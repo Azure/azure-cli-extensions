@@ -46,7 +46,7 @@ setup(
     description='Microsoft Azure Command-Line Connection Monitor V2 Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions',
+    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/connection-monitor-preview',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

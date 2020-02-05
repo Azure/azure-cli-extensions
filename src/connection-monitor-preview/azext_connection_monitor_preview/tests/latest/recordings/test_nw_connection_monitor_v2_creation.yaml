@@ -22,7 +22,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001?api-version=2019-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001","name":"connection_monitor_v2_test_000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","date":"2020-02-04T05:52:28Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001","name":"connection_monitor_v2_test_000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","date":"2020-02-04T14:45:08Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -31,7 +31,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 05:52:35 GMT
+      - Tue, 04 Feb 2020 14:45:28 GMT
       expires:
       - '-1'
       pragma:
@@ -110,13 +110,13 @@ interactions:
       content-type:
       - text/plain; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 05:52:36 GMT
+      - Tue, 04 Feb 2020 14:45:32 GMT
       etag:
       - W/"540044b4084c3c314537f1baa1770f248628b2bc9ba0328f1004c33862e049da"
       expires:
-      - Tue, 04 Feb 2020 05:57:36 GMT
+      - Tue, 04 Feb 2020 14:50:32 GMT
       source-age:
-      - '0'
+      - '226'
       strict-transport-security:
       - max-age=31536000
       vary:
@@ -131,17 +131,17 @@ interactions:
       x-content-type-options:
       - nosniff
       x-fastly-request-id:
-      - fb1372b0626960f257a29465aebf9a5d0ddebf58
+      - 7ef83dadd1f1a7713484573c6f23e3c3eb313775
       x-frame-options:
       - deny
       x-geo-block-list:
       - ''
       x-github-request-id:
-      - 20C2:2110:45FD6:4AFB1:5E3906A4
+      - 6ECE:2110:A60E7:B0E2A:5E39838C
       x-served-by:
-      - cache-tyo19923-TYO
+      - cache-tyo19940-TYO
       x-timer:
-      - S1580795557.550922,VS0,VE247
+      - S1580827532.172226,VS0,VE167
       x-xss-protection:
       - 1; mode=block
     status:
@@ -179,7 +179,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 05:52:37 GMT
+      - Tue, 04 Feb 2020 14:45:34 GMT
       expires:
       - '-1'
       pragma:
@@ -712,7 +712,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 05:52:40 GMT
+      - Tue, 04 Feb 2020 14:45:38 GMT
       expires:
       - '-1'
       pragma:
@@ -759,7 +759,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 05:52:41 GMT
+      - Tue, 04 Feb 2020 14:45:42 GMT
       expires:
       - '-1'
       pragma:
@@ -830,10 +830,10 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2019-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/vm_deploy_O2NOuGojdEEzShvb96jOzJaA2T4WAQIV","name":"vm_deploy_O2NOuGojdEEzShvb96jOzJaA2T4WAQIV","type":"Microsoft.Resources/deployments","properties":{"templateHash":"12940240867523938725","parameters":{"adminPassword":{"type":"SecureString"}},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2020-02-04T05:52:47.6638317Z","duration":"PT2.6924427S","correlationId":"017df878-a45b-4de7-b3e0-b340a2e40cdb","providers":[{"namespace":"Microsoft.Network","resourceTypes":[{"resourceType":"virtualNetworks","locations":["eastus"]},{"resourceType":"networkSecurityGroups","locations":["eastus"]},{"resourceType":"publicIPAddresses","locations":["eastus"]},{"resourceType":"networkInterfaces","locations":["eastus"]}]},{"namespace":"Microsoft.Compute","resourceTypes":[{"resourceType":"virtualMachines","locations":["eastus"]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/virtualNetworks/vm1VNET","resourceType":"Microsoft.Network/virtualNetworks","resourceName":"vm1VNET"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkSecurityGroups/vm1","resourceType":"Microsoft.Network/networkSecurityGroups","resourceName":"vm1"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/publicIPAddresses/vm1PublicIP","resourceType":"Microsoft.Network/publicIPAddresses","resourceName":"vm1PublicIP"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkInterfaces/vm1VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"vm1VMNic"},{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkInterfaces/vm1VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"vm1VMNic"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Compute/virtualMachines/vm1","resourceType":"Microsoft.Compute/virtualMachines","resourceName":"vm1"}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/vm_deploy_ckHTD7wjRyVIoWLUiQdwVTIXJnUCEuzS","name":"vm_deploy_ckHTD7wjRyVIoWLUiQdwVTIXJnUCEuzS","type":"Microsoft.Resources/deployments","properties":{"templateHash":"17538589459038928917","parameters":{"adminPassword":{"type":"SecureString"}},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2020-02-04T14:45:51.9802592Z","duration":"PT3.5022699S","correlationId":"d537b96d-cc4c-4c16-920f-0829ac579efc","providers":[{"namespace":"Microsoft.Network","resourceTypes":[{"resourceType":"virtualNetworks","locations":["eastus"]},{"resourceType":"networkSecurityGroups","locations":["eastus"]},{"resourceType":"publicIPAddresses","locations":["eastus"]},{"resourceType":"networkInterfaces","locations":["eastus"]}]},{"namespace":"Microsoft.Compute","resourceTypes":[{"resourceType":"virtualMachines","locations":["eastus"]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/virtualNetworks/vm1VNET","resourceType":"Microsoft.Network/virtualNetworks","resourceName":"vm1VNET"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkSecurityGroups/vm1","resourceType":"Microsoft.Network/networkSecurityGroups","resourceName":"vm1"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/publicIPAddresses/vm1PublicIP","resourceType":"Microsoft.Network/publicIPAddresses","resourceName":"vm1PublicIP"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkInterfaces/vm1VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"vm1VMNic"},{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkInterfaces/vm1VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"vm1VMNic"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Compute/virtualMachines/vm1","resourceType":"Microsoft.Compute/virtualMachines","resourceName":"vm1"}]}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/vm_deploy_O2NOuGojdEEzShvb96jOzJaA2T4WAQIV/operationStatuses/08586208113205062425?api-version=2019-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/vm_deploy_ckHTD7wjRyVIoWLUiQdwVTIXJnUCEuzS/operationStatuses/08586207793369996365?api-version=2019-07-01
       cache-control:
       - no-cache
       content-length:
@@ -841,7 +841,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 05:52:48 GMT
+      - Tue, 04 Feb 2020 14:45:53 GMT
       expires:
       - '-1'
       pragma:
@@ -851,7 +851,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -873,7 +873,7 @@ interactions:
       - python/3.6.8 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
         azure-mgmt-resource/6.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586208113205062425?api-version=2019-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586207793369996365?api-version=2019-07-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -885,7 +885,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 05:53:19 GMT
+      - Tue, 04 Feb 2020 14:46:33 GMT
       expires:
       - '-1'
       pragma:
@@ -917,7 +917,7 @@ interactions:
       - python/3.6.8 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
         azure-mgmt-resource/6.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586208113205062425?api-version=2019-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586207793369996365?api-version=2019-07-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -929,7 +929,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 05:53:50 GMT
+      - Tue, 04 Feb 2020 14:47:05 GMT
       expires:
       - '-1'
       pragma:
@@ -961,7 +961,7 @@ interactions:
       - python/3.6.8 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
         azure-mgmt-resource/6.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586208113205062425?api-version=2019-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586207793369996365?api-version=2019-07-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -973,7 +973,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 05:54:20 GMT
+      - Tue, 04 Feb 2020 14:47:35 GMT
       expires:
       - '-1'
       pragma:
@@ -1005,7 +1005,7 @@ interactions:
       - python/3.6.8 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
         azure-mgmt-resource/6.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586208113205062425?api-version=2019-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586207793369996365?api-version=2019-07-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -1017,7 +1017,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 05:55:04 GMT
+      - Tue, 04 Feb 2020 14:48:07 GMT
       expires:
       - '-1'
       pragma:
@@ -1049,7 +1049,7 @@ interactions:
       - python/3.6.8 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
         azure-mgmt-resource/6.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586208113205062425?api-version=2019-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586207793369996365?api-version=2019-07-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -1061,7 +1061,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 05:55:35 GMT
+      - Tue, 04 Feb 2020 14:48:37 GMT
       expires:
       - '-1'
       pragma:
@@ -1093,315 +1093,7 @@ interactions:
       - python/3.6.8 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
         azure-mgmt-resource/6.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586208113205062425?api-version=2019-07-01
-  response:
-    body:
-      string: '{"status":"Running"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '20'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 04 Feb 2020 05:56:05 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vm create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g --name --image --authentication-type --admin-username --admin-password
-        --nsg
-      User-Agent:
-      - python/3.6.8 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-resource/6.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586208113205062425?api-version=2019-07-01
-  response:
-    body:
-      string: '{"status":"Running"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '20'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 04 Feb 2020 05:56:36 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vm create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g --name --image --authentication-type --admin-username --admin-password
-        --nsg
-      User-Agent:
-      - python/3.6.8 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-resource/6.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586208113205062425?api-version=2019-07-01
-  response:
-    body:
-      string: '{"status":"Running"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '20'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 04 Feb 2020 05:57:06 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vm create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g --name --image --authentication-type --admin-username --admin-password
-        --nsg
-      User-Agent:
-      - python/3.6.8 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-resource/6.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586208113205062425?api-version=2019-07-01
-  response:
-    body:
-      string: '{"status":"Running"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '20'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 04 Feb 2020 05:57:39 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vm create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g --name --image --authentication-type --admin-username --admin-password
-        --nsg
-      User-Agent:
-      - python/3.6.8 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-resource/6.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586208113205062425?api-version=2019-07-01
-  response:
-    body:
-      string: '{"status":"Running"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '20'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 04 Feb 2020 05:58:09 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vm create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g --name --image --authentication-type --admin-username --admin-password
-        --nsg
-      User-Agent:
-      - python/3.6.8 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-resource/6.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586208113205062425?api-version=2019-07-01
-  response:
-    body:
-      string: '{"status":"Running"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '20'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 04 Feb 2020 05:58:40 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vm create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g --name --image --authentication-type --admin-username --admin-password
-        --nsg
-      User-Agent:
-      - python/3.6.8 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-resource/6.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586208113205062425?api-version=2019-07-01
-  response:
-    body:
-      string: '{"status":"Running"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '20'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 04 Feb 2020 05:59:10 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vm create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g --name --image --authentication-type --admin-username --admin-password
-        --nsg
-      User-Agent:
-      - python/3.6.8 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-resource/6.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586208113205062425?api-version=2019-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586207793369996365?api-version=2019-07-01
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -1413,7 +1105,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 05:59:41 GMT
+      - Tue, 04 Feb 2020 14:49:09 GMT
       expires:
       - '-1'
       pragma:
@@ -1448,7 +1140,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2019-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/vm_deploy_O2NOuGojdEEzShvb96jOzJaA2T4WAQIV","name":"vm_deploy_O2NOuGojdEEzShvb96jOzJaA2T4WAQIV","type":"Microsoft.Resources/deployments","properties":{"templateHash":"12940240867523938725","parameters":{"adminPassword":{"type":"SecureString"}},"mode":"Incremental","provisioningState":"Succeeded","timestamp":"2020-02-04T05:59:37.1130165Z","duration":"PT6M52.1416275S","correlationId":"017df878-a45b-4de7-b3e0-b340a2e40cdb","providers":[{"namespace":"Microsoft.Network","resourceTypes":[{"resourceType":"virtualNetworks","locations":["eastus"]},{"resourceType":"networkSecurityGroups","locations":["eastus"]},{"resourceType":"publicIPAddresses","locations":["eastus"]},{"resourceType":"networkInterfaces","locations":["eastus"]}]},{"namespace":"Microsoft.Compute","resourceTypes":[{"resourceType":"virtualMachines","locations":["eastus"]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/virtualNetworks/vm1VNET","resourceType":"Microsoft.Network/virtualNetworks","resourceName":"vm1VNET"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkSecurityGroups/vm1","resourceType":"Microsoft.Network/networkSecurityGroups","resourceName":"vm1"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/publicIPAddresses/vm1PublicIP","resourceType":"Microsoft.Network/publicIPAddresses","resourceName":"vm1PublicIP"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkInterfaces/vm1VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"vm1VMNic"},{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkInterfaces/vm1VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"vm1VMNic"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Compute/virtualMachines/vm1","resourceType":"Microsoft.Compute/virtualMachines","resourceName":"vm1"}],"outputs":{},"outputResources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Compute/virtualMachines/vm1"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkInterfaces/vm1VMNic"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkSecurityGroups/vm1"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/publicIPAddresses/vm1PublicIP"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/virtualNetworks/vm1VNET"}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/vm_deploy_ckHTD7wjRyVIoWLUiQdwVTIXJnUCEuzS","name":"vm_deploy_ckHTD7wjRyVIoWLUiQdwVTIXJnUCEuzS","type":"Microsoft.Resources/deployments","properties":{"templateHash":"17538589459038928917","parameters":{"adminPassword":{"type":"SecureString"}},"mode":"Incremental","provisioningState":"Succeeded","timestamp":"2020-02-04T14:48:44.5250944Z","duration":"PT2M56.0471051S","correlationId":"d537b96d-cc4c-4c16-920f-0829ac579efc","providers":[{"namespace":"Microsoft.Network","resourceTypes":[{"resourceType":"virtualNetworks","locations":["eastus"]},{"resourceType":"networkSecurityGroups","locations":["eastus"]},{"resourceType":"publicIPAddresses","locations":["eastus"]},{"resourceType":"networkInterfaces","locations":["eastus"]}]},{"namespace":"Microsoft.Compute","resourceTypes":[{"resourceType":"virtualMachines","locations":["eastus"]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/virtualNetworks/vm1VNET","resourceType":"Microsoft.Network/virtualNetworks","resourceName":"vm1VNET"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkSecurityGroups/vm1","resourceType":"Microsoft.Network/networkSecurityGroups","resourceName":"vm1"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/publicIPAddresses/vm1PublicIP","resourceType":"Microsoft.Network/publicIPAddresses","resourceName":"vm1PublicIP"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkInterfaces/vm1VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"vm1VMNic"},{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkInterfaces/vm1VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"vm1VMNic"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Compute/virtualMachines/vm1","resourceType":"Microsoft.Compute/virtualMachines","resourceName":"vm1"}],"outputs":{},"outputResources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Compute/virtualMachines/vm1"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkInterfaces/vm1VMNic"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkSecurityGroups/vm1"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/publicIPAddresses/vm1PublicIP"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/virtualNetworks/vm1VNET"}]}}'
     headers:
       cache-control:
       - no-cache
@@ -1457,7 +1149,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 05:59:42 GMT
+      - Tue, 04 Feb 2020 14:49:10 GMT
       expires:
       - '-1'
       pragma:
@@ -1496,16 +1188,16 @@ interactions:
     body:
       string: "{\r\n  \"name\": \"vm1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Compute/virtualMachines/vm1\",\r\n
         \ \"type\": \"Microsoft.Compute/virtualMachines\",\r\n  \"location\": \"eastus\",\r\n
-        \ \"tags\": {},\r\n  \"properties\": {\r\n    \"vmId\": \"28d86d1c-6b2b-43d5-8bf4-03d9352f5e8d\",\r\n
+        \ \"tags\": {},\r\n  \"properties\": {\r\n    \"vmId\": \"0e938334-f61b-4d7d-84e5-da9e14635366\",\r\n
         \   \"hardwareProfile\": {\r\n      \"vmSize\": \"Standard_DS1_v2\"\r\n    },\r\n
         \   \"storageProfile\": {\r\n      \"imageReference\": {\r\n        \"publisher\":
         \"Canonical\",\r\n        \"offer\": \"UbuntuServer\",\r\n        \"sku\":
         \"18.04-LTS\",\r\n        \"version\": \"latest\",\r\n        \"exactVersion\":
         \"18.04.202001291\"\r\n      },\r\n      \"osDisk\": {\r\n        \"osType\":
-        \"Linux\",\r\n        \"name\": \"vm1_disk1_1c4a5eecd30d4098b81d5042a52fb517\",\r\n
+        \"Linux\",\r\n        \"name\": \"vm1_disk1_c634ef3708cd4049822a242d1dd7f4ae\",\r\n
         \       \"createOption\": \"FromImage\",\r\n        \"caching\": \"ReadWrite\",\r\n
         \       \"managedDisk\": {\r\n          \"storageAccountType\": \"Premium_LRS\",\r\n
-        \         \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CONNECTION_MONITOR_V2_TEST_5ATFCJBL5OZUCMHC6ZWQE4A4FCALEMJILW3NWKRS5EUBGVTB/providers/Microsoft.Compute/disks/vm1_disk1_1c4a5eecd30d4098b81d5042a52fb517\"\r\n
+        \         \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CONNECTION_MONITOR_V2_TEST_RC6ZAXPL5IBOP6GPR2D2FVKYN5NZVNSCT44XHUFCP2G7SMGP/providers/Microsoft.Compute/disks/vm1_disk1_c634ef3708cd4049822a242d1dd7f4ae\"\r\n
         \       },\r\n        \"diskSizeGB\": 30\r\n      },\r\n      \"dataDisks\":
         []\r\n    },\r\n    \"osProfile\": {\r\n      \"computerName\": \"vm1\",\r\n
         \     \"adminUsername\": \"deploy\",\r\n      \"linuxConfiguration\": {\r\n
@@ -1519,15 +1211,15 @@ interactions:
         [\r\n          {\r\n            \"code\": \"ProvisioningState/succeeded\",\r\n
         \           \"level\": \"Info\",\r\n            \"displayStatus\": \"Ready\",\r\n
         \           \"message\": \"Guest Agent is running\",\r\n            \"time\":
-        \"2020-02-04T05:59:40+00:00\"\r\n          }\r\n        ],\r\n        \"extensionHandlers\":
-        []\r\n      },\r\n      \"disks\": [\r\n        {\r\n          \"name\": \"vm1_disk1_1c4a5eecd30d4098b81d5042a52fb517\",\r\n
+        \"2020-02-04T14:49:11+00:00\"\r\n          }\r\n        ],\r\n        \"extensionHandlers\":
+        []\r\n      },\r\n      \"disks\": [\r\n        {\r\n          \"name\": \"vm1_disk1_c634ef3708cd4049822a242d1dd7f4ae\",\r\n
         \         \"statuses\": [\r\n            {\r\n              \"code\": \"ProvisioningState/succeeded\",\r\n
         \             \"level\": \"Info\",\r\n              \"displayStatus\": \"Provisioning
-        succeeded\",\r\n              \"time\": \"2020-02-04T05:58:39.8126723+00:00\"\r\n
+        succeeded\",\r\n              \"time\": \"2020-02-04T14:48:11.4186296+00:00\"\r\n
         \           }\r\n          ]\r\n        }\r\n      ],\r\n      \"hyperVGeneration\":
         \"V1\",\r\n      \"statuses\": [\r\n        {\r\n          \"code\": \"ProvisioningState/succeeded\",\r\n
         \         \"level\": \"Info\",\r\n          \"displayStatus\": \"Provisioning
-        succeeded\",\r\n          \"time\": \"2020-02-04T05:59:20.5316377+00:00\"\r\n
+        succeeded\",\r\n          \"time\": \"2020-02-04T14:48:21.5593223+00:00\"\r\n
         \       },\r\n        {\r\n          \"code\": \"PowerState/running\",\r\n
         \         \"level\": \"Info\",\r\n          \"displayStatus\": \"VM running\"\r\n
         \       }\r\n      ]\r\n    }\r\n  }\r\n}"
@@ -1539,7 +1231,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 05:59:44 GMT
+      - Tue, 04 Feb 2020 14:49:12 GMT
       expires:
       - '-1'
       pragma:
@@ -1556,7 +1248,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-resource:
-      - Microsoft.Compute/LowCostGet3Min;3997,Microsoft.Compute/LowCostGet30Min;31983
+      - Microsoft.Compute/LowCostGet3Min;3997,Microsoft.Compute/LowCostGet30Min;31997
     status:
       code: 200
       message: OK
@@ -1584,12 +1276,12 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"vm1VMNic\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkInterfaces/vm1VMNic\",\r\n
-        \ \"etag\": \"W/\\\"889128df-13c6-4a73-9aa3-569300621310\\\"\",\r\n  \"location\":
+        \ \"etag\": \"W/\\\"315cb90b-9485-4519-bc41-b5b2f219e126\\\"\",\r\n  \"location\":
         \"eastus\",\r\n  \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\":
-        \"Succeeded\",\r\n    \"resourceGuid\": \"15154b23-7008-43ac-ba40-f3f926dac757\",\r\n
+        \"Succeeded\",\r\n    \"resourceGuid\": \"22accc51-12c2-4710-aa81-a5877f0d8a87\",\r\n
         \   \"ipConfigurations\": [\r\n      {\r\n        \"name\": \"ipconfigvm1\",\r\n
         \       \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkInterfaces/vm1VMNic/ipConfigurations/ipconfigvm1\",\r\n
-        \       \"etag\": \"W/\\\"889128df-13c6-4a73-9aa3-569300621310\\\"\",\r\n
+        \       \"etag\": \"W/\\\"315cb90b-9485-4519-bc41-b5b2f219e126\\\"\",\r\n
         \       \"type\": \"Microsoft.Network/networkInterfaces/ipConfigurations\",\r\n
         \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
         \         \"privateIPAddress\": \"10.0.0.4\",\r\n          \"privateIPAllocationMethod\":
@@ -1598,8 +1290,8 @@ interactions:
         \         },\r\n          \"primary\": true,\r\n          \"privateIPAddressVersion\":
         \"IPv4\"\r\n        }\r\n      }\r\n    ],\r\n    \"dnsSettings\": {\r\n      \"dnsServers\":
         [],\r\n      \"appliedDnsServers\": [],\r\n      \"internalDomainNameSuffix\":
-        \"jw4r202wmzhejead3ogc3atnae.bx.internal.cloudapp.net\"\r\n    },\r\n    \"macAddress\":
-        \"00-0D-3A-19-01-21\",\r\n    \"enableAcceleratedNetworking\": false,\r\n
+        \"qpvkqmidrmeuvp3tduach4zc1e.bx.internal.cloudapp.net\"\r\n    },\r\n    \"macAddress\":
+        \"00-0D-3A-18-4B-13\",\r\n    \"enableAcceleratedNetworking\": false,\r\n
         \   \"enableIPForwarding\": false,\r\n    \"networkSecurityGroup\": {\r\n
         \     \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkSecurityGroups/vm1\"\r\n
         \   },\r\n    \"primary\": true,\r\n    \"virtualMachine\": {\r\n      \"id\":
@@ -1613,9 +1305,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 05:59:45 GMT
+      - Tue, 04 Feb 2020 14:49:14 GMT
       etag:
-      - W/"889128df-13c6-4a73-9aa3-569300621310"
+      - W/"315cb90b-9485-4519-bc41-b5b2f219e126"
       expires:
       - '-1'
       pragma:
@@ -1632,7 +1324,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 10b341dd-9c37-40a9-ab66-f06b42ab2de0
+      - 067aa21e-f01b-4713-95b1-0f2043e7ba2c
     status:
       code: 200
       message: OK
@@ -1660,11 +1352,11 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"vm1PublicIP\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/publicIPAddresses/vm1PublicIP\",\r\n
-        \ \"etag\": \"W/\\\"55bcc2c4-f173-4d66-9c50-d5ba9dd797c7\\\"\",\r\n  \"location\":
+        \ \"etag\": \"W/\\\"c9babd85-cf33-48ab-a1d8-18beb8a1a833\\\"\",\r\n  \"location\":
         \"eastus\",\r\n  \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\":
-        \"Succeeded\",\r\n    \"resourceGuid\": \"47c9efda-d9a0-4903-8139-4680547d1a5b\",\r\n
-        \   \"ipAddress\": \"13.92.186.107\",\r\n    \"publicIPAddressVersion\": \"IPv4\",\r\n
-        \   \"publicIPAllocationMethod\": \"Dynamic\",\r\n    \"idleTimeoutInMinutes\":
+        \"Succeeded\",\r\n    \"resourceGuid\": \"28f10edc-10b9-4102-82a7-e80d1f75c947\",\r\n
+        \   \"ipAddress\": \"137.135.106.252\",\r\n    \"publicIPAddressVersion\":
+        \"IPv4\",\r\n    \"publicIPAllocationMethod\": \"Dynamic\",\r\n    \"idleTimeoutInMinutes\":
         4,\r\n    \"ipTags\": [],\r\n    \"ipConfiguration\": {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkInterfaces/vm1VMNic/ipConfigurations/ipconfigvm1\"\r\n
         \   }\r\n  },\r\n  \"type\": \"Microsoft.Network/publicIPAddresses\",\r\n
         \ \"sku\": {\r\n    \"name\": \"Basic\"\r\n  }\r\n}"
@@ -1672,13 +1364,13 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '997'
+      - '999'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 05:59:46 GMT
+      - Tue, 04 Feb 2020 14:49:15 GMT
       etag:
-      - W/"55bcc2c4-f173-4d66-9c50-d5ba9dd797c7"
+      - W/"c9babd85-cf33-48ab-a1d8-18beb8a1a833"
       expires:
       - '-1'
       pragma:
@@ -1695,7 +1387,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 63daab50-dcfa-4c00-9a0b-274421cc8952
+      - bd0f2f04-5929-4f81-8bcc-af8c8f299283
     status:
       code: 200
       message: OK
@@ -1723,16 +1415,16 @@ interactions:
     body:
       string: "{\r\n  \"name\": \"vm1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Compute/virtualMachines/vm1\",\r\n
         \ \"type\": \"Microsoft.Compute/virtualMachines\",\r\n  \"location\": \"eastus\",\r\n
-        \ \"tags\": {},\r\n  \"properties\": {\r\n    \"vmId\": \"28d86d1c-6b2b-43d5-8bf4-03d9352f5e8d\",\r\n
+        \ \"tags\": {},\r\n  \"properties\": {\r\n    \"vmId\": \"0e938334-f61b-4d7d-84e5-da9e14635366\",\r\n
         \   \"hardwareProfile\": {\r\n      \"vmSize\": \"Standard_DS1_v2\"\r\n    },\r\n
         \   \"storageProfile\": {\r\n      \"imageReference\": {\r\n        \"publisher\":
         \"Canonical\",\r\n        \"offer\": \"UbuntuServer\",\r\n        \"sku\":
         \"18.04-LTS\",\r\n        \"version\": \"latest\",\r\n        \"exactVersion\":
         \"18.04.202001291\"\r\n      },\r\n      \"osDisk\": {\r\n        \"osType\":
-        \"Linux\",\r\n        \"name\": \"vm1_disk1_1c4a5eecd30d4098b81d5042a52fb517\",\r\n
+        \"Linux\",\r\n        \"name\": \"vm1_disk1_c634ef3708cd4049822a242d1dd7f4ae\",\r\n
         \       \"createOption\": \"FromImage\",\r\n        \"caching\": \"ReadWrite\",\r\n
         \       \"managedDisk\": {\r\n          \"storageAccountType\": \"Premium_LRS\",\r\n
-        \         \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CONNECTION_MONITOR_V2_TEST_5ATFCJBL5OZUCMHC6ZWQE4A4FCALEMJILW3NWKRS5EUBGVTB/providers/Microsoft.Compute/disks/vm1_disk1_1c4a5eecd30d4098b81d5042a52fb517\"\r\n
+        \         \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CONNECTION_MONITOR_V2_TEST_RC6ZAXPL5IBOP6GPR2D2FVKYN5NZVNSCT44XHUFCP2G7SMGP/providers/Microsoft.Compute/disks/vm1_disk1_c634ef3708cd4049822a242d1dd7f4ae\"\r\n
         \       },\r\n        \"diskSizeGB\": 30\r\n      },\r\n      \"dataDisks\":
         []\r\n    },\r\n    \"osProfile\": {\r\n      \"computerName\": \"vm1\",\r\n
         \     \"adminUsername\": \"deploy\",\r\n      \"linuxConfiguration\": {\r\n
@@ -1746,15 +1438,15 @@ interactions:
         [\r\n          {\r\n            \"code\": \"ProvisioningState/succeeded\",\r\n
         \           \"level\": \"Info\",\r\n            \"displayStatus\": \"Ready\",\r\n
         \           \"message\": \"Guest Agent is running\",\r\n            \"time\":
-        \"2020-02-04T05:59:46+00:00\"\r\n          }\r\n        ],\r\n        \"extensionHandlers\":
-        []\r\n      },\r\n      \"disks\": [\r\n        {\r\n          \"name\": \"vm1_disk1_1c4a5eecd30d4098b81d5042a52fb517\",\r\n
+        \"2020-02-04T14:49:20+00:00\"\r\n          }\r\n        ],\r\n        \"extensionHandlers\":
+        []\r\n      },\r\n      \"disks\": [\r\n        {\r\n          \"name\": \"vm1_disk1_c634ef3708cd4049822a242d1dd7f4ae\",\r\n
         \         \"statuses\": [\r\n            {\r\n              \"code\": \"ProvisioningState/succeeded\",\r\n
         \             \"level\": \"Info\",\r\n              \"displayStatus\": \"Provisioning
-        succeeded\",\r\n              \"time\": \"2020-02-04T05:58:39.8126723+00:00\"\r\n
+        succeeded\",\r\n              \"time\": \"2020-02-04T14:48:11.4186296+00:00\"\r\n
         \           }\r\n          ]\r\n        }\r\n      ],\r\n      \"hyperVGeneration\":
         \"V1\",\r\n      \"statuses\": [\r\n        {\r\n          \"code\": \"ProvisioningState/succeeded\",\r\n
         \         \"level\": \"Info\",\r\n          \"displayStatus\": \"Provisioning
-        succeeded\",\r\n          \"time\": \"2020-02-04T05:59:20.5316377+00:00\"\r\n
+        succeeded\",\r\n          \"time\": \"2020-02-04T14:48:21.5593223+00:00\"\r\n
         \       },\r\n        {\r\n          \"code\": \"PowerState/running\",\r\n
         \         \"level\": \"Info\",\r\n          \"displayStatus\": \"VM running\"\r\n
         \       }\r\n      ]\r\n    }\r\n  }\r\n}"
@@ -1766,7 +1458,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 05:59:47 GMT
+      - Tue, 04 Feb 2020 14:49:21 GMT
       expires:
       - '-1'
       pragma:
@@ -1783,7 +1475,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-resource:
-      - Microsoft.Compute/LowCostGet3Min;3996,Microsoft.Compute/LowCostGet30Min;31982
+      - Microsoft.Compute/LowCostGet3Min;3996,Microsoft.Compute/LowCostGet30Min;31996
     status:
       code: 200
       message: OK
@@ -4156,7 +3848,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 05:59:50 GMT
+      - Tue, 04 Feb 2020 14:49:30 GMT
       expires:
       - '-1'
       pragma:
@@ -4210,7 +3902,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 05:59:51 GMT
+      - Tue, 04 Feb 2020 14:49:38 GMT
       expires:
       - '-1'
       pragma:
@@ -4290,7 +3982,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 05:59:51 GMT
+      - Tue, 04 Feb 2020 14:49:39 GMT
       expires:
       - '-1'
       pragma:
@@ -4347,7 +4039,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus/operations/c01916fb-e4f5-4a09-81ed-85df54c6de05?api-version=2019-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus/operations/36c8e740-212c-44e7-a59c-7623f8166b08?api-version=2019-07-01
       cache-control:
       - no-cache
       content-length:
@@ -4355,7 +4047,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 06:00:02 GMT
+      - Tue, 04 Feb 2020 14:49:48 GMT
       expires:
       - '-1'
       pragma:
@@ -4391,12 +4083,12 @@ interactions:
       - python/3.6.8 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
         azure-mgmt-compute/10.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus/operations/c01916fb-e4f5-4a09-81ed-85df54c6de05?api-version=2019-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus/operations/36c8e740-212c-44e7-a59c-7623f8166b08?api-version=2019-07-01
   response:
     body:
-      string: "{\r\n  \"startTime\": \"2020-02-04T06:00:01.2818588+00:00\",\r\n  \"endTime\":
-        \"2020-02-04T06:00:20.1882183+00:00\",\r\n  \"status\": \"Succeeded\",\r\n
-        \ \"name\": \"c01916fb-e4f5-4a09-81ed-85df54c6de05\"\r\n}"
+      string: "{\r\n  \"startTime\": \"2020-02-04T14:49:46.7784981+00:00\",\r\n  \"endTime\":
+        \"2020-02-04T14:50:14.4660926+00:00\",\r\n  \"status\": \"Succeeded\",\r\n
+        \ \"name\": \"36c8e740-212c-44e7-a59c-7623f8166b08\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -4405,7 +4097,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 06:00:33 GMT
+      - Tue, 04 Feb 2020 14:50:25 GMT
       expires:
       - '-1'
       pragma:
@@ -4460,7 +4152,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 06:00:33 GMT
+      - Tue, 04 Feb 2020 14:50:25 GMT
       expires:
       - '-1'
       pragma:
@@ -4477,7 +4169,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-resource:
-      - Microsoft.Compute/LowCostGet3Min;3994,Microsoft.Compute/LowCostGet30Min;31984
+      - Microsoft.Compute/LowCostGet3Min;3994,Microsoft.Compute/LowCostGet30Min;31994
     status:
       code: 200
       message: OK
@@ -4504,7 +4196,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001?api-version=2019-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001","name":"connection_monitor_v2_test_000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","date":"2020-02-04T05:52:28Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001","name":"connection_monitor_v2_test_000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","date":"2020-02-04T14:45:08Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -4513,7 +4205,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 06:00:35 GMT
+      - Tue, 04 Feb 2020 14:50:32 GMT
       expires:
       - '-1'
       pragma:
@@ -4592,13 +4284,13 @@ interactions:
       content-type:
       - text/plain; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 06:00:37 GMT
+      - Tue, 04 Feb 2020 14:50:35 GMT
       etag:
       - W/"540044b4084c3c314537f1baa1770f248628b2bc9ba0328f1004c33862e049da"
       expires:
-      - Tue, 04 Feb 2020 06:05:37 GMT
+      - Tue, 04 Feb 2020 14:55:35 GMT
       source-age:
-      - '120'
+      - '71'
       strict-transport-security:
       - max-age=31536000
       vary:
@@ -4607,23 +4299,23 @@ interactions:
       - 1.1 varnish (Varnish/6.0)
       - 1.1 varnish
       x-cache:
-      - HIT
+      - MISS
       x-cache-hits:
-      - '1'
+      - '0'
       x-content-type-options:
       - nosniff
       x-fastly-request-id:
-      - 47bc4f71f5e8fc6512136079ee366a683542e35f
+      - 0bb35f5f7600132bcd0d0bc806a95c6304869398
       x-frame-options:
       - deny
       x-geo-block-list:
       - ''
       x-github-request-id:
-      - 20C2:2110:45FD6:4AFB1:5E3906A4
+      - 6ECE:2110:A60E7:B0E2A:5E39838C
       x-served-by:
-      - cache-tyo19949-TYO
+      - cache-tyo19937-TYO
       x-timer:
-      - S1580796037.846975,VS0,VE166
+      - S1580827836.826022,VS0,VE164
       x-xss-protection:
       - 1; mode=block
     status:
@@ -4654,14 +4346,14 @@ interactions:
     body:
       string: "{\r\n  \"value\": [\r\n    {\r\n      \"name\": \"vm1VNET\",\r\n      \"id\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/virtualNetworks/vm1VNET\",\r\n
-        \     \"etag\": \"W/\\\"419a5578-3535-4fc1-8c77-34b6efc909dd\\\"\",\r\n      \"type\":
+        \     \"etag\": \"W/\\\"82fd8f1e-73d1-448e-90f6-7b3a52a0cc71\\\"\",\r\n      \"type\":
         \"Microsoft.Network/virtualNetworks\",\r\n      \"location\": \"eastus\",\r\n
         \     \"tags\": {},\r\n      \"properties\": {\r\n        \"provisioningState\":
-        \"Succeeded\",\r\n        \"resourceGuid\": \"6b1ebd4d-6696-444e-9003-eb8c2e826d04\",\r\n
+        \"Succeeded\",\r\n        \"resourceGuid\": \"31a8ea83-8b03-4a09-bfb3-1d0023fb22dc\",\r\n
         \       \"addressSpace\": {\r\n          \"addressPrefixes\": [\r\n            \"10.0.0.0/16\"\r\n
         \         ]\r\n        },\r\n        \"subnets\": [\r\n          {\r\n            \"name\":
         \"vm1Subnet\",\r\n            \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/virtualNetworks/vm1VNET/subnets/vm1Subnet\",\r\n
-        \           \"etag\": \"W/\\\"419a5578-3535-4fc1-8c77-34b6efc909dd\\\"\",\r\n
+        \           \"etag\": \"W/\\\"82fd8f1e-73d1-448e-90f6-7b3a52a0cc71\\\"\",\r\n
         \           \"properties\": {\r\n              \"provisioningState\": \"Succeeded\",\r\n
         \             \"addressPrefix\": \"10.0.0.0/24\",\r\n              \"ipConfigurations\":
         [\r\n                {\r\n                  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkInterfaces/vm1VMNic/ipConfigurations/ipconfigvm1\"\r\n
@@ -4677,7 +4369,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 06:00:37 GMT
+      - Tue, 04 Feb 2020 14:50:37 GMT
       expires:
       - '-1'
       pragma:
@@ -4694,7 +4386,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 603e8466-b846-4eeb-ac83-074b0e486429
+      - f3ec309f-64ff-488a-b438-3fa250761843
     status:
       code: 200
       message: OK
@@ -5217,7 +4909,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 06:00:38 GMT
+      - Tue, 04 Feb 2020 14:50:47 GMT
       expires:
       - '-1'
       pragma:
@@ -5264,7 +4956,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 06:00:40 GMT
+      - Tue, 04 Feb 2020 14:50:58 GMT
       expires:
       - '-1'
       pragma:
@@ -5331,10 +5023,10 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2019-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/vm_deploy_Jz7nhiLsSp8Fb0QM2m759rEwmI9RCqdS","name":"vm_deploy_Jz7nhiLsSp8Fb0QM2m759rEwmI9RCqdS","type":"Microsoft.Resources/deployments","properties":{"templateHash":"14438653443501723860","parameters":{"adminPassword":{"type":"SecureString"}},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2020-02-04T06:00:45.4915502Z","duration":"PT2.4885639S","correlationId":"4739ffa7-326a-49dc-993c-df6f8dbdf81d","providers":[{"namespace":"Microsoft.Network","resourceTypes":[{"resourceType":"networkSecurityGroups","locations":["eastus"]},{"resourceType":"publicIPAddresses","locations":["eastus"]},{"resourceType":"networkInterfaces","locations":["eastus"]}]},{"namespace":"Microsoft.Compute","resourceTypes":[{"resourceType":"virtualMachines","locations":["eastus"]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkSecurityGroups/vm2","resourceType":"Microsoft.Network/networkSecurityGroups","resourceName":"vm2"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/publicIPAddresses/vm2PublicIP","resourceType":"Microsoft.Network/publicIPAddresses","resourceName":"vm2PublicIP"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkInterfaces/vm2VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"vm2VMNic"},{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkInterfaces/vm2VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"vm2VMNic"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Compute/virtualMachines/vm2","resourceType":"Microsoft.Compute/virtualMachines","resourceName":"vm2"}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/vm_deploy_yxt6JnzVgto6bNsxHWJSvyOrDUC38wdI","name":"vm_deploy_yxt6JnzVgto6bNsxHWJSvyOrDUC38wdI","type":"Microsoft.Resources/deployments","properties":{"templateHash":"16062101442646166603","parameters":{"adminPassword":{"type":"SecureString"}},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2020-02-04T14:51:06.5631756Z","duration":"PT3.1814997S","correlationId":"9828109d-bac4-4420-99ad-d72b3b1d2f39","providers":[{"namespace":"Microsoft.Network","resourceTypes":[{"resourceType":"networkSecurityGroups","locations":["eastus"]},{"resourceType":"publicIPAddresses","locations":["eastus"]},{"resourceType":"networkInterfaces","locations":["eastus"]}]},{"namespace":"Microsoft.Compute","resourceTypes":[{"resourceType":"virtualMachines","locations":["eastus"]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkSecurityGroups/vm2","resourceType":"Microsoft.Network/networkSecurityGroups","resourceName":"vm2"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/publicIPAddresses/vm2PublicIP","resourceType":"Microsoft.Network/publicIPAddresses","resourceName":"vm2PublicIP"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkInterfaces/vm2VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"vm2VMNic"},{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkInterfaces/vm2VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"vm2VMNic"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Compute/virtualMachines/vm2","resourceType":"Microsoft.Compute/virtualMachines","resourceName":"vm2"}]}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/vm_deploy_Jz7nhiLsSp8Fb0QM2m759rEwmI9RCqdS/operationStatuses/08586208108424746379?api-version=2019-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/vm_deploy_yxt6JnzVgto6bNsxHWJSvyOrDUC38wdI/operationStatuses/08586207790220959522?api-version=2019-07-01
       cache-control:
       - no-cache
       content-length:
@@ -5342,7 +5034,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 06:00:46 GMT
+      - Tue, 04 Feb 2020 14:51:07 GMT
       expires:
       - '-1'
       pragma:
@@ -5352,7 +5044,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -5374,7 +5066,7 @@ interactions:
       - python/3.6.8 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
         azure-mgmt-resource/6.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586208108424746379?api-version=2019-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586207790220959522?api-version=2019-07-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -5386,7 +5078,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 06:01:18 GMT
+      - Tue, 04 Feb 2020 14:51:42 GMT
       expires:
       - '-1'
       pragma:
@@ -5418,183 +5110,7 @@ interactions:
       - python/3.6.8 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
         azure-mgmt-resource/6.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586208108424746379?api-version=2019-07-01
-  response:
-    body:
-      string: '{"status":"Running"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '20'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 04 Feb 2020 06:01:48 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vm create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g --name --image --authentication-type --admin-username --admin-password
-        --nsg
-      User-Agent:
-      - python/3.6.8 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-resource/6.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586208108424746379?api-version=2019-07-01
-  response:
-    body:
-      string: '{"status":"Running"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '20'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 04 Feb 2020 06:02:18 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vm create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g --name --image --authentication-type --admin-username --admin-password
-        --nsg
-      User-Agent:
-      - python/3.6.8 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-resource/6.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586208108424746379?api-version=2019-07-01
-  response:
-    body:
-      string: '{"status":"Running"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '20'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 04 Feb 2020 06:02:50 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vm create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g --name --image --authentication-type --admin-username --admin-password
-        --nsg
-      User-Agent:
-      - python/3.6.8 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-resource/6.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586208108424746379?api-version=2019-07-01
-  response:
-    body:
-      string: '{"status":"Running"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '20'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 04 Feb 2020 06:03:20 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vm create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g --name --image --authentication-type --admin-username --admin-password
-        --nsg
-      User-Agent:
-      - python/3.6.8 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-resource/6.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586208108424746379?api-version=2019-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586207790220959522?api-version=2019-07-01
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -5606,7 +5122,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 06:03:51 GMT
+      - Tue, 04 Feb 2020 14:53:57 GMT
       expires:
       - '-1'
       pragma:
@@ -5641,7 +5157,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2019-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/vm_deploy_Jz7nhiLsSp8Fb0QM2m759rEwmI9RCqdS","name":"vm_deploy_Jz7nhiLsSp8Fb0QM2m759rEwmI9RCqdS","type":"Microsoft.Resources/deployments","properties":{"templateHash":"14438653443501723860","parameters":{"adminPassword":{"type":"SecureString"}},"mode":"Incremental","provisioningState":"Succeeded","timestamp":"2020-02-04T06:03:29.4042591Z","duration":"PT2M46.4012728S","correlationId":"4739ffa7-326a-49dc-993c-df6f8dbdf81d","providers":[{"namespace":"Microsoft.Network","resourceTypes":[{"resourceType":"networkSecurityGroups","locations":["eastus"]},{"resourceType":"publicIPAddresses","locations":["eastus"]},{"resourceType":"networkInterfaces","locations":["eastus"]}]},{"namespace":"Microsoft.Compute","resourceTypes":[{"resourceType":"virtualMachines","locations":["eastus"]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkSecurityGroups/vm2","resourceType":"Microsoft.Network/networkSecurityGroups","resourceName":"vm2"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/publicIPAddresses/vm2PublicIP","resourceType":"Microsoft.Network/publicIPAddresses","resourceName":"vm2PublicIP"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkInterfaces/vm2VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"vm2VMNic"},{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkInterfaces/vm2VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"vm2VMNic"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Compute/virtualMachines/vm2","resourceType":"Microsoft.Compute/virtualMachines","resourceName":"vm2"}],"outputs":{},"outputResources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Compute/virtualMachines/vm2"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkInterfaces/vm2VMNic"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkSecurityGroups/vm2"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/publicIPAddresses/vm2PublicIP"}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Resources/deployments/vm_deploy_yxt6JnzVgto6bNsxHWJSvyOrDUC38wdI","name":"vm_deploy_yxt6JnzVgto6bNsxHWJSvyOrDUC38wdI","type":"Microsoft.Resources/deployments","properties":{"templateHash":"16062101442646166603","parameters":{"adminPassword":{"type":"SecureString"}},"mode":"Incremental","provisioningState":"Succeeded","timestamp":"2020-02-04T14:53:47.7250532Z","duration":"PT2M44.3433773S","correlationId":"9828109d-bac4-4420-99ad-d72b3b1d2f39","providers":[{"namespace":"Microsoft.Network","resourceTypes":[{"resourceType":"networkSecurityGroups","locations":["eastus"]},{"resourceType":"publicIPAddresses","locations":["eastus"]},{"resourceType":"networkInterfaces","locations":["eastus"]}]},{"namespace":"Microsoft.Compute","resourceTypes":[{"resourceType":"virtualMachines","locations":["eastus"]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkSecurityGroups/vm2","resourceType":"Microsoft.Network/networkSecurityGroups","resourceName":"vm2"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/publicIPAddresses/vm2PublicIP","resourceType":"Microsoft.Network/publicIPAddresses","resourceName":"vm2PublicIP"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkInterfaces/vm2VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"vm2VMNic"},{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkInterfaces/vm2VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"vm2VMNic"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Compute/virtualMachines/vm2","resourceType":"Microsoft.Compute/virtualMachines","resourceName":"vm2"}],"outputs":{},"outputResources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Compute/virtualMachines/vm2"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkInterfaces/vm2VMNic"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkSecurityGroups/vm2"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/publicIPAddresses/vm2PublicIP"}]}}'
     headers:
       cache-control:
       - no-cache
@@ -5650,7 +5166,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 06:03:51 GMT
+      - Tue, 04 Feb 2020 14:53:58 GMT
       expires:
       - '-1'
       pragma:
@@ -5689,16 +5205,16 @@ interactions:
     body:
       string: "{\r\n  \"name\": \"vm2\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Compute/virtualMachines/vm2\",\r\n
         \ \"type\": \"Microsoft.Compute/virtualMachines\",\r\n  \"location\": \"eastus\",\r\n
-        \ \"tags\": {},\r\n  \"properties\": {\r\n    \"vmId\": \"54ecdfbf-c6ff-464c-9f4d-cc312d5de3c5\",\r\n
+        \ \"tags\": {},\r\n  \"properties\": {\r\n    \"vmId\": \"f65a0a6d-4eed-4a00-9833-47439d163242\",\r\n
         \   \"hardwareProfile\": {\r\n      \"vmSize\": \"Standard_DS1_v2\"\r\n    },\r\n
         \   \"storageProfile\": {\r\n      \"imageReference\": {\r\n        \"publisher\":
         \"Canonical\",\r\n        \"offer\": \"UbuntuServer\",\r\n        \"sku\":
         \"18.04-LTS\",\r\n        \"version\": \"latest\",\r\n        \"exactVersion\":
         \"18.04.202001291\"\r\n      },\r\n      \"osDisk\": {\r\n        \"osType\":
-        \"Linux\",\r\n        \"name\": \"vm2_disk1_a54fd9109d944b3fbecf6008ef9f0a9a\",\r\n
+        \"Linux\",\r\n        \"name\": \"vm2_disk1_2013d85454544b19b6d94c6d5d9f2a16\",\r\n
         \       \"createOption\": \"FromImage\",\r\n        \"caching\": \"ReadWrite\",\r\n
         \       \"managedDisk\": {\r\n          \"storageAccountType\": \"Premium_LRS\",\r\n
-        \         \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CONNECTION_MONITOR_V2_TEST_5ATFCJBL5OZUCMHC6ZWQE4A4FCALEMJILW3NWKRS5EUBGVTB/providers/Microsoft.Compute/disks/vm2_disk1_a54fd9109d944b3fbecf6008ef9f0a9a\"\r\n
+        \         \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CONNECTION_MONITOR_V2_TEST_RC6ZAXPL5IBOP6GPR2D2FVKYN5NZVNSCT44XHUFCP2G7SMGP/providers/Microsoft.Compute/disks/vm2_disk1_2013d85454544b19b6d94c6d5d9f2a16\"\r\n
         \       },\r\n        \"diskSizeGB\": 30\r\n      },\r\n      \"dataDisks\":
         []\r\n    },\r\n    \"osProfile\": {\r\n      \"computerName\": \"vm2\",\r\n
         \     \"adminUsername\": \"deploy\",\r\n      \"linuxConfiguration\": {\r\n
@@ -5712,15 +5228,15 @@ interactions:
         [\r\n          {\r\n            \"code\": \"ProvisioningState/succeeded\",\r\n
         \           \"level\": \"Info\",\r\n            \"displayStatus\": \"Ready\",\r\n
         \           \"message\": \"Guest Agent is running\",\r\n            \"time\":
-        \"2020-02-04T06:03:53+00:00\"\r\n          }\r\n        ],\r\n        \"extensionHandlers\":
-        []\r\n      },\r\n      \"disks\": [\r\n        {\r\n          \"name\": \"vm2_disk1_a54fd9109d944b3fbecf6008ef9f0a9a\",\r\n
+        \"2020-02-04T14:53:59+00:00\"\r\n          }\r\n        ],\r\n        \"extensionHandlers\":
+        []\r\n      },\r\n      \"disks\": [\r\n        {\r\n          \"name\": \"vm2_disk1_2013d85454544b19b6d94c6d5d9f2a16\",\r\n
         \         \"statuses\": [\r\n            {\r\n              \"code\": \"ProvisioningState/succeeded\",\r\n
         \             \"level\": \"Info\",\r\n              \"displayStatus\": \"Provisioning
-        succeeded\",\r\n              \"time\": \"2020-02-04T06:02:35.5326719+00:00\"\r\n
+        succeeded\",\r\n              \"time\": \"2020-02-04T14:53:01.5919217+00:00\"\r\n
         \           }\r\n          ]\r\n        }\r\n      ],\r\n      \"hyperVGeneration\":
         \"V1\",\r\n      \"statuses\": [\r\n        {\r\n          \"code\": \"ProvisioningState/succeeded\",\r\n
         \         \"level\": \"Info\",\r\n          \"displayStatus\": \"Provisioning
-        succeeded\",\r\n          \"time\": \"2020-02-04T06:03:13.626601+00:00\"\r\n
+        succeeded\",\r\n          \"time\": \"2020-02-04T14:53:46.3419167+00:00\"\r\n
         \       },\r\n        {\r\n          \"code\": \"PowerState/running\",\r\n
         \         \"level\": \"Info\",\r\n          \"displayStatus\": \"VM running\"\r\n
         \       }\r\n      ]\r\n    }\r\n  }\r\n}"
@@ -5728,11 +5244,11 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '3168'
+      - '3169'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 06:03:54 GMT
+      - Tue, 04 Feb 2020 14:54:01 GMT
       expires:
       - '-1'
       pragma:
@@ -5749,7 +5265,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-resource:
-      - Microsoft.Compute/LowCostGet3Min;3997,Microsoft.Compute/LowCostGet30Min;31980
+      - Microsoft.Compute/LowCostGet3Min;3997,Microsoft.Compute/LowCostGet30Min;31991
     status:
       code: 200
       message: OK
@@ -5777,12 +5293,12 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"vm2VMNic\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkInterfaces/vm2VMNic\",\r\n
-        \ \"etag\": \"W/\\\"5b90bff6-9890-4f44-b73d-bd7f9170b422\\\"\",\r\n  \"location\":
+        \ \"etag\": \"W/\\\"b49c34cf-c4bd-4843-9880-fa0af50e7328\\\"\",\r\n  \"location\":
         \"eastus\",\r\n  \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\":
-        \"Succeeded\",\r\n    \"resourceGuid\": \"bb0354cf-931e-41ed-af7d-ee67ff892fca\",\r\n
+        \"Succeeded\",\r\n    \"resourceGuid\": \"43db2e25-0e6c-463c-ada5-149f733898d2\",\r\n
         \   \"ipConfigurations\": [\r\n      {\r\n        \"name\": \"ipconfigvm2\",\r\n
         \       \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkInterfaces/vm2VMNic/ipConfigurations/ipconfigvm2\",\r\n
-        \       \"etag\": \"W/\\\"5b90bff6-9890-4f44-b73d-bd7f9170b422\\\"\",\r\n
+        \       \"etag\": \"W/\\\"b49c34cf-c4bd-4843-9880-fa0af50e7328\\\"\",\r\n
         \       \"type\": \"Microsoft.Network/networkInterfaces/ipConfigurations\",\r\n
         \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
         \         \"privateIPAddress\": \"10.0.0.5\",\r\n          \"privateIPAllocationMethod\":
@@ -5791,8 +5307,8 @@ interactions:
         \         },\r\n          \"primary\": true,\r\n          \"privateIPAddressVersion\":
         \"IPv4\"\r\n        }\r\n      }\r\n    ],\r\n    \"dnsSettings\": {\r\n      \"dnsServers\":
         [],\r\n      \"appliedDnsServers\": [],\r\n      \"internalDomainNameSuffix\":
-        \"jw4r202wmzhejead3ogc3atnae.bx.internal.cloudapp.net\"\r\n    },\r\n    \"macAddress\":
-        \"00-0D-3A-19-79-57\",\r\n    \"enableAcceleratedNetworking\": false,\r\n
+        \"qpvkqmidrmeuvp3tduach4zc1e.bx.internal.cloudapp.net\"\r\n    },\r\n    \"macAddress\":
+        \"00-0D-3A-99-E5-B4\",\r\n    \"enableAcceleratedNetworking\": false,\r\n
         \   \"enableIPForwarding\": false,\r\n    \"networkSecurityGroup\": {\r\n
         \     \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkSecurityGroups/vm2\"\r\n
         \   },\r\n    \"primary\": true,\r\n    \"virtualMachine\": {\r\n      \"id\":
@@ -5806,9 +5322,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 06:03:55 GMT
+      - Tue, 04 Feb 2020 14:54:02 GMT
       etag:
-      - W/"5b90bff6-9890-4f44-b73d-bd7f9170b422"
+      - W/"b49c34cf-c4bd-4843-9880-fa0af50e7328"
       expires:
       - '-1'
       pragma:
@@ -5825,7 +5341,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 6ed462d5-5762-4d91-96d1-61c5cfcc1eda
+      - c1c23cc3-77d4-48df-8650-409c741395e3
     status:
       code: 200
       message: OK
@@ -5853,10 +5369,10 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"vm2PublicIP\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/publicIPAddresses/vm2PublicIP\",\r\n
-        \ \"etag\": \"W/\\\"cac6ec2d-d51e-445d-b88e-536bed9f7f9e\\\"\",\r\n  \"location\":
+        \ \"etag\": \"W/\\\"9bb34f32-8046-4b9b-9c21-d4562c7d2dee\\\"\",\r\n  \"location\":
         \"eastus\",\r\n  \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\":
-        \"Succeeded\",\r\n    \"resourceGuid\": \"5aa3f8a9-9a88-4299-b260-12c4da327cfc\",\r\n
-        \   \"ipAddress\": \"52.168.8.166\",\r\n    \"publicIPAddressVersion\": \"IPv4\",\r\n
+        \"Succeeded\",\r\n    \"resourceGuid\": \"c09d833e-ada2-4d39-8e1d-022ea81befcd\",\r\n
+        \   \"ipAddress\": \"13.92.112.107\",\r\n    \"publicIPAddressVersion\": \"IPv4\",\r\n
         \   \"publicIPAllocationMethod\": \"Dynamic\",\r\n    \"idleTimeoutInMinutes\":
         4,\r\n    \"ipTags\": [],\r\n    \"ipConfiguration\": {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkInterfaces/vm2VMNic/ipConfigurations/ipconfigvm2\"\r\n
         \   }\r\n  },\r\n  \"type\": \"Microsoft.Network/publicIPAddresses\",\r\n
@@ -5865,13 +5381,13 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '996'
+      - '997'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 06:03:55 GMT
+      - Tue, 04 Feb 2020 14:54:03 GMT
       etag:
-      - W/"cac6ec2d-d51e-445d-b88e-536bed9f7f9e"
+      - W/"9bb34f32-8046-4b9b-9c21-d4562c7d2dee"
       expires:
       - '-1'
       pragma:
@@ -5888,7 +5404,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 56a97f9d-8f88-4aa6-ac87-9effc5bfe0dc
+      - 6b741ba0-12ee-4376-9f23-63406ce54954
     status:
       code: 200
       message: OK
@@ -5916,16 +5432,16 @@ interactions:
     body:
       string: "{\r\n  \"name\": \"vm2\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Compute/virtualMachines/vm2\",\r\n
         \ \"type\": \"Microsoft.Compute/virtualMachines\",\r\n  \"location\": \"eastus\",\r\n
-        \ \"tags\": {},\r\n  \"properties\": {\r\n    \"vmId\": \"54ecdfbf-c6ff-464c-9f4d-cc312d5de3c5\",\r\n
+        \ \"tags\": {},\r\n  \"properties\": {\r\n    \"vmId\": \"f65a0a6d-4eed-4a00-9833-47439d163242\",\r\n
         \   \"hardwareProfile\": {\r\n      \"vmSize\": \"Standard_DS1_v2\"\r\n    },\r\n
         \   \"storageProfile\": {\r\n      \"imageReference\": {\r\n        \"publisher\":
         \"Canonical\",\r\n        \"offer\": \"UbuntuServer\",\r\n        \"sku\":
         \"18.04-LTS\",\r\n        \"version\": \"latest\",\r\n        \"exactVersion\":
         \"18.04.202001291\"\r\n      },\r\n      \"osDisk\": {\r\n        \"osType\":
-        \"Linux\",\r\n        \"name\": \"vm2_disk1_a54fd9109d944b3fbecf6008ef9f0a9a\",\r\n
+        \"Linux\",\r\n        \"name\": \"vm2_disk1_2013d85454544b19b6d94c6d5d9f2a16\",\r\n
         \       \"createOption\": \"FromImage\",\r\n        \"caching\": \"ReadWrite\",\r\n
         \       \"managedDisk\": {\r\n          \"storageAccountType\": \"Premium_LRS\",\r\n
-        \         \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CONNECTION_MONITOR_V2_TEST_5ATFCJBL5OZUCMHC6ZWQE4A4FCALEMJILW3NWKRS5EUBGVTB/providers/Microsoft.Compute/disks/vm2_disk1_a54fd9109d944b3fbecf6008ef9f0a9a\"\r\n
+        \         \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CONNECTION_MONITOR_V2_TEST_RC6ZAXPL5IBOP6GPR2D2FVKYN5NZVNSCT44XHUFCP2G7SMGP/providers/Microsoft.Compute/disks/vm2_disk1_2013d85454544b19b6d94c6d5d9f2a16\"\r\n
         \       },\r\n        \"diskSizeGB\": 30\r\n      },\r\n      \"dataDisks\":
         []\r\n    },\r\n    \"osProfile\": {\r\n      \"computerName\": \"vm2\",\r\n
         \     \"adminUsername\": \"deploy\",\r\n      \"linuxConfiguration\": {\r\n
@@ -5939,15 +5455,15 @@ interactions:
         [\r\n          {\r\n            \"code\": \"ProvisioningState/succeeded\",\r\n
         \           \"level\": \"Info\",\r\n            \"displayStatus\": \"Ready\",\r\n
         \           \"message\": \"Guest Agent is running\",\r\n            \"time\":
-        \"2020-02-04T06:03:56+00:00\"\r\n          }\r\n        ],\r\n        \"extensionHandlers\":
-        []\r\n      },\r\n      \"disks\": [\r\n        {\r\n          \"name\": \"vm2_disk1_a54fd9109d944b3fbecf6008ef9f0a9a\",\r\n
+        \"2020-02-04T14:54:08+00:00\"\r\n          }\r\n        ],\r\n        \"extensionHandlers\":
+        []\r\n      },\r\n      \"disks\": [\r\n        {\r\n          \"name\": \"vm2_disk1_2013d85454544b19b6d94c6d5d9f2a16\",\r\n
         \         \"statuses\": [\r\n            {\r\n              \"code\": \"ProvisioningState/succeeded\",\r\n
         \             \"level\": \"Info\",\r\n              \"displayStatus\": \"Provisioning
-        succeeded\",\r\n              \"time\": \"2020-02-04T06:02:35.5326719+00:00\"\r\n
+        succeeded\",\r\n              \"time\": \"2020-02-04T14:53:01.5919217+00:00\"\r\n
         \           }\r\n          ]\r\n        }\r\n      ],\r\n      \"hyperVGeneration\":
         \"V1\",\r\n      \"statuses\": [\r\n        {\r\n          \"code\": \"ProvisioningState/succeeded\",\r\n
         \         \"level\": \"Info\",\r\n          \"displayStatus\": \"Provisioning
-        succeeded\",\r\n          \"time\": \"2020-02-04T06:03:13.626601+00:00\"\r\n
+        succeeded\",\r\n          \"time\": \"2020-02-04T14:53:46.3419167+00:00\"\r\n
         \       },\r\n        {\r\n          \"code\": \"PowerState/running\",\r\n
         \         \"level\": \"Info\",\r\n          \"displayStatus\": \"VM running\"\r\n
         \       }\r\n      ]\r\n    }\r\n  }\r\n}"
@@ -5955,11 +5471,11 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '3168'
+      - '3169'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 06:03:57 GMT
+      - Tue, 04 Feb 2020 14:54:09 GMT
       expires:
       - '-1'
       pragma:
@@ -5976,7 +5492,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-resource:
-      - Microsoft.Compute/LowCostGet3Min;3996,Microsoft.Compute/LowCostGet30Min;31979
+      - Microsoft.Compute/LowCostGet3Min;3996,Microsoft.Compute/LowCostGet30Min;31990
     status:
       code: 200
       message: OK
@@ -8349,7 +7865,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 06:04:00 GMT
+      - Tue, 04 Feb 2020 14:54:12 GMT
       expires:
       - '-1'
       pragma:
@@ -8403,7 +7919,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 06:04:01 GMT
+      - Tue, 04 Feb 2020 14:54:19 GMT
       expires:
       - '-1'
       pragma:
@@ -8483,7 +7999,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 06:04:01 GMT
+      - Tue, 04 Feb 2020 14:54:20 GMT
       expires:
       - '-1'
       pragma:
@@ -8540,7 +8056,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus/operations/e07a978c-1269-4f78-982c-fbf139f12fd1?api-version=2019-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus/operations/0687525a-c231-4dde-8d18-d9aaef53f864?api-version=2019-07-01
       cache-control:
       - no-cache
       content-length:
@@ -8548,7 +8064,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 06:04:10 GMT
+      - Tue, 04 Feb 2020 14:54:30 GMT
       expires:
       - '-1'
       pragma:
@@ -8563,7 +8079,7 @@ interactions:
       x-ms-ratelimit-remaining-resource:
       - Microsoft.Compute/UpdateVM3Min;239,Microsoft.Compute/UpdateVM30Min;1198
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -8584,12 +8100,12 @@ interactions:
       - python/3.6.8 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
         azure-mgmt-compute/10.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus/operations/e07a978c-1269-4f78-982c-fbf139f12fd1?api-version=2019-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus/operations/0687525a-c231-4dde-8d18-d9aaef53f864?api-version=2019-07-01
   response:
     body:
-      string: "{\r\n  \"startTime\": \"2020-02-04T06:04:08.9861816+00:00\",\r\n  \"endTime\":
-        \"2020-02-04T06:04:35.5798613+00:00\",\r\n  \"status\": \"Succeeded\",\r\n
-        \ \"name\": \"e07a978c-1269-4f78-982c-fbf139f12fd1\"\r\n}"
+      string: "{\r\n  \"startTime\": \"2020-02-04T14:54:28.9201226+00:00\",\r\n  \"endTime\":
+        \"2020-02-04T14:54:56.8107437+00:00\",\r\n  \"status\": \"Succeeded\",\r\n
+        \ \"name\": \"0687525a-c231-4dde-8d18-d9aaef53f864\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -8598,7 +8114,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 06:04:41 GMT
+      - Tue, 04 Feb 2020 14:55:01 GMT
       expires:
       - '-1'
       pragma:
@@ -8653,7 +8169,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 06:04:42 GMT
+      - Tue, 04 Feb 2020 14:55:02 GMT
       expires:
       - '-1'
       pragma:
@@ -8670,7 +8186,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-resource:
-      - Microsoft.Compute/LowCostGet3Min;3994,Microsoft.Compute/LowCostGet30Min;31977
+      - Microsoft.Compute/LowCostGet3Min;3994,Microsoft.Compute/LowCostGet30Min;31988
     status:
       code: 200
       message: OK
@@ -8697,16 +8213,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/networkWatchers?api-version=2019-11-01
   response:
     body:
-      string: '{"value":[{"name":"NetworkWatcher_westus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_westus","etag":"W/\"4cd1288b-33c6-4886-88ae-1ba50b7f2863\"","type":"Microsoft.Network/networkWatchers","location":"westus","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_eastus","etag":"W/\"76b06994-8ed0-4133-ab55-0d418af964eb\"","type":"Microsoft.Network/networkWatchers","location":"eastus","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_centralus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_centralus","etag":"W/\"808dc9a5-837d-4ceb-b1c3-6583fdaf71e6\"","type":"Microsoft.Network/networkWatchers","location":"centralus","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_westcentralus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_westcentralus","etag":"W/\"4a515ced-1d41-44da-a225-68ff402c42ef\"","type":"Microsoft.Network/networkWatchers","location":"westcentralus","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}}]}'
+      string: '{"value":[{"name":"NetworkWatcher_westus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_westus","etag":"W/\"144fe157-e90e-4884-bb59-5329f5f24fa1\"","type":"Microsoft.Network/networkWatchers","location":"westus","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_eastus","etag":"W/\"4bf3b89f-86ee-4d51-bd57-c22ab09b5ec8\"","type":"Microsoft.Network/networkWatchers","location":"eastus","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_southeastasia","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_southeastasia","etag":"W/\"a1f833bb-e377-4786-b2ad-6c74602d87c0\"","type":"Microsoft.Network/networkWatchers","location":"southeastasia","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_centralus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_centralus","etag":"W/\"808dc9a5-837d-4ceb-b1c3-6583fdaf71e6\"","type":"Microsoft.Network/networkWatchers","location":"centralus","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_westcentralus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_westcentralus","etag":"W/\"4a515ced-1d41-44da-a225-68ff402c42ef\"","type":"Microsoft.Network/networkWatchers","location":"westcentralus","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_centraluseuap","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_centraluseuap","etag":"W/\"45c2db7d-5c1e-4016-a10d-b74c8a4372f0\"","type":"Microsoft.Network/networkWatchers","location":"centraluseuap","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_eastus2euap","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_eastus2euap","etag":"W/\"fd9a143e-7187-47dd-ac6c-d9e6a8c2e9cc\"","type":"Microsoft.Network/networkWatchers","location":"eastus2euap","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1549'
+      - '2737'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 06:04:44 GMT
+      - Tue, 04 Feb 2020 14:55:05 GMT
       expires:
       - '-1'
       pragma:
@@ -8718,10 +8234,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - 30693887-a98d-4103-b463-25b795da4bd0
-      - 78ffea13-f4ed-4ad7-90c4-c24cba75d463
-      - de627187-a380-47a4-8be7-4b059b367862
-      - db51fbc1-c00c-42a0-80e4-d104eada15cd
+      - fe83be28-4202-4ca5-9135-de952dd99983
+      - 8df7e54b-6f33-45b9-82cd-ffb32f9c81d4
+      - b019c3b6-246c-4921-af3b-20078ab2dcc6
+      - 0d29e5bd-d033-48a1-8029-205bbf96c5b5
+      - 539a3977-f856-4359-9a79-a5531087d793
+      - d751ccf4-02e2-407a-8cb8-8222c90d821c
+      - 77500fdb-426c-4c08-a2d4-d7ab638ddaec
     status:
       code: 200
       message: OK
@@ -8758,7 +8277,7 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"CMv2-01\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_eastus/connectionMonitors/CMv2-01\",\r\n
-        \ \"etag\": \"W/\\\"dd85d46a-2ea4-4162-9309-ad467cb7ba2b\\\"\",\r\n  \"properties\":
+        \ \"etag\": \"W/\\\"5f67c73d-ab86-46ef-9708-40c457161b9e\\\"\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Updating\",\r\n    \"resourceGuid\": \"4643b71e-db01-4d00-b9f7-0523d0857412\",\r\n
         \   \"endpoints\": [\r\n      {\r\n        \"name\": \"vm1\",\r\n        \"resourceId\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Compute/virtualMachines/vm1\"\r\n
@@ -8776,7 +8295,7 @@ interactions:
         \ \"location\": \"eastus\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/5fb4beb8-77af-4e49-bdc2-c3730b36b708?api-version=2019-11-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/cb59dcd5-d371-4546-a48e-2f89fed0d638?api-version=2019-11-01
       cache-control:
       - no-cache
       content-length:
@@ -8784,7 +8303,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 06:04:49 GMT
+      - Tue, 04 Feb 2020 14:55:08 GMT
       expires:
       - '-1'
       pragma:
@@ -8794,15 +8313,19 @@ interactions:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 5d87d6b2-c03c-4494-a0b7-c256424fb30f
+      - 03144be4-2f27-43d7-bb29-fc41ed7e343e
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
     status:
-      code: 201
-      message: Created
+      code: 200
+      message: OK
 - request:
     body: null
     headers:
@@ -8821,7 +8344,7 @@ interactions:
       - python/3.6.8 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
         azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/5fb4beb8-77af-4e49-bdc2-c3730b36b708?api-version=2019-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/cb59dcd5-d371-4546-a48e-2f89fed0d638?api-version=2019-11-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -8833,7 +8356,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 06:05:01 GMT
+      - Tue, 04 Feb 2020 14:55:24 GMT
       expires:
       - '-1'
       pragma:
@@ -8850,7 +8373,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - d10d4a60-cd1d-4c7f-8298-960d52deda9c
+      - bf036a4f-b3dd-49b1-9abb-84536c9215de
     status:
       code: 200
       message: OK
@@ -8876,7 +8399,7 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"CMv2-01\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_eastus/connectionMonitors/CMv2-01\",\r\n
-        \ \"etag\": \"W/\\\"d11e97de-4807-4326-8b42-31ae04e731ff\\\"\",\r\n  \"properties\":
+        \ \"etag\": \"W/\\\"e6cb6d87-e02d-47a7-9819-829fab111833\\\"\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"resourceGuid\": \"4643b71e-db01-4d00-b9f7-0523d0857412\",\r\n
         \   \"endpoints\": [\r\n      {\r\n        \"name\": \"vm1\",\r\n        \"resourceId\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Compute/virtualMachines/vm1\"\r\n
@@ -8890,7 +8413,7 @@ interactions:
         [\r\n          \"DefaultTestConfig\"\r\n        ],\r\n        \"sources\":
         [\r\n          \"vm1\"\r\n        ],\r\n        \"destinations\": [\r\n          \"bing\"\r\n
         \       ]\r\n      }\r\n    ],\r\n    \"outputs\": [],\r\n    \"startTime\":
-        \"2020-02-04T06:04:51.0600317Z\",\r\n    \"connectionMonitorType\": \"MultiEndpoint\"\r\n
+        \"2020-02-04T14:55:10.1734001Z\",\r\n    \"connectionMonitorType\": \"MultiEndpoint\"\r\n
         \ },\r\n  \"type\": \"Microsoft.Network/networkWatchers/connectionMonitors\",\r\n
         \ \"location\": \"eastus\"\r\n}"
     headers:
@@ -8901,9 +8424,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 06:05:02 GMT
+      - Tue, 04 Feb 2020 14:55:25 GMT
       etag:
-      - W/"d11e97de-4807-4326-8b42-31ae04e731ff"
+      - W/"e6cb6d87-e02d-47a7-9819-829fab111833"
       expires:
       - '-1'
       pragma:
@@ -8920,7 +8443,687 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - b81d778f-c9ba-47a6-84bf-80e2415127ba
+      - e2ad5ee5-e140-4f6b-82eb-72bbd419f25b
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network watcher connection-monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --endpoint-source-name --endpoint-source-resource-id --endpoint-dest-name
+        --endpoint-dest-address --test-config-name --protocol
+      User-Agent:
+      - python/3.6.8 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-resource/6.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute?api-version=2019-08-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute","namespace":"Microsoft.Compute","authorizations":[{"applicationId":"60e6cd67-9c8c-4951-9b3c-23c25a2169af","roleDefinitionId":"e4770acb-272e-4dc8-87f3-12f44a612224"},{"applicationId":"a303894e-f1d8-4a37-bf10-67aa654a0596","roleDefinitionId":"903ac751-8ad5-4e5a-bfc2-5e49f450a241"},{"applicationId":"a8b6bf88-1d1a-4626-b040-9a729ea93c65","roleDefinitionId":"45c8267c-80ba-4b96-9a43-115b8f49fccd"},{"applicationId":"184909ca-69f1-4368-a6a7-c558ee6eb0bd","roleDefinitionId":"45c8267c-80ba-4b96-9a43-115b8f49fccd"},{"applicationId":"5e5e43d4-54da-4211-86a4-c6e7f3715801","roleDefinitionId":"ffcd6e5b-8772-457d-bb17-89703c03428f"},{"applicationId":"ce6ff14a-7fdc-4685-bbe0-f6afdfcfa8e0","roleDefinitionId":"cb17cddc-dbac-4ae0-ae79-8db34eddfca0"},{"applicationId":"372140e0-b3b7-4226-8ef9-d57986796201","roleDefinitionId":"cb17cddc-dbac-4ae0-ae79-8db34eddfca0"}],"resourceTypes":[{"resourceType":"availabilitySets","locations":["East
+        US","East US 2","West US","Central US","North Central US","South Central US","North
+        Europe","West Europe","East Asia","Southeast Asia","Japan East","Japan West","Australia
+        East","Australia Southeast","Australia Central","Brazil South","South India","Central
+        India","West India","Canada Central","Canada East","West US 2","West Central
+        US","UK South","UK West","Korea Central","Korea South","France Central","South
+        Africa North","UAE North","Switzerland North","Germany West Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2019-12-01","2019-07-01","2019-03-01","2018-10-01","2018-06-01","2018-04-01","2017-12-01","2017-03-30","2016-08-30","2016-04-30-preview","2016-03-30","2015-06-15","2015-05-01-preview"],"defaultApiVersion":"2018-06-01","apiProfiles":[{"profileVersion":"2017-03-09-profile","apiVersion":"2016-03-30"},{"profileVersion":"2018-03-01-hybrid","apiVersion":"2017-03-30"},{"profileVersion":"2018-06-01-profile","apiVersion":"2017-12-01"}],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"virtualMachines","locations":["East
+        US","East US 2","West US","Central US","North Central US","South Central US","North
+        Europe","West Europe","East Asia","Southeast Asia","Japan East","Japan West","Australia
+        East","Australia Southeast","Australia Central","Brazil South","South India","Central
+        India","West India","Canada Central","Canada East","West US 2","West Central
+        US","UK South","UK West","Korea Central","Korea South","France Central","South
+        Africa North","UAE North","Switzerland North","Germany West Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2019-12-01","2019-07-01","2019-03-01","2018-10-01","2018-06-01","2018-04-01","2017-12-01","2017-03-30","2016-08-30","2016-04-30-preview","2016-03-30","2015-06-15","2015-05-01-preview"],"defaultApiVersion":"2018-06-01","apiProfiles":[{"profileVersion":"2017-03-09-profile","apiVersion":"2016-03-30"},{"profileVersion":"2018-03-01-hybrid","apiVersion":"2017-03-30"},{"profileVersion":"2018-06-01-profile","apiVersion":"2017-12-01"}],"zoneMappings":[{"location":"East
+        US 2","zones":["2","3","1"]},{"location":"Central US","zones":["2","3","1"]},{"location":"West
+        Europe","zones":["2","3","1"]},{"location":"East US 2 EUAP","zones":["1","2","3"]},{"location":"Central
+        US EUAP","zones":["1","2"]},{"location":"France Central","zones":["2","3","1"]},{"location":"Southeast
+        Asia","zones":["2","3","1"]},{"location":"West US 2","zones":["2","3","1"]},{"location":"North
+        Europe","zones":["2","3","1"]},{"location":"East US","zones":["2","3","1"]},{"location":"UK
+        South","zones":["2","3","1"]},{"location":"Japan East","zones":["2","3","1"]},{"location":"Australia
+        East","zones":[]},{"location":"South Africa North","zones":[]},{"location":"South
+        Central US","zones":[]},{"location":"Canada Central","zones":[]}],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"virtualMachines/extensions","locations":["East
+        US","East US 2","West US","Central US","North Central US","South Central US","North
+        Europe","West Europe","East Asia","Southeast Asia","Japan East","Japan West","Australia
+        East","Australia Southeast","Australia Central","Brazil South","South India","Central
+        India","West India","Canada Central","Canada East","West US 2","West Central
+        US","UK South","UK West","Korea Central","Korea South","France Central","South
+        Africa North","UAE North","Switzerland North","Germany West Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2019-12-01","2019-07-01","2019-03-01","2018-10-01","2018-06-01","2018-04-01","2017-12-01","2017-03-30","2016-08-30","2016-04-30-preview","2016-03-30","2015-06-15","2015-05-01-preview"],"defaultApiVersion":"2018-06-01","apiProfiles":[{"profileVersion":"2017-03-09-profile","apiVersion":"2016-03-30"},{"profileVersion":"2018-03-01-hybrid","apiVersion":"2017-03-30"},{"profileVersion":"2018-06-01-profile","apiVersion":"2017-12-01"}],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"virtualMachineScaleSets","locations":["East
+        US","East US 2","West US","Central US","North Central US","South Central US","North
+        Europe","West Europe","East Asia","Southeast Asia","Japan East","Japan West","Australia
+        East","Australia Southeast","Australia Central","Brazil South","South India","Central
+        India","West India","Canada Central","Canada East","West US 2","West Central
+        US","UK South","UK West","Korea Central","Korea South","France Central","South
+        Africa North","UAE North","Switzerland North","Germany West Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2019-12-01","2019-07-01","2019-03-01","2018-10-01","2018-06-01","2018-04-01","2017-12-01","2017-10-30-preview","2017-03-30","2016-08-30","2016-04-30-preview","2016-03-30","2015-06-15","2015-05-01-preview"],"defaultApiVersion":"2018-06-01","apiProfiles":[{"profileVersion":"2017-03-09-profile","apiVersion":"2016-03-30"},{"profileVersion":"2018-03-01-hybrid","apiVersion":"2017-03-30"},{"profileVersion":"2018-06-01-profile","apiVersion":"2017-12-01"}],"zoneMappings":[{"location":"East
+        US 2","zones":["2","3","1"]},{"location":"Central US","zones":["2","3","1"]},{"location":"West
+        Europe","zones":["2","3","1"]},{"location":"East US 2 EUAP","zones":["1","2","3"]},{"location":"Central
+        US EUAP","zones":["1","2"]},{"location":"France Central","zones":["2","3","1"]},{"location":"Southeast
+        Asia","zones":["2","3","1"]},{"location":"West US 2","zones":["2","3","1"]},{"location":"North
+        Europe","zones":["2","3","1"]},{"location":"East US","zones":["2","3","1"]},{"location":"UK
+        South","zones":["2","3","1"]},{"location":"Japan East","zones":["2","3","1"]},{"location":"Australia
+        East","zones":[]},{"location":"South Africa North","zones":[]},{"location":"South
+        Central US","zones":[]},{"location":"Canada Central","zones":[]}],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"virtualMachineScaleSets/extensions","locations":["East
+        US","East US 2","West US","Central US","North Central US","South Central US","North
+        Europe","West Europe","East Asia","Southeast Asia","Japan East","Japan West","Australia
+        East","Australia Southeast","Australia Central","Brazil South","South India","Central
+        India","West India","Canada Central","Canada East","West US 2","West Central
+        US","UK South","UK West","Korea Central","Korea South","France Central","South
+        Africa North","UAE North","Switzerland North","Germany West Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2019-12-01","2019-07-01","2019-03-01","2018-10-01","2018-06-01","2018-04-01","2017-12-01","2017-10-30-preview","2017-03-30","2016-08-30","2016-04-30-preview","2016-03-30","2015-06-15","2015-05-01-preview"],"defaultApiVersion":"2015-06-15","apiProfiles":[{"profileVersion":"2017-03-09-profile","apiVersion":"2016-03-30"},{"profileVersion":"2018-03-01-hybrid","apiVersion":"2017-03-30"},{"profileVersion":"2018-06-01-profile","apiVersion":"2017-12-01"}],"capabilities":"None"},{"resourceType":"virtualMachineScaleSets/virtualMachines","locations":["East
+        US","East US 2","West US","Central US","North Central US","South Central US","North
+        Europe","West Europe","East Asia","Southeast Asia","Japan East","Japan West","Australia
+        East","Australia Southeast","Australia Central","Brazil South","South India","Central
+        India","West India","Canada Central","Canada East","West US 2","West Central
+        US","UK South","UK West","Korea Central","Korea South","France Central","South
+        Africa North","UAE North","Switzerland North","Germany West Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2019-12-01","2019-07-01","2019-03-01","2018-10-01","2018-06-01","2018-04-01","2017-12-01","2017-10-30-preview","2017-03-30","2016-08-30","2016-04-30-preview","2016-03-30","2015-06-15","2015-05-01-preview"],"defaultApiVersion":"2018-06-01","apiProfiles":[{"profileVersion":"2017-03-09-profile","apiVersion":"2016-03-30"},{"profileVersion":"2018-03-01-hybrid","apiVersion":"2017-03-30"},{"profileVersion":"2018-06-01-profile","apiVersion":"2017-12-01"}],"capabilities":"None"},{"resourceType":"virtualMachineScaleSets/networkInterfaces","locations":["East
+        US","East US 2","West US","Central US","North Central US","South Central US","North
+        Europe","West Europe","East Asia","Southeast Asia","Japan East","Japan West","Australia
+        East","Australia Southeast","Australia Central","Brazil South","South India","Central
+        India","West India","Canada Central","Canada East","West US 2","West Central
+        US","UK South","UK West","Korea Central","Korea South","France Central","South
+        Africa North","UAE North","Switzerland North","Germany West Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2019-12-01","2019-07-01","2019-03-01","2018-10-01","2018-06-01","2018-04-01","2017-12-01","2017-03-30","2016-09-01","2016-08-01","2016-07-01","2016-06-01","2016-04-30-preview","2016-03-30","2015-06-15","2015-05-01-preview"],"apiProfiles":[{"profileVersion":"2017-03-09-profile","apiVersion":"2016-03-30"},{"profileVersion":"2018-03-01-hybrid","apiVersion":"2017-03-30"},{"profileVersion":"2018-06-01-profile","apiVersion":"2017-12-01"}],"capabilities":"None"},{"resourceType":"virtualMachineScaleSets/virtualMachines/networkInterfaces","locations":["East
+        US","East US 2","West US","Central US","North Central US","South Central US","North
+        Europe","West Europe","East Asia","Southeast Asia","Japan East","Japan West","Australia
+        East","Australia Southeast","Australia Central","Brazil South","South India","Central
+        India","West India","Canada Central","Canada East","West US 2","West Central
+        US","UK South","UK West","Korea Central","Korea South","France Central","South
+        Africa North","UAE North","Switzerland North","Germany West Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2019-12-01","2019-07-01","2019-03-01","2018-10-01","2018-06-01","2018-04-01","2017-12-01","2017-03-30","2016-09-01","2016-08-01","2016-07-01","2016-06-01","2016-04-30-preview","2016-03-30","2015-06-15","2015-05-01-preview"],"apiProfiles":[{"profileVersion":"2017-03-09-profile","apiVersion":"2016-03-30"},{"profileVersion":"2018-03-01-hybrid","apiVersion":"2017-03-30"},{"profileVersion":"2018-06-01-profile","apiVersion":"2017-12-01"}],"capabilities":"None"},{"resourceType":"virtualMachineScaleSets/publicIPAddresses","locations":["East
+        US","East US 2","West US","Central US","North Central US","South Central US","North
+        Europe","West Europe","East Asia","Southeast Asia","Japan East","Japan West","Australia
+        East","Australia Southeast","Australia Central","Brazil South","South India","Central
+        India","West India","Canada Central","Canada East","West US 2","West Central
+        US","UK South","UK West","Korea Central","Korea South","France Central","South
+        Africa North","UAE North","Switzerland North","Germany West Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2019-12-01","2019-07-01","2019-03-01","2018-10-01","2018-06-01","2018-04-01","2017-12-01","2017-03-30"],"apiProfiles":[{"profileVersion":"2018-03-01-hybrid","apiVersion":"2017-03-30"},{"profileVersion":"2018-06-01-profile","apiVersion":"2017-12-01"}],"capabilities":"None"},{"resourceType":"locations","locations":[],"apiVersions":["2019-12-01","2019-07-01","2019-03-01","2018-10-01","2018-06-01","2018-04-01","2017-12-01","2017-03-30","2016-08-30","2016-04-30-preview","2016-03-30","2015-06-15","2015-05-01-preview"],"capabilities":"None"},{"resourceType":"locations/operations","locations":["East
+        US","East US 2","West US","Central US","North Central US","South Central US","North
+        Europe","West Europe","East Asia","Southeast Asia","Japan East","Japan West","Australia
+        East","Australia Southeast","Australia Central","Brazil South","South India","Central
+        India","West India","Canada Central","Canada East","West US 2","West Central
+        US","UK South","UK West","Korea Central","Korea South","France Central","South
+        Africa North","UAE North","Switzerland North","Germany West Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2019-12-01","2019-07-01","2019-03-01","2018-10-01","2018-06-01","2018-04-01","2017-12-01","2017-10-30-preview","2017-03-30","2016-08-30","2016-04-30-preview","2016-03-30","2015-06-15","2015-05-01-preview"],"apiProfiles":[{"profileVersion":"2017-03-09-profile","apiVersion":"2016-03-30"},{"profileVersion":"2018-03-01-hybrid","apiVersion":"2017-03-30"},{"profileVersion":"2018-06-01-profile","apiVersion":"2017-12-01"}],"capabilities":"None"},{"resourceType":"locations/vmSizes","locations":["East
+        US","East US 2","West US","Central US","North Central US","South Central US","North
+        Europe","West Europe","East Asia","Southeast Asia","Japan East","Japan West","Australia
+        East","Australia Southeast","Australia Central","Brazil South","South India","Central
+        India","West India","Canada Central","Canada East","West US 2","West Central
+        US","UK South","UK West","Korea Central","Korea South","France Central","South
+        Africa North","UAE North","Switzerland North","Germany West Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2019-12-01","2019-07-01","2019-03-01","2018-10-01","2018-06-01","2018-04-01","2017-12-01","2017-03-30","2016-08-30","2016-04-30-preview","2016-03-30","2015-06-15","2015-05-01-preview"],"apiProfiles":[{"profileVersion":"2017-03-09-profile","apiVersion":"2016-03-30"},{"profileVersion":"2018-03-01-hybrid","apiVersion":"2017-03-30"},{"profileVersion":"2018-06-01-profile","apiVersion":"2017-12-01"}],"capabilities":"None"},{"resourceType":"locations/runCommands","locations":["East
+        US","East US 2","West US","Central US","North Central US","South Central US","North
+        Europe","West Europe","East Asia","Southeast Asia","Japan East","Japan West","Australia
+        East","Australia Southeast","Australia Central","Brazil South","South India","Central
+        India","West India","Canada Central","Canada East","West US 2","West Central
+        US","UK South","UK West","Korea Central","Korea South","France Central","South
+        Africa North","UAE North","Switzerland North","Germany West Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2019-12-01","2019-07-01","2019-03-01","2018-10-01","2018-06-01","2018-04-01","2017-12-01","2017-03-30"],"apiProfiles":[{"profileVersion":"2018-03-01-hybrid","apiVersion":"2017-03-30"},{"profileVersion":"2018-06-01-profile","apiVersion":"2017-12-01"}],"capabilities":"None"},{"resourceType":"locations/usages","locations":["East
+        US","East US 2","West US","Central US","North Central US","South Central US","North
+        Europe","West Europe","East Asia","Southeast Asia","Japan East","Japan West","Australia
+        East","Australia Southeast","Australia Central","Brazil South","South India","Central
+        India","West India","Canada Central","Canada East","West US 2","West Central
+        US","UK South","UK West","Korea Central","Korea South","France Central","South
+        Africa North","UAE North","Switzerland North","Germany West Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2019-12-01","2019-07-01","2019-03-01","2018-10-01","2018-06-01","2018-04-01","2017-12-01","2017-03-30","2016-08-30","2016-04-30-preview","2016-03-30","2015-06-15","2015-05-01-preview"],"apiProfiles":[{"profileVersion":"2017-03-09-profile","apiVersion":"2016-03-30"},{"profileVersion":"2018-03-01-hybrid","apiVersion":"2017-03-30"},{"profileVersion":"2018-06-01-profile","apiVersion":"2017-12-01"}],"capabilities":"None"},{"resourceType":"locations/virtualMachines","locations":["East
+        US","East US 2","West US","Central US","North Central US","South Central US","North
+        Europe","West Europe","East Asia","Southeast Asia","Japan East","Japan West","Australia
+        East","Australia Southeast","Australia Central","Brazil South","South India","Central
+        India","West India","Canada Central","Canada East","West US 2","West Central
+        US","UK South","UK West","Korea Central","Korea South","France Central","South
+        Africa North","UAE North","Switzerland North","Germany West Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2019-12-01","2019-07-01","2019-03-01","2018-10-01","2018-06-01","2018-04-01","2017-12-01","2017-03-30","2016-08-30"],"defaultApiVersion":"2018-06-01","apiProfiles":[{"profileVersion":"2018-03-01-hybrid","apiVersion":"2017-03-30"},{"profileVersion":"2018-06-01-profile","apiVersion":"2017-12-01"}],"capabilities":"None"},{"resourceType":"locations/publishers","locations":["East
+        US","East US 2","West US","Central US","North Central US","South Central US","North
+        Europe","West Europe","East Asia","Southeast Asia","Japan East","Japan West","Australia
+        East","Australia Southeast","Australia Central","Brazil South","South India","Central
+        India","West India","Canada Central","Canada East","West US 2","West Central
+        US","UK South","UK West","Korea Central","Korea South","France Central","South
+        Africa North","UAE North","Switzerland North","Germany West Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2019-07-01","2019-03-01","2018-10-01","2018-06-01","2018-04-01","2017-12-01","2017-03-30","2016-08-30","2016-04-30-preview","2016-03-30","2015-06-15","2015-05-01-preview"],"apiProfiles":[{"profileVersion":"2017-03-09-profile","apiVersion":"2016-03-30"},{"profileVersion":"2018-03-01-hybrid","apiVersion":"2017-03-30"},{"profileVersion":"2018-06-01-profile","apiVersion":"2017-12-01"}],"capabilities":"None"},{"resourceType":"operations","locations":["East
+        US","East US 2","West US","Central US","North Central US","South Central US","North
+        Europe","West Europe","East Asia","Southeast Asia","Japan East","Japan West","Australia
+        East","Australia Southeast","Australia Central","Brazil South","South India","Central
+        India","West India","Canada Central","Canada East","West US 2","West Central
+        US","UK South","UK West","Korea Central","Korea South","France Central","South
+        Africa North","UAE North","Switzerland North","Germany West Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2019-12-01","2019-07-01","2019-03-01","2018-10-01","2018-06-01","2018-04-01","2017-12-01","2017-03-30","2016-08-30","2016-03-30","2015-06-15","2015-05-01-preview"],"capabilities":"None"},{"resourceType":"restorePointCollections","locations":["Southeast
+        Asia","East US 2","Central US","West Europe","East US","North Central US","South
+        Central US","West US","North Europe","East Asia","Brazil South","West US 2","West
+        Central US","UK West","UK South","Japan East","Japan West","Canada Central","Canada
+        East","Central India","South India","Australia East","Australia Southeast","Korea
+        Central","Korea South","West India","France Central","South Africa North","UAE
+        North","Australia Central","Switzerland North","Germany West Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2019-12-01","2019-07-01","2019-03-01","2018-10-01","2018-06-01","2018-04-01","2017-12-01","2017-03-30"],"defaultApiVersion":"2018-06-01","capabilities":"SupportsTags,
+        SupportsLocation"},{"resourceType":"restorePointCollections/restorePoints","locations":["Southeast
+        Asia","East US 2","Central US","West Europe","East US","North Central US","South
+        Central US","West US","North Europe","East Asia","Brazil South","West US 2","West
+        Central US","UK West","UK South","Japan East","Japan West","Canada Central","Canada
+        East","Central India","South India","Australia East","Australia Southeast","Korea
+        Central","Korea South","West India","France Central","South Africa North","UAE
+        North","Australia Central","Switzerland North","Germany West Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2019-12-01","2019-07-01","2019-03-01","2018-10-01","2018-06-01","2018-04-01","2017-12-01","2017-03-30"],"capabilities":"None"},{"resourceType":"proximityPlacementGroups","locations":["East
+        US","East US 2","West US","Central US","North Central US","South Central US","North
+        Europe","West Europe","East Asia","Southeast Asia","Japan East","Japan West","Australia
+        East","Australia Southeast","Australia Central","Brazil South","South India","Central
+        India","West India","Canada Central","Canada East","West US 2","West Central
+        US","UK South","UK West","Korea Central","Korea South","France Central","South
+        Africa North","UAE North","Switzerland North","Germany West Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2019-12-01","2019-07-01","2019-03-01","2018-10-01","2018-06-01","2018-04-01"],"defaultApiVersion":"2018-06-01","capabilities":"SupportsTags,
+        SupportsLocation"},{"resourceType":"virtualMachines/metricDefinitions","locations":["East
+        US","East US 2","West US","Central US","North Central US","South Central US","North
+        Europe","West Europe","East Asia","Southeast Asia","Japan East","Japan West","Australia
+        East","Australia Southeast","Australia Central","Brazil South","South India","Central
+        India","West India","Canada Central","Canada East","West US 2","West Central
+        US","UK South","UK West","Korea Central","Korea South","France Central","South
+        Africa North","UAE North","Switzerland North","Germany West Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2014-04-01"],"capabilities":"None"},{"resourceType":"sharedVMImages","locations":["West
+        Central US","South Central US","East US 2","Southeast Asia","West Europe","West
+        US","East US","Canada Central","North Europe","North Central US","Brazil South","UK
+        West","West India","East Asia","Australia East","Japan East","Korea South","West
+        US 2","Canada East","UK South","Central India","South India","Australia Southeast","Japan
+        West","Korea Central","France Central","Central US","Australia Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2017-10-15-preview"],"defaultApiVersion":"2017-10-15-preview","capabilities":"SupportsTags,
+        SupportsLocation"},{"resourceType":"sharedVMImages/versions","locations":["West
+        Central US","South Central US","East US 2","Southeast Asia","West Europe","West
+        US","East US","Canada Central","North Europe","North Central US","Brazil South","UK
+        West","West India","East Asia","Australia East","Japan East","Korea South","West
+        US 2","Canada East","UK South","Central India","South India","Australia Southeast","Japan
+        West","Korea Central","France Central","Central US","Australia Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2017-10-15-preview"],"defaultApiVersion":"2017-10-15-preview","capabilities":"SupportsTags,
+        SupportsLocation"},{"resourceType":"locations/artifactPublishers","locations":["West
+        Central US","South Central US","East US 2","Southeast Asia","West Europe","West
+        US","East US","Canada Central","North Europe","North Central US","Brazil South","UK
+        West","West India","East Asia","Australia East","Japan East","Korea South","West
+        US 2","Canada East","UK South","Central India","South India","Australia Southeast","Japan
+        West","Korea Central","France Central","Central US","Australia Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2017-10-15-preview"],"capabilities":"None"},{"resourceType":"locations/capsoperations","locations":["West
+        Central US","South Central US","East US 2","Southeast Asia","West Europe","West
+        US","East US","Canada Central","North Europe","North Central US","Brazil South","UK
+        West","West India","East Asia","Australia East","Japan East","Korea South","West
+        US 2","Canada East","UK South","Central India","South India","Australia Southeast","Japan
+        West","Korea Central","France Central","Central US","Australia Central","South
+        Africa North","UAE North","Switzerland North","Germany West Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2019-12-01","2019-07-01","2019-03-01","2018-06-01","2017-10-15-preview"],"capabilities":"None"},{"resourceType":"galleries","locations":["West
+        Central US","South Central US","East US 2","Southeast Asia","West Europe","West
+        US","East US","Canada Central","North Europe","North Central US","Brazil South","UK
+        West","West India","East Asia","Australia East","Japan East","Korea South","West
+        US 2","Canada East","UK South","Central India","South India","Australia Southeast","Japan
+        West","Korea Central","France Central","Central US","Australia Central","South
+        Africa North","UAE North","Switzerland North","Germany West Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2019-12-01","2019-07-01","2019-03-01","2018-06-01"],"defaultApiVersion":"2018-06-01","capabilities":"SupportsTags,
+        SupportsLocation"},{"resourceType":"galleries/images","locations":["West Central
+        US","South Central US","East US 2","Southeast Asia","West Europe","West US","East
+        US","Canada Central","North Europe","North Central US","Brazil South","UK
+        West","West India","East Asia","Australia East","Japan East","Korea South","West
+        US 2","Canada East","UK South","Central India","South India","Australia Southeast","Japan
+        West","Korea Central","France Central","Central US","Australia Central","South
+        Africa North","UAE North","Switzerland North","Germany West Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2019-12-01","2019-07-01","2019-03-01","2018-06-01"],"defaultApiVersion":"2018-06-01","capabilities":"SupportsTags,
+        SupportsLocation"},{"resourceType":"galleries/images/versions","locations":["West
+        Central US","South Central US","East US 2","Southeast Asia","West Europe","West
+        US","East US","Canada Central","North Europe","North Central US","Brazil South","UK
+        West","West India","East Asia","Australia East","Japan East","Korea South","West
+        US 2","Canada East","UK South","Central India","South India","Australia Southeast","Japan
+        West","Korea Central","France Central","Central US","Australia Central","South
+        Africa North","UAE North","Switzerland North","Germany West Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2019-12-01","2019-07-01","2019-03-01","2018-06-01"],"defaultApiVersion":"2018-06-01","capabilities":"SupportsTags,
+        SupportsLocation"},{"resourceType":"disks","locations":["Southeast Asia","East
+        US 2","Central US","West Europe","East US","North Central US","South Central
+        US","West US","North Europe","East Asia","Brazil South","West US 2","West
+        Central US","UK West","UK South","Japan East","Japan West","Canada Central","Canada
+        East","Central India","South India","Australia East","Australia Southeast","Korea
+        Central","Korea South","West India","France Central","South Africa North","UAE
+        North","Australia Central","Switzerland North","Germany West Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2019-07-01","2019-03-01","2018-09-30","2018-06-01","2018-04-01","2017-03-30","2016-04-30-preview"],"defaultApiVersion":"2018-06-01","apiProfiles":[{"profileVersion":"2018-03-01-hybrid","apiVersion":"2017-03-30"},{"profileVersion":"2018-06-01-profile","apiVersion":"2018-04-01"}],"zoneMappings":[{"location":"East
+        US 2","zones":["2","3","1"]},{"location":"Central US","zones":["2","3","1"]},{"location":"West
+        Europe","zones":["2","3","1"]},{"location":"East US 2 EUAP","zones":["1","2","3"]},{"location":"Central
+        US EUAP","zones":["1","2"]},{"location":"France Central","zones":["2","3","1"]},{"location":"Southeast
+        Asia","zones":["2","3","1"]},{"location":"West US 2","zones":["2","3","1"]},{"location":"North
+        Europe","zones":["2","3","1"]},{"location":"East US","zones":["2","3","1"]},{"location":"UK
+        South","zones":["2","3","1"]},{"location":"Japan East","zones":["2","3","1"]},{"location":"Australia
+        East","zones":[]},{"location":"South Africa North","zones":[]},{"location":"South
+        Central US","zones":[]},{"location":"Canada Central","zones":[]}],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"snapshots","locations":["Southeast
+        Asia","East US 2","Central US","West Europe","East US","North Central US","South
+        Central US","West US","North Europe","East Asia","Brazil South","West US 2","West
+        Central US","UK West","UK South","Japan East","Japan West","Canada Central","Canada
+        East","Central India","South India","Australia East","Australia Southeast","Korea
+        Central","Korea South","West India","France Central","South Africa North","UAE
+        North","Australia Central","Switzerland North","Germany West Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2019-07-01","2019-03-01","2018-09-30","2018-06-01","2018-04-01","2017-03-30","2016-04-30-preview"],"defaultApiVersion":"2018-06-01","apiProfiles":[{"profileVersion":"2018-03-01-hybrid","apiVersion":"2017-03-30"},{"profileVersion":"2018-06-01-profile","apiVersion":"2018-04-01"}],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"locations/diskoperations","locations":["Southeast
+        Asia","East US 2","Central US","West Europe","East US","North Central US","South
+        Central US","West US","North Europe","East Asia","Brazil South","West US 2","West
+        Central US","UK West","UK South","Japan East","Japan West","Canada Central","Canada
+        East","Central India","South India","Australia East","Australia Southeast","Korea
+        Central","Korea South","West India","France Central","South Africa North","UAE
+        North","Australia Central","Switzerland North","Germany West Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2019-07-01","2019-03-01","2018-09-30","2018-06-01","2018-04-01","2017-03-30","2016-04-30-preview"],"apiProfiles":[{"profileVersion":"2018-03-01-hybrid","apiVersion":"2017-03-30"},{"profileVersion":"2018-06-01-profile","apiVersion":"2018-04-01"}],"capabilities":"None"},{"resourceType":"diskEncryptionSets","locations":["Southeast
+        Asia","East US 2","Central US","West Europe","East US","North Central US","South
+        Central US","West US","North Europe","East Asia","Brazil South","West US 2","West
+        Central US","UK West","UK South","Japan East","Japan West","Canada Central","Canada
+        East","Central India","South India","Australia East","Australia Southeast","Korea
+        Central","Korea South","West India","France Central","South Africa North","UAE
+        North","Australia Central","Switzerland North","Germany West Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2019-07-01"],"defaultApiVersion":"2019-07-01","capabilities":"SystemAssignedResourceIdentity,
+        SupportsTags, SupportsLocation"},{"resourceType":"locations/vsmoperations","locations":["East
+        US","West Central US","South Central US","North Europe","Australia East","Central
+        US","North Central US","Southeast Asia","West US","East US 2","West Europe","West
+        India","Australia Central","Australia Central 2","UK West","Brazil South","East
+        Asia","South India","Australia Southeast","France South","West US 2","Japan
+        West","France Central","Central India","Korea South","Korea Central","Japan
+        East","Canada East","Canada Central","South Africa North","UAE North","South
+        Africa West","Switzerland North","Germany West Central","East US 2 EUAP","Central
+        US EUAP"],"apiVersions":["2019-07-01","2019-03-01","2018-10-01","2018-06-01","2018-04-01","2017-12-01","2017-03-30","2016-08-30","2016-04-30-preview","2016-03-30","2015-06-15","2015-05-01-preview"],"apiProfiles":[{"profileVersion":"2017-03-09-profile","apiVersion":"2016-03-30"},{"profileVersion":"2018-03-01-hybrid","apiVersion":"2017-03-30"},{"profileVersion":"2018-06-01-profile","apiVersion":"2017-12-01"}],"capabilities":"None"},{"resourceType":"images","locations":["Southeast
+        Asia","East US 2","Central US","West Europe","East US","North Central US","South
+        Central US","West US","North Europe","East Asia","Brazil South","West US 2","West
+        Central US","UK West","UK South","Japan East","Japan West","Canada Central","Canada
+        East","Central India","South India","Australia East","Australia Southeast","Korea
+        Central","Korea South","West India","France Central","South Africa North","UAE
+        North","Australia Central","Switzerland North","Germany West Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2019-12-01","2019-07-01","2019-03-01","2018-10-01","2018-06-01","2018-04-01","2017-12-01","2017-03-30","2016-08-30","2016-04-30-preview"],"defaultApiVersion":"2018-06-01","apiProfiles":[{"profileVersion":"2018-03-01-hybrid","apiVersion":"2017-03-30"},{"profileVersion":"2018-06-01-profile","apiVersion":"2018-04-01"}],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"locations/logAnalytics","locations":["East
+        US","East US 2","West US","Central US","North Central US","South Central US","North
+        Europe","West Europe","East Asia","Southeast Asia","Japan East","Japan West","Australia
+        East","Australia Southeast","Australia Central","Brazil South","South India","Central
+        India","West India","Canada Central","Canada East","West US 2","West Central
+        US","UK South","UK West","Korea Central","Korea South","France Central","South
+        Africa North","UAE North","Switzerland North","Germany West Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2019-12-01","2019-07-01","2019-03-01","2018-10-01","2018-06-01","2018-04-01","2017-12-01"],"capabilities":"None"},{"resourceType":"hostGroups","locations":["Central
+        US","East US 2","West Europe","Southeast Asia","France Central","North Europe","West
+        US 2","East US","UK South","Japan East","Japan West","East Asia","North Central
+        US","South Central US","Canada East","Korea Central","Brazil South","UK West","Canada
+        Central","West US","West Central US","Central India","South India","Australia
+        Southeast","Korea South","West India","South Africa North","UAE North","Australia
+        Central","Switzerland North","Germany West Central","East US 2 EUAP","Central
+        US EUAP"],"apiVersions":["2019-12-01","2019-07-01","2019-03-01","2018-10-01"],"defaultApiVersion":"2018-10-01","zoneMappings":[{"location":"East
+        US 2","zones":["2","3","1"]},{"location":"Central US","zones":["2","3","1"]},{"location":"West
+        Europe","zones":["2","3","1"]},{"location":"East US 2 EUAP","zones":["1","2","3"]},{"location":"Central
+        US EUAP","zones":["1","2"]},{"location":"France Central","zones":["2","3","1"]},{"location":"Southeast
+        Asia","zones":["2","3","1"]},{"location":"West US 2","zones":["2","3","1"]},{"location":"North
+        Europe","zones":["2","3","1"]},{"location":"East US","zones":["2","3","1"]},{"location":"UK
+        South","zones":["2","3","1"]},{"location":"Japan East","zones":["2","3","1"]},{"location":"South
+        Africa North","zones":[]},{"location":"South Central US","zones":[]},{"location":"Canada
+        Central","zones":[]}],"capabilities":"SupportsTags, SupportsLocation"},{"resourceType":"hostGroups/hosts","locations":["Central
+        US","East US 2","West Europe","Southeast Asia","France Central","North Europe","West
+        US 2","East US","UK South","Japan East","Japan West","East Asia","North Central
+        US","South Central US","Canada East","Korea Central","Brazil South","UK West","Canada
+        Central","West US","West Central US","Central India","South India","Australia
+        Southeast","Korea South","West India","South Africa North","UAE North","Australia
+        Central","Switzerland North","Germany West Central","East US 2 EUAP","Central
+        US EUAP"],"apiVersions":["2019-12-01","2019-07-01","2019-03-01","2018-10-01"],"defaultApiVersion":"2018-10-01","capabilities":"SupportsTags,
+        SupportsLocation"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '36120'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Feb 2020 14:55:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network watcher connection-monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --endpoint-source-name --endpoint-source-resource-id --endpoint-dest-name
+        --endpoint-dest-address --test-config-name --protocol
+      User-Agent:
+      - python/3.6.8 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-resource/6.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Compute/virtualMachines/vm2?api-version=2019-12-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"vm2\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Compute/virtualMachines/vm2\",\r\n
+        \ \"type\": \"Microsoft.Compute/virtualMachines\",\r\n  \"location\": \"eastus\",\r\n
+        \ \"tags\": {},\r\n  \"properties\": {\r\n    \"vmId\": \"f65a0a6d-4eed-4a00-9833-47439d163242\",\r\n
+        \   \"hardwareProfile\": {\r\n      \"vmSize\": \"Standard_DS1_v2\"\r\n    },\r\n
+        \   \"storageProfile\": {\r\n      \"imageReference\": {\r\n        \"publisher\":
+        \"Canonical\",\r\n        \"offer\": \"UbuntuServer\",\r\n        \"sku\":
+        \"18.04-LTS\",\r\n        \"version\": \"latest\",\r\n        \"exactVersion\":
+        \"18.04.202001291\"\r\n      },\r\n      \"osDisk\": {\r\n        \"osType\":
+        \"Linux\",\r\n        \"name\": \"vm2_disk1_2013d85454544b19b6d94c6d5d9f2a16\",\r\n
+        \       \"createOption\": \"FromImage\",\r\n        \"caching\": \"ReadWrite\",\r\n
+        \       \"managedDisk\": {\r\n          \"storageAccountType\": \"Premium_LRS\",\r\n
+        \         \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CONNECTION_MONITOR_V2_TEST_RC6ZAXPL5IBOP6GPR2D2FVKYN5NZVNSCT44XHUFCP2G7SMGP/providers/Microsoft.Compute/disks/vm2_disk1_2013d85454544b19b6d94c6d5d9f2a16\"\r\n
+        \       },\r\n        \"diskSizeGB\": 30\r\n      },\r\n      \"dataDisks\":
+        []\r\n    },\r\n    \"osProfile\": {\r\n      \"computerName\": \"vm2\",\r\n
+        \     \"adminUsername\": \"deploy\",\r\n      \"linuxConfiguration\": {\r\n
+        \       \"disablePasswordAuthentication\": false,\r\n        \"provisionVMAgent\":
+        true\r\n      },\r\n      \"secrets\": [],\r\n      \"allowExtensionOperations\":
+        true,\r\n      \"requireGuestProvisionSignal\": true\r\n    },\r\n    \"networkProfile\":
+        {\"networkInterfaces\":[{\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Network/networkInterfaces/vm2VMNic\"}]},\r\n
+        \   \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"resources\": [\r\n
+        \   {\r\n      \"name\": \"NetworkWatcherAgentLinux\",\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Compute/virtualMachines/vm2/extensions/NetworkWatcherAgentLinux\",\r\n
+        \     \"type\": \"Microsoft.Compute/virtualMachines/extensions\",\r\n      \"location\":
+        \"eastus\",\r\n      \"properties\": {\r\n        \"autoUpgradeMinorVersion\":
+        true,\r\n        \"provisioningState\": \"Succeeded\",\r\n        \"publisher\":
+        \"Microsoft.Azure.NetworkWatcher\",\r\n        \"type\": \"NetworkWatcherAgentLinux\",\r\n
+        \       \"typeHandlerVersion\": \"1.4\"\r\n      }\r\n    }\r\n  ]\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2551'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Feb 2020 14:55:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/LowCostGet3Min;3992,Microsoft.Compute/LowCostGet30Min;31986
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network watcher connection-monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --endpoint-source-name --endpoint-source-resource-id --endpoint-dest-name
+        --endpoint-dest-address --test-config-name --protocol
+      User-Agent:
+      - python/3.6.8 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/networkWatchers?api-version=2019-11-01
+  response:
+    body:
+      string: '{"value":[{"name":"NetworkWatcher_westus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_westus","etag":"W/\"144fe157-e90e-4884-bb59-5329f5f24fa1\"","type":"Microsoft.Network/networkWatchers","location":"westus","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_eastus","etag":"W/\"e6cb6d87-e02d-47a7-9819-829fab111833\"","type":"Microsoft.Network/networkWatchers","location":"eastus","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_southeastasia","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_southeastasia","etag":"W/\"a1f833bb-e377-4786-b2ad-6c74602d87c0\"","type":"Microsoft.Network/networkWatchers","location":"southeastasia","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_centralus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_centralus","etag":"W/\"808dc9a5-837d-4ceb-b1c3-6583fdaf71e6\"","type":"Microsoft.Network/networkWatchers","location":"centralus","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_westcentralus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_westcentralus","etag":"W/\"4a515ced-1d41-44da-a225-68ff402c42ef\"","type":"Microsoft.Network/networkWatchers","location":"westcentralus","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_centraluseuap","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_centraluseuap","etag":"W/\"45c2db7d-5c1e-4016-a10d-b74c8a4372f0\"","type":"Microsoft.Network/networkWatchers","location":"centraluseuap","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_eastus2euap","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_eastus2euap","etag":"W/\"fd9a143e-7187-47dd-ac6c-d9e6a8c2e9cc\"","type":"Microsoft.Network/networkWatchers","location":"eastus2euap","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2737'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Feb 2020 14:55:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - c29c2ab0-363e-4a8a-a2b6-c59e87a9c977
+      - a82f7c88-8a5b-4cce-9c61-e618156a006f
+      - 33bd80e2-7719-4714-b47f-0654ba80f075
+      - 80046e81-966b-48c8-b7ee-c509716ad978
+      - c4d5bcd4-db7e-45bd-b02f-ae4d1551e85b
+      - 61b62b61-c40d-490b-b430-c44fb1894ccf
+      - 23190840-6c06-4f2f-b4f7-39829ff36303
+    status:
+      code: 200
+      message: OK
+- request:
+    body: 'b''{"location": "eastus", "properties": {"endpoints": [{"name": "vm2",
+      "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Compute/virtualMachines/vm2"},
+      {"name": "bing", "address": "bing.com"}], "testConfigurations": [{"name": "DefaultIcmp",
+      "testFrequencySec": 60, "protocol": "Icmp", "icmpConfiguration": {}}], "testGroups":
+      [{"name": "DefaultTestGroup", "testConfigurations": ["DefaultIcmp"], "sources":
+      ["vm2"], "destinations": ["bing"]}], "outputs": []}}'''
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network watcher connection-monitor create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '583'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --name --endpoint-source-name --endpoint-source-resource-id --endpoint-dest-name
+        --endpoint-dest-address --test-config-name --protocol
+      User-Agent:
+      - python/3.6.8 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_eastus/connectionMonitors/cmv2-01?api-version=2019-11-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"cmv2-01\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_eastus/connectionMonitors/cmv2-01\",\r\n
+        \ \"etag\": \"W/\\\"7ddb0770-85b6-4a6f-bf95-6ea01949a677\\\"\",\r\n  \"properties\":
+        {\r\n    \"provisioningState\": \"Updating\",\r\n    \"resourceGuid\": \"4643b71e-db01-4d00-b9f7-0523d0857412\",\r\n
+        \   \"endpoints\": [\r\n      {\r\n        \"name\": \"vm2\",\r\n        \"resourceId\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Compute/virtualMachines/vm2\"\r\n
+        \     },\r\n      {\r\n        \"name\": \"bing\",\r\n        \"address\":
+        \"bing.com\"\r\n      }\r\n    ],\r\n    \"testConfigurations\": [\r\n      {\r\n
+        \       \"name\": \"DefaultIcmp\",\r\n        \"testFrequencySec\": 60,\r\n
+        \       \"protocol\": \"Icmp\",\r\n        \"icmpConfiguration\": {\r\n          \"disableTraceRoute\":
+        false\r\n        }\r\n      }\r\n    ],\r\n    \"testGroups\": [\r\n      {\r\n
+        \       \"name\": \"DefaultTestGroup\",\r\n        \"disable\": false,\r\n
+        \       \"testConfigurations\": [\r\n          \"DefaultIcmp\"\r\n        ],\r\n
+        \       \"sources\": [\r\n          \"vm2\"\r\n        ],\r\n        \"destinations\":
+        [\r\n          \"bing\"\r\n        ]\r\n      }\r\n    ],\r\n    \"outputs\":
+        [],\r\n    \"connectionMonitorType\": \"MultiEndpoint\"\r\n  },\r\n  \"type\":
+        \"Microsoft.Network/networkWatchers/connectionMonitors\",\r\n  \"location\":
+        \"eastus\"\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/83c1880d-2cf1-4fca-9ff6-8e18c921d885?api-version=2019-11-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1432'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Feb 2020 14:55:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 5c30be03-6ae5-4923-ac7c-4f8c11a0a53b
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network watcher connection-monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --endpoint-source-name --endpoint-source-resource-id --endpoint-dest-name
+        --endpoint-dest-address --test-config-name --protocol
+      User-Agent:
+      - python/3.6.8 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/83c1880d-2cf1-4fca-9ff6-8e18c921d885?api-version=2019-11-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Feb 2020 14:56:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 8c93492c-2230-4c1b-aa1a-07fd388575ea
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network watcher connection-monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --endpoint-source-name --endpoint-source-resource-id --endpoint-dest-name
+        --endpoint-dest-address --test-config-name --protocol
+      User-Agent:
+      - python/3.6.8 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_eastus/connectionMonitors/cmv2-01?api-version=2019-11-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"cmv2-01\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_eastus/connectionMonitors/cmv2-01\",\r\n
+        \ \"etag\": \"W/\\\"cdeffa25-e3cd-4278-b680-c573e1f0a707\\\"\",\r\n  \"properties\":
+        {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"resourceGuid\": \"4643b71e-db01-4d00-b9f7-0523d0857412\",\r\n
+        \   \"endpoints\": [\r\n      {\r\n        \"name\": \"vm2\",\r\n        \"resourceId\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Compute/virtualMachines/vm2\"\r\n
+        \     },\r\n      {\r\n        \"name\": \"bing\",\r\n        \"address\":
+        \"bing.com\"\r\n      }\r\n    ],\r\n    \"testConfigurations\": [\r\n      {\r\n
+        \       \"name\": \"DefaultIcmp\",\r\n        \"testFrequencySec\": 60,\r\n
+        \       \"protocol\": \"Icmp\",\r\n        \"icmpConfiguration\": {\r\n          \"disableTraceRoute\":
+        false\r\n        }\r\n      }\r\n    ],\r\n    \"testGroups\": [\r\n      {\r\n
+        \       \"name\": \"DefaultTestGroup\",\r\n        \"disable\": false,\r\n
+        \       \"testConfigurations\": [\r\n          \"DefaultIcmp\"\r\n        ],\r\n
+        \       \"sources\": [\r\n          \"vm2\"\r\n        ],\r\n        \"destinations\":
+        [\r\n          \"bing\"\r\n        ]\r\n      }\r\n    ],\r\n    \"outputs\":
+        [],\r\n    \"startTime\": \"2020-02-04T14:55:49.7045989Z\",\r\n    \"connectionMonitorType\":
+        \"MultiEndpoint\"\r\n  },\r\n  \"type\": \"Microsoft.Network/networkWatchers/connectionMonitors\",\r\n
+        \ \"location\": \"eastus\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1483'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Feb 2020 14:56:04 GMT
+      etag:
+      - W/"cdeffa25-e3cd-4278-b680-c573e1f0a707"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 2d70281c-2bad-4718-92cf-26dd284af7b9
     status:
       code: 200
       message: OK
@@ -8946,16 +9149,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/networkWatchers?api-version=2019-11-01
   response:
     body:
-      string: '{"value":[{"name":"NetworkWatcher_westus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_westus","etag":"W/\"4cd1288b-33c6-4886-88ae-1ba50b7f2863\"","type":"Microsoft.Network/networkWatchers","location":"westus","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_eastus","etag":"W/\"d11e97de-4807-4326-8b42-31ae04e731ff\"","type":"Microsoft.Network/networkWatchers","location":"eastus","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_centralus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_centralus","etag":"W/\"808dc9a5-837d-4ceb-b1c3-6583fdaf71e6\"","type":"Microsoft.Network/networkWatchers","location":"centralus","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_westcentralus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_westcentralus","etag":"W/\"4a515ced-1d41-44da-a225-68ff402c42ef\"","type":"Microsoft.Network/networkWatchers","location":"westcentralus","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}}]}'
+      string: '{"value":[{"name":"NetworkWatcher_westus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_westus","etag":"W/\"144fe157-e90e-4884-bb59-5329f5f24fa1\"","type":"Microsoft.Network/networkWatchers","location":"westus","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_eastus","etag":"W/\"cdeffa25-e3cd-4278-b680-c573e1f0a707\"","type":"Microsoft.Network/networkWatchers","location":"eastus","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_southeastasia","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_southeastasia","etag":"W/\"a1f833bb-e377-4786-b2ad-6c74602d87c0\"","type":"Microsoft.Network/networkWatchers","location":"southeastasia","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_centralus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_centralus","etag":"W/\"808dc9a5-837d-4ceb-b1c3-6583fdaf71e6\"","type":"Microsoft.Network/networkWatchers","location":"centralus","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_westcentralus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_westcentralus","etag":"W/\"4a515ced-1d41-44da-a225-68ff402c42ef\"","type":"Microsoft.Network/networkWatchers","location":"westcentralus","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_centraluseuap","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_centraluseuap","etag":"W/\"45c2db7d-5c1e-4016-a10d-b74c8a4372f0\"","type":"Microsoft.Network/networkWatchers","location":"centraluseuap","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_eastus2euap","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_eastus2euap","etag":"W/\"fd9a143e-7187-47dd-ac6c-d9e6a8c2e9cc\"","type":"Microsoft.Network/networkWatchers","location":"eastus2euap","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1549'
+      - '2737'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 06:05:05 GMT
+      - Tue, 04 Feb 2020 14:56:08 GMT
       expires:
       - '-1'
       pragma:
@@ -8967,10 +9170,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - a4306dc2-246f-4421-8377-d7380b065de3
-      - f22aba42-cedd-4a11-84d2-6398ce3bcd7d
-      - 3396fb2c-e564-413a-b9fd-247eb0bb79d5
-      - 89523bea-a9ae-4bc3-b4a1-38e1ca2abd95
+      - 949a8875-aeaa-4802-b8e0-bfc2430a0a47
+      - 0f0ec02e-2902-40fd-bd01-d0cfeffb8833
+      - 289dcd93-8d5a-454e-9e48-b00d8524c892
+      - 4951d78d-bf8d-4c7c-a941-9d6063a7413e
+      - 1a414c26-5f15-4958-8b87-484fcc0bc880
+      - 3015ea44-95f9-4ec4-a0bd-3f88e0a7e8e3
+      - 016808b5-1329-491b-b3f2-d158624bf731
     status:
       code: 200
       message: OK
@@ -8998,7 +9204,7 @@ interactions:
     body:
       string: "{\r\n  \"value\": [\r\n    {\r\n      \"name\": \"CMv2-05\",\r\n      \"id\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_eastus/connectionMonitors/CMv2-05\",\r\n
-        \     \"etag\": \"W/\\\"d11e97de-4807-4326-8b42-31ae04e731ff\\\"\",\r\n      \"properties\":
+        \     \"etag\": \"W/\\\"cdeffa25-e3cd-4278-b680-c573e1f0a707\\\"\",\r\n      \"properties\":
         {\r\n        \"provisioningState\": \"Succeeded\",\r\n        \"resourceGuid\":
         \"28681fde-2898-4422-ba6b-439e3e4a5ecd\",\r\n        \"endpoints\": [\r\n
         \         {\r\n            \"name\": \"vm05\",\r\n            \"resourceId\":
@@ -9014,38 +9220,58 @@ interactions:
         \           ],\r\n            \"sources\": [\r\n              \"vm05\"\r\n
         \           ],\r\n            \"destinations\": [\r\n              \"bing\"\r\n
         \           ]\r\n          }\r\n        ],\r\n        \"outputs\": [],\r\n
-        \       \"startTime\": \"2020-02-04T05:28:41.6273479Z\",\r\n        \"connectionMonitorType\":
+        \       \"startTime\": \"2020-02-04T09:12:32.9009296Z\",\r\n        \"connectionMonitorType\":
         \"MultiEndpoint\"\r\n      },\r\n      \"type\": \"Microsoft.Network/networkWatchers/connectionMonitors\",\r\n
-        \     \"location\": \"eastus\"\r\n    },\r\n    {\r\n      \"name\": \"CMv2-01\",\r\n
-        \     \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_eastus/connectionMonitors/CMv2-01\",\r\n
-        \     \"etag\": \"W/\\\"d11e97de-4807-4326-8b42-31ae04e731ff\\\"\",\r\n      \"properties\":
+        \     \"location\": \"eastus\"\r\n    },\r\n    {\r\n      \"name\": \"cmv2-01\",\r\n
+        \     \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_eastus/connectionMonitors/cmv2-01\",\r\n
+        \     \"etag\": \"W/\\\"cdeffa25-e3cd-4278-b680-c573e1f0a707\\\"\",\r\n      \"properties\":
         {\r\n        \"provisioningState\": \"Succeeded\",\r\n        \"resourceGuid\":
         \"4643b71e-db01-4d00-b9f7-0523d0857412\",\r\n        \"endpoints\": [\r\n
-        \         {\r\n            \"name\": \"vm1\",\r\n            \"resourceId\":
-        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Compute/virtualMachines/vm1\"\r\n
+        \         {\r\n            \"name\": \"vm2\",\r\n            \"resourceId\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Compute/virtualMachines/vm2\"\r\n
         \         },\r\n          {\r\n            \"name\": \"bing\",\r\n            \"address\":
         \"bing.com\"\r\n          }\r\n        ],\r\n        \"testConfigurations\":
-        [\r\n          {\r\n            \"name\": \"DefaultTestConfig\",\r\n            \"testFrequencySec\":
-        60,\r\n            \"protocol\": \"Tcp\",\r\n            \"tcpConfiguration\":
-        {\r\n              \"port\": 2048,\r\n              \"disableTraceRoute\":
-        false\r\n            }\r\n          }\r\n        ],\r\n        \"testGroups\":
-        [\r\n          {\r\n            \"name\": \"DefaultTestGroup\",\r\n            \"disable\":
-        false,\r\n            \"testConfigurations\": [\r\n              \"DefaultTestConfig\"\r\n
-        \           ],\r\n            \"sources\": [\r\n              \"vm1\"\r\n
-        \           ],\r\n            \"destinations\": [\r\n              \"bing\"\r\n
-        \           ]\r\n          }\r\n        ],\r\n        \"outputs\": [],\r\n
-        \       \"startTime\": \"2020-02-04T06:04:51.0600317Z\",\r\n        \"connectionMonitorType\":
-        \"MultiEndpoint\"\r\n      },\r\n      \"type\": \"Microsoft.Network/networkWatchers/connectionMonitors\",\r\n
-        \     \"location\": \"eastus\"\r\n    }\r\n  ]\r\n}"
+        [\r\n          {\r\n            \"name\": \"DefaultIcmp\",\r\n            \"testFrequencySec\":
+        60,\r\n            \"protocol\": \"Icmp\",\r\n            \"icmpConfiguration\":
+        {\r\n              \"disableTraceRoute\": false\r\n            }\r\n          }\r\n
+        \       ],\r\n        \"testGroups\": [\r\n          {\r\n            \"name\":
+        \"DefaultTestGroup\",\r\n            \"disable\": false,\r\n            \"testConfigurations\":
+        [\r\n              \"DefaultIcmp\"\r\n            ],\r\n            \"sources\":
+        [\r\n              \"vm2\"\r\n            ],\r\n            \"destinations\":
+        [\r\n              \"bing\"\r\n            ]\r\n          }\r\n        ],\r\n
+        \       \"outputs\": [],\r\n        \"startTime\": \"2020-02-04T14:55:49.7045989Z\",\r\n
+        \       \"connectionMonitorType\": \"MultiEndpoint\"\r\n      },\r\n      \"type\":
+        \"Microsoft.Network/networkWatchers/connectionMonitors\",\r\n      \"location\":
+        \"eastus\"\r\n    },\r\n    {\r\n      \"name\": \"CMv2-02\",\r\n      \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_eastus/connectionMonitors/CMv2-02\",\r\n
+        \     \"etag\": \"W/\\\"cdeffa25-e3cd-4278-b680-c573e1f0a707\\\"\",\r\n      \"properties\":
+        {\r\n        \"provisioningState\": \"Succeeded\",\r\n        \"resourceGuid\":
+        \"413d34cb-7ebe-41cf-9035-a9a43b4e3415\",\r\n        \"endpoints\": [\r\n
+        \         {\r\n            \"name\": \"vm01\",\r\n            \"resourceId\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/harold-test/providers/Microsoft.Compute/virtualMachines/harold-cm-vm-05\"\r\n
+        \         },\r\n          {\r\n            \"name\": \"google\",\r\n            \"address\":
+        \"google.com\"\r\n          }\r\n        ],\r\n        \"testConfigurations\":
+        [\r\n          {\r\n            \"name\": \"IcmpConfig\",\r\n            \"testFrequencySec\":
+        60,\r\n            \"protocol\": \"Icmp\",\r\n            \"icmpConfiguration\":
+        {\r\n              \"disableTraceRoute\": false\r\n            }\r\n          }\r\n
+        \       ],\r\n        \"testGroups\": [\r\n          {\r\n            \"name\":
+        \"DefaultTestGroup\",\r\n            \"disable\": false,\r\n            \"testConfigurations\":
+        [\r\n              \"IcmpConfig\"\r\n            ],\r\n            \"sources\":
+        [\r\n              \"vm01\"\r\n            ],\r\n            \"destinations\":
+        [\r\n              \"google\"\r\n            ]\r\n          }\r\n        ],\r\n
+        \       \"outputs\": [],\r\n        \"startTime\": \"2020-02-04T13:48:57.4984837Z\",\r\n
+        \       \"connectionMonitorType\": \"MultiEndpoint\"\r\n      },\r\n      \"type\":
+        \"Microsoft.Network/networkWatchers/connectionMonitors\",\r\n      \"location\":
+        \"eastus\"\r\n    }\r\n  ]\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '3394'
+      - '4991'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 06:05:05 GMT
+      - Tue, 04 Feb 2020 14:56:11 GMT
       expires:
       - '-1'
       pragma:
@@ -9062,7 +9288,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 600a8c88-a1ea-4463-b075-35da088b33c6
+      - bcd7cec9-327b-4c55-82f5-74f050be9f57
     status:
       code: 200
       message: OK
@@ -9088,16 +9314,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/networkWatchers?api-version=2019-11-01
   response:
     body:
-      string: '{"value":[{"name":"NetworkWatcher_westus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_westus","etag":"W/\"4cd1288b-33c6-4886-88ae-1ba50b7f2863\"","type":"Microsoft.Network/networkWatchers","location":"westus","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_eastus","etag":"W/\"d11e97de-4807-4326-8b42-31ae04e731ff\"","type":"Microsoft.Network/networkWatchers","location":"eastus","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_centralus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_centralus","etag":"W/\"808dc9a5-837d-4ceb-b1c3-6583fdaf71e6\"","type":"Microsoft.Network/networkWatchers","location":"centralus","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_westcentralus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_westcentralus","etag":"W/\"4a515ced-1d41-44da-a225-68ff402c42ef\"","type":"Microsoft.Network/networkWatchers","location":"westcentralus","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}}]}'
+      string: '{"value":[{"name":"NetworkWatcher_westus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_westus","etag":"W/\"144fe157-e90e-4884-bb59-5329f5f24fa1\"","type":"Microsoft.Network/networkWatchers","location":"westus","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_eastus","etag":"W/\"cdeffa25-e3cd-4278-b680-c573e1f0a707\"","type":"Microsoft.Network/networkWatchers","location":"eastus","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_southeastasia","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_southeastasia","etag":"W/\"a1f833bb-e377-4786-b2ad-6c74602d87c0\"","type":"Microsoft.Network/networkWatchers","location":"southeastasia","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_centralus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_centralus","etag":"W/\"808dc9a5-837d-4ceb-b1c3-6583fdaf71e6\"","type":"Microsoft.Network/networkWatchers","location":"centralus","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_westcentralus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_westcentralus","etag":"W/\"4a515ced-1d41-44da-a225-68ff402c42ef\"","type":"Microsoft.Network/networkWatchers","location":"westcentralus","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_centraluseuap","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_centraluseuap","etag":"W/\"45c2db7d-5c1e-4016-a10d-b74c8a4372f0\"","type":"Microsoft.Network/networkWatchers","location":"centraluseuap","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_eastus2euap","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_eastus2euap","etag":"W/\"fd9a143e-7187-47dd-ac6c-d9e6a8c2e9cc\"","type":"Microsoft.Network/networkWatchers","location":"eastus2euap","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1549'
+      - '2737'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 06:05:08 GMT
+      - Tue, 04 Feb 2020 14:56:16 GMT
       expires:
       - '-1'
       pragma:
@@ -9109,10 +9335,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - dd7fd466-8025-40b0-9665-f7d9c800797a
-      - 10af1326-b942-4ef8-a3b5-ee33fc88b1a5
-      - 14d5f485-d7d6-4c9c-9e5b-4524e0f2b72d
-      - c69b06cb-0d48-4f32-b9e4-ddf4d3ea4667
+      - 56f7c29a-4cc9-4a11-97c7-92a47a07b696
+      - 317607aa-2d3a-4878-b332-126330e8f855
+      - e2001d5f-2862-42b6-89ff-8a3914c7d3ea
+      - 7e3bc958-97c4-4b61-8534-a49439cd4a24
+      - 6085eaec-747f-4bd3-b3b1-c6a06bc2d056
+      - aa9edbf1-a82b-4feb-89ce-52ae5ebe25ac
+      - a987bd38-42a0-4078-ac18-fb90b9793b90
     status:
       code: 200
       message: OK
@@ -9138,35 +9367,34 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_eastus/connectionMonitors/CMv2-01?api-version=2019-11-01
   response:
     body:
-      string: "{\r\n  \"name\": \"CMv2-01\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_eastus/connectionMonitors/CMv2-01\",\r\n
-        \ \"etag\": \"W/\\\"d11e97de-4807-4326-8b42-31ae04e731ff\\\"\",\r\n  \"properties\":
+      string: "{\r\n  \"name\": \"cmv2-01\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_eastus/connectionMonitors/cmv2-01\",\r\n
+        \ \"etag\": \"W/\\\"cdeffa25-e3cd-4278-b680-c573e1f0a707\\\"\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"resourceGuid\": \"4643b71e-db01-4d00-b9f7-0523d0857412\",\r\n
-        \   \"endpoints\": [\r\n      {\r\n        \"name\": \"vm1\",\r\n        \"resourceId\":
-        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Compute/virtualMachines/vm1\"\r\n
+        \   \"endpoints\": [\r\n      {\r\n        \"name\": \"vm2\",\r\n        \"resourceId\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Compute/virtualMachines/vm2\"\r\n
         \     },\r\n      {\r\n        \"name\": \"bing\",\r\n        \"address\":
         \"bing.com\"\r\n      }\r\n    ],\r\n    \"testConfigurations\": [\r\n      {\r\n
-        \       \"name\": \"DefaultTestConfig\",\r\n        \"testFrequencySec\":
-        60,\r\n        \"protocol\": \"Tcp\",\r\n        \"tcpConfiguration\": {\r\n
-        \         \"port\": 2048,\r\n          \"disableTraceRoute\": false\r\n        }\r\n
-        \     }\r\n    ],\r\n    \"testGroups\": [\r\n      {\r\n        \"name\":
-        \"DefaultTestGroup\",\r\n        \"disable\": false,\r\n        \"testConfigurations\":
-        [\r\n          \"DefaultTestConfig\"\r\n        ],\r\n        \"sources\":
-        [\r\n          \"vm1\"\r\n        ],\r\n        \"destinations\": [\r\n          \"bing\"\r\n
-        \       ]\r\n      }\r\n    ],\r\n    \"outputs\": [],\r\n    \"startTime\":
-        \"2020-02-04T06:04:51.0600317Z\",\r\n    \"connectionMonitorType\": \"MultiEndpoint\"\r\n
-        \ },\r\n  \"type\": \"Microsoft.Network/networkWatchers/connectionMonitors\",\r\n
+        \       \"name\": \"DefaultIcmp\",\r\n        \"testFrequencySec\": 60,\r\n
+        \       \"protocol\": \"Icmp\",\r\n        \"icmpConfiguration\": {\r\n          \"disableTraceRoute\":
+        false\r\n        }\r\n      }\r\n    ],\r\n    \"testGroups\": [\r\n      {\r\n
+        \       \"name\": \"DefaultTestGroup\",\r\n        \"disable\": false,\r\n
+        \       \"testConfigurations\": [\r\n          \"DefaultIcmp\"\r\n        ],\r\n
+        \       \"sources\": [\r\n          \"vm2\"\r\n        ],\r\n        \"destinations\":
+        [\r\n          \"bing\"\r\n        ]\r\n      }\r\n    ],\r\n    \"outputs\":
+        [],\r\n    \"startTime\": \"2020-02-04T14:55:49.7045989Z\",\r\n    \"connectionMonitorType\":
+        \"MultiEndpoint\"\r\n  },\r\n  \"type\": \"Microsoft.Network/networkWatchers/connectionMonitors\",\r\n
         \ \"location\": \"eastus\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1518'
+      - '1483'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Feb 2020 06:05:10 GMT
+      - Tue, 04 Feb 2020 14:56:19 GMT
       etag:
-      - W/"d11e97de-4807-4326-8b42-31ae04e731ff"
+      - W/"cdeffa25-e3cd-4278-b680-c573e1f0a707"
       expires:
       - '-1'
       pragma:
@@ -9183,7 +9411,130 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - b7afe2e9-85a5-4e49-b0bc-17b8c125fc73
+      - afd1102c-bb41-47d9-9753-7c4cd4088cd7
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network watcher connection-monitor show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -l -n
+      User-Agent:
+      - python/3.6.8 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/networkWatchers?api-version=2019-11-01
+  response:
+    body:
+      string: '{"value":[{"name":"NetworkWatcher_westus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_westus","etag":"W/\"144fe157-e90e-4884-bb59-5329f5f24fa1\"","type":"Microsoft.Network/networkWatchers","location":"westus","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_eastus","etag":"W/\"cdeffa25-e3cd-4278-b680-c573e1f0a707\"","type":"Microsoft.Network/networkWatchers","location":"eastus","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_southeastasia","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_southeastasia","etag":"W/\"a1f833bb-e377-4786-b2ad-6c74602d87c0\"","type":"Microsoft.Network/networkWatchers","location":"southeastasia","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_centralus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_centralus","etag":"W/\"808dc9a5-837d-4ceb-b1c3-6583fdaf71e6\"","type":"Microsoft.Network/networkWatchers","location":"centralus","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_westcentralus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_westcentralus","etag":"W/\"4a515ced-1d41-44da-a225-68ff402c42ef\"","type":"Microsoft.Network/networkWatchers","location":"westcentralus","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_centraluseuap","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_centraluseuap","etag":"W/\"45c2db7d-5c1e-4016-a10d-b74c8a4372f0\"","type":"Microsoft.Network/networkWatchers","location":"centraluseuap","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}},{"name":"NetworkWatcher_eastus2euap","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_eastus2euap","etag":"W/\"fd9a143e-7187-47dd-ac6c-d9e6a8c2e9cc\"","type":"Microsoft.Network/networkWatchers","location":"eastus2euap","properties":{"provisioningState":"Succeeded","runningOperationIds":[]}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2737'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Feb 2020 14:56:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 2d2661da-c975-4f92-be10-32b0ae77ead5
+      - a2ae42ad-265b-4c4e-b4f4-178ae3e38a02
+      - 08303634-786c-45e3-80e4-cec9544e661e
+      - de422229-a764-4c03-8ecb-fe4680ce2514
+      - 9cb1eec3-d97a-4f37-b473-b862566b40ef
+      - cd772692-367b-4319-a20f-69462a37c1d8
+      - 5d172d9f-9674-48f1-86c6-a3a8ae267a7e
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network watcher connection-monitor show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -l -n
+      User-Agent:
+      - python/3.6.8 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_eastus/connectionMonitors/cmv2-01?api-version=2019-11-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"cmv2-01\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_eastus/connectionMonitors/cmv2-01\",\r\n
+        \ \"etag\": \"W/\\\"cdeffa25-e3cd-4278-b680-c573e1f0a707\\\"\",\r\n  \"properties\":
+        {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"resourceGuid\": \"4643b71e-db01-4d00-b9f7-0523d0857412\",\r\n
+        \   \"endpoints\": [\r\n      {\r\n        \"name\": \"vm2\",\r\n        \"resourceId\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/connection_monitor_v2_test_000001/providers/Microsoft.Compute/virtualMachines/vm2\"\r\n
+        \     },\r\n      {\r\n        \"name\": \"bing\",\r\n        \"address\":
+        \"bing.com\"\r\n      }\r\n    ],\r\n    \"testConfigurations\": [\r\n      {\r\n
+        \       \"name\": \"DefaultIcmp\",\r\n        \"testFrequencySec\": 60,\r\n
+        \       \"protocol\": \"Icmp\",\r\n        \"icmpConfiguration\": {\r\n          \"disableTraceRoute\":
+        false\r\n        }\r\n      }\r\n    ],\r\n    \"testGroups\": [\r\n      {\r\n
+        \       \"name\": \"DefaultTestGroup\",\r\n        \"disable\": false,\r\n
+        \       \"testConfigurations\": [\r\n          \"DefaultIcmp\"\r\n        ],\r\n
+        \       \"sources\": [\r\n          \"vm2\"\r\n        ],\r\n        \"destinations\":
+        [\r\n          \"bing\"\r\n        ]\r\n      }\r\n    ],\r\n    \"outputs\":
+        [],\r\n    \"startTime\": \"2020-02-04T14:55:49.7045989Z\",\r\n    \"connectionMonitorType\":
+        \"MultiEndpoint\"\r\n  },\r\n  \"type\": \"Microsoft.Network/networkWatchers/connectionMonitors\",\r\n
+        \ \"location\": \"eastus\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1483'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Feb 2020 14:56:27 GMT
+      etag:
+      - W/"cdeffa25-e3cd-4278-b680-c573e1f0a707"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 73d21202-ec5d-43e3-a94d-2d3b21c9637f
     status:
       code: 200
       message: OK
