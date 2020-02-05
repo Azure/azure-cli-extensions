@@ -203,14 +203,14 @@ def debug_send_notificationhubs_hub(cmd, client,
                                     title='',
                                     payload=None,
                                     tag=None):
-
+    # Refer to tutorials in https://docs.microsoft.com/azure/notification-hubs/ for more details
     if message is not None:
         if notification_format == 'gcm':
             parameters = {"data": {"message": message}}
         elif notification_format == 'baidu':
             parameters = {"title": title, "description": message}
         elif notification_format == 'apple':
-            parameters = {"aps": {"alert": "Notification Hub test notification"}}
+            parameters = {"aps": {"alert": message}}
         elif notification_format == 'template':
             parameters = {"message": message}
         elif notification_format == 'windows':
@@ -274,7 +274,7 @@ def update_gcm_credential(cmd, client,
                           namespace_name,
                           notification_hub_name,
                           google_api_key):
-    body = client.get(resource_group_name=resource_group_name, namespace_name=namespace_name, notification_hub_name=notification_hub_name).as_dict()
+    body = {}
     body.setdefault('gcm_credential', {})['google_api_key'] = google_api_key
     return client.patch(resource_group_name=resource_group_name, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
 
@@ -285,7 +285,7 @@ def update_adm_credential(cmd, client,
                           notification_hub_name,
                           client_id,
                           client_secret):
-    body = client.get(resource_group_name=resource_group_name, namespace_name=namespace_name, notification_hub_name=notification_hub_name).as_dict()
+    body = {}
     body.setdefault('adm_credential', {})['client_id'] = client_id
     body.setdefault('adm_credential', {})['client_secret'] = client_secret
     return client.patch(resource_group_name=resource_group_name, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
@@ -303,7 +303,7 @@ def update_apns_credential(cmd, client,
                            app_id=None,
                            token=None):
     import base64
-    body = client.get(resource_group_name=resource_group_name, namespace_name=namespace_name, notification_hub_name=notification_hub_name).as_dict()
+    body = {}
     if apns_certificate is not None:
         with open(apns_certificate, "rb") as f:
             data_bytes = f.read()
@@ -330,7 +330,7 @@ def update_baidu_credential(cmd, client,
                             notification_hub_name,
                             api_key,
                             secret_key):
-    body = client.get(resource_group_name=resource_group_name, namespace_name=namespace_name, notification_hub_name=notification_hub_name).as_dict()
+    body = {}
     body.setdefault('baidu_credential', {})['baidu_api_key'] = api_key
     body.setdefault('baidu_credential', {})['baidu_secret_key'] = secret_key
     return client.patch(resource_group_name=resource_group_name, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
@@ -342,8 +342,13 @@ def update_mpns_credential(cmd, client,
                            notification_hub_name,
                            mpns_certificate,
                            certificate_key):
+    import base64
     body = {}
-    body.setdefault('mpns_credential', {})['mpns_certificate'] = mpns_certificate
+    if mpns_certificate is not None:
+        with open(mpns_certificate, "rb") as f:
+            data_bytes = f.read()
+            cert_data = base64.b64encode(data_bytes).decode('utf-8')
+            body.setdefault('mpns_credential', {})['mpns_certificate'] = cert_data
     body.setdefault('mpns_credential', {})['certificate_key'] = certificate_key
     return client.patch(resource_group_name=resource_group_name, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
 
@@ -354,7 +359,7 @@ def update_wns_credential(cmd, client,
                           notification_hub_name,
                           package_sid,
                           secret_key):
-    body = client.get(resource_group_name=resource_group_name, namespace_name=namespace_name, notification_hub_name=notification_hub_name).as_dict()
+    body = {}
     body.setdefault('wns_credential', {})['package_sid'] = package_sid
     body.setdefault('wns_credential', {})['secret_key'] = secret_key
     return client.patch(resource_group_name=resource_group_name, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
