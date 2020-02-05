@@ -376,7 +376,7 @@ helps['notification-hub credential apns update'] = """
         text: |-
                az notification-hub credential apns update --namespace-name "nh-sdk-ns" \\
                --notification-hub-name "nh-sdk-hub" --apns-certificate "/path/to/certificate" \\
-               --certificate-key "xxxxxx"
+               --certificate-key "xxxxxx" --resource-group MyResourceGroup
 """
 
 helps['notification-hub credential baidu update'] = """
