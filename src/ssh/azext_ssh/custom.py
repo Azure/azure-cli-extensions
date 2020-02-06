@@ -3,10 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import getpass
 import io
 from knack import util
 import os
-from os import path
 import paramiko
 from msrestazure import azure_exceptions
 from msrestazure import tools
@@ -22,23 +22,43 @@ from . import rsa_parser
 
 
 def ssh_vm(cmd, resource_group, vm_name, public_key_file, private_key_file):
+
+    # TODO: all of these f strings are Python3 only
     if public_key_file and not private_key_file or private_key_file and not public_key_file:
         raise util.CLIError(f"Private key and public key must be specified together")
 
     compute_client = client_factory.get_mgmt_service_client(cmd.cli_ctx, profiles.ResourceType.MGMT_COMPUTE)
     network_client = client_factory.get_mgmt_service_client(cmd.cli_ctx, profiles.ResourceType.MGMT_NETWORK)
+    ssh_ip = _get_ssh_ip(resource_group, vm_name, compute_client, network_client)
+    
+    if not ssh_ip:
+        raise util.CLIError(f"VM '{vm_name}' does not have a public IP address to SSH to")
+
+    # if a public key file was specified, read it
+    # otherwise, create a new key pair to SSH with
+    if public_key_file and private_key_file:
+        modulus, exponent = _get_modulus_exponent(public_key_file)
+        paramiko_key = _get_paramiko_key(private_key_file)
+    else:
+        generator = rsa_generator.RSAGenerator()
+        public, private = generator.generate()
+        modulus, exponent = rsa_generator.RSAGenerator.public_key_to_base64_modulus_exponent(public)
+        paramiko_key = paramiko.RSAKey.from_private_key(io.StringIO(private))
+
+    credentials = ssh_credential_factory.get_ssh_credentials(cmd.cli_ctx, modulus, exponent)
+    paramiko_key.load_certificate(credentials.certificate)
+        
+    with paramiko.SSHClient() as client:
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        client.connect(ssh_ip, username=credentials.username, pkey=paramiko_key)
+
+
+def _get_ssh_ip(resource_group, vm_name, compute_client, network_client):
     vm_client = compute_client.virtual_machines
     nic_client = network_client.network_interfaces
     ip_client = network_client.public_ip_addresses
 
-    try:
-        vm = vm_client.get(resource_group, vm_name)
-    except azure_exceptions.CloudError as e:
-        if e.error.error == 'ResourceNotFound':
-            raise util.CLIError(f"VM '{vm_name}' in resource group '{resource_group}' does not exist")
-        else:
-            raise
-
+    vm = vm_client.get(resource_group, vm_name)
     nics = vm.network_profile.network_interfaces
     ssh_ip = None
     for nic_ref in nics:
@@ -56,36 +76,34 @@ def ssh_vm(cmd, resource_group, vm_name, public_key_file, private_key_file):
 
         if ssh_ip:
             break
-    
-    if not ssh_ip:
-        raise util.CLIError(f"VM '{vm_name}' does not have a public IP address to SSH to")
+    return ssh_ip
 
-    # if a public key file was specified, read it
-    # otherwise, create a new key pair to SSH with
-    if public_key_file:
-        if not path.isfile(public_key_file):
-            raise util.CLIError(f"Public key file {public_key_file} was not found")
-        if not path.isfile(private_key_file):
-            raise util.CLIError(f"Private key file {private_key_file} was not found")
 
-        with open(public_key_file, 'r') as f:
-            public_key_text = f.read()
-        with open(private_key_file, 'r') as f:
-            private = f.read()
-        
-        parser = rsa_parser.RSAParser()
-        parser.parse(public_key_text.split(' ')[1])
-        modulus = parser.modulus
-        exponent = parser.exponent
-    else:
-        generator = rsa_generator.RSAGenerator()
-        public, private = generator.generate()
-        modulus, exponent = rsa_generator.RSAGenerator.public_key_to_base64_modulus_exponent(public)
+def _get_modulus_exponent(public_key_file):
+    if not os.path.isfile(public_key_file):
+        raise util.CLIError(f"Public key file '{public_key_file}' was not found")
 
-    credentials = ssh_credential_factory.get_ssh_credentials(cmd.cli_ctx, modulus, exponent)
+    with open(public_key_file, 'r') as f:
+        public_key_text = f.read()
 
-    paramiko_key = paramiko.RSAKey.from_private_key(io.StringIO(private))
-    paramiko_key.load_certificate(credentials.certificate)
+    parser = rsa_parser.RSAParser()
+    try:
+        parser.parse(public_key_text)
+    except Exception as e:
+        raise util.CLIError(f"Could not parse public key. Error: {str(e)}")
+    modulus = parser.modulus
+    exponent = parser.exponent
 
-    with paramiko.SSHClient() as client:
-        client.connect(ssh_ip, username=credentials.username, pkey=paramiko_key)
+    return modulus, exponent
+
+
+def _get_paramiko_key(private_key_file):
+    if not os.path.isfile(private_key_file):
+        raise util.CLIError(f"Private key file '{private_key_file}' was not found")
+
+    try:
+        private_key = paramiko.RSAKey.from_private_key(private_key_file)
+    except paramiko.PasswordRequiredException:
+        password = getpass.getpass("Enter the private key password: ")
+        private_key = paramiko.RSAKey.from_private_key(private_key_file, password=password)
+    return private_key
