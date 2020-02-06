@@ -111,7 +111,7 @@ helps['aks create'] = """
         - name: --load-balancer-outbound-ports
           type: int
           short-summary: Load balancer outbound allocated ports.
-          long-summary: Desired static number of outbound ports per VM in the load balancer backend pool. By default, set to 0 which uses the default allocation based on the number of VMs.
+          long-summary: Desired static number of outbound ports per VM in the load balancer backend pool. By default, set to 0 which uses the default allocation based on the number of VMs.  Please specify a value in the range of [0, 64000] that is a multiple of 8.
         - name: --load-balancer-idle-timeout
           type: int
           short-summary: Load balancer idle timeout in minutes.

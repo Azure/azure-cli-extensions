@@ -15,8 +15,6 @@ from knack.log import get_logger
 from azure.cli.core.util import CLIError
 import azure.cli.core.keys as keys
 
-from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING
-
 logger = get_logger(__name__)
 
 
@@ -239,13 +237,3 @@ def validate_load_balancer_idle_timeout(namespace):
     if namespace.load_balancer_idle_timeout is not None:
         if namespace.load_balancer_idle_timeout < 4 or namespace.load_balancer_idle_timeout > 120:
             raise CLIError("--load-balancer-idle-timeout must be in the range [4,120]")
-
-
-def validate_outbound_type(namespace):
-    if not namespace.outbound_type:
-        return
-
-    if namespace.outbound_type not in [CONST_OUTBOUND_TYPE_LOAD_BALANCER, CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING]:
-        raise CLIError("Invalid --outbound-type '{0}'. --outbound-type can only be set to'{1}' or '{2}'".format(
-            namespace.outbound_type, CONST_OUTBOUND_TYPE_LOAD_BALANCER,
-            CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING))
