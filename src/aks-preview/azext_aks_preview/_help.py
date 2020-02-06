@@ -290,7 +290,7 @@ helps['aks update'] = """
           type: string
           short-summary: Load balancer outbound IP prefix resource IDs.
           long-summary: Comma-separated public IP prefix resource IDs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only.
-       - name: --load-balancer-outbound-ports
+        - name: --load-balancer-outbound-ports
           type: int
           short-summary: Load balancer outbound allocated ports.
           long-summary: Desired static number of outbound ports per VM in the load balancer backend pool. By default, set to 0 which uses the default allocation based on the number of VMs. Please specify a value in the range of [0, 64000] that is a multiple of 8.
