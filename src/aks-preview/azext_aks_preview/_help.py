@@ -228,7 +228,6 @@ helps['aks create'] = """
         - name: Create a kubernetes cluster with authorized apiserver IP ranges.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --api-server-authorized-ip-ranges 193.168.1.0/24,194.168.1.0/24,195.168.1.0
         - name: Create a kubernetes cluster with server side encryption using your owned key.
-        - name: Create a kubernetes cluster with server side encryption using your owned key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --node-osdisk-diskencryptionset-id <disk-encryption-set-resource-id>
         - name: Create a kubernetes cluster with userDefinedRouting, standard load balancer SKU and the azure network plugin
           text: az aks create -g MyResourceGroup -n MyManagedCluster --outbound-type userDefinedRouting --network-plugin azure --load-balancer-sku standard
