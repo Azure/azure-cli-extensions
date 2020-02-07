@@ -22,7 +22,6 @@ from . import rsa_parser
 
 
 def ssh_vm(cmd, resource_group, vm_name, public_key_file, private_key_file):
-
     # TODO: all of these f strings are Python3 only
     if public_key_file and not private_key_file or private_key_file and not public_key_file:
         raise util.CLIError(f"Private key and public key must be specified together")
@@ -52,6 +51,33 @@ def ssh_vm(cmd, resource_group, vm_name, public_key_file, private_key_file):
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         client.connect(ssh_ip, username=credentials.username, pkey=paramiko_key)
 
+
+def ssh_config(cmd, resource_group, vm_name, public_key_file, private_key_file):
+    ssh_dir_parts = ["~", ".ssh"]
+    public_key_file = public_key_file or os.path.expanduser(os.path.join(*ssh_dir_parts, "id_rsa.pub"))
+    private_key_file = private_key_file or os.path.expanduser(os.path.join(*ssh_dir_parts, "id_rsa"))
+    cert_file = os.path.join(*os.path.split(public_key_file)[:-1], "id_rsa-cert.pub")
+
+    compute_client = client_factory.get_mgmt_service_client(cmd.cli_ctx, profiles.ResourceType.MGMT_COMPUTE)
+    network_client = client_factory.get_mgmt_service_client(cmd.cli_ctx, profiles.ResourceType.MGMT_NETWORK)
+    ssh_ip = _get_ssh_ip(resource_group, vm_name, compute_client, network_client)
+    
+    if not ssh_ip:
+        raise util.CLIError(f"VM '{vm_name}' does not have a public IP address to SSH to")
+    
+    modulus, exponent = _get_modulus_exponent(public_key_file)
+    credentials = ssh_credential_factory.get_ssh_credentials(cmd.cli_ctx, modulus, exponent)
+    with open(cert_file, 'w') as f:
+        f.write(credentials.certificate)
+
+    print("Host " + resource_group + "-" + vm_name)
+    print("\tHostName " + ssh_ip)
+    print("\tCertificateFile " + cert_file)
+    print("\tIdentityFile " + private_key_file)
+    print("Host " + ssh_ip)
+    print("\tHostName " + ssh_ip)
+    print("\tCertificateFile " + cert_file)
+    print("\tIdentityFile " + private_key_file)
 
 def _get_ssh_ip(resource_group, vm_name, compute_client, network_client):
     vm_client = compute_client.virtual_machines

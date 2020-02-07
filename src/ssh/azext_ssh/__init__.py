@@ -27,16 +27,22 @@ class SshCommandsLoader(AzCommandsLoader):
             cli_ctx=cli_ctx, custom_command_type=ssh_vm_custom)
 
     def load_command_table(self, _):
-        with self.command_group('') as g:
-            g.custom_command('ssh', 'ssh_vm')
+        with self.command_group('ssh') as g:
+            g.custom_command('vm', 'ssh_vm')
+            g.custom_command('config', 'ssh_config')
         return self.command_table
 
     def load_arguments(self, _):
-        with self.argument_context('ssh') as c:
+        with self.argument_context('ssh vm') as c:
             c.argument('resource_group', options_list=['--resource-group'])
             c.argument('vm_name', options_list=['--name'])
             c.extra('public_key_file', options_list=['--public-key-file'])
             c.extra('private_key_file', options_list=['--private-key-file'])
 
+        with self.argument_context('ssh config') as c:
+            c.argument('resource_group', options_list=['--resource-group'])
+            c.argument('vm_name', options_list=['--name'])
+            c.extra('public_key_file', options_list=['--public-key-file'])
+            c.extra('private_key_file', options_list=['--private-key-file'])
 
 COMMAND_LOADER_CLS = SshCommandsLoader
