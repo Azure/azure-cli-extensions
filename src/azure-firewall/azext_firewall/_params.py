@@ -52,7 +52,9 @@ def load_arguments(self, _):
         c.argument('virtual_hub', options_list=['--virtual-hub', '--vhub'],
                    help='Name or ID of the virtualHub to which the firewall belongs.',
                    validator=validate_virtual_hub)
-        c.argument('sku', arg_type=get_enum_type(['AZFW_VNet', 'AZFW_Hub']), help='SKU of Azure firewall.')
+        c.argument('sku', arg_type=get_enum_type(['AZFW_VNet', 'AZFW_Hub']), help='SKU of Azure firewall. This field cannot be updated after the creation. '
+                                                                                  'The default sku in server end is AZFW_VNet. '
+                                                                                  'If you want to attach azure firewall to vhub, you should set sku to AZFW_Hub.')
         c.argument('private_ranges', nargs='+', validator=process_private_ranges, help='Space-separated list of SNAT private range. Validate values are single Ip, Ip prefixes or a single special value "IANAPrivateRanges"')
     with self.argument_context('network firewall threat-intel-whitelist') as c:
         c.argument('ip_addresses', nargs='+', validator=process_threat_intel_whitelist_ip_addresses, help='Space-separated list of IPv4 addresses.')

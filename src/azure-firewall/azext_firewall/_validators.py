@@ -121,6 +121,10 @@ def validate_virtual_hub(cmd, namespace):
     from msrestazure.tools import is_valid_resource_id, resource_id
 
     if hasattr(namespace, 'virtual_hub') and namespace.virtual_hub is not None:
+
+        if namespace.virtual_hub == '':
+            return
+
         if not is_valid_resource_id(namespace.virtual_hub):
             namespace.virtual_hub = resource_id(
                 subscription=get_subscription_id(cmd.cli_ctx),

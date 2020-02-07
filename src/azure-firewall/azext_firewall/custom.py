@@ -73,9 +73,9 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
                              tags=tags,
                              zones=zones,
                              additional_properties={},
-                             virtual_hub=SubResource(id=virtual_hub),
-                             firewall_policy=SubResource(id=firewall_policy),
-                             sku=sku_instance)
+                             virtual_hub=SubResource(id=virtual_hub) if virtual_hub is not None else None,
+                             firewall_policy=SubResource(id=firewall_policy) if firewall_policy is not None else None,
+                             sku=sku_instance if sku is not None else None)
     if private_ranges is not None:
         if firewall.additional_properties is None:
             firewall.additional_properties = {}
@@ -84,8 +84,8 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
 
 
 def update_azure_firewall(cmd, instance, tags=None, zones=None, private_ranges=None,
-                          firewall_policy=None, virtual_hub=None, sku=None):
-    SubResource, AzureFirewallSku = cmd.get_models('SubResource', 'AzureFirewallSku')
+                          firewall_policy=None, virtual_hub=None):
+    SubResource = cmd.get_models('SubResource')
     if tags is not None:
         instance.tags = tags
     if zones is not None:
@@ -97,10 +97,10 @@ def update_azure_firewall(cmd, instance, tags=None, zones=None, private_ranges=N
     if firewall_policy is not None:
         instance.firewall_policy = SubResource(id=firewall_policy)
     if virtual_hub is not None:
-        instance.virtual_hub = SubResource(id=virtual_hub)
-    if sku is not None:
-        sku_instance = AzureFirewallSku(name=sku, tier='Standard')
-        instance.sku = sku_instance
+        if virtual_hub == '':
+            instance.virtual_hub = None
+        else:
+            instance.virtual_hub = SubResource(id=virtual_hub)
     return instance
 
 
