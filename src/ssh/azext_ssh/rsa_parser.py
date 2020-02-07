@@ -44,8 +44,8 @@ class RSAParser(object):
             raise ValueError(f"Encoded public key is not ssh-rsa algorithm ({encoded_algorithm})")
 
         self.algorithm = encoded_algorithm
-        self.exponent = base64.b64encode(fields[1]).decode("ascii")
-        self.modulus = base64.b64encode(fields[2]).decode("ascii")
+        self.exponent = base64.urlsafe_b64encode(fields[1]).decode("ascii")
+        self.modulus = base64.urlsafe_b64encode(fields[2]).decode("ascii")
 
     def _get_fields(self, key_bytes):
         read = 0
