@@ -6,10 +6,11 @@
 import getpass
 import io
 from knack import util
-import os
-import paramiko
 from msrestazure import azure_exceptions
 from msrestazure import tools
+import os
+import platform
+import subprocess
 
 from azure.cli.core import keys
 from azure.cli.core import profiles
@@ -19,13 +20,11 @@ from azure.cli.core.commands import ssh_credential_factory
 
 from . import rsa_generator
 from . import rsa_parser
+from . import ssh_utils
 
 
-def ssh_vm(cmd, resource_group, vm_name, public_key_file, private_key_file):
-    # TODO: all of these f strings are Python3 only
-    if public_key_file and not private_key_file or private_key_file and not public_key_file:
-        raise util.CLIError(f"Private key and public key must be specified together")
-
+def ssh_vm(cmd, resource_group, vm_name, public_key_file, private_key_file, ssh_params):
+    public_key_file, private_key_file = _check_public_private_files(public_key_file, private_key_file)
     compute_client = client_factory.get_mgmt_service_client(cmd.cli_ctx, profiles.ResourceType.MGMT_COMPUTE)
     network_client = client_factory.get_mgmt_service_client(cmd.cli_ctx, profiles.ResourceType.MGMT_NETWORK)
     ssh_ip = _get_ssh_ip(resource_group, vm_name, compute_client, network_client)
@@ -33,30 +32,15 @@ def ssh_vm(cmd, resource_group, vm_name, public_key_file, private_key_file):
     if not ssh_ip:
         raise util.CLIError(f"VM '{vm_name}' does not have a public IP address to SSH to")
 
-    # if a public key file was specified, read it
-    # otherwise, create a new key pair to SSH with
-    if public_key_file and private_key_file:
-        modulus, exponent = _get_modulus_exponent(public_key_file)
-        paramiko_key = _get_paramiko_key(private_key_file)
-    else:
-        generator = rsa_generator.RSAGenerator()
-        public, private = generator.generate()
-        modulus, exponent = rsa_generator.RSAGenerator.public_key_to_base64_modulus_exponent(public)
-        paramiko_key = paramiko.RSAKey.from_private_key(io.StringIO(private))
-
+    modulus, exponent = _get_modulus_exponent(public_key_file)
     credentials = ssh_credential_factory.get_ssh_credentials(cmd.cli_ctx, modulus, exponent)
-    paramiko_key.load_certificate(credentials.certificate)
-        
-    with paramiko.SSHClient() as client:
-        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        client.connect(ssh_ip, username=credentials.username, pkey=paramiko_key)
 
+    cert_file = _write_cert_file(public_key_file, credentials.certificate)
+
+    ssh_utils.start_ssh_connection(credentials.username, ssh_ip, cert_file, private_key_file, ssh_params)
 
 def ssh_config(cmd, resource_group, vm_name, public_key_file, private_key_file):
-    ssh_dir_parts = ["~", ".ssh"]
-    public_key_file = public_key_file or os.path.expanduser(os.path.join(*ssh_dir_parts, "id_rsa.pub"))
-    private_key_file = private_key_file or os.path.expanduser(os.path.join(*ssh_dir_parts, "id_rsa"))
-    cert_file = os.path.join(*os.path.split(public_key_file)[:-1], "id_rsa-cert.pub")
+    public_key_file, private_key_file = _check_public_private_files(public_key_file, private_key_file)
 
     compute_client = client_factory.get_mgmt_service_client(cmd.cli_ctx, profiles.ResourceType.MGMT_COMPUTE)
     network_client = client_factory.get_mgmt_service_client(cmd.cli_ctx, profiles.ResourceType.MGMT_NETWORK)
@@ -67,17 +51,41 @@ def ssh_config(cmd, resource_group, vm_name, public_key_file, private_key_file):
     
     modulus, exponent = _get_modulus_exponent(public_key_file)
     credentials = ssh_credential_factory.get_ssh_credentials(cmd.cli_ctx, modulus, exponent)
-    with open(cert_file, 'w') as f:
-        f.write(credentials.certificate)
+
+    cert_file = _write_cert_file(public_key_file, credentials.certificate)
 
     print("Host " + resource_group + "-" + vm_name)
+    print("\tUser " + credentials.username)
     print("\tHostName " + ssh_ip)
     print("\tCertificateFile " + cert_file)
     print("\tIdentityFile " + private_key_file)
     print("Host " + ssh_ip)
+    print("\tUser " + credentials.username)
     print("\tHostName " + ssh_ip)
     print("\tCertificateFile " + cert_file)
     print("\tIdentityFile " + private_key_file)
+
+
+def _check_public_private_files(public_key_file, private_key_file):
+    ssh_dir_parts = ["~", ".ssh"]
+    public_key_file = public_key_file or os.path.expanduser(os.path.join(*ssh_dir_parts, "id_rsa.pub"))
+    private_key_file = private_key_file or os.path.expanduser(os.path.join(*ssh_dir_parts, "id_rsa"))
+
+    if not os.path.isfile(public_key_file):
+        raise util.CLIError(f"Pulic key file {public_key_file} not found")
+    if not os.path.isfile(private_key_file):
+        raise util.CLIError(f"Private key file {private_key_file} not found")
+
+    return public_key_file, private_key_file
+
+
+def _write_cert_file(public_key_file, certificate_contents):
+    cert_file = os.path.join(*os.path.split(public_key_file)[:-1], "id_rsa-cert.pub")
+    with open(cert_file, 'w') as f:
+        f.write(certificate_contents)
+
+    return cert_file
+
 
 def _get_ssh_ip(resource_group, vm_name, compute_client, network_client):
     vm_client = compute_client.virtual_machines
@@ -121,15 +129,3 @@ def _get_modulus_exponent(public_key_file):
     exponent = parser.exponent
 
     return modulus, exponent
-
-
-def _get_paramiko_key(private_key_file):
-    if not os.path.isfile(private_key_file):
-        raise util.CLIError(f"Private key file '{private_key_file}' was not found")
-
-    try:
-        private_key = paramiko.RSAKey.from_private_key(private_key_file)
-    except paramiko.PasswordRequiredException:
-        password = getpass.getpass("Enter the private key password: ")
-        private_key = paramiko.RSAKey.from_private_key(private_key_file, password=password)
-    return private_key

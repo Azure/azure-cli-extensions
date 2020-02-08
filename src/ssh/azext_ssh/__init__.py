@@ -38,6 +38,7 @@ class SshCommandsLoader(AzCommandsLoader):
             c.argument('vm_name', options_list=['--name'])
             c.extra('public_key_file', options_list=['--public-key-file'])
             c.extra('private_key_file', options_list=['--private-key-file'])
+            c.extra('ssh_params', nargs="*")
 
         with self.argument_context('ssh config') as c:
             c.argument('resource_group', options_list=['--resource-group'])
