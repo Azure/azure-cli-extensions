@@ -182,7 +182,7 @@ class AzureFirewallScenario(ScenarioTest):
             'destination_ip_group': 'destinationipgroup'
         })
 
-        self.cmd('extension add -n ip-group')
+        # self.cmd('extension add -n ip-group')
         self.cmd('network ip-group create -n {source_ip_group} -g {rg} --ip-addresses 10.0.0.0 10.0.0.1')
         self.cmd('network ip-group create -n {destination_ip_group} -g {rg} --ip-addresses 10.0.0.2 10.0.0.3')
         self.cmd('network firewall create -g {rg} -n {af}')
@@ -213,7 +213,7 @@ class AzureFirewallScenario(ScenarioTest):
             'vhub2': 'clitestvhub2',
             'rg': resource_group
         })
-        self.cmd('extension add -n virtual-wan')
+        # self.cmd('extension add -n virtual-wan')
         self.cmd('network vwan create -n {vwan} -g {rg} --type Standard')
         self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l eastus --sku Standard')
         self.cmd('network firewall create -g {rg} -n {af} --sku AZFW_Hub')
@@ -241,7 +241,7 @@ class AzureFirewallScenario(ScenarioTest):
             'ipconfig': 'myipconfig1',
         })
         # test firewall policy with vhub firewall
-        self.cmd('extension add -n virtual-wan')
+        # self.cmd('extension add -n virtual-wan')
         self.cmd('network vwan create -n {vwan} -g {rg} --type Standard')
         self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l eastus --sku Standard')
 
