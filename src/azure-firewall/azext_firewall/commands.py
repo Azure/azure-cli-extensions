@@ -25,13 +25,13 @@ def load_command_table(self, _):
     )
 
     network_firewall_sdk = CliCommandType(
-        operations_tmpl='azext_firewall.vendored_sdks.v2019_09_01.operations#AzureFirewallsOperations.{}',
+        operations_tmpl='azext_firewall.vendored_sdks.v2019_11_01.operations#AzureFirewallsOperations.{}',
         client_factory=cf_firewalls,
         min_api='2018-08-01'
     )
 
     network_firewall_fqdn_tags_sdk = CliCommandType(
-        operations_tmpl='azext_firewall.vendored_sdks.v2019_09_01.operations#AzureFirewallFqdnTagsOperations.{}',
+        operations_tmpl='azext_firewall.vendored_sdks.v2019_11_01.operations#AzureFirewallFqdnTagsOperations.{}',
         client_factory=cf_firewall_fqdn_tags,
         min_api='2018-08-01'
     )
@@ -68,7 +68,17 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_af_ip_configuration')
         g.command('list', list_network_resource_property('azure_firewalls', 'ip_configurations'))
         g.show_command('show', get_network_resource_property_entry('azure_firewalls', 'ip_configurations'))
-        g.command('delete', delete_network_resource_property_entry('azure_firewalls', 'ip_configurations'))
+        g.custom_command('delete', 'delete_af_ip_configuration')
+
+    with self.command_group('network firewall management-ip-config', network_util) as g:
+        g.custom_command('create', 'create_af_management_ip_configuration')
+        g.custom_show_command('show', 'show_af_management_ip_configuration')
+        g.generic_update_command('update', command_type=network_firewall_sdk,
+                                 custom_func_name='update_af_management_ip_configuration',
+                                 setter_type=CliCommandType(operations_tmpl='azext_firewall.custom#{}'),
+                                 setter_name='set_af_management_ip_configuration')
+        # Discussed with service team to hide this command for now.
+        # g.custom_command('delete', 'delete_af_management_ip_configuration')
 
     af_rules = {
         'network_rule': {'scope': 'network-rule', 'validator': validate_af_network_rule},

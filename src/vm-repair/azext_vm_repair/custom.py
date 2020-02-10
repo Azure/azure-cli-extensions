@@ -380,7 +380,7 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
         repair_resource_group = repair_vm_id['resource_group']
 
         repair_run_command = 'az vm run-command invoke -g {rg} -n {vm} --command-id {command_id} ' \
-                             '--scripts "@{run_script}"' \
+                             '--scripts "@{run_script}" -o json' \
                              .format(rg=repair_resource_group, vm=repair_vm_name, command_id=command_id, run_script=run_script)
 
         # Normal scenario with run id

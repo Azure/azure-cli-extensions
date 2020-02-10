@@ -20,37 +20,42 @@ class Topic(TrackedResource):
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar id: Fully qualified identifier of the resource
+    :ivar id: Fully qualified identifier of the resource.
     :vartype id: str
     :ivar name: Name of the resource
     :vartype name: str
     :ivar type: Type of the resource
     :vartype type: str
-    :param location: Required. Location of the resource
+    :param location: Required. Location of the resource.
     :type location: str
-    :param tags: Tags of the resource
+    :param tags: Tags of the resource.
     :type tags: dict[str, str]
     :ivar provisioning_state: Provisioning state of the topic. Possible values
      include: 'Creating', 'Updating', 'Deleting', 'Succeeded', 'Canceled',
      'Failed'
     :vartype provisioning_state: str or
-     ~microsoft.azure.management.eventgrid.models.TopicProvisioningState
+     ~azext_eventgrid.models.TopicProvisioningState
     :ivar endpoint: Endpoint for the topic.
     :vartype endpoint: str
     :param input_schema: This determines the format that Event Grid should
      expect for incoming events published to the topic. Possible values
      include: 'EventGridSchema', 'CustomEventSchema', 'CloudEventSchemaV1_0'.
      Default value: "EventGridSchema" .
-    :type input_schema: str or
-     ~microsoft.azure.management.eventgrid.models.InputSchema
+    :type input_schema: str or ~azext_eventgrid.models.InputSchema
     :param input_schema_mapping: This enables publishing using custom event
      schemas. An InputSchemaMapping can be specified to map various properties
      of a source schema to various required properties of the EventGridEvent
      schema.
-    :type input_schema_mapping:
-     ~microsoft.azure.management.eventgrid.models.InputSchemaMapping
+    :type input_schema_mapping: ~azext_eventgrid.models.InputSchemaMapping
     :ivar metric_resource_id: Metric resource id for the topic.
     :vartype metric_resource_id: str
+    :param allow_traffic_from_all_ips: This determines if IP filtering rules
+     ought to be evaluated or not. By default it will not evaluate and will
+     allow traffic from all IPs.
+    :type allow_traffic_from_all_ips: bool
+    :param inbound_ip_rules: This determines the IP filtering rules that ought
+     to be applied when events are received on this topic.
+    :type inbound_ip_rules: list[~azext_eventgrid.models.InboundIpRule]
     """
 
     _validation = {
@@ -74,6 +79,8 @@ class Topic(TrackedResource):
         'input_schema': {'key': 'properties.inputSchema', 'type': 'str'},
         'input_schema_mapping': {'key': 'properties.inputSchemaMapping', 'type': 'InputSchemaMapping'},
         'metric_resource_id': {'key': 'properties.metricResourceId', 'type': 'str'},
+        'allow_traffic_from_all_ips': {'key': 'properties.allowTrafficFromAllIPs', 'type': 'bool'},
+        'inbound_ip_rules': {'key': 'properties.inboundIpRules', 'type': '[InboundIpRule]'},
     }
 
     def __init__(self, **kwargs):
@@ -83,3 +90,5 @@ class Topic(TrackedResource):
         self.input_schema = kwargs.get('input_schema', "EventGridSchema")
         self.input_schema_mapping = kwargs.get('input_schema_mapping', None)
         self.metric_resource_id = None
+        self.allow_traffic_from_all_ips = kwargs.get('allow_traffic_from_all_ips', None)
+        self.inbound_ip_rules = kwargs.get('inbound_ip_rules', None)
