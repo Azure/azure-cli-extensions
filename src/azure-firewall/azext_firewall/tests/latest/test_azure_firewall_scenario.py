@@ -9,6 +9,15 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccou
 
 class AzureFirewallScenario(ScenarioTest):
 
+    def __init__(self, method_name, config_file=None, recording_dir=None, recording_name=None,
+                 recording_processors=None,
+                 replay_processors=None, recording_patches=None, replay_patches=None):
+        super(AzureFirewallScenario, self).__init__(
+            method_name
+        )
+        self.cmd('extension add -n ip-group')
+        self.cmd('extension add -n virtual-wan')
+
     @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall')
     def test_azure_firewall(self, resource_group):
 
@@ -111,7 +120,7 @@ class AzureFirewallScenario(ScenarioTest):
             ])
 
         self.cmd(
-            'network firewall management-ip-config update -g {rg} -f {af} -n {management_ipconfig} --public-ip-address {pubip4} --vnet-name {management_vnet2}',
+            'network firewall management-ip-config update -g {rg} -f {af} --public-ip-address {pubip4} --vnet-name {management_vnet2}',
             checks=[
                 self.check('name', '{management_ipconfig}'),
                 self.check('subnet.id', subnet_id_management_ip_config_2)
@@ -182,7 +191,7 @@ class AzureFirewallScenario(ScenarioTest):
             'destination_ip_group': 'destinationipgroup'
         })
 
-        self.cmd('extension add -n ip-group')
+        # self.cmd('extension add -n ip-group')
         self.cmd('network ip-group create -n {source_ip_group} -g {rg} --ip-addresses 10.0.0.0 10.0.0.1')
         self.cmd('network ip-group create -n {destination_ip_group} -g {rg} --ip-addresses 10.0.0.2 10.0.0.3')
         self.cmd('network firewall create -g {rg} -n {af}')
@@ -200,6 +209,77 @@ class AzureFirewallScenario(ScenarioTest):
         })
         self.cmd('network firewall create -g {rg} -n {af} --zones 1 3')
         self.cmd('network firewall update -g {rg} -n {af} --zones 1')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_virtual_hub', location='eastus')
+    def test_azure_firewall_virtual_hub(self, resource_group):
+
+        self.kwargs.update({
+            'af': 'af1',
+            'coll': 'rc1',
+            'vwan': 'clitestvwan',
+            'vhub': 'clitestvhub',
+            'vwan2': 'clitestvwan2',
+            'vhub2': 'clitestvhub2',
+            'rg': resource_group
+        })
+        # self.cmd('extension add -n virtual-wan')
+        self.cmd('network vwan create -n {vwan} -g {rg} --type Standard')
+        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l eastus --sku Standard')
+        self.cmd('network firewall create -g {rg} -n {af} --sku AZFW_Hub')
+        self.cmd('network firewall update -g {rg} -n {af} --vhub {vhub}')
+        self.cmd('network firewall update -g {rg} -n {af} --vhub ""')
+
+        self.cmd('network vwan create -n {vwan2} -g {rg} --type Standard')
+        self.cmd('network vhub create -g {rg} -n {vhub2} --vwan {vwan2}  --address-prefix 10.0.0.0/24 -l eastus --sku Standard')
+        self.cmd('network firewall update -g {rg} -n {af} --vhub {vhub2}')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_with_firewall_policy', location='eastus')
+    def test_azure_firewall_with_firewall_policy(self, resource_group):
+
+        self.kwargs.update({
+            'af': 'af1',
+            'af2': 'af2',
+            'policy': 'myclipolicy',
+            'policy2': 'myclipolicy2',
+            'coll': 'rc1',
+            'vwan': 'clitestvwan',
+            'vhub': 'clitestvhub',
+            'rg': resource_group,
+            'pubip': 'pubip',
+            'vnet': 'myvnet',
+            'ipconfig': 'myipconfig1',
+        })
+        # test firewall policy with vhub firewall
+        # self.cmd('extension add -n virtual-wan')
+        self.cmd('network vwan create -n {vwan} -g {rg} --type Standard')
+        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l eastus --sku Standard')
+
+        self.cmd('network firewall policy create -g {rg} -n {policy} -l westcentralus', checks=[
+            self.check('type', 'Microsoft.Network/FirewallPolicies'),
+            self.check('name', '{policy}')
+        ])
+        self.cmd('network firewall create -g {rg} -n {af} --sku AZFW_Hub --vhub clitestvhub --firewall-policy {policy}')
+
+        self.kwargs.update({'location': 'centraluseuap'})
+
+        # test firewall policy with vnet firewall
+        self.cmd('network firewall create -g {rg} -n {af2} -l {location}')
+        self.cmd('network public-ip create -g {rg} -n {pubip} -l {location} --sku standard')
+        vnet_instance = self.cmd(
+            'network vnet create -g {rg} -n {vnet} --subnet-name "AzureFirewallSubnet" -l {location} --address-prefixes 10.0.0.0/16 --subnet-prefixes 10.0.0.0/24').get_output_in_json()
+        subnet_id_default = vnet_instance['newVNet']['subnets'][0]['id']
+
+        self.cmd(
+            'network firewall ip-config create -g {rg} -n {ipconfig} -f {af2} --public-ip-address {pubip} --vnet-name {vnet}',
+            checks=[
+                self.check('name', '{ipconfig}'),
+                self.check('subnet.id', subnet_id_default)
+            ])
+        self.cmd('network firewall policy create -g {rg} -n {policy2} -l westcentralus', checks=[
+            self.check('type', 'Microsoft.Network/FirewallPolicies'),
+            self.check('name', '{policy2}')
+        ])
+        self.cmd('network firewall update -g {rg} -n {af2} --firewall-policy {policy2}')
 
     @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy', location='westcentralus')
     def test_azure_firewall_policy(self, resource_group, resource_group_location):
