@@ -20,7 +20,7 @@ from ._validators import (
     validate_ssh_key, validate_max_pods, validate_nodes_count, validate_ip_ranges,
     validate_nodepool_name, validate_vm_set_type, validate_load_balancer_sku,
     validate_load_balancer_outbound_ips, validate_load_balancer_outbound_ip_prefixes,
-    validate_taints, validate_priority, validate_eviction_policy, validate_acr, validate_user,
+    validate_taints, validate_priority, validate_eviction_policy, validate_spot_max_price, validate_acr, validate_user,
     validate_load_balancer_outbound_ports, validate_load_balancer_idle_timeout, validate_nodepool_tags)
 from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING
 
@@ -133,6 +133,7 @@ def load_arguments(self, _):
             c.argument('node_taints', type=str, validator=validate_taints)
             c.argument('priority', type=str, validator=validate_priority)
             c.argument('eviction_policy', type=str, validator=validate_eviction_policy)
+            c.argument('spot_max_price', type=float, validator=validate_spot_max_price)
 
     for scope in ['aks nodepool show', 'aks nodepool delete', 'aks nodepool scale', 'aks nodepool upgrade', 'aks nodepool update']:
         with self.argument_context(scope) as c:

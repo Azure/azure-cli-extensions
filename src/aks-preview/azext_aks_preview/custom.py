@@ -1910,6 +1910,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       node_taints=None,
                       priority="Regular",
                       eviction_policy="Delete",
+                      spot_max_price=-1,
                       public_ip_per_vm=False,
                       no_wait=False):
     instances = client.list(resource_group_name, cluster_name)
@@ -1968,6 +1969,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         node_taints=taints_array,
         scale_set_priority=priority,
         scale_set_eviction_policy=eviction_policy,
+        scale_set_spot_max_price=spot_max_price,
         enable_node_public_ip=public_ip_per_vm
     )
 
