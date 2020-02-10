@@ -9,6 +9,15 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccou
 
 class AzureFirewallScenario(ScenarioTest):
 
+    def __init__(self, method_name, config_file=None, recording_dir=None, recording_name=None,
+                 recording_processors=None,
+                 replay_processors=None, recording_patches=None, replay_patches=None):
+        super(AzureFirewallScenario, self).__init__(
+            method_name
+        )
+        self.cmd('extension add -n ip-group')
+        self.cmd('extension add -n virtual-wan')
+
     @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall')
     def test_azure_firewall(self, resource_group):
 
