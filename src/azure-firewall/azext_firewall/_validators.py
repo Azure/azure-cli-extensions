@@ -98,16 +98,40 @@ def get_subnet_validator():
 def validate_firewall_policy(cmd, namespace):
     from msrestazure.tools import is_valid_resource_id, resource_id
 
-    if namespace.base_policy is None:
-        return
+    if hasattr(namespace, 'base_policy') and namespace.base_policy is not None:
+        if not is_valid_resource_id(namespace.base_policy):
+            namespace.base_policy = resource_id(
+                subscription=get_subscription_id(cmd.cli_ctx),
+                resource_group=namespace.resource_group_name,
+                namespace='Microsoft.Network',
+                type='firewallPolicies',
+                name=namespace.base_policy)
 
-    if not is_valid_resource_id(namespace.base_policy):
-        namespace.base_policy = resource_id(
-            subscription=get_subscription_id(cmd.cli_ctx),
-            resource_group=namespace.resource_group_name,
-            namespace='Microsoft.Network',
-            type='firewallPolicies',
-            name=namespace.base_policy)
+    if hasattr(namespace, 'firewall_policy') and namespace.firewall_policy is not None:
+        if not is_valid_resource_id(namespace.firewall_policy):
+            namespace.firewall_policy = resource_id(
+                subscription=get_subscription_id(cmd.cli_ctx),
+                resource_group=namespace.resource_group_name,
+                namespace='Microsoft.Network',
+                type='firewallPolicies',
+                name=namespace.firewall_policy)
+
+
+def validate_virtual_hub(cmd, namespace):
+    from msrestazure.tools import is_valid_resource_id, resource_id
+
+    if hasattr(namespace, 'virtual_hub') and namespace.virtual_hub is not None:
+
+        if namespace.virtual_hub == '':
+            return
+
+        if not is_valid_resource_id(namespace.virtual_hub):
+            namespace.virtual_hub = resource_id(
+                subscription=get_subscription_id(cmd.cli_ctx),
+                resource_group=namespace.resource_group_name,
+                namespace='Microsoft.Network',
+                type='virtualHubs',
+                name=namespace.virtual_hub)
 
 
 def validate_af_network_rule(cmd, namespace):
