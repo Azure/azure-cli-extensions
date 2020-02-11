@@ -247,3 +247,26 @@ def validate_nodepool_tags(ns):
         for item in ns.nodepool_tags:
             tags_dict.update(validate_tag(item))
         ns.nodepool_tags = tags_dict
+def validate_cluster_autoscaler_profile(namespace):
+    """ Validates that cluster autoscaler profile is acceptable by:
+        1. Extracting the key[=value] format to map
+        2. Validating that the key isn't empty
+    """
+    _extract_cluster_autoscaler_params(namespace)
+    if namespace.cluster_autoscaler_profile is not None:
+        for key in namespace.cluster_autoscaler_profile.keys():
+            _validate_cluster_autoscaler_key(key)
+
+
+def _validate_cluster_autoscaler_key(key):
+    if not key:
+        raise CLIError('Empty key specified for cluster-autoscaler parameter')
+
+
+def _extract_cluster_autoscaler_params(namespace):
+    """ Extracts multiple space-separated cluster autoscaler parameters in key[=value] format """
+    if isinstance(namespace.cluster_autoscaler_profile, list):
+        params_dict = {}
+        for item in namespace.cluster_autoscaler_profile:
+            params_dict.update(validate_tag(item))
+        namespace.cluster_autoscaler_profile = params_dict
