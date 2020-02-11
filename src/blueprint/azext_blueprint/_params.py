@@ -12,6 +12,7 @@ from azure.cli.core.commands.parameters import (
     get_location_type
 )
 from knack.arguments import CLIArgumentType
+from argcomplete.completers import FilesCompleter
 
 
 parameter_type = CLIArgumentType(
@@ -34,6 +35,11 @@ def load_arguments(self, _):
         c.argument('description', help='Multi-line explain this resource.')
         c.argument('target_scope', arg_type=get_enum_type(['subscription', 'managementGroup']), help='The scope where this blueprint definition can be assigned.')
         c.argument('parameters', arg_type=parameter_type, help='Parameters required by this blueprint definition.')
+
+    with self.argument_context('blueprint import') as c:
+        c.argument('scope', help='The scope of the resource. Valid scopes are: management group (format: \'/providers/Microsoft.Management/managementGroups/{managementGroup}\'), subscription (format: \'/subscriptions/{subscriptionId}\'). For blueprint assignments management group scope is reserved for future use.')
+        c.argument('blueprint_name', options_list=['--name', '-n'], help='Name of the blueprint definition.')
+        c.argument('input_path', help='The directory path for json definitions of blueprint and artifacts. Artifacts json files should be in input-path/artifacts/.', completer=FilesCompleter())
 
     with self.argument_context('blueprint update') as c:
         c.argument('scope', help='The scope of the resource. Valid scopes are: management group (format: \'/providers/Microsoft.Management/managementGroups/{managementGroup}\'), subscription (format: \'/subscriptions/{subscriptionId}\'). For blueprint assignments management group scope is reserved for future use.')

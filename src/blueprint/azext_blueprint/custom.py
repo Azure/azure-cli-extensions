@@ -10,6 +10,7 @@
 
 
 import json
+import os
 from knack.util import CLIError
 
 
@@ -26,6 +27,48 @@ def create_blueprint(cmd, client,
     body['target_scope'] = target_scope  # str
     body['parameters'] = json.loads(parameters) if parameters is not None else {}  # dictionary
     return client.create_or_update(scope=scope, blueprint_name=blueprint_name, blueprint=body)
+
+
+def import_blueprint_with_artifacts(cmd, client,
+                                    blueprint_name,
+                                    scope,
+                                    input_path):
+    from ._client_factory import cf_artifacts
+
+    artifact_client = cf_artifacts(cmd.cli_ctx)
+    body = {}
+    blueprint_path = os.path.join(input_path, 'blueprint.json')
+
+    with open(blueprint_path) as blueprint_file:
+        blueprint = json.load(blueprint_file)
+        print(blueprint)
+        if blueprint['properties'] is None:
+            raise CLIError('Blueprint file does not contain properties field')
+        blueprint_properties = blueprint['properties']
+        if 'displayName' in blueprint_properties:
+            body['display_name'] = blueprint_properties['displayName']  # str
+        if 'description' in blueprint_properties:
+            body['description'] = blueprint_properties['description']  # str
+        if 'targetScope' in blueprint_properties:
+            body['target_scope'] = blueprint_properties['targetScope']  # str
+        if 'parameters' in blueprint_properties:
+            body['parameters'] = blueprint_properties['parameters']  # dictionary
+        if 'resourceGroups' in blueprint_properties:
+            body['resource_groups'] = blueprint_properties['resourceGroups']  # dictionary
+        print(body)
+        blueprint_response = client.create_or_update(scope=scope, blueprint_name=blueprint_name, blueprint=body)
+
+    for filename in os.listdir(os.path.join(input_path, 'artifacts')):
+        artifact_name = filename.split('.')[0]
+        print(artifact_name)
+        filepath = os.path.join(input_path, 'artifacts', filename)
+        print(filepath)
+        with open(filepath) as artifact_file:
+            artifact = json.load(artifact_file)
+            print(artifact)
+            artifact_client.create_or_update(scope=scope, blueprint_name=blueprint_name, artifact_name=artifact_name, artifact=artifact)
+
+    return blueprint_response
 
 
 def update_blueprint(cmd, client,

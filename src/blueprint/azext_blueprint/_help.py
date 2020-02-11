@@ -87,6 +87,16 @@ helps['blueprint list'] = """
                az blueprint list --scope "subscriptions/00000000-0000-0000-0000-000000000000"
 """
 
+helps['blueprint import'] = """
+    type: command
+    short-summary: Import blueprint definition and artifacts from a path to json files.
+    examples:
+      - name: Import blueprint definition and artifacts
+        text: |-
+               az blueprint import --scope "subscriptions/00000000-0000-0000-0000-000000000000" --name \\
+               "simpleBlueprint" --input-path "/path/to/blueprint/directory"
+"""
+
 helps['blueprint resource-group'] = """
     type: group
     short-summary: Commands to manage blueprint resource group artifact.
