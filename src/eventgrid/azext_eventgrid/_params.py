@@ -18,6 +18,7 @@ from azure.cli.core.commands.parameters import (
 )
 
 from .advanced_filter import EventSubscriptionAddFilter
+from .inbound_ip_rules import AddInboundIpRule
 
 included_event_types_type = CLIArgumentType(
     help="A space-separated list of event types. Example: Microsoft.Storage.BlobCreated Microsoft.Storage.BlobDeleted. To subscribe to all default event types, do not specify any value for this argument.",
@@ -84,6 +85,8 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
         c.argument('odata_query', arg_type=odata_query_type)
         c.argument('domain_name', arg_type=domain_name_type)
         c.argument('domain_topic_name', arg_type=domain_topic_name_type)
+        c.argument('allow_traffic_from_all_ips', arg_type=get_three_state_flag(), options_list=['--allow-traffic-from-all-ips'], help="Allow traffic from all IPs.")
+        c.argument('inbound_ip_rules', action=AddInboundIpRule, nargs='+')
 
     with self.argument_context('eventgrid topic') as c:
         c.argument('topic_name', arg_type=name_type, help='Name of the topic.', id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/topics'))

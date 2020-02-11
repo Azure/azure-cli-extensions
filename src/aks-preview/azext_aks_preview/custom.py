@@ -47,25 +47,20 @@ from azure.graphrbac.models import (ApplicationCreateParameters,
                                     KeyCredential,
                                     ServicePrincipalCreateParameters,
                                     GetObjectsParameters)
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ContainerServiceLinuxProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ManagedClusterWindowsProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ContainerServiceNetworkProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ManagedClusterServicePrincipalProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ContainerServiceSshConfiguration
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ContainerServiceSshPublicKey
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ManagedCluster
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ManagedClusterAADProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ManagedClusterAddonProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ManagedClusterAgentPoolProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import AgentPool
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ContainerServiceStorageProfileTypes
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ManagedClusterLoadBalancerProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ManagedClusterLoadBalancerProfileManagedOutboundIPs
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ManagedClusterLoadBalancerProfileOutboundIPPrefixes
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ManagedClusterLoadBalancerProfileOutboundIPs
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ResourceReference
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ManagedClusterIdentity
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ManagedClusterAPIServerAccessProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_01_01.models import ContainerServiceLinuxProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_01_01.models import ManagedClusterWindowsProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_01_01.models import ContainerServiceNetworkProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_01_01.models import ManagedClusterServicePrincipalProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_01_01.models import ContainerServiceSshConfiguration
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_01_01.models import ContainerServiceSshPublicKey
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_01_01.models import ManagedCluster
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_01_01.models import ManagedClusterAADProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_01_01.models import ManagedClusterAddonProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_01_01.models import ManagedClusterAgentPoolProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_01_01.models import AgentPool
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_01_01.models import ContainerServiceStorageProfileTypes
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_01_01.models import ManagedClusterIdentity
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_01_01.models import ManagedClusterAPIServerAccessProfile
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
@@ -73,7 +68,11 @@ from ._client_factory import cf_resources
 from ._client_factory import get_resource_by_name
 from ._client_factory import cf_container_registry_service
 from ._client_factory import cf_storage
-from ._helpers import _populate_api_server_access_profile, _set_load_balancer_sku, _set_vm_set_type
+
+
+from ._helpers import _populate_api_server_access_profile, _set_vm_set_type, _set_outbound_type
+from ._loadbalancer import (set_load_balancer_sku, is_load_balancer_profile_provided,
+                            update_load_balancer_profile, create_load_balancer_profile)
 
 
 logger = get_logger(__name__)
@@ -643,6 +642,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                kubernetes_version='',
                node_vm_size="Standard_DS2_v2",
                node_osdisk_size=0,
+               node_osdisk_diskencryptionset_id=None,
                node_count=3,
                nodepool_name="nodepool1",
                service_principal=None, client_secret=None,
@@ -663,6 +663,9 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                load_balancer_managed_outbound_ip_count=None,
                load_balancer_outbound_ips=None,
                load_balancer_outbound_ip_prefixes=None,
+               load_balancer_outbound_ports=None,
+               load_balancer_idle_timeout=None,
+               outbound_type=None,
                enable_addons=None,
                workspace_resource_id=None,
                min_count=None,
@@ -709,7 +712,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         vm_set_type = "VirtualMachineScaleSets"
 
     vm_set_type = _set_vm_set_type(vm_set_type, kubernetes_version)
-    load_balancer_sku = _set_load_balancer_sku(load_balancer_sku, kubernetes_version)
+    load_balancer_sku = set_load_balancer_sku(load_balancer_sku, kubernetes_version)
 
     if api_server_authorized_ip_ranges and load_balancer_sku == "basic":
         raise CLIError('--api-server-authorized-ip-ranges can only be used with standard load balancer')
@@ -775,10 +778,14 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             logger.warning('Could not create a role assignment for subnet. '
                            'Are you an Owner on this subscription?')
 
-    load_balancer_profile = _get_load_balancer_profile(
+    load_balancer_profile = create_load_balancer_profile(
         load_balancer_managed_outbound_ip_count,
         load_balancer_outbound_ips,
-        load_balancer_outbound_ip_prefixes)
+        load_balancer_outbound_ip_prefixes,
+        load_balancer_outbound_ports,
+        load_balancer_idle_timeout)
+
+    outbound_type = _set_outbound_type(outbound_type, network_plugin, load_balancer_sku, load_balancer_profile)
 
     network_profile = None
     if any([network_plugin,
@@ -800,6 +807,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             network_policy=network_policy,
             load_balancer_sku=load_balancer_sku.lower(),
             load_balancer_profile=load_balancer_profile,
+            outbound_type=outbound_type
         )
     else:
         if load_balancer_sku.lower() == "standard" or load_balancer_profile:
@@ -807,6 +815,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                 network_plugin="kubenet",
                 load_balancer_sku=load_balancer_sku.lower(),
                 load_balancer_profile=load_balancer_profile,
+                outbound_type=outbound_type,
             )
 
     addon_profiles = _handle_addons_args(
@@ -860,6 +869,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         aad_profile=aad_profile,
         enable_pod_security_policy=bool(enable_pod_security_policy),
         identity=identity,
+        disk_encryption_set_id=node_osdisk_diskencryptionset_id,
         api_server_access_profile=api_server_access_profile)
 
     if node_resource_group:
@@ -912,6 +922,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                load_balancer_managed_outbound_ip_count=None,
                load_balancer_outbound_ips=None,
                load_balancer_outbound_ip_prefixes=None,
+               load_balancer_outbound_ports=None,
+               load_balancer_idle_timeout=None,
                api_server_authorized_ip_ranges=None,
                enable_pod_security_policy=False,
                disable_pod_security_policy=False,
@@ -919,9 +931,12 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                detach_acr=None):
     update_autoscaler = enable_cluster_autoscaler or disable_cluster_autoscaler or update_cluster_autoscaler
     update_acr = attach_acr is not None or detach_acr is not None
-    update_lb_profile = load_balancer_managed_outbound_ip_count is not None or \
-        load_balancer_outbound_ips is not None or load_balancer_outbound_ip_prefixes is not None
     update_pod_security = enable_pod_security_policy or disable_pod_security_policy
+    update_lb_profile = is_load_balancer_profile_provided(load_balancer_managed_outbound_ip_count,
+                                                          load_balancer_outbound_ips,
+                                                          load_balancer_outbound_ip_prefixes,
+                                                          load_balancer_outbound_ports,
+                                                          load_balancer_idle_timeout)
 
     # pylint: disable=too-many-boolean-expressions
     if not update_autoscaler and \
@@ -997,13 +1012,14 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
     if disable_pod_security_policy:
         instance.enable_pod_security_policy = False
 
-    load_balancer_profile = _get_load_balancer_profile(
-        load_balancer_managed_outbound_ip_count,
-        load_balancer_outbound_ips,
-        load_balancer_outbound_ip_prefixes)
-
-    if load_balancer_profile:
-        instance.network_profile.load_balancer_profile = load_balancer_profile
+    if update_lb_profile:
+        instance.network_profile.load_balancer_profile = update_load_balancer_profile(
+            load_balancer_managed_outbound_ip_count,
+            load_balancer_outbound_ips,
+            load_balancer_outbound_ip_prefixes,
+            load_balancer_outbound_ports,
+            load_balancer_idle_timeout,
+            instance.network_profile.load_balancer_profile)
 
     if attach_acr and detach_acr:
         raise CLIError('Cannot specify "--attach-acr" and "--detach-acr" at the same time.')
@@ -1069,14 +1085,19 @@ def aks_get_credentials(cmd,    # pylint: disable=unused-argument
                         resource_group_name,
                         name,
                         admin=False,
+                        user='clusterUser',
                         path=os.path.join(os.path.expanduser('~'), '.kube', 'config'),
                         overwrite_existing=False):
     credentialResults = None
     if admin:
         credentialResults = client.list_cluster_admin_credentials(resource_group_name, name)
     else:
-        credentialResults = client.list_cluster_user_credentials(resource_group_name, name)
-
+        if user.lower() == 'clusteruser':
+            credentialResults = client.list_cluster_user_credentials(resource_group_name, name)
+        elif user.lower() == 'clustermonitoringuser':
+            credentialResults = client.list_cluster_monitoring_user_credentials(resource_group_name, name)
+        else:
+            raise CLIError("The user is invalid.")
     if not credentialResults:
         raise CLIError("No Kubernetes credentials found.")
 
@@ -2244,53 +2265,6 @@ def merge_kubernetes_configurations(existing_file, addition_file, replace):
     current_context = addition.get('current-context', 'UNKNOWN')
     msg = 'Merged "{}" as current context in {}'.format(current_context, existing_file)
     print(msg)
-
-
-def _get_load_balancer_outbound_ips(load_balancer_outbound_ips):
-    """parse load balancer profile outbound IP ids and return an array of references to the outbound IP resources"""
-    load_balancer_outbound_ip_resources = None
-    if load_balancer_outbound_ips:
-        load_balancer_outbound_ip_resources = \
-            [ResourceReference(id=x.strip()) for x in load_balancer_outbound_ips.split(',')]
-    return load_balancer_outbound_ip_resources
-
-
-def _get_load_balancer_outbound_ip_prefixes(load_balancer_outbound_ip_prefixes):
-    """parse load balancer profile outbound IP prefix ids and return an array \
-    of references to the outbound IP prefix resources"""
-    load_balancer_outbound_ip_prefix_resources = None
-    if load_balancer_outbound_ip_prefixes:
-        load_balancer_outbound_ip_prefix_resources = \
-            [ResourceReference(id=x.strip()) for x in load_balancer_outbound_ip_prefixes.split(',')]
-    return load_balancer_outbound_ip_prefix_resources
-
-
-def _get_load_balancer_profile(load_balancer_managed_outbound_ip_count,
-                               load_balancer_outbound_ips,
-                               load_balancer_outbound_ip_prefixes):
-    """parse and build load balancer profile"""
-    load_balancer_outbound_ip_resources = _get_load_balancer_outbound_ips(load_balancer_outbound_ips)
-    load_balancer_outbound_ip_prefix_resources = _get_load_balancer_outbound_ip_prefixes(
-        load_balancer_outbound_ip_prefixes)
-
-    load_balancer_profile = None
-    if any([load_balancer_managed_outbound_ip_count,
-            load_balancer_outbound_ip_resources,
-            load_balancer_outbound_ip_prefix_resources]):
-        load_balancer_profile = ManagedClusterLoadBalancerProfile()
-        if load_balancer_managed_outbound_ip_count:
-            load_balancer_profile.managed_outbound_ips = ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                count=load_balancer_managed_outbound_ip_count
-            )
-        if load_balancer_outbound_ip_resources:
-            load_balancer_profile.outbound_ips = ManagedClusterLoadBalancerProfileOutboundIPs(
-                public_ips=load_balancer_outbound_ip_resources
-            )
-        if load_balancer_outbound_ip_prefix_resources:
-            load_balancer_profile.outbound_ip_prefixes = ManagedClusterLoadBalancerProfileOutboundIPPrefixes(
-                public_ip_prefixes=load_balancer_outbound_ip_prefix_resources
-            )
-    return load_balancer_profile
 
 
 def cloud_storage_account_service_factory(cli_ctx, kwargs):
