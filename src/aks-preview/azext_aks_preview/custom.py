@@ -845,7 +845,9 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             appgw_id = addon_profiles["IngressApplicationGateway"].config["applicationGatewayId"]
             from msrestazure.tools import parse_resource_id, resource_id
             appgw_id_dict = parse_resource_id(appgw_id)
-            appgw_group_id = resource_id(subscription=appgw_id_dict["subscription"], resource_group=appgw_id_dict["resource_group"])
+            appgw_group_id = resource_id(
+                subscription=appgw_id_dict["subscription"],
+                resource_group=appgw_id_dict["resource_group"])
             if not _add_role_assignment(cmd.cli_ctx, 'Contributor',
                                         service_principal_profile.client_id, scope=appgw_group_id):
                 logger.warning('Could not create a role assignment for IngressApplicationGateway addon. '
