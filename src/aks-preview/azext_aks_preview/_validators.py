@@ -77,7 +77,8 @@ def validate_linux_host_name(namespace):
     in the CLI pre-flight.
     """
     # https://stackoverflow.com/questions/106179/regular-expression-to-match-dns-hostname-or-ip-address
-    rfc1123_regex = re.compile(r'^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9]))*$')  # pylint:disable=line-too-long
+    rfc1123_regex = re.compile(
+        r'^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9]))*$')  # pylint:disable=line-too-long
     found = rfc1123_regex.findall(namespace.name)
     if not found:
         raise CLIError('--name cannot exceed 63 characters and can only contain '
@@ -179,7 +180,8 @@ def validate_load_balancer_outbound_ip_prefixes(namespace):
 def validate_taints(namespace):
     """Validates that provided taint is a valid format"""
 
-    regex = re.compile(r"^[a-zA-Z\d][\w\-\.\/]{0,252}=[a-zA-Z\d][\w\-\.]{0,62}:(NoSchedule|PreferNoSchedule|NoExecute)$")  # pylint: disable=line-too-long
+    regex = re.compile(
+        r"^[a-zA-Z\d][\w\-\.\/]{0,252}=[a-zA-Z\d][\w\-\.]{0,62}:(NoSchedule|PreferNoSchedule|NoExecute)$")  # pylint: disable=line-too-long
 
     if namespace.node_taints is not None and namespace.node_taints != '':
         for taint in namespace.node_taints.split(','):
@@ -219,3 +221,19 @@ def validate_user(namespace):
     if namespace.user.lower() != "clusteruser" and \
             namespace.user.lower() != "clustermonitoringuser":
         raise CLIError("--user can only be clusterUser or clusterMonitoringUser")
+
+
+def validate_load_balancer_outbound_ports(namespace):
+    """validate load balancer profile outbound allocated ports"""
+    if namespace.load_balancer_outbound_ports is not None:
+        if namespace.load_balancer_outbound_ports % 8 != 0:
+            raise CLIError("--load-balancer-allocated-ports must be a multiple of 8")
+        if namespace.load_balancer_outbound_ports < 0 or namespace.load_balancer_outbound_ports > 64000:
+            raise CLIError("--load-balancer-allocated-ports must be in the range [0,64000]")
+
+
+def validate_load_balancer_idle_timeout(namespace):
+    """validate load balancer profile idle timeout"""
+    if namespace.load_balancer_idle_timeout is not None:
+        if namespace.load_balancer_idle_timeout < 4 or namespace.load_balancer_idle_timeout > 120:
+            raise CLIError("--load-balancer-idle-timeout must be in the range [4,120]")

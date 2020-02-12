@@ -20,6 +20,10 @@ short-summary: Manage event domains.
 helps['eventgrid domain create'] = """
 type: command
 short-summary: Create a domain.
+parameters:
+  - name: --inbound-ip-rules
+    short-summary: List of inbound ip rules specifying IP Address in CIDR notation e.g., 10.0.0.0/8 along with corresponding Action to perform based on the match or no match of the IpMask. Possible values include - Allow.
+    long-summary: List of inbound ip rules specifying IP Address in CIDR notation e.g., 10.0.0.0/8 along with corresponding Action to perform based on the match or no match of the IpMask. Possible values include - Allow.
 examples:
   - name: Create a new domain.
     text: az eventgrid domain create -g rg1 --name domain1 -l westus2
@@ -27,6 +31,9 @@ examples:
     text: az eventgrid domain create -g rg1 --name domain1 -l westus2 --input-schema customeventschema --input-mapping-fields topic=mytopicField eventType=myEventTypeField --input-mapping-default-values subject=DefaultSubject dataVersion=1.0
   - name: Create a new domain that accepts events published in CloudEvents V1.0 schema and maps a property mytopicfield to the topic name.
     text: az eventgrid domain create -g rg1 --name domain1 -l westus2 --input-schema cloudeventschemav1_0 --input-mapping-fields topic=mytopicfield
+  - name: Create a new domain which allows specific inbound ip rules.
+    text: az eventgrid domain create -g rg1 --name domain1 -l westus2 --allow-traffic-from-all-ips false --inbound-ip-rules 10.0.0.0/8 Allow --inbound-ip-rules 10.2.0.0/8 Allow
+
 """
 
 helps['eventgrid domain delete'] = """
@@ -124,9 +131,13 @@ examples:
 helps['eventgrid domain update'] = """
 type: command
 short-summary: Update a domain.
+parameters:
+  - name: --inbound-ip-rules
+    short-summary: List of inbound ip rules specifying IP Address in CIDR notation e.g., 10.0.0.0/8 along with corresponding Action to perform based on the match or no match of the IpMask. Possible values include - Allow.
+    long-summary: List of inbound ip rules specifying IP Address in CIDR notation e.g., 10.0.0.0/8 along with corresponding Action to perform based on the match or no match of the IpMask. Possible values include - Allow.
 examples:
   - name: Update the properties of an existing domain.
-    text: az eventgrid domain update -g rg1 --name domain1 --tags Dept=IT
+    text: az eventgrid domain update -g rg1 --name domain1 --allow-traffic-from-all-ips false --inbound-ip-rules 10.0.0.0/8 Allow --inbound-ip-rules 10.2.0.0/8 Allow --tags Dept=IT
 """
 
 helps['eventgrid event-subscription'] = """
@@ -465,6 +476,10 @@ short-summary: Manage Azure Event Grid topics.
 helps['eventgrid topic create'] = """
 type: command
 short-summary: Create a topic.
+parameters:
+  - name: --inbound-ip-rules
+    short-summary: List of inbound ip rules specifying IP Address in CIDR notation e.g., 10.0.0.0/8 along with corresponding Action to perform based on the match or no match of the IpMask. Possible values include - Allow.
+    long-summary: List of inbound ip rules specifying IP Address in CIDR notation e.g., 10.0.0.0/8 along with corresponding Action to perform based on the match or no match of the IpMask. Possible values include - Allow.
 examples:
   - name: Create a new topic.
     text: az eventgrid topic create -g rg1 --name topic1 -l westus2
@@ -472,6 +487,8 @@ examples:
     text: az eventgrid topic create -g rg1 --name topic1 -l westus2 --input-schema customeventschema --input-mapping-fields topic=myTopicField eventType=myEventTypeField --input-mapping-default-values subject=DefaultSubject dataVersion=1.0
   - name: Create a new topic that accepts events published in CloudEvents V1.0 schema.
     text: az eventgrid topic create -g rg1 --name topic1 -l westus2 --input-schema cloudeventschemav1_0
+  - name: Create a new topic which allows specific inbound ip rules.
+    text: az eventgrid topic create -g rg1 --name topic1 -l westus2 --allow-traffic-from-all-ips false  --inbound-ip-rules 10.0.0.0/8 Allow --inbound-ip-rules 10.2.0.0/8 Allow
 """
 
 helps['eventgrid topic delete'] = """
@@ -528,9 +545,13 @@ examples:
 helps['eventgrid topic update'] = """
 type: command
 short-summary: Update a topic.
+parameters:
+  - name: --inbound-ip-rules
+    short-summary: List of inbound ip rules specifying IP Address in CIDR notation e.g., 10.0.0.0/8 along with corresponding Action to perform based on the match or no match of the IpMask. Possible values include - Allow.
+    long-summary: List of inbound ip rules specifying IP Address in CIDR notation e.g., 10.0.0.0/8 along with corresponding Action to perform based on the match or no match of the IpMask. Possible values include - Allow.
 examples:
   - name: Update the properties of an existing topic.
-    text: az eventgrid topic update -g rg1 --name topic1 --tags Dept=IT
+    text: az eventgrid topic update -g rg1 --name topic1 --allow-traffic-from-all-ips false --inbound-ip-rules 10.0.0.0/8 Allow --inbound-ip-rules 10.2.0.0/8 Allow --tags Dept=IT
 """
 
 helps['eventgrid topic-type'] = """
