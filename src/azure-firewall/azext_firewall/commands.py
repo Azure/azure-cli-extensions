@@ -71,7 +71,7 @@ def load_command_table(self, _):
         g.custom_command('delete', 'delete_af_ip_configuration')
 
     with self.command_group('network firewall management-ip-config', network_util) as g:
-        g.custom_command('create', 'create_af_management_ip_configuration')
+        # g.custom_command('create', 'create_af_management_ip_configuration') # disable it by service limitation.
         g.custom_show_command('show', 'show_af_management_ip_configuration')
         g.generic_update_command('update', command_type=network_firewall_sdk,
                                  custom_func_name='update_af_management_ip_configuration',
