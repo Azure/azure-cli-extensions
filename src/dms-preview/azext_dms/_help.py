@@ -15,6 +15,11 @@ helps['dms task'] = """
 helps['dms task cancel'] = """
     type: command
     short-summary: Cancel a service-level Task if it's currently queued or running.
+
+    examples:
+        - name: Cancel a service-level task
+          text: >
+            az dms task cancel -g myresourcegroup --service-name mydms -n mytask
 """
 
 helps['dms task create'] = """
@@ -56,7 +61,7 @@ helps['dms task create'] = """
                     "ociDriverPackageName": "Oci driver installer package name"
                 }
     examples:
-        - name: Create a task which checks if the currently installed OCI driver supports
+        - name: Create a service-level task which checks if the currently installed OCI driver supports
           text: >
             az dms task create -g myresourcegroup --service-name mydms -n checkocitask1 --task-options-json "{\"serverVersion\": \"12.2.0.1\"}" --task-type CheckOciDriver
 """
