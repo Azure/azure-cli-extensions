@@ -5,5 +5,5 @@
 
 from azure.cli.core.profiles import CustomResourceType
 
-CUSTOM_FIREWALL = CustomResourceType('azext_firewall.vendored_sdks.v2019_09_01', 'NetworkManagementClient')
+CUSTOM_FIREWALL = CustomResourceType('azext_firewall.vendored_sdks.v2019_11_01', 'NetworkManagementClient')
 CUSTOM_FIREWALL_POLICY = CustomResourceType('azext_firewall.vendored_sdks.v2019_07_01', 'NetworkManagementClient')
