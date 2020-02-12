@@ -59,13 +59,13 @@ class BlueprintScenarioTest(ScenarioTest):
                  '--display-name "Audit Windows VMs in which the Administrators group does not contain only the specified members" '
                  '--policy-definition-id "/providers/Microsoft.Authorization/policySetDefinitions/06122b01-688c-42a8-af2e-fa97dd39aa3b" '
                  '--resource-group-art "my-rg-art" '
-                 '--parameters @src/blueprint/azext_blueprint/tests/latest/policy_params.json',
+                 '--parameters @src/blueprint/azext_blueprint/tests/latest/input/create/policy_params.json',
                  checks=[])
 
         self.cmd('az blueprint update '
                  '--scope "{scope}" '
                  '--name "{blueprintName}" '
-                 '--parameters @src/blueprint/azext_blueprint/tests/latest/blueprint_params.json',
+                 '--parameters @src/blueprint/azext_blueprint/tests/latest/input/create/blueprint_params.json',
                  checks=[])
 
         self.cmd('az blueprint published create '
@@ -82,8 +82,8 @@ class BlueprintScenarioTest(ScenarioTest):
                  '--identity-type "SystemAssigned" '
                  '--blueprint-id "/subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.Blueprint/blueprints/test-bp/versions/1.0" '
                  '--locks-mode "None" '
-                 '--resource-groups @src/blueprint/azext_blueprint/tests/latest/resource_group_params.json '
-                 '--parameters @src/blueprint/azext_blueprint/tests/latest/assignment_params.json',
+                 '--resource-groups @src/blueprint/azext_blueprint/tests/latest/input/create/resource_group_params.json '
+                 '--parameters @src/blueprint/azext_blueprint/tests/latest/input/create/assignment_params.json',
                  checks=[])
 
         self.cmd('az blueprint assignment wait '

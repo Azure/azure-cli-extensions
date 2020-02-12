@@ -314,6 +314,8 @@ def create_blueprint_artifact_template(cmd, client,
                                        resource_group_art=None,
                                        description=None,
                                        depends_on=None):
+    print(parameters)
+    print(template)
     body = {'display_name': display_name,
             'template': json.loads(template),
             'kind': 'template',
