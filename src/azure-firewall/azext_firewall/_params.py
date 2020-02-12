@@ -16,7 +16,8 @@ from ._completers import get_af_subresource_completion_list
 from ._validators import (
     get_public_ip_validator, get_subnet_validator, validate_application_rule_protocols,
     validate_firewall_policy, validate_rule_group_collection, process_private_ranges,
-    process_threat_intel_whitelist_ip_addresses, process_threat_intel_whitelist_fqdns)
+    process_threat_intel_whitelist_ip_addresses, process_threat_intel_whitelist_fqdns,
+    validate_virtual_hub)
 
 
 # pylint: disable=too-many-locals, too-many-branches, too-many-statements
@@ -45,6 +46,15 @@ def load_arguments(self, _):
         c.argument('translated_fqdn', help='Translated FQDN for this NAT rule.')
         c.argument('tags', tags_type)
         c.argument('zones', zones_type)
+        c.argument('firewall_policy', options_list=['--firewall-policy', '--policy'],
+                   help='Name or ID of the firewallPolicy associated with this azure firewall.',
+                   validator=validate_firewall_policy)
+        c.argument('virtual_hub', options_list=['--virtual-hub', '--vhub'],
+                   help='Name or ID of the virtualHub to which the firewall belongs.',
+                   validator=validate_virtual_hub)
+        c.argument('sku', arg_type=get_enum_type(['AZFW_VNet', 'AZFW_Hub']), help='SKU of Azure firewall. This field cannot be updated after the creation. '
+                                                                                  'The default sku in server end is AZFW_VNet. '
+                                                                                  'If you want to attach azure firewall to vhub, you should set sku to AZFW_Hub.')
         c.argument('private_ranges', nargs='+', validator=process_private_ranges, help='Space-separated list of SNAT private range. Validate values are single Ip, Ip prefixes or a single special value "IANAPrivateRanges"')
     with self.argument_context('network firewall threat-intel-whitelist') as c:
         c.argument('ip_addresses', nargs='+', validator=process_threat_intel_whitelist_ip_addresses, help='Space-separated list of IPv4 addresses.')
@@ -101,7 +111,7 @@ def load_arguments(self, _):
         c.argument('subnet', validator=get_subnet_validator(), help=argparse.SUPPRESS)
         c.argument('virtual_network_name', virtual_network_name_type, help='The virtual network (VNet) name. It should contain one subnet called "AzureFirewallSubnet".')
         c.argument('public_ip_address', help='Name or ID of the public IP to use.', validator=get_public_ip_validator())
-        c.argument('private_ip_address', help='IP address used by the Firewall ILB as the next hop in User Defined Routes.')
+        c.argument('private_ip_address', deprecate_info=c.deprecate(expiration='2.3.0'), help='IP address used by the Firewall ILB as the next hop in User Defined Routes.')
 
     with self.argument_context('network firewall management-ip-config') as c:
         c.argument('item_name', options_list=['--name', '-n'], help='Name of the management IP configuration.', id_part='child_name_2')
