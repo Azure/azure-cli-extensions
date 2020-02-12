@@ -534,6 +534,12 @@ def subnet_role_assignment_exists(cli_ctx, scope):
     return False
 
 
+def _update_dict(dict1, dict2):
+    cp = dict1.copy()
+    cp.update(dict2)
+    return cp
+
+
 def aks_browse(cmd,     # pylint: disable=too-many-statements
                client,
                resource_group_name,
@@ -1048,14 +1054,14 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
         instance.agent_pool_profiles[0].enable_auto_scaling = False
         instance.agent_pool_profiles[0].min_count = None
         instance.agent_pool_profiles[0].max_count = None
-    
+
     if cluster_autoscaler_profile and clear_cluster_autoscaler_profile:
         raise CLIError('Only one of cluster-autoscaler-profile or clear-cluster-autoscaler-profile can be specified')
     if clear_cluster_autoscaler_profile:
         instance.auto_scaler_profile = {}
     if cluster_autoscaler_profile:
         instance.auto_scaler_profile = _update_dict(instance.auto_scaler_profile, cluster_autoscaler_profile)
-    
+
     if enable_pod_security_policy and disable_pod_security_policy:
         raise CLIError('Cannot specify --enable-pod-security-policy and --disable-pod-security-policy '
                        'at the same time.')
