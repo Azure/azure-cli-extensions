@@ -115,15 +115,15 @@ def load_arguments(self, _):
 
     with self.argument_context('network firewall ip-config') as c:
         c.argument('management_item_name', options_list=['--m-name'], arg_group="Management Ip Config",
-                   help='Name of the management IP configuration.')
-        c.argument('management_subnet', validator=get_management_subnet_validator(), help=argparse.SUPPRESS)
+                   help='Name of the management IP configuration.', is_preview=True)
+        c.argument('management_subnet', validator=get_management_subnet_validator(), help=argparse.SUPPRESS, is_preview=True)
         c.argument('management_virtual_network_name', virtual_network_name_type, options_list=['--m-vnet-name'],
                    arg_group="Management Ip Config",
                    help='The virtual network (VNet) name for management ip configuation. '
-                        'It should contain one subnet called "AzureFirewallManagementSubnet".')
+                        'It should contain one subnet called "AzureFirewallManagementSubnet".', is_preview=True)
         c.argument('management_public_ip_address', help='Name or ID of the public IP to use for management ip configuation.',
                    arg_group="Management Ip Config", options_list=['--m-public-ip-address'],
-                   validator=get_management_public_ip_validator())
+                   validator=get_management_public_ip_validator(), is_preview=True)
 
     with self.argument_context('network firewall management-ip-config') as c:
         c.argument('item_name', options_list=['--name', '-n'], help='Name of the management IP configuration.', id_part='child_name_2')
