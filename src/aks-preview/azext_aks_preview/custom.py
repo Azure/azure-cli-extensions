@@ -73,7 +73,10 @@ from ._client_factory import cf_storage
 from ._helpers import _populate_api_server_access_profile, _set_vm_set_type, _set_outbound_type
 from ._loadbalancer import (set_load_balancer_sku, is_load_balancer_profile_provided,
                             update_load_balancer_profile, create_load_balancer_profile)
-from ._consts import CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID, CONST_INGRESS_APPGW_APPLICATION_GATEWAY_NAME, CONST_INGRESS_APPGW_SUBNET_PREFIX, CONST_INGRESS_APPGW_SUBNET_ID, CONST_INGRESS_APPGW_SHARED
+from ._consts import CONST_INGRESS_APPGW_ADDON_NAME
+from ._consts import CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID, CONST_INGRESS_APPGW_APPLICATION_GATEWAY_NAME
+from ._consts import CONST_INGRESS_APPGW_SUBNET_PREFIX, CONST_INGRESS_APPGW_SUBNET_ID
+from ._consts import CONST_INGRESS_APPGW_SHARED, CONST_INGRESS_APPGW_WATCH_NAMESPACE
 
 logger = get_logger(__name__)
 
@@ -840,9 +843,9 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
     )
     if 'omsagent' in addon_profiles:
         _ensure_container_insights_for_monitoring(cmd, addon_profiles['omsagent'])
-    if 'IngressApplicationGateway' in addon_profiles:
-        if CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID in addon_profiles["IngressApplicationGateway"].config:
-            appgw_id = addon_profiles["IngressApplicationGateway"].config[CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID]
+    if CONST_INGRESS_APPGW_ADDON_NAME in addon_profiles:
+        if CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID in addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].config:
+            appgw_id = addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].config[CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID]
             from msrestazure.tools import parse_resource_id, resource_id
             appgw_id_dict = parse_resource_id(appgw_id)
             appgw_group_id = resource_id(
@@ -850,14 +853,16 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                 resource_group=appgw_id_dict["resource_group"])
             if not _add_role_assignment(cmd.cli_ctx, 'Contributor',
                                         service_principal_profile.client_id, scope=appgw_group_id):
-                logger.warning('Could not create a role assignment for application gateway: {appgw_id} specified in IngressApplicationGateway addon. '
+                logger.warning('Could not create a role assignment for application gateway: {appgw_id} '
+                               'specified in {CONST_INGRESS_APPGW_ADDON_NAME} addon. '
                                'Are you an Owner on this subscription?')
-        if CONST_INGRESS_APPGW_SUBNET_ID in addon_profiles["IngressApplicationGateway"].config:
-            subnet_id = addon_profiles["IngressApplicationGateway"].config[CONST_INGRESS_APPGW_SUBNET_ID]
+        if CONST_INGRESS_APPGW_SUBNET_ID in addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].config:
+            subnet_id = addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].config[CONST_INGRESS_APPGW_SUBNET_ID]
             from msrestazure.tools import parse_resource_id, resource_id
             if not _add_role_assignment(cmd.cli_ctx, 'Contributor',
                                         service_principal_profile.client_id, scope=subnet_id):
-                logger.warning('Could not create a role assignment for subnet: {subnet_id} specified in IngressApplicationGateway addon. '
+                logger.warning('Could not create a role assignment for subnet: {subnet_id} '
+                               'specified in {CONST_INGRESS_APPGW_ADDON_NAME} addon. '
                                'Are you an Owner on this subscription?')
 
     aad_profile = None
@@ -1146,7 +1151,7 @@ ADDONS = {
     'virtual-node': 'aciConnector',
     'azure-policy': 'azurepolicy',
     'kube-dashboard': 'kubeDashboard',
-    'ingress-appgw': 'IngressApplicationGateway'
+    'ingress-appgw': CONST_INGRESS_APPGW_ADDON_NAME
 }
 
 
@@ -1479,7 +1484,7 @@ def _handle_addons_args(cmd, addons_str, subscription_id, resource_group_name, a
             addon_profile.config[CONST_INGRESS_APPGW_SHARED] = "true"
         if appgw_watch_namespace is not None:
             addon_profile.config[CONST_INGRESS_APPGW_WATCH_NAMESPACE] = appgw_watch_namespace
-        addon_profiles['IngressApplicationGateway'] = addon_profile
+        addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME] = addon_profile
         addons.remove('ingress-appgw')
     # error out if any (unrecognized) addons remain
     if addons:
@@ -2123,22 +2128,24 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
                                         service_principal_client_id, scope=cluster_resource_id):
                 logger.warning('Could not create a role assignment for Monitoring addon. '
                                'Are you an Owner on this subscription?')
-    if 'IngressApplicationGateway' in instance.addon_profiles:
-        if CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID in instance.addon_profiles["IngressApplicationGateway"].config:
-            appgw_id = instance.addon_profiles["IngressApplicationGateway"].config[CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID]
+    if CONST_INGRESS_APPGW_ADDON_NAME in instance.addon_profiles:
+        if CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID in instance.addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].config:
+            appgw_id = instance.addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].config[CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID]
             from msrestazure.tools import parse_resource_id, resource_id
             appgw_id_dict = parse_resource_id(appgw_id)
             appgw_group_id = resource_id(subscription=appgw_id_dict["subscription"], resource_group=appgw_id_dict["resource_group"])
             if not _add_role_assignment(cmd.cli_ctx, 'Contributor',
                                         service_principal_client_id, scope=appgw_group_id):
-                logger.warning('Could not create a role assignment for application gateway: {appgw_id} specified in IngressApplicationGateway addon. '
+                logger.warning('Could not create a role assignment for application gateway: {appgw_id} '
+                               'specified in {CONST_INGRESS_APPGW_ADDON_NAME} addon. '
                                'Are you an Owner on this subscription?')
-        if CONST_INGRESS_APPGW_SUBNET_ID in instance.addon_profiles["IngressApplicationGateway"].config:
-            subnet_id = instance.addon_profiles["IngressApplicationGateway"].config[CONST_INGRESS_APPGW_SUBNET_ID]
+        if CONST_INGRESS_APPGW_SUBNET_ID in instance.addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].config:
+            subnet_id = instance.addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].config[CONST_INGRESS_APPGW_SUBNET_ID]
             from msrestazure.tools import parse_resource_id, resource_id
             if not _add_role_assignment(cmd.cli_ctx, 'Contributor',
                                         service_principal_client_id, scope=subnet_id):
-                logger.warning('Could not create a role assignment for subnet: {subnet_id} specified in IngressApplicationGateway addon. '
+                logger.warning('Could not create a role assignment for subnet: {subnet_id} '
+                               'specified in {CONST_INGRESS_APPGW_ADDON_NAME} addon. '
                                'Are you an Owner on this subscription?')
 
     # send the managed cluster representation to update the addon profiles
@@ -2212,7 +2219,7 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                 if not subnet_name:
                     raise CLIError('The aci-connector addon requires setting a subnet name.')
                 addon_profile.config = {'SubnetName': subnet_name}
-            elif addon.lower() == 'ingressapplicationgateway':
+            elif addon.lower() == CONST_INGRESS_APPGW_ADDON_NAME:
                 if addon_profile.enabled:
                     raise CLIError('The ingress-appgw addon is already enabled for this managed cluster.\n'
                                    'To change ingress-appgw configuration, run '
