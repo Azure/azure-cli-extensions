@@ -1061,7 +1061,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
         instance.auto_scaler_profile = {}
     if cluster_autoscaler_profile:
         if instance.auto_scaler_profile:
-            instance.auto_scaler_profile = _update_dict(instance.auto_scaler_profile.__dict__, dict((key.replace("-", "_"), value) for (key, value) in cluster_autoscaler_profile.items()))
+            instance.auto_scaler_profile = _update_dict(instance.auto_scaler_profile.__dict__,
+                                                        dict((key.replace("-", "_"), value)
+                                                             for (key, value) in cluster_autoscaler_profile.items()))
         else:
             instance.auto_scaler_profile = cluster_autoscaler_profile
 

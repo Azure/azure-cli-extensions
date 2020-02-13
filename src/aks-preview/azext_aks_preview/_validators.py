@@ -12,10 +12,11 @@ from ipaddress import ip_network
 
 from knack.log import get_logger
 
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_02_01.models import ManagedClusterPropertiesAutoScalerProfile
 from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.util import CLIError
 import azure.cli.core.keys as keys
+
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_02_01.models import ManagedClusterPropertiesAutoScalerProfile
 
 logger = get_logger(__name__)
 
@@ -248,6 +249,8 @@ def validate_nodepool_tags(ns):
         for item in ns.nodepool_tags:
             tags_dict.update(validate_tag(item))
         ns.nodepool_tags = tags_dict
+
+
 def validate_cluster_autoscaler_profile(namespace):
     """ Validates that cluster autoscaler profile is acceptable by:
         1. Extracting the key[=value] format to map
@@ -262,7 +265,7 @@ def validate_cluster_autoscaler_profile(namespace):
 def _validate_cluster_autoscaler_key(key):
     if not key:
         raise CLIError('Empty key specified for cluster-autoscaler-profile')
-    valid_keys = list(k.replace("_", "-") for k in ManagedClusterPropertiesAutoScalerProfile._attribute_map.keys())
+    valid_keys = list(k.replace("_", "-") for k, v in ManagedClusterPropertiesAutoScalerProfile._attribute_map.items())  # pylint: disable=protected-access
     if key not in valid_keys:
         raise CLIError('Invalid key specified for cluster-autoscaler-profile: %s' % key)
 
