@@ -763,7 +763,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         if enable_managed_identity:
             if no_wait:
                 raise CLIError('When --attach-acr and --enable-managed-identity are both specified, '
-                               '--no-wait is not allowed, please wait until the whole operation succeed.')
+                               '--no-wait is not allowed, please wait until the whole operation succeeds.')
             else:
                 # Attach acr operation will be handled after the cluster is created
                 pass
@@ -897,7 +897,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
     retry_exception = Exception(None)
     for _ in range(0, max_retry):
         try:
-            print('AKS cluster is creating, please wait...')
+            logger.info('AKS cluster is creating, please wait...')
             created_cluster = sdk_no_wait(no_wait, client.create_or_update,
                                           resource_group_name=resource_group_name,
                                           resource_name=name,
