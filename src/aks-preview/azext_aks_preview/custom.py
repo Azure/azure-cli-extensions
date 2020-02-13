@@ -73,7 +73,7 @@ from ._client_factory import cf_storage
 from ._helpers import _populate_api_server_access_profile, _set_vm_set_type, _set_outbound_type
 from ._loadbalancer import (set_load_balancer_sku, is_load_balancer_profile_provided,
                             update_load_balancer_profile, create_load_balancer_profile)
-
+from ._consts import CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID, CONST_INGRESS_APPGW_APPLICATION_GATEWAY_NAME, CONST_INGRESS_APPGW_SUBNET_PREFIX, CONST_INGRESS_APPGW_SUBNET_ID, CONST_INGRESS_APPGW_SHARED
 
 logger = get_logger(__name__)
 
@@ -841,8 +841,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
     if 'omsagent' in addon_profiles:
         _ensure_container_insights_for_monitoring(cmd, addon_profiles['omsagent'])
     if 'IngressApplicationGateway' in addon_profiles:
-        if "applicationGatewayId" in addon_profiles["IngressApplicationGateway"].config:
-            appgw_id = addon_profiles["IngressApplicationGateway"].config["applicationGatewayId"]
+        if CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID in addon_profiles["IngressApplicationGateway"].config:
+            appgw_id = addon_profiles["IngressApplicationGateway"].config[CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID]
             from msrestazure.tools import parse_resource_id, resource_id
             appgw_id_dict = parse_resource_id(appgw_id)
             appgw_group_id = resource_id(
@@ -850,14 +850,14 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                 resource_group=appgw_id_dict["resource_group"])
             if not _add_role_assignment(cmd.cli_ctx, 'Contributor',
                                         service_principal_profile.client_id, scope=appgw_group_id):
-                logger.warning('Could not create a role assignment for IngressApplicationGateway addon. '
+                logger.warning('Could not create a role assignment for application gateway: {appgw_id} specified in IngressApplicationGateway addon. '
                                'Are you an Owner on this subscription?')
-        if "subnetId" in addon_profiles["IngressApplicationGateway"].config:
-            subnet_id = addon_profiles["IngressApplicationGateway"].config["subnetId"]
+        if CONST_INGRESS_APPGW_SUBNET_ID in addon_profiles["IngressApplicationGateway"].config:
+            subnet_id = addon_profiles["IngressApplicationGateway"].config[CONST_INGRESS_APPGW_SUBNET_ID]
             from msrestazure.tools import parse_resource_id, resource_id
             if not _add_role_assignment(cmd.cli_ctx, 'Contributor',
                                         service_principal_profile.client_id, scope=subnet_id):
-                logger.warning('Could not create a role assignment for IngressApplicationGateway addon. '
+                logger.warning('Could not create a role assignment for subnet: {subnet_id} specified in IngressApplicationGateway addon. '
                                'Are you an Owner on this subscription?')
 
     aad_profile = None
@@ -1468,17 +1468,17 @@ def _handle_addons_args(cmd, addons_str, subscription_id, resource_group_name, a
     if 'ingress-appgw' in addons:
         addon_profile = ManagedClusterAddonProfile(enabled=True, config={})
         if appgw_name is not None:
-            addon_profile.config["applicationGatewayName"] = appgw_name
+            addon_profile.config[CONST_INGRESS_APPGW_APPLICATION_GATEWAY_NAME] = appgw_name
         if appgw_subnet_prefix is not None:
-            addon_profile.config["subnetPrefix"] = appgw_subnet_prefix
+            addon_profile.config[CONST_INGRESS_APPGW_SUBNET_PREFIX] = appgw_subnet_prefix
         if appgw_id is not None:
-            addon_profile.config["applicationGatewayId"] = appgw_id
+            addon_profile.config[CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID] = appgw_id
         if appgw_subnet_id is not None:
-            addon_profile.config["subnetId"] = appgw_subnet_id
+            addon_profile.config[CONST_INGRESS_APPGW_SUBNET_ID] = appgw_subnet_id
         if appgw_shared:
-            addon_profile.config["shared"] = "true"
+            addon_profile.config[CONST_INGRESS_APPGW_SHARED] = "true"
         if appgw_watch_namespace is not None:
-            addon_profile.config["watchNamespace"] = appgw_watch_namespace
+            addon_profile.config[CONST_INGRESS_APPGW_WATCH_NAMESPACE] = appgw_watch_namespace
         addon_profiles['IngressApplicationGateway'] = addon_profile
         addons.remove('ingress-appgw')
     # error out if any (unrecognized) addons remain
@@ -2124,21 +2124,21 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
                 logger.warning('Could not create a role assignment for Monitoring addon. '
                                'Are you an Owner on this subscription?')
     if 'IngressApplicationGateway' in instance.addon_profiles:
-        if "applicationGatewayId" in instance.addon_profiles["IngressApplicationGateway"].config:
-            appgw_id = instance.addon_profiles["IngressApplicationGateway"].config["applicationGatewayId"]
+        if CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID in instance.addon_profiles["IngressApplicationGateway"].config:
+            appgw_id = instance.addon_profiles["IngressApplicationGateway"].config[CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID]
             from msrestazure.tools import parse_resource_id, resource_id
             appgw_id_dict = parse_resource_id(appgw_id)
             appgw_group_id = resource_id(subscription=appgw_id_dict["subscription"], resource_group=appgw_id_dict["resource_group"])
             if not _add_role_assignment(cmd.cli_ctx, 'Contributor',
                                         service_principal_client_id, scope=appgw_group_id):
-                logger.warning('Could not create a role assignment for IngressApplicationGateway addon. '
+                logger.warning('Could not create a role assignment for application gateway: {appgw_id} specified in IngressApplicationGateway addon. '
                                'Are you an Owner on this subscription?')
-        if "subnetId" in instance.addon_profiles["IngressApplicationGateway"].config:
-            subnet_id = instance.addon_profiles["IngressApplicationGateway"].config["subnetId"]
+        if CONST_INGRESS_APPGW_SUBNET_ID in instance.addon_profiles["IngressApplicationGateway"].config:
+            subnet_id = instance.addon_profiles["IngressApplicationGateway"].config[CONST_INGRESS_APPGW_SUBNET_ID]
             from msrestazure.tools import parse_resource_id, resource_id
             if not _add_role_assignment(cmd.cli_ctx, 'Contributor',
                                         service_principal_client_id, scope=subnet_id):
-                logger.warning('Could not create a role assignment for IngressApplicationGateway addon. '
+                logger.warning('Could not create a role assignment for subnet: {subnet_id} specified in IngressApplicationGateway addon. '
                                'Are you an Owner on this subscription?')
 
     # send the managed cluster representation to update the addon profiles
@@ -2220,17 +2220,17 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                                    'before enabling it again.')
                 addon_profile = ManagedClusterAddonProfile(enabled=True, config={})
                 if appgw_name is not None:
-                    addon_profile.config["applicationGatewayName"] = appgw_name
+                    addon_profile.config[CONST_INGRESS_APPGW_APPLICATION_GATEWAY_NAME] = appgw_name
                 if appgw_subnet_prefix is not None:
-                    addon_profile.config["subnetPrefix"] = appgw_subnet_prefix
+                    addon_profile.config[CONST_INGRESS_APPGW_SUBNET_PREFIX] = appgw_subnet_prefix
                 if appgw_id is not None:
-                    addon_profile.config["applicationGatewayId"] = appgw_id
+                    addon_profile.config[CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID] = appgw_id
                 if appgw_subnet_id is not None:
-                    addon_profile.config["subnetId"] = appgw_subnet_id
+                    addon_profile.config[CONST_INGRESS_APPGW_SUBNET_ID] = appgw_subnet_id
                 if appgw_shared:
-                    addon_profile.config["shared"] = "true"
+                    addon_profile.config[CONST_INGRESS_APPGW_SHARED] = "true"
                 if appgw_watch_namespace is not None:
-                    addon_profile.config["watchNamespace"] = appgw_watch_namespace
+                    addon_profile.config[CONST_INGRESS_APPGW_WATCH_NAMESPACE] = appgw_watch_namespace
             addon_profiles[addon] = addon_profile
         else:
             if addon not in addon_profiles:

@@ -220,7 +220,7 @@ helps['aks create'] = """
           short-summary: Use shared flag if application gateway will be shared
         - name: --appgw-watch-namespace
           type: string
-          short-summary: Specify the name space, which AGIC should watch. This could be a single string value, or a comma-separated list of namespaces.
+          short-summary: Specify the namespace, which AGIC should watch. This could be a single string value, or a comma-separated list of namespaces.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
