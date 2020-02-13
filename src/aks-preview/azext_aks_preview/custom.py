@@ -594,11 +594,13 @@ def aks_browse(cmd,     # pylint: disable=too-many-statements
         # TODO: better error handling here.
         response = requests.post('http://localhost:8888/openport/{0}'.format(listen_port))
         result = json.loads(response.text)
+        dashboardURL = '{0}api/v1/namespaces/kube-system/services/{1}:kubernetes-dashboard:/proxy'.format(result['url'],
+                                                                                                    protocol)
         term_id = os.environ.get('ACC_TERM_ID')
         if term_id:
             response = requests.post('http://localhost:8888/openLink/{}'.format(term_id),
-                                     json={"url": result['url']})
-        logger.warning('To view the console, please open %s in a new tab', result['url'])
+                                     json={"url": dashboardURL})
+        logger.warning('To view the console, please open %s in a new tab', dashboardURL)
     else:
         logger.warning('Proxy running on %s', proxy_url)
 
