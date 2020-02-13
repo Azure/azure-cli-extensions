@@ -101,11 +101,11 @@ def get_management_subnet_validator():
 
     def simple_validator(cmd, namespace):
         if any([namespace.management_virtual_network_name,
-               namespace.management_item_name,
-               namespace.management_public_ip_address]):
+                namespace.management_item_name,
+                namespace.management_public_ip_address]):
             if not all([namespace.management_virtual_network_name,
-                       namespace.management_virtual_network_name,
-                       namespace.management_public_ip_address]):
+                        namespace.management_virtual_network_name,
+                        namespace.management_public_ip_address]):
                 raise CLIError("Usage error: --management-virtual-network-name, --management-ip-config-name "
                                "and --management-public-ip-address")
         else:

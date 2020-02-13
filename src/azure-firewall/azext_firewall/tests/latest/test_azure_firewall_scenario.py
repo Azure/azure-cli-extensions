@@ -96,10 +96,11 @@ class AzureFirewallScenario(ScenarioTest):
         subnet_id_management_ip_config_2 = vnet_instance['newVNet']['subnets'][0]['id']
 
         self.cmd('network firewall ip-config create -g {rg} -n {ipconfig} -f {af} --public-ip-address {pubip} --vnet-name {vnet} '
-                 '--m-name {management_ipconfig} --m-public-ip-address {management_pubip} --m-vnet-name {management_vnet}', checks=[
-            self.check('name', '{ipconfig}'),
-            self.check('subnet.id', subnet_id_ip_config)
-        ])
+                 '--m-name {management_ipconfig} --m-public-ip-address {management_pubip} --m-vnet-name {management_vnet}',
+                 checks=[
+                     self.check('name', '{ipconfig}'),
+                     self.check('subnet.id', subnet_id_ip_config)
+                 ])
 
         self.cmd('network firewall ip-config create -g {rg} -n {ipconfig3} -f {af} --public-ip-address {pubip3}', checks=[
             self.check('name', '{ipconfig3}'),
