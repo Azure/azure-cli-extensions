@@ -20,22 +20,15 @@ helps['blueprint create'] = """
     examples:
       - name: SubscriptionBlueprint
         text: |-
-               az blueprint create --scope "subscriptions/00000000-0000-0000-0000-000000000000" --name \\
+               az blueprint create --subscription "00000000-0000-0000-0000-000000000000" --name \\
                "simpleBlueprint" --description \\
-               "blueprint contains all artifact kinds {'template', 'rbac', 'policy'}" --target-scope \\
+               "blueprint contains all artifact" --target-scope \\
                "subscription"
-      - name: ResourceGroupWithTags
-        text: |-
-               az blueprint create --scope \\
-               "providers/Microsoft.Management/managementGroups/{ManagementGroupId}" --name \\
-               "simpleBlueprint" --description "An example blueprint containing an RG with two tags." \\
-               --target-scope "subscription"
       - name: ManagementGroupBlueprint
         text: |-
-               az blueprint create --scope \\
-               "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" --name \\
+               az blueprint create --management-group myManagementGroup --name \\
                "simpleBlueprint" --description \\
-               "blueprint contains all artifact kinds {'template', 'rbac', 'policy'}" --target-scope \\
+               "blueprint contains all artifact" --target-scope \\
                "subscription"
 """
 
@@ -50,12 +43,11 @@ helps['blueprint delete'] = """
     examples:
       - name: ManagementGroupBlueprint
         text: |-
-               az blueprint delete --scope \\
-               "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" --name \\
+               az blueprint delete --management-group myManagementGroup --name \\
                "simpleBlueprint"
       - name: SubscriptionBlueprint
         text: |-
-               az blueprint delete --scope "subscriptions/00000000-0000-0000-0000-000000000000" --name \\
+               az blueprint delete --subscription "00000000-0000-0000-0000-000000000000" --name \\
                "simpleBlueprint"
 """
 
@@ -65,12 +57,11 @@ helps['blueprint show'] = """
     examples:
       - name: ManagementGroupBlueprint
         text: |-
-               az blueprint show --scope \\
-               "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" --name \\
+               az blueprint show --management-group myManagementGroup --name \\
                "simpleBlueprint"
       - name: SubscriptionBlueprint
         text: |-
-               az blueprint show --scope "subscriptions/00000000-0000-0000-0000-000000000000" --name \\
+               az blueprint show --subscription "00000000-0000-0000-0000-000000000000" --name \\
                "simpleBlueprint"
 """
 
@@ -80,11 +71,10 @@ helps['blueprint list'] = """
     examples:
       - name: ManagementGroupBlueprint
         text: |-
-               az blueprint list --scope \\
-               "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup"
+               az blueprint list --management-group myManagementGroup
       - name: SubscriptionBlueprint
         text: |-
-               az blueprint list --scope "subscriptions/00000000-0000-0000-0000-000000000000"
+               az blueprint list --subscription "00000000-0000-0000-0000-000000000000"
 """
 
 helps['blueprint import'] = """
@@ -93,8 +83,8 @@ helps['blueprint import'] = """
     examples:
       - name: Import blueprint definition and artifacts
         text: |-
-               az blueprint import --scope "subscriptions/00000000-0000-0000-0000-000000000000" --name \\
-               "simpleBlueprint" --input-path "/path/to/blueprint/directory"
+               az blueprint import --name "simpleBlueprint" \\
+               --input-path "/path/to/blueprint/directory"
 """
 
 helps['blueprint resource-group'] = """
@@ -108,7 +98,7 @@ helps['blueprint resource-group create'] = """
     examples:
       - name: Create a resource group artifact
         text: |-
-               az blueprint resource-group create --scope "subscriptions/{subscriptionId}" \\
+               az blueprint resource-group create \\
                --blueprint-name "myBlueprint" --artifact-name "myRG"
 """
 
@@ -118,7 +108,7 @@ helps['blueprint resource-group update'] = """
     examples:
       - name: Update a resource group artifact
         text: |-
-               az blueprint resource-group update --scope "subscriptions/{subscriptionId}" \\
+               az blueprint resource-group update \\
                --blueprint-name "myBlueprint" --artifact-name "myRG" --display-name "Updated name"
 """
 
@@ -128,7 +118,7 @@ helps['blueprint resource-group delete'] = """
     examples:
       - name: Delete a resource group artifact
         text: |-
-               az blueprint resource-group delete --scope "subscriptions/{subscriptionId}" \\
+               az blueprint resource-group delete \\
                --blueprint-name "myBlueprint" --artifact-name "myRG"
 """
 
@@ -138,7 +128,7 @@ helps['blueprint resource-group show'] = """
     examples:
       - name: Show a resource group artifact
         text: |-
-               az blueprint resource-group show --scope "subscriptions/{subscriptionId}" \\
+               az blueprint resource-group show \\
                --blueprint-name "myBlueprint" --artifact-name "myRG"
 """
 
@@ -148,7 +138,7 @@ helps['blueprint resource-group list'] = """
     examples:
       - name: List resource group artifacts
         text: |-
-               az blueprint resource-group list --scope "subscriptions/{subscriptionId}" \\
+               az blueprint resource-group list \\
                --blueprint-name "myBlueprint"
 """
 
@@ -161,33 +151,14 @@ helps['blueprint artifact delete'] = """
     type: command
     short-summary: Delete a blueprint artifact.
     examples:
-      - name: MG-RoleAssignmentArtifact
-        text: |-
-               az blueprint artifact delete --scope \\
-               "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" --blueprint-name \\
-               "simpleBlueprint" --artifact-name "ownerAssignment"
-      - name: Sub-ARMTemplateArtifact
-        text: |-
-               az blueprint artifact delete --scope "subscriptions/00000000-0000-0000-0000-000000000000" \\
-               --blueprint-name "simpleBlueprint" --artifact-name "storageTemplate"
-      - name: Sub-PolicyAssignmentArtifact
-        text: |-
-               az blueprint artifact delete --scope "subscriptions/00000000-0000-0000-0000-000000000000" \\
-               --blueprint-name "simpleBlueprint" --artifact-name "costCenterPolicy"
       - name: Sub-RoleAssignmentArtifact
         text: |-
-               az blueprint artifact delete --scope "subscriptions/00000000-0000-0000-0000-000000000000" \\
+               az blueprint artifact delete --subscription "00000000-0000-0000-0000-000000000000" \\
                --blueprint-name "simpleBlueprint" --artifact-name "ownerAssignment"
       - name: MG-ARMTemplateArtifact
         text: |-
-               az blueprint artifact delete --scope \\
-               "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" --blueprint-name \\
+               az blueprint artifact delete --management-group myManagementGroup --blueprint-name \\
                "simpleBlueprint" --artifact-name "storageTemplate"
-      - name: MG-PolicyAssignmentArtifact
-        text: |-
-               az blueprint artifact delete --scope \\
-               "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" --blueprint-name \\
-               "simpleBlueprint" --artifact-name "costCenterPolicy"
 """
 
 helps['blueprint artifact show'] = """
@@ -196,31 +167,12 @@ helps['blueprint artifact show'] = """
     examples:
       - name: Sub-RoleAssignmentArtifact
         text: |-
-               az blueprint artifact show --scope "subscriptions/00000000-0000-0000-0000-000000000000" \\
+               az blueprint artifact show --subscription "00000000-0000-0000-0000-000000000000" \\
                --blueprint-name "simpleBlueprint" --artifact-name "ownerAssignment"
       - name: MG-ARMTemplateArtifact
         text: |-
-               az blueprint artifact show --scope \\
-               "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" --blueprint-name \\
+               az blueprint artifact show --management-group myManagementGroup --blueprint-name \\
                "simpleBlueprint" --artifact-name "storageTemplate"
-      - name: Sub-ARMTemplateArtifact
-        text: |-
-               az blueprint artifact show --scope "subscriptions/00000000-0000-0000-0000-000000000000" \\
-               --blueprint-name "simpleBlueprint" --artifact-name "storageTemplate"
-      - name: Sub-PolicyAssignmentArtifact
-        text: |-
-               az blueprint artifact show --scope "subscriptions/00000000-0000-0000-0000-000000000000" \\
-               --blueprint-name "simpleBlueprint" --artifact-name "costCenterPolicy"
-      - name: MG-PolicyAssignmentArtifact
-        text: |-
-               az blueprint artifact show --scope \\
-               "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" --blueprint-name \\
-               "simpleBlueprint" --artifact-name "costCenterPolicy"
-      - name: MG-RoleAssignmentArtifact
-        text: |-
-               az blueprint artifact show --scope \\
-               "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" --blueprint-name \\
-               "simpleBlueprint" --artifact-name "ownerAssignment"
 """
 
 helps['blueprint artifact list'] = """
@@ -229,12 +181,11 @@ helps['blueprint artifact list'] = """
     examples:
       - name: MG-ArtifactList
         text: |-
-               az blueprint artifact list --scope \\
-               "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" --blueprint-name \\
+               az blueprint artifact list --management-group myManagementGroup --blueprint-name \\
                "simpleBlueprint"
       - name: Sub-ArtifactList
         text: |-
-               az blueprint artifact list --scope "subscriptions/00000000-0000-0000-0000-000000000000" \\
+               az blueprint artifact list --subscription "00000000-0000-0000-0000-000000000000" \\
                --blueprint-name "simpleBlueprint"
 """
 
@@ -249,7 +200,7 @@ helps['blueprint artifact policy create'] = """
     examples:
       - name: Create a policy artifact
         text: |-
-               az blueprint artifact policy create --scope "subscriptions/{subscriptionId}" \\
+               az blueprint artifact policy create \\
                --blueprint-name "myBlueprint" --artifact-name "myPolicy" --policy-definition-id \\
                "/providers/Microsoft.Authorization/policyDefinitions/{policyId}" \\
                --parameters @/path/to/file --display-name "Policy to do sth"
@@ -261,7 +212,7 @@ helps['blueprint artifact policy update'] = """
     examples:
       - name: Update a policy artifact
         text: |-
-               az blueprint artifact policy update --scope "subscriptions/{subscriptionId}" \\
+               az blueprint artifact policy update \\
                --blueprint-name "myBlueprint" --artifact-name "myPolicy" --display-name "Updated Name"
 """
 
@@ -276,7 +227,7 @@ helps['blueprint artifact role create'] = """
     examples:
       - name: Create a role artifact
         text: |-
-               az blueprint artifact role create --scope "subscriptions/{subscriptionId}" \\
+               az blueprint artifact role create \\
                --blueprint-name "myBlueprint" --artifact-name "myRole" --role-definition-id \\
                "/providers/Microsoft.Authorization/roleDefinitions/{roleId}" \\
                --parameters @/path/to/file --principal-ids "pId"
@@ -288,7 +239,7 @@ helps['blueprint artifact role update'] = """
     examples:
       - name: Update a role artifact
         text: |-
-               az blueprint artifact role update --scope "subscriptions/{subscriptionId}" \\
+               az blueprint artifact role update \\
                --blueprint-name "myBlueprint" --artifact-name "myRole" --display-name "Updated Name"
 """
 
@@ -303,9 +254,9 @@ helps['blueprint artifact template create'] = """
     examples:
       - name: Create an arm artifact
         text: |-
-               az blueprint artifact template create --scope "subscriptions/{subscriptionId}" \\
+               az blueprint artifact template create \\
                --blueprint-name "myBlueprint" --artifact-name "myTemplate" \\
-               --parameters @/path/to/file --template @/path/to/template
+               --parameters @/path/to/parameter/file --template @/path/to/template
 """
 
 helps['blueprint artifact template update'] = """
@@ -314,7 +265,7 @@ helps['blueprint artifact template update'] = """
     examples:
       - name: Update a arm artifact
         text: |-
-               az blueprint artifact template update --scope "subscriptions/{subscriptionId}" \\
+               az blueprint artifact template update \\
                --blueprint-name "myBlueprint" --artifact-name "myTemplate" --display-name "Updated Name"
 """
 
@@ -329,13 +280,12 @@ helps['blueprint published create'] = """
     examples:
       - name: PublishedManagementGroupBlueprint_Publish
         text: |-
-               az blueprint published create --scope \\
-               "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" --name \\
+               az blueprint published create --management-group myManagementGroup --name \\
                "simpleBlueprint" --version "v2"
       - name: PublishedSubscriptionBlueprint_Publish
         text: |-
-               az blueprint published create --scope \\
-               "subscriptions/00000000-0000-0000-0000-000000000000" --name "simpleBlueprint" \\
+               az blueprint published create --subscription "00000000-0000-0000-0000-000000000000" \\
+               --name "simpleBlueprint" \\
                --version "v2"
 """
 
@@ -345,13 +295,12 @@ helps['blueprint published delete'] = """
     examples:
       - name: PublishedSubscriptionBlueprint
         text: |-
-               az blueprint published delete --scope \\
-               "subscriptions/00000000-0000-0000-0000-000000000000" --name "simpleBlueprint" \\
+               az blueprint published delete --subscription "00000000-0000-0000-0000-000000000000" \\
+               --name "simpleBlueprint" \\
                --version "v2"
       - name: PublishedManagementGroupBlueprint
         text: |-
-               az blueprint published delete --scope \\
-               "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" --name \\
+               az blueprint published delete --management-group myManagementGroup --name \\
                "simpleBlueprint" --version "v2"
 """
 
@@ -361,12 +310,11 @@ helps['blueprint published show'] = """
     examples:
       - name: PublishedManagementGroupBlueprint
         text: |-
-               az blueprint published show --scope \\
-               "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" --name \\
+               az blueprint published show --management-group myManagementGroup --name \\
                "simpleBlueprint" --version "v2"
       - name: PublishedSubscriptionBlueprint
         text: |-
-               az blueprint published show --scope "subscriptions/00000000-0000-0000-0000-000000000000" \\
+               az blueprint published show --subscription "00000000-0000-0000-0000-000000000000" \\
                --name "simpleBlueprint" --version "v2"
 """
 
@@ -376,12 +324,11 @@ helps['blueprint published list'] = """
     examples:
       - name: PublishedManagementGroupBlueprint
         text: |-
-               az blueprint published list --scope \\
-               "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" --blueprint-name \\
+               az blueprint published list --management-group myManagementGroup --blueprint-name \\
                "simpleBlueprint"
       - name: PublishedSubscriptionBlueprint
         text: |-
-               az blueprint published list --scope "subscriptions/00000000-0000-0000-0000-000000000000" \\
+               az blueprint published list --subscription "00000000-0000-0000-0000-000000000000" \\
                --blueprint-name "simpleBlueprint"
 """
 
@@ -394,36 +341,15 @@ helps['blueprint published artifact show'] = """
     type: command
     short-summary: Show an artifact for a published blueprint definition.
     examples:
-      - name: Sub-ARMTemplateArtifact
-        text: |-
-               az blueprint published artifact show --scope \\
-               "subscriptions/00000000-0000-0000-0000-000000000000" --blueprint-name "simpleBlueprint" \\
-               --version "V2" --artifact-name "storageTemplate"
-      - name: MG-RoleAssignmentArtifact
-        text: |-
-               az blueprint published artifact show --scope \\
-               "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" --blueprint-name \\
-               "simpleBlueprint" --version "V2" --artifact-name "ownerAssignment"
-      - name: Sub-PolicyAssignmentArtifact
-        text: |-
-               az blueprint published artifact show --scope \\
-               "subscriptions/00000000-0000-0000-0000-000000000000" --blueprint-name "simpleBlueprint" \\
-               --version "V2" --artifact-name "costCenterPolicy"
       - name: Sub-RoleAssignmentArtifact
         text: |-
-               az blueprint published artifact show --scope \\
-               "subscriptions/00000000-0000-0000-0000-000000000000" --blueprint-name "simpleBlueprint" \\
+               az blueprint published artifact show --subscription "00000000-0000-0000-0000-000000000000" \\
+               --blueprint-name "simpleBlueprint" \\
                --version "V2" --artifact-name "ownerAssignment"
       - name: MG-ARMTemplateArtifact
         text: |-
-               az blueprint published artifact show --scope \\
-               "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" --blueprint-name \\
+               az blueprint published artifact show --management-group myManagementGroup --blueprint-name \\
                "simpleBlueprint" --version "V2" --artifact-name "storageTemplate"
-      - name: MG-PolicyAssignmentArtifact
-        text: |-
-               az blueprint published artifact show --scope \\
-               "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" --blueprint-name \\
-               "simpleBlueprint" --version "V2" --artifact-name "costCenterPolicy"
 """
 
 helps['blueprint published artifact list'] = """
@@ -432,13 +358,12 @@ helps['blueprint published artifact list'] = """
     examples:
       - name: MG-ArtifactList
         text: |-
-               az blueprint published artifact list --scope \\
-               "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" --blueprint-name \\
+               az blueprint published artifact list --management-group myManagementGroup --blueprint-name \\
                "simpleBlueprint" --version "V2"
       - name: Sub-ArtifactList
         text: |-
-               az blueprint published artifact list --scope \\
-               "subscriptions/00000000-0000-0000-0000-000000000000" --blueprint-name "simpleBlueprint" \\
+               az blueprint published artifact list --subscription "00000000-0000-0000-0000-000000000000" \\
+               --blueprint-name "simpleBlueprint" \\
                --version "V2"
 """
 
@@ -453,18 +378,22 @@ helps['blueprint assignment create'] = """
     examples:
       - name: Assignment with system-assigned managed identity
         text: |-
-               az blueprint assignment create --scope "subscriptions/00000000-0000-0000-0000-000000000000" --name \\
+               az blueprint assignment create --subscription "00000000-0000-0000-0000-000000000000" --name \\
                "assignSimpleBlueprint" --location "eastus" --identity-type "SystemAssigned" \\
                --description "enforce pre-defined simpleBlueprint to this XXXXXXXX subscription." \\
                --blueprint-id "/providers/Microsoft.Management/managementGroups/ContosoOnlineGroup/provid \\
-               ers/Microsoft.Blueprint/blueprints/simpleBlueprint/versions/1.0"
+               ers/Microsoft.Blueprint/blueprints/simpleBlueprint/versions/1.0" \\
+               --resource-groups "@path/to/resource-group/file" \\
+               --parameters "@path/to/parameter/file" \\
       - name: Assignment with user-assigned managed identity
         text: |-
-               az blueprint assignment create --scope "subscriptions/00000000-0000-0000-0000-000000000000" --name \\
-               "assignSimpleBlueprint" --location "eastus" --identity-type "UserAssigned" --description \\
-               "enforce pre-defined simpleBlueprint to this XXXXXXXX subscription." --blueprint-id "/prov \\
-               iders/Microsoft.Management/managementGroups/ContosoOnlineGroup/providers/Microsoft.Bluepri \\
-               nt/blueprints/simpleBlueprint/versions/1.0"
+               az blueprint assignment create --subscription "00000000-0000-0000-0000-000000000000" --name \\
+               "assignSimpleBlueprint" --location "eastus" --identity-type "UserAssigned" \\
+               --description "enforce pre-defined simpleBlueprint to this XXXXXXXX subscription." \\
+               --blueprint-id "/providers/Microsoft.Management/managementGroups/ContosoOnlineGroup \\
+               /providers/Microsoft.Blueprint/blueprints/simpleBlueprint/versions/1.0" \\
+               --resource-groups "@path/to/resource-group/file" \\
+               --parameters "@path/to/parameter/file" \\
 """
 
 helps['blueprint assignment update'] = """
@@ -478,7 +407,7 @@ helps['blueprint assignment delete'] = """
     examples:
       - name: Assignment_Delete
         text: |-
-               az blueprint assignment delete --scope "subscriptions/00000000-0000-0000-0000-000000000000" --name \\
+               az blueprint assignment delete --subscription "00000000-0000-0000-0000-000000000000" --name \\
                "assignSimpleBlueprint"
 """
 
@@ -488,7 +417,7 @@ helps['blueprint assignment show'] = """
     examples:
       - name: Assignment
         text: |-
-               az blueprint assignment show --scope "subscriptions/00000000-0000-0000-0000-000000000000" --name \\
+               az blueprint assignment show --subscription "00000000-0000-0000-0000-000000000000" --name \\
                "assignSimpleBlueprint"
 """
 
@@ -498,7 +427,7 @@ helps['blueprint assignment list'] = """
     examples:
       - name: Assignment
         text: |-
-               az blueprint assignment list --scope "subscriptions/00000000-0000-0000-0000-000000000000"
+               az blueprint assignment list --subscription "00000000-0000-0000-0000-000000000000"
 """
 
 helps['blueprint assignment wait'] = """
@@ -506,9 +435,9 @@ helps['blueprint assignment wait'] = """
     short-summary: Place the CLI in a waiting state until a condition of the Blueprint Assignment is met.
     examples:
         - name: Pause executing next line of CLI script until the Blueprint Assignment is successfully provisioned.
-          text: az blueprint assignment wait --scope \\
-               "subscriptions/00000000-0000-0000-0000-000000000000" --assignment-name "assignSimpleBlueprint" \\
-               --created
+          text: az blueprint assignment wait --subscription "00000000-0000-0000-0000-000000000000" \\
+                --assignment-name "assignSimpleBlueprint" \\
+                --created
 """
 
 helps['blueprint assignment who-is-blueprint'] = """
@@ -517,6 +446,6 @@ helps['blueprint assignment who-is-blueprint'] = """
     examples:
       - name: WhoIsBlueprint_Action
         text: |-
-               az blueprint assignment who-is-blueprint --scope \\
-               "subscriptions/00000000-0000-0000-0000-000000000000" --name "assignSimpleBlueprint"
+               az blueprint assignment who-is-blueprint --subscription "00000000-0000-0000-0000-000000000000" \\
+               --name "assignSimpleBlueprint"
 """

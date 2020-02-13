@@ -7,119 +7,124 @@ import os
 import unittest
 
 from azure_devtools.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
-
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer,
+                               JMESPathCheck, JMESPathCheckExists,
+                               NoneCheck)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class BlueprintScenarioTest(ScenarioTest):
-
     @ResourceGroupPreparer(name_prefix='cli_test_blueprint')
     def test_blueprint(self, resource_group):
 
         self.kwargs.update({
             'blueprintName': 'test-bp',
-            'scope': 'subscriptions/00000000-0000-0000-0000-000000000000',
-            'subscription': '00000000-0000-0000-0000-000000000000',
+            'subscription': '0b1f6471-1bf0-4dda-aec3-cb9272f09590',
             'assignmentName': 'Assignment-test-bp'
         })
 
-        self.cmd('az blueprint create '
-                 '--scope "{scope}" '
-                 '--name "{blueprintName}" '
-                 '--description "An example blueprint." '
-                 '--target-scope "subscription"',
-                 checks=[])
+        self.cmd('az account set -s "{subscription}"')
 
-        self.cmd('az blueprint list '
-                 '--scope "{scope}"',
-                 checks=[])
+        self.cmd(
+            'az blueprint create '
+            '--name "{blueprintName}" '
+            '--description "An example blueprint." '
+            '--target-scope "subscription"',
+            checks=[
+                JMESPathCheck('name', self.kwargs.get('blueprintName', ''))
+            ])
 
-        self.cmd('az blueprint resource-group create '
-                 '--scope "{scope}" '
-                 '--blueprint-name "{blueprintName}" '
-                 '--artifact-name "my-rg-art"',
-                 checks=[])
+        self.cmd('az blueprint list', checks=[])
 
-        self.cmd('az blueprint artifact role create '
-                 '--scope "{scope}" '
-                 '--blueprint-name "{blueprintName}" '
-                 '--artifact-name "reader-role-art" '
-                 '--display-name "[User group or application name] : Reader" '
-                 '--resource-group-art "my-rg-art" '
-                 '--role-definition-id "/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7" '
-                 r'''--principal-ids "[parameters('[Usergrouporapplicationname]:Reader_RoleAssignmentName')]"''',
-                 checks=[])
+        self.cmd(
+            'az blueprint resource-group create '
+            '--blueprint-name "{blueprintName}" '
+            '--artifact-name "myRgArt" '
+            '--display-name "Resource Group 1"',
+            checks=[
+                JMESPathCheck(
+                    'myRgArt.displayName',
+                    "Resource Group 1")
+            ])
 
-        self.cmd('az blueprint artifact policy create '
-                 '--scope "{scope}" '
-                 '--blueprint-name "{blueprintName}" '
-                 '--artifact-name "policy-audit-win-vm-art" '
-                 '--display-name "Audit Windows VMs in which the Administrators group does not contain only the specified members" '
-                 '--policy-definition-id "/providers/Microsoft.Authorization/policySetDefinitions/06122b01-688c-42a8-af2e-fa97dd39aa3b" '
-                 '--resource-group-art "my-rg-art" '
-                 '--parameters @src/blueprint/azext_blueprint/tests/latest/input/create/policy_params.json',
-                 checks=[])
+        self.cmd(
+            'az blueprint artifact role create '
+            '--blueprint-name "{blueprintName}" '
+            '--artifact-name "reader-role-art" '
+            '--display-name "[User group or application name] : Reader" '
+            '--resource-group-art "myRgArt" '
+            '--role-definition-id "/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7" '
+            r'''--principal-ids "[parameters('[Usergrouporapplicationname]:Reader_RoleAssignmentName')]"''',
+            checks=[JMESPathCheck('name', 'reader-role-art')])
 
-        self.cmd('az blueprint update '
-                 '--scope "{scope}" '
-                 '--name "{blueprintName}" '
-                 '--parameters @src/blueprint/azext_blueprint/tests/latest/input/create/blueprint_params.json',
-                 checks=[])
+        self.cmd(
+            'az blueprint artifact policy create '
+            '--blueprint-name "{blueprintName}" '
+            '--artifact-name "policy-audit-win-vm-art" '
+            '--display-name "Audit Windows VMs in which the Administrators group does not contain only the specified members" '
+            '--policy-definition-id "/providers/Microsoft.Authorization/policySetDefinitions/06122b01-688c-42a8-af2e-fa97dd39aa3b" '
+            '--resource-group-art "myRgArt" '
+            '--parameters @src/blueprint/azext_blueprint/tests/latest/input/create/policy_params.json',
+            checks=[JMESPathCheck('name', 'policy-audit-win-vm-art')])
 
-        self.cmd('az blueprint published create '
-                 '--scope "{scope}" '
-                 '--blueprint-name "{blueprintName}" '
-                 '--version "1.0" '
-                 '--change-notes "First release"',
-                 checks=[])
+        self.cmd(
+            'az blueprint update '
+            '--name "{blueprintName}" '
+            '--parameters @src/blueprint/azext_blueprint/tests/latest/input/create/blueprint_params.json',
+            checks=[JMESPathCheckExists('parameters')])
 
-        self.cmd('az blueprint assignment create '
-                 '--scope "{scope}" '
-                 '--assignment-name "{assignmentName}" '
-                 '--location "westus2" '
-                 '--identity-type "SystemAssigned" '
-                 '--blueprint-id "/subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.Blueprint/blueprints/test-bp/versions/1.0" '
-                 '--locks-mode "None" '
-                 '--resource-groups @src/blueprint/azext_blueprint/tests/latest/input/create/resource_group_params.json '
-                 '--parameters @src/blueprint/azext_blueprint/tests/latest/input/create/assignment_params.json',
-                 checks=[])
+        self.cmd(
+            'az blueprint published create '
+            '--blueprint-name "{blueprintName}" '
+            '--version "1.0" '
+            '--change-notes "First release"',
+            checks=[])
 
-        self.cmd('az blueprint assignment wait '
-                 '--scope "{scope}" '
-                 '--assignment-name "{assignmentName}" '
-                 '''--custom "provisioningState=='succeeded'" '''
-                 '--created',
-                 checks=[])
+        self.cmd(
+            'az blueprint assignment create '
+            '--name "{assignmentName}" '
+            '--location "westus2" '
+            '--identity-type "SystemAssigned" '
+            '--blueprint-id "/subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.Blueprint/blueprints/test-bp/versions/1.0" '
+            '--locks-mode "None" '
+            '--resource-groups @src/blueprint/azext_blueprint/tests/latest/input/create/resource_group_params.json '
+            '--parameters @src/blueprint/azext_blueprint/tests/latest/input/create/assignment_params.json',
+            checks=[])
 
-        self.cmd('az blueprint assignment show '
-                 '--scope "{scope}" '
-                 '--assignment-name "{assignmentName}"',
-                 checks=[])
+        self.cmd(
+            'az blueprint assignment wait '
+            '--name "{assignmentName}" '
+            '''--custom "provisioningState=='succeeded'" '''
+            '--created',
+            checks=[])
 
-        self.cmd('az blueprint assignment delete '
-                 '--scope "{scope}" '
-                 '--assignment-name "{assignmentName}" '
-                 '-y',
-                 checks=[])
+        self.cmd(
+            'az blueprint assignment show '
+            '--name "{assignmentName}"',
+            checks=[])
 
-        self.cmd('az blueprint assignment wait '
-                 '--scope "{scope}" '
-                 '--assignment-name "{assignmentName}" '
-                 '''--custom "provisioningState=='succeeded'" '''
-                 '--deleted',
-                 checks=[])
+        self.cmd(
+            'az blueprint assignment delete '
+            '--name "{assignmentName}" '
+            '-y',
+            checks=[])
 
-        self.cmd('az blueprint published delete '
-                 '--scope "{scope}" '
-                 '--blueprint-name "{blueprintName}" '
-                 '--version "1.0" '
-                 '-y',
-                 checks=[])
+        self.cmd(
+            'az blueprint assignment wait '
+            '--name "{assignmentName}" '
+            '''--custom "provisioningState=='succeeded'" '''
+            '--deleted',
+            checks=[])
+
+        self.cmd(
+            'az blueprint published delete '
+            '--blueprint-name "{blueprintName}" '
+            '--version "1.0" '
+            '-y',
+            checks=[])
 
         self.cmd('az blueprint delete '
-                 '--scope "{scope}" '
                  '--name "{blueprintName}" '
                  '-y',
                  checks=[])
@@ -130,3 +135,57 @@ class BlueprintScenarioTest(ScenarioTest):
                  '--subscription "{subscription}" '
                  '--name "blueprint-rg" '
                  '-y')
+
+    # @ResourceGroupPreparer(name_prefix='cli_test_blueprint_import')
+    # def test_blueprint_import(self, resource_group):
+
+    #     self.kwargs.update({
+    #         'blueprintName': 'test-import-bp',
+    #         'subscription': '00000000-0000-0000-0000-000000000000'
+    #     })
+
+    #     self.cmd('az account set -s "{subscription}"')
+
+    #     self.cmd(
+    #         'az blueprint import '
+    #         '--name "{blueprintName}" '
+    #         '--input-path "src/blueprint/azext_blueprint/tests/latest/input/import_with_arm" '
+    #         '-y',
+    #         checks=[JMESPathCheck('name', self.kwargs.get('blueprintName', '')),
+    #                 JMESPathCheck('targetScope', 'subscription'),
+    #                 JMESPathCheckExists('resourceGroups.storageRG')])
+
+    #     # this will overwrite the previous settings
+    #     self.cmd(
+    #         'az blueprint import '
+    #         '--name "{blueprintName}" '
+    #         '--input-path "src/blueprint/azext_blueprint/tests/latest/input/import_with_artifacts" '
+    #         '-y',
+    #         checks=[JMESPathCheckExists('parameters.contributors')])
+
+    #     self.cmd(
+    #         'az blueprint artifact list '
+    #         '--blueprint-name "{blueprintName}" ',
+    #         checks=[
+    #             JMESPathCheckExists('[3].kind'),
+    #             JMESPathCheck('[3].kind', 'roleAssignment')
+    #         ])
+
+    #     self.cmd(
+    #         'az blueprint published create '
+    #         '--blueprint-name "{blueprintName}" '
+    #         '--version "1.0" '
+    #         '--change-notes "First release"',
+    #         checks=[JMESPathCheck('name', '1.0')])
+
+    #     self.cmd(
+    #         'az blueprint published delete '
+    #         '--blueprint-name "{blueprintName}" '
+    #         '--version "1.0" '
+    #         '-y',
+    #         checks=[JMESPathCheck('name', '1.0')])
+
+    #     self.cmd('az blueprint delete '
+    #              '--name "{blueprintName}" '
+    #              '-y',
+    #              checks=[JMESPathCheck('name', self.kwargs.get('blueprintName', ''))])

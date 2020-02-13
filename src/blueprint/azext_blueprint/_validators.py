@@ -4,15 +4,10 @@
 # --------------------------------------------------------------------------------------------
 
 
-def example_name_or_id_validator(cmd, namespace):
+def scope_validator(cmd, namespace):
     from azure.cli.core.commands.client_factory import get_subscription_id
-    from msrestazure.tools import is_valid_resource_id, resource_id
-    if namespace.storage_account:
-        if not is_valid_resource_id(namespace.RESOURCE):
-            namespace.storage_account = resource_id(
-                subscription=get_subscription_id(cmd.cli_ctx),
-                resource_group=namespace.resource_group_name,
-                namespace='Microsoft.Storage',
-                type='storageAccounts',
-                name=namespace.storage_account
-            )
+
+    namespace.scope = '/providers/Microsoft.Management/managementGroups/{}'.format(
+        namespace.management_group
+    ) if namespace.management_group is not None else '/subscriptions/{}'.format(
+        get_subscription_id(cmd.cli_ctx))

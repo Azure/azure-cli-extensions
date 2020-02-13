@@ -7,64 +7,35 @@ Install this extension using the below CLI command
 az extension add --name blueprint
 ```
 
+Blueprint can be scoped in a subscription or management group, which is a group of subscriptions. You can use management group by specify `--management-group`, or use subscription by specify `--subscription.` If both parameters are omitted, the command will use your default subscription. You can set it by running:
+```
+az account set --subscription subscription_id
+```
+
 ### Included Features
 #### Blueprint Definition Management:
 *Examples:*
 
-##### Create an Empty Blueprint
+##### Import Blueprint Definition and Artifacts Settings
+
+```
+az blueprint import \
+--name blueprintName \
+--input-path "/path/to/blueprint/directory"
+
+```
+
+In the input directory, there should be a file named "blueprint.json" that has blueprint definition and parameters for artifacts. There should be a subdirectory named "artifacts" and it should contain files for artifact definition. Examples can be found [here]().
+
+The import command will overwrite defnitions for blueprint and artifacts if a blueprint with the same name already exists.
+
+##### Create a Blueprint with Parameters
 
 ```
 az blueprint create \
-    --scope "/subscriptions/{subscriptionId}" \
     --name blueprintName \
     --description "An example blueprint." \
-    --target-scope "subscription"
-```
-
-##### Add a Resource Group in the Blueprint
-```
-az blueprint resource-group create \
-    --scope "/subscriptions/{subscriptionId}" \
-    --blueprint-name blueprintName \
-    --artifact-name my-rg-art
-```
-
-##### Add a Role Assignment Artifact
-```
-az blueprint artifact role create \
-    --scope "/subscriptions/{subscriptionId}" \
-    --blueprint-name blueprintName \
-    --artifact-name my-role-art \
-    --display-name "My Role Name" \
-    --resource-group-art my-rg-art \
-    --role-definition-id "/providers/Microsoft.Authorization/roleDefinitions/00000000-0000-0000-0000-000000000000" \
-    --principal-ids "[parameters('MyRoleName_RoleAssignmentName')]"
-```
-
-##### Add a Policy Assignment Artifact
-```
-az blueprint artifact policy create \
-    --scope "/subscriptions/{subscriptionId}" \
-    --blueprint-name blueprintName \
-    --artifact-name my-policy-art \
-    --display-name "My Policy Name" \
-    --policy-definition-id "/providers/Microsoft.Authorization/policySetDefinitions/00000000-0000-0000-0000-000000000000" \
-    --parameters @/path/to/policy_params.json
-```
-An example policy_params.json may look like this:
-```json
-{
-    "Members":{
-        "value":"[parameters('MyPolicyName_Members')]"
-    }
-}
-```
-
-##### Update Parameter in Blueprint
-```
-az blueprint update \
-    --scope "/subscriptions/{subscriptionId}" \
-    --name blueprintName \
+    --target-scope "subscription" \
     --parameters @/path/to/blueprint_params.json
 ```
 An example blueprint_params.json may look like this:
@@ -82,11 +53,48 @@ An example blueprint_params.json may look like this:
     }
 }
 ```
+The paramters are for artifacts which will be added in below commands.
+
+##### Add a Resource Group in the Blueprint
+```
+az blueprint resource-group create \
+    --blueprint-name blueprintName \
+    --artifact-name myRgArt
+```
+
+##### Add a Role Assignment Artifact
+```
+az blueprint artifact role create \
+    --blueprint-name blueprintName \
+    --artifact-name my-role-art \
+    --display-name "My Role Name" \
+    --resource-group-art myRgArt \
+    --role-definition-id "/providers/Microsoft.Authorization/roleDefinitions/00000000-0000-0000-0000-000000000000" \
+    --principal-ids "[parameters('MyRoleName_RoleAssignmentName')]"
+```
+
+##### Add a Policy Assignment Artifact
+```
+az blueprint artifact policy create \
+    --blueprint-name blueprintName \
+    --artifact-name my-policy-art \
+    --display-name "My Policy Name" \
+    --policy-definition-id "/providers/Microsoft.Authorization/policySetDefinitions/00000000-0000-0000-0000-000000000000" \
+    --parameters @/path/to/policy_params.json
+```
+An example policy_params.json may look like this:
+```json
+{
+    "Members":{
+        "value":"[parameters('MyPolicyName_Members')]"
+    }
+}
+```
+
 
 ##### Publish a Blueprint
 ```
 az blueprint published create \
-    --scope "/subscriptions/{subscriptionId}" \
     --blueprint-name blueprintName \
     --version "1.0" \
     --change-notes "First release"
@@ -95,8 +103,7 @@ az blueprint published create \
 ##### Assign a Blueprint to a subscription
 ```
 az blueprint assignment create \
-    --scope "/subscriptions/{subscriptionId}" \
-    --assignment-name assignmentName \
+    --name assignmentName \
     --location "westus2" \
     --identity-type "SystemAssigned" \
     --blueprint-id "/subscriptions/{subscriptionId}/providers/Microsoft.Blueprint/blueprints/blueprintName/versions/1.0" \
@@ -104,10 +111,12 @@ az blueprint assignment create \
     --resource-groups @/path/to/resource_group_params.json \
     --parameters @/path/to/assignment_params.json
 ```
+Values need to be assigned for the parameters when assigning a blueprint.
+
 An example resource_group_params.json may look like this:
 ```json
 {
-    "my-rg-art":{
+    "myRgArt":{
         "name":"blueprint-rg",
         "location":"eastasia"
     }
@@ -125,13 +134,20 @@ An example assignment_params.json may look like this:
     }
 }
 ```
+
 ##### Wait for assignment to finish
 ```
-az blueprint assignment wait '
-    --scope "/subscriptions/{subscriptionId}" \
-    --assignment-name assignmentName \
+az blueprint assignment wait \
+    --name assignmentName \
     --custom "provisioningState=='succeeded'" \
     --created
 ```
+
+##### Delete Blueprint Assignment
+```
+az blueprint assignment delete \
+    --name assignmentName
+```
+Deleting a blueprint assignment does not delete the resources created in the target subscription.
 
 If you have issues, please give feedback by opening an issue at https://github.com/Azure/azure-cli-extensions/issues.

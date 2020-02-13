@@ -8,40 +8,25 @@
 # pylint: disable=too-many-locals
 # pylint: disable=unused-argument
 
-
 import json
 import os
 from knack.util import CLIError
 
 
-def create_blueprint(cmd, client,
-                     blueprint_name,
-                     scope,
-                     display_name=None,
-                     description=None,
-                     target_scope=None,
-                     parameters=None):
-    body = {}
-    body['display_name'] = display_name  # str
-    body['description'] = description  # str
-    body['target_scope'] = target_scope  # str
-    body['parameters'] = json.loads(parameters) if parameters is not None else {}  # dictionary
-    return client.create_or_update(scope=scope, blueprint_name=blueprint_name, blueprint=body)
-
-
-def import_blueprint_with_artifacts(cmd, client,
+def import_blueprint_with_artifacts(cmd,
+                                    client,
                                     blueprint_name,
-                                    scope,
-                                    input_path):
+                                    input_path,
+                                    management_group=None,
+                                    scope=None):
     from ._client_factory import cf_artifacts
 
     artifact_client = cf_artifacts(cmd.cli_ctx)
     body = {}
-    blueprint_path = os.path.join(input_path, 'blueprint.json')
+    blueprint_path = os.path.abspath(os.path.join(input_path, 'blueprint.json'))
 
     with open(blueprint_path) as blueprint_file:
         blueprint = json.load(blueprint_file)
-        print(blueprint)
         if blueprint['properties'] is None:
             raise CLIError('Blueprint file does not contain properties field')
         blueprint_properties = blueprint['properties']
@@ -51,29 +36,64 @@ def import_blueprint_with_artifacts(cmd, client,
             body['description'] = blueprint_properties['description']  # str
         if 'targetScope' in blueprint_properties:
             body['target_scope'] = blueprint_properties['targetScope']  # str
+        else:
+            body['target_scope'] = 'subscription'
         if 'parameters' in blueprint_properties:
-            body['parameters'] = blueprint_properties['parameters']  # dictionary
+            body['parameters'] = blueprint_properties[
+                'parameters']  # dictionary
         if 'resourceGroups' in blueprint_properties:
-            body['resource_groups'] = blueprint_properties['resourceGroups']  # dictionary
-        print(body)
-        blueprint_response = client.create_or_update(scope=scope, blueprint_name=blueprint_name, blueprint=body)
+            body['resource_groups'] = blueprint_properties[
+                'resourceGroups']  # dictionary
+        blueprint_response = client.create_or_update(
+            scope=scope, blueprint_name=blueprint_name, blueprint=body)
 
-    for filename in os.listdir(os.path.join(input_path, 'artifacts')):
+    # delete old artifacts
+    artifacts = artifact_client.list(scope=scope, blueprint_name=blueprint_name)
+    for artifact in artifacts:
+        artifact_client.delete(scope=scope,
+                               blueprint_name=blueprint_name,
+                               artifact_name=artifact.name)
+
+    for filename in os.listdir(os.path.abspath(os.path.join(input_path, 'artifacts'))):
         artifact_name = filename.split('.')[0]
-        print(artifact_name)
-        filepath = os.path.join(input_path, 'artifacts', filename)
-        print(filepath)
+        filepath = os.path.abspath(os.path.join(input_path, 'artifacts', filename))
         with open(filepath) as artifact_file:
             artifact = json.load(artifact_file)
             print(artifact)
-            artifact_client.create_or_update(scope=scope, blueprint_name=blueprint_name, artifact_name=artifact_name, artifact=artifact)
+            artifact_client.create_or_update(scope=scope,
+                                             blueprint_name=blueprint_name,
+                                             artifact_name=artifact_name,
+                                             artifact=artifact)
 
     return blueprint_response
 
 
-def update_blueprint(cmd, client,
+def create_blueprint(cmd,
+                     client,
                      blueprint_name,
-                     scope,
+                     management_group=None,
+                     scope=None,
+                     target_scope='subscription',
+                     display_name=None,
+                     description=None,
+                     parameters=None):
+    body = {}
+    body['display_name'] = display_name  # str
+    body['description'] = description  # str
+    body['target_scope'] = target_scope  # str
+    body['parameters'] = json.loads(
+        parameters) if parameters is not None else {}  # dictionary
+
+    return client.create_or_update(scope=scope,
+                                   blueprint_name=blueprint_name,
+                                   blueprint=body)
+
+
+def update_blueprint(cmd,
+                     client,
+                     blueprint_name,
+                     management_group=None,
+                     scope=None,
                      description=None,
                      parameters=None):
     body = client.get(scope=scope, blueprint_name=blueprint_name).as_dict()
@@ -81,49 +101,45 @@ def update_blueprint(cmd, client,
         body['description'] = description  # str
     if parameters is not None:
         body['parameters'] = json.loads(parameters)  # dictionary
-    return client.create_or_update(scope=scope, blueprint_name=blueprint_name, blueprint=body)
+    return client.create_or_update(scope=scope,
+                                   blueprint_name=blueprint_name,
+                                   blueprint=body)
 
 
-def delete_blueprint(cmd, client,
-                     blueprint_name,
-                     scope):
+def delete_blueprint(cmd, client, blueprint_name, management_group=None, scope=None):
     return client.delete(scope=scope, blueprint_name=blueprint_name)
 
 
-def get_blueprint(cmd, client,
-                  blueprint_name,
-                  scope):
+def get_blueprint(cmd, client, blueprint_name, management_group=None, scope=None):
     return client.get(scope=scope, blueprint_name=blueprint_name)
 
 
-def list_blueprint(cmd, client,
-                   scope):
+def list_blueprint(cmd, client, management_group=None, scope=None):
     return client.list(scope=scope)
 
 
-def delete_blueprint_artifact(cmd, client,
-                              blueprint_name,
-                              artifact_name,
-                              scope):
-    return client.delete(scope=scope, blueprint_name=blueprint_name, artifact_name=artifact_name)
+def delete_blueprint_artifact(cmd, client, blueprint_name, artifact_name,
+                              management_group=None, scope=None):
+    return client.delete(scope=scope,
+                         blueprint_name=blueprint_name,
+                         artifact_name=artifact_name)
 
 
-def get_blueprint_artifact(cmd, client,
-                           blueprint_name,
-                           artifact_name,
-                           scope):
-    return client.get(scope=scope, blueprint_name=blueprint_name, artifact_name=artifact_name)
+def get_blueprint_artifact(cmd, client, blueprint_name, artifact_name, management_group=None, scope=None):
+    return client.get(scope=scope,
+                      blueprint_name=blueprint_name,
+                      artifact_name=artifact_name)
 
 
-def list_blueprint_artifact(cmd, client,
-                            blueprint_name,
-                            scope):
+def list_blueprint_artifact(cmd, client, blueprint_name, management_group=None, scope=None):
     return client.list(scope=scope, blueprint_name=blueprint_name)
 
 
-def create_blueprint_resource_group(cmd, client,
+def create_blueprint_resource_group(cmd,
+                                    client,
                                     blueprint_name,
-                                    scope,
+                                    management_group=None,
+                                    scope=None,
                                     artifact_name=None,
                                     display_name=None,
                                     rg_name=None,
@@ -142,7 +158,8 @@ def create_blueprint_resource_group(cmd, client,
             if rg_key not in body['resource_groups']:
                 break
     elif artifact_name in body['resource_groups']:
-        raise CLIError('A resource group artifact with the same name already exists.')
+        raise CLIError(
+            'A resource group artifact with the same name already exists.')
 
     resource_group = {
         "name": rg_name,
@@ -153,14 +170,18 @@ def create_blueprint_resource_group(cmd, client,
         "tags": tags
     }
     body.setdefault('resource_groups', {})[rg_key] = resource_group
-    rgs = client.create_or_update(scope=scope, blueprint_name=blueprint_name, blueprint=body).resource_groups
+    rgs = client.create_or_update(scope=scope,
+                                  blueprint_name=blueprint_name,
+                                  blueprint=body).resource_groups
     return {k: v for k, v in rgs.items() if k == artifact_name}
 
 
-def update_blueprint_resource_group(cmd, client,
+def update_blueprint_resource_group(cmd,
+                                    client,
                                     blueprint_name,
-                                    scope,
                                     artifact_name,
+                                    management_group=None,
+                                    scope=None,
                                     rg_name=None,
                                     rg_location=None,
                                     display_name=None,
@@ -184,69 +205,79 @@ def update_blueprint_resource_group(cmd, client,
     if tags is not None:
         resource_group['tags'] = tags
 
-    rgs = client.create_or_update(scope=scope, blueprint_name=blueprint_name, blueprint=body).resource_groups
+    rgs = client.create_or_update(scope=scope,
+                                  blueprint_name=blueprint_name,
+                                  blueprint=body).resource_groups
     return {k: v for k, v in rgs.items() if k == artifact_name}
 
 
 # todo test
-def delete_blueprint_resource_group(cmd, client,
-                                    blueprint_name,
-                                    scope,
-                                    artifact_name):
+def delete_blueprint_resource_group(cmd, client, blueprint_name,
+                                    artifact_name, management_group=None, scope=None):
     body = client.get(scope=scope, blueprint_name=blueprint_name).as_dict()
     if artifact_name not in body.setdefault('resource_groups', {}):
         raise CLIError('The specified artifact name can not be found.')
     deleted_rg = body['resource_groups'][artifact_name]
     del body['resource_groups'][artifact_name]
-    client.create_or_update(scope=scope, blueprint_name=blueprint_name, blueprint=body)
+    client.create_or_update(scope=scope,
+                            blueprint_name=blueprint_name,
+                            blueprint=body)
     return deleted_rg
 
 
-def get_blueprint_resource_group(cmd, client,
-                                 blueprint_name,
-                                 scope,
-                                 artifact_name):
-    rgs = client.get(scope=scope, blueprint_name=blueprint_name).resource_groups
+def get_blueprint_resource_group(cmd, client, blueprint_name,
+                                 artifact_name, management_group=None, scope=None):
+    rgs = client.get(scope=scope,
+                     blueprint_name=blueprint_name).resource_groups
     return {k: v for k, v in rgs.items() if k == artifact_name}
 
 
-def list_blueprint_resource_group(cmd, client,
-                                  blueprint_name,
-                                  scope):
+def list_blueprint_resource_group(cmd, client, blueprint_name, management_group=None, scope=None):
     body = client.get(scope=scope, blueprint_name=blueprint_name)
     return body.resource_groups
 
 
-def create_blueprint_artifact_policy(cmd, client,
+def create_blueprint_artifact_policy(cmd,
+                                     client,
                                      blueprint_name,
-                                     scope,
                                      policy_definition_id,
                                      artifact_name,
+                                     management_group=None,
+                                     scope=None,
                                      parameters=None,
                                      display_name=None,
                                      resource_group_art=None,
                                      description=None,
                                      depends_on=None):
-    body = {'display_name': display_name,
-            'policy_definition_id': policy_definition_id,
-            'kind': 'policyAssignment',
-            'description': description,
-            'depends_on': depends_on,
-            'parameters': json.loads(parameters) if parameters is not None else {},
-            'resource_group': resource_group_art}
-    return client.create_or_update(scope=scope, blueprint_name=blueprint_name, artifact_name=artifact_name, artifact=body)
+    body = {
+        'display_name': display_name,
+        'policy_definition_id': policy_definition_id,
+        'kind': 'policyAssignment',
+        'description': description,
+        'depends_on': depends_on,
+        'parameters': json.loads(parameters) if parameters is not None else {},
+        'resource_group': resource_group_art
+    }
+    return client.create_or_update(scope=scope,
+                                   blueprint_name=blueprint_name,
+                                   artifact_name=artifact_name,
+                                   artifact=body)
 
 
-def update_blueprint_artifact_policy(cmd, client,
+def update_blueprint_artifact_policy(cmd,
+                                     client,
                                      blueprint_name,
-                                     scope,
                                      artifact_name,
+                                     management_group=None,
+                                     scope=None,
                                      parameters=None,
                                      display_name=None,
                                      resource_group_art=None,
                                      description=None,
                                      depends_on=None):
-    body = client.get(scope=scope, blueprint_name=blueprint_name, artifact_name=artifact_name).as_dict()
+    body = client.get(scope=scope,
+                      blueprint_name=blueprint_name,
+                      artifact_name=artifact_name).as_dict()
     if parameters is not None:
         body['parameters'] = json.loads(parameters)
     if display_name is not None:
@@ -258,39 +289,52 @@ def update_blueprint_artifact_policy(cmd, client,
     if depends_on is not None:
         body['depends_on'] = depends_on
 
-    return client.create_or_update(scope=scope, blueprint_name=blueprint_name, artifact_name=artifact_name, artifact=body)
+    return client.create_or_update(scope=scope,
+                                   blueprint_name=blueprint_name,
+                                   artifact_name=artifact_name,
+                                   artifact=body)
 
 
-def create_blueprint_artifact_role(cmd, client,
+def create_blueprint_artifact_role(cmd,
+                                   client,
                                    blueprint_name,
-                                   scope,
                                    role_definition_id,
                                    principal_ids,
                                    artifact_name,
+                                   management_group=None,
+                                   scope=None,
                                    display_name=None,
                                    resource_group_art=None,
                                    description=None,
                                    depends_on=None):
+    body = {
+        'display_name': display_name,
+        'role_definition_id': role_definition_id,
+        'kind': 'roleAssignment',
+        'description': description,
+        'depends_on': depends_on,
+        'resource_group': resource_group_art,
+        'principal_ids': principal_ids
+    }
+    return client.create_or_update(scope=scope,
+                                   blueprint_name=blueprint_name,
+                                   artifact_name=artifact_name,
+                                   artifact=body)
 
-    body = {'display_name': display_name,
-            'role_definition_id': role_definition_id,
-            'kind': 'roleAssignment',
-            'description': description,
-            'depends_on': depends_on,
-            'resource_group': resource_group_art,
-            'principal_ids': principal_ids}
-    return client.create_or_update(scope=scope, blueprint_name=blueprint_name, artifact_name=artifact_name, artifact=body)
 
-
-def update_blueprint_artifact_role(cmd, client,
+def update_blueprint_artifact_role(cmd,
+                                   client,
                                    blueprint_name,
-                                   scope,
                                    artifact_name,
+                                   management_group=None,
+                                   scope=None,
                                    display_name=None,
                                    resource_group_art=None,
                                    description=None,
                                    depends_on=None):
-    body = client.get(scope=scope, blueprint_name=blueprint_name, artifact_name=artifact_name).as_dict()
+    body = client.get(scope=scope,
+                      blueprint_name=blueprint_name,
+                      artifact_name=artifact_name).as_dict()
 
     if display_name is not None:
         body['display_name'] = display_name
@@ -301,42 +345,54 @@ def update_blueprint_artifact_role(cmd, client,
     if depends_on is not None:
         body['depends_on'] = depends_on
 
-    return client.create_or_update(scope=scope, blueprint_name=blueprint_name, artifact_name=artifact_name, artifact=body)
+    return client.create_or_update(scope=scope,
+                                   blueprint_name=blueprint_name,
+                                   artifact_name=artifact_name,
+                                   artifact=body)
 
 
-def create_blueprint_artifact_template(cmd, client,
+def create_blueprint_artifact_template(cmd,
+                                       client,
                                        blueprint_name,
-                                       scope,
                                        template,
                                        artifact_name,
+                                       management_group=None,
+                                       scope=None,
                                        parameters=None,
                                        display_name=None,
                                        resource_group_art=None,
                                        description=None,
                                        depends_on=None):
-    print(parameters)
-    print(template)
-    body = {'display_name': display_name,
-            'template': json.loads(template),
-            'kind': 'template',
-            'description': description,
-            'depends_on': depends_on,
-            'parameters': json.loads(parameters) if parameters is not None else {},
-            'resource_group': resource_group_art}
-    return client.create_or_update(scope=scope, blueprint_name=blueprint_name, artifact_name=artifact_name, artifact=body)
+    body = {
+        'display_name': display_name,
+        'template': json.loads(template),
+        'kind': 'template',
+        'description': description,
+        'depends_on': depends_on,
+        'parameters': json.loads(parameters) if parameters is not None else {},
+        'resource_group': resource_group_art
+    }
+    return client.create_or_update(scope=scope,
+                                   blueprint_name=blueprint_name,
+                                   artifact_name=artifact_name,
+                                   artifact=body)
 
 
-def update_blueprint_artifact_template(cmd, client,
+def update_blueprint_artifact_template(cmd,
+                                       client,
                                        blueprint_name,
-                                       scope,
                                        artifact_name,
+                                       management_group=None,
+                                       scope=None,
                                        template=None,
                                        parameters=None,
                                        display_name=None,
                                        resource_group_art=None,
                                        description=None,
                                        depends_on=None):
-    body = client.get(scope=scope, blueprint_name=blueprint_name, artifact_name=artifact_name).as_dict()
+    body = client.get(scope=scope,
+                      blueprint_name=blueprint_name,
+                      artifact_name=artifact_name).as_dict()
 
     if template is not None:
         body['template'] = json.loads(template)
@@ -351,58 +407,64 @@ def update_blueprint_artifact_template(cmd, client,
     if depends_on is not None:
         body['depends_on'] = depends_on
 
-    return client.create_or_update(scope=scope, blueprint_name=blueprint_name, artifact_name=artifact_name, artifact=body)
+    return client.create_or_update(scope=scope,
+                                   blueprint_name=blueprint_name,
+                                   artifact_name=artifact_name,
+                                   artifact=body)
 
 
-def create_blueprint_published(cmd, client,
+def create_blueprint_published(cmd,
+                               client,
                                blueprint_name,
-                               scope,
                                version_id,
+                               management_group=None,
+                               scope=None,
                                change_notes=None):
     body = {}
     body['change_notes'] = change_notes  # str
-    return client.create(scope=scope, blueprint_name=blueprint_name, version_id=version_id, published_blueprint=body)
+    return client.create(scope=scope,
+                         blueprint_name=blueprint_name,
+                         version_id=version_id,
+                         published_blueprint=body)
 
 
-def delete_blueprint_published(cmd, client,
-                               blueprint_name,
-                               scope,
-                               version_id):
-    return client.delete(scope=scope, blueprint_name=blueprint_name, version_id=version_id)
+def delete_blueprint_published(cmd, client, blueprint_name, version_id, management_group=None, scope=None):
+    return client.delete(scope=scope,
+                         blueprint_name=blueprint_name,
+                         version_id=version_id)
 
 
-def get_blueprint_published(cmd, client,
-                            blueprint_name,
-                            scope,
-                            version_id):
-    return client.get(scope=scope, blueprint_name=blueprint_name, version_id=version_id)
+def get_blueprint_published(cmd, client, blueprint_name, version_id, management_group=None, scope=None):
+    return client.get(scope=scope,
+                      blueprint_name=blueprint_name,
+                      version_id=version_id)
 
 
-def list_blueprint_published(cmd, client,
-                             blueprint_name,
-                             scope):
+def list_blueprint_published(cmd, client, blueprint_name, management_group=None, scope=None):
     return client.list(scope=scope, blueprint_name=blueprint_name)
 
 
-def get_blueprint_published_artifact(cmd, client,
-                                     blueprint_name,
-                                     scope,
-                                     version_id,
-                                     artifact_name):
-    return client.get(scope=scope, blueprint_name=blueprint_name, version_id=version_id, artifact_name=artifact_name)
+def get_blueprint_published_artifact(cmd, client, blueprint_name,
+                                     version_id, artifact_name, management_group=None, scope=None):
+    return client.get(scope=scope,
+                      blueprint_name=blueprint_name,
+                      version_id=version_id,
+                      artifact_name=artifact_name)
 
 
-def list_blueprint_published_artifact(cmd, client,
-                                      blueprint_name,
-                                      scope,
-                                      version_id):
-    return client.list(scope=scope, blueprint_name=blueprint_name, version_id=version_id)
+def list_blueprint_published_artifact(cmd, client, blueprint_name,
+                                      version_id, management_group=None, scope=None):
+    return client.list(scope=scope,
+                       blueprint_name=blueprint_name,
+                       version_id=version_id)
 
 
-def create_blueprint_assignment(cmd, client,
+def create_blueprint_assignment(cmd,
+                                client,
                                 assignment_name,
-                                scope,
                                 identity_type,
+                                management_group=None,
+                                scope=None,
                                 location=None,
                                 resource_groups=None,
                                 identity_principal_id=None,
@@ -417,22 +479,34 @@ def create_blueprint_assignment(cmd, client,
     body = {}
     body['location'] = location  # str
     body.setdefault('identity', {})['type'] = identity_type  # str
-    body.setdefault('identity', {})['principal_id'] = identity_principal_id  # str
+    body.setdefault('identity',
+                    {})['principal_id'] = identity_principal_id  # str
     body.setdefault('identity', {})['tenant_id'] = identity_tenant_id  # str
-    body.setdefault('identity', {})['user_assigned_identities'] = identity_user_assigned_identities  # dictionary
+    body.setdefault(
+        'identity', {}
+    )['user_assigned_identities'] = identity_user_assigned_identities  # dictionary
     body['display_name'] = display_name  # str
     body['description'] = description  # str
     body['blueprint_id'] = blueprint_id  # str
-    body['parameters'] = json.loads(parameters) if parameters is not None else {}   # dictionary
-    body['resource_groups'] = json.loads(resource_groups) if resource_groups is not None else {}  # dictionary
+    body['parameters'] = json.loads(
+        parameters) if parameters is not None else {}  # dictionary
+    body['resource_groups'] = json.loads(
+        resource_groups) if resource_groups is not None else {}  # dictionary
     body.setdefault('locks', {})['mode'] = locks_mode  # str
-    body.setdefault('locks', {})['excluded_principals'] = None if locks_excluded_principals is None else locks_excluded_principals.split(',')
-    return client.create_or_update(scope=scope, assignment_name=assignment_name, assignment=body)
+    body.setdefault(
+        'locks', {}
+    )['excluded_principals'] = None if locks_excluded_principals is None else locks_excluded_principals.split(
+        ',')
+    return client.create_or_update(scope=scope,
+                                   assignment_name=assignment_name,
+                                   assignment=body)
 
 
-def update_blueprint_assignment(cmd, client,
+def update_blueprint_assignment(cmd,
+                                client,
                                 assignment_name,
-                                scope,
+                                management_group=None,
+                                scope=None,
                                 location=None,
                                 identity_type=None,
                                 identity_principal_id=None,
@@ -451,11 +525,15 @@ def update_blueprint_assignment(cmd, client,
     if identity_type is not None:
         body.setdefault('identity', {})['type'] = identity_type  # str
     if identity_principal_id is not None:
-        body.setdefault('identity', {})['principal_id'] = identity_principal_id  # str
+        body.setdefault('identity',
+                        {})['principal_id'] = identity_principal_id  # str
     if identity_tenant_id is not None:
-        body.setdefault('identity', {})['tenant_id'] = identity_tenant_id  # str
+        body.setdefault('identity',
+                        {})['tenant_id'] = identity_tenant_id  # str
     if identity_user_assigned_identities is not None:
-        body.setdefault('identity', {})['user_assigned_identities'] = identity_user_assigned_identities  # dictionary
+        body.setdefault(
+            'identity', {}
+        )['user_assigned_identities'] = identity_user_assigned_identities  # dictionary
     if display_name is not None:
         body['display_name'] = display_name  # str
     if description is not None:
@@ -469,28 +547,31 @@ def update_blueprint_assignment(cmd, client,
     if locks_mode is not None:
         body.setdefault('locks', {})['mode'] = locks_mode  # str
     if locks_excluded_principals is not None:
-        body.setdefault('locks', {})['excluded_principals'] = None if locks_excluded_principals is None else locks_excluded_principals.split(',')
-    return client.create_or_update(scope=scope, assignment_name=assignment_name, assignment=body)
+        body.setdefault(
+            'locks', {}
+        )['excluded_principals'] = None if locks_excluded_principals is None else locks_excluded_principals.split(
+            ',')
+    return client.create_or_update(scope=scope,
+                                   assignment_name=assignment_name,
+                                   assignment=body)
 
 
-def delete_blueprint_assignment(cmd, client,
-                                assignment_name,
-                                scope):
+def delete_blueprint_assignment(cmd, client, assignment_name, management_group=None, scope=None):
     return client.delete(scope=scope, assignment_name=assignment_name)
 
 
-def get_blueprint_assignment(cmd, client,
-                             assignment_name,
-                             scope):
+def get_blueprint_assignment(cmd, client, assignment_name, management_group=None, scope=None):
     return client.get(scope=scope, assignment_name=assignment_name)
 
 
-def list_blueprint_assignment(cmd, client,
-                              scope):
+def list_blueprint_assignment(cmd, client, management_group=None, scope=None):
     return client.list(scope=scope)
 
 
-def who_is_blueprint_blueprint_assignment(cmd, client,
-                                          assignment_name,
-                                          scope):
-    return client.who_is_blueprint(scope=scope, assignment_name=assignment_name)
+def wait_for_blueprint_assignment(cmd, client, assignment_name, management_group=None, scope=None):
+    client.wait(scope=scope, assignment_name=assignment_name)
+
+
+def who_is_blueprint_blueprint_assignment(cmd, client, assignment_name, management_group=None, scope=None):
+    return client.who_is_blueprint(scope=scope,
+                                   assignment_name=assignment_name)
