@@ -20,11 +20,9 @@ class BlueprintScenarioTest(ScenarioTest):
 
         self.kwargs.update({
             'blueprintName': 'test-bp',
-            'subscription': '0b1f6471-1bf0-4dda-aec3-cb9272f09590',
+            'subscription': '00000000-0000-0000-0000-000000000000',
             'assignmentName': 'Assignment-test-bp'
         })
-
-        self.cmd('az account set -s "{subscription}"')
 
         self.cmd(
             'az blueprint create '
@@ -86,7 +84,7 @@ class BlueprintScenarioTest(ScenarioTest):
             '--name "{assignmentName}" '
             '--location "westus2" '
             '--identity-type "SystemAssigned" '
-            '--blueprint-id "/subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.Blueprint/blueprints/test-bp/versions/1.0" '
+            '--blueprint-id "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp/versions/1.0" '
             '--locks-mode "None" '
             '--resource-groups @src/blueprint/azext_blueprint/tests/latest/input/create/resource_group_params.json '
             '--parameters @src/blueprint/azext_blueprint/tests/latest/input/create/assignment_params.json',
@@ -136,56 +134,54 @@ class BlueprintScenarioTest(ScenarioTest):
                  '--name "blueprint-rg" '
                  '-y')
 
-    # @ResourceGroupPreparer(name_prefix='cli_test_blueprint_import')
-    # def test_blueprint_import(self, resource_group):
+    @ResourceGroupPreparer(name_prefix='cli_test_blueprint_import')
+    def test_blueprint_import(self, resource_group):
 
-    #     self.kwargs.update({
-    #         'blueprintName': 'test-import-bp',
-    #         'subscription': '00000000-0000-0000-0000-000000000000'
-    #     })
+        self.kwargs.update({
+            'blueprintName': 'test-import-bp',
+            'subscription': '00000000-0000-0000-0000-000000000000'
+        })
 
-    #     self.cmd('az account set -s "{subscription}"')
+        self.cmd(
+            'az blueprint import '
+            '--name "{blueprintName}" '
+            '--input-path "src/blueprint/azext_blueprint/tests/latest/input/import_with_arm" '
+            '-y',
+            checks=[JMESPathCheck('name', self.kwargs.get('blueprintName', '')),
+                    JMESPathCheck('targetScope', 'subscription'),
+                    JMESPathCheckExists('resourceGroups.storageRG')])
 
-    #     self.cmd(
-    #         'az blueprint import '
-    #         '--name "{blueprintName}" '
-    #         '--input-path "src/blueprint/azext_blueprint/tests/latest/input/import_with_arm" '
-    #         '-y',
-    #         checks=[JMESPathCheck('name', self.kwargs.get('blueprintName', '')),
-    #                 JMESPathCheck('targetScope', 'subscription'),
-    #                 JMESPathCheckExists('resourceGroups.storageRG')])
+        # this will overwrite the previous settings
+        self.cmd(
+            'az blueprint import '
+            '--name "{blueprintName}" '
+            '--input-path "src/blueprint/azext_blueprint/tests/latest/input/import_with_artifacts" '
+            '-y',
+            checks=[JMESPathCheckExists('parameters.contributors')])
 
-    #     # this will overwrite the previous settings
-    #     self.cmd(
-    #         'az blueprint import '
-    #         '--name "{blueprintName}" '
-    #         '--input-path "src/blueprint/azext_blueprint/tests/latest/input/import_with_artifacts" '
-    #         '-y',
-    #         checks=[JMESPathCheckExists('parameters.contributors')])
+        self.cmd(
+            'az blueprint artifact list '
+            '--blueprint-name "{blueprintName}" ',
+            checks=[
+                JMESPathCheckExists('[3].kind'),
+                JMESPathCheck('[3].kind', 'roleAssignment')
+            ])
 
-    #     self.cmd(
-    #         'az blueprint artifact list '
-    #         '--blueprint-name "{blueprintName}" ',
-    #         checks=[
-    #             JMESPathCheckExists('[3].kind'),
-    #             JMESPathCheck('[3].kind', 'roleAssignment')
-    #         ])
+        self.cmd(
+            'az blueprint published create '
+            '--blueprint-name "{blueprintName}" '
+            '--version "1.0" '
+            '--change-notes "First release"',
+            checks=[JMESPathCheck('name', '1.0')])
 
-    #     self.cmd(
-    #         'az blueprint published create '
-    #         '--blueprint-name "{blueprintName}" '
-    #         '--version "1.0" '
-    #         '--change-notes "First release"',
-    #         checks=[JMESPathCheck('name', '1.0')])
+        self.cmd(
+            'az blueprint published delete '
+            '--blueprint-name "{blueprintName}" '
+            '--version "1.0" '
+            '-y',
+            checks=[JMESPathCheck('name', '1.0')])
 
-    #     self.cmd(
-    #         'az blueprint published delete '
-    #         '--blueprint-name "{blueprintName}" '
-    #         '--version "1.0" '
-    #         '-y',
-    #         checks=[JMESPathCheck('name', '1.0')])
-
-    #     self.cmd('az blueprint delete '
-    #              '--name "{blueprintName}" '
-    #              '-y',
-    #              checks=[JMESPathCheck('name', self.kwargs.get('blueprintName', ''))])
+        self.cmd('az blueprint delete '
+                 '--name "{blueprintName}" '
+                 '-y',
+                 checks=[JMESPathCheck('name', self.kwargs.get('blueprintName', ''))])
