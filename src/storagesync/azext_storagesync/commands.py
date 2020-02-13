@@ -18,11 +18,9 @@ def load_command_table(self, _):
         client_factory=cf_storage_sync_services)
     with self.command_group('storagesync storage-sync-service', storagesync_storage_sync_services, client_factory=cf_storage_sync_services) as g:
         g.custom_command('create', 'create_storagesync_storage_sync_service')
-        g.custom_command('update', 'update_storagesync_storage_sync_service')
-        g.custom_command('delete', 'delete_storagesync_storage_sync_service')
+        g.custom_command('delete', 'delete_storagesync_storage_sync_service', confirmation=True)
         g.custom_show_command('show', 'get_storagesync_storage_sync_service')
         g.custom_command('list', 'list_storagesync_storage_sync_service')
-        g.custom_command('check-name-availability', 'check_name_availability_storagesync_storage_sync_service')
 
     from ._client_factory import cf_sync_groups
     storagesync_sync_groups = CliCommandType(
@@ -30,8 +28,7 @@ def load_command_table(self, _):
         client_factory=cf_sync_groups)
     with self.command_group('storagesync sync-group', storagesync_sync_groups, client_factory=cf_sync_groups) as g:
         g.custom_command('create', 'create_storagesync_sync_group')
-        g.custom_command('update', 'update_storagesync_sync_group')
-        g.custom_command('delete', 'delete_storagesync_sync_group')
+        g.custom_command('delete', 'delete_storagesync_sync_group', confirmation=True)
         g.custom_show_command('show', 'get_storagesync_sync_group')
         g.custom_command('list', 'list_storagesync_sync_group')
 
@@ -41,11 +38,9 @@ def load_command_table(self, _):
         client_factory=cf_cloud_endpoints)
     with self.command_group('storagesync cloud-endpoint', storagesync_cloud_endpoints, client_factory=cf_cloud_endpoints) as g:
         g.custom_command('create', 'create_storagesync_cloud_endpoint')
-        g.custom_command('update', 'update_storagesync_cloud_endpoint')
-        g.custom_command('delete', 'delete_storagesync_cloud_endpoint')
+        g.custom_command('delete', 'delete_storagesync_cloud_endpoint', confirmation=True)
         g.custom_show_command('show', 'get_storagesync_cloud_endpoint')
         g.custom_command('list', 'list_storagesync_cloud_endpoint')
-        g.custom_command('trigger-change-detection', 'trigger_change_detection_storagesync_cloud_endpoint')
 
     from ._client_factory import cf_server_endpoints
     storagesync_server_endpoints = CliCommandType(
@@ -54,7 +49,7 @@ def load_command_table(self, _):
     with self.command_group('storagesync server-endpoint', storagesync_server_endpoints, client_factory=cf_server_endpoints) as g:
         g.custom_command('create', 'create_storagesync_server_endpoint')
         g.custom_command('update', 'update_storagesync_server_endpoint')
-        g.custom_command('delete', 'delete_storagesync_server_endpoint')
+        g.custom_command('delete', 'delete_storagesync_server_endpoint', confirmation=True)
         g.custom_show_command('show', 'get_storagesync_server_endpoint')
         g.custom_command('list', 'list_storagesync_server_endpoint')
 
@@ -64,7 +59,6 @@ def load_command_table(self, _):
         client_factory=cf_registered_servers)
     with self.command_group('storagesync registered-server', storagesync_registered_servers, client_factory=cf_registered_servers) as g:
         g.custom_command('create', 'create_storagesync_registered_server')
-        g.custom_command('update', 'update_storagesync_registered_server')
-        g.custom_command('delete', 'delete_storagesync_registered_server')
+        g.custom_command('delete', 'delete_storagesync_registered_server', confirmation=True)
         g.custom_show_command('show', 'get_storagesync_registered_server')
         g.custom_command('list', 'list_storagesync_registered_server')

@@ -29,16 +29,6 @@ helps['storagesync storage-sync-service create'] = """
                --name "SampleStorageSyncService_1" --location "WestUS"
 """
 
-helps['storagesync storage-sync-service update'] = """
-    type: command
-    short-summary: Create a new StorageSyncService.
-    examples:
-      - name: StorageSyncServices_Update
-        text: |-
-               az storagesync storage-sync-service update --resource-group "SampleResourceGroup_1" \\
-               --name "SampleStorageSyncService_1"
-"""
-
 helps['storagesync storage-sync-service delete'] = """
     type: command
     short-summary: Delete a given StorageSyncService.
@@ -71,20 +61,6 @@ helps['storagesync storage-sync-service list'] = """
                az storagesync storage-sync-service list
 """
 
-helps['storagesync storage-sync-service check-name-availability'] = """
-    type: command
-    short-summary: Check the give namespace name availability.
-    examples:
-      - name: StorageSyncServiceCheckNameAvailability_AlreadyExists
-        text: |-
-               az storagesync storage-sync-service check-name-availability --location-name "westus" \\
-               --name "newstoragesyncservicename" --type "Microsoft.StorageSync/storageSyncServices"
-      - name: StorageSyncServiceCheckNameAvailability_Available
-        text: |-
-               az storagesync storage-sync-service check-name-availability --location-name "westus" \\
-               --name "newstoragesyncservicename" --type "Microsoft.StorageSync/storageSyncServices"
-"""
-
 helps['storagesync sync-group'] = """
     type: group
     short-summary: Commands to manage storagesync sync group.
@@ -98,11 +74,6 @@ helps['storagesync sync-group create'] = """
         text: |-
                az storagesync sync-group create --resource-group "SampleResourceGroup_1" \\
                --storage-sync-service-name "SampleStorageSyncService_1" --name "SampleSyncGroup_1"
-"""
-
-helps['storagesync sync-group update'] = """
-    type: command
-    short-summary: Create a new SyncGroup.
 """
 
 helps['storagesync sync-group delete'] = """
@@ -153,11 +124,6 @@ helps['storagesync cloud-endpoint create'] = """
                ge/storageAccounts/{{ storage_account_name }}" --azure-file-share-name \\
                "cvcloud-afscv-0719-058-a94a1354-a1fd-4e9a-9a50-919fad8c4ba4" --storage-account-tenant-id \\
                "\\"72f988bf-86f1-41af-91ab-2d7cd011db47\\"" --friendly-name "ankushbsubscriptionmgmtmab"
-"""
-
-helps['storagesync cloud-endpoint update'] = """
-    type: command
-    short-summary: Create a new CloudEndpoint.
 """
 
 helps['storagesync cloud-endpoint delete'] = """
@@ -368,11 +334,6 @@ helps['storagesync registered-server create'] = """
                looK2bjMUei9ANtEdXwwfVZGWvVh6tJjdv6k14wWWJ1L7zhA1IIVb1J+sQUzJji5iX0DrezjTz1Fg+gAzITaA/Wsuu
                jlM=\\"" --agent-version "1.0.277.0" --server-osversion "10.0.14393.0" --last-heart-beat \\
                "\\"2017-08-08T18:29:06.470652Z\\"" --server-role "Standalone"
-"""
-
-helps['storagesync registered-server update'] = """
-    type: command
-    short-summary: Add a new registered server.
 """
 
 helps['storagesync registered-server delete'] = """
