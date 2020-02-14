@@ -63,17 +63,17 @@ class EventGridManagementClient(SDKClient):
     :vartype config: EventGridManagementClientConfiguration
 
     :ivar domains: Domains operations
-    :vartype domains: microsoft.azure.management.eventgrid.operations.DomainsOperations
+    :vartype domains: azext_eventgrid.operations.DomainsOperations
     :ivar domain_topics: DomainTopics operations
-    :vartype domain_topics: microsoft.azure.management.eventgrid.operations.DomainTopicsOperations
+    :vartype domain_topics: azext_eventgrid.operations.DomainTopicsOperations
     :ivar event_subscriptions: EventSubscriptions operations
-    :vartype event_subscriptions: microsoft.azure.management.eventgrid.operations.EventSubscriptionsOperations
+    :vartype event_subscriptions: azext_eventgrid.operations.EventSubscriptionsOperations
     :ivar operations: Operations operations
-    :vartype operations: microsoft.azure.management.eventgrid.operations.Operations
+    :vartype operations: azext_eventgrid.operations.Operations
     :ivar topics: Topics operations
-    :vartype topics: microsoft.azure.management.eventgrid.operations.TopicsOperations
+    :vartype topics: azext_eventgrid.operations.TopicsOperations
     :ivar topic_types: TopicTypes operations
-    :vartype topic_types: microsoft.azure.management.eventgrid.operations.TopicTypesOperations
+    :vartype topic_types: azext_eventgrid.operations.TopicTypesOperations
 
     :param credentials: Credentials needed for the client to connect to Azure.
     :type credentials: :mod:`A msrestazure Credentials
@@ -92,7 +92,7 @@ class EventGridManagementClient(SDKClient):
         super(EventGridManagementClient, self).__init__(self.config.credentials, self.config)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
-        self.api_version = '2020-01-01-preview'
+        self.api_version = '2020-04-01-preview'
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
 

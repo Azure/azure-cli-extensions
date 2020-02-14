@@ -5,4 +5,4 @@
 
 from azure.cli.core.profiles import register_resource_type
 from azext_firewall.profiles import CUSTOM_FIREWALL
-register_resource_type('latest', CUSTOM_FIREWALL, '2018-08-01')
+register_resource_type('latest', CUSTOM_FIREWALL, '2019-11-01')

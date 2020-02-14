@@ -10,7 +10,7 @@ import platform
 
 from argcomplete.completers import FilesCompleter
 from azure.cli.core.commands.parameters import (
-    file_type, get_resource_name_completion_list, name_type, tags_type, zones_type)
+    file_type, get_resource_name_completion_list, name_type, tags_type, zones_type, get_enum_type)
 from knack.arguments import CLIArgumentType
 
 from ._completers import (
@@ -20,7 +20,9 @@ from ._validators import (
     validate_ssh_key, validate_max_pods, validate_nodes_count, validate_ip_ranges,
     validate_nodepool_name, validate_vm_set_type, validate_load_balancer_sku,
     validate_load_balancer_outbound_ips, validate_load_balancer_outbound_ip_prefixes,
-    validate_taints, validate_priority, validate_eviction_policy, validate_acr, validate_user)
+    validate_taints, validate_priority, validate_eviction_policy, validate_acr, validate_user,
+    validate_load_balancer_outbound_ports, validate_load_balancer_idle_timeout)
+from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING
 
 
 def load_arguments(self, _):
@@ -60,6 +62,10 @@ def load_arguments(self, _):
         c.argument('load_balancer_managed_outbound_ip_count', type=int)
         c.argument('load_balancer_outbound_ips', type=str, validator=validate_load_balancer_outbound_ips)
         c.argument('load_balancer_outbound_ip_prefixes', type=str, validator=validate_load_balancer_outbound_ip_prefixes)
+        c.argument('load_balancer_outbound_ports', type=int, validator=validate_load_balancer_outbound_ports)
+        c.argument('load_balancer_idle_timeout', type=int, validator=validate_load_balancer_idle_timeout)
+        c.argument('outbound_type', arg_type=get_enum_type([CONST_OUTBOUND_TYPE_LOAD_BALANCER,
+                                                            CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING]))
         c.argument('enable_addons', options_list=['--enable-addons', '-a'])
         c.argument('disable_rbac', action='store_true')
         c.argument('enable_rbac', action='store_true', options_list=['--enable-rbac', '-r'],
@@ -96,6 +102,8 @@ def load_arguments(self, _):
         c.argument('load_balancer_managed_outbound_ip_count', type=int)
         c.argument('load_balancer_outbound_ips', type=str, validator=validate_load_balancer_outbound_ips)
         c.argument('load_balancer_outbound_ip_prefixes', type=str, validator=validate_load_balancer_outbound_ip_prefixes)
+        c.argument('load_balancer_outbound_ports', type=int, validator=validate_load_balancer_outbound_ports)
+        c.argument('load_balancer_idle_timeout', type=int, validator=validate_load_balancer_idle_timeout)
         c.argument('api_server_authorized_ip_ranges', type=str, validator=validate_ip_ranges)
         c.argument('enable_pod_security_policy', action='store_true')
         c.argument('disable_pod_security_policy', action='store_true')
