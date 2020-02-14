@@ -107,15 +107,13 @@ class AzureFirewallScenario(ScenarioTest):
             self.check('subnet', None)
         ])
 
-        '''
         # Disable it due to service limitation.
-        self.cmd(
-            'network firewall management-ip-config create -g {rg} -n {management_ipconfig} -f {af} --public-ip-address {management_pubip} --vnet-name {management_vnet}',
-            checks=[
-                self.check('name', '{management_ipconfig}'),
-                self.check('subnet.id', subnet_id_management_ip_config)
-            ])
-        '''
+        # self.cmd(
+        #    'network firewall management-ip-config create -g {rg} -n {management_ipconfig} -f {af} --public-ip-address {management_pubip} --vnet-name {management_vnet}',
+        #    checks=[
+        #        self.check('name', '{management_ipconfig}'),
+        #        self.check('subnet.id', subnet_id_management_ip_config)
+        #    ])
 
         self.cmd(
             'network firewall management-ip-config show -g {rg} -f {af}',
