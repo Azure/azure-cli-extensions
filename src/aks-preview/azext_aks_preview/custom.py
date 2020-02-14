@@ -645,6 +645,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                node_osdisk_diskencryptionset_id=None,
                node_count=3,
                nodepool_name="nodepool1",
+               nodepool_tags=None,
                service_principal=None, client_secret=None,
                no_ssh_key=False,
                disable_rbac=None,
@@ -719,6 +720,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
 
     agent_pool_profile = ManagedClusterAgentPoolProfile(
         name=_trim_nodepoolname(nodepool_name),  # Must be 12 chars or less before ACS RP adds to it
+        tags=nodepool_tags,
         count=int(node_count),
         vm_size=node_vm_size,
         os_type="Linux",
@@ -1836,6 +1838,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       resource_group_name,
                       cluster_name,
                       nodepool_name,
+                      tags=None,
                       kubernetes_version=None,
                       node_zones=None,
                       node_vm_size=None,
@@ -1895,6 +1898,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
 
     agent_pool = AgentPool(
         name=nodepool_name,
+        tags=tags,
         count=int(node_count),
         vm_size=node_vm_size,
         os_type=os_type,
@@ -1953,6 +1957,7 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
                          resource_group_name,
                          cluster_name,
                          nodepool_name,
+                         tags=None,
                          enable_cluster_autoscaler=False,
                          disable_cluster_autoscaler=False,
                          update_cluster_autoscaler=False,
@@ -1961,9 +1966,10 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
 
     update_flags = enable_cluster_autoscaler + disable_cluster_autoscaler + update_cluster_autoscaler
     if update_flags != 1:
-        raise CLIError('Please specify "--enable-cluster-autoscaler" or '
-                       '"--disable-cluster-autoscaler" or '
-                       '"--update-cluster-autoscaler"')
+        if update_flags != 0 or tags is None:
+            raise CLIError('Please specify "--enable-cluster-autoscaler" or '
+                           '"--disable-cluster-autoscaler" or '
+                           '"--update-cluster-autoscaler"')
 
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
     node_count = instance.count
@@ -2003,6 +2009,8 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
         instance.enable_auto_scaling = False
         instance.min_count = None
         instance.max_count = None
+
+    instance.tags = tags
 
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
 
