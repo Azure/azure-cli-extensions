@@ -43,9 +43,9 @@ def create_subscription_account_subscription_factory(cmd, client,
                                                      billing_account_name,
                                                      billing_profile_name,
                                                      invoice_section_name,
+                                                     display_name,
                                                      billing_profile_id,
                                                      sku_id,
-                                                     display_name=None,
                                                      cost_center=None,
                                                      owner=None,
                                                      management_group_id=None,
@@ -60,9 +60,9 @@ def create_subscription_account_subscription_factory(cmd, client,
 def create_csp_subscription_account_subscription_factory(cmd, client,
                                                          billing_account_name,
                                                          customer_name,
+                                                         display_name,
                                                          billing_profile_id,
                                                          sku_id,
-                                                         display_name=None,
                                                          cost_center=None,
                                                          owner=None,
                                                          management_group_id=None,
@@ -75,10 +75,10 @@ def create_csp_subscription_account_subscription_factory(cmd, client,
 
 
 def create_subscription_in_enrollment_account_account_subscription_factory(cmd, client,
-                                                                           name,
+                                                                           enrollment_account_name,
+                                                                           display_name,
                                                                            billing_profile_id,
                                                                            sku_id,
-                                                                           display_name=None,
                                                                            cost_center=None,
                                                                            owner=None,
                                                                            management_group_id=None,
@@ -87,7 +87,7 @@ def create_subscription_in_enrollment_account_account_subscription_factory(cmd, 
                                                                            service_provider_id=None,
                                                                            owners=None,
                                                                            offer_type=None):
-    return client.create_subscription_in_enrollment_account(enrollment_account_name=name, display_name=display_name, billing_profile_id=billing_profile_id, sku_id=sku_id, cost_center=cost_center, owner=owner, management_group_id=management_group_id, additional_parameters=additional_parameters, reseller_id=reseller_id, service_provider_id=service_provider_id, owners=owners, offer_type=offer_type)
+    return client.create_subscription_in_enrollment_account(enrollment_account_name=enrollment_account_name, display_name=display_name, billing_profile_id=billing_profile_id, sku_id=sku_id, cost_center=cost_center, owner=owner, management_group_id=management_group_id, additional_parameters=additional_parameters, reseller_id=reseller_id, service_provider_id=service_provider_id, owners=owners, offer_type=offer_type)
 
 
 def list_account_subscription_operation(cmd, client):
