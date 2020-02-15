@@ -109,9 +109,9 @@ helps['account subscription-factory create-subscription-in-enrollment-account'] 
     examples:
       - name: createSubscription
         text: |-
-               az account subscription-factory create-subscription-in-enrollment-account --name \\
-               "73f8ab6e-cfa0-42be-b886-be6e77c2980c" --display-name "Test Ea Azure Sub" --offer-type \\
-               "MS-AZR-0017P"
+               az account subscription-factory create-subscription-in-enrollment-account \\
+               --enrollment-account-name "73f8ab6e-cfa0-42be-b886-be6e77c2980c" --display-name \\
+               "Test Ea Azure Sub" --offer-type "MS-AZR-0017P"
 """
 
 helps['account subscription-operation'] = """

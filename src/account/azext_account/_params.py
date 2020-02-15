@@ -7,10 +7,7 @@
 # pylint: disable=too-many-statements
 
 from azure.cli.core.commands.parameters import (
-    tags_type,
-    get_enum_type,
-    resource_group_name_type,
-    get_location_type
+    get_enum_type
 )
 from azext_account.action import (
     PeeringAddOwners
@@ -44,7 +41,7 @@ def load_arguments(self, _):
         c.argument('billing_account_name', id_part=None, help='The name of the Microsoft Customer Agreement billing account for which you want to create the subscription.')
         c.argument('billing_profile_name', id_part=None, help='The name of the billing profile in the billing account for which you want to create the subscription.')
         c.argument('invoice_section_name', id_part=None, help='The name of the invoice section in the billing account for which you want to create the subscription.')
-        c.argument('display_name', id_part=None, help='The display name of the subscription.')
+        c.argument('display_name', id_part=None, help='The friendly name of the subscription.')
         c.argument('billing_profile_id', id_part=None, help='The ARM ID of the billing profile for which you want to create the subscription.')
         c.argument('sku_id', id_part=None, help='The SKU ID of the Azure plan. Azure plan determines the pricing and service-level agreement of the subscription.  Use 001 for Microsoft Azure Plan and 002 for Microsoft Azure Plan for DevTest.')
         c.argument('cost_center', id_part=None, help='If set, the cost center will show up on the Azure usage and charges file.')
@@ -59,7 +56,7 @@ def load_arguments(self, _):
     with self.argument_context('account subscription-factory create-csp-subscription') as c:
         c.argument('billing_account_name', id_part=None, help='The name of the Microsoft Customer Agreement billing account for which you want to create the subscription.')
         c.argument('customer_name', id_part=None, help='The name of the customer.')
-        c.argument('display_name', id_part=None, help='The display name of the subscription.')
+        c.argument('display_name', id_part=None, help='The friendly name of the subscription.')
         c.argument('billing_profile_id', id_part=None, help='The ARM ID of the billing profile for which you want to create the subscription.')
         c.argument('sku_id', id_part=None, help='The SKU ID of the Azure plan. Azure plan determines the pricing and service-level agreement of the subscription.  Use 001 for Microsoft Azure Plan and 002 for Microsoft Azure Plan for DevTest.')
         c.argument('cost_center', id_part=None, help='If set, the cost center will show up on the Azure usage and charges file.')
@@ -72,8 +69,8 @@ def load_arguments(self, _):
         c.argument('offer_type', arg_type=get_enum_type(['MS-AZR-0017P', 'MS-AZR-0148P']), id_part=None, help='The offer type of the subscription. For example, MS-AZR-0017P (EnterpriseAgreement) and MS-AZR-0148P (EnterpriseAgreement devTest) are available. Only valid when creating a subscription in a enrollment account scope.')
 
     with self.argument_context('account subscription-factory create-subscription-in-enrollment-account') as c:
-        c.argument('name', id_part=None, help='The name of the enrollment account to which the subscription will be billed.')
-        c.argument('display_name', id_part=None, help='The display name of the subscription.')
+        c.argument('enrollment_account_name', id_part=None, help='The name of the enrollment account to which the subscription will be billed.')
+        c.argument('display_name', id_part=None, help='The friendly name of the subscription.')
         c.argument('billing_profile_id', id_part=None, help='The ARM ID of the billing profile for which you want to create the subscription.')
         c.argument('sku_id', id_part=None, help='The SKU ID of the Azure plan. Azure plan determines the pricing and service-level agreement of the subscription.  Use 001 for Microsoft Azure Plan and 002 for Microsoft Azure Plan for DevTest.')
         c.argument('cost_center', id_part=None, help='If set, the cost center will show up on the Azure usage and charges file.')

@@ -46,7 +46,7 @@ setup(
     name='account',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools SubscriptionClient Extension',
-   # TODO: Update author and email, if applicable
+    # TODO: Update author and email, if applicable
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
     # TODO: consider pointing directly to your source code instead of the generic repo
