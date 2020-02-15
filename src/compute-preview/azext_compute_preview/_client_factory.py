@@ -13,12 +13,13 @@
 
 from azure.cli.core.profiles import (CustomResourceType, ResourceType)
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azext_compute_preview.vendored_sdks.v2019_12 import ComputeManagementClient
 
-CUSTOM_MGMT_COMPUTE = CustomResourceType('azext_compute_preview.vendored_sdks.v2019_12', 'ComputeManagementClient')
+# CUSTOM_MGMT_COMPUTE = CustomResourceType('azext_compute_preview.vendored_sdks.v2019_12', 'ComputeManagementClient')
 
 
 def _compute_client_factory(cli_ctx, **kwargs):
-    return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_COMPUTE,
+    return get_mgmt_service_client(cli_ctx, ComputeManagementClient,
                                    subscription_id=kwargs.get('subscription_id'),
                                    aux_subscriptions=kwargs.get('aux_subscriptions'))
 

@@ -42,4 +42,19 @@ def create_publish(cmd, client, resource_group_name, shared_vm_extension_name, l
 
 
 def update_publish(instance, client, resource_group_name):
-    pass
+    return instance
+
+
+def create_publish_version(cmd, client, resource_group_name, shared_vm_extension_name, shared_vm_extension_version_name,
+                           location=None, tags=None, no_wait=False):
+    body = {}
+    if location is not None:
+        body['location'] = location
+    if tags is not None:
+        body['tags'] = tags
+    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name,shared_vm_extension_name,
+                       shared_vm_extension_version_name, body)
+
+
+def update_publish_version(instance, client, resource_group_name):
+    return instance
