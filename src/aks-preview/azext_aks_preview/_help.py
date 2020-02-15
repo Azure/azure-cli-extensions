@@ -305,9 +305,6 @@ helps['aks update'] = """
         - name: --cluster-autoscaler-profile
           type: list
           short-summary: Space-separated list of key=value pairs for configuring cluster autoscaler.
-        - name: --api-server-authorized-ip-ranges
-          type: str
-          short-summary: List of authorized IP ranges (separated by comma) for apiserver. Set to "" for disabling it.
         - name: --load-balancer-managed-outbound-ip-count
           type: int
           short-summary: Load balancer managed outbound IP count.
