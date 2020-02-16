@@ -2,6 +2,16 @@
 
 Release History
 ===============
+0.4.29
++++++
+* Add option '--nodepool-tags for create cluster'
+* Add option '--tags' for add or update node pool
+
+0.4.28
++++++
+* Add option '--outbound-type' for create
+* Add options '--load-balancer-outbound-ports' and '--load-balancer-idle-timeout' for create and update
+
 0.4.27
 +++++
 * Fixed aks cluster creation error
