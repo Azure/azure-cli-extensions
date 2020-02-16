@@ -27,7 +27,7 @@ def load_arguments(self, _):
         c.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
 
     with self.argument_context('powerbi embedded-capacity update') as c:
-        c.argument('resource_group', resource_group_name_type)
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('name', id_part=None, help='The name of the Dedicated capacity. It must be at least 3 characters in length, and no more than 63.')
         c.argument('sku_name', id_part=None, help='Name of the SKU level.')
         c.argument('sku_tier', arg_type=get_enum_type(['PBIE_Azure']), id_part=None, help='The name of the Azure pricing tier to which the SKU applies.')

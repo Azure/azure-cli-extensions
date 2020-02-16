@@ -45,16 +45,20 @@ class PowerBIDedicatedScenarioTest(ScenarioTest):
         self.cmd('az powerbi embedded-capacity update '
                  '--resource-group {rg} '
                  '--name {name} '
-                 '--sku-name "A1" '
-                 '--sku-tier "PBIE_Azure" '
-                 '--administration-members "azsdktest@microsoft.com,azsdktest2@microsoft.com"',
-                 checks=[])
+                 '--sku-name "A2" ',
+                 checks=[
+                     self.check('name', '{name}'),
+                     self.check('sku.name', 'A2'),
+                 ])
 
         self.cmd('az powerbi embedded-capacity show',
-                 checks=[])
+                 checks=[
+                     self.check('name', '{name}'),
+                     self.check('sku.name', 'A2'),
+                 ])
 
         self.cmd('az powerbi embedded-capacity delete',
                  checks=[])
 
-        self.cmd('az powerbi embedded-capacity list',
+        self.cmd('az powerbi embedded-capacity list -g {rg}',
                  checks=[])

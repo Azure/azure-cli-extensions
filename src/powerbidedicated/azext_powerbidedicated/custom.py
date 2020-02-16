@@ -27,8 +27,9 @@ def create_powerbi_embedded_capacity(cmd, client,
 
 
 def update_powerbi_embedded_capacity(cmd, client,
-                                     resource_group,
+                                     resource_group_name,
                                      name,
+                                     location=None,
                                      sku_name=None,
                                      sku_tier=None,
                                      tags=None,
@@ -42,7 +43,8 @@ def update_powerbi_embedded_capacity(cmd, client,
         body['tags'] = tags  # dictionary
     if administration_members is not None:
         body.setdefault('administration', {})['members'] = None if administration_members is None else administration_members
-    return client.create(resource_group_name=resource_group, dedicated_capacity_name=name, capacity_parameters=body)
+    return client.update(resource_group_name=resource_group_name, dedicated_capacity_name=name,
+                         capacity_update_parameters=body)
 
 
 def delete_powerbi_embedded_capacity(cmd, client,
