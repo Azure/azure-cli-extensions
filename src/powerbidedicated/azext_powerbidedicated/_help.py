@@ -11,12 +11,12 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 helps['powerbi embedded-capacity'] = """
     type: group
-    short-summary: Commands to manage powerbi embedded capacity.
+    short-summary: Manage powerbi embedded capacity.
 """
 
 helps['powerbi embedded-capacity create'] = """
     type: command
-    short-summary: Provisions the specified Dedicated capacity based on the configuration specified in the request.
+    short-summary: Provision the specified Dedicated capacity based on the configuration specified in the request.
     examples:
       - name: Create capacity
         text: |-
@@ -38,16 +38,16 @@ helps['powerbi embedded-capacity update'] = """
 
 helps['powerbi embedded-capacity delete'] = """
     type: command
-    short-summary: Deletes the specified Dedicated capacity.
+    short-summary: Delete the specified Dedicated capacity.
     examples:
-      - name: Get details of a capacity
+      - name: Delete a capacity in specified resource group
         text: |-
                az powerbi embedded-capacity delete --resource-group "TestRG" --name "azsdktest"
 """
 
 helps['powerbi embedded-capacity show'] = """
     type: command
-    short-summary: Gets details about the specified dedicated capacity.
+    short-summary: Get details about the specified dedicated capacity.
     examples:
       - name: Get details of a capacity
         text: |-
@@ -56,12 +56,12 @@ helps['powerbi embedded-capacity show'] = """
 
 helps['powerbi embedded-capacity list'] = """
     type: command
-    short-summary: Gets all the Dedicated capacities for the given resource group.
+    short-summary: Get all the Dedicated capacities for the given resource group.
     examples:
       - name: List capacities in resource group
         text: |-
                az powerbi embedded-capacity list --resource-group "TestRG"
-      - name: Get details of a capacity
+      - name: List all capacities in default subscription.
         text: |-
                az powerbi embedded-capacity list
 """
