@@ -40,7 +40,6 @@ def load_arguments(self, _):
 
     with self.argument_context('vm extension publish-version') as c:
         c.argument('shared_vm_extension_name', shared_vm_extension_name, help='The name of the shared VM Extension definition in which the Extension Version is to be created.')
-        c.argument('shared_vm_extension_version_name', help='The name of the shared VM Extension Version to be created. Needs to follow semantic version name pattern: The allowed characters are digit and period. Digits must be within the range of a 32-bit integer. Format: <MajorVersion>.<MinorVersion>.<Patch>')
+        c.argument('shared_vm_extension_version_name', options_list=['--version'], help='The name of the shared VM Extension Version to be created. Needs to follow semantic version name pattern: The allowed characters are digit and period. Digits must be within the range of a 32-bit integer. Format: <MajorVersion>.<MinorVersion>.<Patch>')
         c.argument('location', validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
-

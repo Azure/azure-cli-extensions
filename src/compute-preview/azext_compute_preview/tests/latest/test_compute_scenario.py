@@ -47,4 +47,11 @@ class SharedVMExtensionScenarioTest(ScenarioTest):
         self.kwargs.update({
             'ext': 'ext1'
         })
-        self.cmd('vm extension publish create -g {rg} -n {ext} --')
+        self.cmd('vm extension publish create -g {rg} -n {ext}')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_shared_vm_extension_version_')
+    def test_shared_vm_extension_version(self, resource_group):
+        self.kwargs.update({
+            'ext': 'ext1'
+        })
+        self.cmd('vm extension publish-version create -g {rg} -n {ext} --version 1.0.0')
