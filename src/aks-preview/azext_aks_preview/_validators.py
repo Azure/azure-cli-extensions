@@ -12,6 +12,7 @@ from ipaddress import ip_network
 
 from knack.log import get_logger
 
+from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.util import CLIError
 import azure.cli.core.keys as keys
 
@@ -237,3 +238,12 @@ def validate_load_balancer_idle_timeout(namespace):
     if namespace.load_balancer_idle_timeout is not None:
         if namespace.load_balancer_idle_timeout < 4 or namespace.load_balancer_idle_timeout > 120:
             raise CLIError("--load-balancer-idle-timeout must be in the range [4,120]")
+
+
+def validate_nodepool_tags(ns):
+    """ Extracts multiple space-separated tags in key[=value] format """
+    if isinstance(ns.nodepool_tags, list):
+        tags_dict = {}
+        for item in ns.nodepool_tags:
+            tags_dict.update(validate_tag(item))
+        ns.nodepool_tags = tags_dict
