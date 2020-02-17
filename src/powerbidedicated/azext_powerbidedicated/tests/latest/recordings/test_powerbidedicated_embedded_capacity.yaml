@@ -1,0 +1,785 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - powerbi embedded-capacity create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --sku-name --sku-tier --administration-members
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-resource/6.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_powerbidedicated000001?api-version=2019-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001","name":"cli_test_powerbidedicated000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2020-02-17T00:57:45Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '428'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Feb 2020 00:57:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus", "sku": {"name": "A1", "tier": "PBIE_Azure"}, "properties":
+      {"administration": {"members": ["4759ce24-1955-4c57-bc53-357a69cc065f"]}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - powerbi embedded-capacity create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '156'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --sku-name --sku-tier --administration-members
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-powerbidedicated/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.81
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000002?api-version=2017-10-01
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Provisioning","state":"Provisioning","administration":{"members":["4759ce24-1955-4c57-bc53-357a69cc065f"]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000002","name":"clipowerbi000002","type":"Microsoft.PowerBIDedicated/capacities","location":"westus","sku":{"name":"A1","tier":"PBIE_Azure"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.PowerBIDedicated/locations/westus/operationstatuses/A5628621-9368-4BE1-9800-8F3A489403FD?api-version=2017-01-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '508'
+      content-security-policy:
+      - script-src 'self'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Feb 2020 00:58:03 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.PowerBIDedicated/locations/westus/operationresults/A5628621-9368-4BE1-9800-8F3A489403FD?api-version=2017-01-01-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - deny
+      x-ms-current-utc-date:
+      - 2/17/2020 12:57:57 AM
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - powerbi embedded-capacity create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --sku-name --sku-tier --administration-members
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-powerbidedicated/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.81
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.PowerBIDedicated/locations/westus/operationstatuses/A5628621-9368-4BE1-9800-8F3A489403FD?api-version=2017-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/westus/operationstatuses/A5628621-9368-4BE1-9800-8F3A489403FD","name":"A5628621-9368-4BE1-9800-8F3A489403FD","status":"Succeeded","startTime":"2020-02-17T00:57:59.3970000Z","endTime":"2020-02-17T00:58:32.1400000Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '283'
+      content-security-policy:
+      - script-src 'self'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Feb 2020 00:58:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - deny
+      x-ms-current-utc-date:
+      - 2/17/2020 12:58:34 AM
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - powerbi embedded-capacity create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --sku-name --sku-tier --administration-members
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-powerbidedicated/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.81
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000002?api-version=2017-10-01
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","state":"Succeeded","administration":{"members":["4759ce24-1955-4c57-bc53-357a69cc065f"]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000002","name":"clipowerbi000002","type":"Microsoft.PowerBIDedicated/capacities","location":"West
+        US","sku":{"name":"A1","tier":"PBIE_Azure","capacity":1},"tags":{}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '526'
+      content-security-policy:
+      - script-src 'self'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Feb 2020 00:58:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - deny
+      x-ms-current-utc-date:
+      - 2/17/2020 12:58:34 AM
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - powerbi embedded-capacity list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-powerbidedicated/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.81
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities?api-version=2017-10-01
+  response:
+    body:
+      string: '{"value":[{"properties":{"provisioningState":"Succeeded","state":"Succeeded","administration":{"members":["4759ce24-1955-4c57-bc53-357a69cc065f"]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000002","name":"clipowerbi000002","type":"Microsoft.PowerBIDedicated/capacities","location":"West
+        US","sku":{"name":"A1","tier":"PBIE_Azure","capacity":1},"tags":{}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '538'
+      content-security-policy:
+      - script-src 'self'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Feb 2020 00:58:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - deny
+      x-ms-current-utc-date:
+      - 2/17/2020 12:58:36 AM
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - powerbi embedded-capacity show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --name
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-powerbidedicated/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.81
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000002?api-version=2017-10-01
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","state":"Succeeded","administration":{"members":["4759ce24-1955-4c57-bc53-357a69cc065f"]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000002","name":"clipowerbi000002","type":"Microsoft.PowerBIDedicated/capacities","location":"West
+        US","sku":{"name":"A1","tier":"PBIE_Azure","capacity":1},"tags":{}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '526'
+      content-security-policy:
+      - script-src 'self'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Feb 2020 00:58:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - deny
+      x-ms-current-utc-date:
+      - 2/17/2020 12:58:38 AM
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"sku": {"name": "A2"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - powerbi embedded-capacity update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '23'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --sku-name
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-powerbidedicated/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.81
+      accept-language:
+      - en-US
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000002?api-version=2017-10-01
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Preparing","state":"Preparing","administration":{"members":["4759ce24-1955-4c57-bc53-357a69cc065f"]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000002","name":"clipowerbi000002","type":"Microsoft.PowerBIDedicated/capacities","location":"West
+        US","sku":{"name":"A2","tier":"PBIE_Azure","capacity":1},"tags":{}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.PowerBIDedicated/locations/westus/operationstatuses/9B9F66BB-E587-4239-A2CC-838789EC1D0F?api-version=2017-01-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '526'
+      content-security-policy:
+      - script-src 'self'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Feb 2020 00:58:42 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.PowerBIDedicated/locations/westus/operationresults/9B9F66BB-E587-4239-A2CC-838789EC1D0F?api-version=2017-01-01-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - deny
+      x-ms-current-utc-date:
+      - 2/17/2020 12:58:41 AM
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - powerbi embedded-capacity update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --sku-name
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-powerbidedicated/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.81
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.PowerBIDedicated/locations/westus/operationstatuses/9B9F66BB-E587-4239-A2CC-838789EC1D0F?api-version=2017-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/westus/operationstatuses/9B9F66BB-E587-4239-A2CC-838789EC1D0F","name":"9B9F66BB-E587-4239-A2CC-838789EC1D0F","status":"Scaling","startTime":"2020-02-17T00:58:42.2130000Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '240'
+      content-security-policy:
+      - script-src 'self'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Feb 2020 00:59:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - deny
+      x-ms-current-utc-date:
+      - 2/17/2020 12:59:13 AM
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - powerbi embedded-capacity update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --sku-name
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-powerbidedicated/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.81
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.PowerBIDedicated/locations/westus/operationstatuses/9B9F66BB-E587-4239-A2CC-838789EC1D0F?api-version=2017-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/westus/operationstatuses/9B9F66BB-E587-4239-A2CC-838789EC1D0F","name":"9B9F66BB-E587-4239-A2CC-838789EC1D0F","status":"Succeeded","startTime":"2020-02-17T00:58:42.2130000Z","endTime":"2020-02-17T00:59:26.4070000Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '283'
+      content-security-policy:
+      - script-src 'self'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Feb 2020 00:59:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - deny
+      x-ms-current-utc-date:
+      - 2/17/2020 12:59:44 AM
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - powerbi embedded-capacity update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --sku-name
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-powerbidedicated/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.81
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000002?api-version=2017-10-01
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","state":"Succeeded","administration":{"members":["4759ce24-1955-4c57-bc53-357a69cc065f"]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000002","name":"clipowerbi000002","type":"Microsoft.PowerBIDedicated/capacities","location":"West
+        US","sku":{"name":"A2","tier":"PBIE_Azure","capacity":1},"tags":{}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '526'
+      content-security-policy:
+      - script-src 'self'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Feb 2020 00:59:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - deny
+      x-ms-current-utc-date:
+      - 2/17/2020 12:59:44 AM
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - powerbi embedded-capacity show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-powerbidedicated/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.81
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000002?api-version=2017-10-01
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","state":"Succeeded","administration":{"members":["4759ce24-1955-4c57-bc53-357a69cc065f"]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000002","name":"clipowerbi000002","type":"Microsoft.PowerBIDedicated/capacities","location":"West
+        US","sku":{"name":"A2","tier":"PBIE_Azure","capacity":1},"tags":{}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '526'
+      content-security-policy:
+      - script-src 'self'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Feb 2020 00:59:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - deny
+      x-ms-current-utc-date:
+      - 2/17/2020 12:59:46 AM
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - powerbi embedded-capacity delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n -y
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-powerbidedicated/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.81
+      accept-language:
+      - en-US
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000002?api-version=2017-10-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.PowerBIDedicated/locations/westus/operationstatuses/23A72B20-D243-4241-81D9-2A9A7E130387?api-version=2017-01-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      content-security-policy:
+      - script-src 'self'
+      date:
+      - Mon, 17 Feb 2020 00:59:49 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.PowerBIDedicated/locations/westus/operationresults/23A72B20-D243-4241-81D9-2A9A7E130387?api-version=2017-01-01-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - deny
+      x-ms-current-utc-date:
+      - 2/17/2020 12:59:48 AM
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - powerbi embedded-capacity delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -y
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-powerbidedicated/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.81
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.PowerBIDedicated/locations/westus/operationstatuses/23A72B20-D243-4241-81D9-2A9A7E130387?api-version=2017-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/westus/operationstatuses/23A72B20-D243-4241-81D9-2A9A7E130387","name":"23A72B20-D243-4241-81D9-2A9A7E130387","status":"Succeeded","startTime":"2020-02-17T00:59:48.5900000Z","endTime":"2020-02-17T01:00:02.8530000Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '283'
+      content-security-policy:
+      - script-src 'self'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Feb 2020 01:00:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - deny
+      x-ms-current-utc-date:
+      - 2/17/2020 1:00:20 AM
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - powerbi embedded-capacity list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-powerbidedicated/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.81
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities?api-version=2017-10-01
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Feb 2020 01:00:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1
