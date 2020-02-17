@@ -125,10 +125,11 @@ helps['aks create'] = """
           short-summary: Enable the Kubernetes addons in a comma-separated list.
           long-summary: |-
             These addons are available:
-                http_application_routing - configure ingress with automatic public DNS name creation.
-                monitoring - turn on Log Analytics monitoring. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace.
-                virtual-node - enable AKS Virtual Node (PREVIEW). Requires --subnet-name to provide the name of an existing subnet for the Virtual Node to use.
-                azure-policy - enable Azure policy (PREVIEW).
+                http_application_routing  - configure ingress with automatic public DNS name creation.
+                monitoring                - turn on Log Analytics monitoring. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace.
+                virtual-node              - enable AKS Virtual Node (PREVIEW). Requires --subnet-name to provide the name of an existing subnet for the Virtual Node to use.
+                azure-policy              - enable Azure policy (PREVIEW).
+                ingress-appgw             - enable Applicaiton Gateway Ingress Controller addon (PREVIEW).
         - name: --disable-rbac
           type: bool
           short-summary: Disable Kubernetes Role-Based Access Control.
@@ -202,6 +203,24 @@ helps['aks create'] = """
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+        - name: --appgw-name
+          type: string
+          short-summary: Name of the application gateway to create/use in the node resource group
+        - name: --appgw-subnet-prefix
+          type: string
+          short-summary: Subnet Prefix to use for a new subnet created to deploy the Application Gateway
+        - name: --appgw-id
+          type: string
+          short-summary: Resource Id of an existing Application Gateway to use with AGIC
+        - name: --appgw-subnet-id
+          type: string
+          short-summary: Resource Id of an existing Subnet used to deploy the Application Gateway
+        - name: --appgw-shared
+          type: bool
+          short-summary: Use shared flag if application gateway will be shared
+        - name: --appgw-watch-namespace
+          type: string
+          short-summary: Specify the namespace, which AGIC should watch. This could be a single string value, or a comma-separated list of namespaces.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -517,10 +536,11 @@ type: command
 short-summary: Enable Kubernetes addons.
 long-summary: |-
     These addons are available:
-        http_application_routing - configure ingress with automatic public DNS name creation.
-        monitoring - turn on Log Analytics monitoring. Requires "--workspace-resource-id".
-        virtual-node - enable AKS Virtual Node (PREVIEW). Requires "--subnet-name".
-        azure-policy - enable Azure policy (PREVIEW).
+        http_application_routing  - configure ingress with automatic public DNS name creation.
+        monitoring                - turn on Log Analytics monitoring. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace.
+        virtual-node              - enable AKS Virtual Node (PREVIEW). Requires --subnet-name to provide the name of an existing subnet for the Virtual Node to use.
+        azure-policy              - enable Azure policy (PREVIEW).
+        ingress-appgw             - enable Application Gateway Ingress Controller addon (PREVIEW).
 parameters:
   - name: --addons -a
     type: string
@@ -531,6 +551,24 @@ parameters:
   - name: --subnet-name -s
     type: string
     short-summary: The subnet name for the virtual node to use.
+  - name: --appgw-name
+    type: string
+    short-summary: Name of the application gateway to create/use in the node resource group
+  - name: --appgw-subnet-prefix
+    type: string
+    short-summary: Subnet Prefix to use for a new subnet created to deploy the Application Gateway
+  - name: --appgw-id
+    type: string
+    short-summary: Resource Id of an existing Application Gateway to use with AGIC
+  - name: --appgw-subnet-id
+    type: string
+    short-summary: Resource Id of an existing Subnet used to deploy the Application Gateway
+  - name: --appgw-shared
+    type: bool
+    short-summary: Use shared flag if application gateway will be shared
+  - name: --appgw-watch-namespace
+    type: string
+    short-summary: Specify the namespace, which AGIC should watch. This could be a single string value, or a comma-separated list of namespaces.
 examples:
   - name: Enable Kubernetes addons. (autogenerated)
     text: az aks enable-addons --addons virtual-node --name MyManagedCluster --resource-group MyResourceGroup --subnet-name VirtualNodeSubnet
