@@ -7,39 +7,40 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - alertsmanagement smart-group get-by-id
+      - alertsmanagement smart-group get-all
       Connection:
       - keep-alive
-      ParameterSetName:
-      - --smart-group-id
       User-Agent:
-      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-alertsmanagement/0.2.0rc2 Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.8.1 (Windows-10-10.0.17763-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-alertsmanagement/0.2.0rc2 Azure-SDK-For-Python AZURECLI/2.0.81
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.AlertsManagement/smartGroups/603675da-9851-4b26-854a-49fc53d32715?api-version=2019-05-05-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.AlertsManagement/smartGroups?api-version=2019-05-05-preview
   response:
     body:
-      string: '{"error":{"code":"NotFound","message":"Unable to find the input smart
-        group","target":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.AlertsManagement/smartGroups/603675da-9851-4b26-854a-49fc53d32715?api-version=2019-05-05-preview"}}'
+      string: '{"value":[]}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '286'
+      - '12'
       content-security-policy:
       - script-src 'self'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 20 Jan 2020 06:26:19 GMT
+      - Mon, 17 Feb 2020 08:48:28 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
@@ -47,6 +48,6 @@ interactions:
       x-xss-protection:
       - 1; mode=block
     status:
-      code: 404
-      message: Not Found
+      code: 200
+      message: OK
 version: 1

@@ -13,9 +13,12 @@ from azure.cli.core.commands.parameters import (
     resource_group_name_type,
     get_location_type
 )
+from knack.arguments import CLIArgumentType
 
 
 def load_arguments(self, _):
+
+    name_arg_type = CLIArgumentType(options_list=['--name', '-n'], metavar='NAME')
 
     with self.argument_context('alertsmanagement operation list') as c:
         pass
@@ -89,27 +92,30 @@ def load_arguments(self, _):
     with self.argument_context('alertsmanagement smart-group get-history') as c:
         c.argument('smart_group_id', id_part=None, help='Smart group unique id. ')
 
+    action_rule_name = CLIArgumentType(overrides=name_arg_type, help='Name of action rule.',
+                                       id_part='name')
+
     with self.argument_context('alertsmanagement action-rule create') as c:
         c.argument('resource_group', resource_group_name_type)
-        c.argument('name', id_part=None, help='The name that needs to be updated')
+        c.argument('name', action_rule_name)
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('tags', tags_type)
         c.argument('status', arg_type=get_enum_type(['Enabled', 'Disabled']), id_part=None, help='Indicates if the given action rule is enabled or disabled')
 
     with self.argument_context('alertsmanagement action-rule update') as c:
         c.argument('resource_group', resource_group_name_type)
-        c.argument('name', id_part=None, help='The name that needs to be updated')
+        c.argument('name', action_rule_name)
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('tags', tags_type)
         c.argument('status', arg_type=get_enum_type(['Enabled', 'Disabled']), id_part=None, help='Indicates if the given action rule is enabled or disabled')
 
     with self.argument_context('alertsmanagement action-rule delete') as c:
         c.argument('resource_group', resource_group_name_type)
-        c.argument('name', id_part=None, help='The name that needs to be updated')
+        c.argument('name', action_rule_name)
 
     with self.argument_context('alertsmanagement action-rule show') as c:
         c.argument('resource_group', resource_group_name_type)
-        c.argument('name', id_part=None, help='The name that needs to be updated')
+        c.argument('name', action_rule_name)
 
     with self.argument_context('alertsmanagement action-rule list') as c:
         c.argument('resource_group', resource_group_name_type)
