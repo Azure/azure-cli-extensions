@@ -2,16 +2,18 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+import time
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, record_only)
 
 
 class PowerBIDedicatedScenarioTest(ScenarioTest):
-
+    @record_only()
     @ResourceGroupPreparer(name_prefix='cli_test_powerbidedicated')
-    def test_powerbidedicated(self, resource_group):
+    def test_powerbidedicated_embedded_capacity(self, resource_group):
         self.kwargs.update({
-            'name': self.create_random_name(prefix='cli_powerbi', length=24),
+            'name': self.create_random_name(prefix='clipowerbi', length=24),
+            'sp': self.create_random_name('cli_test_sp', 15),
+            'administrator': "4759ce24-1955-4c57-bc53-357a69cc065f"
         })
 
         self.cmd('az powerbi embedded-capacity create '
@@ -19,13 +21,13 @@ class PowerBIDedicatedScenarioTest(ScenarioTest):
                  '--name {name} '
                  '--sku-name "A1" '
                  '--sku-tier "PBIE_Azure" '
-                 '--administration-members "azsdktest@microsoft.com,azsdktest2@microsoft.com"',
+                 '--administration-members "{administrator}"',
                  checks=[
                      self.check('provisioningState', 'Succeeded'),
-                     self.check('name', '{name}'),
+                     self.check('name', self.kwargs['name']),
                      self.check('sku.name', 'A1'),
                      self.check('sku.tier', 'PBIE_Azure'),
-                     self.check('administration.members[0]', 'PBIE_Azure'),
+                     self.check('administration.members[0]', self.kwargs['administrator']),
                  ])
 
         self.cmd('az powerbi embedded-capacity list --resource-group {rg}',
@@ -33,32 +35,31 @@ class PowerBIDedicatedScenarioTest(ScenarioTest):
                      self.check('length(@)', 1),
                  ])
 
-        self.cmd('az powerbi embedded-capacity show',
+        self.cmd('az powerbi embedded-capacity show -g {rg} --name {name}',
                  checks=[
                      self.check('provisioningState', 'Succeeded'),
                      self.check('name', '{name}'),
                      self.check('sku.name', 'A1'),
                      self.check('sku.tier', 'PBIE_Azure'),
-                     self.check('administration.members[0]', 'PBIE_Azure'),
+                     self.check('administration.members[0]', self.kwargs['administrator']),
                  ])
 
-        self.cmd('az powerbi embedded-capacity update '
-                 '--resource-group {rg} '
-                 '--name {name} '
-                 '--sku-name "A2" ',
+        self.cmd('az powerbi embedded-capacity update --resource-group {rg} --name {name} --sku-name "A2" ',
                  checks=[
                      self.check('name', '{name}'),
                      self.check('sku.name', 'A2'),
                  ])
 
-        self.cmd('az powerbi embedded-capacity show',
+        self.cmd('az powerbi embedded-capacity show -g {rg} -n {name}',
                  checks=[
                      self.check('name', '{name}'),
                      self.check('sku.name', 'A2'),
                  ])
 
-        self.cmd('az powerbi embedded-capacity delete',
-                 checks=[])
+        self.cmd('az powerbi embedded-capacity delete -g {rg} -n {name} -y')
 
         self.cmd('az powerbi embedded-capacity list -g {rg}',
-                 checks=[])
+                 checks=[
+                     self.check('length(@)', 0),
+                 ])
+
