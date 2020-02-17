@@ -55,6 +55,13 @@ def load_arguments(self, _):
             c.argument('deployment', options_list=[
                 '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=validate_deployment_name)
 
+    with self.argument_context('spring-cloud app log') as c:
+        c.argument('instance', options_list=['--instance', '-i'], help='Name of an existing instance of the deployment.')
+        c.argument('lines', type=int, help='Number of lines to show. Maximum is 10000', validator=validate_log_lines)
+        c.argument('follow', options_list=['--follow ', '-f'], help='Specify if the logs should be streamed.', action='store_true')
+        c.argument('since', help='Only return logs newer than a relative duration like 5s, 2m, or 1h. Maximum is 1h', validator=validate_log_since)
+        c.argument('limit', type=int, help='Maximum kilobytes of logs to return. Ceiling number is 2048.', validator=validate_log_limit)
+
     with self.argument_context('spring-cloud app log tail') as c:
         c.argument('instance', options_list=['--instance', '-i'], help='Name of an existing instance of the deployment.')
         c.argument('lines', type=int, help='Number of lines to show. Maximum is 10000', validator=validate_log_lines)
