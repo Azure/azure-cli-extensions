@@ -10,7 +10,7 @@ import platform
 
 from argcomplete.completers import FilesCompleter
 from azure.cli.core.commands.parameters import (
-    file_type, get_resource_name_completion_list, name_type, tags_type, zones_type)
+    file_type, get_resource_name_completion_list, name_type, tags_type, zones_type, get_enum_type)
 from knack.arguments import CLIArgumentType
 
 from ._completers import (
@@ -20,7 +20,9 @@ from ._validators import (
     validate_ssh_key, validate_max_pods, validate_nodes_count, validate_ip_ranges,
     validate_nodepool_name, validate_vm_set_type, validate_load_balancer_sku,
     validate_load_balancer_outbound_ips, validate_load_balancer_outbound_ip_prefixes,
-    validate_taints, validate_priority, validate_eviction_policy, validate_acr, validate_user)
+    validate_taints, validate_priority, validate_eviction_policy, validate_acr, validate_user,
+    validate_load_balancer_outbound_ports, validate_load_balancer_idle_timeout, validate_nodepool_tags)
+from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING
 
 
 def load_arguments(self, _):
@@ -48,6 +50,7 @@ def load_arguments(self, _):
         c.argument('node_vm_size', options_list=['--node-vm-size', '-s'], completer=get_vm_size_completion_list)
         c.argument('nodepool_name', type=str, default='nodepool1',
                    help='Node pool name, upto 12 alphanumeric characters', validator=validate_nodepool_name)
+        c.argument('nodepool_tags', nargs='*', validator=validate_nodepool_tags, help='space-separated tags: key[=value] [key[=value] ...]. Use "" to clear existing tags.')
         c.argument('ssh_key_value', required=False, type=file_type, default=os.path.join('~', '.ssh', 'id_rsa.pub'),
                    completer=FilesCompleter(), validator=validate_ssh_key)
         c.argument('aad_client_app_id')
@@ -60,6 +63,10 @@ def load_arguments(self, _):
         c.argument('load_balancer_managed_outbound_ip_count', type=int)
         c.argument('load_balancer_outbound_ips', type=str, validator=validate_load_balancer_outbound_ips)
         c.argument('load_balancer_outbound_ip_prefixes', type=str, validator=validate_load_balancer_outbound_ip_prefixes)
+        c.argument('load_balancer_outbound_ports', type=int, validator=validate_load_balancer_outbound_ports)
+        c.argument('load_balancer_idle_timeout', type=int, validator=validate_load_balancer_idle_timeout)
+        c.argument('outbound_type', arg_type=get_enum_type([CONST_OUTBOUND_TYPE_LOAD_BALANCER,
+                                                            CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING]))
         c.argument('enable_addons', options_list=['--enable-addons', '-a'])
         c.argument('disable_rbac', action='store_true')
         c.argument('enable_rbac', action='store_true', options_list=['--enable-rbac', '-r'],
@@ -96,6 +103,8 @@ def load_arguments(self, _):
         c.argument('load_balancer_managed_outbound_ip_count', type=int)
         c.argument('load_balancer_outbound_ips', type=str, validator=validate_load_balancer_outbound_ips)
         c.argument('load_balancer_outbound_ip_prefixes', type=str, validator=validate_load_balancer_outbound_ip_prefixes)
+        c.argument('load_balancer_outbound_ports', type=int, validator=validate_load_balancer_outbound_ports)
+        c.argument('load_balancer_idle_timeout', type=int, validator=validate_load_balancer_idle_timeout)
         c.argument('api_server_authorized_ip_ranges', type=str, validator=validate_ip_ranges)
         c.argument('enable_pod_security_policy', action='store_true')
         c.argument('disable_pod_security_policy', action='store_true')
@@ -115,6 +124,7 @@ def load_arguments(self, _):
     for scope in ['aks nodepool add']:
         with self.argument_context(scope) as c:
             c.argument('nodepool_name', type=str, options_list=['--name', '-n'], validator=validate_nodepool_name, help='The node pool name.')
+            c.argument('tags', tags_type)
             c.argument('node_zones', zones_type, options_list=['--node-zones', '--zones', '-z'], help='(--node-zones will be deprecated) Space-separated list of availability zones where agent nodes will be placed.')
             c.argument('node_vm_size', options_list=['--node-vm-size', '-s'], completer=get_vm_size_completion_list)
             c.argument('max_pods', type=int, options_list=['--max-pods', '-m'], validator=validate_max_pods)
@@ -132,6 +142,7 @@ def load_arguments(self, _):
         c.argument('enable_cluster_autoscaler', options_list=["--enable-cluster-autoscaler", "-e"], action='store_true')
         c.argument('disable_cluster_autoscaler', options_list=["--disable-cluster-autoscaler", "-d"], action='store_true')
         c.argument('update_cluster_autoscaler', options_list=["--update-cluster-autoscaler", "-u"], action='store_true')
+        c.argument('tags', tags_type)
 
     with self.argument_context('aks disable-addons') as c:
         c.argument('addons', options_list=['--addons', '-a'])

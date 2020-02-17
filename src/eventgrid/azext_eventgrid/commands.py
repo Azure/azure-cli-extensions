@@ -41,10 +41,7 @@ def load_command_table(self, _):
         g.command('delete', 'delete')
         g.custom_command('list', 'cli_topic_list')
         g.custom_command('create', 'cli_topic_create_or_update')
-        g.generic_update_command('update',
-                                 getter_name='get',
-                                 setter_name='update',
-                                 client_factory=topics_factory)
+        g.custom_command('update', 'cli_topic_update')
 
     with self.command_group('eventgrid domain topic', domain_topics_mgmt_util, client_factory=domain_topics_factory) as g:
         g.show_command('show', 'get')
@@ -59,10 +56,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'cli_domain_list')
         g.custom_command('create', 'cli_domain_create_or_update')
         g.command('delete', 'delete')
-        g.generic_update_command('update',
-                                 getter_name='get',
-                                 setter_name='update',
-                                 client_factory=domains_factory)
+        g.custom_command('update', 'cli_domain_update')
 
     custom_tmpl = 'azext_eventgrid.custom#{}'
     eventgrid_custom = CliCommandType(operations_tmpl=custom_tmpl)

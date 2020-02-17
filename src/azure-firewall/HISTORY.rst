@@ -3,6 +3,20 @@
 Release History
 ===============
 
+0.3.0
+++++++
+* `az network firewall ip-config`: Add management ip config args group.
+* `az network firewall management-ip-config`: Delete create command since service doesn't support it.
+
+0.2.0
+++++++
+* `az network firewall ip-config`: deprecate --private-ip-address
+* `az network firewall create/update`: support --sku, --firewall-policy and --vhub.
+
+0.1.9
+++++++
+* `az network firewall management-ip-config`: support creating/showing management ip configuration.
+
 0.1.8
 ++++++
 * `az network firewall create`: support private-ranges
