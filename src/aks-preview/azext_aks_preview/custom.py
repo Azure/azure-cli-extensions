@@ -1929,25 +1929,6 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
             except ValueError:
                 raise CLIError('Taint does not match allowed values. Expect value such as "special=true:NoSchedule".')
 
-    if priority is not None and priority == "Low":
-        from knack.prompting import prompt_y_n
-        msg = 'Cluster Autoscaler is currently required for low-pri, enable it?'
-
-        if not prompt_y_n(msg, default="n"):
-            return None
-
-        enable_cluster_autoscaler = True
-
-        if min_count is None:
-            min_count = node_count
-        if max_count is None:
-            max_count = node_count
-
-        # add low pri taint if not already specified
-        low_pri_taint = "pooltype=lowpri:NoSchedule"
-        if low_pri_taint not in taints_array:
-            taints_array.append("pooltype=lowpri:NoSchedule")
-
     if node_vm_size is None:
         if os_type == "Windows":
             node_vm_size = "Standard_D2s_v3"
