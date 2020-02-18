@@ -8,8 +8,8 @@ import os
 import os.path
 import re
 from math import ceil, isnan
-from numpy import isclose
 from ipaddress import ip_network
+from numpy import isclose
 
 from knack.log import get_logger
 
