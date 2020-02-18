@@ -965,7 +965,6 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                enable_cluster_autoscaler=False,
                disable_cluster_autoscaler=False,
                update_cluster_autoscaler=False,
-               clear_cluster_autoscaler_profile=False,
                cluster_autoscaler_profile=None,
                min_count=None, max_count=None, no_wait=False,
                load_balancer_managed_outbound_ip_count=None,
@@ -986,11 +985,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                                                           load_balancer_outbound_ip_prefixes,
                                                           load_balancer_outbound_ports,
                                                           load_balancer_idle_timeout)
-
     # pylint: disable=too-many-boolean-expressions
     if not update_autoscaler and \
-       not cluster_autoscaler_profile and \
-       not clear_cluster_autoscaler_profile and \
+       cluster_autoscaler_profile is None and \
        not update_acr and \
        not update_lb_profile \
        and api_server_authorized_ip_ranges is None and \
@@ -1000,7 +997,6 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
                        '"--cluster-autoscaler-profile" or '
-                       '"--clear-cluster-autoscaler-profile" or '
                        '"--enable-pod-security-policy" or '
                        '"--disable-pod-security-policy" or '
                        '"--api-server-authorized-ip-ranges" or '
@@ -1055,17 +1051,13 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
         instance.agent_pool_profiles[0].min_count = None
         instance.agent_pool_profiles[0].max_count = None
 
-    if cluster_autoscaler_profile and clear_cluster_autoscaler_profile:
-        raise CLIError('Only one of cluster-autoscaler-profile or clear-cluster-autoscaler-profile can be specified')
-    if clear_cluster_autoscaler_profile:
+    if not cluster_autoscaler_profile:
         instance.auto_scaler_profile = {}
-    if cluster_autoscaler_profile:
-        if instance.auto_scaler_profile:
-            instance.auto_scaler_profile = _update_dict(instance.auto_scaler_profile.__dict__,
-                                                        dict((key.replace("-", "_"), value)
-                                                             for (key, value) in cluster_autoscaler_profile.items()))
-        else:
-            instance.auto_scaler_profile = cluster_autoscaler_profile
+    else:
+        instance.auto_scaler_profile = _update_dict(instance.auto_scaler_profile.__dict__,
+                                                    dict((key.replace("-", "_"), value)
+                                                         for (key, value) in cluster_autoscaler_profile.items())) \
+            if instance.auto_scaler_profile else cluster_autoscaler_profile
 
     if enable_pod_security_policy and disable_pod_security_policy:
         raise CLIError('Cannot specify --enable-pod-security-policy and --disable-pod-security-policy '

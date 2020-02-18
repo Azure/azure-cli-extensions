@@ -181,7 +181,7 @@ helps['aks create'] = """
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100].
         - name: --cluster-autoscaler-profile
           type: list
-          short-summary: Space-separated list of key=value pairs for configuring cluster autoscaler.
+          short-summary: Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.
         - name: --vm-set-type
           type: string
           short-summary: Agent pool vm set type. VirtualMachineScaleSets or AvailabilitySet.
@@ -299,12 +299,9 @@ helps['aks update'] = """
         - name: --max-count
           type: int
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100]
-        - name: --clear-cluster-autoscaler-profile
-          type: bool
-          short-summary: Clears the cluster-autoscaler profile.
         - name: --cluster-autoscaler-profile
           type: list
-          short-summary: Space-separated list of key=value pairs for configuring cluster autoscaler.
+          short-summary: Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.
         - name: --load-balancer-managed-outbound-ip-count
           type: int
           short-summary: Load balancer managed outbound IP count.
