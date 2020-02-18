@@ -18,31 +18,44 @@ helps['powerbi embedded-capacity create'] = """
     type: command
     short-summary: Provision the specified Dedicated capacity based on the configuration specified in the request.
     examples:
-      - name: Create capacity
+      - name: Create capacity.
         text: |-
                az powerbi embedded-capacity create --resource-group "TestRG" --name "azsdktest" \\
                --sku-name "A1" --sku-tier "PBIE_Azure" --administration-members \\
                "azsdktest@microsoft.com,azsdktest2@microsoft.com"
+      - name: Create capacity without waiting.
+        text: |-
+               az powerbi embedded-capacity create --resource-group "TestRG" --name "azsdktest" \\
+               --sku-name "A1" --sku-tier "PBIE_Azure" --administration-members \\
+               "azsdktest@microsoft.com,azsdktest2@microsoft.com" --no-wait
 """
 
 helps['powerbi embedded-capacity update'] = """
     type: command
     short-summary: Provisions the specified Dedicated capacity based on the configuration specified in the request.
     examples:
-      - name: Update capacity parameters
+      - name: Update capacity sku name.
         text: |-
-               az powerbi embedded-capacity update --resource-group "TestRG" --name "azsdktest" \\
-               --sku-name "A1" --sku-tier "PBIE_Azure" --administration-members \\
-               "azsdktest@microsoft.com,azsdktest2@microsoft.com"
+               az powerbi embedded-capacity update --resource-group "TestRG" --name "azsdktest" --sku-name "A1"
+      - name: Update capacity administrator members without waiting.
+        text: |-
+               az powerbi embedded-capacity update --resource-group "TestRG" --name "azsdktest" --sku-name "A1" \\
+               --administration-members "azsdktest3@microsoft.com" --no-wait
 """
 
 helps['powerbi embedded-capacity delete'] = """
     type: command
     short-summary: Delete the specified Dedicated capacity.
     examples:
-      - name: Delete a capacity in specified resource group
+      - name: Delete a capacity in specified resource group.
         text: |-
                az powerbi embedded-capacity delete --resource-group "TestRG" --name "azsdktest"
+      - name: Delete a capacity in specified resource group without prompt.
+        text: |-
+               az powerbi embedded-capacity delete --resource-group "TestRG" --name "azsdktest" -y
+      - name: Delete a capacity in specified resource group without waiting.
+        text: |-
+               az powerbi embedded-capacity delete --resource-group "TestRG" --name "azsdktest" --no-wait
 """
 
 helps['powerbi embedded-capacity show'] = """
@@ -66,7 +79,11 @@ helps['powerbi embedded-capacity list'] = """
                az powerbi embedded-capacity list
 """
 
-helps['-'] = """
-    type: group
-    short-summary: Commands to manage .
+helps['powerbi embedded-capacity wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of powerbi embedded capacity is met.
+    examples:
+      - name: Place the CLI in a waiting state until the powerbi embedded capacity is created.
+        text: |-
+               az powerbi embedded-capacity wait --resource-group "TestRG" --name "azsdktest" --created
 """
