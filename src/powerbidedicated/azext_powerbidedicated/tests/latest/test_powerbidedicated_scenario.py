@@ -7,12 +7,11 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, record_only)
 
 
 class PowerBIDedicatedScenarioTest(ScenarioTest):
-    @record_only()
+
     @ResourceGroupPreparer(name_prefix='cli_test_powerbidedicated')
     def test_powerbidedicated_embedded_capacity(self, resource_group):
         self.kwargs.update({
             'name': self.create_random_name(prefix='clipowerbi', length=24),
-            'sp': self.create_random_name('cli_test_sp', 15),
             'administrator': "4759ce24-1955-4c57-bc53-357a69cc065f"
         })
 
@@ -60,6 +59,5 @@ class PowerBIDedicatedScenarioTest(ScenarioTest):
 
         self.cmd('az powerbi embedded-capacity list -g {rg}',
                  checks=[
-                     self.check('length(@)', 0),
-                 ])
+                     self.check('length(@)', 0)])
 
