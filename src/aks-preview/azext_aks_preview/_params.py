@@ -21,7 +21,7 @@ from ._validators import (
     validate_nodepool_name, validate_vm_set_type, validate_load_balancer_sku,
     validate_load_balancer_outbound_ips, validate_load_balancer_outbound_ip_prefixes,
     validate_taints, validate_priority, validate_eviction_policy, validate_acr, validate_user,
-    validate_load_balancer_outbound_ports, validate_load_balancer_idle_timeout, validate_nodepool_tags, 
+    validate_load_balancer_outbound_ports, validate_load_balancer_idle_timeout, validate_nodepool_tags,
     validate_vnet_subnet_id)
 from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING
 
