@@ -7,9 +7,8 @@ from __future__ import unicode_literals
 import os
 import os.path
 import re
-from math import ceil, isnan
+from math import ceil, isnan, isclose
 from ipaddress import ip_network
-from numpy import isclose
 
 from knack.log import get_logger
 
@@ -220,12 +219,12 @@ def validate_spot_max_price(namespace):
         if namespace.priority != "Spot":
             raise CLIError("--spot_max_price can only be set when --priority is Spot")
         if namespace.priority == "Spot":
-            if namespace.spot_max_price <= 0 and not isclose(namespace.spot_max_price, -1.0, 0.000001):
+            if namespace.spot_max_price * 100000 % 1 != 0:
+                raise CLIError("--spot_max_price can only include up to 5 decimal places")
+            if namespace.spot_max_price <= 0 and not isclose(namespace.spot_max_price, -1.0, rel_tol=1e-06):
                 raise CLIError(
                     "--spot_max_price can only be any decimal value greater than zero, or -1 which indicates "
                     "default price to be up-to on-demand")
-            if namespace.spot_max_price * 100000 % 1 != 0:
-                raise CLIError("--spot_max_price can only include up to 5 decimal places")
 
 
 def validate_acr(namespace):
