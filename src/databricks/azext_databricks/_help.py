@@ -71,8 +71,3 @@ helps['databricks workspace list'] = """
         text: |-
                az databricks workspace list
 """
-
-helps['-'] = """
-    type: group
-    short-summary: Commands to manage .
-"""
