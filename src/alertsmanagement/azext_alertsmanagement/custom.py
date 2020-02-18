@@ -9,6 +9,8 @@
 # pylint: disable=unused-argument
 import json
 
+from knack.util import CLIError
+
 
 def list_alertsmanagement_operation(cmd, client):
     return client.list()
@@ -103,16 +105,78 @@ def get_history_alertsmanagement_smart_group(cmd, client,
     return client.get_history(smart_group_id=smart_group_id)
 
 
+def _transform_condition(condition):
+    """
+    ['Equals', 'Sev0', 'Sev2'] ->
+    {
+        "operator": "Equals",
+        "values": [
+            "Sev0",
+            "Sev2"
+        ]
+    }
+    :param condition: a list
+    :return: a dict
+    """
+    if condition is None:
+        return None
+    if len(condition) < 2:
+        raise CLIError('usage error: condition type should have at least two elements')
+    return {
+        'operator': condition[0],
+        'values': condition[1:]
+    }
+
+
 def create_alertsmanagement_action_rule(cmd, client,
                                         resource_group,
                                         name,
                                         location,
+                                        type,
+                                        description=None,
+                                        scope_type=None,
+                                        scope=None,
+                                        severity=None,
+                                        monitor_service=None,
+                                        monitor_condition=None,
+                                        target_resource_type=None,
+                                        alert_rule_id=None,
+                                        alert_description=None,
+                                        alert_context=None,
                                         tags=None,
                                         status=None):
     body = {}
     body['location'] = location  # str
     body['tags'] = tags  # unknown-primary[object]
     body['status'] = status  # str
+    body['type'] = type
+    body['description'] = description
+    body['scope'] = {
+        'scopeType': scope_type,
+        'values': scope
+    }
+    severity = _transform_condition(severity)
+    monitor_service = _transform_condition(monitor_service)
+    monitor_condition = _transform_condition(monitor_condition)
+    target_resource_type = _transform_condition(target_resource_type)
+    alert_rule_id = _transform_condition(alert_rule_id)
+    alert_description = _transform_condition(alert_description)
+    alert_context = _transform_condition(alert_context)
+    body['conditions'] = {}
+    if severity is not None:
+        body['conditions']['severity'] = severity
+    if severity is not None:
+        body['conditions']['monitorService'] = monitor_service
+    if severity is not None:
+        body['conditions']['monitorCondition'] = monitor_condition
+    if severity is not None:
+        body['conditions']['targetResourceType'] = target_resource_type
+    if severity is not None:
+        body['conditions']['alertRuleId'] = alert_rule_id
+    if severity is not None:
+        body['conditions']['description'] = alert_description
+    if severity is not None:
+        body['conditions']['alertContext'] = alert_context
     return client.create_update(resource_group_name=resource_group, action_rule_name=name, action_rule=body)
 
 

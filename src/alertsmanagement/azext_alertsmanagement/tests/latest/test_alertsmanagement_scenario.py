@@ -48,7 +48,9 @@ class AlertsScenarioTest(ScenarioTest):
                  '--resource-group {rg} '
                  '--name "rule1" '
                  '--location "Global" '
-                 '--status "Enabled"',
+                 '--status "Enabled" '
+                 '--type Suppression '
+                 '--severity Equals Sev0 Sev2 ',
                  checks=[])
 
         self.cmd('az alertsmanagement action-rule show '

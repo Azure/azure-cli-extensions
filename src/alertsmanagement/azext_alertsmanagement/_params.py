@@ -101,6 +101,17 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('tags', tags_type)
         c.argument('status', arg_type=get_enum_type(['Enabled', 'Disabled']), id_part=None, help='Indicates if the given action rule is enabled or disabled')
+        c.argument('type', arg_type=get_enum_type(['Suppression', 'ActionGroup', 'Diagnostics']), help='Indicates type of action rule')
+        c.argument('description', help='Description of action rule')
+        c.argument('scope_type', help='Type of target scope')
+        c.argument('scope', nargs='+', help='List of ARM IDs (space-delimited) of the given scope type which will be the target of the given action rule.')
+        c.argument('severity', nargs='+', help='Filter alerts by severity. All filters should follow format "operator value1 value2 ... valueN". Operator is Equals, NotEquals, Contains or DoesNotContain.')
+        c.argument('monitor_service', nargs='+', help='Filter alerts by monitor service')
+        c.argument('monitor_condition', nargs='+', help='Filter alerts by monitor condition')
+        c.argument('target_resource_type', nargs='+', help='Filter alerts by target resource type')
+        c.argument('alert_rule_id', nargs='+', help='Filter alerts by alert rule ID')
+        c.argument('alert_description', nargs='+', help='Filter alerts by alert rule description')
+        c.argument('alert_context', nargs='+', help='Filter alerts by alert context (payload)')
 
     with self.argument_context('alertsmanagement action-rule update') as c:
         c.argument('resource_group', resource_group_name_type)
