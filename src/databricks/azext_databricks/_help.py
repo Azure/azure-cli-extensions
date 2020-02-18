@@ -72,16 +72,7 @@ helps['databricks workspace list'] = """
                az databricks workspace list
 """
 
-helps['databricks operation'] = """
+helps['-'] = """
     type: group
-    short-summary: Commands to manage databricks operation.
-"""
-
-helps['databricks operation list'] = """
-    type: command
-    short-summary: Lists all of the available RP operations.
-    examples:
-      - name: Operations
-        text: |-
-               az databricks operation list
+    short-summary: Commands to manage .
 """

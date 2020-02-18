@@ -195,7 +195,3 @@ def list_databricks_workspace(cmd, client,
     if resource_group is not None:
         return client.list_by_resource_group(resource_group_name=resource_group)
     return client.list_by_subscription()
-
-
-def list_databricks_operation(cmd, client):
-    return client.list()

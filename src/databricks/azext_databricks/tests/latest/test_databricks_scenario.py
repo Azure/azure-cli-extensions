@@ -48,9 +48,7 @@ class DatabricksClientScenarioTest(ScenarioTest):
         self.cmd('az databricks workspace list',
                  checks=[])
 
-        self.cmd('az databricks operation list',
-                 checks=[])
-
+        # EXAMPLE NOT FOUND: Operations
         self.cmd('az databricks workspace update '
                  '--resource-group {rg} '
                  '--name "myWorkspace"',

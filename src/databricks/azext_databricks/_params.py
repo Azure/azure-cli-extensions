@@ -100,6 +100,3 @@ def load_arguments(self, _):
 
     with self.argument_context('databricks workspace list') as c:
         c.argument('resource_group', resource_group_name_type)
-
-    with self.argument_context('databricks operation list') as c:
-        pass

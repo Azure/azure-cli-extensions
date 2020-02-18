@@ -22,10 +22,3 @@ def load_command_table(self, _):
         g.custom_command('delete', 'delete_databricks_workspace')
         g.custom_show_command('show', 'get_databricks_workspace')
         g.custom_command('list', 'list_databricks_workspace')
-
-    from ._client_factory import cf_operations
-    databricks_operations = CliCommandType(
-        operations_tmpl='azext_databricks.vendored_sdks.databricks.operations._operations_operations#OperationsOperations.{}',
-        client_factory=cf_operations)
-    with self.command_group('databricks operation', databricks_operations, client_factory=cf_operations) as g:
-        g.custom_command('list', 'list_databricks_operation')
