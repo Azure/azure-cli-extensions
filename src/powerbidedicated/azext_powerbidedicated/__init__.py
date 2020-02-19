@@ -5,14 +5,14 @@
 
 from azure.cli.core import AzCommandsLoader
 
-from azext_powerbidedicated._help import helps  # pylint: disable=unused-import
+from ._help import helps  # pylint: disable=unused-import
 
 
 class PowerBIDedicatedCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_powerbidedicated._client_factory import cf_powerbidedicated
+        from ._client_factory import cf_powerbidedicated
         powerbidedicated_custom = CliCommandType(
             operations_tmpl='azext_powerbidedicated.custom#{}',
             client_factory=cf_powerbidedicated)
@@ -20,12 +20,12 @@ class PowerBIDedicatedCommandsLoader(AzCommandsLoader):
                                                              custom_command_type=powerbidedicated_custom)
 
     def load_command_table(self, args):
-        from azext_powerbidedicated.commands import load_command_table
+        from .commands import load_command_table
         load_command_table(self, args)
         return self.command_table
 
     def load_arguments(self, command):
-        from azext_powerbidedicated._params import load_arguments
+        from ._params import load_arguments
         load_arguments(self, command)
 
 
