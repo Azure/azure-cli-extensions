@@ -101,7 +101,7 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('tags', tags_type)
         c.argument('status', arg_type=get_enum_type(['Enabled', 'Disabled']), id_part=None, help='Indicates if the given action rule is enabled or disabled')
-        c.argument('type', arg_type=get_enum_type(['Suppression', 'ActionGroup', 'Diagnostics']), help='Indicates type of action rule')
+        c.argument('rule_type', arg_type=get_enum_type(['Suppression', 'ActionGroup', 'Diagnostics']), help='Indicates type of action rule')
         c.argument('description', help='Description of action rule')
         c.argument('scope_type', help='Type of target scope')
         c.argument('scope', nargs='+', help='List of ARM IDs (space-delimited) of the given scope type which will be the target of the given action rule.')

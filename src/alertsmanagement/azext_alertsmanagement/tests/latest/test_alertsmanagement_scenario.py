@@ -42,14 +42,12 @@ class AlertsScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_alertsmanagement_action_rule_')
     def test_alertsmanagement_action_rule(self, resource_group):
-        subscription_id = self.get_subscription_id()
-
         self.cmd('az alertsmanagement action-rule create '
                  '--resource-group {rg} '
                  '--name "rule1" '
                  '--location "Global" '
                  '--status "Enabled" '
-                 '--type Suppression '
+                 '--rule-type Suppression '
                  '--severity Equals Sev0 Sev2 '
                  '--recurrence-type Daily '
                  '--start-date 12/09/2018 '

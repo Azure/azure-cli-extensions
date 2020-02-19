@@ -7,6 +7,7 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-locals
 # pylint: disable=unused-argument
+# pylint: disable=too-many-boolean-expressions
 import json
 
 from knack.util import CLIError
@@ -132,7 +133,7 @@ def create_alertsmanagement_action_rule(cmd, client,
                                         resource_group,
                                         name,
                                         location,
-                                        type,
+                                        rule_type,
                                         description=None,
                                         scope_type=None,
                                         scope=None,
@@ -157,7 +158,7 @@ def create_alertsmanagement_action_rule(cmd, client,
     properties = {}
     if status is not None:
         properties['status'] = status
-    properties['type'] = type
+    properties['type'] = rule_type
     if description is not None:
         properties['description'] = description
     if scope is not None and scope_type is not None:

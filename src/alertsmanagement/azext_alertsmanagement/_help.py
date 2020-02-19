@@ -45,7 +45,7 @@ helps['alertsmanagement alert meta-data'] = """
 
 helps['alertsmanagement alert get-all'] = """
     type: command
-    short-summary: List all existing alerts, where the results can be filtered on the basis of multiple parameters (e.g. time range). The results can then be sorted on the basis specific fields, with the default being lastModifiedDateTime. 
+    short-summary: List all existing alerts, where the results can be filtered on the basis of multiple parameters (e.g. time range). The results can then be sorted on the basis specific fields, with the default being lastModifiedDateTime.
     examples:
       - name: ListAlerts
         text: |-
@@ -96,7 +96,7 @@ helps['alertsmanagement smart-group change-state'] = """
 
 helps['alertsmanagement smart-group get-all'] = """
     type: command
-    short-summary: List all the Smart Groups within a specified subscription. 
+    short-summary: List all the Smart Groups within a specified subscription.
     examples:
       - name: List
         text: |-
@@ -134,8 +134,8 @@ helps['alertsmanagement action-rule create'] = """
     examples:
       - name: PutActionRule
         text: |-
-               az alertsmanagement action-rule create --resource-group "alertscorrelationrg" --name \\
-               "DailySuppression" --location "Global" --status "Enabled"
+               az alertsmanagement action-rule create --resource-group "alertscorrelationrg" --name "rule" --location "Global" --status "Enabled" --rule-type Suppression --severity Equals Sev0 Sev2 --recurrence-type Daily --start-date 12/09/2018 --end-date 12/18/2018 --start-time 06:00:00 --end-time 14:00:00
+
 """
 
 helps['alertsmanagement action-rule update'] = """

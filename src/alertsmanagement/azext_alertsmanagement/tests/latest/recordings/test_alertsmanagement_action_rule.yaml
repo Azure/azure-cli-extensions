@@ -18,7 +18,7 @@ interactions:
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
-      - --resource-group --name --location --status --type --severity --recurrence-type
+      - --resource-group --name --location --status --rule-type --severity --recurrence-type
         --start-date --end-date --start-time --end-time
       User-Agent:
       - python/3.8.1 (Windows-10-10.0.17763-SP0) msrest/0.6.10 msrest_azure/0.6.2
@@ -29,7 +29,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1?api-version=2019-05-05-preview
   response:
     body:
-      string: '{"properties":{"conditions":{"severity":{"operator":"Equals","values":["Sev0","Sev2"]}},"status":"Enabled","type":"Suppression","suppressionConfig":{"recurrenceType":"Daily","schedule":{"startDate":"12/09/2018","endDate":"12/18/2018","startTime":"06:00:00","endTime":"14:00:00"}},"createdAt":"2020-02-19T16:47:57.7041574Z","createdBy":"fey@microsoft.com","lastModifiedAt":"2020-02-19T16:47:57.7041574Z","lastModifiedBy":"fey@microsoft.com"},"location":"Global","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1","type":"Microsoft.AlertsManagement/actionRules","name":"rule1"}'
+      string: '{"properties":{"conditions":{"severity":{"operator":"Equals","values":["Sev0","Sev2"]}},"status":"Enabled","type":"Suppression","suppressionConfig":{"recurrenceType":"Daily","schedule":{"startDate":"12/09/2018","endDate":"12/18/2018","startTime":"06:00:00","endTime":"14:00:00"}},"createdAt":"2020-02-19T16:55:37.7744856Z","createdBy":"fey@microsoft.com","lastModifiedAt":"2020-02-19T16:55:37.7744856Z","lastModifiedBy":"fey@microsoft.com"},"location":"Global","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1","type":"Microsoft.AlertsManagement/actionRules","name":"rule1"}'
     headers:
       cache-control:
       - no-store, no-cache
@@ -40,7 +40,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 19 Feb 2020 16:47:59 GMT
+      - Wed, 19 Feb 2020 16:55:39 GMT
       expires:
       - '-1'
       pragma:
@@ -54,7 +54,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
       x-xss-protection:
       - 1; mode=block
     status:
@@ -82,7 +82,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1?api-version=2019-05-05-preview
   response:
     body:
-      string: '{"properties":{"conditions":{"severity":{"operator":"Equals","values":["Sev0","Sev2"]}},"status":"Enabled","type":"Suppression","suppressionConfig":{"recurrenceType":"Daily","schedule":{"startDate":"12/09/2018","endDate":"12/18/2018","startTime":"06:00:00","endTime":"14:00:00"}},"createdAt":"2020-02-19T16:47:57.7041574Z","createdBy":"fey@microsoft.com","lastModifiedAt":"2020-02-19T16:47:57.7041574Z","lastModifiedBy":"fey@microsoft.com"},"location":"Global","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1","type":"Microsoft.AlertsManagement/actionRules","name":"rule1"}'
+      string: '{"properties":{"conditions":{"severity":{"operator":"Equals","values":["Sev0","Sev2"]}},"status":"Enabled","type":"Suppression","suppressionConfig":{"recurrenceType":"Daily","schedule":{"startDate":"12/09/2018","endDate":"12/18/2018","startTime":"06:00:00","endTime":"14:00:00"}},"createdAt":"2020-02-19T16:55:37.7744856Z","createdBy":"fey@microsoft.com","lastModifiedAt":"2020-02-19T16:55:37.7744856Z","lastModifiedBy":"fey@microsoft.com"},"location":"Global","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1","type":"Microsoft.AlertsManagement/actionRules","name":"rule1"}'
     headers:
       cache-control:
       - no-store, no-cache
@@ -93,7 +93,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 19 Feb 2020 16:48:02 GMT
+      - Wed, 19 Feb 2020 16:55:41 GMT
       expires:
       - '-1'
       pragma:
@@ -135,7 +135,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1?api-version=2019-05-05-preview
   response:
     body:
-      string: '{"properties":{"conditions":{"severity":{"operator":"Equals","values":["Sev0","Sev2"]}},"status":"Enabled","type":"Suppression","suppressionConfig":{"recurrenceType":"Daily","schedule":{"startDate":"12/09/2018","endDate":"12/18/2018","startTime":"06:00:00","endTime":"14:00:00"}},"createdAt":"2020-02-19T16:47:57.7041574Z","createdBy":"fey@microsoft.com","lastModifiedAt":"2020-02-19T16:47:57.7041574Z","lastModifiedBy":"fey@microsoft.com"},"location":"Global","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1","type":"Microsoft.AlertsManagement/actionRules","name":"rule1"}'
+      string: '{"properties":{"conditions":{"severity":{"operator":"Equals","values":["Sev0","Sev2"]}},"status":"Enabled","type":"Suppression","suppressionConfig":{"recurrenceType":"Daily","schedule":{"startDate":"12/09/2018","endDate":"12/18/2018","startTime":"06:00:00","endTime":"14:00:00"}},"createdAt":"2020-02-19T16:55:37.7744856Z","createdBy":"fey@microsoft.com","lastModifiedAt":"2020-02-19T16:55:37.7744856Z","lastModifiedBy":"fey@microsoft.com"},"location":"Global","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1","type":"Microsoft.AlertsManagement/actionRules","name":"rule1"}'
     headers:
       cache-control:
       - no-store, no-cache
@@ -146,7 +146,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 19 Feb 2020 16:48:03 GMT
+      - Wed, 19 Feb 2020 16:55:44 GMT
       expires:
       - '-1'
       pragma:
@@ -195,7 +195,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1?api-version=2019-05-05-preview
   response:
     body:
-      string: '{"properties":{"conditions":{"severity":{"operator":"Equals","values":["Sev0","Sev2"]}},"status":"Disabled","type":"Suppression","suppressionConfig":{"recurrenceType":"Daily","schedule":{"startDate":"12/09/2018","endDate":"12/18/2018","startTime":"06:00:00","endTime":"14:00:00"}},"createdAt":"2020-02-19T16:47:57.7041574Z","createdBy":"fey@microsoft.com","lastModifiedAt":"2020-02-19T16:48:05.4108095Z","lastModifiedBy":"fey@microsoft.com"},"location":"Global","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1","type":"Microsoft.AlertsManagement/actionRules","name":"rule1"}'
+      string: '{"properties":{"conditions":{"severity":{"operator":"Equals","values":["Sev0","Sev2"]}},"status":"Disabled","type":"Suppression","suppressionConfig":{"recurrenceType":"Daily","schedule":{"startDate":"12/09/2018","endDate":"12/18/2018","startTime":"06:00:00","endTime":"14:00:00"}},"createdAt":"2020-02-19T16:55:37.7744856Z","createdBy":"fey@microsoft.com","lastModifiedAt":"2020-02-19T16:55:46.2519341Z","lastModifiedBy":"fey@microsoft.com"},"location":"Global","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1","type":"Microsoft.AlertsManagement/actionRules","name":"rule1"}'
     headers:
       cache-control:
       - no-store, no-cache
@@ -206,7 +206,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 19 Feb 2020 16:48:05 GMT
+      - Wed, 19 Feb 2020 16:55:46 GMT
       expires:
       - '-1'
       pragma:
@@ -220,7 +220,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1197'
       x-xss-protection:
       - 1; mode=block
     status:
