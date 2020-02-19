@@ -158,9 +158,13 @@ helps['spring-cloud app set-deployment'] = """
 
 helps['spring-cloud app log'] = """
     type: group
-    short-summary: Show logs of an app instance, logs will be streamed when setting '-f/--follow'.
+    short-summary: Commands to tail app instances logs with multiple options. If the app has only one instance, the instance name is optional.
 """
 
+helps['spring-cloud app logs'] = """
+    type: command
+    short-summary: Show logs of an app instance, logs will be streamed when setting '-f/--follow'.
+"""
 
 helps['spring-cloud app deployment'] = """
     type: group
