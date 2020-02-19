@@ -470,10 +470,10 @@ helps['aks nodepool add'] = """
           short-summary: The node taints for the node pool. You can't change the node taints through CLI after the node pool is created.
         - name: --priority
           type: string
-          short-summary: The priority of the node pool. Regular or Spot.
+          short-summary: The priority of the node pool.
         - name: --eviction-policy
           type: string
-          short-summary: The eviction policy of the Spot node pool. Delete or Deallocate.
+          short-summary: The eviction policy of the Spot node pool. It can only be set when --priority is Spot. 
         - name: --spot-max-price
           type: float
           short-summary: It can only be set when --priority is Spot. Specify the maximum price you are willing to pay in US Dollars. Possible values are any decimal value greater than zero or -1 which indicates default price to be up-to on-demand. It can only include up to 5 decimal places.
