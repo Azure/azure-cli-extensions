@@ -10,7 +10,7 @@ from azure.cli.core.commands.parameters import (
     get_enum_type
 )
 from azext_account.action import (
-    PeeringAddOwners
+    AddOwners
 )
 
 
@@ -50,7 +50,7 @@ def load_arguments(self, _):
         c.argument('additional_parameters', id_part=None, help='Additional, untyped parameters to support custom subscription creation scenarios.')
         c.argument('reseller_id', id_part=None, help='Reseller ID, basically MPN Id.')
         c.argument('service_provider_id', id_part=None, help='Service provider ID, basically MPN Id.')
-        c.argument('owners', id_part=None, help='The list of principals that should be granted Owner access on the subscription. Principals should be of type User, Service Principal or Security Group.', action=PeeringAddOwners, nargs='+')
+        c.argument('owners', id_part=None, help='The list of principals that should be granted Owner access on the subscription. Principals should be of type User, Service Principal or Security Group.', action=AddOwners, nargs='+')
         c.argument('offer_type', arg_type=get_enum_type(['MS-AZR-0017P', 'MS-AZR-0148P']), id_part=None, help='The offer type of the subscription. For example, MS-AZR-0017P (EnterpriseAgreement) and MS-AZR-0148P (EnterpriseAgreement devTest) are available. Only valid when creating a subscription in a enrollment account scope.')
 
     with self.argument_context('account subscription-factory create-csp-subscription') as c:
@@ -65,7 +65,7 @@ def load_arguments(self, _):
         c.argument('additional_parameters', id_part=None, help='Additional, untyped parameters to support custom subscription creation scenarios.')
         c.argument('reseller_id', id_part=None, help='Reseller ID, basically MPN Id.')
         c.argument('service_provider_id', id_part=None, help='Service provider ID, basically MPN Id.')
-        c.argument('owners', id_part=None, help='The list of principals that should be granted Owner access on the subscription. Principals should be of type User, Service Principal or Security Group.', action=PeeringAddOwners, nargs='+')
+        c.argument('owners', id_part=None, help='The list of principals that should be granted Owner access on the subscription. Principals should be of type User, Service Principal or Security Group.', action=AddOwners, nargs='+')
         c.argument('offer_type', arg_type=get_enum_type(['MS-AZR-0017P', 'MS-AZR-0148P']), id_part=None, help='The offer type of the subscription. For example, MS-AZR-0017P (EnterpriseAgreement) and MS-AZR-0148P (EnterpriseAgreement devTest) are available. Only valid when creating a subscription in a enrollment account scope.')
 
     with self.argument_context('account subscription-factory create-subscription-in-enrollment-account') as c:
@@ -79,7 +79,7 @@ def load_arguments(self, _):
         c.argument('additional_parameters', id_part=None, help='Additional, untyped parameters to support custom subscription creation scenarios.')
         c.argument('reseller_id', id_part=None, help='Reseller ID, basically MPN Id.')
         c.argument('service_provider_id', id_part=None, help='Service provider ID, basically MPN Id.')
-        c.argument('owners', id_part=None, help='The list of principals that should be granted Owner access on the subscription. Principals should be of type User, Service Principal or Security Group.', action=PeeringAddOwners, nargs='+')
+        c.argument('owners', id_part=None, help='The list of principals that should be granted Owner access on the subscription. Principals should be of type User, Service Principal or Security Group.', action=AddOwners, nargs='+')
         c.argument('offer_type', arg_type=get_enum_type(['MS-AZR-0017P', 'MS-AZR-0148P']), id_part=None, help='The offer type of the subscription. For example, MS-AZR-0017P (EnterpriseAgreement) and MS-AZR-0148P (EnterpriseAgreement devTest) are available. Only valid when creating a subscription in a enrollment account scope.')
 
     with self.argument_context('account subscription-operation list') as c:
