@@ -108,15 +108,28 @@ helps['aks create'] = """
           type: string
           short-summary: Load balancer outbound IP prefix resource IDs.
           long-summary: Comma-separated public IP prefix resource IDs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only.
+        - name: --load-balancer-outbound-ports
+          type: int
+          short-summary: Load balancer outbound allocated ports.
+          long-summary: Desired static number of outbound ports per VM in the load balancer backend pool. By default, set to 0 which uses the default allocation based on the number of VMs. Please specify a value in the range of [0, 64000] that is a multiple of 8.
+        - name: --load-balancer-idle-timeout
+          type: int
+          short-summary: Load balancer idle timeout in minutes.
+          long-summary: Desired idle timeout for load balancer outbound flows, default is 30 minutes. Please specify a value in the range of [4, 120].
+        - name: --outbound-type
+          type: string
+          short-summary: How outbound traffic will be configured for a cluster.
+          long-summary: Select between loadBalancer and userDefinedRouting. If not set, defaults to type loadBalancer. Requires --network-plugin to be azure and a standard load balancer SKU.
         - name: --enable-addons -a
           type: string
           short-summary: Enable the Kubernetes addons in a comma-separated list.
           long-summary: |-
             These addons are available:
-                http_application_routing - configure ingress with automatic public DNS name creation.
-                monitoring - turn on Log Analytics monitoring. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace.
-                virtual-node - enable AKS Virtual Node (PREVIEW). Requires --subnet-name to provide the name of an existing subnet for the Virtual Node to use.
-                azure-policy - enable Azure policy (PREVIEW).
+                http_application_routing  - configure ingress with automatic public DNS name creation.
+                monitoring                - turn on Log Analytics monitoring. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace.
+                virtual-node              - enable AKS Virtual Node (PREVIEW). Requires --subnet-name to provide the name of an existing subnet for the Virtual Node to use.
+                azure-policy              - enable Azure policy (PREVIEW).
+                ingress-appgw             - enable Applicaiton Gateway Ingress Controller addon (PREVIEW).
         - name: --disable-rbac
           type: bool
           short-summary: Disable Kubernetes Role-Based Access Control.
@@ -190,6 +203,24 @@ helps['aks create'] = """
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+        - name: --appgw-name
+          type: string
+          short-summary: Name of the application gateway to create/use in the node resource group
+        - name: --appgw-subnet-prefix
+          type: string
+          short-summary: Subnet Prefix to use for a new subnet created to deploy the Application Gateway
+        - name: --appgw-id
+          type: string
+          short-summary: Resource Id of an existing Application Gateway to use with AGIC
+        - name: --appgw-subnet-id
+          type: string
+          short-summary: Resource Id of an existing Subnet used to deploy the Application Gateway
+        - name: --appgw-shared
+          type: bool
+          short-summary: Use shared flag if application gateway will be shared
+        - name: --appgw-watch-namespace
+          type: string
+          short-summary: Specify the namespace, which AGIC should watch. This could be a single string value, or a comma-separated list of namespaces.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -209,12 +240,16 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-outbound-ips <ip-resource-id-1,ip-resource-id-2>
         - name: Create a kubernetes cluster with standard SKU load balancer and use the provided public IP prefixes for the load balancer outbound connection usage.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-outbound-ip-prefixes <ip-prefix-resource-id-1,ip-prefix-resource-id-2>
+        - name: Create a kubernetes cluster with a standard SKU load balancer, with two outbound AKS managed IPs an idle flow timeout of 5 minutes and 8000 allocated ports per machine
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-managed-outbound-ip-count 2 --load-balancer-idle-timeout 5 --load-balancer-outbound-ports 8000
         - name: Create a kubernetes cluster with basic SKU load balancer and AvailabilitySet vm set type.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-sku basic --vm-set-type AvailabilitySet
         - name: Create a kubernetes cluster with authorized apiserver IP ranges.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --api-server-authorized-ip-ranges 193.168.1.0/24,194.168.1.0/24,195.168.1.0
         - name: Create a kubernetes cluster with server side encryption using your owned key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --node-osdisk-diskencryptionset-id <disk-encryption-set-resource-id>
+        - name: Create a kubernetes cluster with userDefinedRouting, standard load balancer SKU and the azure network plugin
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --outbound-type userDefinedRouting --network-plugin azure --load-balancer-sku standard
 
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 
@@ -273,6 +308,14 @@ helps['aks update'] = """
           type: string
           short-summary: Load balancer outbound IP prefix resource IDs.
           long-summary: Comma-separated public IP prefix resource IDs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only.
+        - name: --load-balancer-outbound-ports
+          type: int
+          short-summary: Load balancer outbound allocated ports.
+          long-summary: Desired static number of outbound ports per VM in the load balancer backend pool. By default, set to 0 which uses the default allocation based on the number of VMs. Please specify a value in the range of [0, 64000] that is a multiple of 8.
+        - name: --load-balancer-idle-timeout
+          type: int
+          short-summary: Load balancer idle timeout in minutes.
+          long-summary: Desired idle timeout for load balancer outbound flows, default is 30 minutes. Please specify a value in the range of [4, 120].
         - name: --enable-pod-security-policy
           type: bool
           short-summary: (PREVIEW) Enable pod security policy.
@@ -305,6 +348,8 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --load-balancer-outbound-ips <ip-resource-id-1,ip-resource-id-2>
       - name: Update a kubernetes cluster with standard SKU load balancer to use the provided public IP prefixes for the load balancer outbound connection usage.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --load-balancer-outbound-ip-prefixes <ip-prefix-resource-id-1,ip-prefix-resource-id-2>
+      - name: Update a kubernetes cluster with two outbound AKS managed IPs an idle flow timeout of 5 minutes and 8000 allocated ports per machine
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --load-balancer-managed-outbound-ip-count 2 --load-balancer-idle-timeout 5 --load-balancer-outbound-ports 8000
       - name: Update a kubernetes cluster with authorized apiserver ip ranges.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --api-server-authorized-ip-ranges 193.168.1.0/24,194.168.1.0/24
       - name: Disable authorized apiserver ip ranges feature for a kubernetes cluster.
@@ -491,10 +536,11 @@ type: command
 short-summary: Enable Kubernetes addons.
 long-summary: |-
     These addons are available:
-        http_application_routing - configure ingress with automatic public DNS name creation.
-        monitoring - turn on Log Analytics monitoring. Requires "--workspace-resource-id".
-        virtual-node - enable AKS Virtual Node (PREVIEW). Requires "--subnet-name".
-        azure-policy - enable Azure policy (PREVIEW).
+        http_application_routing  - configure ingress with automatic public DNS name creation.
+        monitoring                - turn on Log Analytics monitoring. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace.
+        virtual-node              - enable AKS Virtual Node (PREVIEW). Requires --subnet-name to provide the name of an existing subnet for the Virtual Node to use.
+        azure-policy              - enable Azure policy (PREVIEW).
+        ingress-appgw             - enable Application Gateway Ingress Controller addon (PREVIEW).
 parameters:
   - name: --addons -a
     type: string
@@ -505,6 +551,24 @@ parameters:
   - name: --subnet-name -s
     type: string
     short-summary: The subnet name for the virtual node to use.
+  - name: --appgw-name
+    type: string
+    short-summary: Name of the application gateway to create/use in the node resource group
+  - name: --appgw-subnet-prefix
+    type: string
+    short-summary: Subnet Prefix to use for a new subnet created to deploy the Application Gateway
+  - name: --appgw-id
+    type: string
+    short-summary: Resource Id of an existing Application Gateway to use with AGIC
+  - name: --appgw-subnet-id
+    type: string
+    short-summary: Resource Id of an existing Subnet used to deploy the Application Gateway
+  - name: --appgw-shared
+    type: bool
+    short-summary: Use shared flag if application gateway will be shared
+  - name: --appgw-watch-namespace
+    type: string
+    short-summary: Specify the namespace, which AGIC should watch. This could be a single string value, or a comma-separated list of namespaces.
 examples:
   - name: Enable Kubernetes addons. (autogenerated)
     text: az aks enable-addons --addons virtual-node --name MyManagedCluster --resource-group MyResourceGroup --subnet-name VirtualNodeSubnet

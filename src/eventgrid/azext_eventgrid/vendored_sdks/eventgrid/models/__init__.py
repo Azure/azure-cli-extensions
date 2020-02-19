@@ -11,6 +11,7 @@
 
 try:
     from .input_schema_mapping_py3 import InputSchemaMapping
+    from .inbound_ip_rule_py3 import InboundIpRule
     from .resource_py3 import Resource
     from .json_field_py3 import JsonField
     from .json_field_with_default_py3 import JsonFieldWithDefault
@@ -59,6 +60,7 @@ try:
     from .topic_type_info_py3 import TopicTypeInfo
 except (SyntaxError, ImportError):
     from .input_schema_mapping import InputSchemaMapping
+    from .inbound_ip_rule import InboundIpRule
     from .resource import Resource
     from .json_field import JsonField
     from .json_field_with_default import JsonFieldWithDefault
@@ -115,6 +117,7 @@ from .topic_type_info_paged import TopicTypeInfoPaged
 from .event_grid_management_client_enums import (
     DomainProvisioningState,
     InputSchema,
+    IpActionType,
     DomainTopicProvisioningState,
     EventSubscriptionProvisioningState,
     EventDeliverySchema,
@@ -125,6 +128,7 @@ from .event_grid_management_client_enums import (
 
 __all__ = [
     'InputSchemaMapping',
+    'InboundIpRule',
     'Resource',
     'JsonField',
     'JsonFieldWithDefault',
@@ -180,6 +184,7 @@ __all__ = [
     'TopicTypeInfoPaged',
     'DomainProvisioningState',
     'InputSchema',
+    'IpActionType',
     'DomainTopicProvisioningState',
     'EventSubscriptionProvisioningState',
     'EventDeliverySchema',

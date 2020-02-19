@@ -142,6 +142,11 @@ helps['spring-cloud app show-deploy-log'] = """
     short-summary: Show build log of the last deploy, only apply to source code deploy, default to production deployment.
 """
 
+helps['spring-cloud app log tail'] = """
+    type: command
+    short-summary: Show logs of an app instance, logs will be streamed when setting '-f/--follow'.
+"""
+
 helps['spring-cloud app set-deployment'] = """
     type: command
     short-summary: Set production deployment of an app.
@@ -149,6 +154,13 @@ helps['spring-cloud app set-deployment'] = """
     - name: Swap a staging deployment of an app to production.
       text: az spring-cloud app set-deployment -d green-deployment -n MyApp -s MyCluster -g MyResourceGroup
 """
+
+
+helps['spring-cloud app log'] = """
+    type: group
+    short-summary: Show logs of an app instance, logs will be streamed when setting '-f/--follow'.
+"""
+
 
 helps['spring-cloud app deployment'] = """
     type: group
