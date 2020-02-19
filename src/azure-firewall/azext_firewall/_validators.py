@@ -95,6 +95,66 @@ def get_subnet_validator():
     return simple_validator
 
 
+def get_management_subnet_validator():
+    from msrestazure.tools import is_valid_resource_id, resource_id
+    from knack.util import CLIError
+
+    def simple_validator(cmd, namespace):
+        if any([namespace.management_virtual_network_name,
+                namespace.management_item_name,
+                namespace.management_public_ip_address]):
+            if not all([namespace.management_virtual_network_name,
+                        namespace.management_virtual_network_name,
+                        namespace.management_public_ip_address]):
+                raise CLIError("Usage error: --management-virtual-network-name, --management-ip-config-name "
+                               "and --management-public-ip-address")
+        else:
+            return
+
+        # determine if subnet is name or ID
+        is_id = is_valid_resource_id(namespace.management_subnet)
+
+        if not is_id:
+            namespace.management_subnet = resource_id(
+                subscription=get_subscription_id(cmd.cli_ctx),
+                resource_group=namespace.resource_group_name,
+                namespace='Microsoft.Network',
+                type='virtualNetworks',
+                name=namespace.management_virtual_network_name,
+                child_type_1='subnets',
+                child_name_1=namespace.management_subnet)
+
+    return simple_validator
+
+
+def get_management_public_ip_validator():
+    """ Retrieves a validator for public IP address. Accepting all defaults will perform a check
+    for an existing name or ID with no ARM-required -type parameter. """
+    from msrestazure.tools import is_valid_resource_id, resource_id
+
+    def simple_validator(cmd, namespace):
+        if namespace.management_public_ip_address:
+            is_list = isinstance(namespace.management_public_ip_address, list)
+
+            def _validate_name_or_id(public_ip):
+                # determine if public_ip_address is name or ID
+                is_id = is_valid_resource_id(public_ip)
+                return public_ip if is_id else resource_id(
+                    subscription=get_subscription_id(cmd.cli_ctx),
+                    resource_group=namespace.resource_group_name,
+                    namespace='Microsoft.Network',
+                    type='publicIPAddresses',
+                    name=public_ip)
+
+            if is_list:
+                for i, public_ip in enumerate(namespace.management_public_ip_address):
+                    namespace.management_public_ip_address[i] = _validate_name_or_id(public_ip)
+            else:
+                namespace.management_public_ip_address = _validate_name_or_id(namespace.management_public_ip_address)
+
+    return simple_validator
+
+
 def validate_firewall_policy(cmd, namespace):
     from msrestazure.tools import is_valid_resource_id, resource_id
 
