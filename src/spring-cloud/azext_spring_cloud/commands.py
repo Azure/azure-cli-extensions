@@ -11,7 +11,6 @@ from ._transformers import (transform_spring_cloud_table_output,
 
 # pylint: disable=too-many-statements
 def load_command_table(self, _):
-
     with self.command_group('spring-cloud', client_factory=cf_app_services) as g:
         g.custom_command('create', 'spring_cloud_create',
                          supports_no_wait=True)
@@ -33,7 +32,8 @@ def load_command_table(self, _):
         g.custom_command('clear', 'config_delete')
         g.custom_show_command('show', 'config_get')
 
-    with self.command_group('spring-cloud config-server git', client_factory=cf_app_services, supports_local_cache=True) as g:
+    with self.command_group('spring-cloud config-server git', client_factory=cf_app_services,
+                            supports_local_cache=True) as g:
         g.custom_command('set', 'config_git_set')
         g.custom_command('repo add', 'config_repo_add')
         g.custom_command('repo remove', 'config_repo_delete')
@@ -56,8 +56,11 @@ def load_command_table(self, _):
         g.custom_command('start', 'app_start', supports_no_wait=True)
         g.custom_command('stop', 'app_stop', supports_no_wait=True)
         g.custom_command('restart', 'app_restart', supports_no_wait=True)
-        g.custom_command('log', 'app_tail_log')
-        g.custom_command('log tail', 'app_tail_log', deprecate_info=g.deprecate(redirect='az spring-cloud app log', hide=True))
+        g.custom_command('logs', 'app_tail_log')
+
+    with self.command_group('spring-cloud app log', client_factory=cf_spring_cloud,
+                            deprecate_info=g.deprecate(redirect='az spring-cloud app logs', hide=True)) as g:
+        g.custom_command('tail', 'app_tail_log')
 
     with self.command_group('spring-cloud app deployment', client_factory=cf_spring_cloud) as g:
         g.custom_command('create', 'deployment_create', supports_no_wait=True)

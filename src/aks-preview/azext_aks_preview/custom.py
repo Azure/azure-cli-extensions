@@ -534,6 +534,12 @@ def subnet_role_assignment_exists(cli_ctx, scope):
     return False
 
 
+def _update_dict(dict1, dict2):
+    cp = dict1.copy()
+    cp.update(dict2)
+    return cp
+
+
 def aks_browse(cmd,     # pylint: disable=too-many-statements
                client,
                resource_group_name,
@@ -657,6 +663,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                vm_set_type=None,
                skip_subnet_role_assignment=False,
                enable_cluster_autoscaler=False,
+               cluster_autoscaler_profile=None,
                network_plugin=None,
                network_policy=None,
                pod_cidr=None,
@@ -906,6 +913,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         network_profile=network_profile,
         addon_profiles=addon_profiles,
         aad_profile=aad_profile,
+        auto_scaler_profile=cluster_autoscaler_profile,
         enable_pod_security_policy=bool(enable_pod_security_policy),
         identity=identity,
         disk_encryption_set_id=node_osdisk_diskencryptionset_id,
@@ -957,6 +965,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                enable_cluster_autoscaler=False,
                disable_cluster_autoscaler=False,
                update_cluster_autoscaler=False,
+               cluster_autoscaler_profile=None,
                min_count=None, max_count=None, no_wait=False,
                load_balancer_managed_outbound_ip_count=None,
                load_balancer_outbound_ips=None,
@@ -976,9 +985,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                                                           load_balancer_outbound_ip_prefixes,
                                                           load_balancer_outbound_ports,
                                                           load_balancer_idle_timeout)
-
     # pylint: disable=too-many-boolean-expressions
     if not update_autoscaler and \
+       cluster_autoscaler_profile is None and \
        not update_acr and \
        not update_lb_profile \
        and api_server_authorized_ip_ranges is None and \
@@ -987,6 +996,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
+                       '"--cluster-autoscaler-profile" or '
                        '"--enable-pod-security-policy" or '
                        '"--disable-pod-security-policy" or '
                        '"--api-server-authorized-ip-ranges" or '
@@ -1040,6 +1050,14 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
         instance.agent_pool_profiles[0].enable_auto_scaling = False
         instance.agent_pool_profiles[0].min_count = None
         instance.agent_pool_profiles[0].max_count = None
+
+    if not cluster_autoscaler_profile:
+        instance.auto_scaler_profile = {}
+    else:
+        instance.auto_scaler_profile = _update_dict(instance.auto_scaler_profile.__dict__,
+                                                    dict((key.replace("-", "_"), value)
+                                                         for (key, value) in cluster_autoscaler_profile.items())) \
+            if instance.auto_scaler_profile else cluster_autoscaler_profile
 
     if enable_pod_security_policy and disable_pod_security_policy:
         raise CLIError('Cannot specify --enable-pod-security-policy and --disable-pod-security-policy '
@@ -1910,6 +1928,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       node_taints=None,
                       priority="Regular",
                       eviction_policy="Delete",
+                      spot_max_price=-1,
                       public_ip_per_vm=False,
                       no_wait=False):
     instances = client.list(resource_group_name, cluster_name)
@@ -1927,25 +1946,6 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                 taints_array.append(taint)
             except ValueError:
                 raise CLIError('Taint does not match allowed values. Expect value such as "special=true:NoSchedule".')
-
-    if priority is not None and priority == "Low":
-        from knack.prompting import prompt_y_n
-        msg = 'Cluster Autoscaler is currently required for low-pri, enable it?'
-
-        if not prompt_y_n(msg, default="n"):
-            return None
-
-        enable_cluster_autoscaler = True
-
-        if min_count is None:
-            min_count = node_count
-        if max_count is None:
-            max_count = node_count
-
-        # add low pri taint if not already specified
-        low_pri_taint = "pooltype=lowpri:NoSchedule"
-        if low_pri_taint not in taints_array:
-            taints_array.append("pooltype=lowpri:NoSchedule")
 
     if node_vm_size is None:
         if os_type == "Windows":
@@ -1968,6 +1968,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         node_taints=taints_array,
         scale_set_priority=priority,
         scale_set_eviction_policy=eviction_policy,
+        scale_set_spot_max_price=spot_max_price,
         enable_node_public_ip=public_ip_per_vm
     )
 
