@@ -50,13 +50,31 @@ class AlertsScenarioTest(ScenarioTest):
                  '--location "Global" '
                  '--status "Enabled" '
                  '--type Suppression '
-                 '--severity Equals Sev0 Sev2 ',
+                 '--severity Equals Sev0 Sev2 '
+                 '--recurrence-type Daily '
+                 '--start-date 12/09/2018 '
+                 '--end-date 12/18/2018 '
+                 '--start-time 06:00:00 '
+                 '--end-time 14:00:00',
                  checks=[])
 
         self.cmd('az alertsmanagement action-rule show '
                  '--resource-group {rg} '
                  '--name "rule1"',
-                 checks=[])
+                 checks=[
+                     self.check('name', 'rule1'),
+                     self.check('location', 'Global'),
+                     self.check('properties.status', 'Enabled'),
+                     self.check('properties.type', 'Suppression')
+                 ])
+
+        self.cmd('az alertsmanagement action-rule update '
+                 '--resource-group {rg} '
+                 '--name "rule1" '
+                 '--status Disabled',
+                 checks=[
+                     self.check('properties.status', 'Disabled')
+                 ])
 
     @ResourceGroupPreparer(name_prefix='cli_test_alertsmanagement_smart_group_')
     def test_alertsmanagement_smart_group(self, resource_group):

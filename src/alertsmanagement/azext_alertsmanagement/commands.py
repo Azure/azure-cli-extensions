@@ -47,7 +47,9 @@ def load_command_table(self, _):
         client_factory=cf_action_rules)
     with self.command_group('alertsmanagement action-rule', alertsmanagement_action_rules, client_factory=cf_action_rules) as g:
         g.custom_command('create', 'create_alertsmanagement_action_rule')
-        g.custom_command('update', 'update_alertsmanagement_action_rule')
+        g.generic_update_command('update', custom_func_name='update_alertsmanagement_action_rule',
+                                 setter_arg_name='action_rule', getter_name='get_by_name',
+                                 setter_name='create_update')
         g.custom_command('delete', 'delete_alertsmanagement_action_rule')
         g.custom_show_command('show', 'get_alertsmanagement_action_rule')
         g.custom_command('list', 'list_alertsmanagement_action_rule')

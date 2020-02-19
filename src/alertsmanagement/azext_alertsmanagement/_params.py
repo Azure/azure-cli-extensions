@@ -112,10 +112,15 @@ def load_arguments(self, _):
         c.argument('alert_rule_id', nargs='+', help='Filter alerts by alert rule ID')
         c.argument('alert_description', nargs='+', help='Filter alerts by alert rule description')
         c.argument('alert_context', nargs='+', help='Filter alerts by alert context (payload)')
+        c.argument('recurrence_type', arg_type=get_enum_type(['Always', 'Once', 'Daily', 'Weekly', 'Monthly']), help='Specifies when the suppression should be applied')
+        c.argument('start_date', help='Start date for suppression')
+        c.argument('end_date', help='End date for suppression')
+        c.argument('start_time', help='Start time for suppression')
+        c.argument('end_time', help='End date for suppression')
 
     with self.argument_context('alertsmanagement action-rule update') as c:
         c.argument('resource_group', resource_group_name_type)
-        c.argument('name', action_rule_name)
+        c.argument('action_rule_name', action_rule_name)
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('tags', tags_type)
         c.argument('status', arg_type=get_enum_type(['Enabled', 'Disabled']), id_part=None, help='Indicates if the given action rule is enabled or disabled')

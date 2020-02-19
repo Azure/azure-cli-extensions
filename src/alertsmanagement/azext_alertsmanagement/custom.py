@@ -144,17 +144,27 @@ def create_alertsmanagement_action_rule(cmd, client,
                                         alert_description=None,
                                         alert_context=None,
                                         tags=None,
-                                        status=None):
+                                        status=None,
+                                        recurrence_type=None,
+                                        start_date=None,
+                                        end_date=None,
+                                        start_time=None,
+                                        end_time=None):
     body = {}
     body['location'] = location  # str
     body['tags'] = tags  # unknown-primary[object]
-    body['status'] = status  # str
-    body['type'] = type
-    body['description'] = description
-    body['scope'] = {
-        'scopeType': scope_type,
-        'values': scope
-    }
+
+    properties = {}
+    if status is not None:
+        properties['status'] = status
+    properties['type'] = type
+    if description is not None:
+        properties['description'] = description
+    if scope is not None and scope_type is not None:
+        properties['scope'] = {
+            'scopeType': scope_type,
+            'values': scope
+        }
     severity = _transform_condition(severity)
     monitor_service = _transform_condition(monitor_service)
     monitor_condition = _transform_condition(monitor_condition)
@@ -162,38 +172,46 @@ def create_alertsmanagement_action_rule(cmd, client,
     alert_rule_id = _transform_condition(alert_rule_id)
     alert_description = _transform_condition(alert_description)
     alert_context = _transform_condition(alert_context)
-    body['conditions'] = {}
+    properties['conditions'] = {}
     if severity is not None:
-        body['conditions']['severity'] = severity
-    if severity is not None:
-        body['conditions']['monitorService'] = monitor_service
-    if severity is not None:
-        body['conditions']['monitorCondition'] = monitor_condition
-    if severity is not None:
-        body['conditions']['targetResourceType'] = target_resource_type
-    if severity is not None:
-        body['conditions']['alertRuleId'] = alert_rule_id
-    if severity is not None:
-        body['conditions']['description'] = alert_description
-    if severity is not None:
-        body['conditions']['alertContext'] = alert_context
+        properties['conditions']['severity'] = severity
+    if monitor_service is not None:
+        properties['conditions']['monitorService'] = monitor_service
+    if monitor_condition is not None:
+        properties['conditions']['monitorCondition'] = monitor_condition
+    if target_resource_type is not None:
+        properties['conditions']['targetResourceType'] = target_resource_type
+    if alert_rule_id is not None:
+        properties['conditions']['alertRuleId'] = alert_rule_id
+    if alert_description is not None:
+        properties['conditions']['description'] = alert_description
+    if alert_context is not None:
+        properties['conditions']['alertContext'] = alert_context
+    properties['suppressionConfig'] = {
+        'recurrenceType': recurrence_type,
+        'schedule': {
+            'startDate': start_date,
+            'endDate': end_date,
+            'startTime': start_time,
+            'endTime': end_time
+        }
+    }
+    body['properties'] = properties
+
     return client.create_update(resource_group_name=resource_group, action_rule_name=name, action_rule=body)
 
 
-def update_alertsmanagement_action_rule(cmd, client,
-                                        resource_group,
-                                        name,
+def update_alertsmanagement_action_rule(instance, client,
                                         location=None,
                                         tags=None,
                                         status=None):
-    body = {}
     if location is not None:
-        body['location'] = location  # str
+        instance.location = location
     if tags is not None:
-        body['tags'] = tags  # unknown-primary[object]
+        instance.tags = tags
     if status is not None:
-        body['status'] = status  # str
-    return client.create_update(resource_group_name=resource_group, action_rule_name=name, action_rule=body)
+        instance.properties.status = status
+    return instance
 
 
 def delete_alertsmanagement_action_rule(cmd, client,

@@ -1,6 +1,9 @@
 interactions:
 - request:
-    body: '{"location": "Global"}'
+    body: '{"location": "Global", "properties": {"conditions": {"severity": {"operator":
+      "Equals", "values": ["Sev0", "Sev2"]}}, "status": "Enabled", "type": "Suppression",
+      "suppressionConfig": {"recurrenceType": "Daily", "schedule": {"startDate": "12/09/2018",
+      "endDate": "12/18/2018", "startTime": "06:00:00", "endTime": "14:00:00"}}}}'
     headers:
       Accept:
       - application/json
@@ -11,282 +14,216 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '22'
+      - '326'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
-      - --resource-group --name --location --status --type --severity
+      - --resource-group --name --location --status --type --severity --recurrence-type
+        --start-date --end-date --start-time --end-time
       User-Agent:
       - python/3.8.1 (Windows-10-10.0.17763-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-alertsmanagement/0.2.0rc2 Azure-SDK-For-Python AZURECLI/2.0.81
+        azure-mgmt-alertsmanagement/0.2.0rc2 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1?api-version=2019-05-05-preview
   response:
     body:
-      string: '{"error":{"code":"InternalServerError","message":"Encountered internal
-        server error. Please try again."}}'
+      string: '{"properties":{"conditions":{"severity":{"operator":"Equals","values":["Sev0","Sev2"]}},"status":"Enabled","type":"Suppression","suppressionConfig":{"recurrenceType":"Daily","schedule":{"startDate":"12/09/2018","endDate":"12/18/2018","startTime":"06:00:00","endTime":"14:00:00"}},"createdAt":"2020-02-19T16:47:57.7041574Z","createdBy":"fey@microsoft.com","lastModifiedAt":"2020-02-19T16:47:57.7041574Z","lastModifiedBy":"fey@microsoft.com"},"location":"Global","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1","type":"Microsoft.AlertsManagement/actionRules","name":"rule1"}'
     headers:
       cache-control:
       - no-store, no-cache
-      connection:
-      - close
       content-length:
-      - '105'
+      - '729'
       content-security-policy:
       - script-src 'self'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 18 Feb 2020 03:48:49 GMT
+      - Wed, 19 Feb 2020 16:47:59 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-ms-failure-cause:
-      - service
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-      x-xss-protection:
-      - 1; mode=block
-    status:
-      code: 500
-      message: Internal Server Error
-- request:
-    body: '{"location": "Global"}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - alertsmanagement action-rule create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '22'
-      Content-Type:
-      - application/json; charset=utf-8
-      ParameterSetName:
-      - --resource-group --name --location --status --type --severity
-      User-Agent:
-      - python/3.8.1 (Windows-10-10.0.17763-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-alertsmanagement/0.2.0rc2 Azure-SDK-For-Python AZURECLI/2.0.81
-      accept-language:
-      - en-US
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1?api-version=2019-05-05-preview
-  response:
-    body:
-      string: '{"error":{"code":"InternalServerError","message":"Encountered internal
-        server error. Please try again."}}'
-    headers:
-      cache-control:
-      - no-store, no-cache
-      connection:
-      - close
-      content-length:
-      - '105'
-      content-security-policy:
-      - script-src 'self'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 18 Feb 2020 03:48:51 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-failure-cause:
-      - service
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-      x-xss-protection:
-      - 1; mode=block
-    status:
-      code: 500
-      message: Internal Server Error
-- request:
-    body: '{"location": "Global"}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - alertsmanagement action-rule create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '22'
-      Content-Type:
-      - application/json; charset=utf-8
-      ParameterSetName:
-      - --resource-group --name --location --status --type --severity
-      User-Agent:
-      - python/3.8.1 (Windows-10-10.0.17763-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-alertsmanagement/0.2.0rc2 Azure-SDK-For-Python AZURECLI/2.0.81
-      accept-language:
-      - en-US
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1?api-version=2019-05-05-preview
-  response:
-    body:
-      string: '{"error":{"code":"InternalServerError","message":"Encountered internal
-        server error. Please try again."}}'
-    headers:
-      cache-control:
-      - no-store, no-cache
-      connection:
-      - close
-      content-length:
-      - '105'
-      content-security-policy:
-      - script-src 'self'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 18 Feb 2020 03:48:55 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-failure-cause:
-      - service
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-      x-xss-protection:
-      - 1; mode=block
-    status:
-      code: 500
-      message: Internal Server Error
-- request:
-    body: '{"location": "Global"}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - alertsmanagement action-rule create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '22'
-      Content-Type:
-      - application/json; charset=utf-8
-      ParameterSetName:
-      - --resource-group --name --location --status --type --severity
-      User-Agent:
-      - python/3.8.1 (Windows-10-10.0.17763-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-alertsmanagement/0.2.0rc2 Azure-SDK-For-Python AZURECLI/2.0.81
-      accept-language:
-      - en-US
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1?api-version=2019-05-05-preview
-  response:
-    body:
-      string: '{"error":{"code":"InternalServerError","message":"Encountered internal
-        server error. Please try again."}}'
-    headers:
-      cache-control:
-      - no-store, no-cache
-      connection:
-      - close
-      content-length:
-      - '105'
-      content-security-policy:
-      - script-src 'self'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 18 Feb 2020 03:49:00 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-failure-cause:
-      - service
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-      x-xss-protection:
-      - 1; mode=block
-    status:
-      code: 500
-      message: Internal Server Error
-- request:
-    body: '{"location": "Global"}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - alertsmanagement action-rule create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '22'
-      Content-Type:
-      - application/json; charset=utf-8
-      ParameterSetName:
-      - --resource-group --name --location --status --type --severity
-      User-Agent:
-      - python/3.8.1 (Windows-10-10.0.17763-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-alertsmanagement/0.2.0rc2 Azure-SDK-For-Python AZURECLI/2.0.81
-      accept-language:
-      - en-US
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1?api-version=2019-05-05-preview
-  response:
-    body:
-      string: '{"error":{"code":"InternalServerError","message":"Encountered internal
-        server error. Please try again."}}'
-    headers:
-      cache-control:
-      - no-store, no-cache
-      connection:
-      - close
-      content-length:
-      - '105'
-      content-security-policy:
-      - script-src 'self'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 18 Feb 2020 03:49:07 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-failure-cause:
-      - service
       x-ms-ratelimit-remaining-subscription-writes:
       - '1198'
       x-xss-protection:
       - 1; mode=block
     status:
-      code: 500
-      message: Internal Server Error
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - alertsmanagement action-rule show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name
+      User-Agent:
+      - python/3.8.1 (Windows-10-10.0.17763-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-alertsmanagement/0.2.0rc2 Azure-SDK-For-Python AZURECLI/2.1.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1?api-version=2019-05-05-preview
+  response:
+    body:
+      string: '{"properties":{"conditions":{"severity":{"operator":"Equals","values":["Sev0","Sev2"]}},"status":"Enabled","type":"Suppression","suppressionConfig":{"recurrenceType":"Daily","schedule":{"startDate":"12/09/2018","endDate":"12/18/2018","startTime":"06:00:00","endTime":"14:00:00"}},"createdAt":"2020-02-19T16:47:57.7041574Z","createdBy":"fey@microsoft.com","lastModifiedAt":"2020-02-19T16:47:57.7041574Z","lastModifiedBy":"fey@microsoft.com"},"location":"Global","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1","type":"Microsoft.AlertsManagement/actionRules","name":"rule1"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '729'
+      content-security-policy:
+      - script-src 'self'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Feb 2020 16:48:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '999'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - alertsmanagement action-rule update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --status
+      User-Agent:
+      - python/3.8.1 (Windows-10-10.0.17763-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-alertsmanagement/0.2.0rc2 Azure-SDK-For-Python AZURECLI/2.1.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1?api-version=2019-05-05-preview
+  response:
+    body:
+      string: '{"properties":{"conditions":{"severity":{"operator":"Equals","values":["Sev0","Sev2"]}},"status":"Enabled","type":"Suppression","suppressionConfig":{"recurrenceType":"Daily","schedule":{"startDate":"12/09/2018","endDate":"12/18/2018","startTime":"06:00:00","endTime":"14:00:00"}},"createdAt":"2020-02-19T16:47:57.7041574Z","createdBy":"fey@microsoft.com","lastModifiedAt":"2020-02-19T16:47:57.7041574Z","lastModifiedBy":"fey@microsoft.com"},"location":"Global","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1","type":"Microsoft.AlertsManagement/actionRules","name":"rule1"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '729'
+      content-security-policy:
+      - script-src 'self'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Feb 2020 16:48:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '999'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "Global", "properties": {"conditions": {"severity": {"operator":
+      "Equals", "values": ["Sev0", "Sev2"]}}, "status": "Disabled", "type": "Suppression",
+      "suppressionConfig": {"recurrenceType": "Daily", "schedule": {"startDate": "12/09/2018",
+      "endDate": "12/18/2018", "startTime": "06:00:00", "endTime": "14:00:00"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - alertsmanagement action-rule update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '327'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --status
+      User-Agent:
+      - python/3.8.1 (Windows-10-10.0.17763-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-alertsmanagement/0.2.0rc2 Azure-SDK-For-Python AZURECLI/2.1.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1?api-version=2019-05-05-preview
+  response:
+    body:
+      string: '{"properties":{"conditions":{"severity":{"operator":"Equals","values":["Sev0","Sev2"]}},"status":"Disabled","type":"Suppression","suppressionConfig":{"recurrenceType":"Daily","schedule":{"startDate":"12/09/2018","endDate":"12/18/2018","startTime":"06:00:00","endTime":"14:00:00"}},"createdAt":"2020-02-19T16:47:57.7041574Z","createdBy":"fey@microsoft.com","lastModifiedAt":"2020-02-19T16:48:05.4108095Z","lastModifiedBy":"fey@microsoft.com"},"location":"Global","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1","type":"Microsoft.AlertsManagement/actionRules","name":"rule1"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '730'
+      content-security-policy:
+      - script-src 'self'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Feb 2020 16:48:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
 version: 1
