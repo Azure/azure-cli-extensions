@@ -21,22 +21,24 @@ helps['databricks workspace create'] = """
       - name: Create or update workspace
         text: |-
                az databricks workspace create --resource-group "rg" --name "myWorkspace" --location \\
-               "westus" --managed-resource-group-id \\
-               "/subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}"
+               "westus" --managed-resource-group "myResourceGroup" --sku standard
       - name: Create or update workspace with custom parameters
         text: |-
                az databricks workspace create --resource-group "rg" --name "myWorkspace" --location \\
-               "westus" --managed-resource-group-id \\
-               "/subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}"
+               "westus" --managed-resource-group \\
+               "/subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}" --sku premium
 """
 
 helps['databricks workspace update'] = """
     type: command
-    short-summary: Creates a new workspace.
+    short-summary: Update workspace.
     examples:
       - name: Update a workspace's tags.
         text: |-
-               az databricks workspace update --resource-group "rg" --name "myWorkspace"
+               az databricks workspace update --resource-group "rg" --name "myWorkspace" --tags key1=value1 key2=value2
+      - name: Clean a workspace's tags.
+        text: |-
+               az databricks workspace update --resource-group "rg" --name "myWorkspace" --tags ""
 """
 
 helps['databricks workspace delete'] = """
@@ -50,12 +52,12 @@ helps['databricks workspace delete'] = """
 
 helps['databricks workspace show'] = """
     type: command
-    short-summary: Gets the workspace.
+    short-summary: Show the workspace.
     examples:
-      - name: Get a workspace with custom parameters
+      - name: Show a workspace with custom parameters
         text: |-
                az databricks workspace show --resource-group "rg" --name "myWorkspace"
-      - name: Get a workspace
+      - name: Show a workspace
         text: |-
                az databricks workspace show --resource-group "rg" --name "myWorkspace"
 """
