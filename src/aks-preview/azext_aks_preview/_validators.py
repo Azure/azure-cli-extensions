@@ -7,7 +7,7 @@ from __future__ import unicode_literals
 import os
 import os.path
 import re
-from math import ceil
+from math import ceil, isnan, isclose
 from ipaddress import ip_network
 
 from knack.log import get_logger
@@ -198,9 +198,9 @@ def validate_priority(namespace):
     if namespace.priority is not None:
         if namespace.priority == '':
             return
-        if namespace.priority != "Low" and \
+        if namespace.priority != "Spot" and \
                 namespace.priority != "Regular":
-            raise CLIError("--priority can only be Low or Regular")
+            raise CLIError("--priority can only be Spot or Regular")
 
 
 def validate_eviction_policy(namespace):
@@ -211,6 +211,19 @@ def validate_eviction_policy(namespace):
         if namespace.eviction_policy != "Delete" and \
                 namespace.eviction_policy != "Deallocate":
             raise CLIError("--eviction-policy can only be Delete or Deallocate")
+
+
+def validate_spot_max_price(namespace):
+    """Validates the spot node pool max price."""
+    if not isnan(namespace.spot_max_price):
+        if namespace.priority != "Spot":
+            raise CLIError("--spot_max_price can only be set when --priority is Spot")
+        if namespace.spot_max_price * 100000 % 1 != 0:
+            raise CLIError("--spot_max_price can only include up to 5 decimal places")
+        if namespace.spot_max_price <= 0 and not isclose(namespace.spot_max_price, -1.0, rel_tol=1e-06):
+            raise CLIError(
+                "--spot_max_price can only be any decimal value greater than zero, or -1 which indicates "
+                "default price to be up-to on-demand")
 
 
 def validate_acr(namespace):
