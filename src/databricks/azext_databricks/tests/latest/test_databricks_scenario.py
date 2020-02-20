@@ -23,10 +23,8 @@ class DatabricksClientScenarioTest(ScenarioTest):
 
         self.kwargs.update({
             'workspaceName': 'my-test-workspace',
-            'subscription': '0b1f6471-1bf0-4dda-aec3-cb9272f09590'
+            'subscription': '00000000-0000-0000-0000-000000000000'
         })
-
-        self.cmd('az account set --subscription {subscription}', checks=NoneCheck())
 
         self.cmd('az databricks workspace create '
                  '--resource-group {rg} '

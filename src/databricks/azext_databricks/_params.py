@@ -29,7 +29,7 @@ def load_arguments(self, _):
         c.argument('custom_virtual_network_id', options_list=['--virtual-network-id'], help='Virtual network id.')
         c.argument('custom_public_subnet_name', options_list=['--public-subnet-name'], help='Public subnet name.')
         c.argument('custom_private_subnet_name', options_list=['--private-subnet-name'], help='Private subnet name.')
-        c.argument('enable_no_public_ip', arg_type=get_three_state_flag(), options_list=['--no-public-ip'], help='Set true to disallow public IP. Default is False')
+        c.argument('enable_no_public_ip', arg_type=get_three_state_flag(), options_list=['--no-public-ip'], help='Set true to disallow public IP. Default is false')
         c.argument('load_balancer_backend_pool_name', help='The name of load balancer backend pool name.')
         c.argument('load_balancer_id', help='Load balancer id.')
         c.argument('relay_namespace_name', help='The name of relay namespace. Default value is "dbrelay" as prefix, followed by random digits and letters.')

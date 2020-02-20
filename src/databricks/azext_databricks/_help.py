@@ -21,12 +21,12 @@ helps['databricks workspace create'] = """
       - name: Create or update workspace
         text: |-
                az databricks workspace create --resource-group "rg" --name "myWorkspace" --location \\
-               "westus" --managed-resource-group "myResourceGroup" --sku standard
+               "westus"  --sku standard
       - name: Create or update workspace with custom parameters
         text: |-
                az databricks workspace create --resource-group "rg" --name "myWorkspace" --location \\
-               "westus" --managed-resource-group \\
-               "/subscriptions/subscription_id/resourceGroups/rg" --sku premium
+               "westus" --managed-resource-group "myResourceGroup" --sku premium \\
+               --relay-namespace-name "mydbrelay" --storage-account-name "mystorageaccount"
 """
 
 helps['databricks workspace update'] = """
