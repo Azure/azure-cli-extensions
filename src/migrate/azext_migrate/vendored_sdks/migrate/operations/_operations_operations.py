@@ -6,11 +6,10 @@
 from typing import Any, Callable, Dict, Generic, Optional, TypeVar
 import warnings
 
-from azure.core.exceptions import map_error
+from azure.core.exceptions import HttpResponseError, map_error
 from azure.core.paging import ItemPaged
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpRequest, HttpResponse
-from azure.mgmt.core.exceptions import ARMError
 
 from .. import models
 
@@ -50,11 +49,10 @@ class Operations(object):
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: OperationResultList or the result of cls(response)
         :rtype: ~azure_migrate.models.OperationResultList
-        :raises: ~azure.mgmt.core.ARMError
+        :raises: ~azure.core.HttpResponseError
         """
         cls = kwargs.pop('cls', None )  # type: ClsType["models.OperationResultList"]
         error_map = kwargs.pop('error_map', {})
-        api_version = "2018-02-02"
 
         def prepare_request(next_link=None):
             if not next_link:
@@ -65,7 +63,6 @@ class Operations(object):
 
             # Construct parameters
             query_parameters = {}
-            query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
             # Construct headers
             header_parameters = {}
@@ -90,7 +87,7 @@ class Operations(object):
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise ARMError(response=response)
+                raise HttpResponseError(response=response)
 
             return pipeline_response
 

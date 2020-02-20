@@ -16,6 +16,7 @@ try:
     from ._models_py3 import AssessmentResultList
     from ._models_py3 import CheckNameAvailabilityParameters
     from ._models_py3 import CheckNameAvailabilityResult
+    from ._models_py3 import CloudError, CloudErrorException
     from ._models_py3 import CloudErrorBody
     from ._models_py3 import Disk
     from ._models_py3 import DownloadUrl
@@ -47,6 +48,7 @@ except (SyntaxError, ImportError):
     from ._models import AssessmentResultList  # type: ignore
     from ._models import CheckNameAvailabilityParameters  # type: ignore
     from ._models import CheckNameAvailabilityResult  # type: ignore
+    from ._models import CloudError, CloudErrorException  # type: ignore
     from ._models import CloudErrorBody  # type: ignore
     from ._models import Disk  # type: ignore
     from ._models import DownloadUrl  # type: ignore
@@ -103,6 +105,7 @@ __all__ = [
     'AssessmentResultList',
     'CheckNameAvailabilityParameters',
     'CheckNameAvailabilityResult',
+    'CloudError', 'CloudErrorException',
     'CloudErrorBody',
     'Disk',
     'DownloadUrl',

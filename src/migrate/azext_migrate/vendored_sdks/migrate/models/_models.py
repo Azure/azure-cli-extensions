@@ -4,6 +4,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
+from azure.core.exceptions import HttpResponseError
 import msrest.serialization
 
 
@@ -1199,6 +1200,51 @@ class CheckNameAvailabilityResult(msrest.serialization.Model):
         self.name_available = None
         self.reason = None
         self.message = None
+
+
+class CloudErrorException(HttpResponseError):
+    """Server responded with exception of type: 'CloudError'.
+
+    :param response: Server response to be deserialized.
+    :param error_model: A deserialized model of the response body as model.
+    """
+
+    def __init__(self, response, error_model):
+        self.error = error_model
+        super(CloudErrorException, self).__init__(response=response, error_model=error_model)
+
+    @classmethod
+    def from_response(cls, response, deserialize):
+        """Deserialize this response as this exception, or a subclass of this exception.
+
+        :param response: Server response to be deserialized.
+        :param deserialize: A deserializer
+        """
+        model_name = 'CloudError'
+        error = deserialize(model_name, response)
+        if error is None:
+            error = deserialize.dependencies[model_name]()
+        return error._EXCEPTION_TYPE(response, error)
+
+
+class CloudError(msrest.serialization.Model):
+    """An error response from the Azure Migrate service.
+
+    :param error: An error response from the Azure Migrate service.
+    :type error: ~azure_migrate.models.CloudErrorBody
+    """
+    _EXCEPTION_TYPE = CloudErrorException
+
+    _attribute_map = {
+        'error': {'key': 'error', 'type': 'CloudErrorBody'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(CloudError, self).__init__(**kwargs)
+        self.error = kwargs.get('error', None)
 
 
 class CloudErrorBody(msrest.serialization.Model):
