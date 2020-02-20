@@ -651,9 +651,10 @@ def _add_monitoring_role_assignment(result, cluster_resource_id, cmd):
     # Else, provide permissions to MSI
     if (
             hasattr(result, 'service_principal_profile') and
-            hasattr(result.service_principal_profile, 'client_id')
+            hasattr(result.service_principal_profile, 'client_id') and
+            result.service_principal_profile.client_id != 'msi'
     ):
-        logger.info('service principal exists, using it')
+        logger.info('valid service principal exists, using it')
         service_principal_msi_id = result.service_principal_profile.client_id
         is_service_principal = True
     elif (
@@ -742,6 +743,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                appgw_shared=None,
                appgw_watch_namespace=None,
                no_wait=False):
+    logger.warning("rashmi-azure-cli-extensions")
     if not no_ssh_key:
         try:
             if not ssh_key_value or not is_valid_ssh_rsa_public_key(ssh_key_value):
