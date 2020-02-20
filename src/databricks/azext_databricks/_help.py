@@ -26,7 +26,7 @@ helps['databricks workspace create'] = """
         text: |-
                az databricks workspace create --resource-group "rg" --name "myWorkspace" --location \\
                "westus" --managed-resource-group \\
-               "/subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}" --sku premium
+               "/subscriptions/subscription_id/resourceGroups/rg" --sku premium
 """
 
 helps['databricks workspace update'] = """
@@ -72,4 +72,13 @@ helps['databricks workspace list'] = """
       - name: Lists workspaces
         text: |-
                az databricks workspace list
+"""
+
+helps['databricks workspace wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the Databricks workspace is met.
+    examples:
+        - name: Pause executing next line of CLI script until the Databricks workspace is successfully provisioned.
+          text: az databricks workspace wait --resource-group "rg" --name "myWorkspace" \\
+                --created
 """
