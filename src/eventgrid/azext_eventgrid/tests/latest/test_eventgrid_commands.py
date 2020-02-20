@@ -454,7 +454,6 @@ class EventGridTests(ScenarioTest):
 
         self.cmd('az eventgrid event-subscription delete --source-resource-id {scope} --name {event_subscription_name}')
 
-
     @ResourceGroupPreparer(name_prefix='clieventgridrg', location='centraluseuap')
     @StorageAccountPreparer(name_prefix='clieventgrid', location='centraluseuap')
     def test_create_event_subscriptions_to_resource(self, resource_group, resource_group_location, storage_account):
@@ -546,7 +545,6 @@ class EventGridTests(ScenarioTest):
         ])
 
         self.cmd('az eventgrid event-subscription delete --source-resource-id {source_resource_id} --name {event_subscription_name}')
-
 
     @ResourceGroupPreparer()
     @StorageAccountPreparer(name_prefix='clieventgrid', location='centraluseuap')
@@ -812,7 +810,6 @@ class EventGridTests(ScenarioTest):
             self.check('name', self.kwargs['event_subscription_name']),
             self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
         ])
-
 
         # Two advanced filters for NumberIn, StringIn operators
         self.cmd('az eventgrid event-subscription update --source-resource-id {scope} --name {event_subscription_name} --endpoint \"{endpoint_url}\" --advanced-filter data.key1 NumberIn 21 13 400 101 --advanced-filter data.key2 StringIn 122 3 214 1100 2', checks=[

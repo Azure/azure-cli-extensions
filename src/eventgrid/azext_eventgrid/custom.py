@@ -661,11 +661,14 @@ def update_event_subscription(
     tennant_id = None
     application_id = None
 
-    # for the update path, endpoint_type can be None but it does not mean that this is webhook, as it can be other types too.
-    if event_subscription_destination is not None and hasattr(event_subscription_destination, 'azure_active_directory_tenant_id'):
+    # for the update path, endpoint_type can be None but it does not mean that this is webhook,
+    # as it can be other types too.
+    if event_subscription_destination is not None and \
+       hasattr(event_subscription_destination, 'azure_active_directory_tenant_id'):
         tennant_id = event_subscription_destination.azure_active_directory_tenant_id
 
-    if event_subscription_destination is not None and hasattr(event_subscription_destination, 'azure_active_directory_application_id_or_uri'):
+    if event_subscription_destination is not None and \
+       hasattr(event_subscription_destination, 'azure_active_directory_application_id_or_uri'):
         application_id = event_subscription_destination.azure_active_directory_application_id_or_uri
 
     if endpoint is not None:
