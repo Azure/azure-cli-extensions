@@ -10,6 +10,7 @@ from azure.core.exceptions import map_error
 from azure.core.paging import ItemPaged
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpRequest, HttpResponse
+from azure.mgmt.core.exceptions import ARMError
 
 from .. import models
 
@@ -49,7 +50,7 @@ class ProjectsOperations(object):
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ProjectResultList or the result of cls(response)
         :rtype: ~azure_migrate.models.ProjectResultList
-        :raises: ~azure_migrate.models.CloudErrorException:
+        :raises: ~azure.mgmt.core.ARMError
         """
         cls = kwargs.pop('cls', None )  # type: ClsType["models.ProjectResultList"]
         error_map = kwargs.pop('error_map', {})
@@ -95,7 +96,7 @@ class ProjectsOperations(object):
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise models.CloudErrorException.from_response(response, self._deserialize)
+                raise ARMError(response=response)
 
             return pipeline_response
 
@@ -119,7 +120,7 @@ class ProjectsOperations(object):
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ProjectResultList or the result of cls(response)
         :rtype: ~azure_migrate.models.ProjectResultList
-        :raises: ~azure_migrate.models.CloudErrorException:
+        :raises: ~azure.mgmt.core.ARMError
         """
         cls = kwargs.pop('cls', None )  # type: ClsType["models.ProjectResultList"]
         error_map = kwargs.pop('error_map', {})
@@ -166,7 +167,7 @@ class ProjectsOperations(object):
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise models.CloudErrorException.from_response(response, self._deserialize)
+                raise ARMError(response=response)
 
             return pipeline_response
 
@@ -193,7 +194,7 @@ class ProjectsOperations(object):
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Project or the result of cls(response)
         :rtype: ~azure_migrate.models.Project
-        :raises: ~azure_migrate.models.CloudErrorException:
+        :raises: ~azure.mgmt.core.ARMError
         """
         cls = kwargs.pop('cls', None )  # type: ClsType["models.Project"]
         error_map = kwargs.pop('error_map', {})
@@ -225,7 +226,7 @@ class ProjectsOperations(object):
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise ARMError(response=response)
 
         response_headers = {}
         response_headers['x-ms-request-id']=self._deserialize('str', response.headers.get('x-ms-request-id'))
@@ -258,7 +259,7 @@ class ProjectsOperations(object):
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Project or Project or the result of cls(response)
         :rtype: ~azure_migrate.models.Project or ~azure_migrate.models.Project
-        :raises: ~azure_migrate.models.CloudErrorException:
+        :raises: ~azure.mgmt.core.ARMError
         """
         cls = kwargs.pop('cls', None )  # type: ClsType["models.Project"]
         error_map = kwargs.pop('error_map', {})
@@ -297,7 +298,7 @@ class ProjectsOperations(object):
 
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise ARMError(response=response)
 
         response_headers = {}
         deserialized = None
@@ -336,7 +337,7 @@ class ProjectsOperations(object):
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Project or the result of cls(response)
         :rtype: ~azure_migrate.models.Project
-        :raises: ~azure_migrate.models.CloudErrorException:
+        :raises: ~azure.mgmt.core.ARMError
         """
         cls = kwargs.pop('cls', None )  # type: ClsType["models.Project"]
         error_map = kwargs.pop('error_map', {})
@@ -375,7 +376,7 @@ class ProjectsOperations(object):
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise ARMError(response=response)
 
         response_headers = {}
         response_headers['x-ms-request-id']=self._deserialize('str', response.headers.get('x-ms-request-id'))
@@ -405,7 +406,7 @@ class ProjectsOperations(object):
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None or the result of cls(response)
         :rtype: None
-        :raises: ~azure_migrate.models.CloudErrorException:
+        :raises: ~azure.mgmt.core.ARMError
         """
         cls = kwargs.pop('cls', None )  # type: ClsType[None]
         error_map = kwargs.pop('error_map', {})
@@ -436,7 +437,7 @@ class ProjectsOperations(object):
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise ARMError(response=response)
 
         response_headers = {}
         response_headers['x-ms-request-id']=self._deserialize('str', response.headers.get('x-ms-request-id'))
@@ -464,7 +465,7 @@ class ProjectsOperations(object):
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ProjectKey or the result of cls(response)
         :rtype: ~azure_migrate.models.ProjectKey
-        :raises: ~azure_migrate.models.CloudErrorException:
+        :raises: ~azure.mgmt.core.ARMError
         """
         cls = kwargs.pop('cls', None )  # type: ClsType["models.ProjectKey"]
         error_map = kwargs.pop('error_map', {})
@@ -496,7 +497,7 @@ class ProjectsOperations(object):
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise ARMError(response=response)
 
         response_headers = {}
         response_headers['x-ms-request-id']=self._deserialize('str', response.headers.get('x-ms-request-id'))

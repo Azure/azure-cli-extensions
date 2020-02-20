@@ -17,13 +17,13 @@ def load_command_table(self, _):
         operations_tmpl='azext_migrate.vendored_sdks.migrate.operations._location_operations#LocationOperations.{}',
         client_factory=cf_location)
     with self.command_group('migrate location', migrate_location, client_factory=cf_location) as g:
-        g.custom_command('check_name_availability', 'migrate_location_check_name_availability')
+        g.custom_command('check-name-availability', 'migrate_location_check_name_availability')
 
     from ._client_factory import cf_assessment_options
     migrate_assessment_options = CliCommandType(
         operations_tmpl='azext_migrate.vendored_sdks.migrate.operations._assessment_options_operations#AssessmentOptionsOperations.{}',
         client_factory=cf_assessment_options)
-    with self.command_group('migrate assessment_options', migrate_assessment_options, client_factory=cf_assessment_options) as g:
+    with self.command_group('migrate assessment-options', migrate_assessment_options, client_factory=cf_assessment_options) as g:
         g.custom_show_command('show', 'migrate_assessment_options_show')
 
     from ._client_factory import cf_projects
@@ -36,7 +36,7 @@ def load_command_table(self, _):
         g.custom_command('create', 'migrate_projects_create')
         g.custom_command('update', 'migrate_projects_update')
         g.custom_command('delete', 'migrate_projects_delete')
-        g.custom_command('get_keys', 'migrate_projects_get_keys')
+        g.custom_command('get-keys', 'migrate_projects_get_keys')
 
     from ._client_factory import cf_machines
     migrate_machines = CliCommandType(
@@ -65,13 +65,13 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'migrate_assessments_show')
         g.custom_command('create', 'migrate_assessments_create')
         g.custom_command('delete', 'migrate_assessments_delete')
-        g.custom_command('get_report_download_url', 'migrate_assessments_get_report_download_url')
+        g.custom_command('get-report-download-url', 'migrate_assessments_get_report_download_url')
 
     from ._client_factory import cf_assessed_machines
     migrate_assessed_machines = CliCommandType(
         operations_tmpl='azext_migrate.vendored_sdks.migrate.operations._assessed_machines_operations#AssessedMachinesOperations.{}',
         client_factory=cf_assessed_machines)
-    with self.command_group('migrate assessed_machines', migrate_assessed_machines, client_factory=cf_assessed_machines) as g:
+    with self.command_group('migrate assessed-machines', migrate_assessed_machines, client_factory=cf_assessed_machines) as g:
         g.custom_command('list', 'migrate_assessed_machines_list')
         g.custom_show_command('show', 'migrate_assessed_machines_show')
 

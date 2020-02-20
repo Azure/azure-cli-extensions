@@ -16,6 +16,8 @@ class AzureMigrateConfiguration(Configuration):
     Note that all parameters used to create this instance are saved as instance
     attributes.
 
+    :param credential: Credential needed for the client to connect to Azure.
+    :type credential: azure.core.credentials.TokenCredential
     :param subscription_id: Azure Subscription Id in which project was created.
     :type subscription_id: str
     :param accept_language: Standard request header. Used by service to respond to client in appropriate language.
@@ -24,17 +26,22 @@ class AzureMigrateConfiguration(Configuration):
 
     def __init__(
         self,
+        credential: "TokenCredential",
         subscription_id: str,
         accept_language: Optional[str] = None,
         **kwargs: Any
     ) -> None:
+        if credential is None:
+            raise ValueError("Parameter 'credential' must not be None.")
         if subscription_id is None:
             raise ValueError("Parameter 'subscription_id' must not be None.")
         super(AzureMigrateConfiguration, self).__init__(**kwargs)
 
+        self.credential = credential
         self.subscription_id = subscription_id
-        self.accept_language = accept_language
         self.api_version = "2018-02-02"
+        self.accept_language = accept_language
+        self.credential_scopes = ['https://management.azure.com/.default']
         self._configure(**kwargs)
         self.user_agent_policy.add_user_agent('azsdk-python-azuremigrate/{}'.format(VERSION))
 
@@ -50,3 +57,5 @@ class AzureMigrateConfiguration(Configuration):
         self.custom_hook_policy = kwargs.get('custom_hook_policy') or policies.CustomHookPolicy(**kwargs)
         self.redirect_policy = kwargs.get('redirect_policy') or policies.AsyncRedirectPolicy(**kwargs)
         self.authentication_policy = kwargs.get('authentication_policy')
+        if self.credential and not self.authentication_policy:
+            self.authentication_policy = policies.AsyncBearerTokenCredentialPolicy(self.credential, *self.credential_scopes, **kwargs)

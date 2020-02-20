@@ -1,20 +1,20 @@
 # Azure CLI Module Creation Report
 
-### migrate assessed_machines list
+### migrate assessed-machines list
 
-list a migrate assessed_machines.
-
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-### migrate assessed_machines show
-
-show a migrate assessed_machines.
+list a migrate assessed-machines.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
-### migrate assessment_options show
+### migrate assessed-machines show
 
-show a migrate assessment_options.
+show a migrate assessed-machines.
+
+|Option|Type|Description|Path (SDK)|Path (swagger)|
+|------|----|-----------|----------|--------------|
+### migrate assessment-options show
+
+show a migrate assessment-options.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
@@ -31,9 +31,9 @@ delete a migrate assessments.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
-### migrate assessments get_report_download_url
+### migrate assessments get-report-download-url
 
-get_report_download_url a migrate assessments.
+get-report-download-url a migrate assessments.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
@@ -57,7 +57,7 @@ create a migrate groups.
 |------|----|-----------|----------|--------------|
 |**--machines**|array|List of machine names that are part of this group.|/something/my_option|/something/myOption|
 |--group**|object|New or Updated Group object.|/something/my_option|/something/myOption|
-|--e_tag**|string|For optimistic concurrency control.|/something/my_option|/something/myOption|
+|--e-tag**|string|For optimistic concurrency control.|/something/my_option|/something/myOption|
 ### migrate groups delete
 
 delete a migrate groups.
@@ -76,9 +76,9 @@ show a migrate groups.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
-### migrate location check_name_availability
+### migrate location check-name-availability
 
-check_name_availability a migrate location.
+check-name-availability a migrate location.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
@@ -116,9 +116,9 @@ delete a migrate projects.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
-### migrate projects get_keys
+### migrate projects get-keys
 
-get_keys a migrate projects.
+get-keys a migrate projects.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|

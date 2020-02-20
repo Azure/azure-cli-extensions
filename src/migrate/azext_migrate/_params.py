@@ -20,12 +20,12 @@ from azext_migrate.actions import (
 
 def load_arguments(self, _):
 
-    with self.argument_context('migrate location check_name_availability') as c:
+    with self.argument_context('migrate location check-name-availability') as c:
         c.argument('location_name', id_part=None, help='The desired region for the name check.')
         c.argument('name', id_part=None, help='The name to check for availability')
         c.argument('_type', options_list=['--type'], id_part=None, help='The resource type. Must be set to Microsoft.Migrate/projects')
 
-    with self.argument_context('migrate assessment_options show') as c:
+    with self.argument_context('migrate assessment-options show') as c:
         c.argument('location_name', id_part=None, help='Azure region in which the project is created.')
 
     with self.argument_context('migrate projects list') as c:
@@ -49,7 +49,7 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('project_name', id_part=None, help='Name of the Azure Migrate project.')
 
-    with self.argument_context('migrate projects get_keys') as c:
+    with self.argument_context('migrate projects get-keys') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('project_name', id_part=None, help='Name of the Azure Migrate project.')
 
@@ -107,19 +107,19 @@ def load_arguments(self, _):
         c.argument('group_name', id_part=None, help='Unique name of a group within a project.')
         c.argument('assessment_name', id_part=None, help='Unique name of an assessment within a project.')
 
-    with self.argument_context('migrate assessments get_report_download_url') as c:
+    with self.argument_context('migrate assessments get-report-download-url') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('project_name', id_part=None, help='Name of the Azure Migrate project.')
         c.argument('group_name', id_part=None, help='Unique name of a group within a project.')
         c.argument('assessment_name', id_part=None, help='Unique name of an assessment within a project.')
 
-    with self.argument_context('migrate assessed_machines list') as c:
+    with self.argument_context('migrate assessed-machines list') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('project_name', id_part=None, help='Name of the Azure Migrate project.')
         c.argument('group_name', id_part=None, help='Unique name of a group within a project.')
         c.argument('assessment_name', id_part=None, help='Unique name of an assessment within a project.')
 
-    with self.argument_context('migrate assessed_machines show') as c:
+    with self.argument_context('migrate assessed-machines show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('project_name', id_part=None, help='Name of the Azure Migrate project.')
         c.argument('group_name', id_part=None, help='Unique name of a group within a project.')

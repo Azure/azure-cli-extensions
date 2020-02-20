@@ -14,17 +14,17 @@ helps['migrate location'] = """
     short-summary: migrate location
 """
 
-helps['migrate location check_name_availability'] = """
+helps['migrate location check-name-availability'] = """
     type: command
     short-summary: Checks whether the project name is available in the specified region.
 """
 
-helps['migrate assessment_options'] = """
+helps['migrate assessment-options'] = """
     type: group
-    short-summary: migrate assessment_options
+    short-summary: migrate assessment-options
 """
 
-helps['migrate assessment_options show'] = """
+helps['migrate assessment-options show'] = """
     type: command
     short-summary: Get the available options for the properties of an assessment.
 """
@@ -59,7 +59,7 @@ helps['migrate projects delete'] = """
     short-summary: Delete the project. Deleting non-existent project is a no-operation.
 """
 
-helps['migrate projects get_keys'] = """
+helps['migrate projects get-keys'] = """
     type: command
     short-summary: Gets the Log Analytics Workspace ID and Primary Key for the specified project.
 """
@@ -143,17 +143,17 @@ helps['migrate assessments delete'] = """
 When an assessment is under computation, as indicated by the 'computationState' field, it cannot be deleted. Any such attempt will return a 400 - Bad Request.
 """
 
-helps['migrate assessments get_report_download_url'] = """
+helps['migrate assessments get-report-download-url'] = """
     type: command
     short-summary: Get the URL for downloading the assessment in a report format.
 """
 
-helps['migrate assessed_machines'] = """
+helps['migrate assessed-machines'] = """
     type: group
-    short-summary: migrate assessed_machines
+    short-summary: migrate assessed-machines
 """
 
-helps['migrate assessed_machines list'] = """
+helps['migrate assessed-machines list'] = """
     type: command
     short-summary: Get list of machines that assessed as part of the specified assessment. Returns a json array of objects of type 'assessedMachine' as specified in the Models section.
 
@@ -161,7 +161,7 @@ Whenever an assessment is created or updated, it goes under computation. During 
 During the period when the assessment is under computation, the list of assessed machines is empty and no assessed machines are returned by this call.
 """
 
-helps['migrate assessed_machines show'] = """
+helps['migrate assessed-machines show'] = """
     type: command
     short-summary: Get an assessed machine with its size & cost estimate that was evaluated in the specified assessment.
 """
