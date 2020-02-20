@@ -8,6 +8,10 @@
 # pylint: disable=line-too-long
 from knack.help_files import helps  # pylint: disable=unused-import
 
+helps['powerbi'] = """
+    type: group
+    short-summary: Manage powerbi resources.
+"""
 
 helps['powerbi embedded-capacity'] = """
     type: group
