@@ -294,13 +294,20 @@ def cli_eventgrid_event_subscription_create(   # pylint: disable=too-many-locals
             raise CLIError('usage error: azure-active-directory-tenant-id is missing. '
                            'It should include an Azure Active Directory Tenant Id.')
 
+    tennant_id = None
+    application_id = None
+
+    if endpoint_type.lower() == WEBHOOK_DESTINATION.lower():
+        tennant_id = azure_active_directory_tenant_id
+        application_id = azure_active_directory_application_id_or_uri
+
     destination = _get_endpoint_destination(
         endpoint_type,
         endpoint,
         max_events_per_batch,
         preferred_batch_size_in_kilobytes,
-        azure_active_directory_tenant_id,
-        azure_active_directory_application_id_or_uri)
+        tennant_id,
+        application_id)
 
     event_subscription_filter = EventSubscriptionFilter(
         subject_begins_with=subject_begins_with,
@@ -637,6 +644,7 @@ def update_event_subscription(
         subject_begins_with=None,
         subject_ends_with=None,
         included_event_types=None,
+        advanced_filter=None,
         labels=None,
         deadletter_endpoint=None):
     event_subscription_destination = instance.destination
@@ -650,14 +658,24 @@ def update_event_subscription(
     if endpoint_type.lower() != WEBHOOK_DESTINATION.lower() and endpoint is None:
         raise CLIError('Invalid usage: Since --endpoint-type is specified, a valid endpoint must also be specified.')
 
+    tennant_id = None
+    application_id = None
+
+    # for the update path, endpoint_type can be None but it does not mean that this is webhook, as it can be other types too.
+    if event_subscription_destination is not None and hasattr(event_subscription_destination, 'azure_active_directory_tenant_id'):
+        tennant_id = event_subscription_destination.azure_active_directory_tenant_id
+
+    if event_subscription_destination is not None and hasattr(event_subscription_destination, 'azure_active_directory_application_id_or_uri'):
+        application_id = event_subscription_destination.azure_active_directory_application_id_or_uri
+
     if endpoint is not None:
         event_subscription_destination = _get_endpoint_destination(
             endpoint_type,
             endpoint,
             event_subscription_destination.max_events_per_batch,
             event_subscription_destination.preferred_batch_size_in_kilobytes,
-            event_subscription_destination.azure_active_directory_tenant_id,
-            event_subscription_destination.azure_active_directory_application_id_or_uri)
+            tennant_id,
+            application_id)
 
     if deadletter_endpoint is not None:
         deadletter_destination = _get_deadletter_destination(deadletter_endpoint)
@@ -670,6 +688,9 @@ def update_event_subscription(
 
     if included_event_types is not None:
         event_subscription_filter.included_event_types = included_event_types
+
+    if advanced_filter is not None:
+        event_subscription_filter.advanced_filters = advanced_filter
 
     if labels is not None:
         event_subscription_labels = labels
@@ -693,6 +714,7 @@ def _get_endpoint_destination(
         preferred_batch_size_in_kilobytes,
         azure_active_directory_tenant_id,
         azure_active_directory_application_id_or_uri):
+
     if endpoint_type.lower() == WEBHOOK_DESTINATION.lower():
         destination = WebHookEventSubscriptionDestination(
             endpoint_url=endpoint,
