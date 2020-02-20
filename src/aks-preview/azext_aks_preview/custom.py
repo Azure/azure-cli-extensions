@@ -2222,7 +2222,7 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
                 name=name
             )
         _add_monitoring_role_assignment(result, cluster_resource_id, cmd)
-        
+
     return result
 
 
