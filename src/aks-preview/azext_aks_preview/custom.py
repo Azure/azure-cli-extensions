@@ -154,7 +154,7 @@ def _build_service_principal(rbac_client, cli_ctx, name, url, client_secret):
     return service_principal
 
 
-def _add_role_assignment(cli_ctx, role, service_principal_msi_id, isServicePrincipal=True, delay=2, scope=None):
+def _add_role_assignment(cli_ctx, role, service_principal_msi_id, is_service_principal=True, delay=2, scope=None):
     # AAD can have delays in propagating data, so sleep and retry
     hook = cli_ctx.get_progress_controller(True)
     hook.add(message='Waiting for AAD role to propagate', value=0, total_val=1.0)
@@ -163,7 +163,7 @@ def _add_role_assignment(cli_ctx, role, service_principal_msi_id, isServicePrinc
         hook.add(message='Waiting for AAD role to propagate', value=0.1 * x, total_val=1.0)
         try:
             # TODO: break this out into a shared utility library
-            create_role_assignment(cli_ctx, role, service_principal_msi_id, isServicePrincipal, scope=scope)
+            create_role_assignment(cli_ctx, role, service_principal_msi_id, is_service_principal, scope=scope)
             break
         except CloudError as ex:
             if ex.message == 'The role assignment already exists.':
@@ -343,11 +343,11 @@ def create_service_principal(cli_ctx, identifier, resolve_app=True, rbac_client=
     return rbac_client.service_principals.create(ServicePrincipalCreateParameters(app_id=app_id, account_enabled=True))
 
 
-def create_role_assignment(cli_ctx, role, assignee, isServicePrincipal, resource_group_name=None, scope=None):
-    return _create_role_assignment(cli_ctx, role, assignee, isServicePrincipal, resource_group_name, scope)
+def create_role_assignment(cli_ctx, role, assignee, is_service_principal, resource_group_name=None, scope=None):
+    return _create_role_assignment(cli_ctx, role, assignee, is_service_principal, resource_group_name, scope)
 
 
-def _create_role_assignment(cli_ctx, role, assignee, isServicePrincipal,
+def _create_role_assignment(cli_ctx, role, assignee, is_service_principal,
                             resource_group_name=None, scope=None, resolve_assignee=True):
     from azure.cli.core.profiles import ResourceType, get_sdk
     factory = get_auth_management_client(cli_ctx, scope)
@@ -359,7 +359,7 @@ def _create_role_assignment(cli_ctx, role, assignee, isServicePrincipal,
     role_id = _resolve_role_id(role, scope, definitions_client)
     # If the cluster has service principal resolve the service principal client id to get the object id,
     # if not use MSI object id.
-    if isServicePrincipal:
+    if is_service_principal:
         object_id = _resolve_object_id(cli_ctx, assignee) if resolve_assignee else assignee
     else:
         object_id = assignee
@@ -634,6 +634,37 @@ def _trim_nodepoolname(nodepool_name):
     if not nodepool_name:
         return "nodepool1"
     return nodepool_name[:12]
+
+
+def _add_monitoring_role_assignment(result, cluster_resource_id, cmd):
+    service_principal_msi_id = None
+    # Check if service principal exists, if it does, assign permissions to service principal
+    # Else, provide permissions to MSI
+    if (
+            hasattr(result, 'service_principal_profile') and
+            hasattr(result.service_principal_profile, 'client_id')
+    ):
+        logger.info('service principal exists, using it')
+        service_principal_msi_id = result.service_principal_profile.client_id
+        is_service_principal = True
+    elif (
+            (hasattr(result, 'addon_profiles')) and
+            ('omsagent' in result.addon_profiles) and
+            (hasattr(result.addon_profiles['omsagent'], 'identity')) and
+            (hasattr(result.addon_profiles['omsagent'].identity, 'object_id'))
+    ):
+        logger.info('omsagent MSI exists, using it')
+        service_principal_msi_id = result.addon_profiles['omsagent'].identity.object_id
+        is_service_principal = False
+
+    if service_principal_msi_id is not None:
+        if not _add_role_assignment(cmd.cli_ctx, 'Monitoring Metrics Publisher',
+                                    service_principal_msi_id, is_service_principal, scope=cluster_resource_id):
+            logger.warning('Could not create a role assignment for Monitoring addon. '
+                           'Are you an Owner on this subscription?')
+    else:
+        logger.warning('Could not find service principal or user assigned MSI for role'
+                       'assignment')
 
 
 def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,too-many-branches
@@ -913,13 +944,13 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                 resource_name=name,
                 parameters=mc,
                 custom_headers=headers)
-            # adding a wait here since we rely on the result for role assignment
-            result = LongRunningOperation(cmd.cli_ctx)(result)
 
             # add cluster spn with Monitoring Metrics Publisher role assignment to the cluster resource
             # mdm metrics supported only in azure public cloud so add the  role assignment only in this cloud
             cloud_name = cmd.cli_ctx.cloud.name
             if cloud_name.lower() == 'azurecloud' and monitoring:
+                # adding a wait here since we rely on the result for role assignment
+                result = LongRunningOperation(cmd.cli_ctx)(result)
                 from msrestazure.tools import resource_id
                 cluster_resource_id = resource_id(
                     subscription=subscription_id,
@@ -928,33 +959,9 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                     name=name
                 )
 
-                service_principal_msi_id = None
-                # Check if service principal exists, if it does, assign permissions to service principal
-                # Else, provide permissions to MSI
-                if (
-                        hasattr(result, 'service_principal_profile') and
-                        hasattr(result.service_principal_profile, 'client_id')
-                ):
-                    logger.warning('service principal exists, using it')
-                    service_principal_msi_id = result.service_principal_profile.client_id
-                    isServicePrincipal = True
-                elif (
-                        (hasattr(result, 'addon_profiles')) and
-                        ('omsagent' in result.addon_profiles) and
-                        (hasattr(result.addon_profiles['omsagent'], 'identity')) and
-                        (hasattr(result.addon_profiles['omsagent'].identity, 'object_id'))
-                ):
-                    logger.warning('omsagent MSI exists, using it')
-                    service_principal_msi_id = result.addon_profiles['omsagent'].identity.object_id
-                    isServicePrincipal = False
+                _add_monitoring_role_assignment(result, cluster_resource_id, cmd)
 
-                if service_principal_msi_id is not None:
-                    if not _add_role_assignment(cmd.cli_ctx, 'Monitoring Metrics Publisher',
-                                                service_principal_msi_id, isServicePrincipal,
-                                                scope=cluster_resource_id):
-                        logger.warning('Could not create a role assignment for monitoring addon. '
-                                       'Are you an Owner on this subscription?')
-                return result
+            return result
         except CloudError as ex:
             retry_exception = ex
             if 'not found in Active Directory tenant' in ex.message:
@@ -2111,9 +2118,10 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
     result = sdk_no_wait(
         no_wait, client.create_or_update,
         resource_group_name, name, instance)
-    result = LongRunningOperation(cmd.cli_ctx)(result)
 
     if 'omsagent' in instance.addon_profiles:
+        # adding a wait here since we rely on the result for role assignment
+        result = LongRunningOperation(cmd.cli_ctx)(result)
         cloud_name = cmd.cli_ctx.cloud.name
         # mdm metrics supported only in Azure Public cloud so add the role assignment only in this cloud
         if cloud_name.lower() == 'azurecloud':
@@ -2124,31 +2132,8 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
                 namespace='Microsoft.ContainerService', type='managedClusters',
                 name=name
             )
-        service_principal_msi_id = None
-        # Check if service principal exists, if it does, assign permissions to service principal
-        # Else, provide permissions to MSI
-        if hasattr(result, 'service_principal_profile') and hasattr(result.service_principal_profile, 'client_id'):
-            logger.warning('service principal exists, using it')
-            service_principal_msi_id = result.service_principal_profile.client_id
-            isServicePrincipal = True
-        elif (
-                (hasattr(result, 'addon_profiles')) and
-                ('omsagent' in result.addon_profiles) and
-                (hasattr(result.addon_profiles['omsagent'], 'identity')) and
-                (hasattr(result.addon_profiles['omsagent'].identity, 'object_id'))
-        ):
-            logger.warning('omsagent MSI exists, using it')
-            service_principal_msi_id = result.addon_profiles['omsagent'].identity.object_id
-            isServicePrincipal = False
 
-        if service_principal_msi_id is not None:
-            if not _add_role_assignment(cmd.cli_ctx, 'Monitoring Metrics Publisher',
-                                        service_principal_msi_id, isServicePrincipal,
-                                        scope=cluster_resource_id):
-                logger.warning(
-                    'Could not create a role assignment for Monitoring addon.'
-                    'Are you an Owner on this subscription?'
-                )
+        _add_monitoring_role_assignment(result, cluster_resource_id, cmd)
 
     return result
 
