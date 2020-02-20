@@ -780,10 +780,18 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         secret=principal_obj.get("client_secret"))
 
     if attach_acr:
-        _ensure_aks_acr(cmd.cli_ctx,
-                        client_id=service_principal_profile.client_id,
-                        acr_name_or_id=attach_acr,
-                        subscription_id=subscription_id)
+        if enable_managed_identity:
+            if no_wait:
+                raise CLIError('When --attach-acr and --enable-managed-identity are both specified, '
+                               '--no-wait is not allowed, please wait until the whole operation succeeds.')
+            else:
+                # Attach acr operation will be handled after the cluster is created
+                pass
+        else:
+            _ensure_aks_acr(cmd.cli_ctx,
+                            client_id=service_principal_profile.client_id,
+                            acr_name_or_id=attach_acr,
+                            subscription_id=subscription_id)
 
     if (vnet_subnet_id and not skip_subnet_role_assignment and
             not subnet_role_assignment_exists(cmd.cli_ctx, vnet_subnet_id)):
@@ -944,11 +952,27 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
     retry_exception = Exception(None)
     for _ in range(0, max_retry):
         try:
-            return sdk_no_wait(no_wait, client.create_or_update,
-                               resource_group_name=resource_group_name,
-                               resource_name=name,
-                               parameters=mc,
-                               custom_headers=headers)
+            logger.info('AKS cluster is creating, please wait...')
+            created_cluster = sdk_no_wait(no_wait, client.create_or_update,
+                                          resource_group_name=resource_group_name,
+                                          resource_name=name,
+                                          parameters=mc,
+                                          custom_headers=headers).result()
+            if enable_managed_identity and attach_acr:
+                # Attach ACR to cluster enabled managed identity
+                if created_cluster.identity_profile is None or \
+                   created_cluster.identity_profile["kubeletidentity"] is None:
+                    logger.warning('Your cluster is successfully created, but we failed to attach acr to it, '
+                                   'you can manually grant permission to the identity named <ClUSTER_NAME>-agentpool '
+                                   'in MC_ resource group to give it permission to pull from ACR.')
+                else:
+                    kubelet_identity_client_id = created_cluster.identity_profile["kubeletidentity"].client_id
+                    _ensure_aks_acr(cmd.cli_ctx,
+                                    client_id=kubelet_identity_client_id,
+                                    acr_name_or_id=attach_acr,
+                                    subscription_id=subscription_id)
+
+            return created_cluster
         except CloudError as ex:
             retry_exception = ex
             if 'not found in Active Directory tenant' in ex.message:
@@ -1082,7 +1106,16 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
         raise CLIError('Cannot specify "--attach-acr" and "--detach-acr" at the same time.')
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
-    client_id = instance.service_principal_profile.client_id
+    client_id = ""
+    if instance.identity is not None and instance.identity.type == "SystemAssigned":
+        if instance.identity_profile is None or instance.identity_profile["kubeletidentity"] is None:
+            raise CLIError('Unexpected error getting kubelet\'s identity for the cluster. '
+                           'Please do not set --attach-acr or --detach-acr. '
+                           'You can manually grant or revoke permission to the identity named '
+                           '<ClUSTER_NAME>-agentpool in MC_ resource group to access ACR.')
+        client_id = instance.identity_profile["kubeletidentity"].client_id
+    else:
+        client_id = instance.service_principal_profile.client_id
     if not client_id:
         raise CLIError('Cannot get the AKS cluster\'s service principal.')
 
