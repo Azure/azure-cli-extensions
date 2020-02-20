@@ -743,7 +743,6 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                appgw_shared=None,
                appgw_watch_namespace=None,
                no_wait=False):
-    logger.warning("rashmi-azure-cli-extensions")
     if not no_ssh_key:
         try:
             if not ssh_key_value or not is_valid_ssh_rsa_public_key(ssh_key_value):
