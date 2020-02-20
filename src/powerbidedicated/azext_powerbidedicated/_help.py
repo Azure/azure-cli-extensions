@@ -10,24 +10,24 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 helps['powerbi'] = """
     type: group
-    short-summary: Manage powerbi resources.
+    short-summary: Manage PowerBI resources.
 """
 
 helps['powerbi embedded-capacity'] = """
     type: group
-    short-summary: Manage powerbi embedded capacity.
+    short-summary: Manage PowerBI embedded capacity.
 """
 
 helps['powerbi embedded-capacity create'] = """
     type: command
-    short-summary: Provision the specified Dedicated capacity based on the configuration specified in the request.
+    short-summary: Create a new PowerBI embedded capacity.
     examples:
-      - name: Create capacity.
+      - name: Create a new PowerBI embedded capacity.
         text: |-
                az powerbi embedded-capacity create --resource-group "TestRG" --name "azsdktest" \\
                --sku-name "A1" --sku-tier "PBIE_Azure" --administration-members \\
                "azsdktest@microsoft.com,azsdktest2@microsoft.com"
-      - name: Create capacity without waiting.
+      - name: Create a new PowerBI embedded capacity without waiting.
         text: |-
                az powerbi embedded-capacity create --resource-group "TestRG" --name "azsdktest" \\
                --sku-name "A1" --sku-tier "PBIE_Azure" --administration-members \\
@@ -36,12 +36,12 @@ helps['powerbi embedded-capacity create'] = """
 
 helps['powerbi embedded-capacity update'] = """
     type: command
-    short-summary: Provisions the specified Dedicated capacity based on the configuration specified in the request.
+    short-summary: Update the specified PowerBI embedded capacity.
     examples:
-      - name: Update capacity sku name.
+      - name: Update sku name for the specified PowerBI embedded capacity.
         text: |-
                az powerbi embedded-capacity update --resource-group "TestRG" --name "azsdktest" --sku-name "A1"
-      - name: Update capacity administrator members without waiting.
+      - name: Update administrator members the specified PowerBI embedded capacity without waiting.
         text: |-
                az powerbi embedded-capacity update --resource-group "TestRG" --name "azsdktest" --sku-name "A1" \\
                --administration-members "azsdktest3@microsoft.com" --no-wait
@@ -49,7 +49,7 @@ helps['powerbi embedded-capacity update'] = """
 
 helps['powerbi embedded-capacity delete'] = """
     type: command
-    short-summary: Delete the specified Dedicated capacity.
+    short-summary: Delete the specified PowerBI embedded capacity.
     examples:
       - name: Delete a capacity in specified resource group.
         text: |-
@@ -64,7 +64,7 @@ helps['powerbi embedded-capacity delete'] = """
 
 helps['powerbi embedded-capacity show'] = """
     type: command
-    short-summary: Get details about the specified dedicated capacity.
+    short-summary: Get details about the specified PowerBI embedded capacity.
     examples:
       - name: Get details of a capacity
         text: |-
@@ -73,7 +73,7 @@ helps['powerbi embedded-capacity show'] = """
 
 helps['powerbi embedded-capacity list'] = """
     type: command
-    short-summary: Get all the Dedicated capacities for the given resource group.
+    short-summary: List all the embedded capacities for the given resource group.
     examples:
       - name: List capacities in resource group
         text: |-
@@ -85,7 +85,7 @@ helps['powerbi embedded-capacity list'] = """
 
 helps['powerbi embedded-capacity wait'] = """
     type: command
-    short-summary: Place the CLI in a waiting state until a condition of powerbi embedded capacity is met.
+    short-summary: Place the CLI in a waiting state until a condition of PowerBI embedded capacity is met.
     examples:
       - name: Place the CLI in a waiting state until the powerbi embedded capacity is created.
         text: |-

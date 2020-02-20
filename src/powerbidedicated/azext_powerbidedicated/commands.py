@@ -17,7 +17,11 @@ def load_command_table(self, _):
         operations_tmpl='azext_powerbidedicated.custom#{}',
         client_factory=cf_capacities)
 
-    with self.command_group('powerbi embedded-capacity', powerbidedicated_custom_capacities, client_factory=cf_capacities) as g:
+    with self.command_group('powerbi', is_preview=True) as g:
+        pass
+
+    with self.command_group('powerbi embedded-capacity', powerbidedicated_custom_capacities, is_preview=True,
+                            client_factory=cf_capacities) as g:
         g.custom_command('create', 'create_powerbi_embedded_capacity', supports_no_wait=True)
         g.custom_command('update', 'update_powerbi_embedded_capacity', supports_no_wait=True)
         g.custom_command('delete', 'delete_powerbi_embedded_capacity', supports_no_wait=True, confirmation=True)
