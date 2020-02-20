@@ -64,10 +64,18 @@ def _find_item_at_path(instance, path):
 
 # region AzureFirewall
 def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, location=None,
-                          tags=None, zones=None, private_ranges=None):
+                          tags=None, zones=None, private_ranges=None, firewall_policy=None,
+                          virtual_hub=None, sku=None):
     client = network_client_factory(cmd.cli_ctx).azure_firewalls
-    AzureFirewall = cmd.get_models('AzureFirewall')
-    firewall = AzureFirewall(location=location, tags=tags, zones=zones, additional_properties={})
+    AzureFirewall, SubResource, AzureFirewallSku = cmd.get_models('AzureFirewall', 'SubResource', 'AzureFirewallSku')
+    sku_instance = AzureFirewallSku(name=sku, tier='Standard')
+    firewall = AzureFirewall(location=location,
+                             tags=tags,
+                             zones=zones,
+                             additional_properties={},
+                             virtual_hub=SubResource(id=virtual_hub) if virtual_hub is not None else None,
+                             firewall_policy=SubResource(id=firewall_policy) if firewall_policy is not None else None,
+                             sku=sku_instance if sku is not None else None)
     if private_ranges is not None:
         if firewall.additional_properties is None:
             firewall.additional_properties = {}
@@ -75,7 +83,9 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
     return client.create_or_update(resource_group_name, azure_firewall_name, firewall)
 
 
-def update_azure_firewall(instance, tags=None, zones=None, private_ranges=None):
+def update_azure_firewall(cmd, instance, tags=None, zones=None, private_ranges=None,
+                          firewall_policy=None, virtual_hub=None):
+    SubResource = cmd.get_models('SubResource')
     if tags is not None:
         instance.tags = tags
     if zones is not None:
@@ -84,6 +94,13 @@ def update_azure_firewall(instance, tags=None, zones=None, private_ranges=None):
         if instance.additional_properties is None:
             instance.additional_properties = {}
         instance.additional_properties['Network.SNAT.PrivateRanges'] = private_ranges
+    if firewall_policy is not None:
+        instance.firewall_policy = SubResource(id=firewall_policy)
+    if virtual_hub is not None:
+        if virtual_hub == '':
+            instance.virtual_hub = None
+        else:
+            instance.virtual_hub = SubResource(id=virtual_hub)
     return instance
 
 
@@ -91,9 +108,11 @@ def list_azure_firewalls(cmd, resource_group_name=None):
     return _generic_list(cmd.cli_ctx, 'azure_firewalls', resource_group_name)
 
 
+# pylint: disable=unused-argument
 def create_af_ip_configuration(cmd, resource_group_name, azure_firewall_name, item_name,
-                               public_ip_address, virtual_network_name=None, subnet='AzureFirewallSubnet',  # pylint: disable=unused-argument
-                               private_ip_address=None):
+                               public_ip_address, virtual_network_name=None, subnet='AzureFirewallSubnet',
+                               private_ip_address=None, management_item_name=None, management_public_ip_address=None,
+                               management_virtual_network_name=None, management_subnet='AzureFirewallManagementSubnet'):
     AzureFirewallIPConfiguration, SubResource = cmd.get_models('AzureFirewallIPConfiguration', 'SubResource')
     client = network_client_factory(cmd.cli_ctx).azure_firewalls
     af = client.get(resource_group_name, azure_firewall_name)
@@ -104,6 +123,13 @@ def create_af_ip_configuration(cmd, resource_group_name, azure_firewall_name, it
         subnet=SubResource(id=subnet) if subnet else None
     )
     _upsert(af, 'ip_configurations', config, 'name', warn=False)
+    if management_item_name is not None:
+        management_config = AzureFirewallIPConfiguration(
+            name=management_item_name,
+            public_ip_address=SubResource(id=management_public_ip_address) if management_public_ip_address else None,
+            subnet=SubResource(id=management_subnet) if management_subnet else None
+        )
+        af.management_ip_configuration = management_config
     poller = client.create_or_update(resource_group_name, azure_firewall_name, af)
     return _get_property(poller.result().ip_configurations, item_name)
 
