@@ -5,7 +5,7 @@ from knack.util import CLIError
 # pylint: disable=protected-access
 
 
-class AddAddOwners(argparse._AppendAction):
+class AddOwners(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
         super(ImageBuilderAddCustomize, self).__call__(parser, namespace, action, option_string)
@@ -22,7 +22,7 @@ class AddAddOwners(argparse._AppendAction):
         return d
 
 
-class AddAddOwners(argparse._AppendAction):
+class AddOwners(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
         super(ImageBuilderAddCustomize, self).__call__(parser, namespace, action, option_string)
@@ -39,7 +39,7 @@ class AddAddOwners(argparse._AppendAction):
         return d
 
 
-class AddAddOwners(argparse._AppendAction):
+class AddOwners(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
         super(ImageBuilderAddCustomize, self).__call__(parser, namespace, action, option_string)
