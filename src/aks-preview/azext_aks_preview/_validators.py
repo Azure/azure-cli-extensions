@@ -7,13 +7,16 @@ from __future__ import unicode_literals
 import os
 import os.path
 import re
-from math import ceil
+from math import ceil, isnan, isclose
 from ipaddress import ip_network
 
 from knack.log import get_logger
 
+from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.util import CLIError
 import azure.cli.core.keys as keys
+
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_02_01.models import ManagedClusterPropertiesAutoScalerProfile
 
 logger = get_logger(__name__)
 
@@ -197,9 +200,9 @@ def validate_priority(namespace):
     if namespace.priority is not None:
         if namespace.priority == '':
             return
-        if namespace.priority != "Low" and \
+        if namespace.priority != "Spot" and \
                 namespace.priority != "Regular":
-            raise CLIError("--priority can only be Low or Regular")
+            raise CLIError("--priority can only be Spot or Regular")
 
 
 def validate_eviction_policy(namespace):
@@ -210,6 +213,19 @@ def validate_eviction_policy(namespace):
         if namespace.eviction_policy != "Delete" and \
                 namespace.eviction_policy != "Deallocate":
             raise CLIError("--eviction-policy can only be Delete or Deallocate")
+
+
+def validate_spot_max_price(namespace):
+    """Validates the spot node pool max price."""
+    if not isnan(namespace.spot_max_price):
+        if namespace.priority != "Spot":
+            raise CLIError("--spot_max_price can only be set when --priority is Spot")
+        if namespace.spot_max_price * 100000 % 1 != 0:
+            raise CLIError("--spot_max_price can only include up to 5 decimal places")
+        if namespace.spot_max_price <= 0 and not isclose(namespace.spot_max_price, -1.0, rel_tol=1e-06):
+            raise CLIError(
+                "--spot_max_price can only be any decimal value greater than zero, or -1 which indicates "
+                "default price to be up-to on-demand")
 
 
 def validate_acr(namespace):
@@ -237,3 +253,41 @@ def validate_load_balancer_idle_timeout(namespace):
     if namespace.load_balancer_idle_timeout is not None:
         if namespace.load_balancer_idle_timeout < 4 or namespace.load_balancer_idle_timeout > 120:
             raise CLIError("--load-balancer-idle-timeout must be in the range [4,120]")
+
+
+def validate_nodepool_tags(ns):
+    """ Extracts multiple space-separated tags in key[=value] format """
+    if isinstance(ns.nodepool_tags, list):
+        tags_dict = {}
+        for item in ns.nodepool_tags:
+            tags_dict.update(validate_tag(item))
+        ns.nodepool_tags = tags_dict
+
+
+def validate_cluster_autoscaler_profile(namespace):
+    """ Validates that cluster autoscaler profile is acceptable by:
+        1. Extracting the key[=value] format to map
+        2. Validating that the key isn't empty and that the key is valid
+        Empty strings pass validation
+    """
+    _extract_cluster_autoscaler_params(namespace)
+    if namespace.cluster_autoscaler_profile is not None:
+        for key in namespace.cluster_autoscaler_profile.keys():
+            _validate_cluster_autoscaler_key(key)
+
+
+def _validate_cluster_autoscaler_key(key):
+    if not key:
+        raise CLIError('Empty key specified for cluster-autoscaler-profile')
+    valid_keys = list(k.replace("_", "-") for k, v in ManagedClusterPropertiesAutoScalerProfile._attribute_map.items())  # pylint: disable=protected-access
+    if key not in valid_keys:
+        raise CLIError('Invalid key specified for cluster-autoscaler-profile: %s' % key)
+
+
+def _extract_cluster_autoscaler_params(namespace):
+    """ Extracts multiple space-separated cluster autoscaler parameters in key[=value] format """
+    if isinstance(namespace.cluster_autoscaler_profile, list):
+        params_dict = {}
+        for item in namespace.cluster_autoscaler_profile:
+            params_dict.update(validate_tag(item))
+        namespace.cluster_autoscaler_profile = params_dict

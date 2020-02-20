@@ -17,7 +17,7 @@ from ._validators import (
     get_public_ip_validator, get_subnet_validator, validate_application_rule_protocols,
     validate_firewall_policy, validate_rule_group_collection, process_private_ranges,
     process_threat_intel_whitelist_ip_addresses, process_threat_intel_whitelist_fqdns,
-    validate_virtual_hub)
+    validate_virtual_hub, get_management_subnet_validator, get_management_public_ip_validator)
 
 
 # pylint: disable=too-many-locals, too-many-branches, too-many-statements
@@ -112,6 +112,16 @@ def load_arguments(self, _):
         c.argument('virtual_network_name', virtual_network_name_type, help='The virtual network (VNet) name. It should contain one subnet called "AzureFirewallSubnet".')
         c.argument('public_ip_address', help='Name or ID of the public IP to use.', validator=get_public_ip_validator())
         c.argument('private_ip_address', deprecate_info=c.deprecate(expiration='2.3.0'), help='IP address used by the Firewall ILB as the next hop in User Defined Routes.')
+
+    with self.argument_context('network firewall ip-config', arg_group="Management Ip Config") as c:
+        c.argument('management_item_name', options_list=['--m-name'],
+                   help='Name of the management IP configuration.', is_preview=True)
+        c.argument('management_subnet', validator=get_management_subnet_validator(), help=argparse.SUPPRESS, is_preview=True)
+        c.argument('management_virtual_network_name', virtual_network_name_type, options_list=['--m-vnet-name'],
+                   help='The virtual network (VNet) name for management ip configuation. '
+                        'It should contain one subnet called "AzureFirewallManagementSubnet".', is_preview=True)
+        c.argument('management_public_ip_address', help='Name or ID of the public IP to use for management ip configuation.',
+                   options_list=['--m-public-ip-address'], validator=get_management_public_ip_validator(), is_preview=True)
 
     with self.argument_context('network firewall management-ip-config') as c:
         c.argument('item_name', options_list=['--name', '-n'], help='Name of the management IP configuration.', id_part='child_name_2')
