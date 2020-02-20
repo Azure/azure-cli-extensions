@@ -2182,26 +2182,6 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
 
     if 'omsagent' in instance.addon_profiles:
         _ensure_container_insights_for_monitoring(cmd, instance.addon_profiles['omsagent'])
-    # send the managed cluster representation to update the addon profiles
-    result = sdk_no_wait(
-        no_wait, client.create_or_update,
-        resource_group_name, name, instance)
-
-    if 'omsagent' in instance.addon_profiles:
-        # adding a wait here since we rely on the result for role assignment
-        result = LongRunningOperation(cmd.cli_ctx)(result)
-        cloud_name = cmd.cli_ctx.cloud.name
-        # mdm metrics supported only in Azure Public cloud so add the role assignment only in this cloud
-        if cloud_name.lower() == 'azurecloud':
-            from msrestazure.tools import resource_id
-            cluster_resource_id = resource_id(
-                subscription=subscription_id,
-                resource_group=resource_group_name,
-                namespace='Microsoft.ContainerService', type='managedClusters',
-                name=name
-            )
-        _add_monitoring_role_assignment(result, cluster_resource_id, cmd)
-        
 
     if CONST_INGRESS_APPGW_ADDON_NAME in instance.addon_profiles:
         if CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID in instance.addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].config:
@@ -2223,7 +2203,26 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
                                'specified in {CONST_INGRESS_APPGW_ADDON_NAME} addon. '
                                'Are you an Owner on this subscription?')
 
+    # send the managed cluster representation to update the addon profiles
+    result = sdk_no_wait(
+        no_wait, client.create_or_update,
+        resource_group_name, name, instance)
 
+    if 'omsagent' in instance.addon_profiles:
+        # adding a wait here since we rely on the result for role assignment
+        result = LongRunningOperation(cmd.cli_ctx)(result)
+        cloud_name = cmd.cli_ctx.cloud.name
+        # mdm metrics supported only in Azure Public cloud so add the role assignment only in this cloud
+        if cloud_name.lower() == 'azurecloud':
+            from msrestazure.tools import resource_id
+            cluster_resource_id = resource_id(
+                subscription=subscription_id,
+                resource_group=resource_group_name,
+                namespace='Microsoft.ContainerService', type='managedClusters',
+                name=name
+            )
+        _add_monitoring_role_assignment(result, cluster_resource_id, cmd)
+        
     return result
 
 
