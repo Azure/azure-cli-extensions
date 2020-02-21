@@ -11,12 +11,8 @@
 
 def migrate_location_check_name_availability(cmd, client,
                                              location_name,
-                                             name,
-                                             type):
-    parameters = {}
-    parameters['name'] = name  # string
-    parameters['type'] = type  # constant
-    return client.check_name_availability(location_name=location_name, parameters=parameters)
+                                             name):
+    return client.check_name_availability(location_name=location_name, name=name)
 
 
 def migrate_assessment_options_show(cmd, client,

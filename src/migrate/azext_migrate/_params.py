@@ -23,7 +23,6 @@ def load_arguments(self, _):
     with self.argument_context('migrate location check-name-availability') as c:
         c.argument('location_name', id_part=None, help='The desired region for the name check.')
         c.argument('name', id_part=None, help='The name to check for availability')
-        c.argument('_type', options_list=['--type'], id_part=None, help='The resource type. Must be set to Microsoft.Migrate/projects')
 
     with self.argument_context('migrate assessment-options show') as c:
         c.argument('location_name', id_part=None, help='Azure region in which the project is created.')

@@ -96,18 +96,12 @@ helps['migrate groups show'] = """
 
 helps['migrate groups create'] = """
     type: command
-    short-summary: Create a new group by sending a json object of type 'group' as given in Models section as part of the Request Body. The group name in a project is unique. Labels can be applied on a group as part of creation.
-
-If a group with the groupName specified in the URL already exists, then this call acts as an update.
-
-This operation is Idempotent.
+    short-summary: Create a new group by sending a json object of type 'group' as given in Models section as part of the Request Body. The group name in a project is unique. Labels can be applied on a group as part of creation.  If a group with the groupName specified in the URL already exists, then this call acts as an update.  This operation is Idempotent.
 """
 
 helps['migrate groups delete'] = """
     type: command
-    short-summary: Delete the group from the project. The machines remain in the project. Deleting a non-existent group results in a no-operation.
-
-A group is an aggregation mechanism for machines in a project. Therefore, deleting group does not delete machines in it.
+    short-summary: Delete the group from the project. The machines remain in the project. Deleting a non-existent group results in a no-operation.  A group is an aggregation mechanism for machines in a project. Therefore, deleting group does not delete machines in it.
 """
 
 helps['migrate assessments'] = """
@@ -117,9 +111,7 @@ helps['migrate assessments'] = """
 
 helps['migrate assessments list'] = """
     type: command
-    short-summary: Get all assessments created in the project.
-
-Returns a json array of objects of type 'assessment' as specified in Models section.
+    short-summary: Get all assessments created in the project.  Returns a json array of objects of type 'assessment' as specified in Models section.
 """
 
 helps['migrate assessments show'] = """
@@ -129,18 +121,12 @@ helps['migrate assessments show'] = """
 
 helps['migrate assessments create'] = """
     type: command
-    short-summary: Create a new assessment with the given name and the specified settings. Since name of an assessment in a project is a unique identifier, if an assessment with the name provided already exists, then the existing assessment is updated.
-
-Any PUT operation, resulting in either create or update on an assessment, will cause the assessment to go in a "InProgress" state. This will be indicated by the field 'computationState' on the Assessment object. During this time no other PUT operation will be allowed on that assessment object, nor will a Delete operation. Once the computation for the assessment is complete, the field 'computationState' will be updated to 'Ready', and then other PUT or DELETE operations can happen on the assessment.
-
-When assessment is under computation, any PUT will lead to a 400 - Bad Request error.
+    short-summary: Create a new assessment with the given name and the specified settings. Since name of an assessment in a project is a unique identifier, if an assessment with the name provided already exists, then the existing assessment is updated.  Any PUT operation, resulting in either create or update on an assessment, will cause the assessment to go in a "InProgress" state. This will be indicated by the field 'computationState' on the Assessment object. During this time no other PUT operation will be allowed on that assessment object, nor will a Delete operation. Once the computation for the assessment is complete, the field 'computationState' will be updated to 'Ready', and then other PUT or DELETE operations can happen on the assessment.  When assessment is under computation, any PUT will lead to a 400 - Bad Request error.
 """
 
 helps['migrate assessments delete'] = """
     type: command
-    short-summary: Delete an assessment from the project. The machines remain in the assessment. Deleting a non-existent assessment results in a no-operation.
-
-When an assessment is under computation, as indicated by the 'computationState' field, it cannot be deleted. Any such attempt will return a 400 - Bad Request.
+    short-summary: Delete an assessment from the project. The machines remain in the assessment. Deleting a non-existent assessment results in a no-operation.  When an assessment is under computation, as indicated by the 'computationState' field, it cannot be deleted. Any such attempt will return a 400 - Bad Request.
 """
 
 helps['migrate assessments get-report-download-url'] = """
@@ -155,10 +141,7 @@ helps['migrate assessed-machines'] = """
 
 helps['migrate assessed-machines list'] = """
     type: command
-    short-summary: Get list of machines that assessed as part of the specified assessment. Returns a json array of objects of type 'assessedMachine' as specified in the Models section.
-
-Whenever an assessment is created or updated, it goes under computation. During this phase, the 'status' field of Assessment object reports 'Computing'.
-During the period when the assessment is under computation, the list of assessed machines is empty and no assessed machines are returned by this call.
+    short-summary: Get list of machines that assessed as part of the specified assessment. Returns a json array of objects of type 'assessedMachine' as specified in the Models section.  Whenever an assessment is created or updated, it goes under computation. During this phase, the 'status' field of Assessment object reports 'Computing'. During the period when the assessment is under computation, the list of assessed machines is empty and no assessed machines are returned by this call.
 """
 
 helps['migrate assessed-machines show'] = """
