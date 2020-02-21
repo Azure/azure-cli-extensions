@@ -28,8 +28,6 @@ az databricks update \
     --tags key=value
 ```
 
-
-
 ##### Show workspace
 ```
 az databricks show \
