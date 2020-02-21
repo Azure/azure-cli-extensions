@@ -67,8 +67,8 @@ def get_ext_metadata(ext_dir, ext_file, ext_name):
 def get_whl_from_url(url, filename, tmp_dir, whl_cache=None):
     if not whl_cache:
         whl_cache = {}
-    if url in whl_cache:
-        return whl_cache[url]
+    # if url in whl_cache:
+    #     return whl_cache[url]
     import requests
     r = requests.get(url, stream=True)
     assert r.status_code == 200, "Request to {} failed with {}".format(url, r.status_code)
