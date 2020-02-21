@@ -141,7 +141,6 @@ create a migrate projects.
 |--project**|object|New or Updated project object.|/something/my_option|/something/myOption|
 |--e-tag**|string|For optimistic concurrency control.|/something/my_option|/something/myOption|
 |--location**|string|Azure location in which project is created.|/something/my_option|/something/myOption|
-|--tags**|object|Tags provided by Azure Tagging service.|/something/my_option|/something/myOption|
 |--customer-workspace-id**|string|ARM ID of the Service Map workspace created by user.|/something/my_option|/something/myOption|
 |--customer-workspace-location**|string|Location of the Service Map workspace created by user.|/something/my_option|/something/myOption|
 |--provisioning-state**|choice|Provisioning state of the project.|/something/my_option|/something/myOption|
@@ -183,7 +182,6 @@ update a migrate projects.
 |--project**|object|New or Updated project object.|/something/my_option|/something/myOption|
 |--e-tag**|string|For optimistic concurrency control.|/something/my_option|/something/myOption|
 |--location**|string|Azure location in which project is created.|/something/my_option|/something/myOption|
-|--tags**|object|Tags provided by Azure Tagging service.|/something/my_option|/something/myOption|
 |--customer-workspace-id**|string|ARM ID of the Service Map workspace created by user.|/something/my_option|/something/myOption|
 |--customer-workspace-location**|string|Location of the Service Map workspace created by user.|/something/my_option|/something/myOption|
 |--provisioning-state**|choice|Provisioning state of the project.|/something/my_option|/something/myOption|

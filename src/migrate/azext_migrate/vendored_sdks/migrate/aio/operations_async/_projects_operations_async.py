@@ -240,7 +240,6 @@ class ProjectsOperations:
         project_name: str,
         e_tag: Optional[str] = None,
         location: Optional[str] = None,
-        tags: Optional["models.ProjectTags"] = None,
         customer_workspace_id: Optional[str] = None,
         customer_workspace_location: Optional[str] = None,
         provisioning_state: Optional[Union[str, "models.ProvisioningState"]] = None,
@@ -258,8 +257,6 @@ class ProjectsOperations:
         :type e_tag: str
         :param location: Azure location in which project is created.
         :type location: str
-        :param tags: Tags provided by Azure Tagging service.
-        :type tags: ~azure_migrate.models.ProjectTags
         :param customer_workspace_id: ARM ID of the Service Map workspace created by user.
         :type customer_workspace_id: str
         :param customer_workspace_location: Location of the Service Map workspace created by user.
@@ -274,7 +271,7 @@ class ProjectsOperations:
         cls: ClsType["models.Project"] = kwargs.pop('cls', None )
         error_map = kwargs.pop('error_map', {})
 
-        project = models.Project(e_tag=e_tag, location=location, tags=tags, customer_workspace_id=customer_workspace_id, customer_workspace_location=customer_workspace_location, provisioning_state=provisioning_state)
+        project = models.Project(e_tag=e_tag, location=location, customer_workspace_id=customer_workspace_id, customer_workspace_location=customer_workspace_location, provisioning_state=provisioning_state)
         api_version = "2018-02-02"
 
         # Construct URL
@@ -334,7 +331,6 @@ class ProjectsOperations:
         project_name: str,
         e_tag: Optional[str] = None,
         location: Optional[str] = None,
-        tags: Optional["models.ProjectTags"] = None,
         customer_workspace_id: Optional[str] = None,
         customer_workspace_location: Optional[str] = None,
         provisioning_state: Optional[Union[str, "models.ProvisioningState"]] = None,
@@ -352,8 +348,6 @@ class ProjectsOperations:
         :type e_tag: str
         :param location: Azure location in which project is created.
         :type location: str
-        :param tags: Tags provided by Azure Tagging service.
-        :type tags: ~azure_migrate.models.ProjectTags
         :param customer_workspace_id: ARM ID of the Service Map workspace created by user.
         :type customer_workspace_id: str
         :param customer_workspace_location: Location of the Service Map workspace created by user.
@@ -368,7 +362,7 @@ class ProjectsOperations:
         cls: ClsType["models.Project"] = kwargs.pop('cls', None )
         error_map = kwargs.pop('error_map', {})
 
-        project = models.Project(e_tag=e_tag, location=location, tags=tags, customer_workspace_id=customer_workspace_id, customer_workspace_location=customer_workspace_location, provisioning_state=provisioning_state)
+        project = models.Project(e_tag=e_tag, location=location, customer_workspace_id=customer_workspace_id, customer_workspace_location=customer_workspace_location, provisioning_state=provisioning_state)
         api_version = "2018-02-02"
 
         # Construct URL

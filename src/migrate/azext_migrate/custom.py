@@ -38,11 +38,10 @@ def migrate_projects_create(cmd, client,
                             project_name,
                             e_tag=None,
                             location=None,
-                            tags=None,
                             customer_workspace_id=None,
                             customer_workspace_location=None,
                             provisioning_state=None):
-    return client.create(resource_group_name=resource_group_name, project_name=project_name, e_tag=e_tag, location=location, tags=tags, customer_workspace_id=customer_workspace_id, customer_workspace_location=customer_workspace_location, provisioning_state=provisioning_state)
+    return client.create(resource_group_name=resource_group_name, project_name=project_name, e_tag=e_tag, location=location, customer_workspace_id=customer_workspace_id, customer_workspace_location=customer_workspace_location, provisioning_state=provisioning_state)
 
 
 def migrate_projects_update(cmd, client,
@@ -50,11 +49,10 @@ def migrate_projects_update(cmd, client,
                             project_name,
                             e_tag=None,
                             location=None,
-                            tags=None,
                             customer_workspace_id=None,
                             customer_workspace_location=None,
                             provisioning_state=None):
-    return client.update(resource_group_name=resource_group_name, project_name=project_name, e_tag=e_tag, location=location, tags=tags, customer_workspace_id=customer_workspace_id, customer_workspace_location=customer_workspace_location, provisioning_state=provisioning_state)
+    return client.update(resource_group_name=resource_group_name, project_name=project_name, e_tag=e_tag, location=location, customer_workspace_id=customer_workspace_id, customer_workspace_location=customer_workspace_location, provisioning_state=provisioning_state)
 
 
 def migrate_projects_delete(cmd, client,

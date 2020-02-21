@@ -13,7 +13,6 @@ from azure.cli.core.commands.parameters import (
     get_location_type
 )
 from azext_migrate.actions import (
-    AddTags,
     AddMachines
 )
 
@@ -39,7 +38,6 @@ def load_arguments(self, _):
         c.argument('project_name', id_part=None, help='Name of the Azure Migrate project.')
         c.argument('e_tag', id_part=None, help='For optimistic concurrency control.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
-        c.argument('tags', tags_type, action=AddTags, nargs='+')
         c.argument('customer_workspace_id', id_part=None, help='ARM ID of the Service Map workspace created by user.')
         c.argument('customer_workspace_location', id_part=None, help='Location of the Service Map workspace created by user.')
         c.argument('provisioning_state', arg_type=get_enum_type(['Accepted', 'Creating', 'Deleting', 'Failed', 'Moving', 'Succeeded']), id_part=None, help='Provisioning state of the project.')
@@ -49,7 +47,6 @@ def load_arguments(self, _):
         c.argument('project_name', id_part=None, help='Name of the Azure Migrate project.')
         c.argument('e_tag', id_part=None, help='For optimistic concurrency control.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
-        c.argument('tags', tags_type, action=AddTags, nargs='+')
         c.argument('customer_workspace_id', id_part=None, help='ARM ID of the Service Map workspace created by user.')
         c.argument('customer_workspace_location', id_part=None, help='Location of the Service Map workspace created by user.')
         c.argument('provisioning_state', arg_type=get_enum_type(['Accepted', 'Creating', 'Deleting', 'Failed', 'Moving', 'Succeeded']), id_part=None, help='Provisioning state of the project.')
