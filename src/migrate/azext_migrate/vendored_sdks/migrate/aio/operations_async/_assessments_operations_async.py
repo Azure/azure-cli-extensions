@@ -268,7 +268,19 @@ class AssessmentsOperations:
         project_name: str,
         group_name: str,
         assessment_name: str,
-        assessment: Optional["models.Assessment"] = None,
+        azure_location: Union[str, "models.AzureLocation"],
+        azure_offer_code: Union[str, "models.AzureOfferCode"],
+        azure_pricing_tier: Union[str, "models.AzurePricingTier"],
+        azure_storage_redundancy: Union[str, "models.AzureStorageRedundancy"],
+        scaling_factor: float,
+        percentile: Union[str, "models.Percentile"],
+        time_range: Union[str, "models.TimeRange"],
+        stage: Union[str, "models.AssessmentStage"],
+        currency: Union[str, "models.Currency"],
+        azure_hybrid_use_benefit: Union[str, "models.AzureHybridUseBenefit"],
+        discount_percentage: float,
+        sizing_criterion: Union[str, "models.AssessmentSizingCriterion"],
+        e_tag: Optional[str] = None,
         **kwargs
     ) -> "models.Assessment":
         """Create a new assessment with the given name and the specified settings. Since name of an assessment in a project is a unique identifier, if an assessment with the name provided already exists, then the existing assessment is updated.
@@ -287,8 +299,35 @@ class AssessmentsOperations:
         :type group_name: str
         :param assessment_name: Unique name of an assessment within a project.
         :type assessment_name: str
-        :param assessment: New or Updated Assessment object.
-        :type assessment: ~azure_migrate.models.Assessment
+        :param azure_location: Target Azure location for which the machines should be assessed. These
+         enums are the same as used by Compute API.
+        :type azure_location: str or ~azure_migrate.models.AzureLocation
+        :param azure_offer_code: Offer code according to which cost estimation is done.
+        :type azure_offer_code: str or ~azure_migrate.models.AzureOfferCode
+        :param azure_pricing_tier: Pricing tier for Size evaluation.
+        :type azure_pricing_tier: str or ~azure_migrate.models.AzurePricingTier
+        :param azure_storage_redundancy: Storage Redundancy type offered by Azure.
+        :type azure_storage_redundancy: str or ~azure_migrate.models.AzureStorageRedundancy
+        :param scaling_factor: Scaling factor used over utilization data to add a performance buffer
+         for new machines to be created in Azure. Min Value = 1.0, Max value = 1.9, Default = 1.3.
+        :type scaling_factor: float
+        :param percentile: Percentile of performance data used to recommend Azure size.
+        :type percentile: str or ~azure_migrate.models.Percentile
+        :param time_range: Time range of performance data used to recommend a size.
+        :type time_range: str or ~azure_migrate.models.TimeRange
+        :param stage: User configurable setting that describes the status of the assessment.
+        :type stage: str or ~azure_migrate.models.AssessmentStage
+        :param currency: Currency to report prices in.
+        :type currency: str or ~azure_migrate.models.Currency
+        :param azure_hybrid_use_benefit: AHUB discount on windows virtual machines.
+        :type azure_hybrid_use_benefit: str or ~azure_migrate.models.AzureHybridUseBenefit
+        :param discount_percentage: Custom discount percentage to be applied on final costs. Can be in
+         the range [0, 100].
+        :type discount_percentage: float
+        :param sizing_criterion: Assessment sizing criterion.
+        :type sizing_criterion: str or ~azure_migrate.models.AssessmentSizingCriterion
+        :param e_tag: For optimistic concurrency control.
+        :type e_tag: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Assessment or Assessment or the result of cls(response)
         :rtype: ~azure_migrate.models.Assessment or ~azure_migrate.models.Assessment
@@ -296,6 +335,8 @@ class AssessmentsOperations:
         """
         cls: ClsType["models.Assessment"] = kwargs.pop('cls', None )
         error_map = kwargs.pop('error_map', {})
+
+        assessment = models.Assessment(e_tag=e_tag, azure_location=azure_location, azure_offer_code=azure_offer_code, azure_pricing_tier=azure_pricing_tier, azure_storage_redundancy=azure_storage_redundancy, scaling_factor=scaling_factor, percentile=percentile, time_range=time_range, stage=stage, currency=currency, azure_hybrid_use_benefit=azure_hybrid_use_benefit, discount_percentage=discount_percentage, sizing_criterion=sizing_criterion)
         api_version = "2018-02-02"
 
         # Construct URL

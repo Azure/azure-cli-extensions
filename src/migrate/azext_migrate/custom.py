@@ -36,15 +36,25 @@ def migrate_projects_show(cmd, client,
 def migrate_projects_create(cmd, client,
                             resource_group_name,
                             project_name,
-                            project=None):
-    return client.create(resource_group_name=resource_group_name, project_name=project_name, project=project)
+                            e_tag=None,
+                            location=None,
+                            tags=None,
+                            customer_workspace_id=None,
+                            customer_workspace_location=None,
+                            provisioning_state=None):
+    return client.create(resource_group_name=resource_group_name, project_name=project_name, e_tag=e_tag, location=location, tags=tags, customer_workspace_id=customer_workspace_id, customer_workspace_location=customer_workspace_location, provisioning_state=provisioning_state)
 
 
 def migrate_projects_update(cmd, client,
                             resource_group_name,
                             project_name,
-                            project=None):
-    return client.update(resource_group_name=resource_group_name, project_name=project_name, project=project)
+                            e_tag=None,
+                            location=None,
+                            tags=None,
+                            customer_workspace_id=None,
+                            customer_workspace_location=None,
+                            provisioning_state=None):
+    return client.update(resource_group_name=resource_group_name, project_name=project_name, e_tag=e_tag, location=location, tags=tags, customer_workspace_id=customer_workspace_id, customer_workspace_location=customer_workspace_location, provisioning_state=provisioning_state)
 
 
 def migrate_projects_delete(cmd, client,
@@ -91,10 +101,7 @@ def migrate_groups_create(cmd, client,
                           group_name,
                           machines,
                           e_tag=None):
-    group = {}
-    group['e_tag'] = e_tag  # string
-    group['machines'] = None if machines is None else machines
-    return client.create(resource_group_name=resource_group_name, project_name=project_name, group_name=group_name, group=group)
+    return client.create(resource_group_name=resource_group_name, project_name=project_name, group_name=group_name, e_tag=e_tag, machines=machines)
 
 
 def migrate_groups_delete(cmd, client,
@@ -126,8 +133,20 @@ def migrate_assessments_create(cmd, client,
                                project_name,
                                group_name,
                                assessment_name,
-                               assessment=None):
-    return client.create(resource_group_name=resource_group_name, project_name=project_name, group_name=group_name, assessment_name=assessment_name, assessment=assessment)
+                               azure_location,
+                               azure_offer_code,
+                               azure_pricing_tier,
+                               azure_storage_redundancy,
+                               scaling_factor,
+                               percentile,
+                               time_range,
+                               stage,
+                               currency,
+                               azure_hybrid_use_benefit,
+                               discount_percentage,
+                               sizing_criterion,
+                               e_tag=None):
+    return client.create(resource_group_name=resource_group_name, project_name=project_name, group_name=group_name, assessment_name=assessment_name, e_tag=e_tag, azure_location=azure_location, azure_offer_code=azure_offer_code, azure_pricing_tier=azure_pricing_tier, azure_storage_redundancy=azure_storage_redundancy, scaling_factor=scaling_factor, percentile=percentile, time_range=time_range, stage=stage, currency=currency, azure_hybrid_use_benefit=azure_hybrid_use_benefit, discount_percentage=discount_percentage, sizing_criterion=sizing_criterion)
 
 
 def migrate_assessments_delete(cmd, client,

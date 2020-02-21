@@ -44,11 +44,25 @@ class AzureMigrateScenarioTest(ScenarioTest):
                  checks=[])
 
         self.cmd('az migrate projects create '
+                 '--name "project01" '
+                 '--type "Microsoft.Migrate/projects" '
+                 '--e-tag "\"b701c73a-0000-0000-0000-59c12ff00000\"" '
+                 '--id "/subscriptions/75dd7e42-4fd1-4512-af04-83ad9864335b/resourceGroups/myResourceGroup/providers/Microsoft.Migrate/projects/project01" '
+                 '--location "West Us" '
+                 '--customer-workspace-id "url-to-customers-service-map" '
+                 '--customer-workspace-location "West Us" '
                  '--project-name "project01" '
                  '--resource-group-name {rg}',
                  checks=[])
 
         self.cmd('az migrate projects update '
+                 '--name "project01" '
+                 '--type "Microsoft.Migrate/projects" '
+                 '--e-tag "" '
+                 '--id "/subscriptions/75dd7e42-4fd1-4512-af04-83ad9864335b/resourceGroups/myResourceGroup/providers/Microsoft.Migrate/projects/project01" '
+                 '--location "West Us" '
+                 '--customer-workspace-id "url-to-customers-service-map" '
+                 '--customer-workspace-location "West Us" '
                  '--project-name "project01" '
                  '--resource-group-name {rg}',
                  checks=[])
@@ -117,6 +131,19 @@ class AzureMigrateScenarioTest(ScenarioTest):
                  checks=[])
 
         self.cmd('az migrate assessments create '
+                 '--e-tag "\"1100637e-0000-0000-0000-59f6ed1f0000\"" '
+                 '--azure-hybrid-use-benefit "Yes" '
+                 '--azure-location "WestUs" '
+                 '--azure-offer-code "MSAZR0003P" '
+                 '--azure-pricing-tier "Standard" '
+                 '--azure-storage-redundancy "LocallyRedundant" '
+                 '--currency "USD" '
+                 '--discount-percentage 100 '
+                 '--percentile "Percentile50" '
+                 '--scaling-factor 1.2 '
+                 '--sizing-criterion "PerformanceBased" '
+                 '--stage "InProgress" '
+                 '--time-range "Day" '
                  '--assessment-name "assessment01" '
                  '--group-name "group01" '
                  '--project-name "project01" '

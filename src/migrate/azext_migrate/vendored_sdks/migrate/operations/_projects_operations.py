@@ -241,7 +241,12 @@ class ProjectsOperations(object):
         self,
         resource_group_name,  # type: str
         project_name,  # type: str
-        project=None,  # type: Optional["models.Project"]
+        e_tag=None,  # type: Optional[str]
+        location=None,  # type: Optional[str]
+        tags=None,  # type: Optional["models.ProjectTags"]
+        customer_workspace_id=None,  # type: Optional[str]
+        customer_workspace_location=None,  # type: Optional[str]
+        provisioning_state=None,  # type: Optional[Union[str, "models.ProvisioningState"]]
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.Project"
@@ -253,8 +258,18 @@ class ProjectsOperations(object):
         :type resource_group_name: str
         :param project_name: Name of the Azure Migrate project.
         :type project_name: str
-        :param project: New or Updated project object.
-        :type project: ~azure_migrate.models.Project
+        :param e_tag: For optimistic concurrency control.
+        :type e_tag: str
+        :param location: Azure location in which project is created.
+        :type location: str
+        :param tags: Tags provided by Azure Tagging service.
+        :type tags: ~azure_migrate.models.ProjectTags
+        :param customer_workspace_id: ARM ID of the Service Map workspace created by user.
+        :type customer_workspace_id: str
+        :param customer_workspace_location: Location of the Service Map workspace created by user.
+        :type customer_workspace_location: str
+        :param provisioning_state: Provisioning state of the project.
+        :type provisioning_state: str or ~azure_migrate.models.ProvisioningState
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Project or Project or the result of cls(response)
         :rtype: ~azure_migrate.models.Project or ~azure_migrate.models.Project
@@ -262,6 +277,8 @@ class ProjectsOperations(object):
         """
         cls = kwargs.pop('cls', None )  # type: ClsType["models.Project"]
         error_map = kwargs.pop('error_map', {})
+
+        project = models.Project(e_tag=e_tag, location=location, tags=tags, customer_workspace_id=customer_workspace_id, customer_workspace_location=customer_workspace_location, provisioning_state=provisioning_state)
         api_version = "2018-02-02"
 
         # Construct URL
@@ -319,7 +336,12 @@ class ProjectsOperations(object):
         self,
         resource_group_name,  # type: str
         project_name,  # type: str
-        project=None,  # type: Optional["models.Project"]
+        e_tag=None,  # type: Optional[str]
+        location=None,  # type: Optional[str]
+        tags=None,  # type: Optional["models.ProjectTags"]
+        customer_workspace_id=None,  # type: Optional[str]
+        customer_workspace_location=None,  # type: Optional[str]
+        provisioning_state=None,  # type: Optional[Union[str, "models.ProvisioningState"]]
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.Project"
@@ -331,8 +353,18 @@ class ProjectsOperations(object):
         :type resource_group_name: str
         :param project_name: Name of the Azure Migrate project.
         :type project_name: str
-        :param project: New or Updated project object.
-        :type project: ~azure_migrate.models.Project
+        :param e_tag: For optimistic concurrency control.
+        :type e_tag: str
+        :param location: Azure location in which project is created.
+        :type location: str
+        :param tags: Tags provided by Azure Tagging service.
+        :type tags: ~azure_migrate.models.ProjectTags
+        :param customer_workspace_id: ARM ID of the Service Map workspace created by user.
+        :type customer_workspace_id: str
+        :param customer_workspace_location: Location of the Service Map workspace created by user.
+        :type customer_workspace_location: str
+        :param provisioning_state: Provisioning state of the project.
+        :type provisioning_state: str or ~azure_migrate.models.ProvisioningState
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Project or the result of cls(response)
         :rtype: ~azure_migrate.models.Project
@@ -340,6 +372,8 @@ class ProjectsOperations(object):
         """
         cls = kwargs.pop('cls', None )  # type: ClsType["models.Project"]
         error_map = kwargs.pop('error_map', {})
+
+        project = models.Project(e_tag=e_tag, location=location, tags=tags, customer_workspace_id=customer_workspace_id, customer_workspace_location=customer_workspace_location, provisioning_state=provisioning_state)
         api_version = "2018-02-02"
 
         # Construct URL
