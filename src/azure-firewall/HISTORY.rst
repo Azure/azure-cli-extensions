@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.3.0
+++++++
+* `az network firewall ip-config`: Add management ip config args group.
+* `az network firewall management-ip-config`: Delete create command since service doesn't support it.
+
 0.2.0
 ++++++
 * `az network firewall ip-config`: deprecate --private-ip-address
