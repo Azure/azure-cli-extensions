@@ -83,7 +83,7 @@ helps['dms task list'] = """
         - name: --task-type
           type: string
           short-summary: >
-            Filters the list by the type of task. For the list of possible types see "az dms check-status".
+            The type of task to be listed. For the list of possible types see "az dms check-status".
     examples:
         - name: List all Tasks within a DMS instance.
           text: >
