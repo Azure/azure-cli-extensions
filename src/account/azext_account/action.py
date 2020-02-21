@@ -14,5 +14,5 @@ class AddOwners(argparse._AppendAction):
             properties = dict(x.split('=', 1) for x in values)
         except ValueError:
             raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
-        d ={}
+        d = {}
         return d
