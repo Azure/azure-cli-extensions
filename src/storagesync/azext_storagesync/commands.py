@@ -62,3 +62,4 @@ def load_command_table(self, _):
         g.custom_command('delete', 'delete_storagesync_registered_server', confirmation=True)
         g.custom_show_command('show', 'get_storagesync_registered_server')
         g.custom_command('list', 'list_storagesync_registered_server')
+        g.custom_command('rollover-certificate', 'rollover_certificate_storagesync_registered_server')

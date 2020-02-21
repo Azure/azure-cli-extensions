@@ -35,7 +35,9 @@ CLASSIFIERS = [
 ]
 
 # TODO: Add any additional SDK dependencies here
-DEPENDENCIES = []
+DEPENDENCIES = [
+    'pywin32==227'
+]
 
 with open('README.rst', 'r', encoding='utf-8') as f:
     README = f.read()

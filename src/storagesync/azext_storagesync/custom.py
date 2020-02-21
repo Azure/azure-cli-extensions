@@ -7,6 +7,36 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-locals
 # pylint: disable=unused-argument
+import uuid
+
+import pythoncom
+import win32com.client
+
+import abc
+
+
+class IEcsManagement(object):
+    __metaclass__ = abc.ABCMeta
+
+    @abc.abstractmethod
+    def register_sync_server(self, service_uri, subscription_id, storage_sync_service_name, resource_group_name,
+                             certificate_provider_name, certificate_hash_algorithm, certificate_key_length,
+                             monitoring_data_path):
+        return
+
+
+class EcsManagementInteropClient(IEcsManagement):
+    _reg_clsid_ = "{41E24E95-D45A-11D2-852C-204C4F4F5020}"
+
+    def __init__(self):
+        clsid = pythoncom.MakeIID('{3EC1199D-20EB-40C0-8294-EB684E89AB2B}')
+        iid = pythoncom.MakeIID('{F29EAB44-2C63-4ACE-8C05-67C2203CBED2}')
+        mgmt_object = pythoncom.CoCreateInstance(clsid, None, pythoncom.CLSCTX_LOCAL_SERVER, iid)
+
+    def register_sync_server(self, service_uri, subscription_id, storage_sync_service_name, resource_group_name,
+                             certificate_provider_name, certificate_hash_algorithm, certificate_key_length,
+                             monitoring_data_path):
+        return
 
 
 def create_storagesync_storage_sync_service(client,
@@ -176,17 +206,22 @@ def list_storagesync_server_endpoint(client,
 
 def create_storagesync_registered_server(client,
                                          resource_group_name,
-                                         storage_sync_service_name,
-                                         server_id,
-                                         server_certificate=None,
-                                         agent_version=None,
-                                         server_osversion=None,
-                                         last_heart_beat=None,
-                                         server_role=None,
-                                         cluster_id=None,
-                                         cluster_name=None,
-                                         friendly_name=None):
+                                         storage_sync_service_name):
     body = {}
+    xl = win32com.client.Dispatch("Excel.Application")
+    mgmt_object = pythoncom.CoCreateInstance(uuid.UUID('{3EC1199D-20EB-40C0-8294-EB684E89AB2B}'), None, pythoncom.CLSCTX_LOCAL_SERVER,
+                               uuid.UUID('{F29EAB44-2C63-4ACE-8C05-67C2203CBED2}'))
+    # Generate from local call
+    server_id = None
+    server_certificate = None,
+    agent_version = None,
+    server_osversion = None,
+    last_heart_beat = None,
+    server_role = None,
+    cluster_id = None,
+    cluster_name = None,
+    friendly_name = None
+    # Generate from local call
     body['server_certificate'] = server_certificate  # str
     body['agent_version'] = agent_version  # str
     body['server_osversion'] = server_osversion  # str
@@ -216,3 +251,11 @@ def list_storagesync_registered_server(client,
                                        resource_group_name,
                                        storage_sync_service_name):
     return client.list_by_storage_sync_service(resource_group_name=resource_group_name, storage_sync_service_name=storage_sync_service_name)
+
+
+def rollover_certificate_storagesync_registered_server(client,
+                                                       resource_group,
+                                                       storage_sync_service_name):
+    body = {}
+    server_id = None  # Generate from local call
+    return client.trigger_rollover(resource_group_name=resource_group, storage_sync_service_name=storage_sync_service_name, server_id=server_id, parameters=body)

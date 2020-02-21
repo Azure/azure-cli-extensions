@@ -19,21 +19,17 @@ from knack.arguments import CLIArgumentType
 
 
 def load_arguments(self, _):
-    storage_sync_service_name_type = CLIArgumentType(options_list=['--storage-sync-service-name', '-sss'],
-                                                     help='The name of storage sync service.')
-    sync_group_name_type = CLIArgumentType(options_list=['--sync-group-name', '-sg'], help='The name of sync group.')
-    cloud_endpoint_name_type = CLIArgumentType(options_list=['--cloud-endpoint-name', '-ce'],
-                                               help='The name of cloud endpoint.')
-    server_endpoint_name_type = CLIArgumentType(options_list=['--server-endpoint-name', '-se'],
-                                                help='The name of server endpoint.')
-    share_name_type = CLIArgumentType(options_list=['--share-name', '-s'], help='The name of Azure file share.')
+    storage_sync_service_name_type = CLIArgumentType(help='The name of storage sync service.')
+    sync_group_name_type = CLIArgumentType(help='The name of sync group.')
+    cloud_endpoint_name_type = CLIArgumentType(help='The name of cloud endpoint.')
+    server_endpoint_name_type = CLIArgumentType(help='The name of server endpoint.')
+    azure_file_share_name_type = CLIArgumentType(help='The name of Azure file share.')
     storage_account_type = CLIArgumentType(options_list='--storage-account',
                                            help='The name or ID of the storage account.',
                                            validator=parse_storage_account, id_part='name')
-    storage_account_tenant_id_type = CLIArgumentType(options_list='--tenant-id',
-                                                     help='The id of the tenant that the storage account is in.')
-    server_resource_id_type = CLIArgumentType(options_list='--server-id',
-                                                     help='The resource id of the registered server.')
+    storage_account_tenant_id_type = CLIArgumentType(help='The id of the tenant that the storage account is in.')
+    server_resource_id_type = CLIArgumentType(help='The resource id of the registered server.')
+    server_id_type = CLIArgumentType(help='GUID identifying the on-premises server.')
 
     with self.argument_context('storagesync storage-sync-service create') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -41,7 +37,6 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
-        c.argument('properties', help='The properties of the storage sync service.')
 
     with self.argument_context('storagesync storage-sync-service delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -79,7 +74,7 @@ def load_arguments(self, _):
         c.argument('sync_group_name', sync_group_name_type)
         c.argument('cloud_endpoint_name', cloud_endpoint_name_type)
         c.argument('storage_account_resource_id', storage_account_type)
-        c.argument('azure_file_share_name', share_name_type)
+        c.argument('azure_file_share_name', azure_file_share_name_type)
         c.argument('storage_account_tenant_id', storage_account_tenant_id_type)
 
     with self.argument_context('storagesync cloud-endpoint delete') as c:
@@ -145,26 +140,21 @@ def load_arguments(self, _):
     with self.argument_context('storagesync registered-server create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('storage_sync_service_name', storage_sync_service_name_type)
-        c.argument('server_id', help='Server Id')
-        c.argument('server_certificate', help='Registered Server Certificate')
-        c.argument('agent_version', help='Registered Server Agent Version')
-        c.argument('server_osversion', help='Registered Server OS Version')
-        c.argument('last_heart_beat', help='Registered Server last heart beat')
-        c.argument('server_role', help='Registered Server serverRole')
-        c.argument('cluster_id', help='Registered Server clusterId')
-        c.argument('cluster_name', help='Registered Server clusterName')
-        c.argument('friendly_name', help='Friendly Name')
 
     with self.argument_context('storagesync registered-server delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('storage_sync_service_name', storage_sync_service_name_type)
-        c.argument('server_id', help='Server Id')
+        c.argument('server_id', server_id_type)
 
     with self.argument_context('storagesync registered-server show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('storage_sync_service_name', storage_sync_service_name_type)
-        c.argument('server_id', help='Server Id')
+        c.argument('server_id', server_id_type)
 
     with self.argument_context('storagesync registered-server list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('storage_sync_service_name', storage_sync_service_name_type)
+
+    with self.argument_context('storagesync registered-server rollover-certificate') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('storage_sync_service_name', storage_sync_service_name_type)
