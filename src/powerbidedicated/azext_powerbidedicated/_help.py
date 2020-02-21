@@ -26,12 +26,12 @@ helps['powerbi embedded-capacity create'] = """
         text: |-
                az powerbi embedded-capacity create --resource-group "TestRG" --name "azsdktest" \\
                --sku-name "A1" --sku-tier "PBIE_Azure" --administration-members \\
-               "azsdktest@microsoft.com,azsdktest2@microsoft.com"
+               "azsdktest@microsoft.com" "azsdktest2@microsoft.com"
       - name: Create a new PowerBI embedded capacity without waiting.
         text: |-
                az powerbi embedded-capacity create --resource-group "TestRG" --name "azsdktest" \\
                --sku-name "A1" --sku-tier "PBIE_Azure" --administration-members \\
-               "azsdktest@microsoft.com,azsdktest2@microsoft.com" --no-wait
+               "azsdktest@microsoft.com" "azsdktest2@microsoft.com" --no-wait
 """
 
 helps['powerbi embedded-capacity update'] = """
@@ -43,8 +43,8 @@ helps['powerbi embedded-capacity update'] = """
                az powerbi embedded-capacity update --resource-group "TestRG" --name "azsdktest" --sku-name "A1"
       - name: Update administrator members the specified PowerBI embedded capacity without waiting.
         text: |-
-               az powerbi embedded-capacity update --resource-group "TestRG" --name "azsdktest" --sku-name "A1" \\
-               --administration-members "azsdktest3@microsoft.com" --no-wait
+               az powerbi embedded-capacity update --resource-group "TestRG" --name "azsdktest" \\
+               --sku-name "A1" --administration-members "azsdktest3@microsoft.com" --no-wait
 """
 
 helps['powerbi embedded-capacity delete'] = """
