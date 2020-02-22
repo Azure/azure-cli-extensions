@@ -11,10 +11,9 @@ from azure.cli.command_modules.appservice.custom import (
     get_app_settings,
     list_publishing_credentials
 )
-from azure.cli.command_modules.appservice._client_factory import cf_plans
 from azure.cli.command_modules.resource.custom import move_resource
-from knack.log import get_logger
 from azure.cli.core.profiles import ResourceType
+from knack.log import get_logger
 
 
 logger = get_logger(__name__)
@@ -59,7 +58,6 @@ class Website:
         self.__cmd = cmd
         self.__cmd.command_kwargs = {
             'resource_type': ResourceType.MGMT_APPSERVICE,
-            # 'operation_group': 
         }
         self.__deployment_info = None
 
