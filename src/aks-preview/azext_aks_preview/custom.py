@@ -347,10 +347,10 @@ def create_service_principal(cli_ctx, identifier, resolve_app=True, rbac_client=
 
 
 def create_role_assignment(cli_ctx, role, assignee, is_service_principal, resource_group_name=None, scope=None):
-    return _create_role_assignment(cli_ctx, role, assignee, is_service_principal, resource_group_name, scope)
+    return _create_role_assignment(cli_ctx, role, assignee, resource_group_name, scope, resolve_assignee=is_service_principal)
 
 
-def _create_role_assignment(cli_ctx, role, assignee, is_service_principal,
+def _create_role_assignment(cli_ctx, role, assignee,
                             resource_group_name=None, scope=None, resolve_assignee=True):
     from azure.cli.core.profiles import ResourceType, get_sdk
     factory = get_auth_management_client(cli_ctx, scope)
@@ -360,12 +360,10 @@ def _create_role_assignment(cli_ctx, role, assignee, is_service_principal,
     scope = _build_role_scope(resource_group_name, scope, assignments_client.config.subscription_id)
 
     role_id = _resolve_role_id(role, scope, definitions_client)
+
     # If the cluster has service principal resolve the service principal client id to get the object id,
     # if not use MSI object id.
-    if is_service_principal:
-        object_id = _resolve_object_id(cli_ctx, assignee) if resolve_assignee else assignee
-    else:
-        object_id = assignee
+    object_id = _resolve_object_id(cli_ctx, assignee) if resolve_assignee else assignee
     RoleAssignmentCreateParameters = get_sdk(cli_ctx, ResourceType.MGMT_AUTHORIZATION,
                                              'RoleAssignmentCreateParameters', mod='models',
                                              operation_group='role_assignments')
@@ -985,30 +983,34 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
     retry_exception = Exception(None)
     for _ in range(0, max_retry):
         try:
-            result = sdk_no_wait(
-                no_wait, client.create_or_update,
-                resource_group_name=resource_group_name,
-                resource_name=name,
-                parameters=mc,
-                custom_headers=headers)
-
-            # add cluster spn with Monitoring Metrics Publisher role assignment to the cluster resource
-            # mdm metrics supported only in azure public cloud so add the  role assignment only in this cloud
-            cloud_name = cmd.cli_ctx.cloud.name
-            if cloud_name.lower() == 'azurecloud' and monitoring:
+            if monitoring:
                 # adding a wait here since we rely on the result for role assignment
-                result = LongRunningOperation(cmd.cli_ctx)(result)
-                from msrestazure.tools import resource_id
-                cluster_resource_id = resource_id(
-                    subscription=subscription_id,
-                    resource_group=resource_group_name,
-                    namespace='Microsoft.ContainerService', type='managedClusters',
-                    name=name
-                )
+                result = LongRunningOperation(cmd.cli_ctx)(client.create_or_update(resource_group_name=resource_group_name,
+                            resource_name=name,
+                            parameters=mc,
+                            custom_headers=headers))
+                cloud_name = cmd.cli_ctx.cloud.name
+                 # add cluster spn/msi Monitoring Metrics Publisher role assignment to publish metrics to MDM
+                # mdm metrics is supported only in azure public cloud, so add the role assignment only in this cloud
+                if cloud_name.lower() == 'azurecloud':
+                    from msrestazure.tools import resource_id
+                    cluster_resource_id = resource_id(
+                        subscription=subscription_id,
+                        resource_group=resource_group_name,
+                        namespace='Microsoft.ContainerService', type='managedClusters',
+                        name=name
+                    )
+                    _add_monitoring_role_assignment(result, cluster_resource_id, cmd)
+                    
+                return result
+            else:
+                return sdk_no_wait(
+                    no_wait, client.create_or_update,
+                    resource_group_name=resource_group_name,
+                    resource_name=name,
+                    parameters=mc,
+                    custom_headers=headers)
 
-                _add_monitoring_role_assignment(result, cluster_resource_id, cmd)
-
-            return result
         except CloudError as ex:
             retry_exception = ex
             if 'not found in Active Directory tenant' in ex.message:
@@ -2204,14 +2206,9 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
                                'specified in {CONST_INGRESS_APPGW_ADDON_NAME} addon. '
                                'Are you an Owner on this subscription?')
 
-    # send the managed cluster representation to update the addon profiles
-    result = sdk_no_wait(
-        no_wait, client.create_or_update,
-        resource_group_name, name, instance)
-
     if 'omsagent' in instance.addon_profiles:
         # adding a wait here since we rely on the result for role assignment
-        result = LongRunningOperation(cmd.cli_ctx)(result)
+        result = LongRunningOperation(cmd.cli_ctx)(client.create_or_update(resource_group_name, name, instance)) 
         cloud_name = cmd.cli_ctx.cloud.name
         # mdm metrics supported only in Azure Public cloud so add the role assignment only in this cloud
         if cloud_name.lower() == 'azurecloud':
@@ -2222,9 +2219,12 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
                 namespace='Microsoft.ContainerService', type='managedClusters',
                 name=name
             )
-        _add_monitoring_role_assignment(result, cluster_resource_id, cmd)
+            _add_monitoring_role_assignment(result, cluster_resource_id, cmd)
 
-    return result
+        return result
+    else: 
+        return sdk_no_wait(no_wait, client.create_or_update,
+                resource_group_name, name, instance)
 
 
 def aks_rotate_certs(cmd, client, resource_group_name, name, no_wait=True):     # pylint: disable=unused-argument
