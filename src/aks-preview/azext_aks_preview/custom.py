@@ -26,6 +26,7 @@ import base64
 import webbrowser
 from six.moves.urllib.request import urlopen  # pylint: disable=import-error
 from six.moves.urllib.error import URLError  # pylint: disable=import-error
+from math import isnan
 import requests
 from knack.log import get_logger
 from knack.util import CLIError
@@ -77,6 +78,7 @@ from ._consts import CONST_INGRESS_APPGW_ADDON_NAME
 from ._consts import CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID, CONST_INGRESS_APPGW_APPLICATION_GATEWAY_NAME
 from ._consts import CONST_INGRESS_APPGW_SUBNET_PREFIX, CONST_INGRESS_APPGW_SUBNET_ID
 from ._consts import CONST_INGRESS_APPGW_SHARED, CONST_INGRESS_APPGW_WATCH_NAMESPACE
+from ._consts import CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SPOT, CONST_SPOT_EVICTION_POLICY_DELETE
 
 logger = get_logger(__name__)
 
@@ -1960,9 +1962,9 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       max_count=None,
                       enable_cluster_autoscaler=False,
                       node_taints=None,
-                      priority="Regular",
-                      eviction_policy="Delete",
-                      spot_max_price=-1,
+                      priority=CONST_SCALE_SET_PRIORITY_REGULAR,
+                      eviction_policy=CONST_SPOT_EVICTION_POLICY_DELETE,
+                      spot_max_price=float('nan'),
                       public_ip_per_vm=False,
                       no_wait=False):
     instances = client.list(resource_group_name, cluster_name)
@@ -2001,10 +2003,14 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         availability_zones=node_zones,
         node_taints=taints_array,
         scale_set_priority=priority,
-        scale_set_eviction_policy=eviction_policy,
-        scale_set_spot_max_price=spot_max_price,
         enable_node_public_ip=public_ip_per_vm
     )
+
+    if priority == CONST_SCALE_SET_PRIORITY_SPOT:
+        agent_pool.scale_set_eviction_policy = eviction_policy
+        if isnan(spot_max_price):
+            spot_max_price = -1
+        agent_pool.spot_max_price = spot_max_price
 
     _check_cluster_autoscaler_flag(enable_cluster_autoscaler, min_count, max_count, node_count, agent_pool)
 
