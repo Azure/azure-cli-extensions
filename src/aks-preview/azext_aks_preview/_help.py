@@ -11,7 +11,6 @@ from knack.help_files import helps
 ACS_SERVICE_PRINCIPAL_CACHE = os.path.join('$HOME', '.azure', 'acsServicePrincipal.json')
 AKS_SERVICE_PRINCIPAL_CACHE = os.path.join('$HOME', '.azure', 'aksServicePrincipal.json')
 
-
 # AKS command help
 helps['aks create'] = """
     type: command
@@ -125,10 +124,11 @@ helps['aks create'] = """
           short-summary: Enable the Kubernetes addons in a comma-separated list.
           long-summary: |-
             These addons are available:
-                http_application_routing - configure ingress with automatic public DNS name creation.
-                monitoring - turn on Log Analytics monitoring. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace.
-                virtual-node - enable AKS Virtual Node (PREVIEW). Requires --subnet-name to provide the name of an existing subnet for the Virtual Node to use.
-                azure-policy - enable Azure policy (PREVIEW).
+                http_application_routing  - configure ingress with automatic public DNS name creation.
+                monitoring                - turn on Log Analytics monitoring. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace.
+                virtual-node              - enable AKS Virtual Node (PREVIEW). Requires --subnet-name to provide the name of an existing subnet for the Virtual Node to use.
+                azure-policy              - enable Azure policy (PREVIEW).
+                ingress-appgw             - enable Applicaiton Gateway Ingress Controller addon (PREVIEW).
         - name: --disable-rbac
           type: bool
           short-summary: Disable Kubernetes Role-Based Access Control.
@@ -178,6 +178,9 @@ helps['aks create'] = """
         - name: --max-count
           type: int
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100].
+        - name: --cluster-autoscaler-profile
+          type: list
+          short-summary: Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.
         - name: --vm-set-type
           type: string
           short-summary: Agent pool vm set type. VirtualMachineScaleSets or AvailabilitySet.
@@ -202,6 +205,24 @@ helps['aks create'] = """
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+        - name: --appgw-name
+          type: string
+          short-summary: Name of the application gateway to create/use in the node resource group
+        - name: --appgw-subnet-prefix
+          type: string
+          short-summary: Subnet Prefix to use for a new subnet created to deploy the Application Gateway
+        - name: --appgw-id
+          type: string
+          short-summary: Resource Id of an existing Application Gateway to use with AGIC
+        - name: --appgw-subnet-id
+          type: string
+          short-summary: Resource Id of an existing Subnet used to deploy the Application Gateway
+        - name: --appgw-shared
+          type: bool
+          short-summary: Use shared flag if application gateway will be shared
+        - name: --appgw-watch-namespace
+          type: string
+          short-summary: Specify the namespace, which AGIC should watch. This could be a single string value, or a comma-separated list of namespaces.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -277,6 +298,9 @@ helps['aks update'] = """
         - name: --max-count
           type: int
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100]
+        - name: --cluster-autoscaler-profile
+          type: list
+          short-summary: Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.
         - name: --load-balancer-managed-outbound-ip-count
           type: int
           short-summary: Load balancer managed outbound IP count.
@@ -452,10 +476,13 @@ helps['aks nodepool add'] = """
           short-summary: The node taints for the node pool. You can't change the node taints through CLI after the node pool is created.
         - name: --priority
           type: string
-          short-summary: The priority of the node pool. Regular or Low.
+          short-summary: The priority of the node pool.
         - name: --eviction-policy
           type: string
-          short-summary: The eviction policy of the low-pri node pool. Delete or Deallocate.
+          short-summary: The eviction policy of the Spot node pool. It can only be set when --priority is Spot.
+        - name: --spot-max-price
+          type: float
+          short-summary: It can only be set when --priority is Spot. Specify the maximum price you are willing to pay in US Dollars. Possible values are any decimal value greater than zero or -1 which indicates default price to be up-to on-demand. It can only include up to 5 decimal places.
         - name: --public-ip-per-vm
           type: bool
           short-summary: Each node will have a public ip.
@@ -517,10 +544,11 @@ type: command
 short-summary: Enable Kubernetes addons.
 long-summary: |-
     These addons are available:
-        http_application_routing - configure ingress with automatic public DNS name creation.
-        monitoring - turn on Log Analytics monitoring. Requires "--workspace-resource-id".
-        virtual-node - enable AKS Virtual Node (PREVIEW). Requires "--subnet-name".
-        azure-policy - enable Azure policy (PREVIEW).
+        http_application_routing  - configure ingress with automatic public DNS name creation.
+        monitoring                - turn on Log Analytics monitoring. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace.
+        virtual-node              - enable AKS Virtual Node (PREVIEW). Requires --subnet-name to provide the name of an existing subnet for the Virtual Node to use.
+        azure-policy              - enable Azure policy (PREVIEW).
+        ingress-appgw             - enable Application Gateway Ingress Controller addon (PREVIEW).
 parameters:
   - name: --addons -a
     type: string
@@ -531,6 +559,24 @@ parameters:
   - name: --subnet-name -s
     type: string
     short-summary: The subnet name for the virtual node to use.
+  - name: --appgw-name
+    type: string
+    short-summary: Name of the application gateway to create/use in the node resource group
+  - name: --appgw-subnet-prefix
+    type: string
+    short-summary: Subnet Prefix to use for a new subnet created to deploy the Application Gateway
+  - name: --appgw-id
+    type: string
+    short-summary: Resource Id of an existing Application Gateway to use with AGIC
+  - name: --appgw-subnet-id
+    type: string
+    short-summary: Resource Id of an existing Subnet used to deploy the Application Gateway
+  - name: --appgw-shared
+    type: bool
+    short-summary: Use shared flag if application gateway will be shared
+  - name: --appgw-watch-namespace
+    type: string
+    short-summary: Specify the namespace, which AGIC should watch. This could be a single string value, or a comma-separated list of namespaces.
 examples:
   - name: Enable Kubernetes addons. (autogenerated)
     text: az aks enable-addons --addons virtual-node --name MyManagedCluster --resource-group MyResourceGroup --subnet-name VirtualNodeSubnet

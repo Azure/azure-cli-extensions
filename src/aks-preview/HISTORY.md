@@ -2,6 +2,18 @@
 
 Release History
 ===============
+0.4.30
++++++
+* Remove "Low" option from --priority
+* Add "Spot" option to --priority
+* Add float value option "--spot-max-price" for Spot Pool
+* Add "--cluster-autoscaler-profile" for configuring autoscaler settings
+
+0.4.29
++++++
+* Add option '--nodepool-tags for create cluster'
+* Add option '--tags' for add or update node pool
+
 0.4.28
 +++++
 * Add option '--outbound-type' for create
