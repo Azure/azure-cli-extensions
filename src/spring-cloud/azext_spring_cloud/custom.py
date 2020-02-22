@@ -19,7 +19,7 @@ from azure.cli.core.util import sdk_no_wait
 from ast import literal_eval
 from azure.cli.core.commands import cached_put
 from ._utils import _get_rg_location
-from urllib import parse
+from six.moves.urllib import parse
 from threading import Thread
 from threading import Timer
 import certifi
@@ -1065,16 +1065,15 @@ def _get_app_log(url, user_name, password, exceptions):
     )
     try:
         if response.status != 200:
-            raise CLIError("Failed to connect to '{}' with status code '{}' and reason '{}'".format(
-                url, response.status, response.reason))
+            raise CLIError("Failed to connect to the server with status code '{}' and reason '{}'".format(
+                response.status, response.reason))
         std_encoding = sys.stdout.encoding
 
         for chunk in stream(response):
             if chunk:
-                logger.warning(chunk.decode(encoding='utf-8', errors='replace')
-                               .encode(std_encoding, errors='replace')
-                               .decode(std_encoding, errors='replace')
-                               .rstrip())
+                sys.stdout.write(chunk.decode(encoding='utf-8', errors='replace')
+                                 .encode(std_encoding, errors='replace')
+                                 .decode(std_encoding, errors='replace'))
         response.release_conn()
     except CLIError as e:
         exceptions.append(e)
