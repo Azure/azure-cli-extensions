@@ -2010,7 +2010,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         agent_pool.scale_set_eviction_policy = eviction_policy
         if isnan(spot_max_price):
             spot_max_price = -1
-        agent_pool.scale_set_spot_max_price = spot_max_price
+        agent_pool.spot_max_price = spot_max_price
 
     _check_cluster_autoscaler_flag(enable_cluster_autoscaler, min_count, max_count, node_count, agent_pool)
 
