@@ -10,7 +10,6 @@
 
 
 def account_subscriptions_list(cmd, client):
-        return client.list_locations()
     return client.list()
 
 
