@@ -1,8 +1,8 @@
 ---
 title: Available extensions for the Azure CLI
 description: A complete list of the officially supported extensions for the Azure CLI.
-author: azpycli@microsoft.com
-ms.author: azpycli@microsoft.com
+author: haroldrandom
+ms.author: jianzen
 manager: yonzhan,yungez
 ms.date: {{ date }}
 ms.topic: article
