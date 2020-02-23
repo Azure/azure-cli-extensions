@@ -10,7 +10,6 @@ This script must be run at the root of repo folder, which is azure-cli-extension
 
 import os
 import sys
-import logging
 
 import collections
 import datetime
@@ -18,17 +17,11 @@ from pkg_resources import parse_version
 
 from jinja2 import Template  # pylint: disable=import-error
 
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
-
-AZURE_CLI_DOCS_REPO_PATH = './azure-cli-docs'
 
 SCRIPTS_LOCATION = os.path.abspath(os.path.join('.', 'scripts'))
 
-CLONED_CLI_DOCS = os.path.join('..', 'azure-docs-cli')
-print('CLONED_CLI_DOCS =', CLONED_CLI_DOCS)
-AVAILABLE_EXTENSIONS_DOC = os.path.join(CLONED_CLI_DOCS, 'docs-ref-conceptual', 'azure-cli-extensions-list.md')
-print('AVAILABLE_EXTENSIONS_DOC =', AVAILABLE_EXTENSIONS_DOC)
+AZURE_DOCS_CLI_REPO_PATH = os.path.join('.', 'azure-docs-cli')
+AVAILABLE_EXTENSIONS_DOC = os.path.join(AZURE_DOCS_CLI_REPO_PATH, 'docs-ref-conceptual', 'azure-cli-extensions-list.md')
 TEMPLATE_FILE = os.path.join(SCRIPTS_LOCATION, "ci", "docs", "list-template.md")
 
 sys.path.insert(0, SCRIPTS_LOCATION)
