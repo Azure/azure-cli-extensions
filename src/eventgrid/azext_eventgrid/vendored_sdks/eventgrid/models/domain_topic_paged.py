@@ -14,7 +14,7 @@ from msrest.paging import Paged
 
 class DomainTopicPaged(Paged):
     """
-    A paging container for iterating over a list of :class:`DomainTopic <microsoft.azure.management.eventgrid.models.DomainTopic>` object
+    A paging container for iterating over a list of :class:`DomainTopic <azext_eventgrid.models.DomainTopic>` object
     """
 
     _attribute_map = {

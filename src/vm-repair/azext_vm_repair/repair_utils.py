@@ -144,7 +144,7 @@ def _fetch_compatible_sku(source_vm):
                        '"[?capabilities[?name==\'vCPUs\' && to_number(value)<= to_number(\'4\')] && ' \
                        'capabilities[?name==\'MemoryGB\' && to_number(value)<=to_number(\'16\')] && ' \
                        'capabilities[?name==\'MaxDataDiskCount\' && to_number(value)>to_number(\'0\')] && ' \
-                       'capabilities[?name==\'PremiumIO\' && value==\'True\']].name"'\
+                       'capabilities[?name==\'PremiumIO\' && value==\'True\']].name" -o json'\
                        .format(loc=location)
 
     logger.info('Fetching available VM sizes for repair VM...')
@@ -157,7 +157,7 @@ def _fetch_compatible_sku(source_vm):
 
 
 def _fetch_disk_sku(resource_group_name, disk_name):
-    show_disk_command = 'az disk show -g {g} -n {name}'.format(g=resource_group_name, name=disk_name)
+    show_disk_command = 'az disk show -g {g} -n {name} -o json'.format(g=resource_group_name, name=disk_name)
     disk_sku = loads(_call_az_command(show_disk_command))['sku']['name']
     return disk_sku
 
@@ -167,7 +167,7 @@ def _get_repair_resource_tag(resource_group_name, source_vm_name):
 
 
 def _list_resource_ids_in_rg(resource_group_name):
-    get_resources_command = 'az resource list --resource-group {rg} --query [].id' \
+    get_resources_command = 'az resource list --resource-group {rg} --query [].id -o json' \
                             .format(rg=resource_group_name)
     logger.debug('Fetching resources in resource group...')
     ids = loads(_call_az_command(get_resources_command))
@@ -181,7 +181,7 @@ def _uses_encrypted_disk(vm):
 def _fetch_compatible_windows_os_urn(source_vm):
 
     location = source_vm.location
-    fetch_urn_command = 'az vm image list -s "2016-Datacenter" -f WindowsServer -p MicrosoftWindowsServer -l {loc} --verbose --all --query "[?sku==\'2016-Datacenter\'].urn | reverse(sort(@))"'.format(loc=location)
+    fetch_urn_command = 'az vm image list -s "2016-Datacenter" -f WindowsServer -p MicrosoftWindowsServer -l {loc} --verbose --all --query "[?sku==\'2016-Datacenter\'].urn | reverse(sort(@))" -o json'.format(loc=location)
     logger.info('Fetching compatible Windows OS images from gallery...')
     urns = loads(_call_az_command(fetch_urn_command))
 

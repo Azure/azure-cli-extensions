@@ -17,11 +17,9 @@ class EventSubscriptionUpdateParameters(Model):
 
     :param destination: Information about the destination where events have to
      be delivered for the event subscription.
-    :type destination:
-     ~microsoft.azure.management.eventgrid.models.EventSubscriptionDestination
+    :type destination: ~azext_eventgrid.models.EventSubscriptionDestination
     :param filter: Information about the filter for the event subscription.
-    :type filter:
-     ~microsoft.azure.management.eventgrid.models.EventSubscriptionFilter
+    :type filter: ~azext_eventgrid.models.EventSubscriptionFilter
     :param labels: List of user defined labels.
     :type labels: list[str]
     :param expiration_time_utc: Information about the expiration time for the
@@ -31,15 +29,14 @@ class EventSubscriptionUpdateParameters(Model):
      subscription. Possible values include: 'EventGridSchema',
      'CustomInputSchema', 'CloudEventSchemaV1_0'
     :type event_delivery_schema: str or
-     ~microsoft.azure.management.eventgrid.models.EventDeliverySchema
+     ~azext_eventgrid.models.EventDeliverySchema
     :param retry_policy: The retry policy for events. This can be used to
      configure maximum number of delivery attempts and time to live for events.
-    :type retry_policy:
-     ~microsoft.azure.management.eventgrid.models.RetryPolicy
+    :type retry_policy: ~azext_eventgrid.models.RetryPolicy
     :param dead_letter_destination: The DeadLetter destination of the event
      subscription.
     :type dead_letter_destination:
-     ~microsoft.azure.management.eventgrid.models.DeadLetterDestination
+     ~azext_eventgrid.models.DeadLetterDestination
     """
 
     _attribute_map = {
