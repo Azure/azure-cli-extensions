@@ -6,6 +6,8 @@
 
 """
 This script must be run at the root of repo folder, which is azure-cli-extensions/
+It's used to update a file "azure-cli-extensions-list.md" of MicrosoftDocs/azure-cli-docs.
+The file content is list of all available latest extensions.
 """
 
 import os
