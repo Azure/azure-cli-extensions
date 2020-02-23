@@ -2247,7 +2247,7 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
                                'specified in {CONST_INGRESS_APPGW_ADDON_NAME} addon. '
                                'Are you an Owner on this subscription?')
 
-    if 'omsagent' in instance.addon_profiles:
+    if 'omsagent' in instance.addon_profiles and instance.addon_profiles['omsagent'].enabled:
         # adding a wait here since we rely on the result for role assignment
         result = LongRunningOperation(cmd.cli_ctx)(client.create_or_update(resource_group_name, name, instance))
         cloud_name = cmd.cli_ctx.cloud.name
