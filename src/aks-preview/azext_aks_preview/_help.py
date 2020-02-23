@@ -11,7 +11,6 @@ from knack.help_files import helps
 ACS_SERVICE_PRINCIPAL_CACHE = os.path.join('$HOME', '.azure', 'acsServicePrincipal.json')
 AKS_SERVICE_PRINCIPAL_CACHE = os.path.join('$HOME', '.azure', 'aksServicePrincipal.json')
 
-
 # AKS command help
 helps['aks create'] = """
     type: command
@@ -179,6 +178,9 @@ helps['aks create'] = """
         - name: --max-count
           type: int
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100].
+        - name: --cluster-autoscaler-profile
+          type: list
+          short-summary: Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.
         - name: --vm-set-type
           type: string
           short-summary: Agent pool vm set type. VirtualMachineScaleSets or AvailabilitySet.
@@ -296,6 +298,9 @@ helps['aks update'] = """
         - name: --max-count
           type: int
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100]
+        - name: --cluster-autoscaler-profile
+          type: list
+          short-summary: Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.
         - name: --load-balancer-managed-outbound-ip-count
           type: int
           short-summary: Load balancer managed outbound IP count.
@@ -471,10 +476,13 @@ helps['aks nodepool add'] = """
           short-summary: The node taints for the node pool. You can't change the node taints through CLI after the node pool is created.
         - name: --priority
           type: string
-          short-summary: The priority of the node pool. Regular or Low.
+          short-summary: The priority of the node pool.
         - name: --eviction-policy
           type: string
-          short-summary: The eviction policy of the low-pri node pool. Delete or Deallocate.
+          short-summary: The eviction policy of the Spot node pool. It can only be set when --priority is Spot.
+        - name: --spot-max-price
+          type: float
+          short-summary: It can only be set when --priority is Spot. Specify the maximum price you are willing to pay in US Dollars. Possible values are any decimal value greater than zero or -1 which indicates default price to be up-to on-demand. It can only include up to 5 decimal places.
         - name: --public-ip-per-vm
           type: bool
           short-summary: Each node will have a public ip.
