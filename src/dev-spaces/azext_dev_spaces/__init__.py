@@ -5,6 +5,7 @@
 
 from azure.cli.core import AzCommandsLoader
 from azure.cli.core.commands import CliCommandType
+from azure.cli.core.commands.parameters import (get_enum_type)
 import azext_dev_spaces._help  # pylint: disable=unused-import
 import azext_dev_spaces.custom  # pylint: disable=unused-import
 
@@ -31,6 +32,8 @@ class DevspacesExtCommandLoader(AzCommandsLoader):  # pylint:disable=too-few-pub
             c.argument('cluster_name', options_list=['--name', '-n'])
             c.argument('update', options_list=['--update'], action='store_true')
             c.argument('space_name', options_list=['--space', '-s'])
+            c.argument('endpoint_type', get_enum_type(['Public', 'Private', 'None'], default='Public'),
+                       options_list=['--endpoint', '-e'])
             c.argument('do_not_prompt', options_list=['--yes', '-y'],
                        action='store_true', help='Do not prompt for confirmation. Requires --space.')
 
