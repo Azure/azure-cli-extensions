@@ -16,9 +16,9 @@ class AddBody(argparse._AppendAction):
         except ValueError:
             raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
-        for k in properties:
-            kl = k.lower()
-            v = properties[k]
+        # for k in properties:
+        #    kl = k.lower()
+        #    v = properties[k]
         return d
 
 
@@ -33,9 +33,9 @@ class AddBody(argparse._AppendAction):
         except ValueError:
             raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
-        for k in properties:
-            kl = k.lower()
-            v = properties[k]
+        # for k in properties:
+        #    kl = k.lower()
+        #    v = properties[k]
         return d
 
 
@@ -50,9 +50,9 @@ class AddBody(argparse._AppendAction):
         except ValueError:
             raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
-        for k in properties:
-            kl = k.lower()
-            v = properties[k]
+        # for k in properties:
+        #    kl = k.lower()
+        #    v = properties[k]
         return d
 
 
@@ -67,9 +67,9 @@ class AddOwners(argparse._AppendAction):
         except ValueError:
             raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
-        for k in properties:
-            kl = k.lower()
-            v = properties[k]
+        # for k in properties:
+        #    kl = k.lower()
+        #    v = properties[k]
         return d
 
 
@@ -84,7 +84,7 @@ class AddBody(argparse._AppendAction):
         except ValueError:
             raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
-        for k in properties:
-            kl = k.lower()
-            v = properties[k]
+        # for k in properties:
+        #    kl = k.lower()
+        #    v = properties[k]
         return d
