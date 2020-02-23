@@ -22,9 +22,9 @@ from jinja2 import Template  # pylint: disable=import-error
 
 SCRIPTS_LOCATION = os.path.abspath(os.path.join('.', 'scripts'))
 
-AZURE_DOCS_CLI_REPO_PATH = os.path.join('.', 'azure-docs-cli')
+AZURE_DOCS_CLI_REPO_PATH = os.path.join('..', 'azure-docs-cli')
 AVAILABLE_EXTENSIONS_DOC = os.path.join(AZURE_DOCS_CLI_REPO_PATH, 'docs-ref-conceptual', 'azure-cli-extensions-list.md')
-TEMPLATE_FILE = os.path.join(SCRIPTS_LOCATION, "ci", "docs", "list-template.md")
+TEMPLATE_FILE = os.path.join(SCRIPTS_LOCATION, "ci", "avail-ext-doc", "list-template.md")
 
 sys.path.insert(0, SCRIPTS_LOCATION)
 from ci.util import get_index_data, INDEX_PATH
