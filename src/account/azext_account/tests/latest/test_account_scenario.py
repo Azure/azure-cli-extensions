@@ -17,3 +17,4 @@ class SubscriptionClientScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_account')
     def test_account(self, resource_group):
+        return
