@@ -91,7 +91,7 @@ def load_arguments(self, _):
         c.argument('node_zones', zones_type, options_list=['--node-zones', '--zones', '-z'], help='(--node-zones will be deprecated, use --zones) Space-separated list of availability zones where agent nodes will be placed.')
         c.argument('enable_pod_security_policy', action='store_true')
         c.argument('node_resource_group')
-        c.argument('attach_acr', acr_arg_type, validator=validate_acr)
+        c.argument('attach_acr', acr_arg_type)
         c.argument('api_server_authorized_ip_ranges', type=str, validator=validate_ip_ranges)
         c.argument('aks_custom_headers')
         c.argument('enable_private_cluster', action='store_true')
