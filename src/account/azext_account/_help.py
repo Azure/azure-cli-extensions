@@ -39,42 +39,42 @@ helps['account subscriptions enable'] = """
     short-summary: The operation to enable a subscription
 """
 
-helps['account subscription_operation'] = """
+helps['account subscription-operation'] = """
     type: group
-    short-summary: account subscription_operation
+    short-summary: account subscription-operation
 """
 
-helps['account subscription_operation show'] = """
+helps['account subscription-operation show'] = """
     type: command
     short-summary: Get the status of the pending Microsoft.Subscription API operations.
 """
 
-helps['account subscription_factory'] = """
+helps['account subscription-factory'] = """
     type: group
-    short-summary: account subscription_factory
+    short-summary: account subscription-factory
 """
 
-helps['account subscription_factory create_csp_subscription'] = """
+helps['account subscription-factory create-csp-subscription'] = """
     type: command
     short-summary: The operation to create a new CSP subscription.
 """
 
-helps['account subscription_factory create_subscription_in_enrollment_account'] = """
+helps['account subscription-factory create-subscription-in-enrollment-account'] = """
     type: command
     short-summary: Creates an Azure subscription
 """
 
-helps['account subscription_factory create_subscription'] = """
+helps['account subscription-factory create-subscription'] = """
     type: command
     short-summary: The operation to create a new WebDirect or EA Azure subscription.
 """
 
-helps['account subscription_operations'] = """
+helps['account subscription-operations'] = """
     type: group
-    short-summary: account subscription_operations
+    short-summary: account subscription-operations
 """
 
-helps['account subscription_operations list'] = """
+helps['account subscription-operations list'] = """
     type: command
     short-summary: Lists all of the available pending Microsoft.Subscription API operations.
 """

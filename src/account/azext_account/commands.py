@@ -27,23 +27,23 @@ def load_command_table(self, _):
     account_subscription_operation = CliCommandType(
         operations_tmpl='azext_account.vendored_sdks.subscription.operations._subscription_operation_operations#SubscriptionOperationOperations.{}',
         client_factory=cf_subscription_operation)
-    with self.command_group('account subscription_operation', account_subscription_operation, client_factory=cf_subscription_operation) as g:
+    with self.command_group('account subscription-operation', account_subscription_operation, client_factory=cf_subscription_operation) as g:
         g.custom_show_command('show', 'account_subscription_operation_show')
 
     from ._client_factory import cf_subscription_factory
     account_subscription_factory = CliCommandType(
         operations_tmpl='azext_account.vendored_sdks.subscription.operations._subscription_factory_operations#SubscriptionFactoryOperations.{}',
         client_factory=cf_subscription_factory)
-    with self.command_group('account subscription_factory', account_subscription_factory, client_factory=cf_subscription_factory) as g:
-        g.custom_command('create_csp_subscription', 'account_subscription_factory_create_csp_subscription')
-        g.custom_command('create_subscription_in_enrollment_account', 'account_subscription_factory_create_subscription_in_enrollment_account')
-        g.custom_command('create_subscription', 'account_subscription_factory_create_subscription')
+    with self.command_group('account subscription-factory', account_subscription_factory, client_factory=cf_subscription_factory) as g:
+        g.custom_command('create-csp-subscription', 'account_subscription_factory_create_csp_subscription')
+        g.custom_command('create-subscription-in-enrollment-account', 'account_subscription_factory_create_subscription_in_enrollment_account')
+        g.custom_command('create-subscription', 'account_subscription_factory_create_subscription')
 
     from ._client_factory import cf_subscription_operations
     account_subscription_operations = CliCommandType(
         operations_tmpl='azext_account.vendored_sdks.subscription.operations._subscription_operations_operations#SubscriptionOperationsOperations.{}',
         client_factory=cf_subscription_operations)
-    with self.command_group('account subscription_operations', account_subscription_operations, client_factory=cf_subscription_operations) as g:
+    with self.command_group('account subscription-operations', account_subscription_operations, client_factory=cf_subscription_operations) as g:
         g.custom_command('list', 'account_subscription_operations_list')
 
     from ._client_factory import cf_operations
