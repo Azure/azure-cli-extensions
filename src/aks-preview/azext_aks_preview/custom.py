@@ -43,6 +43,7 @@ from azure.cli.core.api import get_config_dir
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
 from azure.cli.core.keys import is_valid_ssh_rsa_public_key
 from azure.cli.core.util import in_cloud_console, shell_safe_json_parse, truncate_text, sdk_no_wait
+from azure.cli.core.commands import LongRunningOperation
 from azure.graphrbac.models import (ApplicationCreateParameters,
                                     PasswordCredential,
                                     KeyCredential,
@@ -158,7 +159,7 @@ def _build_service_principal(rbac_client, cli_ctx, name, url, client_secret):
     return service_principal
 
 
-def _add_role_assignment(cli_ctx, role, service_principal, delay=2, scope=None):
+def _add_role_assignment(cli_ctx, role, service_principal_msi_id, is_service_principal=True, delay=2, scope=None):
     # AAD can have delays in propagating data, so sleep and retry
     hook = cli_ctx.get_progress_controller(True)
     hook.add(message='Waiting for AAD role to propagate', value=0, total_val=1.0)
@@ -167,7 +168,7 @@ def _add_role_assignment(cli_ctx, role, service_principal, delay=2, scope=None):
         hook.add(message='Waiting for AAD role to propagate', value=0.1 * x, total_val=1.0)
         try:
             # TODO: break this out into a shared utility library
-            create_role_assignment(cli_ctx, role, service_principal, scope=scope)
+            create_role_assignment(cli_ctx, role, service_principal_msi_id, is_service_principal, scope=scope)
             break
         except CloudError as ex:
             if ex.message == 'The role assignment already exists.':
@@ -347,11 +348,14 @@ def create_service_principal(cli_ctx, identifier, resolve_app=True, rbac_client=
     return rbac_client.service_principals.create(ServicePrincipalCreateParameters(app_id=app_id, account_enabled=True))
 
 
-def create_role_assignment(cli_ctx, role, assignee, resource_group_name=None, scope=None):
-    return _create_role_assignment(cli_ctx, role, assignee, resource_group_name, scope)
+def create_role_assignment(cli_ctx, role, assignee, is_service_principal, resource_group_name=None, scope=None):
+    return _create_role_assignment(cli_ctx,
+                                   role, assignee, resource_group_name,
+                                   scope, resolve_assignee=is_service_principal)
 
 
-def _create_role_assignment(cli_ctx, role, assignee, resource_group_name=None, scope=None, resolve_assignee=True):
+def _create_role_assignment(cli_ctx, role, assignee,
+                            resource_group_name=None, scope=None, resolve_assignee=True):
     from azure.cli.core.profiles import ResourceType, get_sdk
     factory = get_auth_management_client(cli_ctx, scope)
     assignments_client = factory.role_assignments
@@ -360,6 +364,9 @@ def _create_role_assignment(cli_ctx, role, assignee, resource_group_name=None, s
     scope = _build_role_scope(resource_group_name, scope, assignments_client.config.subscription_id)
 
     role_id = _resolve_role_id(role, scope, definitions_client)
+
+    # If the cluster has service principal resolve the service principal client id to get the object id,
+    # if not use MSI object id.
     object_id = _resolve_object_id(cli_ctx, assignee) if resolve_assignee else assignee
     RoleAssignmentCreateParameters = get_sdk(cli_ctx, ResourceType.MGMT_AUTHORIZATION,
                                              'RoleAssignmentCreateParameters', mod='models',
@@ -640,6 +647,38 @@ def _trim_nodepoolname(nodepool_name):
     return nodepool_name[:12]
 
 
+def _add_monitoring_role_assignment(result, cluster_resource_id, cmd):
+    service_principal_msi_id = None
+    # Check if service principal exists, if it does, assign permissions to service principal
+    # Else, provide permissions to MSI
+    if (
+            hasattr(result, 'service_principal_profile') and
+            hasattr(result.service_principal_profile, 'client_id') and
+            result.service_principal_profile.client_id != 'msi'
+    ):
+        logger.info('valid service principal exists, using it')
+        service_principal_msi_id = result.service_principal_profile.client_id
+        is_service_principal = True
+    elif (
+            (hasattr(result, 'addon_profiles')) and
+            ('omsagent' in result.addon_profiles) and
+            (hasattr(result.addon_profiles['omsagent'], 'identity')) and
+            (hasattr(result.addon_profiles['omsagent'].identity, 'object_id'))
+    ):
+        logger.info('omsagent MSI exists, using it')
+        service_principal_msi_id = result.addon_profiles['omsagent'].identity.object_id
+        is_service_principal = False
+
+    if service_principal_msi_id is not None:
+        if not _add_role_assignment(cmd.cli_ctx, 'Monitoring Metrics Publisher',
+                                    service_principal_msi_id, is_service_principal, scope=cluster_resource_id):
+            logger.warning('Could not create a role assignment for Monitoring addon. '
+                           'Are you an Owner on this subscription?')
+    else:
+        logger.warning('Could not find service principal or user assigned MSI for role'
+                       'assignment')
+
+
 def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,too-many-branches
                client,
                resource_group_name,
@@ -860,7 +899,9 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         appgw_shared,
         appgw_watch_namespace
     )
+    monitoring = False
     if 'omsagent' in addon_profiles:
+        monitoring = True
         _ensure_container_insights_for_monitoring(cmd, addon_profiles['omsagent'])
     if CONST_INGRESS_APPGW_ADDON_NAME in addon_profiles:
         if CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID in addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].config:
@@ -955,11 +996,33 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
     for _ in range(0, max_retry):
         try:
             logger.info('AKS cluster is creating, please wait...')
-            created_cluster = sdk_no_wait(no_wait, client.create_or_update,
-                                          resource_group_name=resource_group_name,
-                                          resource_name=name,
-                                          parameters=mc,
-                                          custom_headers=headers).result()
+            if monitoring:
+                # adding a wait here since we rely on the result for role assignment
+                created_cluster = LongRunningOperation(cmd.cli_ctx)(client.create_or_update(
+                    resource_group_name=resource_group_name,
+                    resource_name=name,
+                    parameters=mc,
+                    custom_headers=headers))
+                cloud_name = cmd.cli_ctx.cloud.name
+                # add cluster spn/msi Monitoring Metrics Publisher role assignment to publish metrics to MDM
+                # mdm metrics is supported only in azure public cloud, so add the role assignment only in this cloud
+                if cloud_name.lower() == 'azurecloud':
+                    from msrestazure.tools import resource_id
+                    cluster_resource_id = resource_id(
+                        subscription=subscription_id,
+                        resource_group=resource_group_name,
+                        namespace='Microsoft.ContainerService', type='managedClusters',
+                        name=name
+                    )
+                    _add_monitoring_role_assignment(created_cluster, cluster_resource_id, cmd)
+
+            else:
+                created_cluster = sdk_no_wait(no_wait, client.create_or_update,
+                                              resource_group_name=resource_group_name,
+                                              resource_name=name,
+                                              parameters=mc,
+                                              custom_headers=headers).result()
+
             if enable_managed_identity and attach_acr:
                 # Attach ACR to cluster enabled managed identity
                 if created_cluster.identity_profile is None or \
@@ -2163,20 +2226,7 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
 
     if 'omsagent' in instance.addon_profiles and instance.addon_profiles['omsagent'].enabled:
         _ensure_container_insights_for_monitoring(cmd, instance.addon_profiles['omsagent'])
-        cloud_name = cmd.cli_ctx.cloud.name
-        # mdm metrics supported only in Azure Public cloud so add the role assignment only in this cloud
-        if cloud_name.lower() == 'azurecloud':
-            from msrestazure.tools import resource_id
-            cluster_resource_id = resource_id(
-                subscription=subscription_id,
-                resource_group=resource_group_name,
-                namespace='Microsoft.ContainerService', type='managedClusters',
-                name=name
-            )
-            if not _add_role_assignment(cmd.cli_ctx, 'Monitoring Metrics Publisher',
-                                        service_principal_client_id, scope=cluster_resource_id):
-                logger.warning('Could not create a role assignment for Monitoring addon. '
-                               'Are you an Owner on this subscription?')
+
     if CONST_INGRESS_APPGW_ADDON_NAME in instance.addon_profiles:
         if CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID in instance.addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].config:
             appgw_id = instance.addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].config[CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID]
@@ -2197,8 +2247,25 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
                                'specified in {CONST_INGRESS_APPGW_ADDON_NAME} addon. '
                                'Are you an Owner on this subscription?')
 
-    # send the managed cluster representation to update the addon profiles
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
+    if 'omsagent' in instance.addon_profiles and instance.addon_profiles['omsagent'].enabled:
+        # adding a wait here since we rely on the result for role assignment
+        result = LongRunningOperation(cmd.cli_ctx)(client.create_or_update(resource_group_name, name, instance))
+        cloud_name = cmd.cli_ctx.cloud.name
+        # mdm metrics supported only in Azure Public cloud so add the role assignment only in this cloud
+        if cloud_name.lower() == 'azurecloud':
+            from msrestazure.tools import resource_id
+            cluster_resource_id = resource_id(
+                subscription=subscription_id,
+                resource_group=resource_group_name,
+                namespace='Microsoft.ContainerService', type='managedClusters',
+                name=name
+            )
+            _add_monitoring_role_assignment(result, cluster_resource_id, cmd)
+
+    else:
+        result = sdk_no_wait(no_wait, client.create_or_update,
+                             resource_group_name, name, instance)
+    return result
 
 
 def aks_rotate_certs(cmd, client, resource_group_name, name, no_wait=True):     # pylint: disable=unused-argument
