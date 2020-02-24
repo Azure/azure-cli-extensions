@@ -2,6 +2,14 @@
 
 Release History
 ===============
+0.4.32
++++++
+* Adding support for user assigned msi for monitoring addon.
+
+0.4.31
++++++
+* Fixed a regular agent pool creation bug.
+
 0.4.30
 +++++
 * Remove "Low" option from --priority
