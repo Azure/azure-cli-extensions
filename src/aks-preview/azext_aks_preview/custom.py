@@ -2262,10 +2262,10 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
             )
             _add_monitoring_role_assignment(result, cluster_resource_id, cmd)
 
-        return result
     else:
-        return sdk_no_wait(no_wait, client.create_or_update,
-                           resource_group_name, name, instance)
+        result = sdk_no_wait(no_wait, client.create_or_update,
+                             resource_group_name, name, instance)
+    return result
 
 
 def aks_rotate_certs(cmd, client, resource_group_name, name, no_wait=True):     # pylint: disable=unused-argument
