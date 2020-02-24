@@ -20,14 +20,12 @@ class AzureMigrateScenarioTest(ScenarioTest):
 
         self.cmd('az migrate location check-name-availability '
                  '--location-name "eastus" '
-                 '--name "newprojectname" '
-                 '--type "Microsoft.Migrate/projects"',
+                 '--name "newprojectname" ',
                  checks=[])
 
         self.cmd('az migrate location check-name-availability '
                  '--location-name "eastus" '
-                 '--name "existingprojectname" '
-                 '--type "Microsoft.Migrate/projects"',
+                 '--name "existingprojectname" ',
                  checks=[])
 
         self.cmd('az migrate assessment-options show '
@@ -35,24 +33,19 @@ class AzureMigrateScenarioTest(ScenarioTest):
                  checks=[])
 
         self.cmd('az migrate projects list '
-                 '--resource-group-name {rg}',
+                 '--resource-group {rg}',
                  checks=[])
 
         self.cmd('az migrate projects show '
                  '--project-name "project01" '
-                 '--resource-group-name {rg}',
+                 '--resource-group {rg}',
                  checks=[])
 
         self.cmd('az migrate projects create '
-                 '--name "project01" '
-                 '--type "Microsoft.Migrate/projects" '
                  '--e-tag "\"b701c73a-0000-0000-0000-59c12ff00000\"" '
-                 '--id "/subscriptions/75dd7e42-4fd1-4512-af04-83ad9864335b/resourceGroups/myResourceGroup/providers/Microsoft.Migrate/projects/project01" '
                  '--location "West Us" '
-                 '--customer-workspace-id "url-to-customers-service-map" '
-                 '--customer-workspace-location "West Us" '
                  '--project-name "project01" '
-                 '--resource-group-name {rg}',
+                 '--resource-group {rg}',
                  checks=[])
 
         self.cmd('az migrate projects update '
@@ -64,70 +57,70 @@ class AzureMigrateScenarioTest(ScenarioTest):
                  '--customer-workspace-id "url-to-customers-service-map" '
                  '--customer-workspace-location "West Us" '
                  '--project-name "project01" '
-                 '--resource-group-name {rg}',
+                 '--resource-group {rg}',
                  checks=[])
 
         self.cmd('az migrate projects delete '
                  '--project-name "project01" '
-                 '--resource-group-name {rg}',
+                 '--resource-group {rg}',
                  checks=[])
 
         self.cmd('az migrate projects get-keys '
                  '--project-name "project01" '
-                 '--resource-group-name {rg}',
+                 '--resource-group {rg}',
                  checks=[])
 
         self.cmd('az migrate machines list '
                  '--project-name "project01" '
-                 '--resource-group-name {rg}',
+                 '--resource-group {rg}',
                  checks=[])
 
         self.cmd('az migrate machines show '
                  '--machine-name "amansing_vm1" '
                  '--project-name "project01" '
-                 '--resource-group-name {rg}',
+                 '--resource-group {rg}',
                  checks=[])
 
         self.cmd('az migrate groups list '
                  '--project-name "project01" '
-                 '--resource-group-name {rg}',
+                 '--resource-group {rg}',
                  checks=[])
 
         self.cmd('az migrate groups show '
                  '--group-name "group01" '
                  '--project-name "project01" '
-                 '--resource-group-name {rg}',
+                 '--resource-group {rg}',
                  checks=[])
 
         self.cmd('az migrate groups create '
                  '--e-tag "\"1100637e-0000-0000-0000-59f6ed1f0000\"" '
                  '--group-name "group01" '
                  '--project-name "project01" '
-                 '--resource-group-name {rg}',
+                 '--resource-group {rg}',
                  checks=[])
 
         self.cmd('az migrate groups delete '
                  '--group-name "group01" '
                  '--project-name "project01" '
-                 '--resource-group-name {rg}',
+                 '--resource-group {rg}',
                  checks=[])
 
         self.cmd('az migrate assessments list '
                  '--group-name "group01" '
                  '--project-name "project01" '
-                 '--resource-group-name {rg}',
+                 '--resource-group {rg}',
                  checks=[])
 
         self.cmd('az migrate assessments list '
                  '--project-name "project01" '
-                 '--resource-group-name {rg}',
+                 '--resource-group {rg}',
                  checks=[])
 
         self.cmd('az migrate assessments show '
                  '--assessment-name "assessment01" '
                  '--group-name "group01" '
                  '--project-name "project01" '
-                 '--resource-group-name {rg}',
+                 '--resource-group {rg}',
                  checks=[])
 
         self.cmd('az migrate assessments create '
@@ -147,28 +140,28 @@ class AzureMigrateScenarioTest(ScenarioTest):
                  '--assessment-name "assessment01" '
                  '--group-name "group01" '
                  '--project-name "project01" '
-                 '--resource-group-name {rg}',
+                 '--resource-group {rg}',
                  checks=[])
 
         self.cmd('az migrate assessments delete '
                  '--assessment-name "assessment01" '
                  '--group-name "group01" '
                  '--project-name "project01" '
-                 '--resource-group-name {rg}',
+                 '--resource-group {rg}',
                  checks=[])
 
         self.cmd('az migrate assessments get-report-download-url '
                  '--assessment-name "assessment01" '
                  '--group-name "group01" '
                  '--project-name "project01" '
-                 '--resource-group-name {rg}',
+                 '--resource-group {rg}',
                  checks=[])
 
         self.cmd('az migrate assessed-machines list '
                  '--assessment-name "assessment01" '
                  '--group-name "group01" '
                  '--project-name "project01" '
-                 '--resource-group-name {rg}',
+                 '--resource-group {rg}',
                  checks=[])
 
         self.cmd('az migrate assessed-machines show '
@@ -176,7 +169,7 @@ class AzureMigrateScenarioTest(ScenarioTest):
                  '--assessment-name "assessment01" '
                  '--group-name "group01" '
                  '--project-name "project01" '
-                 '--resource-group-name {rg}',
+                 '--resource-group {rg}',
                  checks=[])
 
         self.cmd('az migrate operations list',
