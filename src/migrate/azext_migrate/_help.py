@@ -17,6 +17,15 @@ helps['migrate location'] = """
 helps['migrate location check-name-availability'] = """
     type: command
     short-summary: Checks whether the project name is available in the specified region.
+    examples:
+      - name: LocationCheckNameAvailability_AlreadyExists
+        text: |-
+               az migrate location check-name-availability --location-name "eastus" --name \\
+               "existingprojectname"
+      - name: LocationCheckNameAvailability_Available
+        text: |-
+               az migrate location check-name-availability --location-name "eastus" --name \\
+               "newprojectname"
 """
 
 helps['migrate assessment-options'] = """
@@ -27,6 +36,10 @@ helps['migrate assessment-options'] = """
 helps['migrate assessment-options show'] = """
     type: command
     short-summary: Get the available options for the properties of an assessment.
+    examples:
+      - name: AssessmentOptions_Get
+        text: |-
+               az migrate assessment-options show --location-name "SoutheastAsia"
 """
 
 helps['migrate projects'] = """
@@ -37,31 +50,61 @@ helps['migrate projects'] = """
 helps['migrate projects list'] = """
     type: command
     short-summary: Get all the projects in the subscription.
+    examples:
+      - name: Projects_List
+        text: |-
+               az migrate projects list --resource-group "myResourceGroup"
 """
 
 helps['migrate projects show'] = """
     type: command
     short-summary: Get the project with the specified name.
+    examples:
+      - name: Projects_Get
+        text: |-
+               az migrate projects show --project-name "project01" --resource-group "myResourceGroup"
 """
 
 helps['migrate projects create'] = """
     type: command
     short-summary: Create a project with specified name. If a project already exists, update it.
+    examples:
+      - name: Projects_Create
+        text: |-
+               az migrate projects create --e-tag "\\"b701c73a-0000-0000-0000-59c12ff00000\\"" --location \\
+               "West Us" --customer-workspace-id "url-to-customers-service-map" \\
+               --customer-workspace-location "West Us" --project-name "project01" --resource-group \\
+               "myResourceGroup"
 """
 
 helps['migrate projects update'] = """
     type: command
     short-summary: Update a project with specified name. Supports partial updates, for example only tags can be provided.
+    examples:
+      - name: Projects_Update
+        text: |-
+               az migrate projects update --e-tag "" --location "West Us" --customer-workspace-id \\
+               "url-to-customers-service-map" --customer-workspace-location "West Us" --project-name \\
+               "project01" --resource-group "myResourceGroup"
 """
 
 helps['migrate projects delete'] = """
     type: command
     short-summary: Delete the project. Deleting non-existent project is a no-operation.
+    examples:
+      - name: Projects_Delete
+        text: |-
+               az migrate projects delete --project-name "project01" --resource-group "myResourceGroup"
 """
 
 helps['migrate projects get-keys'] = """
     type: command
     short-summary: Gets the Log Analytics Workspace ID and Primary Key for the specified project.
+    examples:
+      - name: Projects_GetKeys
+        text: |-
+               az migrate projects get-keys --project-name "project01" --resource-group \\
+               "myResourceGroup"
 """
 
 helps['migrate machines'] = """
@@ -72,11 +115,20 @@ helps['migrate machines'] = """
 helps['migrate machines list'] = """
     type: command
     short-summary: Get data of all the machines available in the project. Returns a json array of objects of type 'machine' defined in Models section.
+    examples:
+      - name: Machines_ListByProject
+        text: |-
+               az migrate machines list --project-name "project01" --resource-group "myResourceGroup"
 """
 
 helps['migrate machines show'] = """
     type: command
     short-summary: Get the machine with the specified name. Returns a json object of type 'machine' defined in Models section.
+    examples:
+      - name: Machines_Get
+        text: |-
+               az migrate machines show --machine-name "amansing_vm1" --project-name "project01" \\
+               --resource-group "myResourceGroup"
 """
 
 helps['migrate groups'] = """
@@ -87,21 +139,40 @@ helps['migrate groups'] = """
 helps['migrate groups list'] = """
     type: command
     short-summary: Get all groups created in the project. Returns a json array of objects of type 'group' as specified in the Models section.
+    examples:
+      - name: Groups_ListByProject
+        text: |-
+               az migrate groups list --project-name "project01" --resource-group "myResourceGroup"
 """
 
 helps['migrate groups show'] = """
     type: command
     short-summary: Get information related to a specific group in the project. Returns a json object of type 'group' as specified in the models section.
+    examples:
+      - name: Groups_Get
+        text: |-
+               az migrate groups show --group-name "group01" --project-name "project01" --resource-group \\
+               "myResourceGroup"
 """
 
 helps['migrate groups create'] = """
     type: command
     short-summary: Create a new group by sending a json object of type 'group' as given in Models section as part of the Request Body. The group name in a project is unique. Labels can be applied on a group as part of creation.  If a group with the groupName specified in the URL already exists, then this call acts as an update.  This operation is Idempotent.
+    examples:
+      - name: Groups_Create
+        text: |-
+               az migrate groups create --e-tag "\\"1100637e-0000-0000-0000-59f6ed1f0000\\"" --group-name \\
+               "group01" --project-name "project01" --resource-group "myResourceGroup"
 """
 
 helps['migrate groups delete'] = """
     type: command
     short-summary: Delete the group from the project. The machines remain in the project. Deleting a non-existent group results in a no-operation.  A group is an aggregation mechanism for machines in a project. Therefore, deleting group does not delete machines in it.
+    examples:
+      - name: Groups_Delete
+        text: |-
+               az migrate groups delete --group-name "group01" --project-name "project01" \\
+               --resource-group "myResourceGroup"
 """
 
 helps['migrate assessments'] = """
@@ -112,26 +183,56 @@ helps['migrate assessments'] = """
 helps['migrate assessments list'] = """
     type: command
     short-summary: Get all assessments created in the project.  Returns a json array of objects of type 'assessment' as specified in Models section.
+    examples:
+      - name: Assessments_ListByGroup
+        text: |-
+               az migrate assessments list --group-name "group01" --project-name "project01" \\
+               --resource-group "myResourceGroup"
 """
 
 helps['migrate assessments show'] = """
     type: command
     short-summary: Get an existing assessment with the specified name. Returns a json object of type 'assessment' as specified in Models section.
+    examples:
+      - name: Assessments_Get
+        text: |-
+               az migrate assessments show --assessment-name "assessment01" --group-name "group01" \\
+               --project-name "project01" --resource-group "myResourceGroup"
 """
 
 helps['migrate assessments create'] = """
     type: command
     short-summary: Create a new assessment with the given name and the specified settings. Since name of an assessment in a project is a unique identifier, if an assessment with the name provided already exists, then the existing assessment is updated.  Any PUT operation, resulting in either create or update on an assessment, will cause the assessment to go in a "InProgress" state. This will be indicated by the field 'computationState' on the Assessment object. During this time no other PUT operation will be allowed on that assessment object, nor will a Delete operation. Once the computation for the assessment is complete, the field 'computationState' will be updated to 'Ready', and then other PUT or DELETE operations can happen on the assessment.  When assessment is under computation, any PUT will lead to a 400 - Bad Request error.
+    examples:
+      - name: Assessments_Create
+        text: |-
+               az migrate assessments create --e-tag "\\"1100637e-0000-0000-0000-59f6ed1f0000\\"" \\
+               --azure-hybrid-use-benefit "Yes" --azure-location "WestUs" --azure-offer-code \\
+               "MSAZR0003P" --azure-pricing-tier "Standard" --azure-storage-redundancy \\
+               "LocallyRedundant" --currency "USD" --discount-percentage 100 --percentile "Percentile50" \\
+               --scaling-factor 1.2 --sizing-criterion "PerformanceBased" --stage "InProgress" \\
+               --time-range "Day" --assessment-name "assessment01" --group-name "group01" --project-name \\
+               "project01" --resource-group "myResourceGroup"
 """
 
 helps['migrate assessments delete'] = """
     type: command
     short-summary: Delete an assessment from the project. The machines remain in the assessment. Deleting a non-existent assessment results in a no-operation.  When an assessment is under computation, as indicated by the 'computationState' field, it cannot be deleted. Any such attempt will return a 400 - Bad Request.
+    examples:
+      - name: Assessments_Delete
+        text: |-
+               az migrate assessments delete --assessment-name "assessment01" --group-name "group01" \\
+               --project-name "project01" --resource-group "myResourceGroup"
 """
 
 helps['migrate assessments get-report-download-url'] = """
     type: command
     short-summary: Get the URL for downloading the assessment in a report format.
+    examples:
+      - name: Assessments_GetReportDownloadUrl
+        text: |-
+               az migrate assessments get-report-download-url --assessment-name "assessment01" \\
+               --group-name "group01" --project-name "project01" --resource-group "myResourceGroup"
 """
 
 helps['migrate assessed-machines'] = """
@@ -142,11 +243,22 @@ helps['migrate assessed-machines'] = """
 helps['migrate assessed-machines list'] = """
     type: command
     short-summary: Get list of machines that assessed as part of the specified assessment. Returns a json array of objects of type 'assessedMachine' as specified in the Models section.  Whenever an assessment is created or updated, it goes under computation. During this phase, the 'status' field of Assessment object reports 'Computing'. During the period when the assessment is under computation, the list of assessed machines is empty and no assessed machines are returned by this call.
+    examples:
+      - name: AssessedMachines_ListByAssessment
+        text: |-
+               az migrate assessed-machines list --assessment-name "assessment01" --group-name "group01" \\
+               --project-name "project01" --resource-group "myResourceGroup"
 """
 
 helps['migrate assessed-machines show'] = """
     type: command
     short-summary: Get an assessed machine with its size & cost estimate that was evaluated in the specified assessment.
+    examples:
+      - name: AssessedMachines_Get
+        text: |-
+               az migrate assessed-machines show --assessed-machine-name "amansing_vm1" \\
+               --assessment-name "assessment01" --group-name "group01" --project-name "project01" \\
+               --resource-group "myResourceGroup"
 """
 
 helps['migrate operations'] = """
@@ -157,4 +269,8 @@ helps['migrate operations'] = """
 helps['migrate operations list'] = """
     type: command
     short-summary: Get a list of REST API supported by Microsoft.Migrate provider.
+    examples:
+      - name: Operations_List
+        text: |-
+               az migrate operations list
 """

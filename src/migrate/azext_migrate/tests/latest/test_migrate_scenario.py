@@ -20,12 +20,12 @@ class AzureMigrateScenarioTest(ScenarioTest):
 
         self.cmd('az migrate location check-name-availability '
                  '--location-name "eastus" '
-                 '--name "newprojectname" ',
+                 '--name "newprojectname"',
                  checks=[])
 
         self.cmd('az migrate location check-name-availability '
                  '--location-name "eastus" '
-                 '--name "existingprojectname" ',
+                 '--name "existingprojectname"',
                  checks=[])
 
         self.cmd('az migrate assessment-options show '
@@ -36,6 +36,9 @@ class AzureMigrateScenarioTest(ScenarioTest):
                  '--resource-group {rg}',
                  checks=[])
 
+        self.cmd('az migrate projects list',
+                 checks=[])
+
         self.cmd('az migrate projects show '
                  '--project-name "project01" '
                  '--resource-group {rg}',
@@ -44,15 +47,14 @@ class AzureMigrateScenarioTest(ScenarioTest):
         self.cmd('az migrate projects create '
                  '--e-tag "\"b701c73a-0000-0000-0000-59c12ff00000\"" '
                  '--location "West Us" '
+                 '--customer-workspace-id "url-to-customers-service-map" '
+                 '--customer-workspace-location "West Us" '
                  '--project-name "project01" '
                  '--resource-group {rg}',
                  checks=[])
 
         self.cmd('az migrate projects update '
-                 '--name "project01" '
-                 '--type "Microsoft.Migrate/projects" '
                  '--e-tag "" '
-                 '--id "/subscriptions/75dd7e42-4fd1-4512-af04-83ad9864335b/resourceGroups/myResourceGroup/providers/Microsoft.Migrate/projects/project01" '
                  '--location "West Us" '
                  '--customer-workspace-id "url-to-customers-service-map" '
                  '--customer-workspace-location "West Us" '
