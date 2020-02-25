@@ -1,0 +1,63 @@
+interactions:
+- request:
+    body: '{"name": "12345", "type": "Microsoft.Support/supportTickets"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support tickets create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '61'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --debug --description --severity --ticket-name --severity --title --contact-country
+        --contact-email --contact-first-name --contact-language --contact-last-name
+        --contact-method --contact-timezone --problem-classification
+      User-Agent:
+      - python/3.6.9 (Linux-4.4.0-18362-Microsoft-x86_64-with-Ubuntu-18.04-bionic)
+        msrest/0.6.10 msrest_azure/0.6.2 azure-mgmt-support/2.0.0 Azure-SDK-For-Python
+        AZURECLI/2.0.78
+      accept-language:
+      - en-US
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/checkNameAvailability?api-version=2019-05-01-preview
+  response:
+    body:
+      string: '{"message":"Name 12345 is invalid. The name cannot include: ''<'',
+        ''>'', ''%'', ''&'', '':'', '''', ''?'', ''/'' or any control characters.
+        It cannot be all digits and cannot start with ''tmp-''. The max length is
+        260 characters.","nameAvailable":false,"reason":"Invalid"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '255'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 16 Jan 2020 02:10:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+version: 1
