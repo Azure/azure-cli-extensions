@@ -14,33 +14,29 @@ def load_command_table(self, _):
 
     maintenance_configurations_mgmt_util = CliCommandType(
         operations_tmpl='azext_maintenance.maintenance.operations.maintenance_configurations_operations#MaintenanceConfigurationsOperations.{}',
-        client_factory=cf_maintenance_configurations,
-        client_arg_name='self'
+        client_factory=cf_maintenance_configurations
     )
 
     maintenance_updates_mgmt_util = CliCommandType(
         operations_tmpl='azext_maintenance.maintenance.operations.updates_operations#UpdatesOperations.{}',
-        client_factory=cf_maintenance_updates,
-        client_arg_name='self'
+        client_factory=cf_maintenance_updates
     )
 
     configuration_assignments_mgmt_util = CliCommandType(
         operations_tmpl='azext_maintenance.maintenance.operations.configuration_assignments_operations#ConfigurationAssignmentsOperations.{}',
-        client_factory=cf_configuration_assignments,
-        client_arg_name='self'
+        client_factory=cf_configuration_assignments
     )
 
     apply_updates_mgmt_util = CliCommandType(
         operations_tmpl='azext_maintenance.maintenance.operations.apply_updates_operations#ApplyUpdatesOperations.{}',
-        client_factory=cf_apply_updates,
-        client_arg_name='self'
+        client_factory=cf_apply_updates
     )
 
     with self.command_group('maintenance configuration', maintenance_configurations_mgmt_util, client_factory=cf_maintenance_configurations) as g:
         g.custom_command('create', 'cli_configuration_create')
         g.command('delete', 'delete')
         g.custom_command('update', 'cli_configuration_create')
-        g.command('show', 'get')
+        g.show_command('show', 'get')
         g.command('list', 'list')
 
     with self.command_group('maintenance update', maintenance_updates_mgmt_util, client_factory=cf_maintenance_updates) as g:
@@ -54,3 +50,4 @@ def load_command_table(self, _):
     with self.command_group('maintenance applyupdate', apply_updates_mgmt_util, client_factory=cf_apply_updates) as g:
         g.custom_command('create', 'cli_applyupdate_create')
         g.custom_command('get', 'cli_applyupdate_get')
+        g.custom_command('show', 'cli_applyupdate_get')

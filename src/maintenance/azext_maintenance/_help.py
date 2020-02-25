@@ -130,3 +130,12 @@ helps['maintenance applyupdate get'] = """
           text: >
             az maintenance applyupdate get -g smdtest --resource-name smdVM --resource-type virtualMachines --provider-name Microsoft.Compute --apply-update-name 7b1b66dc-e93a-4183-81ff-591f1b2d4f07
 """
+
+helps['maintenance applyupdate show'] = """
+    type: command
+    short-summary: Shows the state of a ApplyUpdate request.
+    examples:
+        - name: Shows the state of a ApplyUpdate request.
+          text: >
+            az maintenance applyupdate show -g smdtest --resource-name smdVM --resource-type virtualMachines --provider-name Microsoft.Compute --apply-update-name 7b1b66dc-e93a-4183-81ff-591f1b2d4f07
+"""
