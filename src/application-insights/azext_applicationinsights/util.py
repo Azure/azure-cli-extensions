@@ -13,8 +13,8 @@ def get_id_from_azure_resource(cli_ctx, app, resource_group=None):
     if is_valid_resource_id(app):
         parsed = parse_resource_id(app)
         resource_group, name, subscription = parsed["resource_group"], parsed["name"], parsed["subscription"]
-        return applicationinsights_mgmt_plane_client(cli_ctx,
-                                                     subscription_id=subscription).get(resource_group, name).app_id
+        client = applicationinsights_mgmt_plane_client(cli_ctx, subscription_id=subscription).components
+        return client.get(resource_group, name).app_id
     if resource_group:
         return cf_components(cli_ctx, None).get(resource_group, app).app_id
     return app
