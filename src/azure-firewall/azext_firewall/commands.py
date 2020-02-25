@@ -70,8 +70,10 @@ def load_command_table(self, _):
         g.show_command('show', get_network_resource_property_entry('azure_firewalls', 'ip_configurations'))
         g.custom_command('delete', 'delete_af_ip_configuration')
 
-    with self.command_group('network firewall management-ip-config', network_util) as g:
-        g.custom_command('create', 'create_af_management_ip_configuration')
+    with self.command_group('network firewall management-ip-config', network_util, is_preview=True) as g:
+        # https://github.com/Azure/azure-cli-extensions/issues/1270
+        # disable it by service limitation.
+        # g.custom_command('create', 'create_af_management_ip_configuration')
         g.custom_show_command('show', 'show_af_management_ip_configuration')
         g.generic_update_command('update', command_type=network_firewall_sdk,
                                  custom_func_name='update_af_management_ip_configuration',
