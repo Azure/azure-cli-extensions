@@ -88,6 +88,21 @@ helps['monitor app-insights component delete'] = """
           az monitor app-insights component delete --app demoApp -g demoRg
 """
 
+helps['monitor app-insights component billing'] = """
+    type: group
+    short-summary: Manage an Application Insights component billing features.
+"""
+
+helps['monitor app-insights component billing show'] = """
+    type: command
+    short-summary: Show the billing features of an Application Insights resource.
+"""
+
+helps['monitor app-insights component billing update'] = """
+    type: command
+    short-summary: Update the billing features of an Application Insights resource.
+"""
+
 helps['monitor app-insights api-key'] = """
     type: group
     short-summary: Operations on API keys associated with an Application Insights component.

@@ -86,7 +86,7 @@ def show_api_key(client, application, resource_group_name, api_key=None):
     result = list(filter(lambda result: result.name == api_key, client.list(resource_group_name, application)))
     if len(result) == 1:
         return result[0]
-    elif len(result) > 1:
+    if len(result) > 1:
         return result
     return None
 
@@ -103,11 +103,9 @@ def show_componet_billing(client, application, resource_group_name):
 
 
 def update_componet_billing(client, application, resource_group_name, cap=None, stop_send_notification_when_hit_cap=None):
-    from .vendored_sdks.mgmt_applicationinsights.models import (ApplicationInsightsComponentDataVolumeCap,
-                                                                ApplicationInsightsComponentBillingFeatures)
     billing_features = client.get(resource_group_name=resource_group_name, resource_name=application)
-    billing_features.data_volume_cap.cap=cap
-    billing_features.data_volume_cap.stop_send_notification_when_hit_cap=stop_send_notification_when_hit_cap
+    billing_features.data_volume_cap.cap = cap
+    billing_features.data_volume_cap.stop_send_notification_when_hit_cap = stop_send_notification_when_hit_cap
     return client.update(resource_group_name=resource_group_name,
                          resource_name=application,
                          data_volume_cap=billing_features.data_volume_cap,

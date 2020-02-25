@@ -16,11 +16,11 @@ def applicationinsights_data_plane_client(cli_ctx, _, subscription=None):
     return ApplicationInsightsDataClient(cred)
 
 
-def applicationinsights_mgmt_plane_client(cli_ctx, _):
+def applicationinsights_mgmt_plane_client(cli_ctx, **kwargs):
     """Initialize Log Analytics mgmt client for use with CLI."""
     from .vendored_sdks.mgmt_applicationinsights import ApplicationInsightsManagementClient
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    return get_mgmt_service_client(cli_ctx, ApplicationInsightsManagementClient)
+    return get_mgmt_service_client(cli_ctx, ApplicationInsightsManagementClient, **kwargs)
 
 
 def cf_query(cli_ctx, _):
@@ -36,12 +36,12 @@ def cf_events(cli_ctx, _):
 
 
 def cf_components(cli_ctx, _):
-    return applicationinsights_mgmt_plane_client(cli_ctx, _).components
+    return applicationinsights_mgmt_plane_client(cli_ctx).components
 
 
 def cf_component_billing(cli_ctx, _):
-    return applicationinsights_mgmt_plane_client(cli_ctx, _).component_current_billing_features
+    return applicationinsights_mgmt_plane_client(cli_ctx).component_current_billing_features
 
 
 def cf_api_key(cli_ctx, _):
-    return applicationinsights_mgmt_plane_client(cli_ctx, _).api_keys
+    return applicationinsights_mgmt_plane_client(cli_ctx).api_keys
