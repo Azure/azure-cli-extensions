@@ -96,3 +96,19 @@ def delete_api_key(client, application, resource_group_name, api_key):
     if existing_key != []:
         return client.delete(resource_group_name, application, existing_key[0].id.split('/')[-1])
     raise CLIError('--api-key provided but key not found for deletion.')
+
+
+def show_componet_billing(client, application, resource_group_name):
+    return client.get(resource_group_name=resource_group_name, resource_name=application)
+
+
+def update_componet_billing(client, application, resource_group_name, cap=None, stop_send_notification_when_hit_cap=None):
+    from .vendored_sdks.mgmt_applicationinsights.models import (ApplicationInsightsComponentDataVolumeCap,
+                                                                ApplicationInsightsComponentBillingFeatures)
+    billing_features = client.get(resource_group_name=resource_group_name, resource_name=application)
+    billing_features.data_volume_cap.cap=cap
+    billing_features.data_volume_cap.stop_send_notification_when_hit_cap=stop_send_notification_when_hit_cap
+    return client.update(resource_group_name=resource_group_name,
+                         resource_name=application,
+                         data_volume_cap=billing_features.data_volume_cap,
+                         current_billing_features=billing_features.current_billing_features)
