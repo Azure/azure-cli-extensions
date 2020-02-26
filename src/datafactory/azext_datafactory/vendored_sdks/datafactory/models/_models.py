@@ -389,6 +389,59 @@ class AddDataFlowToDebugSessionResponse(msrest.serialization.Model):
         self.job_version = kwargs.get('job_version', None)
 
 
+class AdditionalColumns(msrest.serialization.Model):
+    """Specify the column name and value of additional columns.
+
+    :param name: Additional column name. Type: string (or Expression with resultType string).
+    :type name: ~data_factory_management_client.models.AdditionalColumnsName
+    :param value: Additional column value. Type: string (or Expression with resultType string).
+    :type value: ~data_factory_management_client.models.AdditionalColumnsValue
+    """
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'AdditionalColumnsName'},
+        'value': {'key': 'value', 'type': 'AdditionalColumnsValue'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(AdditionalColumns, self).__init__(**kwargs)
+        self.name = kwargs.get('name', None)
+        self.value = kwargs.get('value', None)
+
+
+class AdditionalColumnsName(msrest.serialization.Model):
+    """Additional column name. Type: string (or Expression with resultType string).
+
+    """
+
+    _attribute_map = {
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(AdditionalColumnsName, self).__init__(**kwargs)
+
+
+class AdditionalColumnsValue(msrest.serialization.Model):
+    """Additional column value. Type: string (or Expression with resultType string).
+
+    """
+
+    _attribute_map = {
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(AdditionalColumnsValue, self).__init__(**kwargs)
+
+
 class LinkedService(msrest.serialization.Model):
     """The Azure Data Factory nested object which contains the information and credential which can be used to connect with related store or compute resource.
 
@@ -951,6 +1004,9 @@ class TabularSource(CopySource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     """
 
     _validation = {
@@ -964,6 +1020,7 @@ class TabularSource(CopySource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
 
     _subtype_map = {
@@ -977,6 +1034,7 @@ class TabularSource(CopySource):
         super(TabularSource, self).__init__(**kwargs)
         self.type = 'TabularSource'
         self.query_timeout = kwargs.get('query_timeout', None)
+        self.additional_columns = kwargs.get('additional_columns', None)
 
 
 class AmazonMWSSource(TabularSource):
@@ -1002,6 +1060,9 @@ class AmazonMWSSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: ~data_factory_management_client.models.AmazonMWSSourceQuery
@@ -1018,6 +1079,7 @@ class AmazonMWSSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'AmazonMWSSourceQuery'},
     }
 
@@ -1278,6 +1340,9 @@ class AmazonRedshiftSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: Database query. Type: string (or Expression with resultType string).
     :type query: ~data_factory_management_client.models.AmazonRedshiftSourceQuery
     :param redshift_unload_settings: The Amazon S3 settings needed for the interim Amazon S3 when
@@ -1297,6 +1362,7 @@ class AmazonRedshiftSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'AmazonRedshiftSourceQuery'},
         'redshift_unload_settings': {'key': 'redshiftUnloadSettings', 'type': 'RedshiftUnloadSettings'},
     }
@@ -2068,6 +2134,10 @@ class AmazonS3ReadSettings(StoreReadSettings):
     :param prefix: The prefix filter for the S3 object name. Type: string (or Expression with
      resultType string).
     :type prefix: ~data_factory_management_client.models.AmazonS3ReadSettingsPrefix
+    :param file_list_path: Point to a text file that lists each file (relative path to the path
+     configured in the dataset) that you want to copy. Type: string (or Expression with resultType
+     string).
+    :type file_list_path: ~data_factory_management_client.models.AmazonS3ReadSettingsFileListPath
     :param enable_partition_discovery: Indicates whether to enable partition discovery.
     :type enable_partition_discovery: bool
     :param modified_datetime_start: The start of file's modified datetime. Type: string (or
@@ -2092,6 +2162,7 @@ class AmazonS3ReadSettings(StoreReadSettings):
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'AmazonS3ReadSettingsWildcardFolderPath'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'AmazonS3ReadSettingsWildcardFileName'},
         'prefix': {'key': 'prefix', 'type': 'AmazonS3ReadSettingsPrefix'},
+        'file_list_path': {'key': 'fileListPath', 'type': 'AmazonS3ReadSettingsFileListPath'},
         'enable_partition_discovery': {'key': 'enablePartitionDiscovery', 'type': 'bool'},
         'modified_datetime_start': {'key': 'modifiedDatetimeStart', 'type': 'AmazonS3ReadSettingsModifiedDatetimeStart'},
         'modified_datetime_end': {'key': 'modifiedDatetimeEnd', 'type': 'AmazonS3ReadSettingsModifiedDatetimeEnd'},
@@ -2107,9 +2178,25 @@ class AmazonS3ReadSettings(StoreReadSettings):
         self.wildcard_folder_path = kwargs.get('wildcard_folder_path', None)
         self.wildcard_file_name = kwargs.get('wildcard_file_name', None)
         self.prefix = kwargs.get('prefix', None)
+        self.file_list_path = kwargs.get('file_list_path', None)
         self.enable_partition_discovery = kwargs.get('enable_partition_discovery', None)
         self.modified_datetime_start = kwargs.get('modified_datetime_start', None)
         self.modified_datetime_end = kwargs.get('modified_datetime_end', None)
+
+
+class AmazonS3ReadSettingsFileListPath(msrest.serialization.Model):
+    """Point to a text file that lists each file (relative path to the path configured in the dataset) that you want to copy. Type: string (or Expression with resultType string).
+
+    """
+
+    _attribute_map = {
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(AmazonS3ReadSettingsFileListPath, self).__init__(**kwargs)
 
 
 class AmazonS3ReadSettingsModifiedDatetimeEnd(msrest.serialization.Model):
@@ -2667,6 +2754,9 @@ class AvroSource(CopySource):
      ~data_factory_management_client.models.CopySourceMaxConcurrentConnections
     :param store_settings: Connector read setting.
     :type store_settings: ~data_factory_management_client.models.StoreReadSettings
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     """
 
     _validation = {
@@ -2680,6 +2770,7 @@ class AvroSource(CopySource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreReadSettings'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
 
     def __init__(
@@ -2689,6 +2780,7 @@ class AvroSource(CopySource):
         super(AvroSource, self).__init__(**kwargs)
         self.type = 'AvroSource'
         self.store_settings = kwargs.get('store_settings', None)
+        self.additional_columns = kwargs.get('additional_columns', None)
 
 
 class FormatWriteSettings(msrest.serialization.Model):
@@ -3605,6 +3697,11 @@ class AzureBlobFSReadSettings(StoreReadSettings):
      resultType string).
     :type wildcard_file_name:
      ~data_factory_management_client.models.AzureBlobFSReadSettingsWildcardFileName
+    :param file_list_path: Point to a text file that lists each file (relative path to the path
+     configured in the dataset) that you want to copy. Type: string (or Expression with resultType
+     string).
+    :type file_list_path:
+     ~data_factory_management_client.models.AzureBlobFSReadSettingsFileListPath
     :param enable_partition_discovery: Indicates whether to enable partition discovery.
     :type enable_partition_discovery: bool
     :param modified_datetime_start: The start of file's modified datetime. Type: string (or
@@ -3628,6 +3725,7 @@ class AzureBlobFSReadSettings(StoreReadSettings):
         'recursive': {'key': 'recursive', 'type': 'AzureBlobFSReadSettingsRecursive'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'AzureBlobFSReadSettingsWildcardFolderPath'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'AzureBlobFSReadSettingsWildcardFileName'},
+        'file_list_path': {'key': 'fileListPath', 'type': 'AzureBlobFSReadSettingsFileListPath'},
         'enable_partition_discovery': {'key': 'enablePartitionDiscovery', 'type': 'bool'},
         'modified_datetime_start': {'key': 'modifiedDatetimeStart', 'type': 'AzureBlobFSReadSettingsModifiedDatetimeStart'},
         'modified_datetime_end': {'key': 'modifiedDatetimeEnd', 'type': 'AzureBlobFSReadSettingsModifiedDatetimeEnd'},
@@ -3642,9 +3740,25 @@ class AzureBlobFSReadSettings(StoreReadSettings):
         self.recursive = kwargs.get('recursive', None)
         self.wildcard_folder_path = kwargs.get('wildcard_folder_path', None)
         self.wildcard_file_name = kwargs.get('wildcard_file_name', None)
+        self.file_list_path = kwargs.get('file_list_path', None)
         self.enable_partition_discovery = kwargs.get('enable_partition_discovery', None)
         self.modified_datetime_start = kwargs.get('modified_datetime_start', None)
         self.modified_datetime_end = kwargs.get('modified_datetime_end', None)
+
+
+class AzureBlobFSReadSettingsFileListPath(msrest.serialization.Model):
+    """Point to a text file that lists each file (relative path to the path configured in the dataset) that you want to copy. Type: string (or Expression with resultType string).
+
+    """
+
+    _attribute_map = {
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(AzureBlobFSReadSettingsFileListPath, self).__init__(**kwargs)
 
 
 class AzureBlobFSReadSettingsModifiedDatetimeEnd(msrest.serialization.Model):
@@ -4297,6 +4411,11 @@ class AzureBlobStorageReadSettings(StoreReadSettings):
     :param prefix: The prefix filter for the Azure Blob name. Type: string (or Expression with
      resultType string).
     :type prefix: ~data_factory_management_client.models.AzureBlobStorageReadSettingsPrefix
+    :param file_list_path: Point to a text file that lists each file (relative path to the path
+     configured in the dataset) that you want to copy. Type: string (or Expression with resultType
+     string).
+    :type file_list_path:
+     ~data_factory_management_client.models.AzureBlobStorageReadSettingsFileListPath
     :param enable_partition_discovery: Indicates whether to enable partition discovery.
     :type enable_partition_discovery: bool
     :param modified_datetime_start: The start of file's modified datetime. Type: string (or
@@ -4321,6 +4440,7 @@ class AzureBlobStorageReadSettings(StoreReadSettings):
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'AzureBlobStorageReadSettingsWildcardFolderPath'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'AzureBlobStorageReadSettingsWildcardFileName'},
         'prefix': {'key': 'prefix', 'type': 'AzureBlobStorageReadSettingsPrefix'},
+        'file_list_path': {'key': 'fileListPath', 'type': 'AzureBlobStorageReadSettingsFileListPath'},
         'enable_partition_discovery': {'key': 'enablePartitionDiscovery', 'type': 'bool'},
         'modified_datetime_start': {'key': 'modifiedDatetimeStart', 'type': 'AzureBlobStorageReadSettingsModifiedDatetimeStart'},
         'modified_datetime_end': {'key': 'modifiedDatetimeEnd', 'type': 'AzureBlobStorageReadSettingsModifiedDatetimeEnd'},
@@ -4336,9 +4456,25 @@ class AzureBlobStorageReadSettings(StoreReadSettings):
         self.wildcard_folder_path = kwargs.get('wildcard_folder_path', None)
         self.wildcard_file_name = kwargs.get('wildcard_file_name', None)
         self.prefix = kwargs.get('prefix', None)
+        self.file_list_path = kwargs.get('file_list_path', None)
         self.enable_partition_discovery = kwargs.get('enable_partition_discovery', None)
         self.modified_datetime_start = kwargs.get('modified_datetime_start', None)
         self.modified_datetime_end = kwargs.get('modified_datetime_end', None)
+
+
+class AzureBlobStorageReadSettingsFileListPath(msrest.serialization.Model):
+    """Point to a text file that lists each file (relative path to the path configured in the dataset) that you want to copy. Type: string (or Expression with resultType string).
+
+    """
+
+    _attribute_map = {
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(AzureBlobStorageReadSettingsFileListPath, self).__init__(**kwargs)
 
 
 class AzureBlobStorageReadSettingsModifiedDatetimeEnd(msrest.serialization.Model):
@@ -5429,6 +5565,9 @@ class AzureDataExplorerSource(CopySource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9]))..
     :type query_timeout: ~data_factory_management_client.models.AzureDataExplorerSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     """
 
     _validation = {
@@ -5445,6 +5584,7 @@ class AzureDataExplorerSource(CopySource):
         'query': {'key': 'query', 'type': 'AzureDataExplorerSourceQuery'},
         'no_truncation': {'key': 'noTruncation', 'type': 'AzureDataExplorerSourceNoTruncation'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'AzureDataExplorerSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
 
     def __init__(
@@ -5456,6 +5596,7 @@ class AzureDataExplorerSource(CopySource):
         self.query = kwargs.get('query', None)
         self.no_truncation = kwargs.get('no_truncation', None)
         self.query_timeout = kwargs.get('query_timeout', None)
+        self.additional_columns = kwargs.get('additional_columns', None)
 
 
 class AzureDataExplorerSourceNoTruncation(msrest.serialization.Model):
@@ -6289,6 +6430,11 @@ class AzureDataLakeStoreReadSettings(StoreReadSettings):
      string).
     :type wildcard_file_name:
      ~data_factory_management_client.models.AzureDataLakeStoreReadSettingsWildcardFileName
+    :param file_list_path: Point to a text file that lists each file (relative path to the path
+     configured in the dataset) that you want to copy. Type: string (or Expression with resultType
+     string).
+    :type file_list_path:
+     ~data_factory_management_client.models.AzureDataLakeStoreReadSettingsFileListPath
     :param enable_partition_discovery: Indicates whether to enable partition discovery.
     :type enable_partition_discovery: bool
     :param modified_datetime_start: The start of file's modified datetime. Type: string (or
@@ -6312,6 +6458,7 @@ class AzureDataLakeStoreReadSettings(StoreReadSettings):
         'recursive': {'key': 'recursive', 'type': 'AzureDataLakeStoreReadSettingsRecursive'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'AzureDataLakeStoreReadSettingsWildcardFolderPath'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'AzureDataLakeStoreReadSettingsWildcardFileName'},
+        'file_list_path': {'key': 'fileListPath', 'type': 'AzureDataLakeStoreReadSettingsFileListPath'},
         'enable_partition_discovery': {'key': 'enablePartitionDiscovery', 'type': 'bool'},
         'modified_datetime_start': {'key': 'modifiedDatetimeStart', 'type': 'AzureDataLakeStoreReadSettingsModifiedDatetimeStart'},
         'modified_datetime_end': {'key': 'modifiedDatetimeEnd', 'type': 'AzureDataLakeStoreReadSettingsModifiedDatetimeEnd'},
@@ -6326,9 +6473,25 @@ class AzureDataLakeStoreReadSettings(StoreReadSettings):
         self.recursive = kwargs.get('recursive', None)
         self.wildcard_folder_path = kwargs.get('wildcard_folder_path', None)
         self.wildcard_file_name = kwargs.get('wildcard_file_name', None)
+        self.file_list_path = kwargs.get('file_list_path', None)
         self.enable_partition_discovery = kwargs.get('enable_partition_discovery', None)
         self.modified_datetime_start = kwargs.get('modified_datetime_start', None)
         self.modified_datetime_end = kwargs.get('modified_datetime_end', None)
+
+
+class AzureDataLakeStoreReadSettingsFileListPath(msrest.serialization.Model):
+    """Point to a text file that lists each file (relative path to the path configured in the dataset) that you want to copy. Type: string (or Expression with resultType string).
+
+    """
+
+    _attribute_map = {
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(AzureDataLakeStoreReadSettingsFileListPath, self).__init__(**kwargs)
 
 
 class AzureDataLakeStoreReadSettingsModifiedDatetimeEnd(msrest.serialization.Model):
@@ -6573,6 +6736,11 @@ class AzureDataLakeStoreWriteSettings(StoreWriteSettings):
      ~data_factory_management_client.models.StoreWriteSettingsMaxConcurrentConnections
     :param copy_behavior: The type of copy behavior for copy sink.
     :type copy_behavior: ~data_factory_management_client.models.StoreWriteSettingsCopyBehavior
+    :param expiry_date_time: Specifies the expiry time of the written files. The time is applied to
+     the UTC time zone in the format of "2018-12-01T05:00:00Z". Default value is NULL. Type: integer
+     (or Expression with resultType integer).
+    :type expiry_date_time:
+     ~data_factory_management_client.models.AzureDataLakeStoreWriteSettingsExpiryDateTime
     """
 
     _validation = {
@@ -6584,6 +6752,7 @@ class AzureDataLakeStoreWriteSettings(StoreWriteSettings):
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'StoreWriteSettingsMaxConcurrentConnections'},
         'copy_behavior': {'key': 'copyBehavior', 'type': 'StoreWriteSettingsCopyBehavior'},
+        'expiry_date_time': {'key': 'expiryDateTime', 'type': 'AzureDataLakeStoreWriteSettingsExpiryDateTime'},
     }
 
     def __init__(
@@ -6592,6 +6761,22 @@ class AzureDataLakeStoreWriteSettings(StoreWriteSettings):
     ):
         super(AzureDataLakeStoreWriteSettings, self).__init__(**kwargs)
         self.type = 'AzureDataLakeStoreWriteSettings'
+        self.expiry_date_time = kwargs.get('expiry_date_time', None)
+
+
+class AzureDataLakeStoreWriteSettingsExpiryDateTime(msrest.serialization.Model):
+    """Specifies the expiry time of the written files. The time is applied to the UTC time zone in the format of "2018-12-01T05:00:00Z". Default value is NULL. Type: integer (or Expression with resultType integer).
+
+    """
+
+    _attribute_map = {
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(AzureDataLakeStoreWriteSettingsExpiryDateTime, self).__init__(**kwargs)
 
 
 class AzureFileStorageLinkedService(LinkedService):
@@ -6810,6 +6995,11 @@ class AzureFileStorageReadSettings(StoreReadSettings):
      with resultType string).
     :type wildcard_file_name:
      ~data_factory_management_client.models.AzureFileStorageReadSettingsWildcardFileName
+    :param file_list_path: Point to a text file that lists each file (relative path to the path
+     configured in the dataset) that you want to copy. Type: string (or Expression with resultType
+     string).
+    :type file_list_path:
+     ~data_factory_management_client.models.AzureFileStorageReadSettingsFileListPath
     :param enable_partition_discovery: Indicates whether to enable partition discovery.
     :type enable_partition_discovery: bool
     :param modified_datetime_start: The start of file's modified datetime. Type: string (or
@@ -6833,6 +7023,7 @@ class AzureFileStorageReadSettings(StoreReadSettings):
         'recursive': {'key': 'recursive', 'type': 'AzureFileStorageReadSettingsRecursive'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'AzureFileStorageReadSettingsWildcardFolderPath'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'AzureFileStorageReadSettingsWildcardFileName'},
+        'file_list_path': {'key': 'fileListPath', 'type': 'AzureFileStorageReadSettingsFileListPath'},
         'enable_partition_discovery': {'key': 'enablePartitionDiscovery', 'type': 'bool'},
         'modified_datetime_start': {'key': 'modifiedDatetimeStart', 'type': 'AzureFileStorageReadSettingsModifiedDatetimeStart'},
         'modified_datetime_end': {'key': 'modifiedDatetimeEnd', 'type': 'AzureFileStorageReadSettingsModifiedDatetimeEnd'},
@@ -6847,9 +7038,25 @@ class AzureFileStorageReadSettings(StoreReadSettings):
         self.recursive = kwargs.get('recursive', None)
         self.wildcard_folder_path = kwargs.get('wildcard_folder_path', None)
         self.wildcard_file_name = kwargs.get('wildcard_file_name', None)
+        self.file_list_path = kwargs.get('file_list_path', None)
         self.enable_partition_discovery = kwargs.get('enable_partition_discovery', None)
         self.modified_datetime_start = kwargs.get('modified_datetime_start', None)
         self.modified_datetime_end = kwargs.get('modified_datetime_end', None)
+
+
+class AzureFileStorageReadSettingsFileListPath(msrest.serialization.Model):
+    """Point to a text file that lists each file (relative path to the path configured in the dataset) that you want to copy. Type: string (or Expression with resultType string).
+
+    """
+
+    _attribute_map = {
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(AzureFileStorageReadSettingsFileListPath, self).__init__(**kwargs)
 
 
 class AzureFileStorageReadSettingsModifiedDatetimeEnd(msrest.serialization.Model):
@@ -7555,6 +7762,9 @@ class AzureMariaDBSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: ~data_factory_management_client.models.AzureMariaDBSourceQuery
@@ -7571,6 +7781,7 @@ class AzureMariaDBSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'AzureMariaDBSourceQuery'},
     }
 
@@ -8847,6 +9058,9 @@ class AzureMySqlSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: Database query. Type: string (or Expression with resultType string).
     :type query: ~data_factory_management_client.models.AzureMySqlSourceQuery
     """
@@ -8862,6 +9076,7 @@ class AzureMySqlSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'AzureMySqlSourceQuery'},
     }
 
@@ -9223,6 +9438,9 @@ class AzurePostgreSqlSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: ~data_factory_management_client.models.AzurePostgreSqlSourceQuery
@@ -9239,6 +9457,7 @@ class AzurePostgreSqlSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'AzurePostgreSqlSourceQuery'},
     }
 
@@ -10792,6 +11011,9 @@ class AzureSqlSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param sql_reader_query: SQL reader query. Type: string (or Expression with resultType string).
     :type sql_reader_query: ~data_factory_management_client.models.AzureSqlSourceSqlReaderQuery
     :param sql_reader_stored_procedure_name: Name of the stored procedure for a SQL Database
@@ -10819,6 +11041,7 @@ class AzureSqlSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'sql_reader_query': {'key': 'sqlReaderQuery', 'type': 'AzureSqlSourceSqlReaderQuery'},
         'sql_reader_stored_procedure_name': {'key': 'sqlReaderStoredProcedureName', 'type': 'AzureSqlSourceSqlReaderStoredProcedureName'},
         'stored_procedure_parameters': {'key': 'storedProcedureParameters', 'type': '{StoredProcedureParameter}'},
@@ -11427,6 +11650,9 @@ class AzureTableSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param azure_table_source_query: Azure Table source query. Type: string (or Expression with
      resultType string).
     :type azure_table_source_query:
@@ -11448,6 +11674,7 @@ class AzureTableSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'azure_table_source_query': {'key': 'azureTableSourceQuery', 'type': 'AzureTableSourceAzureTableSourceQuery'},
         'azure_table_source_ignore_table_not_found': {'key': 'azureTableSourceIgnoreTableNotFound', 'type': 'AzureTableSourceAzureTableSourceIgnoreTableNotFound'},
     }
@@ -12534,6 +12761,9 @@ class CassandraSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: Database query. Should be a SQL-92 query expression or Cassandra Query Language
      (CQL) command. Type: string (or Expression with resultType string).
     :type query: ~data_factory_management_client.models.CassandraSourceQuery
@@ -12558,6 +12788,7 @@ class CassandraSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'CassandraSourceQuery'},
         'consistency_level': {'key': 'consistencyLevel', 'type': 'str'},
     }
@@ -13584,6 +13815,9 @@ class CommonDataServiceForAppsSource(CopySource):
     :param query: FetchXML is a proprietary query language that is used in Microsoft Common Data
      Service for Apps (online & on-premises). Type: string (or Expression with resultType string).
     :type query: ~data_factory_management_client.models.CommonDataServiceForAppsSourceQuery
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     """
 
     _validation = {
@@ -13597,6 +13831,7 @@ class CommonDataServiceForAppsSource(CopySource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query': {'key': 'query', 'type': 'CommonDataServiceForAppsSourceQuery'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
 
     def __init__(
@@ -13606,6 +13841,7 @@ class CommonDataServiceForAppsSource(CopySource):
         super(CommonDataServiceForAppsSource, self).__init__(**kwargs)
         self.type = 'CommonDataServiceForAppsSource'
         self.query = kwargs.get('query', None)
+        self.additional_columns = kwargs.get('additional_columns', None)
 
 
 class CommonDataServiceForAppsSourceQuery(msrest.serialization.Model):
@@ -13973,6 +14209,9 @@ class ConcurSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: ~data_factory_management_client.models.ConcurSourceQuery
@@ -13989,6 +14228,7 @@ class ConcurSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'ConcurSourceQuery'},
     }
 
@@ -14070,12 +14310,20 @@ class CopyActivity(ExecutionActivity):
     :param redirect_incompatible_row_settings: Redirect incompatible row settings.
     :type redirect_incompatible_row_settings:
      ~data_factory_management_client.models.RedirectIncompatibleRowSettings
+    :param log_storage_settings: Log storage settings.
+    :type log_storage_settings: ~data_factory_management_client.models.LogStorageSettings
     :param preserve_rules: Preserve Rules.
     :type preserve_rules:
      list[~data_factory_management_client.models.CopyActivityTypePropertiesPreserveRulesItem]
     :param preserve: Preserve rules.
     :type preserve:
      list[~data_factory_management_client.models.CopyActivityTypePropertiesPreserveItem]
+    :param validate_data_consistency: Whether to enable Data Consistency validation. Type: boolean
+     (or Expression with resultType boolean).
+    :type validate_data_consistency:
+     ~data_factory_management_client.models.CopyActivityTypePropertiesValidateDataConsistency
+    :param skip_error_file: Skip error file.
+    :type skip_error_file: ~data_factory_management_client.models.SkipErrorFile
     """
 
     _validation = {
@@ -14105,8 +14353,11 @@ class CopyActivity(ExecutionActivity):
         'data_integration_units': {'key': 'typeProperties.dataIntegrationUnits', 'type': 'CopyActivityTypePropertiesDataIntegrationUnits'},
         'enable_skip_incompatible_row': {'key': 'typeProperties.enableSkipIncompatibleRow', 'type': 'CopyActivityTypePropertiesEnableSkipIncompatibleRow'},
         'redirect_incompatible_row_settings': {'key': 'typeProperties.redirectIncompatibleRowSettings', 'type': 'RedirectIncompatibleRowSettings'},
+        'log_storage_settings': {'key': 'typeProperties.logStorageSettings', 'type': 'LogStorageSettings'},
         'preserve_rules': {'key': 'typeProperties.preserveRules', 'type': '[CopyActivityTypePropertiesPreserveRulesItem]'},
         'preserve': {'key': 'typeProperties.preserve', 'type': '[CopyActivityTypePropertiesPreserveItem]'},
+        'validate_data_consistency': {'key': 'typeProperties.validateDataConsistency', 'type': 'CopyActivityTypePropertiesValidateDataConsistency'},
+        'skip_error_file': {'key': 'typeProperties.skipErrorFile', 'type': 'SkipErrorFile'},
     }
 
     def __init__(
@@ -14126,8 +14377,11 @@ class CopyActivity(ExecutionActivity):
         self.data_integration_units = kwargs.get('data_integration_units', None)
         self.enable_skip_incompatible_row = kwargs.get('enable_skip_incompatible_row', None)
         self.redirect_incompatible_row_settings = kwargs.get('redirect_incompatible_row_settings', None)
+        self.log_storage_settings = kwargs.get('log_storage_settings', None)
         self.preserve_rules = kwargs.get('preserve_rules', None)
         self.preserve = kwargs.get('preserve', None)
+        self.validate_data_consistency = kwargs.get('validate_data_consistency', None)
+        self.skip_error_file = kwargs.get('skip_error_file', None)
 
 
 class CopyActivityTypeProperties(msrest.serialization.Model):
@@ -14163,12 +14417,20 @@ class CopyActivityTypeProperties(msrest.serialization.Model):
     :param redirect_incompatible_row_settings: Redirect incompatible row settings.
     :type redirect_incompatible_row_settings:
      ~data_factory_management_client.models.RedirectIncompatibleRowSettings
+    :param log_storage_settings: Log storage settings.
+    :type log_storage_settings: ~data_factory_management_client.models.LogStorageSettings
     :param preserve_rules: Preserve Rules.
     :type preserve_rules:
      list[~data_factory_management_client.models.CopyActivityTypePropertiesPreserveRulesItem]
     :param preserve: Preserve rules.
     :type preserve:
      list[~data_factory_management_client.models.CopyActivityTypePropertiesPreserveItem]
+    :param validate_data_consistency: Whether to enable Data Consistency validation. Type: boolean
+     (or Expression with resultType boolean).
+    :type validate_data_consistency:
+     ~data_factory_management_client.models.CopyActivityTypePropertiesValidateDataConsistency
+    :param skip_error_file: Skip error file.
+    :type skip_error_file: ~data_factory_management_client.models.SkipErrorFile
     """
 
     _validation = {
@@ -14186,8 +14448,11 @@ class CopyActivityTypeProperties(msrest.serialization.Model):
         'data_integration_units': {'key': 'dataIntegrationUnits', 'type': 'CopyActivityTypePropertiesDataIntegrationUnits'},
         'enable_skip_incompatible_row': {'key': 'enableSkipIncompatibleRow', 'type': 'CopyActivityTypePropertiesEnableSkipIncompatibleRow'},
         'redirect_incompatible_row_settings': {'key': 'redirectIncompatibleRowSettings', 'type': 'RedirectIncompatibleRowSettings'},
+        'log_storage_settings': {'key': 'logStorageSettings', 'type': 'LogStorageSettings'},
         'preserve_rules': {'key': 'preserveRules', 'type': '[CopyActivityTypePropertiesPreserveRulesItem]'},
         'preserve': {'key': 'preserve', 'type': '[CopyActivityTypePropertiesPreserveItem]'},
+        'validate_data_consistency': {'key': 'validateDataConsistency', 'type': 'CopyActivityTypePropertiesValidateDataConsistency'},
+        'skip_error_file': {'key': 'skipErrorFile', 'type': 'SkipErrorFile'},
     }
 
     def __init__(
@@ -14204,8 +14469,11 @@ class CopyActivityTypeProperties(msrest.serialization.Model):
         self.data_integration_units = kwargs.get('data_integration_units', None)
         self.enable_skip_incompatible_row = kwargs.get('enable_skip_incompatible_row', None)
         self.redirect_incompatible_row_settings = kwargs.get('redirect_incompatible_row_settings', None)
+        self.log_storage_settings = kwargs.get('log_storage_settings', None)
         self.preserve_rules = kwargs.get('preserve_rules', None)
         self.preserve = kwargs.get('preserve', None)
+        self.validate_data_consistency = kwargs.get('validate_data_consistency', None)
+        self.skip_error_file = kwargs.get('skip_error_file', None)
 
 
 class CopyActivityTypePropertiesDataIntegrationUnits(msrest.serialization.Model):
@@ -14311,6 +14579,21 @@ class CopyActivityTypePropertiesTranslator(msrest.serialization.Model):
         **kwargs
     ):
         super(CopyActivityTypePropertiesTranslator, self).__init__(**kwargs)
+
+
+class CopyActivityTypePropertiesValidateDataConsistency(msrest.serialization.Model):
+    """Whether to enable Data Consistency validation. Type: boolean (or Expression with resultType boolean).
+
+    """
+
+    _attribute_map = {
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(CopyActivityTypePropertiesValidateDataConsistency, self).__init__(**kwargs)
 
 
 class CopySinkMaxConcurrentConnections(msrest.serialization.Model):
@@ -14936,6 +15219,9 @@ class CosmosDbMongoDbApiSource(CopySource):
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout:
      ~data_factory_management_client.models.CosmosDbMongoDbApiSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     """
 
     _validation = {
@@ -14952,6 +15238,7 @@ class CosmosDbMongoDbApiSource(CopySource):
         'cursor_methods': {'key': 'cursorMethods', 'type': 'MongoDbCursorMethodsProperties'},
         'batch_size': {'key': 'batchSize', 'type': 'CosmosDbMongoDbApiSourceBatchSize'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'CosmosDbMongoDbApiSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
 
     def __init__(
@@ -14964,6 +15251,7 @@ class CosmosDbMongoDbApiSource(CopySource):
         self.cursor_methods = kwargs.get('cursor_methods', None)
         self.batch_size = kwargs.get('batch_size', None)
         self.query_timeout = kwargs.get('query_timeout', None)
+        self.additional_columns = kwargs.get('additional_columns', None)
 
 
 class CosmosDbMongoDbApiSourceBatchSize(msrest.serialization.Model):
@@ -15213,6 +15501,9 @@ class CosmosDbSqlApiSource(CopySource):
      resultType array of strings).
     :type preferred_regions:
      ~data_factory_management_client.models.CosmosDbSqlApiSourcePreferredRegions
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     """
 
     _validation = {
@@ -15228,6 +15519,7 @@ class CosmosDbSqlApiSource(CopySource):
         'query': {'key': 'query', 'type': 'CosmosDbSqlApiSourceQuery'},
         'page_size': {'key': 'pageSize', 'type': 'CosmosDbSqlApiSourcePageSize'},
         'preferred_regions': {'key': 'preferredRegions', 'type': 'CosmosDbSqlApiSourcePreferredRegions'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
 
     def __init__(
@@ -15239,6 +15531,7 @@ class CosmosDbSqlApiSource(CopySource):
         self.query = kwargs.get('query', None)
         self.page_size = kwargs.get('page_size', None)
         self.preferred_regions = kwargs.get('preferred_regions', None)
+        self.additional_columns = kwargs.get('additional_columns', None)
 
 
 class CosmosDbSqlApiSourcePageSize(msrest.serialization.Model):
@@ -15429,6 +15722,9 @@ class CouchbaseSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: ~data_factory_management_client.models.CouchbaseSourceQuery
@@ -15445,6 +15741,7 @@ class CouchbaseSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'CouchbaseSourceQuery'},
     }
 
@@ -17688,39 +17985,43 @@ class Db2LinkedService(LinkedService):
     :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[~data_factory_management_client.models.LinkedServiceAnnotationsItem]
-    :param server: Required. Server name for connection. Type: string (or Expression with
-     resultType string).
+    :param connection_string: The connection string. It is mutually exclusive with server,
+     database, authenticationType, userName, packageCollection and certificateCommonName property.
+     Type: string, SecureString or AzureKeyVaultSecretReference.
+    :type connection_string:
+     ~data_factory_management_client.models.Db2LinkedServiceTypePropertiesConnectionString
+    :param server: Server name for connection. It is mutually exclusive with connectionString
+     property. Type: string (or Expression with resultType string).
     :type server: ~data_factory_management_client.models.Db2LinkedServiceTypePropertiesServer
-    :param database: Required. Database name for connection. Type: string (or Expression with
-     resultType string).
+    :param database: Database name for connection. It is mutually exclusive with connectionString
+     property. Type: string (or Expression with resultType string).
     :type database: ~data_factory_management_client.models.Db2LinkedServiceTypePropertiesDatabase
-    :ivar authentication_type: AuthenticationType to be used for connection. Default value:
-     "Basic".
+    :ivar authentication_type: AuthenticationType to be used for connection. It is mutually
+     exclusive with connectionString property. Default value: "Basic".
     :vartype authentication_type: str
-    :param username: Username for authentication. Type: string (or Expression with resultType
-     string).
+    :param username: Username for authentication. It is mutually exclusive with connectionString
+     property. Type: string (or Expression with resultType string).
     :type username: ~data_factory_management_client.models.Db2LinkedServiceTypePropertiesUsername
     :param password: The base definition of a secret type.
     :type password: ~data_factory_management_client.models.SecretBase
-    :param package_collection: Under where packages are created when querying database. Type:
-     string (or Expression with resultType string).
+    :param package_collection: Under where packages are created when querying database. It is
+     mutually exclusive with connectionString property. Type: string (or Expression with resultType
+     string).
     :type package_collection:
      ~data_factory_management_client.models.Db2LinkedServiceTypePropertiesPackageCollection
-    :param certificate_common_name: Certificate Common Name when TLS is enabled. Type: string (or
-     Expression with resultType string).
+    :param certificate_common_name: Certificate Common Name when TLS is enabled. It is mutually
+     exclusive with connectionString property. Type: string (or Expression with resultType string).
     :type certificate_common_name:
      ~data_factory_management_client.models.Db2LinkedServiceTypePropertiesCertificateCommonName
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
-     encrypted using the integration runtime credential manager. Type: string (or Expression with
-     resultType string).
+     encrypted using the integration runtime credential manager. It is mutually exclusive with
+     connectionString property. Type: string (or Expression with resultType string).
     :type encrypted_credential:
      ~data_factory_management_client.models.Db2LinkedServiceTypePropertiesEncryptedCredential
     """
 
     _validation = {
         'type': {'required': True},
-        'server': {'required': True},
-        'database': {'required': True},
         'authentication_type': {'constant': True},
     }
 
@@ -17731,6 +18032,7 @@ class Db2LinkedService(LinkedService):
         'description': {'key': 'description', 'type': 'str'},
         'parameters': {'key': 'parameters', 'type': '{ParameterSpecification}'},
         'annotations': {'key': 'annotations', 'type': '[LinkedServiceAnnotationsItem]'},
+        'connection_string': {'key': 'typeProperties.connectionString', 'type': 'Db2LinkedServiceTypePropertiesConnectionString'},
         'server': {'key': 'typeProperties.server', 'type': 'Db2LinkedServiceTypePropertiesServer'},
         'database': {'key': 'typeProperties.database', 'type': 'Db2LinkedServiceTypePropertiesDatabase'},
         'authentication_type': {'key': 'typeProperties.authenticationType', 'type': 'str'},
@@ -17749,6 +18051,7 @@ class Db2LinkedService(LinkedService):
     ):
         super(Db2LinkedService, self).__init__(**kwargs)
         self.type = 'Db2'
+        self.connection_string = kwargs.get('connection_string', None)
         self.server = kwargs.get('server', None)
         self.database = kwargs.get('database', None)
         self.username = kwargs.get('username', None)
@@ -17763,44 +18066,47 @@ class Db2LinkedServiceTypeProperties(msrest.serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    All required parameters must be populated in order to send to Azure.
-
-    :param server: Required. Server name for connection. Type: string (or Expression with
-     resultType string).
+    :param connection_string: The connection string. It is mutually exclusive with server,
+     database, authenticationType, userName, packageCollection and certificateCommonName property.
+     Type: string, SecureString or AzureKeyVaultSecretReference.
+    :type connection_string:
+     ~data_factory_management_client.models.Db2LinkedServiceTypePropertiesConnectionString
+    :param server: Server name for connection. It is mutually exclusive with connectionString
+     property. Type: string (or Expression with resultType string).
     :type server: ~data_factory_management_client.models.Db2LinkedServiceTypePropertiesServer
-    :param database: Required. Database name for connection. Type: string (or Expression with
-     resultType string).
+    :param database: Database name for connection. It is mutually exclusive with connectionString
+     property. Type: string (or Expression with resultType string).
     :type database: ~data_factory_management_client.models.Db2LinkedServiceTypePropertiesDatabase
-    :ivar authentication_type: AuthenticationType to be used for connection. Default value:
-     "Basic".
+    :ivar authentication_type: AuthenticationType to be used for connection. It is mutually
+     exclusive with connectionString property. Default value: "Basic".
     :vartype authentication_type: str
-    :param username: Username for authentication. Type: string (or Expression with resultType
-     string).
+    :param username: Username for authentication. It is mutually exclusive with connectionString
+     property. Type: string (or Expression with resultType string).
     :type username: ~data_factory_management_client.models.Db2LinkedServiceTypePropertiesUsername
     :param password: The base definition of a secret type.
     :type password: ~data_factory_management_client.models.SecretBase
-    :param package_collection: Under where packages are created when querying database. Type:
-     string (or Expression with resultType string).
+    :param package_collection: Under where packages are created when querying database. It is
+     mutually exclusive with connectionString property. Type: string (or Expression with resultType
+     string).
     :type package_collection:
      ~data_factory_management_client.models.Db2LinkedServiceTypePropertiesPackageCollection
-    :param certificate_common_name: Certificate Common Name when TLS is enabled. Type: string (or
-     Expression with resultType string).
+    :param certificate_common_name: Certificate Common Name when TLS is enabled. It is mutually
+     exclusive with connectionString property. Type: string (or Expression with resultType string).
     :type certificate_common_name:
      ~data_factory_management_client.models.Db2LinkedServiceTypePropertiesCertificateCommonName
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
-     encrypted using the integration runtime credential manager. Type: string (or Expression with
-     resultType string).
+     encrypted using the integration runtime credential manager. It is mutually exclusive with
+     connectionString property. Type: string (or Expression with resultType string).
     :type encrypted_credential:
      ~data_factory_management_client.models.Db2LinkedServiceTypePropertiesEncryptedCredential
     """
 
     _validation = {
-        'server': {'required': True},
-        'database': {'required': True},
         'authentication_type': {'constant': True},
     }
 
     _attribute_map = {
+        'connection_string': {'key': 'connectionString', 'type': 'Db2LinkedServiceTypePropertiesConnectionString'},
         'server': {'key': 'server', 'type': 'Db2LinkedServiceTypePropertiesServer'},
         'database': {'key': 'database', 'type': 'Db2LinkedServiceTypePropertiesDatabase'},
         'authentication_type': {'key': 'authenticationType', 'type': 'str'},
@@ -17818,6 +18124,7 @@ class Db2LinkedServiceTypeProperties(msrest.serialization.Model):
         **kwargs
     ):
         super(Db2LinkedServiceTypeProperties, self).__init__(**kwargs)
+        self.connection_string = kwargs.get('connection_string', None)
         self.server = kwargs.get('server', None)
         self.database = kwargs.get('database', None)
         self.username = kwargs.get('username', None)
@@ -17828,7 +18135,7 @@ class Db2LinkedServiceTypeProperties(msrest.serialization.Model):
 
 
 class Db2LinkedServiceTypePropertiesCertificateCommonName(msrest.serialization.Model):
-    """Certificate Common Name when TLS is enabled. Type: string (or Expression with resultType string).
+    """Certificate Common Name when TLS is enabled. It is mutually exclusive with connectionString property. Type: string (or Expression with resultType string).
 
     """
 
@@ -17842,8 +18149,23 @@ class Db2LinkedServiceTypePropertiesCertificateCommonName(msrest.serialization.M
         super(Db2LinkedServiceTypePropertiesCertificateCommonName, self).__init__(**kwargs)
 
 
+class Db2LinkedServiceTypePropertiesConnectionString(msrest.serialization.Model):
+    """The connection string. It is mutually exclusive with server, database, authenticationType, userName, packageCollection and certificateCommonName property. Type: string, SecureString or AzureKeyVaultSecretReference.
+
+    """
+
+    _attribute_map = {
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(Db2LinkedServiceTypePropertiesConnectionString, self).__init__(**kwargs)
+
+
 class Db2LinkedServiceTypePropertiesDatabase(msrest.serialization.Model):
-    """Database name for connection. Type: string (or Expression with resultType string).
+    """Database name for connection. It is mutually exclusive with connectionString property. Type: string (or Expression with resultType string).
 
     """
 
@@ -17858,7 +18180,7 @@ class Db2LinkedServiceTypePropertiesDatabase(msrest.serialization.Model):
 
 
 class Db2LinkedServiceTypePropertiesEncryptedCredential(msrest.serialization.Model):
-    """The encrypted credential used for authentication. Credentials are encrypted using the integration runtime credential manager. Type: string (or Expression with resultType string).
+    """The encrypted credential used for authentication. Credentials are encrypted using the integration runtime credential manager. It is mutually exclusive with connectionString property. Type: string (or Expression with resultType string).
 
     """
 
@@ -17873,7 +18195,7 @@ class Db2LinkedServiceTypePropertiesEncryptedCredential(msrest.serialization.Mod
 
 
 class Db2LinkedServiceTypePropertiesPackageCollection(msrest.serialization.Model):
-    """Under where packages are created when querying database. Type: string (or Expression with resultType string).
+    """Under where packages are created when querying database. It is mutually exclusive with connectionString property. Type: string (or Expression with resultType string).
 
     """
 
@@ -17888,7 +18210,7 @@ class Db2LinkedServiceTypePropertiesPackageCollection(msrest.serialization.Model
 
 
 class Db2LinkedServiceTypePropertiesServer(msrest.serialization.Model):
-    """Server name for connection. Type: string (or Expression with resultType string).
+    """Server name for connection. It is mutually exclusive with connectionString property. Type: string (or Expression with resultType string).
 
     """
 
@@ -17903,7 +18225,7 @@ class Db2LinkedServiceTypePropertiesServer(msrest.serialization.Model):
 
 
 class Db2LinkedServiceTypePropertiesUsername(msrest.serialization.Model):
-    """Username for authentication. Type: string (or Expression with resultType string).
+    """Username for authentication. It is mutually exclusive with connectionString property. Type: string (or Expression with resultType string).
 
     """
 
@@ -17940,6 +18262,9 @@ class Db2Source(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: Database query. Type: string (or Expression with resultType string).
     :type query: ~data_factory_management_client.models.Db2SourceQuery
     """
@@ -17955,6 +18280,7 @@ class Db2Source(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'Db2SourceQuery'},
     }
 
@@ -18754,6 +19080,9 @@ class DelimitedTextSource(CopySource):
     :type store_settings: ~data_factory_management_client.models.StoreReadSettings
     :param format_settings: Delimited text read settings.
     :type format_settings: ~data_factory_management_client.models.DelimitedTextReadSettings
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     """
 
     _validation = {
@@ -18768,6 +19097,7 @@ class DelimitedTextSource(CopySource):
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreReadSettings'},
         'format_settings': {'key': 'formatSettings', 'type': 'DelimitedTextReadSettings'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
 
     def __init__(
@@ -18778,6 +19108,7 @@ class DelimitedTextSource(CopySource):
         self.type = 'DelimitedTextSource'
         self.store_settings = kwargs.get('store_settings', None)
         self.format_settings = kwargs.get('format_settings', None)
+        self.additional_columns = kwargs.get('additional_columns', None)
 
 
 class DelimitedTextWriteSettings(FormatWriteSettings):
@@ -19193,6 +19524,9 @@ class DocumentDbCollectionSource(CopySource):
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout:
      ~data_factory_management_client.models.DocumentDbCollectionSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     """
 
     _validation = {
@@ -19208,6 +19542,7 @@ class DocumentDbCollectionSource(CopySource):
         'query': {'key': 'query', 'type': 'DocumentDbCollectionSourceQuery'},
         'nesting_separator': {'key': 'nestingSeparator', 'type': 'DocumentDbCollectionSourceNestingSeparator'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'DocumentDbCollectionSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
 
     def __init__(
@@ -19219,6 +19554,7 @@ class DocumentDbCollectionSource(CopySource):
         self.query = kwargs.get('query', None)
         self.nesting_separator = kwargs.get('nesting_separator', None)
         self.query_timeout = kwargs.get('query_timeout', None)
+        self.additional_columns = kwargs.get('additional_columns', None)
 
 
 class DocumentDbCollectionSourceNestingSeparator(msrest.serialization.Model):
@@ -19483,6 +19819,9 @@ class DrillSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: ~data_factory_management_client.models.DrillSourceQuery
@@ -19499,6 +19838,7 @@ class DrillSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'DrillSourceQuery'},
     }
 
@@ -20018,6 +20358,9 @@ class DynamicsAXSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: ~data_factory_management_client.models.DynamicsAXSourceQuery
@@ -20034,6 +20377,7 @@ class DynamicsAXSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'DynamicsAXSourceQuery'},
     }
 
@@ -20601,6 +20945,9 @@ class DynamicsCrmSource(CopySource):
     :param query: FetchXML is a proprietary query language that is used in Microsoft Dynamics CRM
      (online & on-premises). Type: string (or Expression with resultType string).
     :type query: ~data_factory_management_client.models.DynamicsCrmSourceQuery
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     """
 
     _validation = {
@@ -20614,6 +20961,7 @@ class DynamicsCrmSource(CopySource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query': {'key': 'query', 'type': 'DynamicsCrmSourceQuery'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
 
     def __init__(
@@ -20623,6 +20971,7 @@ class DynamicsCrmSource(CopySource):
         super(DynamicsCrmSource, self).__init__(**kwargs)
         self.type = 'DynamicsCrmSource'
         self.query = kwargs.get('query', None)
+        self.additional_columns = kwargs.get('additional_columns', None)
 
 
 class DynamicsCrmSourceQuery(msrest.serialization.Model):
@@ -21176,6 +21525,9 @@ class DynamicsSource(CopySource):
     :param query: FetchXML is a proprietary query language that is used in Microsoft Dynamics
      (online & on-premises). Type: string (or Expression with resultType string).
     :type query: ~data_factory_management_client.models.DynamicsSourceQuery
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     """
 
     _validation = {
@@ -21189,6 +21541,7 @@ class DynamicsSource(CopySource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query': {'key': 'query', 'type': 'DynamicsSourceQuery'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
 
     def __init__(
@@ -21198,6 +21551,7 @@ class DynamicsSource(CopySource):
         super(DynamicsSource, self).__init__(**kwargs)
         self.type = 'DynamicsSource'
         self.query = kwargs.get('query', None)
+        self.additional_columns = kwargs.get('additional_columns', None)
 
 
 class DynamicsSourceQuery(msrest.serialization.Model):
@@ -21533,6 +21887,9 @@ class EloquaSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: ~data_factory_management_client.models.EloquaSourceQuery
@@ -21549,6 +21906,7 @@ class EloquaSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'EloquaSourceQuery'},
     }
 
@@ -22847,6 +23205,10 @@ class FileServerReadSettings(StoreReadSettings):
      resultType string).
     :type wildcard_file_name:
      ~data_factory_management_client.models.FileServerReadSettingsWildcardFileName
+    :param file_list_path: Point to a text file that lists each file (relative path to the path
+     configured in the dataset) that you want to copy. Type: string (or Expression with resultType
+     string).
+    :type file_list_path: ~data_factory_management_client.models.FileServerReadSettingsFileListPath
     :param enable_partition_discovery: Indicates whether to enable partition discovery.
     :type enable_partition_discovery: bool
     :param modified_datetime_start: The start of file's modified datetime. Type: string (or
@@ -22870,6 +23232,7 @@ class FileServerReadSettings(StoreReadSettings):
         'recursive': {'key': 'recursive', 'type': 'FileServerReadSettingsRecursive'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'FileServerReadSettingsWildcardFolderPath'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'FileServerReadSettingsWildcardFileName'},
+        'file_list_path': {'key': 'fileListPath', 'type': 'FileServerReadSettingsFileListPath'},
         'enable_partition_discovery': {'key': 'enablePartitionDiscovery', 'type': 'bool'},
         'modified_datetime_start': {'key': 'modifiedDatetimeStart', 'type': 'FileServerReadSettingsModifiedDatetimeStart'},
         'modified_datetime_end': {'key': 'modifiedDatetimeEnd', 'type': 'FileServerReadSettingsModifiedDatetimeEnd'},
@@ -22884,9 +23247,25 @@ class FileServerReadSettings(StoreReadSettings):
         self.recursive = kwargs.get('recursive', None)
         self.wildcard_folder_path = kwargs.get('wildcard_folder_path', None)
         self.wildcard_file_name = kwargs.get('wildcard_file_name', None)
+        self.file_list_path = kwargs.get('file_list_path', None)
         self.enable_partition_discovery = kwargs.get('enable_partition_discovery', None)
         self.modified_datetime_start = kwargs.get('modified_datetime_start', None)
         self.modified_datetime_end = kwargs.get('modified_datetime_end', None)
+
+
+class FileServerReadSettingsFileListPath(msrest.serialization.Model):
+    """Point to a text file that lists each file (relative path to the path configured in the dataset) that you want to copy. Type: string (or Expression with resultType string).
+
+    """
+
+    _attribute_map = {
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(FileServerReadSettingsFileListPath, self).__init__(**kwargs)
 
 
 class FileServerReadSettingsModifiedDatetimeEnd(msrest.serialization.Model):
@@ -23311,6 +23690,9 @@ class FileSystemSource(CopySource):
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: ~data_factory_management_client.models.FileSystemSourceRecursive
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     """
 
     _validation = {
@@ -23324,6 +23706,7 @@ class FileSystemSource(CopySource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'recursive': {'key': 'recursive', 'type': 'FileSystemSourceRecursive'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
 
     def __init__(
@@ -23333,6 +23716,7 @@ class FileSystemSource(CopySource):
         super(FileSystemSource, self).__init__(**kwargs)
         self.type = 'FileSystemSource'
         self.recursive = kwargs.get('recursive', None)
+        self.additional_columns = kwargs.get('additional_columns', None)
 
 
 class FileSystemSourceRecursive(msrest.serialization.Model):
@@ -23559,6 +23943,10 @@ class FtpReadSettings(StoreReadSettings):
      string).
     :type wildcard_file_name:
      ~data_factory_management_client.models.FtpReadSettingsWildcardFileName
+    :param file_list_path: Point to a text file that lists each file (relative path to the path
+     configured in the dataset) that you want to copy. Type: string (or Expression with resultType
+     string).
+    :type file_list_path: ~data_factory_management_client.models.FtpReadSettingsFileListPath
     :param use_binary_transfer: Specify whether to use binary transfer mode for FTP stores.
     :type use_binary_transfer: bool
     """
@@ -23574,6 +23962,7 @@ class FtpReadSettings(StoreReadSettings):
         'recursive': {'key': 'recursive', 'type': 'FtpReadSettingsRecursive'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'FtpReadSettingsWildcardFolderPath'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'FtpReadSettingsWildcardFileName'},
+        'file_list_path': {'key': 'fileListPath', 'type': 'FtpReadSettingsFileListPath'},
         'use_binary_transfer': {'key': 'useBinaryTransfer', 'type': 'bool'},
     }
 
@@ -23586,7 +23975,23 @@ class FtpReadSettings(StoreReadSettings):
         self.recursive = kwargs.get('recursive', None)
         self.wildcard_folder_path = kwargs.get('wildcard_folder_path', None)
         self.wildcard_file_name = kwargs.get('wildcard_file_name', None)
+        self.file_list_path = kwargs.get('file_list_path', None)
         self.use_binary_transfer = kwargs.get('use_binary_transfer', None)
+
+
+class FtpReadSettingsFileListPath(msrest.serialization.Model):
+    """Point to a text file that lists each file (relative path to the path configured in the dataset) that you want to copy. Type: string (or Expression with resultType string).
+
+    """
+
+    _attribute_map = {
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(FtpReadSettingsFileListPath, self).__init__(**kwargs)
 
 
 class FtpReadSettingsRecursive(msrest.serialization.Model):
@@ -24526,6 +24931,9 @@ class GoogleAdWordsSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: ~data_factory_management_client.models.GoogleAdWordsSourceQuery
@@ -24542,6 +24950,7 @@ class GoogleAdWordsSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'GoogleAdWordsSourceQuery'},
     }
 
@@ -25080,6 +25489,9 @@ class GoogleBigQuerySource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: ~data_factory_management_client.models.GoogleBigQuerySourceQuery
@@ -25096,6 +25508,7 @@ class GoogleBigQuerySource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'GoogleBigQuerySourceQuery'},
     }
 
@@ -25379,6 +25792,11 @@ class GoogleCloudStorageReadSettings(StoreReadSettings):
     :param prefix: The prefix filter for the Google Cloud Storage object name. Type: string (or
      Expression with resultType string).
     :type prefix: ~data_factory_management_client.models.GoogleCloudStorageReadSettingsPrefix
+    :param file_list_path: Point to a text file that lists each file (relative path to the path
+     configured in the dataset) that you want to copy. Type: string (or Expression with resultType
+     string).
+    :type file_list_path:
+     ~data_factory_management_client.models.GoogleCloudStorageReadSettingsFileListPath
     :param enable_partition_discovery: Indicates whether to enable partition discovery.
     :type enable_partition_discovery: bool
     :param modified_datetime_start: The start of file's modified datetime. Type: string (or
@@ -25403,6 +25821,7 @@ class GoogleCloudStorageReadSettings(StoreReadSettings):
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'GoogleCloudStorageReadSettingsWildcardFolderPath'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'GoogleCloudStorageReadSettingsWildcardFileName'},
         'prefix': {'key': 'prefix', 'type': 'GoogleCloudStorageReadSettingsPrefix'},
+        'file_list_path': {'key': 'fileListPath', 'type': 'GoogleCloudStorageReadSettingsFileListPath'},
         'enable_partition_discovery': {'key': 'enablePartitionDiscovery', 'type': 'bool'},
         'modified_datetime_start': {'key': 'modifiedDatetimeStart', 'type': 'GoogleCloudStorageReadSettingsModifiedDatetimeStart'},
         'modified_datetime_end': {'key': 'modifiedDatetimeEnd', 'type': 'GoogleCloudStorageReadSettingsModifiedDatetimeEnd'},
@@ -25418,9 +25837,25 @@ class GoogleCloudStorageReadSettings(StoreReadSettings):
         self.wildcard_folder_path = kwargs.get('wildcard_folder_path', None)
         self.wildcard_file_name = kwargs.get('wildcard_file_name', None)
         self.prefix = kwargs.get('prefix', None)
+        self.file_list_path = kwargs.get('file_list_path', None)
         self.enable_partition_discovery = kwargs.get('enable_partition_discovery', None)
         self.modified_datetime_start = kwargs.get('modified_datetime_start', None)
         self.modified_datetime_end = kwargs.get('modified_datetime_end', None)
+
+
+class GoogleCloudStorageReadSettingsFileListPath(msrest.serialization.Model):
+    """Point to a text file that lists each file (relative path to the path configured in the dataset) that you want to copy. Type: string (or Expression with resultType string).
+
+    """
+
+    _attribute_map = {
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(GoogleCloudStorageReadSettingsFileListPath, self).__init__(**kwargs)
 
 
 class GoogleCloudStorageReadSettingsModifiedDatetimeEnd(msrest.serialization.Model):
@@ -25731,6 +26166,9 @@ class GreenplumSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: ~data_factory_management_client.models.GreenplumSourceQuery
@@ -25747,6 +26185,7 @@ class GreenplumSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'GreenplumSourceQuery'},
     }
 
@@ -26247,6 +26686,9 @@ class HBaseSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: ~data_factory_management_client.models.HBaseSourceQuery
@@ -26263,6 +26705,7 @@ class HBaseSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'HBaseSourceQuery'},
     }
 
@@ -26529,6 +26972,10 @@ class HdfsReadSettings(StoreReadSettings):
      string).
     :type wildcard_file_name:
      ~data_factory_management_client.models.HdfsReadSettingsWildcardFileName
+    :param file_list_path: Point to a text file that lists each file (relative path to the path
+     configured in the dataset) that you want to copy. Type: string (or Expression with resultType
+     string).
+    :type file_list_path: ~data_factory_management_client.models.HdfsReadSettingsFileListPath
     :param enable_partition_discovery: Indicates whether to enable partition discovery.
     :type enable_partition_discovery: bool
     :param modified_datetime_start: The start of file's modified datetime. Type: string (or
@@ -26554,6 +27001,7 @@ class HdfsReadSettings(StoreReadSettings):
         'recursive': {'key': 'recursive', 'type': 'HdfsReadSettingsRecursive'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'HdfsReadSettingsWildcardFolderPath'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'HdfsReadSettingsWildcardFileName'},
+        'file_list_path': {'key': 'fileListPath', 'type': 'HdfsReadSettingsFileListPath'},
         'enable_partition_discovery': {'key': 'enablePartitionDiscovery', 'type': 'bool'},
         'modified_datetime_start': {'key': 'modifiedDatetimeStart', 'type': 'HdfsReadSettingsModifiedDatetimeStart'},
         'modified_datetime_end': {'key': 'modifiedDatetimeEnd', 'type': 'HdfsReadSettingsModifiedDatetimeEnd'},
@@ -26569,10 +27017,26 @@ class HdfsReadSettings(StoreReadSettings):
         self.recursive = kwargs.get('recursive', None)
         self.wildcard_folder_path = kwargs.get('wildcard_folder_path', None)
         self.wildcard_file_name = kwargs.get('wildcard_file_name', None)
+        self.file_list_path = kwargs.get('file_list_path', None)
         self.enable_partition_discovery = kwargs.get('enable_partition_discovery', None)
         self.modified_datetime_start = kwargs.get('modified_datetime_start', None)
         self.modified_datetime_end = kwargs.get('modified_datetime_end', None)
         self.distcp_settings = kwargs.get('distcp_settings', None)
+
+
+class HdfsReadSettingsFileListPath(msrest.serialization.Model):
+    """Point to a text file that lists each file (relative path to the path configured in the dataset) that you want to copy. Type: string (or Expression with resultType string).
+
+    """
+
+    _attribute_map = {
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(HdfsReadSettingsFileListPath, self).__init__(**kwargs)
 
 
 class HdfsReadSettingsModifiedDatetimeEnd(msrest.serialization.Model):
@@ -29482,6 +29946,9 @@ class HiveSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: ~data_factory_management_client.models.HiveSourceQuery
@@ -29498,6 +29965,7 @@ class HiveSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'HiveSourceQuery'},
     }
 
@@ -30512,6 +30980,9 @@ class HubspotSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: ~data_factory_management_client.models.HubspotSourceQuery
@@ -30528,6 +30999,7 @@ class HubspotSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'HubspotSourceQuery'},
     }
 
@@ -31143,6 +31615,9 @@ class ImpalaSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: ~data_factory_management_client.models.ImpalaSourceQuery
@@ -31159,6 +31634,7 @@ class ImpalaSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'ImpalaSourceQuery'},
     }
 
@@ -31472,6 +31948,9 @@ class InformixSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: Database query. Type: string (or Expression with resultType string).
     :type query: ~data_factory_management_client.models.InformixSourceQuery
     """
@@ -31487,6 +31966,7 @@ class InformixSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'InformixSourceQuery'},
     }
 
@@ -32732,6 +33212,9 @@ class JiraSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: ~data_factory_management_client.models.JiraSourceQuery
@@ -32748,6 +33231,7 @@ class JiraSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'JiraSourceQuery'},
     }
 
@@ -33105,6 +33589,9 @@ class JsonSource(CopySource):
      ~data_factory_management_client.models.CopySourceMaxConcurrentConnections
     :param store_settings: Connector read setting.
     :type store_settings: ~data_factory_management_client.models.StoreReadSettings
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     """
 
     _validation = {
@@ -33118,6 +33605,7 @@ class JsonSource(CopySource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreReadSettings'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
 
     def __init__(
@@ -33127,6 +33615,7 @@ class JsonSource(CopySource):
         super(JsonSource, self).__init__(**kwargs)
         self.type = 'JsonSource'
         self.store_settings = kwargs.get('store_settings', None)
+        self.additional_columns = kwargs.get('additional_columns', None)
 
 
 class JsonWriteSettings(FormatWriteSettings):
@@ -33967,6 +34456,9 @@ class MagentoSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: ~data_factory_management_client.models.MagentoSourceQuery
@@ -33983,6 +34475,7 @@ class MagentoSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'MagentoSourceQuery'},
     }
 
@@ -34551,6 +35044,9 @@ class MariaDBSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: ~data_factory_management_client.models.MariaDBSourceQuery
@@ -34567,6 +35063,7 @@ class MariaDBSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'MariaDBSourceQuery'},
     }
 
@@ -34968,6 +35465,9 @@ class MarketoSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: ~data_factory_management_client.models.MarketoSourceQuery
@@ -34984,6 +35484,7 @@ class MarketoSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'MarketoSourceQuery'},
     }
 
@@ -35296,6 +35797,9 @@ class MicrosoftAccessSource(CopySource):
      ~data_factory_management_client.models.CopySourceMaxConcurrentConnections
     :param query: Database query. Type: string (or Expression with resultType string).
     :type query: ~data_factory_management_client.models.MicrosoftAccessSourceQuery
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     """
 
     _validation = {
@@ -35309,6 +35813,7 @@ class MicrosoftAccessSource(CopySource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query': {'key': 'query', 'type': 'MicrosoftAccessSourceQuery'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
 
     def __init__(
@@ -35318,6 +35823,7 @@ class MicrosoftAccessSource(CopySource):
         super(MicrosoftAccessSource, self).__init__(**kwargs)
         self.type = 'MicrosoftAccessSource'
         self.query = kwargs.get('query', None)
+        self.additional_columns = kwargs.get('additional_columns', None)
 
 
 class MicrosoftAccessSourceQuery(msrest.serialization.Model):
@@ -35959,6 +36465,9 @@ class MongoDbSource(CopySource):
     :param query: Database query. Should be a SQL-92 query expression. Type: string (or Expression
      with resultType string).
     :type query: ~data_factory_management_client.models.MongoDbSourceQuery
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     """
 
     _validation = {
@@ -35972,6 +36481,7 @@ class MongoDbSource(CopySource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query': {'key': 'query', 'type': 'MongoDbSourceQuery'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
 
     def __init__(
@@ -35981,6 +36491,7 @@ class MongoDbSource(CopySource):
         super(MongoDbSource, self).__init__(**kwargs)
         self.type = 'MongoDbSource'
         self.query = kwargs.get('query', None)
+        self.additional_columns = kwargs.get('additional_columns', None)
 
 
 class MongoDbSourceQuery(msrest.serialization.Model):
@@ -36254,6 +36765,9 @@ class MongoDbV2Source(CopySource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.MongoDbV2SourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     """
 
     _validation = {
@@ -36270,6 +36784,7 @@ class MongoDbV2Source(CopySource):
         'cursor_methods': {'key': 'cursorMethods', 'type': 'MongoDbCursorMethodsProperties'},
         'batch_size': {'key': 'batchSize', 'type': 'MongoDbV2SourceBatchSize'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'MongoDbV2SourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
 
     def __init__(
@@ -36282,6 +36797,7 @@ class MongoDbV2Source(CopySource):
         self.cursor_methods = kwargs.get('cursor_methods', None)
         self.batch_size = kwargs.get('batch_size', None)
         self.query_timeout = kwargs.get('query_timeout', None)
+        self.additional_columns = kwargs.get('additional_columns', None)
 
 
 class MongoDbV2SourceBatchSize(msrest.serialization.Model):
@@ -36477,6 +36993,9 @@ class MySqlSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: Database query. Type: string (or Expression with resultType string).
     :type query: ~data_factory_management_client.models.MySqlSourceQuery
     """
@@ -36492,6 +37011,7 @@ class MySqlSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'MySqlSourceQuery'},
     }
 
@@ -36836,6 +37356,9 @@ class NetezzaSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: ~data_factory_management_client.models.NetezzaSourceQuery
@@ -36857,6 +37380,7 @@ class NetezzaSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'NetezzaSourceQuery'},
         'partition_option': {'key': 'partitionOption', 'type': 'str'},
         'partition_settings': {'key': 'partitionSettings', 'type': 'NetezzaPartitionSettings'},
@@ -37433,6 +37957,9 @@ class ODataSource(CopySource):
     :param query: OData query. For example, "$top=1". Type: string (or Expression with resultType
      string).
     :type query: ~data_factory_management_client.models.ODataSourceQuery
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     """
 
     _validation = {
@@ -37446,6 +37973,7 @@ class ODataSource(CopySource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query': {'key': 'query', 'type': 'ODataSourceQuery'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
 
     def __init__(
@@ -37455,6 +37983,7 @@ class ODataSource(CopySource):
         super(ODataSource, self).__init__(**kwargs)
         self.type = 'ODataSource'
         self.query = kwargs.get('query', None)
+        self.additional_columns = kwargs.get('additional_columns', None)
 
 
 class ODataSourceQuery(msrest.serialization.Model):
@@ -37754,6 +38283,9 @@ class OdbcSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: Database query. Type: string (or Expression with resultType string).
     :type query: ~data_factory_management_client.models.OdbcSourceQuery
     """
@@ -37769,6 +38301,7 @@ class OdbcSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'OdbcSourceQuery'},
     }
 
@@ -39180,6 +39713,9 @@ class OracleServiceCloudSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: ~data_factory_management_client.models.OracleServiceCloudSourceQuery
@@ -39196,6 +39732,7 @@ class OracleServiceCloudSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'OracleServiceCloudSourceQuery'},
     }
 
@@ -39324,6 +39861,9 @@ class OracleSource(CopySource):
     :type partition_option: str or ~data_factory_management_client.models.OraclePartitionOption
     :param partition_settings: The settings that will be leveraged for Oracle source partitioning.
     :type partition_settings: ~data_factory_management_client.models.OraclePartitionSettings
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     """
 
     _validation = {
@@ -39340,6 +39880,7 @@ class OracleSource(CopySource):
         'query_timeout': {'key': 'queryTimeout', 'type': 'OracleSourceQueryTimeout'},
         'partition_option': {'key': 'partitionOption', 'type': 'str'},
         'partition_settings': {'key': 'partitionSettings', 'type': 'OraclePartitionSettings'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
 
     def __init__(
@@ -39352,6 +39893,7 @@ class OracleSource(CopySource):
         self.query_timeout = kwargs.get('query_timeout', None)
         self.partition_option = kwargs.get('partition_option', None)
         self.partition_settings = kwargs.get('partition_settings', None)
+        self.additional_columns = kwargs.get('additional_columns', None)
 
 
 class OracleSourceOracleReaderQuery(msrest.serialization.Model):
@@ -39733,6 +40275,9 @@ class OrcSource(CopySource):
      ~data_factory_management_client.models.CopySourceMaxConcurrentConnections
     :param store_settings: Connector read setting.
     :type store_settings: ~data_factory_management_client.models.StoreReadSettings
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     """
 
     _validation = {
@@ -39746,6 +40291,7 @@ class OrcSource(CopySource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreReadSettings'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
 
     def __init__(
@@ -39755,6 +40301,7 @@ class OrcSource(CopySource):
         super(OrcSource, self).__init__(**kwargs)
         self.type = 'OrcSource'
         self.store_settings = kwargs.get('store_settings', None)
+        self.additional_columns = kwargs.get('additional_columns', None)
 
 
 class ParameterSpecification(msrest.serialization.Model):
@@ -40006,6 +40553,9 @@ class ParquetSource(CopySource):
      ~data_factory_management_client.models.CopySourceMaxConcurrentConnections
     :param store_settings: Connector read setting.
     :type store_settings: ~data_factory_management_client.models.StoreReadSettings
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     """
 
     _validation = {
@@ -40019,6 +40569,7 @@ class ParquetSource(CopySource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreReadSettings'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
 
     def __init__(
@@ -40028,6 +40579,7 @@ class ParquetSource(CopySource):
         super(ParquetSource, self).__init__(**kwargs)
         self.type = 'ParquetSource'
         self.store_settings = kwargs.get('store_settings', None)
+        self.additional_columns = kwargs.get('additional_columns', None)
 
 
 class PaypalLinkedService(LinkedService):
@@ -40344,6 +40896,9 @@ class PaypalSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: ~data_factory_management_client.models.PaypalSourceQuery
@@ -40360,6 +40915,7 @@ class PaypalSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'PaypalSourceQuery'},
     }
 
@@ -40912,6 +41468,9 @@ class PhoenixSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: ~data_factory_management_client.models.PhoenixSourceQuery
@@ -40928,6 +41487,7 @@ class PhoenixSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'PhoenixSourceQuery'},
     }
 
@@ -41574,6 +42134,9 @@ class PostgreSqlSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: Database query. Type: string (or Expression with resultType string).
     :type query: ~data_factory_management_client.models.PostgreSqlSourceQuery
     """
@@ -41589,6 +42152,7 @@ class PostgreSqlSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'PostgreSqlSourceQuery'},
     }
 
@@ -42333,6 +42897,9 @@ class PrestoSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: ~data_factory_management_client.models.PrestoSourceQuery
@@ -42349,6 +42916,7 @@ class PrestoSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'PrestoSourceQuery'},
     }
 
@@ -42710,6 +43278,9 @@ class QuickBooksSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: ~data_factory_management_client.models.QuickBooksSourceQuery
@@ -42726,6 +43297,7 @@ class QuickBooksSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'QuickBooksSourceQuery'},
     }
 
@@ -42961,6 +43533,9 @@ class RelationalSource(CopySource):
      ~data_factory_management_client.models.CopySourceMaxConcurrentConnections
     :param query: Database query. Type: string (or Expression with resultType string).
     :type query: ~data_factory_management_client.models.RelationalSourceQuery
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     """
 
     _validation = {
@@ -42974,6 +43549,7 @@ class RelationalSource(CopySource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query': {'key': 'query', 'type': 'RelationalSourceQuery'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
 
     def __init__(
@@ -42983,6 +43559,7 @@ class RelationalSource(CopySource):
         super(RelationalSource, self).__init__(**kwargs)
         self.type = 'RelationalSource'
         self.query = kwargs.get('query', None)
+        self.additional_columns = kwargs.get('additional_columns', None)
 
 
 class RelationalSourceQuery(msrest.serialization.Model):
@@ -43541,6 +44118,9 @@ class ResponsysSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: ~data_factory_management_client.models.ResponsysSourceQuery
@@ -43557,6 +44137,7 @@ class ResponsysSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'ResponsysSourceQuery'},
     }
 
@@ -44107,6 +44688,9 @@ class RestSource(CopySource):
     :type http_request_timeout: ~data_factory_management_client.models.RestSourceHttpRequestTimeout
     :param request_interval: The time to await before sending next page request.
     :type request_interval: ~data_factory_management_client.models.RestSourceRequestInterval
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     """
 
     _validation = {
@@ -44125,6 +44709,7 @@ class RestSource(CopySource):
         'pagination_rules': {'key': 'paginationRules', 'type': 'RestSourcePaginationRules'},
         'http_request_timeout': {'key': 'httpRequestTimeout', 'type': 'RestSourceHttpRequestTimeout'},
         'request_interval': {'key': 'requestInterval', 'type': 'RestSourceRequestInterval'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
 
     def __init__(
@@ -44139,6 +44724,7 @@ class RestSource(CopySource):
         self.pagination_rules = kwargs.get('pagination_rules', None)
         self.http_request_timeout = kwargs.get('http_request_timeout', None)
         self.request_interval = kwargs.get('request_interval', None)
+        self.additional_columns = kwargs.get('additional_columns', None)
 
 
 class RestSourceAdditionalHeaders(msrest.serialization.Model):
@@ -44427,6 +45013,10 @@ class SalesforceLinkedService(LinkedService):
     :type password: ~data_factory_management_client.models.SecretBase
     :param security_token: The base definition of a secret type.
     :type security_token: ~data_factory_management_client.models.SecretBase
+    :param api_version: The Salesforce API version used in ADF. Type: string (or Expression with
+     resultType string).
+    :type api_version:
+     ~data_factory_management_client.models.SalesforceLinkedServiceTypePropertiesApiVersion
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -44449,6 +45039,7 @@ class SalesforceLinkedService(LinkedService):
         'username': {'key': 'typeProperties.username', 'type': 'SalesforceLinkedServiceTypePropertiesUsername'},
         'password': {'key': 'typeProperties.password', 'type': 'SecretBase'},
         'security_token': {'key': 'typeProperties.securityToken', 'type': 'SecretBase'},
+        'api_version': {'key': 'typeProperties.apiVersion', 'type': 'SalesforceLinkedServiceTypePropertiesApiVersion'},
         'encrypted_credential': {'key': 'typeProperties.encryptedCredential', 'type': 'SalesforceLinkedServiceTypePropertiesEncryptedCredential'},
     }
 
@@ -44462,6 +45053,7 @@ class SalesforceLinkedService(LinkedService):
         self.username = kwargs.get('username', None)
         self.password = kwargs.get('password', None)
         self.security_token = kwargs.get('security_token', None)
+        self.api_version = kwargs.get('api_version', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
 
 
@@ -44482,6 +45074,10 @@ class SalesforceLinkedServiceTypeProperties(msrest.serialization.Model):
     :type password: ~data_factory_management_client.models.SecretBase
     :param security_token: The base definition of a secret type.
     :type security_token: ~data_factory_management_client.models.SecretBase
+    :param api_version: The Salesforce API version used in ADF. Type: string (or Expression with
+     resultType string).
+    :type api_version:
+     ~data_factory_management_client.models.SalesforceLinkedServiceTypePropertiesApiVersion
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -44494,6 +45090,7 @@ class SalesforceLinkedServiceTypeProperties(msrest.serialization.Model):
         'username': {'key': 'username', 'type': 'SalesforceLinkedServiceTypePropertiesUsername'},
         'password': {'key': 'password', 'type': 'SecretBase'},
         'security_token': {'key': 'securityToken', 'type': 'SecretBase'},
+        'api_version': {'key': 'apiVersion', 'type': 'SalesforceLinkedServiceTypePropertiesApiVersion'},
         'encrypted_credential': {'key': 'encryptedCredential', 'type': 'SalesforceLinkedServiceTypePropertiesEncryptedCredential'},
     }
 
@@ -44506,7 +45103,23 @@ class SalesforceLinkedServiceTypeProperties(msrest.serialization.Model):
         self.username = kwargs.get('username', None)
         self.password = kwargs.get('password', None)
         self.security_token = kwargs.get('security_token', None)
+        self.api_version = kwargs.get('api_version', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
+
+
+class SalesforceLinkedServiceTypePropertiesApiVersion(msrest.serialization.Model):
+    """The Salesforce API version used in ADF. Type: string (or Expression with resultType string).
+
+    """
+
+    _attribute_map = {
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(SalesforceLinkedServiceTypePropertiesApiVersion, self).__init__(**kwargs)
 
 
 class SalesforceLinkedServiceTypePropertiesEncryptedCredential(msrest.serialization.Model):
@@ -44847,6 +45460,9 @@ class SalesforceMarketingCloudSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: ~data_factory_management_client.models.SalesforceMarketingCloudSourceQuery
@@ -44863,6 +45479,7 @@ class SalesforceMarketingCloudSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'SalesforceMarketingCloudSourceQuery'},
     }
 
@@ -45018,6 +45635,10 @@ class SalesforceServiceCloudLinkedService(LinkedService):
     :type password: ~data_factory_management_client.models.SecretBase
     :param security_token: The base definition of a secret type.
     :type security_token: ~data_factory_management_client.models.SecretBase
+    :param api_version: The Salesforce API version used in ADF. Type: string (or Expression with
+     resultType string).
+    :type api_version:
+     ~data_factory_management_client.models.SalesforceServiceCloudLinkedServiceTypePropertiesApiVersion
     :param extended_properties: Extended properties appended to the connection string. Type: string
      (or Expression with resultType string).
     :type extended_properties:
@@ -45044,6 +45665,7 @@ class SalesforceServiceCloudLinkedService(LinkedService):
         'username': {'key': 'typeProperties.username', 'type': 'SalesforceServiceCloudLinkedServiceTypePropertiesUsername'},
         'password': {'key': 'typeProperties.password', 'type': 'SecretBase'},
         'security_token': {'key': 'typeProperties.securityToken', 'type': 'SecretBase'},
+        'api_version': {'key': 'typeProperties.apiVersion', 'type': 'SalesforceServiceCloudLinkedServiceTypePropertiesApiVersion'},
         'extended_properties': {'key': 'typeProperties.extendedProperties', 'type': 'SalesforceServiceCloudLinkedServiceTypePropertiesExtendedProperties'},
         'encrypted_credential': {'key': 'typeProperties.encryptedCredential', 'type': 'SalesforceServiceCloudLinkedServiceTypePropertiesEncryptedCredential'},
     }
@@ -45058,6 +45680,7 @@ class SalesforceServiceCloudLinkedService(LinkedService):
         self.username = kwargs.get('username', None)
         self.password = kwargs.get('password', None)
         self.security_token = kwargs.get('security_token', None)
+        self.api_version = kwargs.get('api_version', None)
         self.extended_properties = kwargs.get('extended_properties', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
 
@@ -45079,6 +45702,10 @@ class SalesforceServiceCloudLinkedServiceTypeProperties(msrest.serialization.Mod
     :type password: ~data_factory_management_client.models.SecretBase
     :param security_token: The base definition of a secret type.
     :type security_token: ~data_factory_management_client.models.SecretBase
+    :param api_version: The Salesforce API version used in ADF. Type: string (or Expression with
+     resultType string).
+    :type api_version:
+     ~data_factory_management_client.models.SalesforceServiceCloudLinkedServiceTypePropertiesApiVersion
     :param extended_properties: Extended properties appended to the connection string. Type: string
      (or Expression with resultType string).
     :type extended_properties:
@@ -45095,6 +45722,7 @@ class SalesforceServiceCloudLinkedServiceTypeProperties(msrest.serialization.Mod
         'username': {'key': 'username', 'type': 'SalesforceServiceCloudLinkedServiceTypePropertiesUsername'},
         'password': {'key': 'password', 'type': 'SecretBase'},
         'security_token': {'key': 'securityToken', 'type': 'SecretBase'},
+        'api_version': {'key': 'apiVersion', 'type': 'SalesforceServiceCloudLinkedServiceTypePropertiesApiVersion'},
         'extended_properties': {'key': 'extendedProperties', 'type': 'SalesforceServiceCloudLinkedServiceTypePropertiesExtendedProperties'},
         'encrypted_credential': {'key': 'encryptedCredential', 'type': 'SalesforceServiceCloudLinkedServiceTypePropertiesEncryptedCredential'},
     }
@@ -45108,8 +45736,24 @@ class SalesforceServiceCloudLinkedServiceTypeProperties(msrest.serialization.Mod
         self.username = kwargs.get('username', None)
         self.password = kwargs.get('password', None)
         self.security_token = kwargs.get('security_token', None)
+        self.api_version = kwargs.get('api_version', None)
         self.extended_properties = kwargs.get('extended_properties', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
+
+
+class SalesforceServiceCloudLinkedServiceTypePropertiesApiVersion(msrest.serialization.Model):
+    """The Salesforce API version used in ADF. Type: string (or Expression with resultType string).
+
+    """
+
+    _attribute_map = {
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(SalesforceServiceCloudLinkedServiceTypePropertiesApiVersion, self).__init__(**kwargs)
 
 
 class SalesforceServiceCloudLinkedServiceTypePropertiesEncryptedCredential(msrest.serialization.Model):
@@ -45394,6 +46038,9 @@ class SalesforceServiceCloudSource(CopySource):
     :param read_behavior: The read behavior for the operation. Default is Query. Possible values
      include: 'Query', 'QueryAll'.
     :type read_behavior: str or ~data_factory_management_client.models.SalesforceSourceReadBehavior
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     """
 
     _validation = {
@@ -45408,6 +46055,7 @@ class SalesforceServiceCloudSource(CopySource):
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query': {'key': 'query', 'type': 'SalesforceServiceCloudSourceQuery'},
         'read_behavior': {'key': 'readBehavior', 'type': 'str'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
 
     def __init__(
@@ -45418,6 +46066,7 @@ class SalesforceServiceCloudSource(CopySource):
         self.type = 'SalesforceServiceCloudSource'
         self.query = kwargs.get('query', None)
         self.read_behavior = kwargs.get('read_behavior', None)
+        self.additional_columns = kwargs.get('additional_columns', None)
 
 
 class SalesforceServiceCloudSourceQuery(msrest.serialization.Model):
@@ -45558,6 +46207,9 @@ class SalesforceSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: Database query. Type: string (or Expression with resultType string).
     :type query: ~data_factory_management_client.models.SalesforceSourceQuery
     :param read_behavior: The read behavior for the operation. Default is Query. Possible values
@@ -45576,6 +46228,7 @@ class SalesforceSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'SalesforceSourceQuery'},
         'read_behavior': {'key': 'readBehavior', 'type': 'str'},
     }
@@ -45892,6 +46545,9 @@ class SapBwSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: MDX query. Type: string (or Expression with resultType string).
     :type query: ~data_factory_management_client.models.SapBwSourceQuery
     """
@@ -45907,6 +46563,7 @@ class SapBwSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'SapBwSourceQuery'},
     }
 
@@ -46272,6 +46929,9 @@ class SapCloudForCustomerSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: SAP Cloud for Customer OData query. For example, "$top=1". Type: string (or
      Expression with resultType string).
     :type query: ~data_factory_management_client.models.SapCloudForCustomerSourceQuery
@@ -46288,6 +46948,7 @@ class SapCloudForCustomerSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'SapCloudForCustomerSourceQuery'},
     }
 
@@ -46544,6 +47205,9 @@ class SapEccSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: SAP ECC OData query. For example, "$top=1". Type: string (or Expression with
      resultType string).
     :type query: ~data_factory_management_client.models.SapEccSourceQuery
@@ -46560,6 +47224,7 @@ class SapEccSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'SapEccSourceQuery'},
     }
 
@@ -46835,6 +47500,9 @@ class SapHanaSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: SAP HANA Sql query. Type: string (or Expression with resultType string).
     :type query: ~data_factory_management_client.models.SapHanaSourceQuery
     :param packet_size: The packet size of data read from SAP HANA. Type: integer(or Expression
@@ -46859,6 +47527,7 @@ class SapHanaSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'SapHanaSourceQuery'},
         'packet_size': {'key': 'packetSize', 'type': 'SapHanaSourcePacketSize'},
         'partition_option': {'key': 'partitionOption', 'type': 'str'},
@@ -47291,6 +47960,9 @@ class SapOpenHubSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param exclude_last_request: Whether to exclude the records of the last request. The default
      value is true. Type: boolean (or Expression with resultType boolean).
     :type exclude_last_request:
@@ -47312,6 +47984,7 @@ class SapOpenHubSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'exclude_last_request': {'key': 'excludeLastRequest', 'type': 'SapOpenHubSourceExcludeLastRequest'},
         'base_request_id': {'key': 'baseRequestId', 'type': 'SapOpenHubSourceBaseRequestId'},
     }
@@ -48213,6 +48886,9 @@ class SapTableSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param row_count: The number of rows to be retrieved. Type: integer(or Expression with
      resultType integer).
     :type row_count: ~data_factory_management_client.models.SapTableSourceRowCount
@@ -48252,6 +48928,7 @@ class SapTableSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'row_count': {'key': 'rowCount', 'type': 'SapTableSourceRowCount'},
         'row_skips': {'key': 'rowSkips', 'type': 'SapTableSourceRowSkips'},
         'rfc_table_fields': {'key': 'rfcTableFields', 'type': 'SapTableSourceRfcTableFields'},
@@ -49375,6 +50052,9 @@ class ServiceNowSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: ~data_factory_management_client.models.ServiceNowSourceQuery
@@ -49391,6 +50071,7 @@ class ServiceNowSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'ServiceNowSourceQuery'},
     }
 
@@ -49568,6 +50249,10 @@ class SftpReadSettings(StoreReadSettings):
      string).
     :type wildcard_file_name:
      ~data_factory_management_client.models.SftpReadSettingsWildcardFileName
+    :param file_list_path: Point to a text file that lists each file (relative path to the path
+     configured in the dataset) that you want to copy. Type: string (or Expression with resultType
+     string).
+    :type file_list_path: ~data_factory_management_client.models.SftpReadSettingsFileListPath
     :param modified_datetime_start: The start of file's modified datetime. Type: string (or
      Expression with resultType string).
     :type modified_datetime_start:
@@ -49589,6 +50274,7 @@ class SftpReadSettings(StoreReadSettings):
         'recursive': {'key': 'recursive', 'type': 'SftpReadSettingsRecursive'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'SftpReadSettingsWildcardFolderPath'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'SftpReadSettingsWildcardFileName'},
+        'file_list_path': {'key': 'fileListPath', 'type': 'SftpReadSettingsFileListPath'},
         'modified_datetime_start': {'key': 'modifiedDatetimeStart', 'type': 'SftpReadSettingsModifiedDatetimeStart'},
         'modified_datetime_end': {'key': 'modifiedDatetimeEnd', 'type': 'SftpReadSettingsModifiedDatetimeEnd'},
     }
@@ -49602,8 +50288,24 @@ class SftpReadSettings(StoreReadSettings):
         self.recursive = kwargs.get('recursive', None)
         self.wildcard_folder_path = kwargs.get('wildcard_folder_path', None)
         self.wildcard_file_name = kwargs.get('wildcard_file_name', None)
+        self.file_list_path = kwargs.get('file_list_path', None)
         self.modified_datetime_start = kwargs.get('modified_datetime_start', None)
         self.modified_datetime_end = kwargs.get('modified_datetime_end', None)
+
+
+class SftpReadSettingsFileListPath(msrest.serialization.Model):
+    """Point to a text file that lists each file (relative path to the path configured in the dataset) that you want to copy. Type: string (or Expression with resultType string).
+
+    """
+
+    _attribute_map = {
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(SftpReadSettingsFileListPath, self).__init__(**kwargs)
 
 
 class SftpReadSettingsModifiedDatetimeEnd(msrest.serialization.Model):
@@ -49991,6 +50693,11 @@ class SftpWriteSettings(StoreWriteSettings):
      value: 01:00:00 (one hour). Type: string (or Expression with resultType string).
     :type operation_timeout:
      ~data_factory_management_client.models.SftpWriteSettingsOperationTimeout
+    :param use_temp_file_rename: Upload to temporary file(s) and rename. Disable this option if
+     your SFTP server doesn't support rename operation. Type: boolean (or Expression with resultType
+     boolean).
+    :type use_temp_file_rename:
+     ~data_factory_management_client.models.SftpWriteSettingsUseTempFileRename
     """
 
     _validation = {
@@ -50003,6 +50710,7 @@ class SftpWriteSettings(StoreWriteSettings):
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'StoreWriteSettingsMaxConcurrentConnections'},
         'copy_behavior': {'key': 'copyBehavior', 'type': 'StoreWriteSettingsCopyBehavior'},
         'operation_timeout': {'key': 'operationTimeout', 'type': 'SftpWriteSettingsOperationTimeout'},
+        'use_temp_file_rename': {'key': 'useTempFileRename', 'type': 'SftpWriteSettingsUseTempFileRename'},
     }
 
     def __init__(
@@ -50012,6 +50720,7 @@ class SftpWriteSettings(StoreWriteSettings):
         super(SftpWriteSettings, self).__init__(**kwargs)
         self.type = 'SftpWriteSettings'
         self.operation_timeout = kwargs.get('operation_timeout', None)
+        self.use_temp_file_rename = kwargs.get('use_temp_file_rename', None)
 
 
 class SftpWriteSettingsOperationTimeout(msrest.serialization.Model):
@@ -50027,6 +50736,21 @@ class SftpWriteSettingsOperationTimeout(msrest.serialization.Model):
         **kwargs
     ):
         super(SftpWriteSettingsOperationTimeout, self).__init__(**kwargs)
+
+
+class SftpWriteSettingsUseTempFileRename(msrest.serialization.Model):
+    """Upload to temporary file(s) and rename. Disable this option if your SFTP server doesn't support rename operation. Type: boolean (or Expression with resultType boolean).
+
+    """
+
+    _attribute_map = {
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(SftpWriteSettingsUseTempFileRename, self).__init__(**kwargs)
 
 
 class ShopifyLinkedService(LinkedService):
@@ -50316,6 +51040,9 @@ class ShopifySource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: ~data_factory_management_client.models.ShopifySourceQuery
@@ -50332,6 +51059,7 @@ class ShopifySource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'ShopifySourceQuery'},
     }
 
@@ -50357,6 +51085,61 @@ class ShopifySourceQuery(msrest.serialization.Model):
         **kwargs
     ):
         super(ShopifySourceQuery, self).__init__(**kwargs)
+
+
+class SkipErrorFile(msrest.serialization.Model):
+    """Skip error file.
+
+    :param file_missing: Skip if file is deleted by other client during copy. Default is true.
+     Type: boolean (or Expression with resultType boolean).
+    :type file_missing: ~data_factory_management_client.models.SkipErrorFileFileMissing
+    :param data_inconsistency: Skip if source/sink file changed by other concurrent write. Default
+     is false. Type: boolean (or Expression with resultType boolean).
+    :type data_inconsistency: ~data_factory_management_client.models.SkipErrorFileDataInconsistency
+    """
+
+    _attribute_map = {
+        'file_missing': {'key': 'fileMissing', 'type': 'SkipErrorFileFileMissing'},
+        'data_inconsistency': {'key': 'dataInconsistency', 'type': 'SkipErrorFileDataInconsistency'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(SkipErrorFile, self).__init__(**kwargs)
+        self.file_missing = kwargs.get('file_missing', None)
+        self.data_inconsistency = kwargs.get('data_inconsistency', None)
+
+
+class SkipErrorFileDataInconsistency(msrest.serialization.Model):
+    """Skip if source/sink file changed by other concurrent write. Default is false. Type: boolean (or Expression with resultType boolean).
+
+    """
+
+    _attribute_map = {
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(SkipErrorFileDataInconsistency, self).__init__(**kwargs)
+
+
+class SkipErrorFileFileMissing(msrest.serialization.Model):
+    """Skip if file is deleted by other client during copy. Default is true. Type: boolean (or Expression with resultType boolean).
+
+    """
+
+    _attribute_map = {
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(SkipErrorFileFileMissing, self).__init__(**kwargs)
 
 
 class SparkDatasetTypeProperties(msrest.serialization.Model):
@@ -50898,6 +51681,9 @@ class SparkSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: ~data_factory_management_client.models.SparkSourceQuery
@@ -50914,6 +51700,7 @@ class SparkSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'SparkSourceQuery'},
     }
 
@@ -51102,6 +51889,9 @@ class SqlDWSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param sql_reader_query: SQL Data Warehouse reader query. Type: string (or Expression with
      resultType string).
     :type sql_reader_query: ~data_factory_management_client.models.SqlDWSourceSqlReaderQuery
@@ -51128,6 +51918,7 @@ class SqlDWSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'sql_reader_query': {'key': 'sqlReaderQuery', 'type': 'SqlDWSourceSqlReaderQuery'},
         'sql_reader_stored_procedure_name': {'key': 'sqlReaderStoredProcedureName', 'type': 'SqlDWSourceSqlReaderStoredProcedureName'},
         'stored_procedure_parameters': {'key': 'storedProcedureParameters', 'type': 'SqlDWSourceStoredProcedureParameters'},
@@ -51369,6 +52160,9 @@ class SqlMISource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param sql_reader_query: SQL reader query. Type: string (or Expression with resultType string).
     :type sql_reader_query: ~data_factory_management_client.models.SqlMISourceSqlReaderQuery
     :param sql_reader_stored_procedure_name: Name of the stored procedure for a Azure SQL Managed
@@ -51396,6 +52190,7 @@ class SqlMISource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'sql_reader_query': {'key': 'sqlReaderQuery', 'type': 'SqlMISourceSqlReaderQuery'},
         'sql_reader_stored_procedure_name': {'key': 'sqlReaderStoredProcedureName', 'type': 'SqlMISourceSqlReaderStoredProcedureName'},
         'stored_procedure_parameters': {'key': 'storedProcedureParameters', 'type': '{StoredProcedureParameter}'},
@@ -51794,6 +52589,9 @@ class SqlServerSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param sql_reader_query: SQL reader query. Type: string (or Expression with resultType string).
     :type sql_reader_query: ~data_factory_management_client.models.SqlServerSourceSqlReaderQuery
     :param sql_reader_stored_procedure_name: Name of the stored procedure for a SQL Database
@@ -51821,6 +52619,7 @@ class SqlServerSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'sql_reader_query': {'key': 'sqlReaderQuery', 'type': 'SqlServerSourceSqlReaderQuery'},
         'sql_reader_stored_procedure_name': {'key': 'sqlReaderStoredProcedureName', 'type': 'SqlServerSourceSqlReaderStoredProcedureName'},
         'stored_procedure_parameters': {'key': 'storedProcedureParameters', 'type': '{StoredProcedureParameter}'},
@@ -52320,6 +53119,9 @@ class SqlSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param sql_reader_query: SQL reader query. Type: string (or Expression with resultType string).
     :type sql_reader_query: ~data_factory_management_client.models.SqlSourceSqlReaderQuery
     :param sql_reader_stored_procedure_name: Name of the stored procedure for a SQL Database
@@ -52331,6 +53133,10 @@ class SqlSource(TabularSource):
      Example: "{Parameter1: {value: "1", type: "int"}}".
     :type stored_procedure_parameters: dict[str,
      ~data_factory_management_client.models.StoredProcedureParameter]
+    :param isolation_level: Specifies the transaction locking behavior for the SQL source. Allowed
+     values: ReadCommitted/ReadUncommitted/RepeatableRead/Serializable/Snapshot. The default value
+     is ReadCommitted. Type: string (or Expression with resultType string).
+    :type isolation_level: ~data_factory_management_client.models.SqlSourceIsolationLevel
     """
 
     _validation = {
@@ -52344,9 +53150,11 @@ class SqlSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'sql_reader_query': {'key': 'sqlReaderQuery', 'type': 'SqlSourceSqlReaderQuery'},
         'sql_reader_stored_procedure_name': {'key': 'sqlReaderStoredProcedureName', 'type': 'SqlSourceSqlReaderStoredProcedureName'},
         'stored_procedure_parameters': {'key': 'storedProcedureParameters', 'type': '{StoredProcedureParameter}'},
+        'isolation_level': {'key': 'isolationLevel', 'type': 'SqlSourceIsolationLevel'},
     }
 
     def __init__(
@@ -52358,6 +53166,22 @@ class SqlSource(TabularSource):
         self.sql_reader_query = kwargs.get('sql_reader_query', None)
         self.sql_reader_stored_procedure_name = kwargs.get('sql_reader_stored_procedure_name', None)
         self.stored_procedure_parameters = kwargs.get('stored_procedure_parameters', None)
+        self.isolation_level = kwargs.get('isolation_level', None)
+
+
+class SqlSourceIsolationLevel(msrest.serialization.Model):
+    """Specifies the transaction locking behavior for the SQL source. Allowed values: ReadCommitted/ReadUncommitted/RepeatableRead/Serializable/Snapshot. The default value is ReadCommitted. Type: string (or Expression with resultType string).
+
+    """
+
+    _attribute_map = {
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(SqlSourceIsolationLevel, self).__init__(**kwargs)
 
 
 class SqlSourceSqlReaderQuery(msrest.serialization.Model):
@@ -52733,6 +53557,9 @@ class SquareSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: ~data_factory_management_client.models.SquareSourceQuery
@@ -52749,6 +53576,7 @@ class SquareSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'SquareSourceQuery'},
     }
 
@@ -54242,6 +55070,9 @@ class SybaseSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: Database query. Type: string (or Expression with resultType string).
     :type query: ~data_factory_management_client.models.SybaseSourceQuery
     """
@@ -54257,6 +55088,7 @@ class SybaseSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'SybaseSourceQuery'},
     }
 
@@ -54678,6 +55510,9 @@ class TeradataSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: Teradata query. Type: string (or Expression with resultType string).
     :type query: ~data_factory_management_client.models.TeradataSourceQuery
     :param partition_option: The partition mechanism that will be used for teradata read in
@@ -54699,6 +55534,7 @@ class TeradataSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'TeradataSourceQuery'},
         'partition_option': {'key': 'partitionOption', 'type': 'str'},
         'partition_settings': {'key': 'partitionSettings', 'type': 'TeradataPartitionSettings'},
@@ -56339,6 +57175,9 @@ class VerticaSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: ~data_factory_management_client.models.VerticaSourceQuery
@@ -56355,6 +57194,7 @@ class VerticaSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'VerticaSourceQuery'},
     }
 
@@ -57221,6 +58061,9 @@ class WebSource(CopySource):
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections:
      ~data_factory_management_client.models.CopySourceMaxConcurrentConnections
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     """
 
     _validation = {
@@ -57233,6 +58076,7 @@ class WebSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'CopySourceSourceRetryCount'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
 
     def __init__(
@@ -57241,6 +58085,7 @@ class WebSource(CopySource):
     ):
         super(WebSource, self).__init__(**kwargs)
         self.type = 'WebSource'
+        self.additional_columns = kwargs.get('additional_columns', None)
 
 
 class WebTableDataset(Dataset):
@@ -57664,6 +58509,9 @@ class XeroSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: ~data_factory_management_client.models.XeroSourceQuery
@@ -57680,6 +58528,7 @@ class XeroSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'XeroSourceQuery'},
     }
 
@@ -57994,6 +58843,9 @@ class ZohoSource(TabularSource):
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: ~data_factory_management_client.models.TabularSourceQueryTimeout
+    :param additional_columns: Specifies the additional columns to be added to source data. Type:
+     array of objects (or Expression with resultType array of objects).
+    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: ~data_factory_management_client.models.ZohoSourceQuery
@@ -58010,6 +58862,7 @@ class ZohoSource(TabularSource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'CopySourceSourceRetryWait'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'CopySourceMaxConcurrentConnections'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'TabularSourceQueryTimeout'},
+        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'ZohoSourceQuery'},
     }
 

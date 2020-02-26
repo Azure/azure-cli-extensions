@@ -17,6 +17,9 @@ try:
     from ._models_py3 import ActivityRunOutput
     from ._models_py3 import ActivityRunsQueryResponse
     from ._models_py3 import AddDataFlowToDebugSessionResponse
+    from ._models_py3 import AdditionalColumns
+    from ._models_py3 import AdditionalColumnsName
+    from ._models_py3 import AdditionalColumnsValue
     from ._models_py3 import AmazonMWSLinkedService
     from ._models_py3 import AmazonMWSLinkedServiceTypeProperties
     from ._models_py3 import AmazonMWSLinkedServiceTypePropertiesAccessKeyId
@@ -61,6 +64,7 @@ try:
     from ._models_py3 import AmazonS3LocationBucketName
     from ._models_py3 import AmazonS3LocationVersion
     from ._models_py3 import AmazonS3ReadSettings
+    from ._models_py3 import AmazonS3ReadSettingsFileListPath
     from ._models_py3 import AmazonS3ReadSettingsModifiedDatetimeEnd
     from ._models_py3 import AmazonS3ReadSettingsModifiedDatetimeStart
     from ._models_py3 import AmazonS3ReadSettingsPrefix
@@ -103,6 +107,7 @@ try:
     from ._models_py3 import AzureBlobFSLocation
     from ._models_py3 import AzureBlobFSLocationFileSystem
     from ._models_py3 import AzureBlobFSReadSettings
+    from ._models_py3 import AzureBlobFSReadSettingsFileListPath
     from ._models_py3 import AzureBlobFSReadSettingsModifiedDatetimeEnd
     from ._models_py3 import AzureBlobFSReadSettingsModifiedDatetimeStart
     from ._models_py3 import AzureBlobFSReadSettingsRecursive
@@ -125,6 +130,7 @@ try:
     from ._models_py3 import AzureBlobStorageLocation
     from ._models_py3 import AzureBlobStorageLocationContainer
     from ._models_py3 import AzureBlobStorageReadSettings
+    from ._models_py3 import AzureBlobStorageReadSettingsFileListPath
     from ._models_py3 import AzureBlobStorageReadSettingsModifiedDatetimeEnd
     from ._models_py3 import AzureBlobStorageReadSettingsModifiedDatetimeStart
     from ._models_py3 import AzureBlobStorageReadSettingsPrefix
@@ -178,6 +184,7 @@ try:
     from ._models_py3 import AzureDataLakeStoreLinkedServiceTypePropertiesTenant
     from ._models_py3 import AzureDataLakeStoreLocation
     from ._models_py3 import AzureDataLakeStoreReadSettings
+    from ._models_py3 import AzureDataLakeStoreReadSettingsFileListPath
     from ._models_py3 import AzureDataLakeStoreReadSettingsModifiedDatetimeEnd
     from ._models_py3 import AzureDataLakeStoreReadSettingsModifiedDatetimeStart
     from ._models_py3 import AzureDataLakeStoreReadSettingsRecursive
@@ -189,6 +196,7 @@ try:
     from ._models_py3 import AzureDataLakeStoreSource
     from ._models_py3 import AzureDataLakeStoreSourceRecursive
     from ._models_py3 import AzureDataLakeStoreWriteSettings
+    from ._models_py3 import AzureDataLakeStoreWriteSettingsExpiryDateTime
     from ._models_py3 import AzureDatabricksLinkedService
     from ._models_py3 import AzureDatabricksLinkedServiceTypeProperties
     from ._models_py3 import AzureDatabricksLinkedServiceTypePropertiesDomain
@@ -208,6 +216,7 @@ try:
     from ._models_py3 import AzureFileStorageLinkedServiceTypePropertiesUserId
     from ._models_py3 import AzureFileStorageLocation
     from ._models_py3 import AzureFileStorageReadSettings
+    from ._models_py3 import AzureFileStorageReadSettingsFileListPath
     from ._models_py3 import AzureFileStorageReadSettingsModifiedDatetimeEnd
     from ._models_py3 import AzureFileStorageReadSettingsModifiedDatetimeStart
     from ._models_py3 import AzureFileStorageReadSettingsRecursive
@@ -435,6 +444,7 @@ try:
     from ._models_py3 import CopyActivityTypePropertiesPreserveItem
     from ._models_py3 import CopyActivityTypePropertiesPreserveRulesItem
     from ._models_py3 import CopyActivityTypePropertiesTranslator
+    from ._models_py3 import CopyActivityTypePropertiesValidateDataConsistency
     from ._models_py3 import CopySink
     from ._models_py3 import CopySinkMaxConcurrentConnections
     from ._models_py3 import CopySinkSinkRetryCount
@@ -559,6 +569,7 @@ try:
     from ._models_py3 import Db2LinkedService
     from ._models_py3 import Db2LinkedServiceTypeProperties
     from ._models_py3 import Db2LinkedServiceTypePropertiesCertificateCommonName
+    from ._models_py3 import Db2LinkedServiceTypePropertiesConnectionString
     from ._models_py3 import Db2LinkedServiceTypePropertiesDatabase
     from ._models_py3 import Db2LinkedServiceTypePropertiesEncryptedCredential
     from ._models_py3 import Db2LinkedServiceTypePropertiesPackageCollection
@@ -708,6 +719,7 @@ try:
     from ._models_py3 import FileServerLinkedServiceTypePropertiesUserId
     from ._models_py3 import FileServerLocation
     from ._models_py3 import FileServerReadSettings
+    from ._models_py3 import FileServerReadSettingsFileListPath
     from ._models_py3 import FileServerReadSettingsModifiedDatetimeEnd
     from ._models_py3 import FileServerReadSettingsModifiedDatetimeStart
     from ._models_py3 import FileServerReadSettingsRecursive
@@ -732,6 +744,7 @@ try:
     from ._models_py3 import FormatReadSettings
     from ._models_py3 import FormatWriteSettings
     from ._models_py3 import FtpReadSettings
+    from ._models_py3 import FtpReadSettingsFileListPath
     from ._models_py3 import FtpReadSettingsRecursive
     from ._models_py3 import FtpReadSettingsWildcardFileName
     from ._models_py3 import FtpReadSettingsWildcardFolderPath
@@ -792,6 +805,7 @@ try:
     from ._models_py3 import GoogleCloudStorageLocationBucketName
     from ._models_py3 import GoogleCloudStorageLocationVersion
     from ._models_py3 import GoogleCloudStorageReadSettings
+    from ._models_py3 import GoogleCloudStorageReadSettingsFileListPath
     from ._models_py3 import GoogleCloudStorageReadSettingsModifiedDatetimeEnd
     from ._models_py3 import GoogleCloudStorageReadSettingsModifiedDatetimeStart
     from ._models_py3 import GoogleCloudStorageReadSettingsPrefix
@@ -897,6 +911,7 @@ try:
     from ._models_py3 import HdfsLinkedServiceTypePropertiesUserName
     from ._models_py3 import HdfsLocation
     from ._models_py3 import HdfsReadSettings
+    from ._models_py3 import HdfsReadSettingsFileListPath
     from ._models_py3 import HdfsReadSettingsModifiedDatetimeEnd
     from ._models_py3 import HdfsReadSettingsModifiedDatetimeStart
     from ._models_py3 import HdfsReadSettingsRecursive
@@ -1418,6 +1433,7 @@ try:
     from ._models_py3 import SSISPropertyOverrideValue
     from ._models_py3 import SalesforceLinkedService
     from ._models_py3 import SalesforceLinkedServiceTypeProperties
+    from ._models_py3 import SalesforceLinkedServiceTypePropertiesApiVersion
     from ._models_py3 import SalesforceLinkedServiceTypePropertiesEncryptedCredential
     from ._models_py3 import SalesforceLinkedServiceTypePropertiesEnvironmentUrl
     from ._models_py3 import SalesforceLinkedServiceTypePropertiesUsername
@@ -1436,6 +1452,7 @@ try:
     from ._models_py3 import SalesforceObjectDatasetTypePropertiesObjectApiName
     from ._models_py3 import SalesforceServiceCloudLinkedService
     from ._models_py3 import SalesforceServiceCloudLinkedServiceTypeProperties
+    from ._models_py3 import SalesforceServiceCloudLinkedServiceTypePropertiesApiVersion
     from ._models_py3 import SalesforceServiceCloudLinkedServiceTypePropertiesEncryptedCredential
     from ._models_py3 import SalesforceServiceCloudLinkedServiceTypePropertiesEnvironmentUrl
     from ._models_py3 import SalesforceServiceCloudLinkedServiceTypePropertiesExtendedProperties
@@ -1573,6 +1590,7 @@ try:
     from ._models_py3 import SetVariableActivityTypePropertiesValue
     from ._models_py3 import SftpLocation
     from ._models_py3 import SftpReadSettings
+    from ._models_py3 import SftpReadSettingsFileListPath
     from ._models_py3 import SftpReadSettingsModifiedDatetimeEnd
     from ._models_py3 import SftpReadSettingsModifiedDatetimeStart
     from ._models_py3 import SftpReadSettingsRecursive
@@ -1589,6 +1607,7 @@ try:
     from ._models_py3 import SftpServerLinkedServiceTypePropertiesUserName
     from ._models_py3 import SftpWriteSettings
     from ._models_py3 import SftpWriteSettingsOperationTimeout
+    from ._models_py3 import SftpWriteSettingsUseTempFileRename
     from ._models_py3 import ShopifyLinkedService
     from ._models_py3 import ShopifyLinkedServiceTypeProperties
     from ._models_py3 import ShopifyLinkedServiceTypePropertiesEncryptedCredential
@@ -1599,6 +1618,9 @@ try:
     from ._models_py3 import ShopifyObjectDataset
     from ._models_py3 import ShopifySource
     from ._models_py3 import ShopifySourceQuery
+    from ._models_py3 import SkipErrorFile
+    from ._models_py3 import SkipErrorFileDataInconsistency
+    from ._models_py3 import SkipErrorFileFileMissing
     from ._models_py3 import SparkDatasetTypeProperties
     from ._models_py3 import SparkDatasetTypePropertiesSchema
     from ._models_py3 import SparkDatasetTypePropertiesTable
@@ -1667,6 +1689,7 @@ try:
     from ._models_py3 import SqlSinkStoredProcedureTableTypeParameterName
     from ._models_py3 import SqlSinkTableOption
     from ._models_py3 import SqlSource
+    from ._models_py3 import SqlSourceIsolationLevel
     from ._models_py3 import SqlSourceSqlReaderQuery
     from ._models_py3 import SqlSourceSqlReaderStoredProcedureName
     from ._models_py3 import SquareLinkedService
@@ -1849,6 +1872,9 @@ except (SyntaxError, ImportError):
     from ._models import ActivityRunOutput  # type: ignore
     from ._models import ActivityRunsQueryResponse  # type: ignore
     from ._models import AddDataFlowToDebugSessionResponse  # type: ignore
+    from ._models import AdditionalColumns  # type: ignore
+    from ._models import AdditionalColumnsName  # type: ignore
+    from ._models import AdditionalColumnsValue  # type: ignore
     from ._models import AmazonMWSLinkedService  # type: ignore
     from ._models import AmazonMWSLinkedServiceTypeProperties  # type: ignore
     from ._models import AmazonMWSLinkedServiceTypePropertiesAccessKeyId  # type: ignore
@@ -1893,6 +1919,7 @@ except (SyntaxError, ImportError):
     from ._models import AmazonS3LocationBucketName  # type: ignore
     from ._models import AmazonS3LocationVersion  # type: ignore
     from ._models import AmazonS3ReadSettings  # type: ignore
+    from ._models import AmazonS3ReadSettingsFileListPath  # type: ignore
     from ._models import AmazonS3ReadSettingsModifiedDatetimeEnd  # type: ignore
     from ._models import AmazonS3ReadSettingsModifiedDatetimeStart  # type: ignore
     from ._models import AmazonS3ReadSettingsPrefix  # type: ignore
@@ -1935,6 +1962,7 @@ except (SyntaxError, ImportError):
     from ._models import AzureBlobFSLocation  # type: ignore
     from ._models import AzureBlobFSLocationFileSystem  # type: ignore
     from ._models import AzureBlobFSReadSettings  # type: ignore
+    from ._models import AzureBlobFSReadSettingsFileListPath  # type: ignore
     from ._models import AzureBlobFSReadSettingsModifiedDatetimeEnd  # type: ignore
     from ._models import AzureBlobFSReadSettingsModifiedDatetimeStart  # type: ignore
     from ._models import AzureBlobFSReadSettingsRecursive  # type: ignore
@@ -1957,6 +1985,7 @@ except (SyntaxError, ImportError):
     from ._models import AzureBlobStorageLocation  # type: ignore
     from ._models import AzureBlobStorageLocationContainer  # type: ignore
     from ._models import AzureBlobStorageReadSettings  # type: ignore
+    from ._models import AzureBlobStorageReadSettingsFileListPath  # type: ignore
     from ._models import AzureBlobStorageReadSettingsModifiedDatetimeEnd  # type: ignore
     from ._models import AzureBlobStorageReadSettingsModifiedDatetimeStart  # type: ignore
     from ._models import AzureBlobStorageReadSettingsPrefix  # type: ignore
@@ -2010,6 +2039,7 @@ except (SyntaxError, ImportError):
     from ._models import AzureDataLakeStoreLinkedServiceTypePropertiesTenant  # type: ignore
     from ._models import AzureDataLakeStoreLocation  # type: ignore
     from ._models import AzureDataLakeStoreReadSettings  # type: ignore
+    from ._models import AzureDataLakeStoreReadSettingsFileListPath  # type: ignore
     from ._models import AzureDataLakeStoreReadSettingsModifiedDatetimeEnd  # type: ignore
     from ._models import AzureDataLakeStoreReadSettingsModifiedDatetimeStart  # type: ignore
     from ._models import AzureDataLakeStoreReadSettingsRecursive  # type: ignore
@@ -2021,6 +2051,7 @@ except (SyntaxError, ImportError):
     from ._models import AzureDataLakeStoreSource  # type: ignore
     from ._models import AzureDataLakeStoreSourceRecursive  # type: ignore
     from ._models import AzureDataLakeStoreWriteSettings  # type: ignore
+    from ._models import AzureDataLakeStoreWriteSettingsExpiryDateTime  # type: ignore
     from ._models import AzureDatabricksLinkedService  # type: ignore
     from ._models import AzureDatabricksLinkedServiceTypeProperties  # type: ignore
     from ._models import AzureDatabricksLinkedServiceTypePropertiesDomain  # type: ignore
@@ -2040,6 +2071,7 @@ except (SyntaxError, ImportError):
     from ._models import AzureFileStorageLinkedServiceTypePropertiesUserId  # type: ignore
     from ._models import AzureFileStorageLocation  # type: ignore
     from ._models import AzureFileStorageReadSettings  # type: ignore
+    from ._models import AzureFileStorageReadSettingsFileListPath  # type: ignore
     from ._models import AzureFileStorageReadSettingsModifiedDatetimeEnd  # type: ignore
     from ._models import AzureFileStorageReadSettingsModifiedDatetimeStart  # type: ignore
     from ._models import AzureFileStorageReadSettingsRecursive  # type: ignore
@@ -2267,6 +2299,7 @@ except (SyntaxError, ImportError):
     from ._models import CopyActivityTypePropertiesPreserveItem  # type: ignore
     from ._models import CopyActivityTypePropertiesPreserveRulesItem  # type: ignore
     from ._models import CopyActivityTypePropertiesTranslator  # type: ignore
+    from ._models import CopyActivityTypePropertiesValidateDataConsistency  # type: ignore
     from ._models import CopySink  # type: ignore
     from ._models import CopySinkMaxConcurrentConnections  # type: ignore
     from ._models import CopySinkSinkRetryCount  # type: ignore
@@ -2391,6 +2424,7 @@ except (SyntaxError, ImportError):
     from ._models import Db2LinkedService  # type: ignore
     from ._models import Db2LinkedServiceTypeProperties  # type: ignore
     from ._models import Db2LinkedServiceTypePropertiesCertificateCommonName  # type: ignore
+    from ._models import Db2LinkedServiceTypePropertiesConnectionString  # type: ignore
     from ._models import Db2LinkedServiceTypePropertiesDatabase  # type: ignore
     from ._models import Db2LinkedServiceTypePropertiesEncryptedCredential  # type: ignore
     from ._models import Db2LinkedServiceTypePropertiesPackageCollection  # type: ignore
@@ -2540,6 +2574,7 @@ except (SyntaxError, ImportError):
     from ._models import FileServerLinkedServiceTypePropertiesUserId  # type: ignore
     from ._models import FileServerLocation  # type: ignore
     from ._models import FileServerReadSettings  # type: ignore
+    from ._models import FileServerReadSettingsFileListPath  # type: ignore
     from ._models import FileServerReadSettingsModifiedDatetimeEnd  # type: ignore
     from ._models import FileServerReadSettingsModifiedDatetimeStart  # type: ignore
     from ._models import FileServerReadSettingsRecursive  # type: ignore
@@ -2564,6 +2599,7 @@ except (SyntaxError, ImportError):
     from ._models import FormatReadSettings  # type: ignore
     from ._models import FormatWriteSettings  # type: ignore
     from ._models import FtpReadSettings  # type: ignore
+    from ._models import FtpReadSettingsFileListPath  # type: ignore
     from ._models import FtpReadSettingsRecursive  # type: ignore
     from ._models import FtpReadSettingsWildcardFileName  # type: ignore
     from ._models import FtpReadSettingsWildcardFolderPath  # type: ignore
@@ -2624,6 +2660,7 @@ except (SyntaxError, ImportError):
     from ._models import GoogleCloudStorageLocationBucketName  # type: ignore
     from ._models import GoogleCloudStorageLocationVersion  # type: ignore
     from ._models import GoogleCloudStorageReadSettings  # type: ignore
+    from ._models import GoogleCloudStorageReadSettingsFileListPath  # type: ignore
     from ._models import GoogleCloudStorageReadSettingsModifiedDatetimeEnd  # type: ignore
     from ._models import GoogleCloudStorageReadSettingsModifiedDatetimeStart  # type: ignore
     from ._models import GoogleCloudStorageReadSettingsPrefix  # type: ignore
@@ -2729,6 +2766,7 @@ except (SyntaxError, ImportError):
     from ._models import HdfsLinkedServiceTypePropertiesUserName  # type: ignore
     from ._models import HdfsLocation  # type: ignore
     from ._models import HdfsReadSettings  # type: ignore
+    from ._models import HdfsReadSettingsFileListPath  # type: ignore
     from ._models import HdfsReadSettingsModifiedDatetimeEnd  # type: ignore
     from ._models import HdfsReadSettingsModifiedDatetimeStart  # type: ignore
     from ._models import HdfsReadSettingsRecursive  # type: ignore
@@ -3250,6 +3288,7 @@ except (SyntaxError, ImportError):
     from ._models import SSISPropertyOverrideValue  # type: ignore
     from ._models import SalesforceLinkedService  # type: ignore
     from ._models import SalesforceLinkedServiceTypeProperties  # type: ignore
+    from ._models import SalesforceLinkedServiceTypePropertiesApiVersion  # type: ignore
     from ._models import SalesforceLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
     from ._models import SalesforceLinkedServiceTypePropertiesEnvironmentUrl  # type: ignore
     from ._models import SalesforceLinkedServiceTypePropertiesUsername  # type: ignore
@@ -3268,6 +3307,7 @@ except (SyntaxError, ImportError):
     from ._models import SalesforceObjectDatasetTypePropertiesObjectApiName  # type: ignore
     from ._models import SalesforceServiceCloudLinkedService  # type: ignore
     from ._models import SalesforceServiceCloudLinkedServiceTypeProperties  # type: ignore
+    from ._models import SalesforceServiceCloudLinkedServiceTypePropertiesApiVersion  # type: ignore
     from ._models import SalesforceServiceCloudLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
     from ._models import SalesforceServiceCloudLinkedServiceTypePropertiesEnvironmentUrl  # type: ignore
     from ._models import SalesforceServiceCloudLinkedServiceTypePropertiesExtendedProperties  # type: ignore
@@ -3405,6 +3445,7 @@ except (SyntaxError, ImportError):
     from ._models import SetVariableActivityTypePropertiesValue  # type: ignore
     from ._models import SftpLocation  # type: ignore
     from ._models import SftpReadSettings  # type: ignore
+    from ._models import SftpReadSettingsFileListPath  # type: ignore
     from ._models import SftpReadSettingsModifiedDatetimeEnd  # type: ignore
     from ._models import SftpReadSettingsModifiedDatetimeStart  # type: ignore
     from ._models import SftpReadSettingsRecursive  # type: ignore
@@ -3421,6 +3462,7 @@ except (SyntaxError, ImportError):
     from ._models import SftpServerLinkedServiceTypePropertiesUserName  # type: ignore
     from ._models import SftpWriteSettings  # type: ignore
     from ._models import SftpWriteSettingsOperationTimeout  # type: ignore
+    from ._models import SftpWriteSettingsUseTempFileRename  # type: ignore
     from ._models import ShopifyLinkedService  # type: ignore
     from ._models import ShopifyLinkedServiceTypeProperties  # type: ignore
     from ._models import ShopifyLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
@@ -3431,6 +3473,9 @@ except (SyntaxError, ImportError):
     from ._models import ShopifyObjectDataset  # type: ignore
     from ._models import ShopifySource  # type: ignore
     from ._models import ShopifySourceQuery  # type: ignore
+    from ._models import SkipErrorFile  # type: ignore
+    from ._models import SkipErrorFileDataInconsistency  # type: ignore
+    from ._models import SkipErrorFileFileMissing  # type: ignore
     from ._models import SparkDatasetTypeProperties  # type: ignore
     from ._models import SparkDatasetTypePropertiesSchema  # type: ignore
     from ._models import SparkDatasetTypePropertiesTable  # type: ignore
@@ -3499,6 +3544,7 @@ except (SyntaxError, ImportError):
     from ._models import SqlSinkStoredProcedureTableTypeParameterName  # type: ignore
     from ._models import SqlSinkTableOption  # type: ignore
     from ._models import SqlSource  # type: ignore
+    from ._models import SqlSourceIsolationLevel  # type: ignore
     from ._models import SqlSourceSqlReaderQuery  # type: ignore
     from ._models import SqlSourceSqlReaderStoredProcedureName  # type: ignore
     from ._models import SquareLinkedService  # type: ignore
@@ -3764,6 +3810,9 @@ __all__ = [
     'ActivityRunOutput',
     'ActivityRunsQueryResponse',
     'AddDataFlowToDebugSessionResponse',
+    'AdditionalColumns',
+    'AdditionalColumnsName',
+    'AdditionalColumnsValue',
     'AmazonMWSLinkedService',
     'AmazonMWSLinkedServiceTypeProperties',
     'AmazonMWSLinkedServiceTypePropertiesAccessKeyId',
@@ -3808,6 +3857,7 @@ __all__ = [
     'AmazonS3LocationBucketName',
     'AmazonS3LocationVersion',
     'AmazonS3ReadSettings',
+    'AmazonS3ReadSettingsFileListPath',
     'AmazonS3ReadSettingsModifiedDatetimeEnd',
     'AmazonS3ReadSettingsModifiedDatetimeStart',
     'AmazonS3ReadSettingsPrefix',
@@ -3850,6 +3900,7 @@ __all__ = [
     'AzureBlobFSLocation',
     'AzureBlobFSLocationFileSystem',
     'AzureBlobFSReadSettings',
+    'AzureBlobFSReadSettingsFileListPath',
     'AzureBlobFSReadSettingsModifiedDatetimeEnd',
     'AzureBlobFSReadSettingsModifiedDatetimeStart',
     'AzureBlobFSReadSettingsRecursive',
@@ -3872,6 +3923,7 @@ __all__ = [
     'AzureBlobStorageLocation',
     'AzureBlobStorageLocationContainer',
     'AzureBlobStorageReadSettings',
+    'AzureBlobStorageReadSettingsFileListPath',
     'AzureBlobStorageReadSettingsModifiedDatetimeEnd',
     'AzureBlobStorageReadSettingsModifiedDatetimeStart',
     'AzureBlobStorageReadSettingsPrefix',
@@ -3925,6 +3977,7 @@ __all__ = [
     'AzureDataLakeStoreLinkedServiceTypePropertiesTenant',
     'AzureDataLakeStoreLocation',
     'AzureDataLakeStoreReadSettings',
+    'AzureDataLakeStoreReadSettingsFileListPath',
     'AzureDataLakeStoreReadSettingsModifiedDatetimeEnd',
     'AzureDataLakeStoreReadSettingsModifiedDatetimeStart',
     'AzureDataLakeStoreReadSettingsRecursive',
@@ -3936,6 +3989,7 @@ __all__ = [
     'AzureDataLakeStoreSource',
     'AzureDataLakeStoreSourceRecursive',
     'AzureDataLakeStoreWriteSettings',
+    'AzureDataLakeStoreWriteSettingsExpiryDateTime',
     'AzureDatabricksLinkedService',
     'AzureDatabricksLinkedServiceTypeProperties',
     'AzureDatabricksLinkedServiceTypePropertiesDomain',
@@ -3955,6 +4009,7 @@ __all__ = [
     'AzureFileStorageLinkedServiceTypePropertiesUserId',
     'AzureFileStorageLocation',
     'AzureFileStorageReadSettings',
+    'AzureFileStorageReadSettingsFileListPath',
     'AzureFileStorageReadSettingsModifiedDatetimeEnd',
     'AzureFileStorageReadSettingsModifiedDatetimeStart',
     'AzureFileStorageReadSettingsRecursive',
@@ -4182,6 +4237,7 @@ __all__ = [
     'CopyActivityTypePropertiesPreserveItem',
     'CopyActivityTypePropertiesPreserveRulesItem',
     'CopyActivityTypePropertiesTranslator',
+    'CopyActivityTypePropertiesValidateDataConsistency',
     'CopySink',
     'CopySinkMaxConcurrentConnections',
     'CopySinkSinkRetryCount',
@@ -4306,6 +4362,7 @@ __all__ = [
     'Db2LinkedService',
     'Db2LinkedServiceTypeProperties',
     'Db2LinkedServiceTypePropertiesCertificateCommonName',
+    'Db2LinkedServiceTypePropertiesConnectionString',
     'Db2LinkedServiceTypePropertiesDatabase',
     'Db2LinkedServiceTypePropertiesEncryptedCredential',
     'Db2LinkedServiceTypePropertiesPackageCollection',
@@ -4455,6 +4512,7 @@ __all__ = [
     'FileServerLinkedServiceTypePropertiesUserId',
     'FileServerLocation',
     'FileServerReadSettings',
+    'FileServerReadSettingsFileListPath',
     'FileServerReadSettingsModifiedDatetimeEnd',
     'FileServerReadSettingsModifiedDatetimeStart',
     'FileServerReadSettingsRecursive',
@@ -4479,6 +4537,7 @@ __all__ = [
     'FormatReadSettings',
     'FormatWriteSettings',
     'FtpReadSettings',
+    'FtpReadSettingsFileListPath',
     'FtpReadSettingsRecursive',
     'FtpReadSettingsWildcardFileName',
     'FtpReadSettingsWildcardFolderPath',
@@ -4539,6 +4598,7 @@ __all__ = [
     'GoogleCloudStorageLocationBucketName',
     'GoogleCloudStorageLocationVersion',
     'GoogleCloudStorageReadSettings',
+    'GoogleCloudStorageReadSettingsFileListPath',
     'GoogleCloudStorageReadSettingsModifiedDatetimeEnd',
     'GoogleCloudStorageReadSettingsModifiedDatetimeStart',
     'GoogleCloudStorageReadSettingsPrefix',
@@ -4644,6 +4704,7 @@ __all__ = [
     'HdfsLinkedServiceTypePropertiesUserName',
     'HdfsLocation',
     'HdfsReadSettings',
+    'HdfsReadSettingsFileListPath',
     'HdfsReadSettingsModifiedDatetimeEnd',
     'HdfsReadSettingsModifiedDatetimeStart',
     'HdfsReadSettingsRecursive',
@@ -5165,6 +5226,7 @@ __all__ = [
     'SSISPropertyOverrideValue',
     'SalesforceLinkedService',
     'SalesforceLinkedServiceTypeProperties',
+    'SalesforceLinkedServiceTypePropertiesApiVersion',
     'SalesforceLinkedServiceTypePropertiesEncryptedCredential',
     'SalesforceLinkedServiceTypePropertiesEnvironmentUrl',
     'SalesforceLinkedServiceTypePropertiesUsername',
@@ -5183,6 +5245,7 @@ __all__ = [
     'SalesforceObjectDatasetTypePropertiesObjectApiName',
     'SalesforceServiceCloudLinkedService',
     'SalesforceServiceCloudLinkedServiceTypeProperties',
+    'SalesforceServiceCloudLinkedServiceTypePropertiesApiVersion',
     'SalesforceServiceCloudLinkedServiceTypePropertiesEncryptedCredential',
     'SalesforceServiceCloudLinkedServiceTypePropertiesEnvironmentUrl',
     'SalesforceServiceCloudLinkedServiceTypePropertiesExtendedProperties',
@@ -5320,6 +5383,7 @@ __all__ = [
     'SetVariableActivityTypePropertiesValue',
     'SftpLocation',
     'SftpReadSettings',
+    'SftpReadSettingsFileListPath',
     'SftpReadSettingsModifiedDatetimeEnd',
     'SftpReadSettingsModifiedDatetimeStart',
     'SftpReadSettingsRecursive',
@@ -5336,6 +5400,7 @@ __all__ = [
     'SftpServerLinkedServiceTypePropertiesUserName',
     'SftpWriteSettings',
     'SftpWriteSettingsOperationTimeout',
+    'SftpWriteSettingsUseTempFileRename',
     'ShopifyLinkedService',
     'ShopifyLinkedServiceTypeProperties',
     'ShopifyLinkedServiceTypePropertiesEncryptedCredential',
@@ -5346,6 +5411,9 @@ __all__ = [
     'ShopifyObjectDataset',
     'ShopifySource',
     'ShopifySourceQuery',
+    'SkipErrorFile',
+    'SkipErrorFileDataInconsistency',
+    'SkipErrorFileFileMissing',
     'SparkDatasetTypeProperties',
     'SparkDatasetTypePropertiesSchema',
     'SparkDatasetTypePropertiesTable',
@@ -5414,6 +5482,7 @@ __all__ = [
     'SqlSinkStoredProcedureTableTypeParameterName',
     'SqlSinkTableOption',
     'SqlSource',
+    'SqlSourceIsolationLevel',
     'SqlSourceSqlReaderQuery',
     'SqlSourceSqlReaderStoredProcedureName',
     'SquareLinkedService',
