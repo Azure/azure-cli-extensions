@@ -2,6 +2,11 @@
 
 Release History
 ===============
+
+0.4.34
++++++
+* Remove preview flag for private cluster feature.
+
 0.4.33
 +++++
 * Adding az aks get-credentials --context argument
