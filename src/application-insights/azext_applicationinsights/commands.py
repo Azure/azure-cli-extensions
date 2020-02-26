@@ -71,8 +71,8 @@ def load_command_table(self, _):
         g.custom_command('update-tags', 'update_component_tags')
 
     with self.command_group('monitor app-insights component billing', command_type=components_billing_sdk, custom_command_type=components_billing_custom_sdk) as g:
-        g.custom_command('update', 'update_componet_billing')
-        g.custom_show_command('show', 'show_componet_billing')
+        g.custom_command('update', 'update_component_billing')
+        g.custom_show_command('show', 'show_component_billing')
 
     with self.command_group('monitor app-insights api-key', command_type=api_key_sdk, custom_command_type=api_key_custom_sdk) as g:
         g.custom_command('create', 'create_api_key')

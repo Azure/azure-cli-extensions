@@ -28,7 +28,7 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
 
     with self.argument_context('monitor app-insights component billing') as c:
-        c.argument('stop_send_notification_when_hit_cap', options_list=['-s', '--stop'], arg_type=get_three_state_flag(),
+        c.argument('stop_sending_notification_when_hitting_cap', options_list=['-s', '--stop'], arg_type=get_three_state_flag(),
                    help='Do not send a notification email when the daily data volume cap is met.')
         c.argument('cap', type=int, help='Daily data volume cap in GB.')
 

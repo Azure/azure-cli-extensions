@@ -98,14 +98,16 @@ def delete_api_key(client, application, resource_group_name, api_key):
     raise CLIError('--api-key provided but key not found for deletion.')
 
 
-def show_componet_billing(client, application, resource_group_name):
+def show_component_billing(client, application, resource_group_name):
     return client.get(resource_group_name=resource_group_name, resource_name=application)
 
 
-def update_componet_billing(client, application, resource_group_name, cap=None, stop_send_notification_when_hit_cap=None):
+def update_component_billing(client, application, resource_group_name, cap=None, stop_sending_notification_when_hitting_cap=None):
     billing_features = client.get(resource_group_name=resource_group_name, resource_name=application)
-    billing_features.data_volume_cap.cap = cap
-    billing_features.data_volume_cap.stop_send_notification_when_hit_cap = stop_send_notification_when_hit_cap
+    if cap is not None:
+        billing_features.data_volume_cap.cap = cap
+    if stop_sending_notification_when_hitting_cap is not None:
+        billing_features.data_volume_cap.stop_send_notification_when_hit_cap = stop_sending_notification_when_hitting_cap
     return client.update(resource_group_name=resource_group_name,
                          resource_name=application,
                          data_volume_cap=billing_features.data_volume_cap,

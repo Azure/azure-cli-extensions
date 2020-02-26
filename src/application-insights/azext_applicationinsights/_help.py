@@ -96,11 +96,19 @@ helps['monitor app-insights component billing'] = """
 helps['monitor app-insights component billing show'] = """
     type: command
     short-summary: Show the billing features of an Application Insights resource.
+    examples:
+      - name: Show the billing features of an application insights component
+        text: |
+          az monitor app-insights component billing show --app demoApp -g demoRg
 """
 
 helps['monitor app-insights component billing update'] = """
     type: command
     short-summary: Update the billing features of an Application Insights resource.
+    examples:
+      - name: Update the daily cap of the billing features
+        text: |
+          az monitor app-insights component billing update --app demoApp -g demoRg --cap 200 --stop
 """
 
 helps['monitor app-insights api-key'] = """
