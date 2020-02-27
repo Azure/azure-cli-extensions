@@ -5,11 +5,9 @@
 
 # pylint: disable=line-too-long, too-many-locals, too-many-statements, broad-except, too-many-branches
 import json
-import logging
 import timeit
 import os
 import pkgutil
-import inspect
 import traceback
 import requests
 from knack.log import get_logger
@@ -33,7 +31,6 @@ from .repair_utils import (
     _process_bash_parameters,
     _parse_run_script_raw_logs,
     _check_script_succeeded,
-    _get_function_param_dict,
     _fetch_disk_sku
 )
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError
@@ -42,7 +39,7 @@ logger = get_logger(__name__)
 
 
 def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None):
-    
+
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair create')
 
@@ -58,7 +55,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
         # List of created resouces
         created_resources = []
-        
+
         # Fetch OS image urn
         if is_linux:
             os_image_urn = "UbuntuLTS"
@@ -209,17 +206,17 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         return_dict['created_resources'] = created_resources
 
         logger.info('\n%s\n', command.message)
-    
+
     return return_dict
 
 
 def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None, yes=False):
-    
+
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair restore')
 
     try:
-         # Fetch source and repair VM data
+        # Fetch source and repair VM data
         source_vm = get_vm(cmd, resource_group_name, vm_name)
         is_managed = _uses_managed_disk(source_vm)
         repair_vm_id = parse_resource_id(repair_vm_id)
@@ -284,7 +281,7 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
         command.set_status_error()
         return_dict = command.init_return_dict()
     else:
-        # Construct return dict        
+        # Construct return dict
         command.message = '\'{disk}\' successfully attached to \'{n}\' as an OS disk. Please test your repairs and once confirmed, ' \
                           'you may choose to delete the source OS disk \'{src_disk}\' within resource group \'{rg}\' manually if you no longer need it, to avoid any undesired costs.' \
                           .format(disk=disk_name, n=vm_name, src_disk=source_disk, rg=resource_group_name)
@@ -295,7 +292,7 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
 
 
 def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custom_script_file=None, parameters=None, run_on_repair=False):
-    
+
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair run')
 
@@ -340,7 +337,7 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
         else:
             # no-op run id
             repair_run_command += ' "@{custom_file}" --parameters script_path=no-op'.format(custom_file=custom_script_file)
-        
+
         # Append Parameters
         if parameters:
             if is_linux:

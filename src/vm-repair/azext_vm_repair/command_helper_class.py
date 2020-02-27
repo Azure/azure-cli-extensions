@@ -1,3 +1,10 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
+# pylint: disable=line-too-long, too-many-instance-attributes
+
 import logging
 import timeit
 import inspect
@@ -13,10 +20,11 @@ STATUS_SUCCESS = 'SUCCESS'
 STATUS_ERROR = 'ERROR'
 VM_REPAIR_RUN_COMMAND = 'vm repair run'
 
+
 class command_helper(object):
     """
     The command helper stores command state data and helper functions for vm-repair commands.
-    It will also execute needed functions at the start and end of commands such as sending telemetry data 
+    It will also execute needed functions at the start and end of commands such as sending telemetry data
     and displaying progress controller
     """
 
@@ -68,18 +76,18 @@ class command_helper(object):
             self.cmd.cli_ctx.get_progress_controller().add(message='Running')
 
     def __del__(self):
-        """ 
-        This object will have the same life time as an invoked command. 
+        """
+        This object will have the same life time as an invoked command.
         We will run all telemetry and clean-up work through the destructor.
         """
 
         # End long running op for process if not verbose
         if not self.is_verbose:
             self.cmd.cli_ctx.get_progress_controller().end()
-        # Track telemetry data       
+        # Track telemetry data
         elapsed_time = timeit.default_timer() - self.start_time
         if self.command_name == VM_REPAIR_RUN_COMMAND:
-            _track_run_command_telemetry(self.logger, self.command_name, self.command_params, self.status, self.message, self.error_message, self.error_stack_trace, elapsed_time, get_subscription_id(self.cmd.cli_ctx), self.return_dict, self.script.run_id, self.script.status,self.script.output, self.script.run_time)
+            _track_run_command_telemetry(self.logger, self.command_name, self.command_params, self.status, self.message, self.error_message, self.error_stack_trace, elapsed_time, get_subscription_id(self.cmd.cli_ctx), self.return_dict, self.script.run_id, self.script.status, self.script.output, self.script.run_time)
         else:
             _track_command_telemetry(self.logger, self.command_name, self.command_params, self.status, self.message, self.error_message, self.error_stack_trace, elapsed_time, get_subscription_id(self.cmd.cli_ctx), self.return_dict)
 
@@ -110,26 +118,24 @@ class command_helper(object):
 
 
 class script_data(object):
-        """
-        Repair script related data.
-        """
-        def __init__(self):
-            # Unique run-id
-            self.run_id = ''
+    """ Repair script related data. """
+    def __init__(self):
+        # Unique run-id
+        self.run_id = ''
 
-            # Script status
-            self.status = ''
+        # Script status
+        self.status = ''
 
-            # Script Output
-            self.output = ''
+        # Script Output
+        self.output = ''
 
-            # Script run time
-            self.run_time = None
-    
-        def set_status_success(self):
-            """ Set command status to success """
-            self.status = STATUS_SUCCESS
+        # Script run time
+        self.run_time = None
 
-        def set_status_error(self):
-            """ Set command status to error """
-            self.status = STATUS_ERROR
+    def set_status_success(self):
+        """ Set command status to success """
+        self.status = STATUS_SUCCESS
+
+    def set_status_error(self):
+        """ Set command status to error """
+        self.status = STATUS_ERROR
