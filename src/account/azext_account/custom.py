@@ -6,5 +6,5 @@
 import azext_account.generated.custom
 try:
     import azext_account.manual.custom
-except ImportError
+except ImportError:
     pass
