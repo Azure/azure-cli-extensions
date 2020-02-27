@@ -10,25 +10,13 @@ def cf_account(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, SubscriptionClient)
 
 
-def cf_subscriptions(cli_ctx, *_):
-    return cf_account(cli_ctx).subscriptions
+def cf_subscription(cli_ctx, *_):
+    return cf_account(cli_ctx).subscription
 
 
 def cf_subscription_operation(cli_ctx, *_):
     return cf_account(cli_ctx).subscription_operation
 
 
-def cf_subscription_factory(cli_ctx, *_):
-    return cf_account(cli_ctx).subscription_factory
-
-
-def cf_subscription_operations(cli_ctx, *_):
-    return cf_account(cli_ctx).subscription_operations
-
-
 def cf_operations(cli_ctx, *_):
     return cf_account(cli_ctx).operations
-
-
-def cf_tenants(cli_ctx, *_):
-    return cf_account(cli_ctx).tenants
