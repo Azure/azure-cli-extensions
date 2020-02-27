@@ -86,7 +86,7 @@ def show_api_key(client, application, resource_group_name, api_key=None):
     result = list(filter(lambda result: result.name == api_key, client.list(resource_group_name, application)))
     if len(result) == 1:
         return result[0]
-    elif len(result) > 1:
+    if len(result) > 1:
         return result
     return None
 
@@ -96,3 +96,19 @@ def delete_api_key(client, application, resource_group_name, api_key):
     if existing_key != []:
         return client.delete(resource_group_name, application, existing_key[0].id.split('/')[-1])
     raise CLIError('--api-key provided but key not found for deletion.')
+
+
+def show_component_billing(client, application, resource_group_name):
+    return client.get(resource_group_name=resource_group_name, resource_name=application)
+
+
+def update_component_billing(client, application, resource_group_name, cap=None, stop_sending_notification_when_hitting_cap=None):
+    billing_features = client.get(resource_group_name=resource_group_name, resource_name=application)
+    if cap is not None:
+        billing_features.data_volume_cap.cap = cap
+    if stop_sending_notification_when_hitting_cap is not None:
+        billing_features.data_volume_cap.stop_send_notification_when_hit_cap = stop_sending_notification_when_hitting_cap
+    return client.update(resource_group_name=resource_group_name,
+                         resource_name=application,
+                         data_volume_cap=billing_features.data_volume_cap,
+                         current_billing_features=billing_features.current_billing_features)
