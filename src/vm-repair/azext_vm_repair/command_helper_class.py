@@ -30,12 +30,12 @@ class command_helper(object):
 
     def __init__(self, logger, cmd, command_name):
         """
-        The command helper object will always be initialized at the start of a command
+        The command helper object should always be initialized at the start of a command
         """
         # Start timer for custom telemetry
         self.start_time = timeit.default_timer()
 
-        # Store command parameters
+        # Fetch and store command parameters
         self.command_params = _get_function_param_dict(inspect.getouterframes(inspect.currentframe())[1].frame)
 
         # Logger
@@ -118,7 +118,7 @@ class command_helper(object):
 
 
 class script_data(object):
-    """ Repair script related data. """
+    """ Stores repair script data. """
     def __init__(self):
         # Unique run-id
         self.run_id = ''

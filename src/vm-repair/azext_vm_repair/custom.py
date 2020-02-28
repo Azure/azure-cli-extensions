@@ -31,7 +31,7 @@ from .repair_utils import (
     _process_bash_parameters,
     _parse_run_script_raw_logs,
     _check_script_succeeded,
-    _fetch_disk_sku
+    _fetch_disk_info
 )
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError
 
@@ -56,11 +56,13 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         # List of created resouces
         created_resources = []
 
-        # Fetch OS image urn
+        # Fetch OS image urn and set OS type for disk create
         if is_linux:
             os_image_urn = "UbuntuLTS"
+            os_type = 'Linux'
         else:
             os_image_urn = _fetch_compatible_windows_os_urn(source_vm)
+            os_type = 'Windows'
 
         # Set up base create vm command
         create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-username {username} --admin-password {password}' \
@@ -80,13 +82,11 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         # MANAGED DISK
         if is_managed:
             logger.info('Source VM uses managed disks. Creating repair VM with managed disks.\n')
+
             # Copy OS disk command
-            disk_sku = source_vm.storage_profile.os_disk.managed_disk.storage_account_type
-            if not disk_sku:
-                # VM is deallocated so fetch disk_sku info from disk itself
-                disk_sku = _fetch_disk_sku(resource_group_name, target_disk_name)
-            copy_disk_command = 'az disk create -g {g} -n {n} --source {s} --sku {sku} --location {loc} --query id -o tsv' \
-                                .format(g=resource_group_name, n=copy_disk_name, s=target_disk_name, sku=disk_sku, loc=source_vm.location)
+            disk_sku, location, os_type, hyperV_generation = _fetch_disk_info(resource_group_name, target_disk_name)
+            copy_disk_command = 'az disk create -g {g} -n {n} --source {s} --sku {sku} --location {loc} --os-type {os_type} --hyper-v-generation {hyperV} --query id -o tsv' \
+                                .format(g=resource_group_name, n=copy_disk_name, s=target_disk_name, sku=disk_sku, loc=location, os_type=os_type, hyperV=hyperV_generation)
             # Validate create vm create command to validate parameters before runnning copy disk command
             validate_create_vm_command = create_repair_vm_command + ' --validate'
 
@@ -185,7 +185,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             logger.debug(command.error_stack_trace)
 
     # Generate return results depending on command state
-    if not command.is_status_success:
+    if not command.is_status_success():
         command.set_status_error()
         return_dict = command.init_return_dict()
         _clean_up_resources(repair_group_name, confirm=False)
@@ -277,7 +277,7 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
         if command.error_stack_trace:
             logger.debug(command.error_stack_trace)
 
-    if not command.is_status_success:
+    if not command.is_status_success():
         command.set_status_error()
         return_dict = command.init_return_dict()
     else:
