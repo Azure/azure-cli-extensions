@@ -40,19 +40,23 @@ def update_support_tickets(cmd, client,
                            contact_timezone=None,
                            contact_country=None,
                            contact_language=None):
-    body = {}
-    body["first_name"] = contact_first_name
-    body["last_name"] = contact_last_name
-    body["preferred_contact_method"] = contact_method
-    body["primary_email_address"] = contact_email
-    body["additional_email_addresses"] = contact_additional_emails
-    body["phone_number"] = contact_phone_number
-    body["preferred_time_zone"] = contact_timezone
-    body["country"] = contact_country
-    body["preferred_support_language"] = contact_language
+    contactBody = {}
+    contactBody["first_name"] = contact_first_name
+    contactBody["last_name"] = contact_last_name
+    contactBody["preferred_contact_method"] = contact_method
+    contactBody["primary_email_address"] = contact_email
+    contactBody["additional_email_addresses"] = contact_additional_emails
+    contactBody["phone_number"] = contact_phone_number
+    contactBody["preferred_time_zone"] = contact_timezone
+    contactBody["country"] = contact_country
+    contactBody["preferred_support_language"] = contact_language
 
-    update_support_ticket = UpdateSupportTicket(severity=severity, status=status, contact_details=body)
-    return client.update(support_ticket_name=ticket_name, update_support_ticket=update_support_ticket)
+    body = {}
+    body["severity"] = severity
+    body["status"] = status
+    body["contact_details"] = contactBody
+
+    return client.update(support_ticket_name=ticket_name, update_support_ticket=body)
 
 
 def list_support_tickets_communications(cmd, client, ticket_name=None, filters=None):
