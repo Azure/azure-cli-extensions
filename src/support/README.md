@@ -85,6 +85,9 @@ az extension add --name support
     ```
     # Update support ticket severity.
     az support tickets update --ticket-name "TestTicketName" --severity "moderate"
+  
+    # Update support ticket status.
+    az support tickets update --ticket-name "TestTicketName" --status "closed"
 
     # Update support ticket customer contact details properties.
     az support tickets update --ticket-name "TestTicketName" \
@@ -98,8 +101,9 @@ az extension add --name support
         --contact-phone-number "123-456-7890" \
         --contact-timezone "Pacific Standard Time"
 
-    # Update support ticket severity and customer contact details properties.
+    # Update support ticket severity, status and customer contact details properties.
     az support tickets update --ticket-name "TestTicketName" \
+        --status "closed" \
         --contact-additional-emails "xyz@contoso.com" "devs@contoso.com" \
         --contact-country "USA" \
         --contact-email "abc@contoso.com" \

@@ -29,6 +29,7 @@ def get_support_tickets(cmd, client, ticket_name=None):
 def update_support_tickets(cmd, client,
                            ticket_name=None,
                            severity=None,
+                           status=None,
                            contact_first_name=None,
                            contact_last_name=None,
                            contact_method=None,
@@ -39,6 +40,8 @@ def update_support_tickets(cmd, client,
                            contact_country=None,
                            contact_language=None):
     body = {}
+    body["severity"] = severity
+    body["status"] = status
     body["first_name"] = contact_first_name
     body["last_name"] = contact_last_name
     body["preferred_contact_method"] = contact_method
@@ -49,7 +52,7 @@ def update_support_tickets(cmd, client,
     body["country"] = contact_country
     body["preferred_support_language"] = contact_language
 
-    return client.update(support_ticket_name=ticket_name, severity=severity, contact_details=body)
+    return client.update(support_ticket_name=ticket_name, update_support_ticket=body)
 
 
 def list_support_tickets_communications(cmd, client, ticket_name=None, filters=None):

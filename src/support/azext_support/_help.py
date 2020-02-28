@@ -93,11 +93,15 @@ examples:
 
 helps['support tickets update'] = """
 type: command
-short-summary: Updates severity level and customer contact information for a support ticket.
+short-summary: Updates severity level, status and customer contact information for a support ticket.
 examples:
   - name: Update support ticket severity.
     text: |-
           az support tickets update --ticket-name "TestTicketName" --severity "moderate"
+          
+  - name: Update support ticket status.
+    text: |-
+          az support tickets update --ticket-name "TestTicketName" --status "closed"
 
   - name: Update support ticket customer contact details properties.
     text: |
@@ -112,9 +116,10 @@ examples:
             --contact-phone-number "123-456-7890" \\
             --contact-timezone "Pacific Standard Time"
 
-  - name: Update support ticket severity and customer contact details properties.
+  - name: Update support ticket severity, status and customer contact details properties.
     text: |
           az support tickets update --ticket-name "TestTicketName" \\
+            --status "closed" \\
             --contact-additional-emails "xyz@contoso.com" "devs@contoso.com" \\
             --contact-country "USA" \\
             --contact-email "abc@contoso.com" \\
