@@ -7,10 +7,7 @@
 # pylint: disable=too-many-statements
 
 from azure.cli.core.commands.parameters import (
-    tags_type,
-    get_enum_type,
-    resource_group_name_type,
-    get_location_type
+    get_enum_type
 )
 from azext_account.action import (
     AddOwners

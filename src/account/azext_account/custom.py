@@ -3,8 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azext_account.generated.custom import *
 try:
-    from azext_account.manual.custom import *
+    pass
 except ImportError:
     pass
