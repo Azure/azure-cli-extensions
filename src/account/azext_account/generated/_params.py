@@ -9,7 +9,7 @@
 from azure.cli.core.commands.parameters import (
     get_enum_type
 )
-from azext_account.action import (
+from azext_account.generated.action import (
     AddOwners
 )
 
