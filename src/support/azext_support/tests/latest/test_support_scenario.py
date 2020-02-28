@@ -16,7 +16,7 @@ from azure_devtools.scenario_tests import AllowLargeResponse
 class SupportScenarioTest(ScenarioTest):
 
     def cmd(self, command, checks=None, expect_failure=False):
-        print("Runnig... {0}\n".format(command))
+        print("Running... {0}\n".format(command))
         rsp = super(SupportScenarioTest, self).cmd(command, checks=checks, expect_failure=expect_failure)
 
         try:
@@ -311,6 +311,7 @@ class SupportScenarioTest(ScenarioTest):
         cmd = "support tickets update "
         cmd += "--ticket-name '{0}' ".format(test_ticket_name)
         cmd += "--severity 'moderate' "
+        cmd += "--status 'open' "
         cmd += "--contact-method 'phone' "
         cmd += "--contact-phone-number '123-456-7890' "
 
@@ -330,6 +331,7 @@ class SupportScenarioTest(ScenarioTest):
         cmd = "support tickets update "
         cmd += "--ticket-name '{0}' ".format(test_ticket_name)
         cmd += "--severity 'minimal' "
+        cmd += "--status 'open' "
         cmd += "--contact-method 'email' "
 
         return cmd

@@ -98,7 +98,7 @@ examples:
   - name: Update support ticket severity.
     text: |-
           az support tickets update --ticket-name "TestTicketName" --severity "moderate"
-          
+
   - name: Update support ticket status.
     text: |-
           az support tickets update --ticket-name "TestTicketName" --status "closed"

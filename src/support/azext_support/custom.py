@@ -12,7 +12,6 @@ from datetime import date, datetime, timedelta
 from azext_support._utils import (get_bearer_token, is_quota_ticket,
                                   is_technical_ticket, parse_support_area_path)
 from knack.log import get_logger
-from.vendored_sdks.models import UpdateSupportTicket
 
 logger = get_logger(__name__)
 

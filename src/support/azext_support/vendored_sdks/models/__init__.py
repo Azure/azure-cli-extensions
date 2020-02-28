@@ -10,76 +10,77 @@
 # --------------------------------------------------------------------------
 
 try:
-    from ._models_py3 import CheckNameAvailabilityInput
-    from ._models_py3 import CheckNameAvailabilityOutput
-    from ._models_py3 import CommunicationDetails
-    from ._models_py3 import ContactProfile
-    from ._models_py3 import ExceptionResponse, ExceptionResponseException
-    from ._models_py3 import Operation
-    from ._models_py3 import OperationDisplay
-    from ._models_py3 import ProblemClassification
-    from ._models_py3 import QuotaChangeRequest
-    from ._models_py3 import QuotaTicketDetails
-    from ._models_py3 import Service
-    from ._models_py3 import ServiceError
-    from ._models_py3 import ServiceErrorDetail
-    from ._models_py3 import ServiceLevelAgreement
-    from ._models_py3 import SupportEngineer
-    from ._models_py3 import SupportTicketDetails
-    from ._models_py3 import TechnicalTicketDetails
-    from ._models_py3 import UpdateContactProfile
-    from ._models_py3 import UpdateSupportTicket
+    from .operation_display_py3 import OperationDisplay
+    from .operation_py3 import Operation
+    from .service_py3 import Service
+    from .problem_classification_py3 import ProblemClassification
+    from .check_name_availability_input_py3 import CheckNameAvailabilityInput
+    from .check_name_availability_output_py3 import CheckNameAvailabilityOutput
+    from .contact_profile_py3 import ContactProfile
+    from .service_level_agreement_py3 import ServiceLevelAgreement
+    from .support_engineer_py3 import SupportEngineer
+    from .technical_ticket_details_py3 import TechnicalTicketDetails
+    from .quota_change_request_py3 import QuotaChangeRequest
+    from .quota_ticket_details_py3 import QuotaTicketDetails
+    from .support_ticket_details_py3 import SupportTicketDetails
+    from .communication_details_py3 import CommunicationDetails
+    from .service_error_detail_py3 import ServiceErrorDetail
+    from .service_error_py3 import ServiceError
+    from .exception_response_py3 import ExceptionResponse, ExceptionResponseException
+    from .update_contact_profile_py3 import UpdateContactProfile
+    from .update_support_ticket_py3 import UpdateSupportTicket
 except (SyntaxError, ImportError):
-    from ._models import CheckNameAvailabilityInput
-    from ._models import CheckNameAvailabilityOutput
-    from ._models import CommunicationDetails
-    from ._models import ContactProfile
-    from ._models import ExceptionResponse, ExceptionResponseException
-    from ._models import Operation
-    from ._models import OperationDisplay
-    from ._models import ProblemClassification
-    from ._models import QuotaChangeRequest
-    from ._models import QuotaTicketDetails
-    from ._models import Service
-    from ._models import ServiceError
-    from ._models import ServiceErrorDetail
-    from ._models import ServiceLevelAgreement
-    from ._models import SupportEngineer
-    from ._models import SupportTicketDetails
-    from ._models import TechnicalTicketDetails
-    from ._models import UpdateContactProfile
-    from ._models import UpdateSupportTicket
-from ._paged_models import CommunicationDetailsPaged
-from ._paged_models import OperationPaged
-from ._paged_models import ProblemClassificationPaged
-from ._paged_models import ServicePaged
-from ._paged_models import SupportTicketDetailsPaged
-from ._microsoft_support_enums import (
+    from .operation_display import OperationDisplay
+    from .operation import Operation
+    from .service import Service
+    from .problem_classification import ProblemClassification
+    from .check_name_availability_input import CheckNameAvailabilityInput
+    from .check_name_availability_output import CheckNameAvailabilityOutput
+    from .contact_profile import ContactProfile
+    from .service_level_agreement import ServiceLevelAgreement
+    from .support_engineer import SupportEngineer
+    from .technical_ticket_details import TechnicalTicketDetails
+    from .quota_change_request import QuotaChangeRequest
+    from .quota_ticket_details import QuotaTicketDetails
+    from .support_ticket_details import SupportTicketDetails
+    from .communication_details import CommunicationDetails
+    from .service_error_detail import ServiceErrorDetail
+    from .service_error import ServiceError
+    from .exception_response import ExceptionResponse, ExceptionResponseException
+    from .update_contact_profile import UpdateContactProfile
+    from .update_support_ticket import UpdateSupportTicket
+from .operation_paged import OperationPaged
+from .service_paged import ServicePaged
+from .problem_classification_paged import ProblemClassificationPaged
+from .support_ticket_details_paged import SupportTicketDetailsPaged
+from .communication_details_paged import CommunicationDetailsPaged
+from .microsoft_support_enums import (
     Type,
     SeverityLevel,
     PreferredContactMethod,
     CommunicationType,
     CommunicationDirection,
+    Status,
 )
 
 __all__ = [
+    'OperationDisplay',
+    'Operation',
+    'Service',
+    'ProblemClassification',
     'CheckNameAvailabilityInput',
     'CheckNameAvailabilityOutput',
-    'CommunicationDetails',
     'ContactProfile',
-    'ExceptionResponse', 'ExceptionResponseException',
-    'Operation',
-    'OperationDisplay',
-    'ProblemClassification',
-    'QuotaChangeRequest',
-    'QuotaTicketDetails',
-    'Service',
-    'ServiceError',
-    'ServiceErrorDetail',
     'ServiceLevelAgreement',
     'SupportEngineer',
-    'SupportTicketDetails',
     'TechnicalTicketDetails',
+    'QuotaChangeRequest',
+    'QuotaTicketDetails',
+    'SupportTicketDetails',
+    'CommunicationDetails',
+    'ServiceErrorDetail',
+    'ServiceError',
+    'ExceptionResponse', 'ExceptionResponseException',
     'UpdateContactProfile',
     'UpdateSupportTicket',
     'OperationPaged',
@@ -92,4 +93,5 @@ __all__ = [
     'PreferredContactMethod',
     'CommunicationType',
     'CommunicationDirection',
+    'Status',
 ]

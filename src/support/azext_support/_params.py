@@ -69,7 +69,7 @@ def load_tickets_argument(self, _):
         c.argument('ticket_name', help='Support ticket name', required=True)
         c.argument('severity', arg_type=get_enum_type(['minimal', 'moderate', 'critical', 'highestcriticalimpact']),
                    help='A value that indicates the urgency of the case, which in turn determines the response ' +
-                   'time according to the service level agreement of the technical support plan you have with Azure.'),
+                   'time according to the service level agreement of the technical support plan you have with Azure.')
         c.argument('status', arg_type=get_enum_type(['open', 'closed']),
                    help='Status to be updated on the ticket.')
 
