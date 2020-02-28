@@ -6,7 +6,7 @@
 
 def cf_account(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from ..vendored_sdks.subscription import SubscriptionClient
+    from ..vendored_sdks.account import SubscriptionClient
     return get_mgmt_service_client(cli_ctx, SubscriptionClient)
 
 
