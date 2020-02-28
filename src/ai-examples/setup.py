@@ -5,11 +5,20 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+
 from codecs import open
 from setuptools import setup, find_packages
+try:
+    from azure_bdist_wheel import cmdclass
+except ImportError:
+    from distutils import log as logger
+    logger.warn("Wheel is not available, disabling bdist_wheel hook")
 
-VERSION = "0.1.4"
+# HISTORY.rst entry.
+VERSION = '0.1.0'
 
+# The full list of classifiers is available at
+# https://pypi.python.org/pypi?%3Aaction=list_classifiers
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
     'Intended Audience :: Developers',
@@ -18,9 +27,10 @@ CLASSIFIERS = [
     'Programming Language :: Python :: 2',
     'Programming Language :: Python :: 2.7',
     'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.4',
     'Programming Language :: Python :: 3.5',
     'Programming Language :: Python :: 3.6',
+    'Programming Language :: Python :: 3.7',
+    'Programming Language :: Python :: 3.8',
     'License :: OSI Approved :: MIT License',
 ]
 
@@ -32,16 +42,16 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='application-insights',
+    name='ai_examples',
     version=VERSION,
-    description='Support for managing Application Insights components and querying metrics, events, and logs from such components.',
-    long_description=README + '\n\n' + HISTORY,
+    description='Add AI powered examples to help content.',
+    author='Matthew Booe',
+    author_email='mabooe@microsoft.com',
+    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/ai-examples',
+    long_description='Improve user experince by adding AI powered examples to command help content.',
     license='MIT',
-    author='Ace Eldeib',
-    author_email='aleldeib@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/application-insights',
     classifiers=CLASSIFIERS,
-    packages=find_packages(exclude=["tests"]),
-    package_data={'azext_applicationinsights': ['azext_metadata.json']},
-    install_requires=DEPENDENCIES
+    packages=find_packages(),
+    install_requires=DEPENDENCIES,
+    package_data={'azext_ai_examples': ['azext_metadata.json']},
 )

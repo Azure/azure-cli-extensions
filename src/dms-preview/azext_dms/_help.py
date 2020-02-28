@@ -5,6 +5,105 @@
 
 from knack.help_files import helps
 
+helps['dms task'] = """
+    type: group
+    short-summary: Manage service-level tasks for a Database Migration Service instance.
+    long-summary: |
+        Service-level tasks are non-migration tasks that are performed at the service level. This is usually for administrative and maintenance work which applies to the service's agent and VM.
+"""
+
+helps['dms task cancel'] = """
+    type: command
+    short-summary: Cancel a service-level Task if it's currently queued or running.
+
+    examples:
+        - name: Cancel a service-level task
+          text: >
+            az dms task cancel -g myresourcegroup --service-name mydms -n mytask
+"""
+
+helps['dms task create'] = """
+    type: command
+    short-summary: Create and start a service-level task.
+    long-summary: |
+        The following tasks are currently supported:
+            1) Check OCI driver against Oracle source to check for compatibility
+            2) Upload OCI driver install package
+            3) Install an already uploaded OCI driver package
+
+    parameters:
+        - name: --task-type
+          type: string
+          short-summary: >
+            The type of task to create. The supported types are CheckOciDriver, UploadOciDriver, and InstallOciDriver.
+        - name: --task-options-json
+          type: string
+          short-summary: >
+            Information and settings relevant to the particular task's type. This can be either a JSON-formatted string or the location to a file containing the JSON object. See examples below for the format.
+          long-summary: >
+            For CheckOciDriver:
+                {
+                    // The version of your Oracle source server against which to check the driver's compatibility.
+                    // Can also be null to get a list of supported versions.
+                    "serverVersion": "Oracle source version"
+                }
+
+            For UploadOciDriver:
+                {
+                    "ociDriverPath": File share path of the driver install package,
+                    "userName": "user name",    // if this is missing or null, you will be prompted
+                    "password": "password"      // if this is missing or null (highly recommended) you will be prompted
+                }
+
+            For InstallOciDriver:
+                {
+                    // The output of the UploadOciDriver task can be used here
+                    "ociDriverPackageName": "Oci driver installer package name"
+                }
+    examples:
+        - name: Create a service-level task which checks if the currently installed OCI driver supports
+          text: >
+            az dms task create -g myresourcegroup --service-name mydms -n checkocitask1 --task-options-json "{\"serverVersion\": \"12.2.0.1\"}" --task-type CheckOciDriver
+"""
+
+helps['dms task delete'] = """
+    type: command
+    short-summary: Delete a service-level Task.
+    parameters:
+        - name: --delete-running-tasks
+          type: bool
+          short-summary: >
+            Delete the service-level Task even if the Task is currently running.
+"""
+
+helps['dms task list'] = """
+    type: command
+    short-summary: List the service-level Tasks within a DMS instance. Some tasks may have a status of Unknown, which indicates that an error occurred while querying the status of that task.
+    parameters:
+        - name: --task-type
+          type: string
+          short-summary: >
+            The type of task to be listed. For the list of possible types see "az dms check-status".
+    examples:
+        - name: List all Tasks within a DMS instance.
+          text: >
+            az dms task list -g myresourcegroup -n mydms
+        - name: List only the tasks that check the OCI driver compatibility within a DMS instance.
+          text: >
+            az dms task list -g myresourcegroup -n mydms --task-type Service.Check.OCI
+"""
+
+helps['dms task show'] = """
+    type: command
+    short-summary: Show the details of a service-level Task. Use the "--expand" to get more details.
+    parameters:
+        - name: --expand
+          type: string
+          short-summary: >
+            Expand the response to provide more details. Use with "command" to see more details of the Task.
+            Use with "output" to see the results of the Task's migration.
+"""
+
 helps['dms project create'] = """
     type: command
     short-summary: Create a migration Project which can contain multiple Tasks.
@@ -236,9 +335,7 @@ helps['dms project task create'] = """
         - name: --target-connection-json
           type: string
           short-summary: >
-            The connection information to the target server. This can be either a JSON-formatted string or the location to a file containing the JSON object. See examples below for the format.
-          long-summary: |
-            See 'source-connection-json' for examples of connection formats.
+            The connection information to the target server. This can be either a JSON-formatted string or the location to a file containing the JSON object. See 'source-connection-json' for examples of connection formats.
         - name: --enable-data-integrity-validation
           type: bool
           short-summary: >
