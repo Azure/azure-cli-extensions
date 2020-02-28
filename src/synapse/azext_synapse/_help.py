@@ -21,7 +21,7 @@ short-summary: Manage Synapse Workspace.
 
 helps['synapse workspace create'] = """
 type: command
-short-summary: create a synapse workspace.
+short-summary: Create a synapse workspace.
 examples:
   - name: Create a synapse workspace
     text: |-
@@ -32,7 +32,7 @@ examples:
 
 helps['synapse workspace list'] = """
 type: command
-short-summary: list all synapse workspaces under a subscription or under a specific resource group.
+short-summary: List all synapse workspaces under a subscription or under a specific resource group.
 examples:
   - name: List all synapse workspaces under a subscription
     text: |-
@@ -44,20 +44,35 @@ examples:
 
 helps['synapse workspace show'] = """
 type: command
-short-summary: get a synapse workspaces with workspace name.
+short-summary: Get a synapse workspaces with workspace name.
 examples:
   - name: Get a synapse workspaces with workspace name.
     text: |-
         az synapse workspace show --name testsynapseworkspace --resource-group rg --name testsynapseworkspace
 """
 
+helps['synapse workspace update'] = """
+type: command
+short-summary: Update a synapse workspace.
+examples:
+  - name: Update a synapse workspace
+    text: |-
+        az synapse workspace update --name fromcli4 --resource-group rg \\
+          --tags key1=value1
+"""
+
 helps['synapse workspace delete'] = """
 type: command
-short-summary: delete a synapse workspaces with workspace name.
+short-summary: Delete a synapse workspaces with workspace name.
 examples:
   - name: Delete a synapse workspaces with workspace name.
     text: |-
         az synapse workspace delete --name testsynapseworkspace --resource-group rg
+"""
+
+helps['synapse workspace wait'] = """
+type: command
+short-summary: Place the CLI in a waiting state until an operation is complete.
 """
 
 helps['synapse spark'] = """
@@ -101,6 +116,16 @@ examples:
         --resource-group rg
 """
 
+helps['synapse spark pool update'] = """
+type: command
+short-summary: Update the spark pool's tags.
+examples:
+  - name: Update the spark pool's tags.
+    text: |-
+        az synapse spark pool update --name testpool  --workspace-name testsynapseworkspace --resource-group rg \\
+        --tags key1=value1
+"""
+
 helps['synapse spark pool delete'] = """
 type: command
 short-summary: Delete a specific spark pool with spark pool name.
@@ -109,6 +134,11 @@ examples:
     text: |-
         az synapse spark pool delete --name testpool --workspace-name testsynapseworkspace \\
         --resource-group rg
+"""
+
+helps['synapse spark pool wait'] = """
+type: command
+short-summary: Place the CLI in a waiting state until an operation is complete.
 """
 
 helps['synapse spark batch'] = """

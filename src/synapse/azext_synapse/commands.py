@@ -34,6 +34,7 @@ def load_command_table(self, _):
         g.show_command('show', 'get')
         g.custom_command('list', 'list_workspaces')
         g.custom_command('create', 'create_workspace', supports_no_wait=True)
+        g.custom_command('update', 'update_workspace', supports_no_wait=True)
         g.command('delete', 'delete', confirmation=True, supports_no_wait=True)
         g.wait_command('wait')
 
@@ -42,6 +43,7 @@ def load_command_table(self, _):
         g.show_command('show', 'get')
         g.command('list', 'list_by_workspace')
         g.custom_command('create', 'create_spark_pool', supports_no_wait=True)
+        g.custom_command('update', 'update_spark_pool', supports_no_wait=True)
         g.command('delete', 'delete', confirmation=True, supports_no_wait=True)
         g.wait_command('wait')
 

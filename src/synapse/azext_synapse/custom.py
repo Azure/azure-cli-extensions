@@ -5,9 +5,11 @@
 
 from knack.log import get_logger
 
-from azext_synapse.vendored_sdks.azure_synapse.models import ExtendedLivyBatchRequest, LivyStatementRequestBody, ExtendedLivySessionRequest
+from azext_synapse.vendored_sdks.azure_synapse.models import ExtendedLivyBatchRequest, LivyStatementRequestBody, \
+    ExtendedLivySessionRequest
 
-from azext_synapse.vendored_sdks.azure_mgmt_synapse.models import Workspace, ManagedIdentity, DataLakeStorageAccountDetails, \
+from azext_synapse.vendored_sdks.azure_mgmt_synapse.models import Workspace, WorkspacePatchInfo, ManagedIdentity, \
+    DataLakeStorageAccountDetails, \
     BigDataPoolResourceInfo, AutoScaleProperties, AutoPauseProperties, LibraryRequirements, NodeSize, NodeSizeFamily
 
 
@@ -104,6 +106,18 @@ def create_workspace(cmd, client, resource_group_name, workspace_name, account_u
     return client.create_or_update(resource_group_name, workspace_name, workspace_info)
 
 
+def update_workspace(cmd, client, resource_group_name, workspace_name, sql_admin_login_password=None,
+                     provisioning_state=None, identity_type="SystemAssigned", principal_id=None, tags=None):
+    identity = ManagedIdentity(type=identity_type)
+    workspace_patch_info = WorkspacePatchInfo(
+        tags=tags,
+        identity=identity,
+        sql_administrator_login_password=sql_admin_login_password,
+        provisioning_state=provisioning_state
+    )
+    return client.update(resource_group_name, workspace_name, workspace_patch_info)
+
+
 def create_spark_pool(cmd, client, resource_group_name, workspace_name, spark_pool_name, location,
                       spark_version="2.4", node_size=NodeSize.medium.value, node_count=3,
                       node_size_family=NodeSizeFamily.memory_optimized.value, auto_scale_enabled=True,
@@ -126,3 +140,7 @@ def create_spark_pool(cmd, client, resource_group_name, workspace_name, spark_po
         big_data_pool_info.library_requirements = LibraryRequirements(filename=library_requirements_filename,
                                                                       content=library_requirements_content)
     return client.create_or_update(resource_group_name, workspace_name, spark_pool_name, big_data_pool_info, force)
+
+
+def update_spark_pool(cmd, client, resource_group_name, workspace_name, spark_pool_name, tags=None):
+    return client.update(resource_group_name, workspace_name, spark_pool_name, tags)

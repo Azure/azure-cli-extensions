@@ -18,7 +18,7 @@ def load_arguments(self, _):
                    help='Optional query parameter specifying whether detailed response is returned beyond plain livy.')
         c.argument('size',
                    help='The size of the returned list.By default it is 20 and that is the maximum.')
-        c.argument('tags', arg_type=tags_type, help='The tag of spark batch job.')
+        c.argument('tags', arg_type=tags_type, help='The tags of spark batch job.')
         c.argument('artifact_id', help='The artifact id.')
         c.argument('job_name', arg_type=name_type, help='The spark batch or session job name.')
         c.argument('file', help='The URI of file.')
@@ -56,9 +56,15 @@ def load_arguments(self, _):
         c.argument('file_system', help='The file system of the data lake storage account.')
         c.argument('sql_admin_login_user', help='The sql administrator login user name.')
         c.argument('sql_admin_login_password', help='The sql administrator login password.')
+        c.argument('tags', arg_type=tags_type, help='The tag of workspace.')
+        c.argument('identity_type', help='The type of managed identity.')
+        c.argument('principal_id', help='The principal id of managed identity.')
+        c.argument('tenant_id', help='The tenant id of managed identity.')
+        c.argument('provisioning_state', help='The provisioning state of workspace.')
 
     # synapse spark pool
     with self.argument_context('synapse spark pool') as c:
         c.argument('big_data_pool_name', arg_type=name_type, help='The spark pool name.')
         c.argument('spark_pool_name', arg_type=name_type, help='The spark pool name.')
         c.argument('workspace_name', help='The workspace name.')
+        c.argument('tags', arg_type=tags_type, help='The tags of spark pool.')
