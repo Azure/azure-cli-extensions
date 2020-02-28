@@ -12,7 +12,7 @@ from .repair_utils import _get_current_vmrepair_version
 TEST_KEY = 'a6bdff92-33b5-426f-9123-33875d0ae98b'
 PROD_KEY = '3e7130f2-759b-41d4-afb8-f1405d1d7ed9'
 
-tc = TelemetryClient(TEST_KEY)
+tc = TelemetryClient(PROD_KEY)
 tc.context.application.ver = _get_current_vmrepair_version()
 
 
