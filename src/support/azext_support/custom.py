@@ -12,6 +12,7 @@ from datetime import date, datetime, timedelta
 from azext_support._utils import (get_bearer_token, is_quota_ticket,
                                   is_technical_ticket, parse_support_area_path)
 from knack.log import get_logger
+from.vendored_sdks.models import UpdateSupportTicket
 
 logger = get_logger(__name__)
 
@@ -40,8 +41,6 @@ def update_support_tickets(cmd, client,
                            contact_country=None,
                            contact_language=None):
     body = {}
-    body["severity"] = severity
-    body["status"] = status
     body["first_name"] = contact_first_name
     body["last_name"] = contact_last_name
     body["preferred_contact_method"] = contact_method
@@ -52,7 +51,8 @@ def update_support_tickets(cmd, client,
     body["country"] = contact_country
     body["preferred_support_language"] = contact_language
 
-    return client.update(support_ticket_name=ticket_name, update_support_ticket=body)
+    update_support_ticket = UpdateSupportTicket(severity=severity, status=status, contact_details=body)
+    return client.update(support_ticket_name=ticket_name, update_support_ticket=update_support_ticket)
 
 
 def list_support_tickets_communications(cmd, client, ticket_name=None, filters=None):
