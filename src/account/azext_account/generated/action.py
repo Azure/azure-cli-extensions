@@ -10,10 +10,10 @@ from knack.util import CLIError
 # pylint: disable=protected-access
 
 
-class AddBody(argparse._AppendAction):
+class AddOwners(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        super(AddBody, self).__call__(parser, namespace, action, option_string)
+        super(AddOwners, self).__call__(parser, namespace, action, option_string)
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -24,5 +24,6 @@ class AddBody(argparse._AppendAction):
         for k in properties:
             kl = k.lower()
             v = properties[k]
-            d[kl] = v
+            if kl == 'object_id':
+                d['object_id'] = v
         return d
