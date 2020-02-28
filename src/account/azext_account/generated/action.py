@@ -24,6 +24,8 @@ class AddBody(argparse._AppendAction):
         for k in properties:
             kl = k.lower()
             v = properties[k]
+            if kl == 'xxx':
+                d['moo'] = v
         return d
 
 
@@ -41,6 +43,8 @@ class AddOwner(argparse._AppendAction):
         for k in properties:
             kl = k.lower()
             v = properties[k]
+            if kl == 'xxx':
+                d['moo'] = v
         return d
 
 
@@ -58,6 +62,8 @@ class AddBody(argparse._AppendAction):
         for k in properties:
             kl = k.lower()
             v = properties[k]
+            if kl == 'xxx':
+                d['moo'] = v
         return d
 
 
@@ -92,6 +98,8 @@ class AddBody(argparse._AppendAction):
         for k in properties:
             kl = k.lower()
             v = properties[k]
+            if kl == 'xxx':
+                d['moo'] = v
         return d
 
 
@@ -109,4 +117,6 @@ class AddBody(argparse._AppendAction):
         for k in properties:
             kl = k.lower()
             v = properties[k]
+            if kl == 'xxx':
+                d['moo'] = v
         return d
