@@ -13,7 +13,6 @@ from azure.cli.core.commands.parameters import (
     get_location_type
 )
 from azext_account.action import (
-    AddOwner,
     AddOwners
 )
 
