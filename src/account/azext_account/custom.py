@@ -5,10 +5,9 @@
 
 # pylint: disable=wildcard-import
 # pylint: disable=unused-wildcard-import
-# noqa: F403
 
-from azext_account.generated.custom import *
+from azext_account.generated.custom import * # noqa: F403
 try:
-    from azext_account.manual.custom import *
+    from azext_account.manual.custom import * # noqa: F403
 except ImportError:
     pass
