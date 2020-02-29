@@ -22,7 +22,7 @@ class AddOwners(argparse._AppendAction):
             raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
-            k1 = k.lower()
+            kl = k.lower()
             v = properties[k]
             if kl == 'object_id':
                 d['object_id'] = v
