@@ -55,5 +55,5 @@ def load_arguments(self, _):
     with self.argument_context('account subscription-operation show') as c:
         c.argument('operation_id', help='The operation ID, which can be found from the Location field in the generate recommendation response header.')
 
-    with self.argument_context('account operations list') as c:
+    with self.argument_context('account operation list') as c:
         pass
