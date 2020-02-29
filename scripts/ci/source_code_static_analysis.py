@@ -136,7 +136,6 @@ def main():
     print("Pylint OK.\n")
 
     print("Running flake8 on CI scripts...")
-    print(ci_files)
     _run_flake8(ci_files, config_file=config_file)
     print("Pylint OK.\n")
 
