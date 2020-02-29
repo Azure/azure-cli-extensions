@@ -1,3 +1,8 @@
+0.1.4
+++++++++++++++++++
+
+* Support managing billing features of application insights component.
+
 0.1.3
 ++++++++++++++++++
 
