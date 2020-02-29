@@ -21,7 +21,6 @@ LICENSE_HEADER = ("Copyright (c) Microsoft Corporation. All rights reserved. Lic
 def main(args):
     excluded_paths = args.excluded_paths
     excluded_paths.append('env')
-    excluded_paths.append('vendored_sdks')
     excluded_paths = tuple([os.path.join(REPO_ROOT, relative_path) for relative_path in excluded_paths])
 
     files_without_header = []
