@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=unused-wildcard-import
+
 from azext_account.generated.action import *
 try:
     from azext_account.manual.action import *
