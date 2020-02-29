@@ -28,6 +28,18 @@ jobs:
         TSLint: false
         ToolLogsNotFoundAction: 'Standard'
 
+- job: PublishPrecheck
+  displayName: 'Publish Precheck'
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+    - task: UsePythonVersion@0
+      displayName: 'Use Python 3.6'
+      inputs:
+        versionSpec: 3.6
+    - bash: python scripts/ci/publish_precheck.py
+      displayName: 'Run check'
+
 - job: StaticAnalysis
   displayName: "Static Analysis"
   pool:
