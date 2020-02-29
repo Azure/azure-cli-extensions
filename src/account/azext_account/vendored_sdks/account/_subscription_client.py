@@ -10,7 +10,6 @@ from msrest.service_client import ServiceClient
 from msrest import Deserializer, Serializer
 from msrestazure import AzureConfiguration
 from .version import VERSION
-from ._configuration import SubscriptionClientConfiguration
 from .operations import SubscriptionOperations
 from .operations import SubscriptionOperationOperations
 from .operations import Operations
