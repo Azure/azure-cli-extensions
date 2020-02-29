@@ -91,16 +91,16 @@ helps['account subscription-operation show'] = """
                "e4b8d068-f574-462a-a76f-6fa0afc613c9"
 """
 
-helps['account operations'] = """
+helps['account operation'] = """
     type: group
-    short-summary: account operations
+    short-summary: account operation
 """
 
-helps['account operations list'] = """
+helps['account operation list'] = """
     type: command
     short-summary: Lists all of the available Microsoft.Subscription API operations.
     examples:
       - name: getOperations
         text: |-
-               az account operations list
+               az account operation list
 """

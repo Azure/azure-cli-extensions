@@ -1,8 +1,8 @@
 # Azure CLI Module Creation Report
 
-### account operations list
+### account operation list
 
-list a account operations.
+list a account operation.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|

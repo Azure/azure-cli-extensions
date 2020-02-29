@@ -18,5 +18,5 @@ def cf_subscription_operation(cli_ctx, *_):
     return cf_account(cli_ctx).subscription_operation
 
 
-def cf_operations(cli_ctx, *_):
-    return cf_account(cli_ctx).operations
+def cf_operation(cli_ctx, *_):
+    return cf_account(cli_ctx).operation
