@@ -66,11 +66,11 @@ class SubscriptionClient(object):
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
 
-        self.operations = Operations(
+        self.operation = Operations(
             self._client, self.config, self._serialize, self._deserialize)
-        self.subscription_operations = SubscriptionOperations(
+        self.subscription = SubscriptionOperations(
             self._client, self.config, self._serialize, self._deserialize)
-        self.subscriptions = SubscriptionOperationOperations(
+        self.subscription_operation = SubscriptionOperationOperations(
             self._client, self.config, self._serialize, self._deserialize)
 
     def close(self):
