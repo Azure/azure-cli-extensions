@@ -111,7 +111,15 @@ jobs:
       displayName: 'Use Python 3.6'
       inputs:
         versionSpec: 3.6
-    - bash: python scripts/ci/verify_linter.py
+    - bash: |
+        set -ev
+
+        # prepare and activate virtualenv
+        pip install virtualenv
+        python -m virtualenv venv/
+        source ./venv/bin/activate
+
+        python scripts/ci/verify_linter.py
       displayName: "CLI Linter on Modified Extension"
 
 - job: IndexRefDocVerify
