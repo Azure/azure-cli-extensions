@@ -611,7 +611,7 @@ def aks_browse(cmd,     # pylint: disable=too-many-statements
         # TODO: better error handling here.
         response = requests.post('http://localhost:8888/openport/{0}'.format(listen_port))
         result = json.loads(response.text)
-        dashboardURL = '{0}api/v1/namespaces/kube-system/services/{1}:kubernetes-dashboard:/proxy'.format(result['url'],
+        dashboardURL = '{0}api/v1/namespaces/kube-system/services/{1}:kubernetes-dashboard:/proxy/'.format(result['url'],
                                                                                                           protocol)
         term_id = os.environ.get('ACC_TERM_ID')
         if term_id:
