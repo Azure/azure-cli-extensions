@@ -70,9 +70,7 @@ class SubscriptionClient(object):
             self._client, self.config, self._serialize, self._deserialize)
         self.subscription_operations = SubscriptionOperations(
             self._client, self.config, self._serialize, self._deserialize)
-        self.subscriptions = SubscriptionsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.tenants = TenantsOperations(
+        self.subscriptions = SubscriptionOperationOperations(
             self._client, self.config, self._serialize, self._deserialize)
 
     def close(self):
