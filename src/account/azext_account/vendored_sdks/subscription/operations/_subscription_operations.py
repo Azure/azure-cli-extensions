@@ -201,16 +201,7 @@ class SubscriptionOperations(object):
         request = self._client.post(url, query_parameters, header_parameters)
         response = self._client.send(request, stream=False, **kwargs)
 
-        if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.ErrorResponseException.from_response(response, self._deserialize)
-
-        deserialized = self._deserialize('CanceledSubscriptionId', pipeline_response)
-
-        if cls:
-          return cls(pipeline_response, deserialized, {})
-
-        return deserialized
+        return response
     cancel.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Subscription/cancel'}
 
     def rename(
