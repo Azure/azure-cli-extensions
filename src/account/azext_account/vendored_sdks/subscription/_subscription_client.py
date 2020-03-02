@@ -29,7 +29,7 @@ class SubscriptionClientConfiguration(AzureConfiguration):
     """
 
     def __init__(
-            self, credentials, base_url=None):
+            self, credentials, subscription_id, base_url=None):
 
         if credentials is None:
             raise ValueError("Parameter 'credentials' must not be None.")
@@ -42,6 +42,7 @@ class SubscriptionClientConfiguration(AzureConfiguration):
         self.add_user_agent('Azure-SDK-For-Python')
 
         self.credentials = credentials
+        self.subscription_id = subscription_id
 
 class SubscriptionClient(object):
     """The subscription client
@@ -56,9 +57,9 @@ class SubscriptionClient(object):
     """
 
     def __init__(
-            self, credentials, base_url=None):
+            self, credentials, subscription_id, base_url=None):
 
-        self.config = SubscriptionClientConfiguration(credentials, base_url)
+        self.config = SubscriptionClientConfiguration(credentials, subscription_id, base_url)
         self._client = ServiceClient(self.config.credentials, self.config)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
