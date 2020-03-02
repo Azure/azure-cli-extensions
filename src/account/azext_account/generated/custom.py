@@ -44,8 +44,8 @@ def account_subscription_rename(cmd, client,
     return client.rename(subscription_name=body_subscription_name)
 
 
-def account_subscription_cancel(cmd, client):
-    return client.cancel()
+def account_subscription_cancel(cmd, client,subscription_id):
+    return client.cancel(subscription_id=subscription_id)
 
 
 def account_subscription_enable(cmd, client):
