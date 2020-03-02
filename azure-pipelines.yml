@@ -102,6 +102,18 @@ jobs:
         ./scripts/ci/verify_modified_index.sh
       displayName: "CLI Linter on Modified Extension"
 
+- job: LintModifiedExtensionsNew
+  displayName: "CLI Linter on Modified Extensions (New)"
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+    - task: UsePythonVersion@0
+      displayName: 'Use Python 3.6'
+      inputs:
+        versionSpec: 3.6
+    - bash: python scripts/ci/verify_linter.py
+      displayName: "CLI Linter on Modified Extension"
+
 - job: IndexRefDocVerify
   displayName: "Verify Ref Docs"
   pool:
