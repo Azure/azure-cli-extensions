@@ -3,10 +3,13 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+
+# pylint: disable=too-many-statements
 def load_command_table(self, _):
     from azure.cli.core.commands import CliCommandType
     from ._client_factory import cf_synapse_client_workspace_factory
     from ._client_factory import cf_synapse_client_bigdatapool_factory
+    from ._client_factory import cf_synapse_client_sqlpool_factory
     from ._client_factory import cf_synapse_spark_batch
     from ._client_factory import cf_synapse_spark_session
 
@@ -17,6 +20,10 @@ def load_command_table(self, _):
     synapse_bigdatapool_sdk = CliCommandType(
         operations_tmpl='azext_synapse.vendored_sdks.azure_mgmt_synapse.operations#BigDataPoolsOperations.{}',
         client_factory=cf_synapse_client_bigdatapool_factory)
+
+    synapse_sqlpool_sdk = CliCommandType(
+        operations_tmpl='azext_synapse.vendored_sdks.azure_mgmt_synapse.operations#SqlPoolsOperations.{}',
+        client_factory=cf_synapse_client_sqlpool_factory)
 
     synapse_spark_batch_sdk = CliCommandType(
         operations_tmpl='azext_synapse.vendored_sdks.azure_synapse.operations#SparkBatchOperations.{}',
@@ -45,6 +52,16 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_spark_pool', supports_no_wait=True)
         g.custom_command('update', 'update_spark_pool', supports_no_wait=True)
         g.command('delete', 'delete', confirmation=True, supports_no_wait=True)
+        g.wait_command('wait')
+
+    with self.command_group('synapse sql pool', synapse_sqlpool_sdk,
+                            client_factory=cf_synapse_client_sqlpool_factory) as g:
+        g.show_command('show', 'get')
+        g.command('list', 'list_by_workspace')
+        g.custom_command('create', 'create_sql_pool', supports_no_wait=True)
+        g.command('delete', 'delete', confirmation=True, supports_no_wait=True)
+        g.command('pause', 'pause')
+        g.command('resume', 'resume')
         g.wait_command('wait')
 
     # Data Plane Commands

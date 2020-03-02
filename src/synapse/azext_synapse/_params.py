@@ -32,7 +32,7 @@ def load_arguments(self, _):
         c.argument('driver_cores', help='The number of cores in driver.')
         c.argument('executor_memory', help='The memory of executor.')
         c.argument('executor_cores', help='The number of cores in each executor.')
-        c.argument('executor_number', help='The number of executors.')
+        c.argument('num_executors', help='The number of executors.')
 
     with self.argument_context('synapse spark batch') as c:
         c.argument('batch_id', options_list=['--id'], arg_group='Spark Batch', help='The id of the spark batch job.')
@@ -40,6 +40,7 @@ def load_arguments(self, _):
     with self.argument_context('synapse spark session') as c:
         c.argument('session_id', options_list=['--id'], arg_group='Spark Session',
                    help='The id of the spark session job.')
+        c.argument('num_executors', help='The number of executors.')
 
     with self.argument_context("synapse spark session-statement") as c:
         c.argument('statement_id', options_list=['--id'], arg_group="Spark Session-statement",
@@ -67,4 +68,30 @@ def load_arguments(self, _):
         c.argument('big_data_pool_name', arg_type=name_type, help='The spark pool name.')
         c.argument('spark_pool_name', arg_type=name_type, help='The spark pool name.')
         c.argument('workspace_name', help='The workspace name.')
+        c.argument('auto_pause_enabled', help='The flag of enabling auto pause.')
+        c.argument('auto_scale_enabled', help='The flag of enabling auto scale.')
+        c.argument('default_spark_log_folder', help='The default spark log folder.')
+        c.argument('delay_in_minutes', help='The delay time.')
+        c.argument('library_requirements_content', help='The library requirements content.')
+        c.argument('library_requirements_filename', help='The library requirements file name.')
+        c.argument('max_node_count', help='The max node count.')
+        c.argument('min_node_count', help='The min node count.')
+        c.argument('node_count', help='The number of node.')
+        c.argument('node_size_family', help='The node size family.')
+        c.argument('node_size', help='The node size.')
+        c.argument('spark_events_folder', help='The spark events folder.')
+        c.argument('spark_version', help='The spark version.')
+        c.argument('force', help='The flag of force operation.')
         c.argument('tags', arg_type=tags_type, help='The tags of spark pool.')
+
+    # synapse sql pool
+    with self.argument_context('synapse sql pool') as c:
+        c.argument('sql_pool_name', arg_type=name_type, help='The sql pool name.')
+        c.argument('workspace_name', help='The workspace name.')
+        c.argument('max_size_bytes', help='The max size bytes.')
+        c.argument('sku_name', help='The sku name.')
+        c.argument('sku_tier', help='The sku tier.')
+        c.argument('source_database_id', help='The source database id.')
+        c.argument('recoverable_database_id', help='The recoverable database id.')
+        c.argument('create_mode', help='The create mode.')
+        c.argument('tags', arg_type=tags_type, help='The tags.')

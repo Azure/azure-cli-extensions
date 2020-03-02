@@ -3,14 +3,15 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from knack.log import get_logger
+from knack.log import get_logger  # pylint: disable=unused-import
 
 from azext_synapse.vendored_sdks.azure_synapse.models import ExtendedLivyBatchRequest, LivyStatementRequestBody, \
     ExtendedLivySessionRequest
 
 from azext_synapse.vendored_sdks.azure_mgmt_synapse.models import Workspace, WorkspacePatchInfo, ManagedIdentity, \
     DataLakeStorageAccountDetails, \
-    BigDataPoolResourceInfo, AutoScaleProperties, AutoPauseProperties, LibraryRequirements, NodeSize, NodeSizeFamily
+    BigDataPoolResourceInfo, AutoScaleProperties, AutoPauseProperties, LibraryRequirements, NodeSize, NodeSizeFamily, \
+    SqlPool, Sku
 
 
 # pylint: disable=too-many-locals, too-many-branches, too-many-statements, unused-argument
@@ -144,3 +145,14 @@ def create_spark_pool(cmd, client, resource_group_name, workspace_name, spark_po
 
 def update_spark_pool(cmd, client, resource_group_name, workspace_name, spark_pool_name, tags=None):
     return client.update(resource_group_name, workspace_name, spark_pool_name, tags)
+
+
+def create_sql_pool(cmd, client, resource_group_name, workspace_name, sql_pool_name, location, sku_tier=None,
+                    sku_name="DW1000c", max_size_bytes=None, source_database_id=None, recoverable_database_id=None,
+                    create_mode=None, tags=None):
+    sku = Sku(tier=sku_tier, name=sku_name)
+    sql_pool_info = SqlPool(sku=sku, location=location, max_size_bytes=max_size_bytes,
+                            source_database_id=source_database_id, recoverable_database_id=recoverable_database_id,
+                            create_mode=create_mode, tags=tags)
+
+    return client.create(resource_group_name, workspace_name, sql_pool_name, sql_pool_info)

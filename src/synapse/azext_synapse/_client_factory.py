@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+
 def synapse_client_factory(cli_ctx, *_):
 
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
@@ -18,10 +19,12 @@ def cf_synapse_client_bigdatapool_factory(cli_ctx, *_):
     return synapse_client_factory(cli_ctx).big_data_pools
 
 
+def cf_synapse_client_sqlpool_factory(cli_ctx, *_):
+    return synapse_client_factory(cli_ctx).sql_pools
+
+
 # TODO: add Synapse endpoint and synapse_dns_suffix to azure.cli.core
 def synapse_data_plane_factory(cli_ctx, _, subscription=None):
-
-    from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from azext_synapse.vendored_sdks.azure_synapse import SynapseClient
     from azure.cli.core._profile import Profile
     profile = Profile(cli_ctx=cli_ctx)

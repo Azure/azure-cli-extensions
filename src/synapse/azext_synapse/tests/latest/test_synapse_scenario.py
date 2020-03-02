@@ -55,6 +55,38 @@ class SynapseScenarioTests(ScenarioTest):
             'az synapse spark pool delete --name {spark-pool} --workspace-name {workspace} --resource-group {rg} --yes',
             checks=[])
 
+    def test_sql_pool(self):
+        self.kwargs.update({
+            'location': 'eastus',
+            'workspace': 'testsynapseworkspace1234',
+            'rg': 'cli-test-rg',
+            'sql-pool': self.create_random_name(prefix='testsqlpool', length=15),
+        })
+
+        # create sql pool
+        self.cmd('az synapse sql pool create --name {sql-pool} --workspace-name {workspace} --resource-group {rg}'
+                 ' --location {location}', checks=[])
+
+        # get sql pool with sql pool name
+        self.cmd('az synapse sql pool show --name {sql-pool} --workspace-name {workspace} --resource-group {rg}',
+                 checks=[])
+
+        # list all sql pools under the workspace
+        self.cmd('az synapse sql pool list --workspace-name {workspace} --resource-group {rg}', checks=[])
+
+        # pause sql pool
+        self.cmd('az synapse sql pool pause --name {sql-pool} --workspace-name {workspace} --resource-group {rg}',
+                 checks=[])
+
+        # resume sql pool
+        self.cmd('az synapse sql pool resume --name {sql-pool} --workspace-name {workspace} --resource-group {rg}',
+                 checks=[])
+
+        # delete sql pool with sql pool name
+        self.cmd(
+            'az synapse sql pool delete --name {sql-pool} --workspace-name {workspace} --resource-group {rg} --yes',
+            checks=[])
+
     @ResourceGroupPreparer(name_prefix='synapse-cli', random_name_length=16)
     def test_spark_batch(self, resource_group):
         self.kwargs.update({
@@ -136,7 +168,7 @@ class SynapseScenarioTests(ScenarioTest):
         statement = self.cmd('az synapse spark session-statement create --session-id {session-id} '
                              '--workspace-name {workspace} --spark-pool-name {spark-pool} '
                              '--code {code} --kind {kind}', checks=[]).get_output_in_json()
-        self.kwargs['statement-id']=statement['id']
+        self.kwargs['statement-id'] = statement['id']
 
         # get a spark session statement
         self.cmd('az synapse spark session-statement show --id {statement-id} --session-id {session-id} '

@@ -16,8 +16,7 @@ class SynapseCommandsLoader(AzCommandsLoader):
         synapse_custom = CliCommandType(
             operations_tmpl='azext_synapse.custom#{}',
             client_factory=synapse_client_factory)
-        super(SynapseCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                  custom_command_type=synapse_custom)
+        super(SynapseCommandsLoader, self).__init__(cli_ctx=cli_ctx, custom_command_type=synapse_custom)
 
     def load_command_table(self, args):
         from azext_synapse.commands import load_command_table
