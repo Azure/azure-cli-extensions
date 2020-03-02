@@ -114,24 +114,12 @@ jobs:
     - bash: |
         set -ev
 
-        git clone --single-branch -b dev https://github.com/Azure/azure-cli.git ../azure-cli
-
-        pip install azdev
-
-        azdev --version
-
-        azdev setup -c ../azure-cli
-
-        az --version
-      displayName: 'azdev setup'
-    - bash: |
-        set -ev
-
         # prepare and activate virtualenv
         pip install virtualenv
         python -m virtualenv venv/
         source ./venv/bin/activate
 
+        # clone azure-cli
         git clone --single-branch -b dev https://github.com/Azure/azure-cli.git ../azure-cli
 
         pip install azdev
