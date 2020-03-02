@@ -9,7 +9,7 @@
 from azure.cli.core.commands.parameters import (
     get_enum_type
 )
-from azext_account.generated.action import (
+from azext_account.action import (
     AddOwners
 )
 
@@ -23,7 +23,7 @@ def load_arguments(self, _):
         c.argument('body_display_name', help='The friendly name of the subscription.')
         c.argument('body_sku_id', help='The SKU ID of the Azure plan. Azure plan determines the pricing and service-level agreement of the subscription.  Use 001 for Microsoft Azure Plan and 002 for Microsoft Azure Plan for DevTest.')
         c.argument('body_cost_center', help='If set, the cost center will show up on the Azure usage and charges file.')
-        c.argument('body_owner', help='Active Directory Principal who’ll get owner access on the new subscription.', action=AddOwners, nargs='+')
+        c.argument('body_owner', help='Active Directory Principal who’ll get owner access on the new subscription.')
         c.argument('body_management_group_id', help='The identifier of the management group to which this subscription will be associated.')
 
     with self.argument_context('account subscription create-subscription-in-enrollment-account') as c:
@@ -52,5 +52,5 @@ def load_arguments(self, _):
     with self.argument_context('account subscription-operation show') as c:
         c.argument('operation_id', help='The operation ID, which can be found from the Location field in the generate recommendation response header.')
 
-    with self.argument_context('account operations list') as c:
+    with self.argument_context('account operation list') as c:
         pass

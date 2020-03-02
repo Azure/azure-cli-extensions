@@ -97,5 +97,5 @@ class SubscriptionClientScenarioTest(ScenarioTest):
                  '--operation-id "e4b8d068-f574-462a-a76f-6fa0afc613c9"',
                  checks=[])
 
-        self.cmd('az account operations list',
+        self.cmd('az account operation list',
                  checks=[])

@@ -57,5 +57,5 @@ def account_subscription_operation_show(cmd, client,
     return client.get(operation_id=operation_id)
 
 
-def account_operations_list(cmd, client):
+def account_operation_list(cmd, client):
     return client.list()
