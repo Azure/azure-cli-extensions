@@ -12,7 +12,7 @@ from msrestazure.tools import parse_resource_id
 from dateutil.parser import parse
 
 from azure.cli.core.commands.client_factory import get_subscription_id
-from azext_maintenance.maintenance.models import (
+from azext_maintenance.vendored_sdks.models import (
     ApplyUpdate,
     ConfigurationAssignment,
     MaintenanceConfiguration,

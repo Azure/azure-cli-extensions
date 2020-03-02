@@ -5,7 +5,7 @@
 
 
 def _maintenance_client_factory(cli_ctx, **_):
-    from azext_maintenance.maintenance import MaintenanceManagementClient
+    from azext_maintenance.vendored_sdks import MaintenanceManagementClient
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     return get_mgmt_service_client(cli_ctx, MaintenanceManagementClient)
 

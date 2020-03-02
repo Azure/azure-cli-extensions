@@ -13,22 +13,22 @@ from ._client_factory import (cf_maintenance_configurations, cf_maintenance_upda
 def load_command_table(self, _):
 
     maintenance_configurations_mgmt_util = CliCommandType(
-        operations_tmpl='azext_maintenance.maintenance.operations.maintenance_configurations_operations#MaintenanceConfigurationsOperations.{}',
+        operations_tmpl='azext_maintenance.vendored_sdks.operations.maintenance_configurations_operations#MaintenanceConfigurationsOperations.{}',
         client_factory=cf_maintenance_configurations
     )
 
     maintenance_updates_mgmt_util = CliCommandType(
-        operations_tmpl='azext_maintenance.maintenance.operations.updates_operations#UpdatesOperations.{}',
+        operations_tmpl='azext_maintenance.vendored_sdks.operations.updates_operations#UpdatesOperations.{}',
         client_factory=cf_maintenance_updates
     )
 
     configuration_assignments_mgmt_util = CliCommandType(
-        operations_tmpl='azext_maintenance.maintenance.operations.configuration_assignments_operations#ConfigurationAssignmentsOperations.{}',
+        operations_tmpl='azext_maintenance.vendored_sdks.operations.configuration_assignments_operations#ConfigurationAssignmentsOperations.{}',
         client_factory=cf_configuration_assignments
     )
 
     apply_updates_mgmt_util = CliCommandType(
-        operations_tmpl='azext_maintenance.maintenance.operations.apply_updates_operations#ApplyUpdatesOperations.{}',
+        operations_tmpl='azext_maintenance.vendored_sdks.operations.apply_updates_operations#ApplyUpdatesOperations.{}',
         client_factory=cf_apply_updates
     )
 
