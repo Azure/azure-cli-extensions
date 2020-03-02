@@ -602,7 +602,7 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"severity": "moderate", "contactDetails": {"preferredContactMethod": "phone",
+    body: '{"severity": "moderate", "status", "open", "contactDetails": {"preferredContactMethod": "phone",
       "phoneNumber": "123-456-7890"}}'
     headers:
       Accept:
@@ -663,7 +663,7 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"severity": "minimal", "contactDetails": {"preferredContactMethod": "email"}}'
+    body: '{"severity": "minimal", "status", "closed", "contactDetails": {"preferredContactMethod": "email"}}'
     headers:
       Accept:
       - application/json
@@ -693,7 +693,7 @@ interactions:
         ticket from python cli test. Do not assign and close after a day.","problemClassificationId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc/problemClassifications/44114011-6a66-e902-c00f-e419b6b4509f","problemClassificationDisplayName":"Cost
         Management / Access control issues","severity":"Minimal","require24X7Response":false,"enrollmentId":"","productionOutage":false,"contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
         Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"serviceLevelAgreement":{"startTime":"2020-01-16T14:00:00Z","expirationTime":"2020-01-16T16:00:00Z","slaMinutes":120},"supportEngineer":{},"supportPlanType":"ProDirect","supportTicketId":"120011621000159","title":"test
-        ticket from python cli test. Do not assign and close after a day.","serviceId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc","serviceDisplayName":"Billing","status":"Open","problemStartTime":"2020-01-15T18:10:13Z","createdDate":"2020-01-16T02:10:22Z","modifiedDate":"2020-01-16T02:14:18Z"}}'
+        ticket from python cli test. Do not assign and close after a day.","serviceId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc","serviceDisplayName":"Billing","status":"Closed","problemStartTime":"2020-01-15T18:10:13Z","createdDate":"2020-01-16T02:10:22Z","modifiedDate":"2020-01-16T02:14:18Z"}}'
     headers:
       cache-control:
       - no-cache

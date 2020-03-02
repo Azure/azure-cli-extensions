@@ -323,6 +323,8 @@ class SupportScenarioTest(ScenarioTest):
         self.assertTrue(rsp["type"] == "Microsoft.Support/supportTickets")
         self.assertTrue("severity" in rsp)
         self.assertTrue("Moderate" == rsp["severity"])
+        self.assertTrue("status" in rsp)
+        self.assertTrue("Open" == rsp["status"])
         self.assertTrue("contactDetails" in rsp)
         self.assertTrue("123-456-7890" == rsp["contactDetails"]["phoneNumber"])
         self.assertTrue("Phone" == rsp["contactDetails"]["preferredContactMethod"])
@@ -331,7 +333,7 @@ class SupportScenarioTest(ScenarioTest):
         cmd = "support tickets update "
         cmd += "--ticket-name '{0}' ".format(test_ticket_name)
         cmd += "--severity 'minimal' "
-        cmd += "--status 'open' "
+        cmd += "--status 'closed' "
         cmd += "--contact-method 'email' "
 
         return cmd
@@ -342,6 +344,8 @@ class SupportScenarioTest(ScenarioTest):
         self.assertTrue(rsp["type"] == "Microsoft.Support/supportTickets")
         self.assertTrue("severity" in rsp)
         self.assertTrue("Minimal" == rsp["severity"])
+        self.assertTrue("status" in rsp)
+        self.assertTrue("Closed" == rsp["status"])
         self.assertTrue("contactDetails" in rsp)
         self.assertTrue("Email" == rsp["contactDetails"]["preferredContactMethod"])
 
