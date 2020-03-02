@@ -52,6 +52,9 @@ def create_nw_connection_monitor(cmd,
         dest_resource, dest_address, dest_port
     ]
 
+    print('This is for test')
+    print(v1_required_parameter_set)
+
     v2_required_parameter_set = [
         endpoint_source_name, endpoint_source_resource_id,
         endpoint_dest_name, endpoint_dest_address,
