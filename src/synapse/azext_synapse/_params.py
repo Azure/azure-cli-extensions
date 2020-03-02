@@ -36,6 +36,7 @@ def load_arguments(self, _):
 
     with self.argument_context('synapse spark batch') as c:
         c.argument('batch_id', options_list=['--id'], arg_group='Spark Batch', help='The id of the spark batch job.')
+        c.argument('job_type', help='The spark batch job type: SCALA, PYTHON or DOTNET. The default value is SCALA.')
 
     with self.argument_context('synapse spark session') as c:
         c.argument('session_id', options_list=['--id'], arg_group='Spark Session',

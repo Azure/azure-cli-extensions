@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from knack.log import get_logger  # pylint: disable=unused-import
+from knack.util import CLIError
 
 from azext_synapse.vendored_sdks.azure_synapse.models import ExtendedLivyBatchRequest, LivyStatementRequestBody, \
     ExtendedLivySessionRequest
@@ -15,16 +16,28 @@ from azext_synapse.vendored_sdks.azure_mgmt_synapse.models import Workspace, Wor
 
 
 # pylint: disable=too-many-locals, too-many-branches, too-many-statements, unused-argument
+
+
 def list_spark_batch_jobs(cmd, client, workspace_name, spark_pool_name, from_index=None, size=None, detailed=True):
     return client.list(workspace_name, spark_pool_name, from_index, size, detailed)
 
 
 def create_spark_batch_job(cmd, client, workspace_name, spark_pool_name, job_name, args, driver_memory, driver_cores,
-                           executor_memory, executor_cores,
-                           num_executors, file="local:///usr/hdp/current/spark2-client/jars/microsoft-spark.jar",
-                           class_name="org.apache.spark.deploy.dotnet.DotnetRunner", jars=None, files=None,
+                           executor_memory, executor_cores, num_executors, job_type="SCALA",
+                           file=None, class_name=None, jars=None, files=None,
                            archives=None, conf=None, artifact_id=None,
                            tags=None, detailed=True):
+    dotnet_file = "local:///usr/hdp/current/spark2-client/jars/microsoft-spark.jar"
+    dotnet_class = "org.apache.spark.deploy.dotnet.DotnetRunner"
+
+    if job_type.upper() != "DOTNET" and (not file or not class_name):
+        raise CLIError('Scala and python spark batch job must provide value for parameter file and class_name.'
+                       'If you want to create a DotNet spark batch job please add `--job-type DOTNET`.')
+
+    if job_type.upper() == "DOTNET":
+        file = dotnet_file
+        class_name = dotnet_class
+
     livy_batch_request = ExtendedLivyBatchRequest(
         tags=tags, artifact_id=artifact_id,
         name=job_name, file=file, class_name=class_name, args=args, jars=jars, files=files, archives=archives,
