@@ -6,8 +6,8 @@
 # pylint: disable=wildcard-import
 # pylint: disable=unused-wildcard-import
 
-from azext_datafactory.generated.custom import *  # noqa: F403
+from azext_datafactory.generated.action import *  # noqa: F403
 try:
-    from azext_datafactory.manual.custom import *  # noqa: F403
+    from azext_datafactory.manual.action import *  # noqa: F403
 except ImportError:
     pass
