@@ -201,7 +201,12 @@ class SubscriptionOperations(object):
         request = self._client.post(url, query_parameters, header_parameters)
         response = self._client.send(request, stream=False, **kwargs)
 
-        return response
+        deserialized = self._deserialize('CanceledSubscriptionId', response)
+
+        if cls:
+          return cls(response, deserialized, {})
+
+        return deserialized
     cancel.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Subscription/cancel'}
 
     def rename(
