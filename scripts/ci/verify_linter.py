@@ -24,7 +24,7 @@ class ModifiedFilesNotAllowedError(Exception):
     def __str__(self):
         msg = """
         ---------------------------------------------------------------------------------------------------------
-        You have modified both source code and src/index.json!" 
+        You have modified both source code and src/index.json!
 
         There is a release pipeline will help you to build, upload and publish your extension.
         The precondition is to put your source code inside repo Azure/azure-cli-extensions.
