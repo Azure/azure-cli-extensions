@@ -132,6 +132,16 @@ jobs:
         python -m virtualenv venv/
         source ./venv/bin/activate
 
+        git clone --single-branch -b dev https://github.com/Azure/azure-cli.git ../azure-cli
+
+        pip install azdev
+
+        azdev --version
+
+        azdev setup -c ../azure-cli
+
+        az --version
+
         python scripts/ci/verify_linter.py
       displayName: "CLI Linter on Modified Extension"
 
