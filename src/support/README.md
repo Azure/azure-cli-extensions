@@ -183,7 +183,22 @@ az extension add --name support
         --ticket-name "BillingTestTicketName" \
         --title "BillingTicketTitle" \
         --partner-tenant-id "CSPPartnerTenantIdGuid"
-        
+  
+    # Create a ticket for Generic Quota increase which increases the throughput to 10000 per container.
+    az support tickets create \\
+            --contact-country "USA" \\
+            --contact-email "abc@contoso.com" \\
+            --contact-first-name "Foo" \\
+            --contact-language "en-US" \\
+            --contact-last-name "Bar" \\
+            --contact-method "email" \\
+            --contact-timezone "Pacific Standard Time" \\
+            --description "QuotaTicketDescription" \\
+            --problem-classification "/providers/Microsoft.Support/services/quota_service_guid/problemClassifications/cosmosdb_problemClassification_guid" \\
+            --severity "minimal" \\
+            --ticket-name "QuotaTestTicketName" \\
+            --title "QuotaTicketTitle"
+  
     # Create a ticket to request Quota increase for Compute VM Cores.
     az support tickets create \
         --contact-country "USA" \
