@@ -49,5 +49,5 @@ def load_command_table(self, _):
 
     with self.command_group('maintenance applyupdate', apply_updates_mgmt_util, client_factory=cf_apply_updates) as g:
         g.custom_command('create', 'cli_applyupdate_create')
-        g.custom_command('get', 'cli_applyupdate_get')
+        g.custom_command('get', 'cli_applyupdate_get', deprecate_info=g.deprecate(redirect='maintenance applyupdate show'))
         g.custom_command('show', 'cli_applyupdate_get')
