@@ -31,7 +31,7 @@ def create_spark_batch_job(cmd, client, workspace_name, spark_pool_name, job_nam
     dotnet_class = "org.apache.spark.deploy.dotnet.DotnetRunner"
 
     if job_type.upper() != "DOTNET" and (not file or not class_name):
-        raise CLIError('Scala and python spark batch job must provide value for parameter file and class_name.'
+        raise CLIError('Scala and Python spark batch job must provide value for parameter file and class_name.'
                        'If you want to create a DotNet spark batch job please add `--job-type DOTNET`.')
 
     if job_type.upper() == "DOTNET":
@@ -121,19 +121,22 @@ def create_workspace(cmd, client, resource_group_name, workspace_name, account_u
 
 
 def update_workspace(cmd, client, resource_group_name, workspace_name, sql_admin_login_password=None,
-                     provisioning_state=None, identity_type="SystemAssigned", principal_id=None, tags=None):
+                     identity_type="SystemAssigned", principal_id=None, tags=None):
     identity = ManagedIdentity(type=identity_type)
     workspace_patch_info = WorkspacePatchInfo(
         tags=tags,
         identity=identity,
-        sql_administrator_login_password=sql_admin_login_password,
-        provisioning_state=provisioning_state
+        sql_administrator_login_password=sql_admin_login_password
     )
     return client.update(resource_group_name, workspace_name, workspace_patch_info)
 
 
+def get_spark_pool(cmd, client, resource_group_name, workspace_name, spark_pool_name):
+    return client.get(resource_group_name, workspace_name, spark_pool_name)
+
+
 def create_spark_pool(cmd, client, resource_group_name, workspace_name, spark_pool_name, location,
-                      spark_version="2.4", node_size=NodeSize.medium.value, node_count=3,
+                      spark_version, node_size=NodeSize.medium.value, node_count=3,
                       node_size_family=NodeSizeFamily.memory_optimized.value, auto_scale_enabled=True,
                       min_node_count=3,
                       max_node_count=40, auto_pause_enabled=True, delay_in_minutes=15, spark_events_folder="/events",
@@ -160,8 +163,12 @@ def update_spark_pool(cmd, client, resource_group_name, workspace_name, spark_po
     return client.update(resource_group_name, workspace_name, spark_pool_name, tags)
 
 
-def create_sql_pool(cmd, client, resource_group_name, workspace_name, sql_pool_name, location, sku_tier=None,
-                    sku_name="DW1000c", max_size_bytes=None, source_database_id=None, recoverable_database_id=None,
+def delete_spark_pool(cmd, client, resource_group_name, workspace_name, spark_pool_name):
+    return client.delete(resource_group_name, workspace_name, spark_pool_name)
+
+
+def create_sql_pool(cmd, client, resource_group_name, workspace_name, sql_pool_name, location, sku_name,
+                    sku_tier=None, max_size_bytes=None, source_database_id=None, recoverable_database_id=None,
                     create_mode=None, tags=None):
     sku = Sku(tier=sku_tier, name=sku_name)
     sql_pool_info = SqlPool(sku=sku, location=location, max_size_bytes=max_size_bytes,

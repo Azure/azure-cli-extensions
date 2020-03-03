@@ -47,11 +47,11 @@ def load_command_table(self, _):
 
     with self.command_group('synapse spark pool', synapse_bigdatapool_sdk,
                             client_factory=cf_synapse_client_bigdatapool_factory) as g:
-        g.show_command('show', 'get')
+        g.custom_command('show', 'get_spark_pool')
         g.command('list', 'list_by_workspace')
         g.custom_command('create', 'create_spark_pool', supports_no_wait=True)
         g.custom_command('update', 'update_spark_pool', supports_no_wait=True)
-        g.command('delete', 'delete', confirmation=True, supports_no_wait=True)
+        g.custom_command('delete', 'delete_spark_pool', confirmation=True, supports_no_wait=True)
         g.wait_command('wait')
 
     with self.command_group('synapse sql pool', synapse_sqlpool_sdk,
@@ -71,7 +71,6 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_spark_batch_jobs')
         g.custom_command('show', 'get_spark_batch_job')
         g.custom_command('cancel', 'cancel_spark_batch_job', confirmation=True, supports_no_wait=True)
-        g.wait_command('wait')
 
     # Spark session operations
     with self.command_group('synapse spark session', synapse_spark_session_sdk,
@@ -81,7 +80,6 @@ def load_command_table(self, _):
         g.custom_command('show', 'get_spark_session_job')
         g.custom_command('cancel', 'cancel_spark_session_job', confirmation=True, supports_no_wait=True)
         g.custom_command('reset-timeout', 'reset_timeout')
-        g.wait_command('wait')
 
     # Spark session statements operations
     with self.command_group('synapse spark session-statement', synapse_spark_session_sdk,
@@ -90,7 +88,6 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_spark_session_statements')
         g.custom_command('show', 'get_spark_session_statement')
         g.custom_command('cancel', 'cancel_spark_session_statement', confirmation=True, supports_no_wait=True)
-        g.wait_command('wait')
 
     with self.command_group('synapse', is_preview=True):
         pass

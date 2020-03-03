@@ -9,10 +9,11 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .synapse_management_client import SynapseManagementClient
-from .version import VERSION
+from ._configuration import SynapseManagementClientConfiguration
+from ._synapse_management_client import SynapseManagementClient
+__all__ = ['SynapseManagementClient', 'SynapseManagementClientConfiguration']
 
-__all__ = ['SynapseManagementClient']
+from .version import VERSION
 
 __version__ = VERSION
 

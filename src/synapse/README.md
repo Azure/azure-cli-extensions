@@ -42,6 +42,21 @@ az synapse spark pool create \
     --location "East US"
 ```
 
+#### Sql Pool
+
+Manage Synapse Sql Pools
+
+*Examples:*
+
+```bash
+az synapse sql pool create \
+    --name sqlpoolcli1 \
+    --sku-name DW1000c \
+    --resource-group rg \
+    --workspace-name testsynapseworkspace \
+    --location "East US"
+```
+
 #### Spark Batch Job
 
 Manage Spark batch jobs.

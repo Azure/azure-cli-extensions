@@ -93,7 +93,7 @@ examples:
   - name: Create a spark pool.
     text: |-
         az synapse spark pool create --name testpool --resource-group rg --workspace-name \\
-        testsynapseworkspace --location "East US"
+        testsynapseworkspace --location "East US" --spark-version 2.4
 """
 
 helps['synapse spark pool list'] = """
@@ -153,7 +153,7 @@ long-summary: Create a sql pool with default configuration.
 examples:
   - name: Create SQL pool.
     text: |-
-        az synapse sql pool create --name sqlpoolcli1 --resource-group rg --workspace-name \\
+        az synapse sql pool create --name sqlpoolcli1 --sku-name "DW1000c" --resource-group rg --workspace-name \\
         testsynapseworkspace --location "East US"
 """
 
@@ -267,11 +267,6 @@ examples:
         az synapse spark batch cancel  --id 1 --workspace-name testsynapseworkspace --spark-pool-name testsparkpool
 """
 
-helps['synapse spark batch wait'] = """
-type: command
-short-summary: Place the CLI in a waiting state until an operation is complete.
-"""
-
 helps['synapse spark session'] = """
 type: group
 short-summary: Create, Get, List, Cancel spark session job and reset the spark session timeout.
@@ -328,11 +323,6 @@ examples:
         az synapse spark session reset-timeout --id 1 --workspace-name testsynapseworkspace --spark-pool-name testsparkpool
 """
 
-helps['synapse spark session wait'] = """
-type: command
-short-summary: Place the CLI in a waiting state until an operation is complete.
-"""
-
 helps['synapse spark session-statement'] = """
 type: group
 short-summary: Create, Get, List, Cancel spark statement.
@@ -376,9 +366,4 @@ examples:
     text: |-
         az synapse spark session-statement cancel --id 1 --session-id 11 --workspace-name testsynapseworkspace \\
         --spark-pool-name testsparkpool
-"""
-
-helps['synapse spark session-statement wait'] = """
-type: command
-short-summary: Place the CLI in a waiting state until an operation is complete.
 """

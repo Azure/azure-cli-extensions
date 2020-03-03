@@ -62,11 +62,9 @@ def load_arguments(self, _):
         c.argument('identity_type', help='The type of managed identity.')
         c.argument('principal_id', help='The principal id of managed identity.')
         c.argument('tenant_id', help='The tenant id of managed identity.')
-        c.argument('provisioning_state', help='The provisioning state of workspace.')
 
     # synapse spark pool
     with self.argument_context('synapse spark pool') as c:
-        c.argument('big_data_pool_name', arg_type=name_type, help='The spark pool name.')
         c.argument('spark_pool_name', arg_type=name_type, help='The spark pool name.')
         c.argument('workspace_name', help='The workspace name.')
         c.argument('auto_pause_enabled', help='The flag of enabling auto pause.')

@@ -37,11 +37,12 @@ class SynapseScenarioTests(ScenarioTest):
             'workspace': 'testsynapseworkspace1234',
             'rg': 'cli-test-rg',
             'spark-pool': self.create_random_name(prefix='testpool', length=15),
+            'spark-version': '2.4'
         })
 
         # create spark pool
-        self.cmd('az synapse spark pool create --name {spark-pool} --workspace-name {workspace} --resource-group {rg}'
-                 ' --location {location}', checks=[])
+        self.cmd('az synapse spark pool create --name {spark-pool} --spark-version {spark-version}'
+                 ' --workspace-name {workspace} --resource-group {rg} --location {location}', checks=[])
 
         # get spark pool with spark pool name
         self.cmd('az synapse spark pool show --name {spark-pool} --workspace-name {workspace} --resource-group {rg}',
@@ -61,11 +62,13 @@ class SynapseScenarioTests(ScenarioTest):
             'workspace': 'testsynapseworkspace1234',
             'rg': 'cli-test-rg',
             'sql-pool': self.create_random_name(prefix='testsqlpool', length=15),
+            'sku-name': 'DW1000c'
         })
 
         # create sql pool
-        self.cmd('az synapse sql pool create --name {sql-pool} --workspace-name {workspace} --resource-group {rg}'
-                 ' --location {location}', checks=[])
+        self.cmd(
+            'az synapse sql pool create --name {sql-pool} --sku-name {sku-name} --workspace-name {workspace}'
+            ' --resource-group {rg} --location {location}', checks=[])
 
         # get sql pool with sql pool name
         self.cmd('az synapse sql pool show --name {sql-pool} --workspace-name {workspace} --resource-group {rg}',
