@@ -813,6 +813,13 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             admin_username=windows_admin_username,
             admin_password=windows_admin_password)
 
+    # Enable managed identity by default. Only disable it
+    # if customer explicitly specify a service principal
+    # in the request body.
+    if not enable_managed_identity and service_principal:
+        enable_managed_identity = False
+    else:
+        enable_managed_identity = True
     principal_obj = _ensure_aks_service_principal(cmd.cli_ctx,
                                                   service_principal=service_principal, client_secret=client_secret,
                                                   subscription_id=subscription_id, dns_name_prefix=dns_name_prefix,
