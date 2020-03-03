@@ -581,64 +581,6 @@
                 "sha256Digest": "df40a828288a6c5bb4f640d2e5aadcd5b841503e1cba755c08dc0423a95067c8"
             }
         ],
-        "azure-iot": [
-            {
-                "downloadUrl": "https://github.com/Azure/azure-iot-cli-extension/releases/download/v0.9.1/azure_iot-0.9.1-py2.py3-none-any.whl",
-                "filename": "azure_iot-0.9.1-py2.py3-none-any.whl",
-                "metadata": {
-                    "azext.minCliCoreVersion": "2.0.70",
-                    "classifiers": [
-                        "Development Status :: 4 - Beta",
-                        "Intended Audience :: Developers",
-                        "Intended Audience :: System Administrators",
-                        "Programming Language :: Python",
-                        "Programming Language :: Python :: 2",
-                        "Programming Language :: Python :: 2.7",
-                        "Programming Language :: Python :: 3",
-                        "Programming Language :: Python :: 3.4",
-                        "Programming Language :: Python :: 3.5",
-                        "Programming Language :: Python :: 3.6",
-                        "Programming Language :: Python :: 3.7",
-                        "Programming Language :: Python :: 3.8",
-                        "License :: OSI Approved :: MIT License"
-                    ],
-                    "extensions": {
-                        "python.details": {
-                            "contacts": [
-                                {
-                                    "email": "iotupx@microsoft.com",
-                                    "name": "Microsoft",
-                                    "role": "author"
-                                }
-                            ],
-                            "document_names": {
-                                "description": "DESCRIPTION.rst"
-                            },
-                            "project_urls": {
-                                "Home": "https://github.com/azure/azure-iot-cli-extension"
-                            }
-                        }
-                    },
-                    "extras": [],
-                    "generator": "bdist_wheel (0.30.0)",
-                    "license": "MIT",
-                    "metadata_version": "2.0",
-                    "name": "azure-iot",
-                    "run_requires": [
-                        {
-                            "requires": [
-                                "jsonschema (==3.0.2)",
-                                "paho-mqtt (==1.5.0)",
-                                "setuptools"
-                            ]
-                        }
-                    ],
-                    "summary": "The Azure IoT extension for Azure CLI.",
-                    "version": "0.9.1"
-                },
-                "sha256Digest": "97e5ddd2ddef1ec829e112bc5e6d46ec34df930b528fdf591c6201f7d89b9119"
-            }
-        ],
         "azure-cli-iot-ext": [
             {
                 "downloadUrl": "https://github.com/Azure/azure-iot-cli-extension/releases/download/v0.8.9/azure_cli_iot_ext-0.8.9-py2.py3-none-any.whl",
@@ -1104,6 +1046,64 @@
                     "version": "0.3.0"
                 },
                 "sha256Digest": "12e5f8567ba8a74988f50ec6ed3539fad5b9e491727b0bc2c16e7acc34f49423"
+            }
+        ],
+        "azure-iot": [
+            {
+                "downloadUrl": "https://github.com/Azure/azure-iot-cli-extension/releases/download/v0.9.1/azure_iot-0.9.1-py2.py3-none-any.whl",
+                "filename": "azure_iot-0.9.1-py2.py3-none-any.whl",
+                "metadata": {
+                    "azext.minCliCoreVersion": "2.0.70",
+                    "classifiers": [
+                        "Development Status :: 4 - Beta",
+                        "Intended Audience :: Developers",
+                        "Intended Audience :: System Administrators",
+                        "Programming Language :: Python",
+                        "Programming Language :: Python :: 2",
+                        "Programming Language :: Python :: 2.7",
+                        "Programming Language :: Python :: 3",
+                        "Programming Language :: Python :: 3.4",
+                        "Programming Language :: Python :: 3.5",
+                        "Programming Language :: Python :: 3.6",
+                        "Programming Language :: Python :: 3.7",
+                        "Programming Language :: Python :: 3.8",
+                        "License :: OSI Approved :: MIT License"
+                    ],
+                    "extensions": {
+                        "python.details": {
+                            "contacts": [
+                                {
+                                    "email": "iotupx@microsoft.com",
+                                    "name": "Microsoft",
+                                    "role": "author"
+                                }
+                            ],
+                            "document_names": {
+                                "description": "DESCRIPTION.rst"
+                            },
+                            "project_urls": {
+                                "Home": "https://github.com/azure/azure-iot-cli-extension"
+                            }
+                        }
+                    },
+                    "extras": [],
+                    "generator": "bdist_wheel (0.30.0)",
+                    "license": "MIT",
+                    "metadata_version": "2.0",
+                    "name": "azure-iot",
+                    "run_requires": [
+                        {
+                            "requires": [
+                                "jsonschema (==3.0.2)",
+                                "paho-mqtt (==1.5.0)",
+                                "setuptools"
+                            ]
+                        }
+                    ],
+                    "summary": "The Azure IoT extension for Azure CLI.",
+                    "version": "0.9.1"
+                },
+                "sha256Digest": "97e5ddd2ddef1ec829e112bc5e6d46ec34df930b528fdf591c6201f7d89b9119"
             }
         ],
         "connectedmachine": [
@@ -2056,10 +2056,9 @@
         ],
         "maintenance": [
             {
-                "downloadUrl": "https://mrpcliextension.blob.core.windows.net/cliextension/maintenance-1.0.0-py2.py3-none-any.whl",
-                "filename": "maintenance-1.0.0-py2.py3-none-any.whl",
+                "downloadUrl": "https://mrpcliextensionrelease.blob.core.windows.net/cliextension/maintenance-1.0.1-py2.py3-none-any.whl",
+                "filename": "maintenance-1.0.1-py2.py3-none-any.whl",
                 "metadata": {
-                    "azext.isPreview": true,
                     "azext.minCliCoreVersion": "2.0.47",
                     "classifiers": [
                         "Development Status :: 4 - Beta",
@@ -2095,10 +2094,10 @@
                     "license": "MIT",
                     "metadata_version": "2.0",
                     "name": "maintenance",
-                    "summary": "Support for Azure maintenance management preview.",
-                    "version": "1.0.0"
+                    "summary": "Support for Azure maintenance management.",
+                    "version": "1.0.1"
                 },
-                "sha256Digest": "d420491c0b25838a2096d93a1872d54b6b482df246310383d42b94fcd080a508"
+                "sha256Digest": "3e0fb5392bd29e53e7afde543d1a0ef5d33a6032f01322fd75b7afe7016c34fc"
             }
         ],
         "managementpartner": [
