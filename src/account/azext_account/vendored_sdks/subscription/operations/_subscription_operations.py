@@ -82,14 +82,14 @@ class SubscriptionOperations(object):
         response_headers = {}
         deserialized = None
         if response.status_code == 200:
-            deserialized = self._deserialize('SubscriptionCreationResult', pipeline_response)
+            deserialized = self._deserialize('SubscriptionCreationResult', response)
 
         if response.status_code == 202:
             response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
             response_headers['Retry-After']=self._deserialize('str', response.headers.get('Retry-After'))
 
         if cls:
-          return cls(pipeline_response, deserialized, response_headers)
+          return cls(response, deserialized, response_headers)
 
         return deserialized
     _create_subscription_in_enrollment_account_initial.metadata = {'url': '/providers/Microsoft.Billing/enrollmentAccounts/{enrollmentAccountName}/providers/Microsoft.Subscription/createSubscription'}
