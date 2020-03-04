@@ -73,7 +73,11 @@ class AzdevExtension:
 
 
 def find_modified_files_against_master_branch():
-    cmd = 'git --no-pager diff --name-only origin/master -- src/'
+    """
+    A: Added, C: Copied, M: Modified, R: Renamed
+    Deleted files don't count it diff
+    """
+    cmd = 'git --no-pager diff --name-only --diff-filter=ACMRT origin/master -- src/'
     files = check_output(cmd.split()).decode('utf-8').split('\n')
     return [f for f in files if len(f) > 0]
 
