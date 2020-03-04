@@ -615,7 +615,7 @@ def aks_browse(cmd,     # pylint: disable=too-many-statements
                                                                                                           protocol)
         term_id = os.environ.get('ACC_TERM_ID')
         if term_id:
-            response = requests.post('http://localhost:8888/openLink/{}'.format(term_id),
+            response = requests.post('http://localhost:8888/openLink/{0}'.format(term_id),
                                      json={"url": dashboardURL})
         logger.warning('To view the console, please open %s in a new tab', dashboardURL)
     else:
