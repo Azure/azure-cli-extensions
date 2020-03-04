@@ -141,11 +141,11 @@ def create_spark_pool(cmd, client, resource_group_name, workspace_name, spark_po
                       min_node_count=3,
                       max_node_count=40, auto_pause_enabled=True, delay_in_minutes=15, spark_events_folder="/events",
                       library_requirements_filename=None, library_requirements_content=None,
-                      default_spark_log_folder="/logs", force=False):
+                      default_spark_log_folder="/logs", force=False, tags=None):
     big_data_pool_info = BigDataPoolResourceInfo(location=location, spark_version=spark_version, node_size=node_size,
                                                  node_count=node_count, node_size_family=node_size_family,
                                                  spark_events_folder=spark_events_folder,
-                                                 default_spark_log_folder=default_spark_log_folder)
+                                                 default_spark_log_folder=default_spark_log_folder, tags=tags)
     if auto_scale_enabled:
         big_data_pool_info.auto_scale = AutoScaleProperties(enabled=auto_scale_enabled, min_node_count=min_node_count,
                                                             max_node_count=max_node_count)

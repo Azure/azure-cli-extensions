@@ -47,7 +47,7 @@ def load_command_table(self, _):
 
     with self.command_group('synapse spark pool', synapse_bigdatapool_sdk,
                             client_factory=cf_synapse_client_bigdatapool_factory) as g:
-        g.custom_command('show', 'get_spark_pool')
+        g.custom_show_command('show', 'get_spark_pool')
         g.command('list', 'list_by_workspace')
         g.custom_command('create', 'create_spark_pool', supports_no_wait=True)
         g.custom_command('update', 'update_spark_pool', supports_no_wait=True)
@@ -69,7 +69,7 @@ def load_command_table(self, _):
     with self.command_group('synapse spark batch', synapse_spark_batch_sdk, client_factory=cf_synapse_spark_batch) as g:
         g.custom_command('create', 'create_spark_batch_job', supports_no_wait=True)
         g.custom_command('list', 'list_spark_batch_jobs')
-        g.custom_command('show', 'get_spark_batch_job')
+        g.custom_show_command('show', 'get_spark_batch_job')
         g.custom_command('cancel', 'cancel_spark_batch_job', confirmation=True, supports_no_wait=True)
 
     # Spark session operations
@@ -77,7 +77,7 @@ def load_command_table(self, _):
                             client_factory=cf_synapse_spark_session) as g:
         g.custom_command('create', 'create_spark_session_job', supports_no_wait=True)
         g.custom_command('list', 'list_spark_session_jobs')
-        g.custom_command('show', 'get_spark_session_job')
+        g.custom_show_command('show', 'get_spark_session_job')
         g.custom_command('cancel', 'cancel_spark_session_job', confirmation=True, supports_no_wait=True)
         g.custom_command('reset-timeout', 'reset_timeout')
 
@@ -86,7 +86,7 @@ def load_command_table(self, _):
                             client_factory=cf_synapse_spark_session) as g:
         g.custom_command('create', 'create_spark_session_statement', supports_no_wait=True)
         g.custom_command('list', 'list_spark_session_statements')
-        g.custom_command('show', 'get_spark_session_statement')
+        g.custom_show_command('show', 'get_spark_session_statement')
         g.custom_command('cancel', 'cancel_spark_session_statement', confirmation=True, supports_no_wait=True)
 
     with self.command_group('synapse', is_preview=True):
