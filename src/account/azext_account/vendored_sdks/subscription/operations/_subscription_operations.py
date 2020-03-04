@@ -152,10 +152,8 @@ class SubscriptionOperations(object):
             'polling_interval',
             self._config.polling_interval
         )
-        if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
-        elif polling is False: polling_method = NoPolling()
-        else: polling_method = polling
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+        
+        return LROPoller(self._client, raw_result, get_long_running_output, NoPolling())
     begin_create_subscription_in_enrollment_account.metadata = {'url': '/providers/Microsoft.Billing/enrollmentAccounts/{enrollmentAccountName}/providers/Microsoft.Subscription/createSubscription'}
 
     def cancel(
