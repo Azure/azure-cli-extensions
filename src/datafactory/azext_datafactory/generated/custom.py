@@ -176,14 +176,14 @@ def datafactory_integration_runtime_start(cmd, client,
                                           resource_group_name,
                                           factory_name,
                                           integration_runtime_name):
-    return client.start(resource_group_name=resource_group_name, factory_name=factory_name, integration_runtime_name=integration_runtime_name)
+    return client.begin_start(resource_group_name=resource_group_name, factory_name=factory_name, integration_runtime_name=integration_runtime_name)
 
 
 def datafactory_integration_runtime_stop(cmd, client,
                                          resource_group_name,
                                          factory_name,
                                          integration_runtime_name):
-    return client.stop(resource_group_name=resource_group_name, factory_name=factory_name, integration_runtime_name=integration_runtime_name)
+    return client.begin_stop(resource_group_name=resource_group_name, factory_name=factory_name, integration_runtime_name=integration_runtime_name)
 
 
 def datafactory_integration_runtime_sync_credentials(cmd, client,
@@ -219,7 +219,7 @@ def datafactory_integration_runtime_object_metadata_refresh(cmd, client,
                                                             resource_group_name,
                                                             factory_name,
                                                             integration_runtime_name):
-    return client.refresh(resource_group_name=resource_group_name, factory_name=factory_name, integration_runtime_name=integration_runtime_name)
+    return client.begin_refresh(resource_group_name=resource_group_name, factory_name=factory_name, integration_runtime_name=integration_runtime_name)
 
 
 def datafactory_integration_runtime_node_show(cmd, client,
@@ -475,7 +475,7 @@ def datafactory_trigger_subscribe_to_event(cmd, client,
                                            resource_group_name,
                                            factory_name,
                                            trigger_name):
-    return client.subscribe_to_event(resource_group_name=resource_group_name, factory_name=factory_name, trigger_name=trigger_name)
+    return client.begin_subscribe_to_event(resource_group_name=resource_group_name, factory_name=factory_name, trigger_name=trigger_name)
 
 
 def datafactory_trigger_get_event_subscription_status(cmd, client,
@@ -489,21 +489,21 @@ def datafactory_trigger_unsubscribe_from_event(cmd, client,
                                                resource_group_name,
                                                factory_name,
                                                trigger_name):
-    return client.unsubscribe_from_event(resource_group_name=resource_group_name, factory_name=factory_name, trigger_name=trigger_name)
+    return client.begin_unsubscribe_from_event(resource_group_name=resource_group_name, factory_name=factory_name, trigger_name=trigger_name)
 
 
 def datafactory_trigger_start(cmd, client,
                               resource_group_name,
                               factory_name,
                               trigger_name):
-    return client.start(resource_group_name=resource_group_name, factory_name=factory_name, trigger_name=trigger_name)
+    return client.begin_start(resource_group_name=resource_group_name, factory_name=factory_name, trigger_name=trigger_name)
 
 
 def datafactory_trigger_stop(cmd, client,
                              resource_group_name,
                              factory_name,
                              trigger_name):
-    return client.stop(resource_group_name=resource_group_name, factory_name=factory_name, trigger_name=trigger_name)
+    return client.begin_stop(resource_group_name=resource_group_name, factory_name=factory_name, trigger_name=trigger_name)
 
 
 def datafactory_trigger_run_query_by_factory(cmd, client,
@@ -568,7 +568,7 @@ def datafactory_data_flow_debug_session_create(cmd, client,
                                                request_core_count=None,
                                                request_time_to_live=None,
                                                request_integration_runtime=None):
-    return client.create(resource_group_name=resource_group_name, factory_name=factory_name, compute_type=request_compute_type, core_count=request_core_count, time_to_live=request_time_to_live, integration_runtime=request_integration_runtime)
+    return client.begin_create(resource_group_name=resource_group_name, factory_name=factory_name, compute_type=request_compute_type, core_count=request_core_count, time_to_live=request_time_to_live, integration_runtime=request_integration_runtime)
 
 
 def datafactory_data_flow_debug_session_delete(cmd, client,
@@ -596,7 +596,7 @@ def datafactory_data_flow_debug_session_execute_command(cmd, client,
                                                         request_session_id=None,
                                                         request_command=None,
                                                         request_command_payload=None):
-    return client.execute_command(resource_group_name=resource_group_name, factory_name=factory_name, session_id=request_session_id, command=request_command, command_payload=request_command_payload)
+    return client.begin_execute_command(resource_group_name=resource_group_name, factory_name=factory_name, session_id=request_session_id, command=request_command, command_payload=request_command_payload)
 
 
 def datafactory_data_flow_debug_session_query_by_factory(cmd, client,

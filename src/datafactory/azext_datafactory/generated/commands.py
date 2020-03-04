@@ -50,11 +50,12 @@ def load_command_table(self, _):
         g.custom_command('get-status', 'datafactory_integration_runtime_get_status')
         g.custom_command('get-connection-info', 'datafactory_integration_runtime_get_connection_info')
         g.custom_command('list-auth-key', 'datafactory_integration_runtime_list_auth_key')
-        g.custom_command('start', 'datafactory_integration_runtime_start')
-        g.custom_command('stop', 'datafactory_integration_runtime_stop')
+        g.custom_command('start', 'datafactory_integration_runtime_start', supports_no_wait=True)
+        g.custom_command('stop', 'datafactory_integration_runtime_stop', supports_no_wait=True)
         g.custom_command('sync-credentials', 'datafactory_integration_runtime_sync_credentials')
         g.custom_command('get-monitoring-data', 'datafactory_integration_runtime_get_monitoring_data')
         g.custom_command('upgrade', 'datafactory_integration_runtime_upgrade')
+        g.wait_command('wait');
 
     from ._client_factory import cf_integration_runtime_object_metadata
     datafactory_integration_runtime_object_metadata = CliCommandType(
@@ -62,7 +63,8 @@ def load_command_table(self, _):
         client_factory=cf_integration_runtime_object_metadata)
     with self.command_group('datafactory integration-runtime-object-metadata', datafactory_integration_runtime_object_metadata, client_factory=cf_integration_runtime_object_metadata) as g:
         g.custom_command('get', 'datafactory_integration_runtime_object_metadata_get')
-        g.custom_command('refresh', 'datafactory_integration_runtime_object_metadata_refresh')
+        g.custom_command('refresh', 'datafactory_integration_runtime_object_metadata_refresh', supports_no_wait=True)
+        g.wait_command('wait');
 
     from ._client_factory import cf_integration_runtime_node
     datafactory_integration_runtime_node = CliCommandType(
@@ -82,7 +84,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'datafactory_linked_service_list')
         g.custom_show_command('show', 'datafactory_linked_service_show')
         g.custom_command('create', 'datafactory_linked_service_create')
-        g.custom_command('update', 'datafactory_linked_service_update')
+        g.generic_update_command('update', 'datafactory_linked_service_update')
         g.custom_command('delete', 'datafactory_linked_service_delete')
 
     from ._client_factory import cf_dataset
@@ -93,7 +95,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'datafactory_dataset_list')
         g.custom_show_command('show', 'datafactory_dataset_show')
         g.custom_command('create', 'datafactory_dataset_create')
-        g.custom_command('update', 'datafactory_dataset_update')
+        g.generic_update_command('update', 'datafactory_dataset_update')
         g.custom_command('delete', 'datafactory_dataset_delete')
 
     from ._client_factory import cf_pipeline
@@ -104,7 +106,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'datafactory_pipeline_list')
         g.custom_show_command('show', 'datafactory_pipeline_show')
         g.custom_command('create', 'datafactory_pipeline_create')
-        g.custom_command('update', 'datafactory_pipeline_update')
+        g.generic_update_command('update', 'datafactory_pipeline_update')
         g.custom_command('delete', 'datafactory_pipeline_delete')
         g.custom_command('create-run', 'datafactory_pipeline_create_run')
 
@@ -132,14 +134,15 @@ def load_command_table(self, _):
         g.custom_command('list', 'datafactory_trigger_list')
         g.custom_show_command('show', 'datafactory_trigger_show')
         g.custom_command('create', 'datafactory_trigger_create')
-        g.custom_command('update', 'datafactory_trigger_update')
+        g.generic_update_command('update', 'datafactory_trigger_update')
         g.custom_command('delete', 'datafactory_trigger_delete')
         g.custom_command('query-by-factory', 'datafactory_trigger_query_by_factory')
-        g.custom_command('subscribe-to-event', 'datafactory_trigger_subscribe_to_event')
+        g.custom_command('subscribe-to-event', 'datafactory_trigger_subscribe_to_event', supports_no_wait=True)
         g.custom_command('get-event-subscription-status', 'datafactory_trigger_get_event_subscription_status')
-        g.custom_command('unsubscribe-from-event', 'datafactory_trigger_unsubscribe_from_event')
-        g.custom_command('start', 'datafactory_trigger_start')
-        g.custom_command('stop', 'datafactory_trigger_stop')
+        g.custom_command('unsubscribe-from-event', 'datafactory_trigger_unsubscribe_from_event', supports_no_wait=True)
+        g.custom_command('start', 'datafactory_trigger_start', supports_no_wait=True)
+        g.custom_command('stop', 'datafactory_trigger_stop', supports_no_wait=True)
+        g.wait_command('wait');
 
     from ._client_factory import cf_trigger_run
     datafactory_trigger_run = CliCommandType(
@@ -157,7 +160,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'datafactory_data_flow_list')
         g.custom_show_command('show', 'datafactory_data_flow_show')
         g.custom_command('create', 'datafactory_data_flow_create')
-        g.custom_command('update', 'datafactory_data_flow_update')
+        g.generic_update_command('update', 'datafactory_data_flow_update')
         g.custom_command('delete', 'datafactory_data_flow_delete')
 
     from ._client_factory import cf_data_flow_debug_session
@@ -165,8 +168,9 @@ def load_command_table(self, _):
         operations_tmpl='azext_datafactory.vendored_sdks.datafactory.operations._data_flow_debug_session_operations#DataFlowDebugSessionOperations.{}',
         client_factory=cf_data_flow_debug_session)
     with self.command_group('datafactory data-flow-debug-session', datafactory_data_flow_debug_session, client_factory=cf_data_flow_debug_session) as g:
-        g.custom_command('create', 'datafactory_data_flow_debug_session_create')
+        g.custom_command('create', 'datafactory_data_flow_debug_session_create', supports_no_wait=True)
         g.custom_command('delete', 'datafactory_data_flow_debug_session_delete')
         g.custom_command('add-data-flow', 'datafactory_data_flow_debug_session_add_data_flow')
-        g.custom_command('execute-command', 'datafactory_data_flow_debug_session_execute_command')
+        g.custom_command('execute-command', 'datafactory_data_flow_debug_session_execute_command', supports_no_wait=True)
         g.custom_command('query-by-factory', 'datafactory_data_flow_debug_session_query_by_factory')
+        g.wait_command('wait');
