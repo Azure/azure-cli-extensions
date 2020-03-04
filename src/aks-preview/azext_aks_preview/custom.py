@@ -605,7 +605,7 @@ def aks_browse(cmd,     # pylint: disable=too-many-statements
 
     proxy_url = 'http://{0}:{1}/'.format(listen_address, listen_port)
     dashboardURL = '{0}/api/v1/namespaces/kube-system/services/{1}:kubernetes-dashboard:/proxy/'.format(proxy_url,
-                                                                                                       protocol)
+                                                                                                        protocol)
     # launch kubectl port-forward locally to access the remote dashboard
     if in_cloud_console():
         # TODO: better error handling here.
