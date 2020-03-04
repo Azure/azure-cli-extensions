@@ -140,7 +140,7 @@ class SubscriptionOperations(object):
             cls=lambda x,y,z: x,
             **kwargs
         )
-
+        deserialized = None
         def get_long_running_output(pipeline_response):
             deserialized = self._deserialize('SubscriptionCreationResult', pipeline_response)
 
