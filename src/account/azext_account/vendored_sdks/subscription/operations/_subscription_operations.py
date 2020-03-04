@@ -254,17 +254,12 @@ class SubscriptionOperations(object):
 
         # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters, body_content)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
-        response = pipeline_response.http_response
+        response = self._client.send(request, stream=False, **kwargs)
 
-        if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.ErrorResponseException.from_response(response, self._deserialize)
-
-        deserialized = self._deserialize('RenamedSubscriptionId', pipeline_response)
+        deserialized = self._deserialize('RenamedSubscriptionId', response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+          return cls(response, deserialized, {})
 
         return deserialized
     rename.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Subscription/rename'}
@@ -305,17 +300,12 @@ class SubscriptionOperations(object):
 
         # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
-        response = pipeline_response.http_response
+        response = self._client.send(request, stream=False, **kwargs)
 
-        if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.ErrorResponseException.from_response(response, self._deserialize)
-
-        deserialized = self._deserialize('EnabledSubscriptionId', pipeline_response)
+        deserialized = self._deserialize('EnabledSubscriptionId', response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+          return cls(response, deserialized, {})
 
         return deserialized
     enable.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Subscription/enable'}
