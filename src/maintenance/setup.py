@@ -1,14 +1,13 @@
-#!/usr/bin/env python
-
 # --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+
 from setuptools import setup, find_packages
 
-VERSION = "0.3.0"
 
+VERSION = "1.0.1"
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
     'Intended Audience :: Developers',
@@ -23,21 +22,19 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = [
-    'colorama~=0.3.7'
-]
+DEPENDENCIES = []
 
 setup(
-    name='find',
+    name='maintenance',
     version=VERSION,
-    description='Intelligent querying for CLI information.',
-    long_description='Find answers any CLI related questions from defining Azure terms to finding the right CLI command for your task.',
+    description='Support for Azure maintenance management.',
+    long_description='Microsoft Azure Command-Line Extensions for Maintenance',
     license='MIT',
-    author='Roshanak Zilouchian',
-    author_email='rozilouc@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/find',
+    author='Abhishek Kumar',
+    author_email='abkmr@microsoft.com',
+    url='https://github.com/Azure/azure-cli-extensions',
     classifiers=CLASSIFIERS,
-    packages=find_packages(),
-    install_requires=DEPENDENCIES,
-    package_data={'azext_find': ['azext_metadata.json']}
+    package_data={'azext_maintenance': ['azext_metadata.json']},
+    packages=find_packages(exclude=['tests']),
+    install_requires=DEPENDENCIES
 )
