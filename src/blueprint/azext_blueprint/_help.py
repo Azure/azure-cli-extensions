@@ -18,13 +18,13 @@ helps['blueprint create'] = """
     type: command
     short-summary: Create a blueprint definition.
     examples:
-      - name: SubscriptionBlueprint
+      - name: Create a subscription blueprint
         text: |-
                az blueprint create --subscription "00000000-0000-0000-0000-000000000000" --name \\
                "simpleBlueprint" --description \\
                "blueprint contains all artifact" --target-scope \\
                "subscription"
-      - name: ManagementGroupBlueprint
+      - name: Create a management group blueprint
         text: |-
                az blueprint create --management-group myManagementGroup --name \\
                "simpleBlueprint" --description \\
@@ -41,11 +41,11 @@ helps['blueprint delete'] = """
     type: command
     short-summary: Delete a blueprint definition.
     examples:
-      - name: ManagementGroupBlueprint
+      - name: Delete a management group blueprint
         text: |-
                az blueprint delete --management-group myManagementGroup --name \\
                "simpleBlueprint"
-      - name: SubscriptionBlueprint
+      - name: Delete a subscription blueprint
         text: |-
                az blueprint delete --subscription "00000000-0000-0000-0000-000000000000" --name \\
                "simpleBlueprint"
@@ -55,11 +55,11 @@ helps['blueprint show'] = """
     type: command
     short-summary: Get a blueprint definition.
     examples:
-      - name: ManagementGroupBlueprint
+      - name: Show a management group blueprint
         text: |-
                az blueprint show --management-group myManagementGroup --name \\
                "simpleBlueprint"
-      - name: SubscriptionBlueprint
+      - name: Show a subscription blueprint
         text: |-
                az blueprint show --subscription "00000000-0000-0000-0000-000000000000" --name \\
                "simpleBlueprint"
@@ -69,19 +69,19 @@ helps['blueprint list'] = """
     type: command
     short-summary: List blueprint definitions.
     examples:
-      - name: ManagementGroupBlueprint
+      - name: List blueprints in a management group
         text: |-
                az blueprint list --management-group myManagementGroup
-      - name: SubscriptionBlueprint
+      - name: List blueprints in a subscription
         text: |-
                az blueprint list --subscription "00000000-0000-0000-0000-000000000000"
 """
 
 helps['blueprint import'] = """
     type: command
-    short-summary: Import blueprint definition and artifacts from a path to json files.
+    short-summary: Import a blueprint definition and artifacts from a directoy of json files.
     examples:
-      - name: Import blueprint definition and artifacts
+      - name: Import a blueprint definition and artifacts
         text: |-
                az blueprint import --name "simpleBlueprint" \\
                --input-path "/path/to/blueprint/directory"
@@ -151,14 +151,14 @@ helps['blueprint artifact delete'] = """
     type: command
     short-summary: Delete a blueprint artifact.
     examples:
-      - name: Sub-RoleAssignmentArtifact
+      - name: Delete a role assignment artifact
         text: |-
                az blueprint artifact delete --subscription "00000000-0000-0000-0000-000000000000" \\
-               --blueprint-name "simpleBlueprint" --artifact-name "ownerAssignment"
-      - name: MG-ARMTemplateArtifact
+               --blueprint-name "simpleBlueprint" --name "ownerAssignment"
+      - name: Delete an ARM template artifact
         text: |-
                az blueprint artifact delete --management-group myManagementGroup --blueprint-name \\
-               "simpleBlueprint" --artifact-name "storageTemplate"
+               "simpleBlueprint" --name "storageTemplate"
 """
 
 helps['blueprint artifact show'] = """
@@ -168,11 +168,11 @@ helps['blueprint artifact show'] = """
       - name: Sub-RoleAssignmentArtifact
         text: |-
                az blueprint artifact show --subscription "00000000-0000-0000-0000-000000000000" \\
-               --blueprint-name "simpleBlueprint" --artifact-name "ownerAssignment"
+               --blueprint-name "simpleBlueprint" --name "ownerAssignment"
       - name: MG-ARMTemplateArtifact
         text: |-
                az blueprint artifact show --management-group myManagementGroup --blueprint-name \\
-               "simpleBlueprint" --artifact-name "storageTemplate"
+               "simpleBlueprint" --name "storageTemplate"
 """
 
 helps['blueprint artifact list'] = """

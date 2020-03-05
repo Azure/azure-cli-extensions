@@ -36,7 +36,7 @@ class BlueprintScenarioTest(ScenarioTest):
         self.cmd('az blueprint list', checks=[])
 
         self.cmd(
-            'az blueprint resource-group create '
+            'az blueprint resource-group add '
             '--blueprint-name "{blueprintName}" '
             '--artifact-name "myRgArt" '
             '--display-name "Resource Group 1"',

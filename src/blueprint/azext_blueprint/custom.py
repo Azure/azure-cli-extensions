@@ -23,7 +23,8 @@ def import_blueprint_with_artifacts(cmd,
 
     artifact_client = cf_artifacts(cmd.cli_ctx)
     body = {}
-    blueprint_path = os.path.abspath(os.path.join(input_path, 'blueprint.json'))
+    blueprint_path = os.path.realpath(os.path.join(os.path.expanduser(input_path), 'blueprint.json'))
+    print(blueprint_path)
 
     with open(blueprint_path) as blueprint_file:
         blueprint = json.load(blueprint_file)
@@ -136,17 +137,17 @@ def list_blueprint_artifact(cmd, client, blueprint_name, management_group=None, 
 
 
 def add_blueprint_resource_group(cmd,
-                                    client,
-                                    blueprint_name,
-                                    management_group=None,
-                                    scope=None,
-                                    artifact_name=None,
-                                    display_name=None,
-                                    rg_name=None,
-                                    rg_location=None,
-                                    description=None,
-                                    depends_on=None,
-                                    tags=None):
+                                 client,
+                                 blueprint_name,
+                                 management_group=None,
+                                 scope=None,
+                                 artifact_name=None,
+                                 display_name=None,
+                                 rg_name=None,
+                                 rg_location=None,
+                                 description=None,
+                                 depends_on=None,
+                                 tags=None):
     body = client.get(scope=scope, blueprint_name=blueprint_name).as_dict()
     rg_key = artifact_name
     body.setdefault('resource_groups', {})
