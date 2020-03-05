@@ -34,10 +34,9 @@ class ModifiedFilesNotAllowedError(Exception):
         You have modified both source code and src/index.json!
 
         There is a release pipeline will help you to build, upload and publish your extension.
-        The precondition is to put your source code inside repo Azure/azure-cli-extensions.
+        Once your PR is merged into master branch, a new PR will be created to update src/index.json automatically.
 
         If you want us to help to build, upload and publish your extension, src/index.json must not be modified.
-        If your source code is outside of this repo, you have to build, upload and publish by yourself.
         ---------------------------------------------------------------------------------------------------------
         """
         return msg
