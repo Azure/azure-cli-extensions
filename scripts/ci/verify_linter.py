@@ -80,18 +80,25 @@ class AzdevExtension:
 
 def find_modified_files_against_master_branch():
     """
+    Find modified files from src/ only.
     A: Added, C: Copied, M: Modified, R: Renamed, T: File type changed.
     Deleted files don't count in diff.
     """
     ado_pr_target_branch = 'origin/' + os.environ.get('ADO_PULL_REQUEST_TARGET_BRANCH')
 
     separator_line()
-    print(ado_pr_target_branch)
-    separator_line()
+    print('pull request target branch:', ado_pr_target_branch)
 
     cmd = 'git --no-pager diff --name-only --diff-filter=ACMRT {} -- src/'.format(ado_pr_target_branch)
     files = check_output(cmd.split()).decode('utf-8').split('\n')
-    return [f for f in files if len(f) > 0]
+    files = [f for f in files if len(f) > 0]
+
+    if files:
+        separator_line()
+        for f in files:
+            print(f)
+
+    return files
 
 
 def contain_index_json(files):
@@ -168,11 +175,6 @@ def linter_on_internal_extension(modified_files):
 
 def main():
     modified_files = find_modified_files_against_master_branch()
-
-    separator_line()
-    for f in modified_files:
-        print(f)
-    separator_line()
 
     if len(modified_files) == 1 and contain_index_json(modified_files):
         # Scenario 1.
