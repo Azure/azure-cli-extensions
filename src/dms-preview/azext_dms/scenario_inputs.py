@@ -4,13 +4,18 @@
 # --------------------------------------------------------------------------------------------
 
 from knack.util import CLIError
+from knack.prompting import prompt, prompt_pass
 from azext_dms.vendored_sdks.datamigration.models import (MigrateMySqlAzureDbForMySqlSyncDatabaseInput,
                                                           MigratePostgreSqlAzureDbForPostgreSqlSyncDatabaseInput,
                                                           MigrateMySqlAzureDbForMySqlSyncTaskInput,
                                                           MigratePostgreSqlAzureDbForPostgreSqlSyncTaskInput,
                                                           MongoDbMigrationSettings,
                                                           MigrateOracleAzureDbPostgreSqlSyncDatabaseInput,
-                                                          MigrateOracleAzureDbPostgreSqlSyncTaskInput)
+                                                          MigrateOracleAzureDbPostgreSqlSyncTaskInput,
+                                                          CheckOCIDriverTaskInput,
+                                                          UploadOCIDriverTaskInput,
+                                                          InstallOCIDriverTaskInput,
+                                                          FileShare)
 
 
 def get_migrate_mysql_to_azuredbformysql_sync_input(database_options_json,
@@ -100,3 +105,22 @@ def get_migrate_oracle_to_azuredbforpostgresql_sync_input(database_options_json,
     return MigrateOracleAzureDbPostgreSqlSyncTaskInput(source_connection_info=source_connection_info,
                                                        target_connection_info=target_connection_info,
                                                        selected_databases=database_options)
+
+
+def get_check_oci_driver_input(task_options_json):
+    server_version = task_options_json.get('serverVersion', None)
+    return CheckOCIDriverTaskInput(server_version=server_version)
+
+
+def get_upload_oci_driver_input(task_options_json):
+    driver_path = task_options_json.get('ociDriverPath', None)
+    user_name = task_options_json.get('userName', None) or prompt('Share Path Username: ')
+    password = task_options_json.get('password', None) or prompt_pass(msg='Share Path Password: ')
+    return UploadOCIDriverTaskInput(driver_share=FileShare(path=driver_path,
+                                                           user_name=user_name,
+                                                           password=password))
+
+
+def get_install_oci_driver_input(task_options_json):
+    driver_package_name = task_options_json.get('ociDriverPackageName', None)
+    return InstallOCIDriverTaskInput(driver_package_name=driver_package_name)
