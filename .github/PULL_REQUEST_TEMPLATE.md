@@ -15,4 +15,5 @@ For new extensions:
 ### About to Publish
 
 There is a pipeline will help you build, upload and publish (update index.json) extension wheel automatically.  
-The precondition is not to modify src/index.json by yourself and put source code inside this repo.
+Once your PR is merged into master branch, a new PR will be created to update src/index.json automatically.  
+The precondition is put your code inside this repo and src/index.json must not be modified.  
