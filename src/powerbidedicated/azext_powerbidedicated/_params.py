@@ -43,7 +43,7 @@ def load_arguments(self, _):
         c.argument('sku_tier', sku_tier_type)
         c.argument('tags', tags_type)
         c.argument('administration_members', administration_type)
-        c.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
+        c.argument('location', get_location_type(self.cli_ctx))
 
     with self.argument_context('powerbi embedded-capacity update') as c:
         c.argument('sku_name', sku_name_type)

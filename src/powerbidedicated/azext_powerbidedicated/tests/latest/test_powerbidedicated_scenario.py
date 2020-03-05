@@ -12,11 +12,12 @@ class PowerBIDedicatedScenarioTest(ScenarioTest):
     def test_powerbidedicated_embedded_capacity(self, resource_group):
         self.kwargs.update({
             'name': self.create_random_name(prefix='clipowerbi', length=24),
-            'administrator': "4759ce24-1955-4c57-bc53-357a69cc065f"
+            'administrator': "4759ce24-1955-4c57-bc53-357a69cc065f",
+            'location': "eastus"
         })
 
         self.cmd('az powerbi embedded-capacity create --resource-group {rg} --name {name} --sku-name "A1" '
-                 '--sku-tier "PBIE_Azure" --administration-members "{administrator}" --no-wait')
+                 '--location {location} --sku-tier "PBIE_Azure" --administration-members "{administrator}" --no-wait')
 
         self.cmd('az powerbi embedded-capacity wait --resource-group {rg} --name {name} --created')
 

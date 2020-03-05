@@ -15,7 +15,7 @@ def create_powerbi_embedded_capacity(client,
                                      resource_group_name,
                                      name,
                                      sku_name,
-                                     location=None,
+                                     location,
                                      sku_tier=None,
                                      tags=None,
                                      administration_members=None, no_wait=False):
