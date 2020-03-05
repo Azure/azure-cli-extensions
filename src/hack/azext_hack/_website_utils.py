@@ -113,10 +113,10 @@ class Website:
         return self.__deployment_info
 
     def __get_or_create_app_service_plan(self) -> str:
-        plans = list_app_service_plans(self.__cmd)
+        plans = list_app_service_plans(self.__cmd, self.name)
         for plan in plans:
             if plan.sku.family == 'F':
-                logger.warning('Using existing free plan...')
+                logger.warning('Using existing free plan: {}'.format(plan.name))
                 return plan
         # Reached here, no free plan found
         logger.warning(
@@ -131,7 +131,7 @@ class Website:
         # create in the app plans resource group
         # TODO: get logger
         runtime_setting = _RUNTIME_SETTINGS[self.runtime]
-        logger.warning('Creating website...')
+        logger.warning('Creating website: {}'.format(self.name))
         webapp = create_webapp(self.__cmd, resource_group_name=app_service_plan.resource_group, name=self.name,
                                plan=app_service_plan.name, runtime=runtime_setting['name'], deployment_local_git=True)
         self.resource_group = app_service_plan.resource_group
