@@ -6,10 +6,10 @@
 
 from ._subscription_operations_async import SubscriptionOperations
 from ._subscription_operation_operations_async import SubscriptionOperationOperations
-from ._operations_operations_async import Operations
+from ._operation_operations_async import OperationOperations
 
 __all__ = [
     'SubscriptionOperations',
     'SubscriptionOperationOperations',
-    'Operations',
+    'OperationOperations',
 ]

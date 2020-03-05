@@ -12,7 +12,7 @@ from msrest import Deserializer, Serializer
 from ._configuration_async import SubscriptionClientConfiguration
 from .operations_async import SubscriptionOperations
 from .operations_async import SubscriptionOperationOperations
-from .operations_async import Operations
+from .operations_async import OperationOperations
 from .. import models
 
 
@@ -23,8 +23,8 @@ class SubscriptionClient(object):
     :vartype subscription: subscription_client.aio.operations_async.SubscriptionOperations
     :ivar subscription_operation: SubscriptionOperationOperations operations
     :vartype subscription_operation: subscription_client.aio.operations_async.SubscriptionOperationOperations
-    :ivar operations: Operations operations
-    :vartype operations: subscription_client.aio.operations_async.Operations
+    :ivar operation: OperationOperations operations
+    :vartype operation: subscription_client.aio.operations_async.OperationOperations
     :param str base_url: Service URL
     """
 
@@ -46,7 +46,7 @@ class SubscriptionClient(object):
             self._client, self._config, self._serialize, self._deserialize)
         self.subscription_operation = SubscriptionOperationOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.operations = Operations(
+        self.operation = OperationOperations(
             self._client, self._config, self._serialize, self._deserialize)
 
     async def close(self) -> None:
