@@ -10,3 +10,9 @@ This checklist is used to make sure that common guidelines for a pull request ar
 For new extensions:
 
 - [ ] My extension description/summary conforms to the [Extension Summary Guidelines](https://github.com/Azure/azure-cli/blob/dev/doc/extensions/extension_summary_guidelines.md).
+
+
+### About to Publish
+
+There is a pipeline will help you build, upload and publish (update index.json) extension wheel automatically.  
+The precondition is not to modify src/index.json by yourself and put source code inside this repo.
