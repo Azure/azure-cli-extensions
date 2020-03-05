@@ -6,14 +6,15 @@
 from datetime import datetime
 import dateutil.parser  # pylint: disable=import-error
 from msrestazure.tools import is_valid_resource_id, parse_resource_id
-from azext_applicationinsights._client_factory import cf_components
+from azext_applicationinsights._client_factory import cf_components, applicationinsights_mgmt_plane_client
 
 
 def get_id_from_azure_resource(cli_ctx, app, resource_group=None):
     if is_valid_resource_id(app):
         parsed = parse_resource_id(app)
         resource_group, name, subscription = parsed["resource_group"], parsed["name"], parsed["subscription"]
-        return cf_components(cli_ctx, None, subscription=subscription).get(resource_group, name).app_id
+        client = applicationinsights_mgmt_plane_client(cli_ctx, subscription_id=subscription).components
+        return client.get(resource_group, name).app_id
     if resource_group:
         return cf_components(cli_ctx, None).get(resource_group, app).app_id
     return app
@@ -25,10 +26,9 @@ def get_query_targets(cli_ctx, apps, resource_group):
         if resource_group:
             return [get_id_from_azure_resource(cli_ctx, apps[0], resource_group)]
         return list(map(lambda x: get_id_from_azure_resource(cli_ctx, x), apps))
-    else:
-        if resource_group:
-            return [get_id_from_azure_resource(cli_ctx, apps, resource_group)]
-        return apps
+    if resource_group:
+        return [get_id_from_azure_resource(cli_ctx, apps, resource_group)]
+    return apps
 
 
 def get_timespan(_, start_time=None, end_time=None, offset=None):
