@@ -27,7 +27,7 @@ def account_subscription_create_subscription_in_enrollment_account(cmd, client,
                                                                    body_management_group_id=None,
                                                                    body_owners=None,
                                                                    body_offer_type=None):
-    return client.create_subscription_in_enrollment_account(enrollment_account_name=enrollment_account_name, display_name=body_display_name, management_group_id=body_management_group_id, owners=body_owners, offer_type=body_offer_type)
+    return client.begin_create_subscription_in_enrollment_account(enrollment_account_name=enrollment_account_name, display_name=body_display_name, management_group_id=body_management_group_id, owners=body_owners, offer_type=body_offer_type)
 
 
 def account_subscription_create_csp_subscription(cmd, client,
@@ -39,17 +39,17 @@ def account_subscription_create_csp_subscription(cmd, client,
     return client.create_csp_subscription(billing_account_name=billing_account_name, customer_name=customer_name, display_name=body_display_name, sku_id=body_sku_id, reseller_id=body_reseller_id)
 
 
-def account_subscription_rename(cmd, client,
+def account_subscription_rename(cmd, client,subscription_id,
                                 body_subscription_name=None):
-    return client.rename(subscription_name=body_subscription_name)
+    return client.rename(subscription_id=subscription_id,subscription_name=body_subscription_name)
 
 
-def account_subscription_cancel(cmd, client):
-    return client.cancel()
+def account_subscription_cancel(cmd, client,subscription_id):
+    return client.cancel(subscription_id=subscription_id)
 
 
-def account_subscription_enable(cmd, client):
-    return client.enable()
+def account_subscription_enable(cmd, client,subscription_id):
+    return client.enable(subscription_id=subscription_id)
 
 
 def account_subscription_operation_show(cmd, client,
