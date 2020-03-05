@@ -48,6 +48,7 @@ class AzExtension:
 
     @staticmethod
     def _cmd(cmd):
+        print(cmd)
         check_call(cmd.split(), shell=True)
 
     def add_from_url(self, url):
@@ -63,7 +64,8 @@ class AzdevExtension:
 
     @staticmethod
     def _cmd(cmd):
-        check_call(cmd.split(), shell=True)
+        print(cmd)
+        check_call(cmd, shell=True)
 
     def add_from_code(self):
         self._cmd('azdev extension add {}'.format(self.extension_name))
