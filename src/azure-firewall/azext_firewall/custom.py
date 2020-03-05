@@ -34,6 +34,7 @@ def _upsert(parent, collection_name, obj_to_add, key_name, warn=True):
     collection = getattr(parent, collection_name, None)
 
     value = getattr(obj_to_add, key_name)
+    print(value)
     if value is None:
         raise CLIError(
             "Unable to resolve a value for key '{}' with which to match.".format(key_name))
