@@ -4,12 +4,11 @@
 # --------------------------------------------------------------------------------------------
 
 import base64
-import functools
 import struct
-import sys
 
 
 class RSAParser(object):
+    # pylint: disable=too-few-public-methods
     RSAAlgorithm = 'ssh-rsa'
 
     def __init__(self):
@@ -23,7 +22,7 @@ class RSAParser(object):
 
         if len(text_parts) < 2:
             error_str = ("Incorrectly formatted public key. "
-                "Key must be format '<algorithm> <base64_key>'")
+                         "Key must be format '<algorithm> <base64_key>'")
             raise ValueError(error_str)
 
         algorithm = text_parts[0]
@@ -36,7 +35,7 @@ class RSAParser(object):
 
         if len(fields) < 3:
             error_str = ("Incorrectly encoded public key. "
-                "Encoded key must be base64 encoded <algorithm><exponent><modulus>")
+                         "Encoded key must be base64 encoded <algorithm><exponent><modulus>")
             raise ValueError(error_str)
 
         encoded_algorithm = fields[0].decode("ascii")

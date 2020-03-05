@@ -8,6 +8,7 @@ import mock
 
 from azext_ssh import rsa_parser
 
+
 class RSAParserTest(unittest.TestCase):
     def test_rsa_parser_success(self):
         public_key_text = 'ssh-rsa ' + self._get_good_key()
@@ -69,16 +70,17 @@ class RSAParserTest(unittest.TestCase):
 
     def _get_good_modulus(self):
         return (
-            "AKF2wFGA0VQCa/hQRgVVJU/bF/TPes+JJ7CCtXXqndC7tV3EGiQIDC9XooY4aM"
-            "BT8MqimYppdxJMODSYAN2C2Mkd9mLfw+DnlRsWfP8blG16JS38hVzPpd1HV6OT"
-            "GbMWSQA/UuoZKxlY5P7SYkgO7J0aV5LiFjkouV796WGUvwMFuYYWJDDGQBX66M"
-            "cIBWzxcM8k+R2I/cXk0Y4UgdbT0qe5G8RMaAEQmbAK2qvt1abmsYhTcJNxAc0/"
+            "AKF2wFGA0VQCa_hQRgVVJU_bF_TPes-JJ7CCtXXqndC7tV3EGiQIDC9XooY4aM"
+            "BT8MqimYppdxJMODSYAN2C2Mkd9mLfw-DnlRsWfP8blG16JS38hVzPpd1HV6OT"
+            "GbMWSQA_UuoZKxlY5P7SYkgO7J0aV5LiFjkouV796WGUvwMFuYYWJDDGQBX66M"
+            "cIBWzxcM8k-R2I_cXk0Y4UgdbT0qe5G8RMaAEQmbAK2qvt1abmsYhTcJNxAc0_"
             "4uJhQVNtAoubAo7pg3u0Uan4OtA2NVO07TVY0r6nMs8TKcmva0nmDdWAkonxDB"
-            "oMG4r44BLJ5NLd6Oa+f5vQUPMAcBIef4c="
+            "oMG4r44BLJ5NLd6Oa-f5vQUPMAcBIef4c="
         )
 
     def _get_good_exponent(self):
         return "AQAB"
+
 
 if __name__ == '__main__':
     unittest.main()

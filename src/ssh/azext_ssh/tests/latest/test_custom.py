@@ -13,135 +13,155 @@ import unittest
 
 from azext_ssh import custom
 
+
 class SshCustomCommandTest(unittest.TestCase):
+    @mock.patch('azext_ssh.custom._do_ssh_op')
+    @mock.patch('azext_ssh.custom.ssh_utils')
+    def test_ssh_vm(self, mock_ssh_utils, mock_do_op):
+        cmd = mock.Mock()
+        custom.ssh_vm(cmd, "rg", "vm", "ip", "public", "private")
 
-    @mock.patch('azext_ssh.custom._get_ssh_ip')
+        mock_do_op.assert_called_once_with(
+            cmd, "rg", "vm", "ip", "public", "private", mock_ssh_utils.start_ssh_connection)
+
+    @mock.patch('azext_ssh.custom._do_ssh_op')
+    @mock.patch('azext_ssh.custom.ssh_utils')
+    @mock.patch('functools.partial')
+    def test_ssh_config(self, mock_partial, mock_ssh_utils, mock_do_op):
+        cmd = mock.Mock()
+        custom.ssh_config(cmd, "path/to/file", "rg", "vm", "ip", "public", "private")
+
+        mock_partial.assert_called_once_with(
+            mock_ssh_utils.write_ssh_config, "path/to/file", "rg", "vm")
+        mock_do_op.assert_called_once_with(
+            cmd, "rg", "vm", "ip", "public", "private", mock_partial.return_value)
+
+    @mock.patch('azext_ssh.custom._assert_args')
+    @mock.patch('azext_ssh.custom._check_public_private_files')
+    @mock.patch('azext_ssh.ip_utils.get_ssh_ip')
     @mock.patch('azext_ssh.custom._get_modulus_exponent')
-    @mock.patch('azext_ssh.custom._get_paramiko_key')
-    @mock.patch('azext_ssh.custom.client_factory')
-    @mock.patch('azext_ssh.custom.ssh_credential_factory')
-    def test_ssh_vm_success_provided_keys(self, mock_ssh_factory,
-        mock_client_factory, mock_get_key, mock_get_modexp, mock_get_ip):
-
-        mock_compute = mock.Mock()
-        mock_network = mock.Mock()
-        def get_client(_, resource):
-            if resource == profiles.ResourceType.MGMT_COMPUTE:
-                return mock_compute
-            elif resource == profiles.ResourceType.MGMT_NETWORK:
-                return mock_network
-            raise ValueError()
-
-        mock_client_factory.get_mgmt_service_client.side_effect = get_client
-        mock_get_ip.return_value = '1.2.3.4'
-        mod, exp = (mock.Mock(), mock.Mock())
-        mock_get_modexp.return_value = mod, exp
-
+    @mock.patch('azure.cli.core.commands.ssh_credential_factory.get_ssh_credentials')
+    @mock.patch('azext_ssh.custom._write_cert_file')
+    def test_do_ssh_op(self, mock_write_cert, mock_ssh_creds, mock_get_mod_exp, mock_ip,
+                       mock_check_files, mock_assert):
         cmd = mock.Mock()
-        mock_ssh_client = mock.Mock()
-        with mock.patch.object(paramiko, 'SSHClient') as mock_ssh_client_class:
-            with mock.patch.object(paramiko, 'AutoAddPolicy') as mock_auto_add_policy:
-                mock_ssh_client_class.return_value.__enter__.return_value = mock_ssh_client
-                custom.ssh_vm(cmd, "rg", "vm", "public", "private")
+        mock_op = mock.Mock()
+        mock_check_files.return_value = "public", "private"
+        mock_get_mod_exp.return_value = "modulus", "exponent"
 
-        mock_client_factory.get_mgmt_service_client(cmd.cli_ctx, profiles.ResourceType.MGMT_COMPUTE)
-        mock_client_factory.get_mgmt_service_client(cmd.cli_ctx, profiles.ResourceType.MGMT_NETWORK)
-        mock_get_ip.assert_called_once_with("rg", "vm", mock_compute, mock_network)
-        mock_get_modexp.assert_called_once_with("public")
-        mock_get_key.assert_called_once_with("private")
-        mock_ssh_factory.get_ssh_credentials.assert_called_once_with(cmd.cli_ctx, mod, exp)
-        mock_get_key.return_value.load_certificate.assert_called_once_with(
-            mock_ssh_factory.get_ssh_credentials.return_value.certificate
-        )
-        mock_ssh_client.set_missing_host_key_policy.assert_called_once_with(mock_auto_add_policy.return_value)
-        mock_ssh_client.connect.assert_called_once_with('1.2.3.4',
-            username=mock_ssh_factory.get_ssh_credentials.return_value.username,
-            pkey=mock_get_key.return_value
-        )
-        
-    @mock.patch('io.StringIO')
-    @mock.patch('paramiko.RSAKey.from_private_key')
-    @mock.patch('azext_ssh.custom.rsa_generator.RSAGenerator')
-    @mock.patch('azext_ssh.custom._get_ssh_ip')
-    @mock.patch('azext_ssh.custom.client_factory')
-    @mock.patch('azext_ssh.custom.ssh_credential_factory')
-    def test_ssh_vm_success_generated_keys(self, mock_ssh_factory,
-        mock_client_factory, mock_get_ip, mock_rsa_generator, mock_from_pk, mock_io):
+        custom._do_ssh_op(cmd, None, None, "1.2.3.4", "publicfile", "privatefile", mock_op)
 
-        mock_compute = mock.Mock()
-        mock_network = mock.Mock()
-        def get_client(_, resource):
-            if resource == profiles.ResourceType.MGMT_COMPUTE:
-                return mock_compute
-            elif resource == profiles.ResourceType.MGMT_NETWORK:
-                return mock_network
-            raise ValueError()
+        mock_assert.assert_called_once_with(None, None, "1.2.3.4")
+        mock_check_files.assert_called_once_with("publicfile", "privatefile")
+        mock_ip.assert_not_called()
+        mock_get_mod_exp.assert_called_once_with("public")
+        mock_ssh_creds.assert_called_once_with(cmd.cli_ctx, "modulus", "exponent")
+        mock_write_cert.assert_called_once_with("public", mock_ssh_creds.return_value.certificate)
+        mock_op.assert_called_once_with(
+            "1.2.3.4", mock_ssh_creds.return_value.username,
+            mock_write_cert.return_value, "private")
 
-        mock_client_factory.get_mgmt_service_client.side_effect = get_client
-        mock_get_ip.return_value = '1.2.3.4'
-        mock_generator = mock.Mock()
-        mock_rsa_generator.return_value = mock_generator
-        public, private = mock.Mock(), mock.Mock()
-        mod, exp = mock.Mock(), mock.Mock()
-        mock_generator.generate.return_value = public, private
-        mock_rsa_generator.public_key_to_base64_modulus_exponent.return_value = mod, exp
-
+    @mock.patch('azext_ssh.custom._assert_args')
+    @mock.patch('azext_ssh.custom._check_public_private_files')
+    @mock.patch('azext_ssh.ip_utils.get_ssh_ip')
+    @mock.patch('azext_ssh.custom._get_modulus_exponent')
+    @mock.patch('azure.cli.core.commands.ssh_credential_factory.get_ssh_credentials')
+    @mock.patch('azext_ssh.custom._write_cert_file')
+    def test_do_ssh_op_no_public_ip(self, mock_write_cert, mock_ssh_creds, mock_get_mod_exp,
+                                    mock_ip, mock_check_files, mock_assert):
         cmd = mock.Mock()
-        mock_ssh_client = mock.Mock()
-        with mock.patch.object(paramiko, 'SSHClient') as mock_ssh_client_class:
-            with mock.patch.object(paramiko, 'AutoAddPolicy') as mock_auto_add_policy:
-                mock_ssh_client_class.return_value.__enter__.return_value = mock_ssh_client
-                custom.ssh_vm(cmd, "rg", "vm", None, None)
+        mock_op = mock.Mock()
+        mock_check_files.return_value = "public", "private"
+        mock_get_mod_exp.return_value = "modulus", "exponent"
+        mock_ip.return_value = None
 
-        mock_client_factory.get_mgmt_service_client(cmd.cli_ctx, profiles.ResourceType.MGMT_COMPUTE)
-        mock_client_factory.get_mgmt_service_client(cmd.cli_ctx, profiles.ResourceType.MGMT_NETWORK)
-        mock_get_ip.assert_called_once_with("rg", "vm", mock_compute, mock_network)
-        mock_generator.generate.assert_called_once_with()
-        mock_rsa_generator.public_key_to_base64_modulus_exponent.assert_called_once_with(public)
-        mock_io.assert_called_once_with(private)
-        mock_from_pk.assert_called_once_with(mock_io.return_value)
-        mock_ssh_factory.get_ssh_credentials.assert_called_once_with(cmd.cli_ctx, mod, exp)
-        mock_from_pk.return_value.load_certificate.assert_called_once_with(
-            mock_ssh_factory.get_ssh_credentials.return_value.certificate
-        )
-        mock_ssh_client.set_missing_host_key_policy.assert_called_once_with(mock_auto_add_policy.return_value)
-        mock_ssh_client.connect.assert_called_once_with('1.2.3.4',
-            username=mock_ssh_factory.get_ssh_credentials.return_value.username,
-            pkey=mock_from_pk.return_value
-        )
+        self.assertRaises(
+            util.CLIError, custom._do_ssh_op, cmd, "rg", "vm", None,
+            "publicfile", "privatefile", mock_op)
 
-    @mock.patch('azext_ssh.custom._get_ssh_ip')
-    @mock.patch('azext_ssh.custom.client_factory')
-    def test_ssh_vm_no_public_ip(self, mock_client_factory, mock_get_ip):
-        mock_compute = mock.Mock()
-        mock_network = mock.Mock()
-        def get_client(_, resource):
-            if resource == profiles.ResourceType.MGMT_COMPUTE:
-                return mock_compute
-            elif resource == profiles.ResourceType.MGMT_NETWORK:
-                return mock_network
-            raise ValueError()
+        mock_assert.assert_called_once_with("rg", "vm", None)
+        mock_check_files.assert_called_once_with("publicfile", "privatefile")
+        mock_ip.assert_called_once_with(cmd, "rg", "vm")
 
-        mock_client_factory.get_mgmt_service_client.side_effect = get_client
-        mock_get_ip.return_value = None
+    def test_assert_args_no_ip_or_vm(self):
+        self.assertRaises(util.CLIError, custom._assert_args, None, None, None)
 
-        cmd = mock.Mock()
-        self.assertRaises(util.CLIError, custom.ssh_vm,
-            cmd, "rg", "vm", "public", "private")
+    def test_assert_args_vm_rg_mismatch(self):
+        self.assertRaises(util.CLIError, custom._assert_args, "rg", None, None)
+        self.assertRaises(util.CLIError, custom._assert_args, None, "vm", None)
 
-        mock_client_factory.get_mgmt_service_client(cmd.cli_ctx, profiles.ResourceType.MGMT_COMPUTE)
-        mock_client_factory.get_mgmt_service_client(cmd.cli_ctx, profiles.ResourceType.MGMT_NETWORK)
-        mock_get_ip.assert_called_once_with("rg", "vm", mock_compute, mock_network)
+    def test_assert_args_ip_with_vm_or_rg(self):
+        self.assertRaises(util.CLIError, custom._assert_args, None, "vm", "ip")
+        self.assertRaises(util.CLIError, custom._assert_args, "rg", "vm", "ip")
 
-    def test_ssh_vm_private_key_no_public(self):
-        cmd = mock.Mock()
-        self.assertRaises(util.CLIError, custom.ssh_vm,
-            cmd, "rg", "vm", None, "private")
+    @mock.patch('os.path.isfile')
+    @mock.patch('os.path.expanduser')
+    @mock.patch('os.path.join')
+    def test_check_public_private_files_defaults(self, mock_join, mock_expand, mock_isfile):
+        mock_expand.side_effect = ['publicfile', 'privatefile']
+        mock_isfile.return_value = True
 
-    def test_ssh_vm_public_key_no_private(self):
-        cmd = mock.Mock()
-        self.assertRaises(util.CLIError, custom.ssh_vm,
-            cmd, "rg", "vm", "public", None)
+        public, private = custom._check_public_private_files(None, None)
+
+        self.assertEqual('publicfile', public)
+        self.assertEqual('privatefile', private)
+        mock_expand.assert_has_calls([
+            mock.call(mock_join.return_value),
+            mock.call(mock_join.return_value)
+        ])
+        mock_join.assert_has_calls([
+            mock.call("~", ".ssh", "id_rsa.pub"),
+            mock.call("~", ".ssh", "id_rsa")
+        ])
+        mock_isfile.assert_has_calls([
+            mock.call('publicfile'),
+            mock.call('privatefile')
+        ])
+
+    @mock.patch('os.path.isfile')
+    @mock.patch('os.path.expanduser')
+    @mock.patch('os.path.join')
+    def test_check_public_private_files_no_public(self, mock_join, mock_expand, mock_isfile):
+        mock_isfile.side_effect = [False, True]
+
+        self.assertRaises(
+            util.CLIError, custom._check_public_private_files, "public", None)
+
+        mock_expand.assert_called_once_with(mock_join.return_value)
+        mock_join.assert_called_once_with("~", ".ssh", "id_rsa")
+        mock_isfile.assert_called_once_with("public")
+
+    @mock.patch('os.path.isfile')
+    @mock.patch('os.path.expanduser')
+    @mock.patch('os.path.join')
+    def test_check_public_private_files_no_private(self, mock_join, mock_expand, mock_isfile):
+        mock_isfile.side_effect = [True, False]
+
+        self.assertRaises(
+            util.CLIError, custom._check_public_private_files, "public", "private")
+
+        mock_expand.assert_not_called()
+        mock_join.assert_not_called()
+        mock_isfile.assert_has_calls([
+            mock.call("public"),
+            mock.call("private")
+        ])
+
+    @mock.patch('os.path.join')
+    @mock.patch('os.path.split')
+    @mock.patch('builtins.open')
+    def test_write_cert_file(self, mock_open, mock_split, mock_join):
+        mock_file = mock.Mock()
+        mock_open.return_value.__enter__.return_value = mock_file
+        mock_split.return_value = ["path", "to", "publickey"]
+
+        file_name = custom._write_cert_file("public", "cert")
+
+        self.assertEqual(mock_join.return_value, file_name)
+        mock_split.assert_called_once_with("public")
+        mock_join.assert_called_once_with("path", "to", "id_rsa-cert.pub")
+        mock_open.assert_called_once_with(mock_join.return_value, 'w')
+        mock_file.write.assert_called_once_with("cert")
 
     @mock.patch('azext_ssh.rsa_parser.RSAParser')
     @mock.patch('os.path.isfile')
@@ -157,7 +177,6 @@ class SshCustomCommandTest(unittest.TestCase):
         mock_isfile.assert_called_once_with('file')
         mock_open.assert_called_once_with('file', 'r')
         mock_parser.return_value.parse.assert_called_once_with('publickey')
-
 
     @mock.patch('os.path.isfile')
     def test_get_modulus_exponent_file_not_found(self, mock_isfile):
@@ -178,40 +197,6 @@ class SshCustomCommandTest(unittest.TestCase):
 
         self.assertRaises(util.CLIError, custom._get_modulus_exponent, 'file')
 
-    @mock.patch('os.path.isfile')
-    @mock.patch('paramiko.RSAKey.from_private_key')
-    def test_get_paramiko_key_success(self, mock_from_pk, mock_isfile):
-        mock_isfile.return_value = True
-
-        private_key = custom._get_paramiko_key('file')
-
-        self.assertEqual(private_key, mock_from_pk.return_value)
-        mock_isfile.assert_called_once_with('file')
-        mock_from_pk.assert_called_once_with('file')
-
-    @mock.patch('os.path.isfile')
-    def test_get_paramiko_key_file_not_found(self, mock_isfile):
-        mock_isfile.return_value = False
-
-        self.assertRaises(util.CLIError, custom._get_paramiko_key, 'file')
-
-    @mock.patch('os.path.isfile')
-    @mock.patch('getpass.getpass')
-    @mock.patch('paramiko.RSAKey.from_private_key')
-    def test_get_paramiko_key_with_password(self, mock_from_pk, mock_getpass, mock_isfile):
-        mock_getpass.return_value = 'foo'
-        mock_isfile.return_value = True
-        mock_private_key = mock.Mock()
-        mock_from_pk.side_effect = [paramiko.PasswordRequiredException, mock_private_key]
-        key_file = 'file'
-
-        private_key = custom._get_paramiko_key(key_file)
-
-        self.assertEqual(mock_private_key, private_key)
-        mock_from_pk.assert_any_call(key_file)
-        mock_from_pk.assert_any_call(key_file, password='foo')
-        mock_isfile.assert_called_once_with(key_file)
-        mock_getpass.assert_called_once()
 
 if __name__ == '__main__':
     unittest.main()

@@ -34,16 +34,19 @@ class SshCommandsLoader(AzCommandsLoader):
 
     def load_arguments(self, _):
         with self.argument_context('ssh vm') as c:
-            c.argument('resource_group', options_list=['--resource-group'])
-            c.argument('vm_name', options_list=['--name'])
+            c.extra('resource_group', options_list=['--resource-group'])
+            c.extra('vm_name', options_list=['--name'])
+            c.extra('ssh_ip', options_list=['--ip'])
             c.extra('public_key_file', options_list=['--public-key-file'])
             c.extra('private_key_file', options_list=['--private-key-file'])
-            c.extra('ssh_params', nargs="*")
 
         with self.argument_context('ssh config') as c:
-            c.argument('resource_group', options_list=['--resource-group'])
-            c.argument('vm_name', options_list=['--name'])
+            c.argument('config_path', options_list=['--file'])
+            c.extra('resource_group', options_list=['--resource-group'])
+            c.extra('vm_name', options_list=['--name'])
+            c.extra('ssh_ip', options_list=['--ip'])
             c.extra('public_key_file', options_list=['--public-key-file'])
             c.extra('private_key_file', options_list=['--private-key-file'])
+
 
 COMMAND_LOADER_CLS = SshCommandsLoader
