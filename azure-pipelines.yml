@@ -132,6 +132,9 @@ jobs:
 
         python scripts/ci/verify_linter.py
       displayName: "CLI Linter on Modified Extension (New)"
+      env:
+        ADO_PULL_REQUEST_LATEST_COMMIT: $(System.PullRequest.SourceCommitId)
+        ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
 
 - job: IndexRefDocVerify
   displayName: "Verify Ref Docs"

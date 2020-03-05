@@ -83,7 +83,13 @@ def find_modified_files_against_master_branch():
     A: Added, C: Copied, M: Modified, R: Renamed, T: File type changed.
     Deleted files don't count in diff.
     """
-    cmd = 'git --no-pager diff --name-only --diff-filter=ACMRT $(System.PullRequest.TargetBranch) -- src/'
+    ado_pr_target_branch = os.environ.get('ADO_PULL_REQUEST_TARGET_BRANCH')
+
+    separator_line()
+    print(ado_pr_target_branch)
+    separator_line()
+
+    cmd = 'git --no-pager diff --name-only --diff-filter=ACMRT {} -- src/'.format(ado_pr_target_branch)
     files = check_output(cmd.split()).decode('utf-8').split('\n')
     return [f for f in files if len(f) > 0]
 
