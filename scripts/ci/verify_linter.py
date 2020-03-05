@@ -3,6 +3,13 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+"""
+This script is used to verify linter on extensions.
+
+It's only working on ADO by default. If want to run locally,
+please update the target branch/commit to find diff in function find_modified_files_against_master_branch()
+"""
+
 import os
 import json
 from subprocess import check_output, check_call
@@ -74,10 +81,10 @@ class AzdevExtension:
 
 def find_modified_files_against_master_branch():
     """
-    A: Added, C: Copied, M: Modified, R: Renamed, T: File type changed
-    Deleted files don't count in diff
+    A: Added, C: Copied, M: Modified, R: Renamed, T: File type changed.
+    Deleted files don't count in diff.
     """
-    cmd = 'git --no-pager diff --name-only --diff-filter=ACMRT origin/master -- src/'
+    cmd = 'git --no-pager diff --name-only --diff-filter=ACMRT $(System.PullRequest.TargetBranch) -- src/'
     files = check_output(cmd.split()).decode('utf-8').split('\n')
     return [f for f in files if len(f) > 0]
 
@@ -156,6 +163,11 @@ def linter_on_internal_extension(modified_files):
 
 def main():
     modified_files = find_modified_files_against_master_branch()
+
+    separator_line()
+    for f in modified_files:
+        print(f)
+    separator_line()
 
     if len(modified_files) == 1 and contain_index_json(modified_files):
         # Scenario 1.
