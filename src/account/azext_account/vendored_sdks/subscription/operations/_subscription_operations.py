@@ -338,24 +338,19 @@ class SubscriptionOperations(object):
 
         # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters, body_content)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200, 202]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.ErrorResponseException.from_response(response, self._deserialize)
+        response = self._client.send(request, stream=False, **kwargs)
 
         response_headers = {}
         deserialized = None
         if response.status_code == 200:
-            deserialized = self._deserialize('SubscriptionCreationResult', pipeline_response)
+            deserialized = self._deserialize('SubscriptionCreationResult', response)
 
         if response.status_code == 202:
             response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
             response_headers['Retry-After']=self._deserialize('int', response.headers.get('Retry-After'))
 
         if cls:
-          return cls(pipeline_response, deserialized, response_headers)
+          return cls(response, deserialized, response_headers)
 
         return deserialized
     _create_subscription_initial.metadata = {'url': '/providers/Microsoft.Billing/billingAccounts/{billingAccountName}/billingProfiles/{billingProfileName}/invoiceSections/{invoiceSectionName}/providers/Microsoft.Subscription/createSubscription'}
@@ -476,24 +471,19 @@ class SubscriptionOperations(object):
 
         # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters, body_content)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200, 202]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.ErrorResponseException.from_response(response, self._deserialize)
+        response = self._client.send(request, stream=False, **kwargs)
 
         response_headers = {}
         deserialized = None
         if response.status_code == 200:
-            deserialized = self._deserialize('SubscriptionCreationResult', pipeline_response)
+            deserialized = self._deserialize('SubscriptionCreationResult', response)
 
         if response.status_code == 202:
             response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
             response_headers['Retry-After']=self._deserialize('int', response.headers.get('Retry-After'))
 
         if cls:
-          return cls(pipeline_response, deserialized, response_headers)
+          return cls(response, deserialized, response_headers)
 
         return deserialized
     _create_csp_subscription_initial.metadata = {'url': '/providers/Microsoft.Billing/billingAccounts/{billingAccountName}/customers/{customerName}/providers/Microsoft.Subscription/createSubscription'}
