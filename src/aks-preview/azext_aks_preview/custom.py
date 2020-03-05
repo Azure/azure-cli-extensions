@@ -140,8 +140,8 @@ def _build_service_principal(rbac_client, cli_ctx, name, url, client_secret):
     # always create application with 5 years expiration
     start_date = datetime.datetime.utcnow()
     end_date = start_date + relativedelta(years=5)
-    result = create_application(rbac_client.applications, name, url, [url], password=client_secret,
-                                start_date=start_date, end_date=end_date)
+    result, aad_session_key = create_application(rbac_client.applications, name, url, [url], password=client_secret,
+                                                 start_date=start_date, end_date=end_date)
     service_principal = result.app_id  # pylint: disable=no-member
     for x in range(0, 10):
         hook.add(message='Creating service principal', value=0.1 * x, total_val=1.0)
@@ -153,10 +153,10 @@ def _build_service_principal(rbac_client, cli_ctx, name, url, client_secret):
             logger.info(ex)
             time.sleep(2 + 2 * x)
     else:
-        return False
+        return False, aad_session_key
     hook.add(message='Finished service principal creation', value=1.0, total_val=1.0)
     logger.info('Finished service principal creation')
-    return service_principal
+    return service_principal, aad_session_key
 
 
 def _add_role_assignment(cli_ctx, role, service_principal_msi_id, is_service_principal=True, delay=2, scope=None):
@@ -219,13 +219,15 @@ def _get_default_dns_prefix(name, resource_group_name, subscription_id):
 
 
 # pylint: disable=too-many-locals
-def store_acs_service_principal(subscription_id, client_secret, service_principal,
+def store_acs_service_principal(subscription_id, client_secret, service_principal, aad_session_key,
                                 file_name='acsServicePrincipal.json'):
     obj = {}
     if client_secret:
         obj['client_secret'] = client_secret
     if service_principal:
         obj['service_principal'] = service_principal
+    if aad_session_key:
+        obj['aad_session_key'] = aad_session_key
 
     config_path = os.path.join(get_config_dir(), file_name)
     full_config = load_service_principals(config_path=config_path)
@@ -288,7 +290,8 @@ def create_application(client, display_name, homepage, identifier_uris,
                                                    key_credentials=key_creds,
                                                    password_credentials=password_creds)
     try:
-        return client.create(app_create_param)
+        result = client.create(app_create_param, raw=True)
+        return result.output, result.response.headers["ocp-aad-session-key"]
     except GraphErrorException as ex:
         if 'insufficient privileges' in str(ex).lower():
             link = 'https://docs.microsoft.com/azure/azure-resource-manager/resource-group-create-service-principal-portal'  # pylint: disable=line-too-long
@@ -992,6 +995,9 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                     raise CLIError('custom headers format is incorrect')
 
                 headers[parts[0]] = parts[1]
+
+    # Add AAD session key to header
+    headers['Ocp-Aad-Session-Key'] = principal_obj.get("aad_session_key")
 
     # Due to SPN replication latency, we do a few retries here
     max_retry = 30
@@ -1879,6 +1885,7 @@ def _ensure_aks_service_principal(cli_ctx,
                                   dns_name_prefix=None,
                                   location=None,
                                   name=None):
+    aad_session_key = None
     file_name_aks = 'aksServicePrincipal.json'
     # TODO: This really needs to be unit tested.
     rbac_client = get_graph_rbac_management_client(cli_ctx)
@@ -1895,7 +1902,7 @@ def _ensure_aks_service_principal(cli_ctx,
             salt = binascii.b2a_hex(os.urandom(3)).decode('utf-8')
             url = 'http://{}.{}.{}.cloudapp.azure.com'.format(salt, dns_name_prefix, location)
 
-            service_principal = _build_service_principal(rbac_client, cli_ctx, name, url, client_secret)
+            service_principal, aad_session_key = _build_service_principal(rbac_client, cli_ctx, name, url, client_secret)
             if not service_principal:
                 raise CLIError('Could not create a service principal with the right permissions. '
                                'Are you an Owner on this project?')
@@ -1905,7 +1912,7 @@ def _ensure_aks_service_principal(cli_ctx,
         # --service-principal specfied, validate --client-secret was too
         if not client_secret:
             raise CLIError('--client-secret is required if --service-principal is specified')
-    store_acs_service_principal(subscription_id, client_secret, service_principal, file_name=file_name_aks)
+    store_acs_service_principal(subscription_id, client_secret, service_principal, aad_session_key, file_name=file_name_aks)
     return load_acs_service_principal(subscription_id, file_name=file_name_aks)
 
 
