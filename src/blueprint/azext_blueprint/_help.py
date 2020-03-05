@@ -92,13 +92,13 @@ helps['blueprint resource-group'] = """
     short-summary: Commands to manage blueprint resource group artifact.
 """
 
-helps['blueprint resource-group create'] = """
+helps['blueprint resource-group add'] = """
     type: command
-    short-summary: Create blueprint resource group artifact.
+    short-summary: Add a resource group artifact to the blueprint.
     examples:
-      - name: Create a resource group artifact
+      - name: Add a resource group artifact
         text: |-
-               az blueprint resource-group create \\
+               az blueprint resource-group add \\
                --blueprint-name "myBlueprint" --artifact-name "myRG"
 """
 
@@ -112,11 +112,11 @@ helps['blueprint resource-group update'] = """
                --blueprint-name "myBlueprint" --artifact-name "myRG" --display-name "Updated name"
 """
 
-helps['blueprint resource-group delete'] = """
+helps['blueprint resource-group remove'] = """
     type: command
-    short-summary: Delete blueprint resource group artifact.
+    short-summary: Remove a blueprint resource group artifact.
     examples:
-      - name: Delete a resource group artifact
+      - name: Remove a resource group artifact
         text: |-
                az blueprint resource-group delete \\
                --blueprint-name "myBlueprint" --artifact-name "myRG"

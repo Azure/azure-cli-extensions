@@ -25,9 +25,9 @@ az blueprint import \
 
 ```
 
-In the input directory, there should be a file named "blueprint.json" that has blueprint definition and parameters for artifacts. There should be a subdirectory named "artifacts" and it should contain files for artifact definition. Examples can be found [here]().
+In the input directory, there should be a file named "blueprint.json" with a blueprint definition and parameters for artifacts. There should be a subdirectory named "artifacts" and it should contain files for artifact definitions. Examples can be found [here](https://github.com/Azure/azure-cli-extensions/tree/master/src/blueprint/azext_blueprint/tests/latest/input/import_with_artifacts).
 
-The import command will overwrite defnitions for blueprint and artifacts if a blueprint with the same name already exists.
+The import command will overwrite defnitions for the blueprint and its artifacts if a blueprint with the same name already exists.
 
 ##### Create a Blueprint with Parameters
 
@@ -57,7 +57,7 @@ The paramters are for artifacts which will be added in below commands.
 
 ##### Add a Resource Group in the Blueprint
 ```
-az blueprint resource-group create \
+az blueprint resource-group add \
     --blueprint-name blueprintName \
     --artifact-name myRgArt
 ```

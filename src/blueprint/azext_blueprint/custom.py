@@ -135,7 +135,7 @@ def list_blueprint_artifact(cmd, client, blueprint_name, management_group=None, 
     return client.list(scope=scope, blueprint_name=blueprint_name)
 
 
-def create_blueprint_resource_group(cmd,
+def add_blueprint_resource_group(cmd,
                                     client,
                                     blueprint_name,
                                     management_group=None,
@@ -212,7 +212,7 @@ def update_blueprint_resource_group(cmd,
 
 
 # todo test
-def delete_blueprint_resource_group(cmd, client, blueprint_name,
+def remove_blueprint_resource_group(cmd, client, blueprint_name,
                                     artifact_name, management_group=None, scope=None):
     body = client.get(scope=scope, blueprint_name=blueprint_name).as_dict()
     if artifact_name not in body.setdefault('resource_groups', {}):

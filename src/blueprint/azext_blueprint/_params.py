@@ -8,12 +8,17 @@
 
 from azure.cli.core.commands.parameters import (
     tags_type,
-    get_enum_type,
     get_location_type
 )
 from knack.arguments import CLIArgumentType
 from argcomplete.completers import FilesCompleter
 from ._validators import scope_validator
+from .vendored_sdks.blueprint.models._blueprint_management_client_enums import (
+    BlueprintTargetScope,
+    ManagedServiceIdentityType,
+    AssignmentLockMode
+)
+
 
 parameter_type = CLIArgumentType(
     options_list=['--parameters'],
@@ -36,7 +41,7 @@ def load_arguments(self, _):
         c.argument('blueprint_name', options_list=['--name', '-n'], help='Name of the blueprint definition.')
         c.argument('display_name', help='One-liner string explain this resource.')
         c.argument('description', help='Multi-line explain this resource.')
-        c.argument('target_scope', arg_type=get_enum_type(['subscription', 'managementGroup']), help='The scope where this blueprint definition can be assigned.')
+        c.argument('target_scope', arg_type=BlueprintTargetScope, help='The scope where this blueprint definition can be assigned.')
         c.argument('parameters', arg_type=parameter_type, help='Parameters required by this blueprint definition.')
 
     with self.argument_context('blueprint import') as c:
@@ -68,7 +73,7 @@ def load_arguments(self, _):
     with self.argument_context('blueprint artifact list') as c:
         c.argument('blueprint_name', help='Name of the blueprint definition.')
 
-    with self.argument_context('blueprint resource-group create') as c:
+    with self.argument_context('blueprint resource-group add') as c:
         c.argument('blueprint_name', help='Name of the blueprint definition.')
         c.argument('rg_name', help='Name of this resource group. Leave empty if the resource group name will be specified during the blueprint assignment.')
         c.argument('rg_location', help='Location of this resource group. Leave empty if the resource group location will be specified during the blueprint assignment.')
@@ -88,7 +93,7 @@ def load_arguments(self, _):
         c.argument('depends_on', nargs='+', help='Artifacts which need to be deployed before the specified artifact.')
         c.argument('tags', tags_type, arg_group='Resource Group', help='Tags to be assigned to this resource group.')
 
-    with self.argument_context('blueprint resource-group delete') as c:
+    with self.argument_context('blueprint resource-group remove') as c:
         c.argument('blueprint_name', help='Name of the blueprint definition.')
         c.argument('artifact_name', help='A unique name of this resource group artifact.')
 
@@ -185,7 +190,7 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument('assignment_name', options_list=['--name', '-n'], help='Name of the blueprint assignment.')
             c.argument('location', arg_type=get_location_type(self.cli_ctx))
-            c.argument('identity_type', arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned']), arg_group='identity', help='Type of the managed identity.')
+            c.argument('identity_type', arg_type=ManagedServiceIdentityType, arg_group='identity', help='Type of the managed identity.')
             c.argument('identity_principal_id', arg_group='identity', help='Azure Active Directory principal ID associated with this Identity.')
             c.argument('identity_tenant_id', arg_group='identity', help='ID of the Azure Active Directory.')
             c.argument('identity_user_assigned_identities', arg_group='identity', help='The list of user-assigned managed identities associated with the resource. Key is the Azure resource Id of the managed identity.')
@@ -194,7 +199,7 @@ def load_arguments(self, _):
             c.argument('blueprint_id', help='ID of the published version of a blueprint definition.')
             c.argument('parameters', arg_type=parameter_type, help='Blueprint assignment parameter values.')
             c.argument('resource_groups', help='Names and locations of resource group placeholders.')
-            c.argument('locks_mode', arg_type=get_enum_type(['None', 'AllResourcesReadOnly', 'AllResourcesDoNotDelete']), help='Lock mode.')
+            c.argument('locks_mode', arg_type=AssignmentLockMode, help='Lock mode.')
             c.argument('locks_excluded_principals', help='List of AAD principals excluded from blueprint locks. Up to 5 principals are permitted.', nargs='+')
 
     with self.argument_context('blueprint assignment delete') as c:
