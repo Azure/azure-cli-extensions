@@ -83,7 +83,7 @@ def find_modified_files_against_master_branch():
     A: Added, C: Copied, M: Modified, R: Renamed, T: File type changed.
     Deleted files don't count in diff.
     """
-    ado_pr_target_branch = os.environ.get('ADO_PULL_REQUEST_TARGET_BRANCH')
+    ado_pr_target_branch = 'origin/' + os.environ.get('ADO_PULL_REQUEST_TARGET_BRANCH')
 
     separator_line()
     print(ado_pr_target_branch)
