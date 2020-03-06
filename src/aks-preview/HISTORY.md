@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.4.35
++++++
+* Adding --paid-high-availability for paid service
+
 0.4.33
 +++++
 * Adding az aks get-credentials --context argument

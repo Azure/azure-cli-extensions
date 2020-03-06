@@ -84,6 +84,7 @@ def load_arguments(self, _):
         c.argument('workspace_resource_id')
         c.argument('skip_subnet_role_assignment', action='store_true')
         c.argument('enable_cluster_autoscaler', action='store_true')
+        c.argument('paid_high_availability', action='store_true')
         c.argument('cluster_autoscaler_profile', nargs='+', validator=validate_cluster_autoscaler_profile)
         c.argument('min_count', type=int, validator=validate_nodes_count)
         c.argument('max_count', type=int, validator=validate_nodes_count)
@@ -113,6 +114,7 @@ def load_arguments(self, _):
         c.argument('api_server_authorized_ip_ranges', type=str, validator=validate_ip_ranges)
         c.argument('enable_pod_security_policy', action='store_true')
         c.argument('disable_pod_security_policy', action='store_true')
+        c.argument('paid_high_availability', action='store_true')
         c.argument('attach_acr', acr_arg_type, validator=validate_acr)
         c.argument('detach_acr', acr_arg_type, validator=validate_acr)
 
