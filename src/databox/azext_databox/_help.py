@@ -20,14 +20,21 @@ helps['databox job create'] = """
     examples:
       - name: Create a databox job to use both storage account and managed disk as data destination.
         text: |-
-               az databox job create --resource-group "SdkRg4981" --job-name "SdkJob3971" --location \\
-               "westus" --sku-name "DataBox" --contact-name "Public SDK Test" \\
+               az databox job create --resource-group "SdkRg4981" --name "SdkJob3971" --location \\
+               "westus" --sku "DataBox" --contact-name "Public SDK Test" \\
                --phone "1234567890" --email-list "testing@microsoft.com" \\
                --street-address1 "16 TOWNSEND ST" --street-address2 "Unit 1" --city "San Francisco"  \\
                --state-or-province "CA" --country "US" --postal-code "94107" --company-name "Microsoft" \\
-               --storage-account-id /subscriptions/sub/resourceGroups/rg/providers/Microsoft.Storage/storageAccounts/sa \\
-               --staging-storage-account-id /subscriptions/sub/resourceGroups/rg/providers/Microsoft.Storage/storageAccounts/sa \\
-               --resource-group-id /subscriptions/sub/resourceGroups/rg
+               --storage-account sa1 sa2 --staging-storage-account sa \\
+               --resource-group-for-managed-disk /subscriptions/sub/resourceGroups/rg
+
+      - name: Create a databoxdisk job to use storage account as data destination.
+        text: |-
+               az databox job create --resource-group "SdkRg4981" --name "SdkJob3971" --location \\
+               "westus" --sku "DataBoxDisk" --expected-data-size 1 --contact-name "Public SDK Test" \\
+               --phone "1234567890" --email-list "testing@microsoft.com" --street-address1 "16 TOWNSEND ST" \\
+               --street-address2 "Unit 1" --city "San Francisco" --state-or-province "CA" --country "US" \\
+               --postal-code "94107" --company-name "Microsoft" --storage-account sa1
 """
 
 helps['databox job update'] = """
@@ -36,7 +43,7 @@ helps['databox job update'] = """
     examples:
       - name: Update the job "SdkJob3971" with the specified parameters.
         text: |-
-               az databox job update --resource-group "SdkRg4981" --job-name "SdkJob3971" \\
+               az databox job update --resource-group "SdkRg4981" --name "SdkJob3971" \\
                --contact-name "Update Job" --phone "1234567890" \\
                --email-list "testing@microsoft.com" \\
                --street-address1 "16 TOWNSEND ST" \\
@@ -51,7 +58,7 @@ helps['databox job delete'] = """
     examples:
       - name: Delete the job "SdkJob3971" in resource group "SdkRg4981".
         text: |-
-               az databox job delete --resource-group "SdkRg4981" --job-name "SdkJob3971"
+               az databox job delete --resource-group "SdkRg4981" --name "SdkJob3971"
 """
 
 helps['databox job show'] = """
@@ -60,7 +67,7 @@ helps['databox job show'] = """
     examples:
       - name: Get the information about the job "SdkJob3971".
         text: |-
-               az databox job show --resource-group "SdkRg4981" --job-name "SdkJob3971"
+               az databox job show --resource-group "SdkRg4981" --name "SdkJob3971"
 """
 
 helps['databox job list'] = """
@@ -81,7 +88,7 @@ helps['databox job cancel'] = """
     examples:
       - name: Cancel the job "SdkJob3971" under resource group "SdkRg4981".
         text: |-
-               az databox job cancel --resource-group "SdkRg4981" --job-name "SdkJob3971" --reason "CancelTest"
+               az databox job cancel --resource-group "SdkRg4981" --name "SdkJob3971" --reason "CancelTest"
 """
 
 helps['databox job list-credentials'] = """
@@ -90,5 +97,5 @@ helps['databox job list-credentials'] = """
     examples:
       - name: List the unencrypted secrets related to the job "TJ-636646322037905056".
         text: |-
-               az databox job list-credentials --resource-group "bvttoolrg6" --job-name "TJ-636646322037905056"
+               az databox job list-credentials --resource-group "bvttoolrg6" --name "TJ-636646322037905056"
 """

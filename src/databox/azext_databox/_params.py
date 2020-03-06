@@ -16,21 +16,23 @@ from knack.arguments import CLIArgumentType
 
 
 def load_arguments(self, _):
-    job_name_type = CLIArgumentType(
-        help='The name of the job resource within the specified resource group. job names must be between 3 and 24 '
-             'characters in length and use any alphanumeric and underscore only')
+    storage_accounts_type = CLIArgumentType(help='Space-separated list of the destination storage account. It can be the name or resource ID of storage account.', arg_group='Storage Account', nargs='+')
+    staging_storage_account_type = CLIArgumentType(help='The name or ID of the destination storage account that can be used to copy the vhd for staging.', arg_group='Managed Disk')
+    resource_group_for_managed_disk_type = CLIArgumentType(help='The name or ID of the destination resource group where the Compute disks should be created.', arg_group='Managed Disk')
+    job_name_type = CLIArgumentType(options_list=['--name', '-n'], help='The name of the job resource within the specified resource group. job names must be between 3 and 24 characters in length and use any alphanumeric and underscore only')
 
     with self.argument_context('databox job create') as c:
         c.argument('job_name', job_name_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), default=None,
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
-        c.argument('sku_name', arg_type=get_enum_type(['DataBox', 'DataBoxDisk', 'DataBoxHeavy']),
+        c.argument('sku', arg_type=get_enum_type(['DataBox', 'DataBoxDisk', 'DataBoxHeavy']),
                    help='The sku type of DataBox.')
+        c.argument('expected_data_size', type=int, help='The expected size of the data which needs to be transferred in this job, in terabytes.The maximum usable capacity is up to 35 TB. This is only needed when sku is DataBoxDisk.')
         c.argument('contact_name', help='Contact name of the person.')
         c.argument('phone', help='Phone number of the contact person.')
         c.argument('mobile', help='Mobile number of the contact person.')
-        c.argument('email_list', help='List of Email addresses to be notified about job progress.', nargs='+')
+        c.argument('email_list', help='Space-separated list of Email addresses to be notified about job progress.', nargs='+')
         c.argument('street_address1', help='Street Address line 1.')
         c.argument('street_address2', help='Street Address line 2.')
         c.argument('street_address3', help='Street Address line 3.')
@@ -39,15 +41,10 @@ def load_arguments(self, _):
         c.argument('country', help='Name of the Country. Ex: US')
         c.argument('postal_code', help='Postal code.')
         c.argument('company_name', help='Name of the company.')
-        c.extra('storage_account_id', help='The destination storage account resource id.', arg_group='Storage Account')
-        c.extra('staging_storage_account_id',
-                help='The destination storage account id that can be used to copy the vhd for staging.',
-                arg_group='Managed Disk')
-        c.extra('resource_group_id',
-                help='The destination resource group id where the Compute disks should be created.',
-                arg_group='Managed Disk')
-        c.ignore('storage_account_details')
-        c.ignore('managed_disk_details')
+        c.extra('storage_accounts', arg_type=storage_accounts_type)
+        c.extra('staging_storage_account', arg_type=staging_storage_account_type)
+        c.extra('resource_group_for_managed_disk', arg_type=resource_group_for_managed_disk_type)
+        c.ignore('destination_account_details')
 
     with self.argument_context('databox job update') as c:
         c.argument('job_name', job_name_type)

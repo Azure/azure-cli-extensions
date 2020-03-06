@@ -12,7 +12,3 @@ def cf_databox(cli_ctx, *_):
 
 def cf_jobs(cli_ctx, *_):
     return cf_databox(cli_ctx).jobs
-
-
-def cf_service(cli_ctx, *_):
-    return cf_databox(cli_ctx).service
