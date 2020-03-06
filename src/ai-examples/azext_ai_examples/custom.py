@@ -23,8 +23,8 @@ def check_connection_aladdin():
         print('Connection failed')
 
 
-def new_examples(command):
-    return replace_examples(command)
+def new_examples(help_file):
+    help_file.examples = replace_examples(help_file.command)
 
 
 # Replace built in examples with Aladdin ones

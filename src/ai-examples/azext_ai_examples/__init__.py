@@ -13,7 +13,7 @@ def inject_functions_into_core():
     # Replace the default examples from help calls
     from azure.cli.core._help import AzCliHelp
     from azext_ai_examples.custom import new_examples
-    AzCliHelp.check_for_new_examples = new_examples
+    AzCliHelp.update_examples = new_examples
 
 
 class AiExamplesCommandsLoader(AzCommandsLoader):
