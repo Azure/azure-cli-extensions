@@ -23,13 +23,12 @@ def import_blueprint_with_artifacts(cmd,
 
     artifact_client = cf_artifacts(cmd.cli_ctx)
     body = {}
-    blueprint_path = os.path.realpath(os.path.join(os.path.expanduser(input_path), 'blueprint.json'))
-    print(blueprint_path)
+    blueprint_path = os.path.join(os.path.expanduser(input_path), 'blueprint.json')
 
     with open(blueprint_path) as blueprint_file:
         blueprint = json.load(blueprint_file)
-        if blueprint['properties'] is None:
-            raise CLIError('Blueprint file does not contain properties field')
+        if 'properties' not in blueprint:
+            raise CLIError("blueprint.json does not contain 'properties' field")
         blueprint_properties = blueprint['properties']
         if 'displayName' in blueprint_properties:
             body['display_name'] = blueprint_properties['displayName']  # str
@@ -55,12 +54,11 @@ def import_blueprint_with_artifacts(cmd,
                                blueprint_name=blueprint_name,
                                artifact_name=artifact.name)
 
-    for filename in os.listdir(os.path.abspath(os.path.join(input_path, 'artifacts'))):
+    for filename in os.listdir(os.path.join(os.path.expanduser(input_path), 'artifacts')):
         artifact_name = filename.split('.')[0]
-        filepath = os.path.abspath(os.path.join(input_path, 'artifacts', filename))
+        filepath = os.path.join(os.path.expanduser(input_path), 'artifacts', filename)
         with open(filepath) as artifact_file:
             artifact = json.load(artifact_file)
-            print(artifact)
             artifact_client.create_or_update(scope=scope,
                                              blueprint_name=blueprint_name,
                                              artifact_name=artifact_name,
