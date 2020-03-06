@@ -16,14 +16,20 @@ class SubscriptionClientConfiguration(Configuration):
     Note that all parameters used to create this instance are saved as instance
     attributes.
 
+    :param credential: Credential needed for the client to connect to Azure.
+    :type credential: azure.core.credentials.TokenCredential
     """
 
     def __init__(
         self,
+        credential: "TokenCredential",
         **kwargs: Any
     ) -> None:
+        if credential is None:
+            raise ValueError("Parameter 'credential' must not be None.")
         super(SubscriptionClientConfiguration, self).__init__(**kwargs)
 
+        self.credential = credential
         self.api_version = "2019-10-01-preview"
         self._configure(**kwargs)
         self.user_agent_policy.add_user_agent('azsdk-python-subscriptionclient/{}'.format(VERSION))
@@ -40,3 +46,5 @@ class SubscriptionClientConfiguration(Configuration):
         self.custom_hook_policy = kwargs.get('custom_hook_policy') or policies.CustomHookPolicy(**kwargs)
         self.redirect_policy = kwargs.get('redirect_policy') or policies.AsyncRedirectPolicy(**kwargs)
         self.authentication_policy = kwargs.get('authentication_policy')
+        if self.credential and not self.authentication_policy:
+            self.authentication_policy = policies.AsyncBearerTokenCredentialPolicy(self.credential, **kwargs)

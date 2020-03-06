@@ -25,17 +25,20 @@ class SubscriptionClient(object):
     :vartype subscription_operation: subscription_client.aio.operations_async.SubscriptionOperationOperations
     :ivar operation: OperationOperations operations
     :vartype operation: subscription_client.aio.operations_async.OperationOperations
+    :param credential: Credential needed for the client to connect to Azure.
+    :type credential: azure.core.credentials.TokenCredential
     :param str base_url: Service URL
     """
 
     def __init__(
         self,
+        credential: "TokenCredential",
         base_url: Optional[str] = None,
         **kwargs: Any
     ) -> None:
         if not base_url:
             base_url = 'https://management.azure.com'
-        self._config = SubscriptionClientConfiguration(**kwargs)
+        self._config = SubscriptionClientConfiguration(credential, **kwargs)
         self._client = AsyncPipelineClient(base_url=base_url, config=self._config, **kwargs)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
