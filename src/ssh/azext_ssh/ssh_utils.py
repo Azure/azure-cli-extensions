@@ -2,12 +2,12 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
-from knack import log
-from knack import util
 import os
 import platform
 import subprocess
+
+from knack import log
+from knack import util
 
 from . import file_utils
 

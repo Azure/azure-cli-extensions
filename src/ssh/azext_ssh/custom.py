@@ -4,9 +4,9 @@
 # --------------------------------------------------------------------------------------------
 
 import functools
-from knack import util
 import os
 
+from knack import util
 from azure.cli.core.commands import ssh_credential_factory
 
 from . import ip_utils
