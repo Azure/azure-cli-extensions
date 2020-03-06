@@ -73,7 +73,7 @@ class BlueprintScenarioTest(ScenarioTest):
             checks=[JMESPathCheckExists('parameters')])
 
         self.cmd(
-            'az blueprint published create '
+            'az blueprint publish '
             '--blueprint-name "{blueprintName}" '
             '--version "1.0" '
             '--change-notes "First release"',
@@ -116,7 +116,7 @@ class BlueprintScenarioTest(ScenarioTest):
             checks=[])
 
         self.cmd(
-            'az blueprint published delete '
+            'az blueprint version delete '
             '--blueprint-name "{blueprintName}" '
             '--version "1.0" '
             '-y',
@@ -168,14 +168,14 @@ class BlueprintScenarioTest(ScenarioTest):
             ])
 
         self.cmd(
-            'az blueprint published create '
+            'az blueprint publish '
             '--blueprint-name "{blueprintName}" '
             '--version "1.0" '
             '--change-notes "First release"',
             checks=[JMESPathCheck('name', '1.0')])
 
         self.cmd(
-            'az blueprint published delete '
+            'az blueprint version delete '
             '--blueprint-name "{blueprintName}" '
             '--version "1.0" '
             '-y',

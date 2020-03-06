@@ -413,12 +413,12 @@ def update_blueprint_artifact_template(cmd,
 
 
 def publish_blueprint(cmd,
-                               client,
-                               blueprint_name,
-                               version_id,
-                               management_group=None,
-                               scope=None,
-                               change_notes=None):
+                      client,
+                      blueprint_name,
+                      version_id,
+                      management_group=None,
+                      scope=None,
+                      change_notes=None):
     body = {}
     body['change_notes'] = change_notes  # str
     return client.create(scope=scope,
@@ -444,7 +444,7 @@ def list_blueprint_version(cmd, client, blueprint_name, management_group=None, s
 
 
 def get_blueprint_version_artifact(cmd, client, blueprint_name,
-                                     version_id, artifact_name, management_group=None, scope=None):
+                                   version_id, artifact_name, management_group=None, scope=None):
     return client.get(scope=scope,
                       blueprint_name=blueprint_name,
                       version_id=version_id,
@@ -452,7 +452,7 @@ def get_blueprint_version_artifact(cmd, client, blueprint_name,
 
 
 def list_blueprint_version_artifact(cmd, client, blueprint_name,
-                                      version_id, management_group=None, scope=None):
+                                    version_id, management_group=None, scope=None):
     return client.list(scope=scope,
                        blueprint_name=blueprint_name,
                        version_id=version_id)

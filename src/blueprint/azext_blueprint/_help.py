@@ -118,7 +118,7 @@ helps['blueprint resource-group remove'] = """
     examples:
       - name: Remove a resource group artifact
         text: |-
-               az blueprint resource-group delete \\
+               az blueprint resource-group remove \\
                --blueprint-name "myBlueprint" --artifact-name "myRG"
 """
 
@@ -230,7 +230,7 @@ helps['blueprint artifact role create'] = """
                az blueprint artifact role create \\
                --blueprint-name "myBlueprint" --artifact-name "myRole" --role-definition-id \\
                "/providers/Microsoft.Authorization/roleDefinitions/{roleId}" \\
-               --parameters @/path/to/file --principal-ids "pId"
+               --principal-ids "pId"
 """
 
 helps['blueprint artifact role update'] = """
@@ -280,12 +280,12 @@ helps['blueprint publish'] = """
     examples:
       - name: Publish a management group blueprint
         text: |-
-               az blueprint publish --management-group myManagementGroup --name \\
+               az blueprint publish --management-group myManagementGroup --blueprint-name \\
                "simpleBlueprint" --version "v2"
       - name: Publish a subscription blueprint
         text: |-
                az blueprint publish --subscription "00000000-0000-0000-0000-000000000000" \\
-               --name "simpleBlueprint" \\
+               --blueprint-name "simpleBlueprint" \\
                --version "v2"
 """
 
@@ -296,11 +296,11 @@ helps['blueprint version delete'] = """
       - name: Delete a published subscription blueprint
         text: |-
                az blueprint version delete --subscription "00000000-0000-0000-0000-000000000000" \\
-               --name "simpleBlueprint" \\
+               --blueprint-name "simpleBlueprint" \\
                --version "v2"
       - name: Delete a published management group blueprint
         text: |-
-               az blueprint version delete --management-group myManagementGroup --name \\
+               az blueprint version delete --management-group myManagementGroup --blueprint-name \\
                "simpleBlueprint" --version "v2"
 """
 
@@ -310,12 +310,12 @@ helps['blueprint version show'] = """
     examples:
       - name: Get a published management group blueprint
         text: |-
-               az blueprint version show --management-group myManagementGroup --name \\
+               az blueprint version show --management-group myManagementGroup --blueprint-name \\
                "simpleBlueprint" --version "v2"
       - name: Get a published subscription blueprint
         text: |-
                az blueprint version show --subscription "00000000-0000-0000-0000-000000000000" \\
-               --name "simpleBlueprint" --version "v2"
+               --blueprint-name "simpleBlueprint" --version "v2"
 """
 
 helps['blueprint version list'] = """
@@ -436,7 +436,7 @@ helps['blueprint assignment wait'] = """
     examples:
         - name: Pause executing next line of CLI script until the Blueprint Assignment is successfully provisioned.
           text: az blueprint assignment wait --subscription "00000000-0000-0000-0000-000000000000" \\
-                --assignment-name "assignSimpleBlueprint" \\
+                --name "assignSimpleBlueprint" \\
                 --created
 """
 
