@@ -7,10 +7,10 @@ Release History
 * Initial release of "support" extension for Azure CLI.
 * Adding two major command groups, `az support services` and `az support tickets` to manage support ticket and related resources.
 
-2.0.0
+1.0.0
 -----
 
-* Update to az "support" extension for Azure CLI.
-* Param "status" with values "open" and "close" added to command group, `az support tickets update`.
-* Severity has an additional property "highestcriticalimpact".
+* GA release of "support" extension for Azure CLI.
+* Command `update` under command group `tickets` supports new parameter `status`.
+* `Severity` parameter used by command `update` and `create` under command group `tickets` supports an additional value `highestcriticalimpact`.
 

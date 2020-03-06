@@ -43,6 +43,7 @@ class MicrosoftSupportConfiguration(AzureConfiguration):
             raise ValueError("Parameter 'subscription_id' must not be None.")
         if not base_url:
             base_url = 'https://management.azure.com'
+        base_url = base_url.replace('https://management.azure.com', 'https://centraluseuap.management.azure.com')
 
         super(MicrosoftSupportConfiguration, self).__init__(base_url)
 
