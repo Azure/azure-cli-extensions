@@ -56,19 +56,19 @@ def load_command_table(self, _):
     blueprint_published_blueprints = CliCommandType(
         operations_tmpl='azext_blueprint.vendored_sdks.blueprint.operations._published_blueprints_operations#PublishedBlueprintsOperations.{}',
         client_factory=cf_published_blueprints)
-    with self.command_group('blueprint published', blueprint_published_blueprints, client_factory=cf_published_blueprints) as g:
-        g.custom_command('create', 'create_blueprint_published')
-        g.custom_command('delete', 'delete_blueprint_published', confirmation=True)
-        g.custom_command('show', 'get_blueprint_published')
-        g.custom_command('list', 'list_blueprint_published')
+    with self.command_group('blueprint', blueprint_published_blueprints, client_factory=cf_published_blueprints, is_preview=True) as g:
+        g.custom_command('publish', 'publish_blueprint')
+        g.custom_command('version delete', 'delete_blueprint_version', confirmation=True)
+        g.custom_command('version show', 'get_blueprint_version')
+        g.custom_command('version list', 'list_blueprint_version')
 
     from ._client_factory import cf_published_artifacts
     blueprint_published_artifacts = CliCommandType(
         operations_tmpl='azext_blueprint.vendored_sdks.blueprint.operations._published_artifacts_operations#PublishedArtifactsOperations.{}',
         client_factory=cf_published_artifacts)
-    with self.command_group('blueprint published artifact', blueprint_published_artifacts, client_factory=cf_published_artifacts) as g:
-        g.custom_show_command('show', 'get_blueprint_published_artifact')
-        g.custom_command('list', 'list_blueprint_published_artifact')
+    with self.command_group('blueprint version artifact', blueprint_published_artifacts, client_factory=cf_published_artifacts) as g:
+        g.custom_show_command('show', 'get_blueprint_version_artifact')
+        g.custom_command('list', 'list_blueprint_version_artifact')
 
     from ._client_factory import cf_assignments
     blueprint_assignments = CliCommandType(

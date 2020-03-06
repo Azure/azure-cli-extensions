@@ -412,7 +412,7 @@ def update_blueprint_artifact_template(cmd,
                                    artifact=body)
 
 
-def create_blueprint_published(cmd,
+def publish_blueprint(cmd,
                                client,
                                blueprint_name,
                                version_id,
@@ -427,23 +427,23 @@ def create_blueprint_published(cmd,
                          published_blueprint=body)
 
 
-def delete_blueprint_published(cmd, client, blueprint_name, version_id, management_group=None, scope=None):
+def delete_blueprint_version(cmd, client, blueprint_name, version_id, management_group=None, scope=None):
     return client.delete(scope=scope,
                          blueprint_name=blueprint_name,
                          version_id=version_id)
 
 
-def get_blueprint_published(cmd, client, blueprint_name, version_id, management_group=None, scope=None):
+def get_blueprint_version(cmd, client, blueprint_name, version_id, management_group=None, scope=None):
     return client.get(scope=scope,
                       blueprint_name=blueprint_name,
                       version_id=version_id)
 
 
-def list_blueprint_published(cmd, client, blueprint_name, management_group=None, scope=None):
+def list_blueprint_version(cmd, client, blueprint_name, management_group=None, scope=None):
     return client.list(scope=scope, blueprint_name=blueprint_name)
 
 
-def get_blueprint_published_artifact(cmd, client, blueprint_name,
+def get_blueprint_version_artifact(cmd, client, blueprint_name,
                                      version_id, artifact_name, management_group=None, scope=None):
     return client.get(scope=scope,
                       blueprint_name=blueprint_name,
@@ -451,7 +451,7 @@ def get_blueprint_published_artifact(cmd, client, blueprint_name,
                       artifact_name=artifact_name)
 
 
-def list_blueprint_published_artifact(cmd, client, blueprint_name,
+def list_blueprint_version_artifact(cmd, client, blueprint_name,
                                       version_id, management_group=None, scope=None):
     return client.list(scope=scope,
                        blueprint_name=blueprint_name,

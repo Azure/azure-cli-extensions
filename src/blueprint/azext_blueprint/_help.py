@@ -269,100 +269,100 @@ helps['blueprint artifact template update'] = """
                --blueprint-name "myBlueprint" --artifact-name "myTemplate" --display-name "Updated Name"
 """
 
-helps['blueprint published'] = """
+helps['blueprint version'] = """
     type: group
-    short-summary: Commands to manage published blueprint.
+    short-summary: Commands to manage published blueprint versions.
 """
 
-helps['blueprint published create'] = """
+helps['blueprint publish'] = """
     type: command
     short-summary: Publish a new version of the blueprint definition with the latest artifacts. Published blueprint definitions are immutable.
     examples:
-      - name: PublishedManagementGroupBlueprint_Publish
+      - name: Publish a management group blueprint
         text: |-
-               az blueprint published create --management-group myManagementGroup --name \\
+               az blueprint publish --management-group myManagementGroup --name \\
                "simpleBlueprint" --version "v2"
-      - name: PublishedSubscriptionBlueprint_Publish
+      - name: Publish a subscription blueprint
         text: |-
-               az blueprint published create --subscription "00000000-0000-0000-0000-000000000000" \\
+               az blueprint publish --subscription "00000000-0000-0000-0000-000000000000" \\
                --name "simpleBlueprint" \\
                --version "v2"
 """
 
-helps['blueprint published delete'] = """
+helps['blueprint version delete'] = """
     type: command
-    short-summary: Delete a published version of a blueprint definition.
+    short-summary: Delete a published version of a blueprint.
     examples:
-      - name: PublishedSubscriptionBlueprint
+      - name: Delete a published subscription blueprint
         text: |-
-               az blueprint published delete --subscription "00000000-0000-0000-0000-000000000000" \\
+               az blueprint version delete --subscription "00000000-0000-0000-0000-000000000000" \\
                --name "simpleBlueprint" \\
                --version "v2"
-      - name: PublishedManagementGroupBlueprint
+      - name: Delete a published management group blueprint
         text: |-
-               az blueprint published delete --management-group myManagementGroup --name \\
+               az blueprint version delete --management-group myManagementGroup --name \\
                "simpleBlueprint" --version "v2"
 """
 
-helps['blueprint published show'] = """
+helps['blueprint version show'] = """
     type: command
-    short-summary: Get a published version of a blueprint definition.
+    short-summary: Get a published version of a blueprint.
     examples:
-      - name: PublishedManagementGroupBlueprint
+      - name: Get a published management group blueprint
         text: |-
-               az blueprint published show --management-group myManagementGroup --name \\
+               az blueprint version show --management-group myManagementGroup --name \\
                "simpleBlueprint" --version "v2"
-      - name: PublishedSubscriptionBlueprint
+      - name: Get a published subscription blueprint
         text: |-
-               az blueprint published show --subscription "00000000-0000-0000-0000-000000000000" \\
+               az blueprint version show --subscription "00000000-0000-0000-0000-000000000000" \\
                --name "simpleBlueprint" --version "v2"
 """
 
-helps['blueprint published list'] = """
+helps['blueprint version list'] = """
     type: command
     short-summary: List published versions of given blueprint definition.
     examples:
-      - name: PublishedManagementGroupBlueprint
+      - name: List published blueprints of a management group
         text: |-
-               az blueprint published list --management-group myManagementGroup --blueprint-name \\
+               az blueprint version list --management-group myManagementGroup --blueprint-name \\
                "simpleBlueprint"
-      - name: PublishedSubscriptionBlueprint
+      - name: List published blueprints of a subscription
         text: |-
-               az blueprint published list --subscription "00000000-0000-0000-0000-000000000000" \\
+               az blueprint version list --subscription "00000000-0000-0000-0000-000000000000" \\
                --blueprint-name "simpleBlueprint"
 """
 
-helps['blueprint published artifact'] = """
+helps['blueprint version artifact'] = """
     type: group
-    short-summary: Commands to manage blueprint published artifact.
+    short-summary: Commands to manage published blueprint artifacts.
 """
 
-helps['blueprint published artifact show'] = """
+helps['blueprint version artifact show'] = """
     type: command
-    short-summary: Show an artifact for a published blueprint definition.
+    short-summary: Show an artifact for a published blueprint.
     examples:
-      - name: Sub-RoleAssignmentArtifact
+      - name: Show a role assignment artifact
         text: |-
-               az blueprint published artifact show --subscription "00000000-0000-0000-0000-000000000000" \\
+               az blueprint version artifact show --subscription "00000000-0000-0000-0000-000000000000" \\
                --blueprint-name "simpleBlueprint" \\
                --version "V2" --artifact-name "ownerAssignment"
-      - name: MG-ARMTemplateArtifact
+      - name: Show a template artifact
         text: |-
-               az blueprint published artifact show --management-group myManagementGroup --blueprint-name \\
+               az blueprint version artifact show --management-group myManagementGroup --blueprint-name \\
                "simpleBlueprint" --version "V2" --artifact-name "storageTemplate"
 """
 
-helps['blueprint published artifact list'] = """
+helps['blueprint version artifact list'] = """
     type: command
-    short-summary: List artifacts for a version of a published blueprint definition.
+    short-summary: List artifacts for a version of a published blueprint.
     examples:
-      - name: MG-ArtifactList
+      - name: List artifacts of a published management group blueprint
         text: |-
-               az blueprint published artifact list --management-group myManagementGroup --blueprint-name \\
+               az blueprint version artifact list --management-group myManagementGroup --blueprint-name \\
                "simpleBlueprint" --version "V2"
-      - name: Sub-ArtifactList
+      - name: List artifacts of a published subscription blueprint
         text: |-
-               az blueprint published artifact list --subscription "00000000-0000-0000-0000-000000000000" \\
+               az blueprint version artifact list --subscription "00000000-0000-0000-0000-000000000000" \\
                --blueprint-name "simpleBlueprint" \\
                --version "V2"
 """
@@ -405,7 +405,7 @@ helps['blueprint assignment delete'] = """
     type: command
     short-summary: Delete a blueprint assignment.
     examples:
-      - name: Assignment_Delete
+      - name: Delete an assignment
         text: |-
                az blueprint assignment delete --subscription "00000000-0000-0000-0000-000000000000" --name \\
                "assignSimpleBlueprint"
@@ -415,7 +415,7 @@ helps['blueprint assignment show'] = """
     type: command
     short-summary: Get a blueprint assignment.
     examples:
-      - name: Assignment
+      - name: Show an assignment
         text: |-
                az blueprint assignment show --subscription "00000000-0000-0000-0000-000000000000" --name \\
                "assignSimpleBlueprint"
@@ -425,7 +425,7 @@ helps['blueprint assignment list'] = """
     type: command
     short-summary: List blueprint assignments within a subscription.
     examples:
-      - name: Assignment
+      - name: List assignments
         text: |-
                az blueprint assignment list --subscription "00000000-0000-0000-0000-000000000000"
 """
@@ -444,7 +444,7 @@ helps['blueprint assignment who-is-blueprint'] = """
     type: command
     short-summary: Get Blueprints service SPN objectId
     examples:
-      - name: WhoIsBlueprint_Action
+      - name: Get SPN objectId
         text: |-
                az blueprint assignment who-is-blueprint --subscription "00000000-0000-0000-0000-000000000000" \\
                --name "assignSimpleBlueprint"

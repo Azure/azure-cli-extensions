@@ -162,28 +162,28 @@ def load_arguments(self, _):
         c.argument('parameters', arg_type=parameter_type)
         c.argument('template', arg_type=template_type)
 
-    with self.argument_context('blueprint published create') as c:
+    with self.argument_context('blueprint publish') as c:
         c.argument('blueprint_name', help='Name of the blueprint definition.')
         c.argument('version_id', options_list=['--version'], help='Version of the published blueprint definition.')
         c.argument('change_notes', help='Version-specific change notes.')
 
-    with self.argument_context('blueprint published delete') as c:
+    with self.argument_context('blueprint version delete') as c:
         c.argument('blueprint_name', help='Name of the blueprint definition.')
         c.argument('version_id', options_list=['--version'], help='Version of the published blueprint definition.')
 
-    with self.argument_context('blueprint published show') as c:
+    with self.argument_context('blueprint version show') as c:
         c.argument('blueprint_name', help='Name of the blueprint definition.')
         c.argument('version_id', options_list=['--version'], help='Version of the published blueprint definition.')
 
-    with self.argument_context('blueprint published list') as c:
+    with self.argument_context('blueprint version list') as c:
         c.argument('blueprint_name', help='Name of the blueprint definition.')
 
-    with self.argument_context('blueprint published artifact show') as c:
+    with self.argument_context('blueprint version artifact show') as c:
         c.argument('blueprint_name', help='Name of the blueprint definition.')
         c.argument('version_id', options_list=['--version'], help='Version of the published blueprint definition.')
         c.argument('artifact_name', help='Name of the blueprint artifact.')
 
-    with self.argument_context('blueprint published artifact list') as c:
+    with self.argument_context('blueprint version artifact list') as c:
         c.argument('blueprint_name', help='Name of the blueprint definition.')
         c.argument('version_id', options_list=['--version'], help='Version of the published blueprint definition.')
 
