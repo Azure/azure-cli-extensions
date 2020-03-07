@@ -184,7 +184,7 @@ az extension add --name support
         --title "BillingTicketTitle" \
         --partner-tenant-id "CSPPartnerTenantIdGuid"
   
-    # Create a ticket for Generic Quota increase which increases the throughput to 10000 per container.
+    # Create a ticket for Generic Quota increase for any Azure Service.
     az support tickets create \\
             --contact-country "USA" \\
             --contact-email "abc@contoso.com" \\
@@ -194,7 +194,7 @@ az extension add --name support
             --contact-method "email" \\
             --contact-timezone "Pacific Standard Time" \\
             --description "QuotaTicketDescription" \\
-            --problem-classification "/providers/Microsoft.Support/services/quota_service_guid/problemClassifications/cosmosdb_problemClassification_guid" \\
+            --problem-classification "/providers/Microsoft.Support/services/QuotaServiceNameGuid/problemClassifications/GenericProblemClassificationNameGuid" \\
             --severity "minimal" \\
             --ticket-name "QuotaTestTicketName" \\
             --title "QuotaTicketTitle"

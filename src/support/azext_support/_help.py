@@ -203,7 +203,7 @@ examples:
             --title "BillingTicketTitle" \\
             --partner-tenant-id "CSPPartnerTenantIdGuid"
 
-  - name: Create a ticket for Generic Quota increase which increases the throughput to 10000 per container.
+  - name: Create a ticket for Generic Quota increase for any Azure Service.
     text: |
           az support tickets create \\
             --contact-country "USA" \\
@@ -214,7 +214,7 @@ examples:
             --contact-method "email" \\
             --contact-timezone "Pacific Standard Time" \\
             --description "QuotaTicketDescription" \\
-            --problem-classification "/providers/Microsoft.Support/services/quota_service_guid/problemClassifications/cosmosdb_problemClassification_guid" \\
+            --problem-classification "/providers/Microsoft.Support/services/QuotaServiceNameGuid/problemClassifications/GenericProblemClassificationNameGuid" \\
             --severity "minimal" \\
             --ticket-name "QuotaTestTicketName" \\
             --title "QuotaTicketTitle"

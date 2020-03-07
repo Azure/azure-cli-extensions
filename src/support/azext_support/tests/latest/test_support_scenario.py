@@ -160,6 +160,11 @@ class SupportScenarioTest(ScenarioTest):
         rsp = self.cmd(cmd).get_output_in_json()
         self._validate_support_tickets_update_cmd2(rsp)
 
+        # Update status
+        cmd = self._build_support_tickets_update_cmd3(test_ticket_name)
+        rsp = self.cmd(cmd).get_output_in_json()
+        self._validate_support_tickets_update_cmd3(rsp)
+
         # Show
         cmd = self._build_support_tickets_show_cmd(test_ticket_name)
         rsp = self.cmd(cmd).get_output_in_json()
@@ -311,7 +316,6 @@ class SupportScenarioTest(ScenarioTest):
         cmd = "support tickets update "
         cmd += "--ticket-name '{0}' ".format(test_ticket_name)
         cmd += "--severity 'moderate' "
-        cmd += "--status 'open' "
         cmd += "--contact-method 'phone' "
         cmd += "--contact-phone-number '123-456-7890' "
 
@@ -323,8 +327,6 @@ class SupportScenarioTest(ScenarioTest):
         self.assertTrue(rsp["type"] == "Microsoft.Support/supportTickets")
         self.assertTrue("severity" in rsp)
         self.assertTrue("Moderate" == rsp["severity"])
-        self.assertTrue("status" in rsp)
-        self.assertTrue("Open" == rsp["status"])
         self.assertTrue("contactDetails" in rsp)
         self.assertTrue("123-456-7890" == rsp["contactDetails"]["phoneNumber"])
         self.assertTrue("Phone" == rsp["contactDetails"]["preferredContactMethod"])
@@ -333,7 +335,6 @@ class SupportScenarioTest(ScenarioTest):
         cmd = "support tickets update "
         cmd += "--ticket-name '{0}' ".format(test_ticket_name)
         cmd += "--severity 'minimal' "
-        cmd += "--status 'closed' "
         cmd += "--contact-method 'email' "
 
         return cmd
@@ -344,10 +345,22 @@ class SupportScenarioTest(ScenarioTest):
         self.assertTrue(rsp["type"] == "Microsoft.Support/supportTickets")
         self.assertTrue("severity" in rsp)
         self.assertTrue("Minimal" == rsp["severity"])
-        self.assertTrue("status" in rsp)
-        self.assertTrue("Closed" == rsp["status"])
         self.assertTrue("contactDetails" in rsp)
         self.assertTrue("Email" == rsp["contactDetails"]["preferredContactMethod"])
+
+    def _build_support_tickets_update_cmd3(self, test_ticket_name):
+        cmd = "support tickets update "
+        cmd += "--ticket-name '{0}' ".format(test_ticket_name)
+        cmd += "--status 'closed' "
+
+        return cmd
+
+    def _validate_support_tickets_update_cmd3(self, rsp):
+        self.assertTrue(rsp is not None)
+        self.assertTrue("type" in rsp)
+        self.assertTrue(rsp["type"] == "Microsoft.Support/supportTickets")
+        self.assertTrue("status" in rsp)
+        self.assertTrue("Closed" == rsp["status"])
 
     def _build_support_tickets_show_cmd(self, test_ticket_name):
         cmd = "support tickets show "
