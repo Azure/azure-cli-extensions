@@ -458,6 +458,11 @@ def list_blueprint_version_artifact(cmd, client, blueprint_name,
                        version_id=version_id)
 
 
+def _del_artifact_name(rg):
+    del rg['artifact_name']
+    return rg
+
+
 def create_blueprint_assignment(cmd,
                                 client,
                                 assignment_name,
@@ -489,8 +494,7 @@ def create_blueprint_assignment(cmd,
     body['blueprint_id'] = blueprint_id  # str
     body['parameters'] = json.loads(
         parameters) if parameters is not None else {}  # dictionary
-    body['resource_groups'] = json.loads(
-        resource_groups) if resource_groups is not None else {}  # dictionary
+    body['resource_groups'] = {rg['artifact_name']: _del_artifact_name(rg) for rg in resource_groups} if resource_groups is not None else {}
     body.setdefault('locks', {})['mode'] = locks_mode  # str
     body.setdefault(
         'locks', {}

@@ -69,7 +69,7 @@ az blueprint artifact role create \
     --artifact-name my-role-art \
     --display-name "My Role Name" \
     --resource-group-art myRgArt \
-    --role-definition-id "/providers/Microsoft.Authorization/roleDefinitions/00000000-0000-0000-0000-000000000000" \
+    --role-definition "/providers/Microsoft.Authorization/roleDefinitions/00000000-0000-0000-0000-000000000000" \
     --principal-ids "[parameters('MyRoleName_RoleAssignmentName')]"
 ```
 
@@ -79,7 +79,7 @@ az blueprint artifact policy create \
     --blueprint-name blueprintName \
     --artifact-name my-policy-art \
     --display-name "My Policy Name" \
-    --policy-definition-id "/providers/Microsoft.Authorization/policySetDefinitions/00000000-0000-0000-0000-000000000000" \
+    --policy-definition "/providers/Microsoft.Authorization/policySetDefinitions/00000000-0000-0000-0000-000000000000" \
     --parameters @/path/to/policy_params.json
 ```
 An example policy_params.json may look like this:
@@ -94,7 +94,7 @@ An example policy_params.json may look like this:
 
 ##### Publish a Blueprint
 ```
-az blueprint published create \
+az blueprint publish \
     --blueprint-name blueprintName \
     --version "1.0" \
     --change-notes "First release"
@@ -108,26 +108,16 @@ az blueprint assignment create \
     --identity-type "SystemAssigned" \
     --blueprint-id "/subscriptions/{subscriptionId}/providers/Microsoft.Blueprint/blueprints/blueprintName/versions/1.0" \
     --locks-mode "None" \
-    --resource-groups @/path/to/resource_group_params.json \
+    --resource-group artifact_name=myRgArt name=blueprint-rg location=westus \
     --parameters @/path/to/assignment_params.json
 ```
 Values need to be assigned for the parameters when assigning a blueprint.
-
-An example resource_group_params.json may look like this:
-```json
-{
-    "myRgArt":{
-        "name":"blueprint-rg",
-        "location":"eastasia"
-    }
-}
-```
 
 An example assignment_params.json may look like this:
 ```json
 {
     "MyRoleName_RoleAssignmentName":{
-        "value":["31e600e0-d7ce-4e98-a927-19bb30042e44"]
+        "value":["00000000-0000-0000-0000-000000000000"]
     },
     "MyPolicyName_Members":{
         "value":"jack"

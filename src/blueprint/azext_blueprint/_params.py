@@ -111,7 +111,7 @@ def load_arguments(self, _):
         c.argument('display_name', help='DisplayName of this artifact.')
         c.argument('description', help='Description of the blueprint artifact.')
         c.argument('depends_on', nargs='+', help='Artifacts which need to be deployed before the specified artifact.')
-        c.argument('policy_definition_id', help='Azure resource ID of the policy definition.')
+        c.argument('policy_definition_id', options_list=['--policy-definition'], help='The full policy definition id.')
         c.argument('resource_group_art', help='Name of the resource group artifact to which the policy will be assigned.')
         c.argument('parameters', arg_type=parameter_type)
 
@@ -130,9 +130,9 @@ def load_arguments(self, _):
         c.argument('display_name', help='DisplayName of this artifact.')
         c.argument('description', help='Description of the blueprint artifact.')
         c.argument('depends_on', nargs='+', help='Artifacts which need to be deployed before the specified artifact.')
-        c.argument('role_definition_id', help='Azure resource ID of the RoleDefinition.')
+        c.argument('role_definition_id', options_list=['--role-definition'], help='The full role definition id.')
         c.argument('resource_group_art', help='Name of the resource group artifact to which the policy will be assigned.')
-        c.argument('principal_ids', help='Array of user or group identities in Azure Active Directory. The roleDefinition will apply to each identity.')
+        c.argument('principal_ids', nargs='+', help='Array of user or group identities in Azure Active Directory or a reference to the corresponding parameter in blueprint definiton. The roleDefinition will apply to each identity.')
 
     with self.argument_context('blueprint artifact role update') as c:
         c.argument('blueprint_name', help='Name of the blueprint definition.')
@@ -189,17 +189,18 @@ def load_arguments(self, _):
 
     for scope in ['blueprint assignment create', 'blueprint assignment update']:
         with self.argument_context(scope) as c:
+            from .action import ResourceGroupAssignAddAction
             c.argument('assignment_name', options_list=['--name', '-n'], help='Name of the blueprint assignment.')
             c.argument('location', arg_type=get_location_type(self.cli_ctx))
             c.argument('identity_type', arg_type=get_enum_type(ManagedServiceIdentityType), arg_group='identity', help='Type of the managed identity.')
             c.argument('identity_principal_id', arg_group='identity', help='Azure Active Directory principal ID associated with this Identity.')
             c.argument('identity_tenant_id', arg_group='identity', help='ID of the Azure Active Directory.')
-            c.argument('identity_user_assigned_identities', arg_group='identity', help='The list of user-assigned managed identities associated with the resource. Key is the Azure resource Id of the managed identity.')
+            c.argument('identity_user_assigned_identities', arg_group='identity', nargs='+', help='The list of user-assigned managed identities associated with the resource. Key is the Azure resource Id of the managed identity.')
             c.argument('display_name', help='One-liner string explain this resource.')
             c.argument('description', help='Multi-line explain this resource.')
             c.argument('blueprint_id', help='ID of the published version of a blueprint definition.')
             c.argument('parameters', arg_type=parameter_type, help='Blueprint assignment parameter values.')
-            c.argument('resource_groups', help='Names and locations of resource group placeholders.')
+            c.argument('resource_groups', options_list=['--resource-group'], action=ResourceGroupAssignAddAction, nargs='+', help="Key=Value pairs for a resource group. Keys include 'artifact_name'(required), 'name', 'location'.")
             c.argument('locks_mode', arg_type=get_enum_type(AssignmentLockMode), help='Lock mode.')
             c.argument('locks_excluded_principals', help='List of AAD principals excluded from blueprint locks. Up to 5 principals are permitted.', nargs='+')
 

@@ -201,7 +201,7 @@ helps['blueprint artifact policy create'] = """
       - name: Create a policy artifact
         text: |-
                az blueprint artifact policy create \\
-               --blueprint-name "myBlueprint" --artifact-name "myPolicy" --policy-definition-id \\
+               --blueprint-name "myBlueprint" --artifact-name "myPolicy" --policy-definition \\
                "/providers/Microsoft.Authorization/policyDefinitions/{policyId}" \\
                --parameters @/path/to/file --display-name "Policy to do sth"
 """
@@ -228,7 +228,7 @@ helps['blueprint artifact role create'] = """
       - name: Create a role artifact
         text: |-
                az blueprint artifact role create \\
-               --blueprint-name "myBlueprint" --artifact-name "myRole" --role-definition-id \\
+               --blueprint-name "myBlueprint" --artifact-name "myRole" --role-definition \\
                "/providers/Microsoft.Authorization/roleDefinitions/{roleId}" \\
                --principal-ids "pId"
 """
@@ -383,7 +383,8 @@ helps['blueprint assignment create'] = """
                --description "enforce pre-defined simpleBlueprint to this XXXXXXXX subscription." \\
                --blueprint-id "/providers/Microsoft.Management/managementGroups/ContosoOnlineGroup/provid \\
                ers/Microsoft.Blueprint/blueprints/simpleBlueprint/versions/1.0" \\
-               --resource-groups "@path/to/resource-group/file" \\
+               --resource-group artifact_name=rg-art-1 name=rg1 location=westus \\
+               --resource-group artifact_name=rg-art-2 name=rg2 location=eastus \\
                --parameters "@path/to/parameter/file" \\
       - name: Assignment with user-assigned managed identity
         text: |-
@@ -392,7 +393,7 @@ helps['blueprint assignment create'] = """
                --description "enforce pre-defined simpleBlueprint to this XXXXXXXX subscription." \\
                --blueprint-id "/providers/Microsoft.Management/managementGroups/ContosoOnlineGroup \\
                /providers/Microsoft.Blueprint/blueprints/simpleBlueprint/versions/1.0" \\
-               --resource-groups "@path/to/resource-group/file" \\
+               --resource-group artifact_name=rg-art-1 name=rg1 location=westus \\
                --parameters "@path/to/parameter/file" \\
 """
 
