@@ -17,13 +17,15 @@ def validate_workspace_values(cmd, namespace):
     from azure.cli.core.commands.client_factory import get_subscription_id
 
     random_id = id_generator()
+    subscription_id = get_subscription_id(cmd.cli_ctx)
     if not namespace.managed_resource_group:
         namespace.managed_resource_group = resource_id(
-            subscription=get_subscription_id(cmd.cli_ctx),
-            resource_group='databricks-rg-' + namespace.workspace_name + '-' + random_id)
+            subscription=subscription_id,
+            resource_group='databricks-rg-' + namespace.workspace_name + '-' +
+            random_id)
     elif not is_valid_resource_id(namespace.managed_resource_group):
         namespace.managed_resource_group = resource_id(
-            subscription=get_subscription_id(cmd.cli_ctx),
+            subscription=subscription_id,
             resource_group=namespace.managed_resource_group)
 
     # set default values similar to portal
@@ -31,7 +33,22 @@ def validate_workspace_values(cmd, namespace):
         namespace.relay_namespace_name = 'dbrelay{}'.format(random_id)
     if not namespace.storage_account_name:
         namespace.storage_account_name = 'dbstorage{}'.format(random_id)
-    if not namespace.storage_account_sku_name:
-        namespace.storage_account_sku_name = 'Standard_GRS'
-    if not namespace.vnet_address_prefix:
-        namespace.vnet_address_prefix = '10.139'
+
+    # name to resource id for virtual-network
+    if namespace.custom_virtual_network_id is not None \
+       and not is_valid_resource_id(namespace.custom_virtual_network_id):
+        namespace.custom_virtual_network_id = resource_id(
+            subscription=subscription_id,
+            resource_group=namespace.resource_group_name,
+            namespace='Microsoft.Network',
+            type='virtualNetworks',
+            name=namespace.custom_virtual_network_id)
+
+    # name to resource id for load-balancer
+    if namespace.load_balancer_id is not None and not is_valid_resource_id(namespace.load_balancer_id):
+        namespace.load_balancer_id = resource_id(
+            subscription=subscription_id,
+            resource_group=namespace.resource_group_name,
+            namespace='Microsoft.Network',
+            type='loadBalancers',
+            name=namespace.load_balancer_id)
