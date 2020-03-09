@@ -9,11 +9,12 @@
 from azure.cli.core.commands.parameters import (
     tags_type,
     get_enum_type,
-    get_location_type
+    get_location_type,
+    file_type
 )
 from knack.arguments import CLIArgumentType
 from argcomplete.completers import FilesCompleter
-from ._validators import scope_validator
+from ._validators import blueprint_validator
 from .vendored_sdks.blueprint.models._blueprint_management_client_enums import (
     BlueprintTargetScope,
     ManagedServiceIdentityType,
@@ -34,7 +35,7 @@ template_type = CLIArgumentType(
 
 def load_arguments(self, _):
 
-    with self.argument_context('blueprint', validator=scope_validator) as c:
+    with self.argument_context('blueprint', validator=blueprint_validator) as c:
         c.argument('management_group', help='The management group for the scope of the resource. The scope could either be a subscription or a management group. For blueprint assignments management group scope is reserved for future use. If management-group is not specified, will use subscription as scope')
         c.ignore('scope')
 
@@ -47,7 +48,7 @@ def load_arguments(self, _):
 
     with self.argument_context('blueprint import') as c:
         c.argument('blueprint_name', options_list=['--name', '-n'], help='Name of the blueprint definition.')
-        c.argument('input_path', help='The directory path for json definitions of the blueprint and artifacts. Artifacts json files should be in input-path/artifacts/.', completer=FilesCompleter())
+        c.argument('input_path', type=file_type, help='The directory path for json definitions of the blueprint and artifacts. Artifacts json files should be in input-path/artifacts/.', completer=FilesCompleter())
 
     with self.argument_context('blueprint update') as c:
         c.argument('blueprint_name', options_list=['--name', '-n'], help='Name of the blueprint definition.')

@@ -23,46 +23,55 @@ def import_blueprint_with_artifacts(cmd,
 
     artifact_client = cf_artifacts(cmd.cli_ctx)
     body = {}
-    blueprint_path = os.path.join(os.path.expanduser(input_path), 'blueprint.json')
+    blueprint_path = os.path.join(input_path, 'blueprint.json')
+    art_dict = {}
 
-    with open(blueprint_path) as blueprint_file:
-        blueprint = json.load(blueprint_file)
-        if 'properties' not in blueprint:
-            raise CLIError("blueprint.json does not contain 'properties' field")
-        blueprint_properties = blueprint['properties']
-        if 'displayName' in blueprint_properties:
-            body['display_name'] = blueprint_properties['displayName']  # str
-        if 'description' in blueprint_properties:
-            body['description'] = blueprint_properties['description']  # str
-        if 'targetScope' in blueprint_properties:
-            body['target_scope'] = blueprint_properties['targetScope']  # str
-        else:
-            body['target_scope'] = 'subscription'
-        if 'parameters' in blueprint_properties:
-            body['parameters'] = blueprint_properties[
-                'parameters']  # dictionary
-        if 'resourceGroups' in blueprint_properties:
-            body['resource_groups'] = blueprint_properties[
-                'resourceGroups']  # dictionary
-        blueprint_response = client.create_or_update(
-            scope=scope, blueprint_name=blueprint_name, blueprint=body)
+    try:
+        with open(blueprint_path) as blueprint_file:
+            try:
+                blueprint = json.load(blueprint_file)
+            except json.decoder.JSONDecodeError as ex:
+                raise CLIError('JSON decode error for {}: {}'.format(blueprint_path, str(ex)))
+            if 'properties' not in blueprint:
+                raise CLIError("blueprint.json does not contain the 'properties' field")
+            blueprint_properties = blueprint['properties']
+            if 'displayName' in blueprint_properties:
+                body['display_name'] = blueprint_properties['displayName']  # str
+            if 'description' in blueprint_properties:
+                body['description'] = blueprint_properties['description']  # str
+            body['target_scope'] = blueprint_properties.get('targetScope', 'subscription')  # str
+            if 'parameters' in blueprint_properties:
+                body['parameters'] = blueprint_properties[
+                    'parameters']  # dictionary
+            if 'resourceGroups' in blueprint_properties:
+                body['resource_groups'] = blueprint_properties['resourceGroups']  # dictionary
 
+        for filename in os.listdir(os.path.join(input_path, 'artifacts')):
+            artifact_name = filename.split('.')[0]
+            filepath = os.path.join(input_path, 'artifacts', filename)
+            with open(filepath) as artifact_file:
+                try:
+                    artifact = json.load(artifact_file)
+                    art_dict[artifact_name] = artifact
+                except json.decoder.JSONDecodeError as ex:
+                    raise CLIError('JSON decode error for {}: {}'.format(filepath, str(ex)))
+    except FileNotFoundError as ex:
+        raise CLIError('File not Found: {}'.format(str(ex)))
+
+    # Only import when all files have no errors
+    blueprint_response = client.create_or_update(scope=scope, blueprint_name=blueprint_name, blueprint=body)
     # delete old artifacts
     artifacts = artifact_client.list(scope=scope, blueprint_name=blueprint_name)
     for artifact in artifacts:
         artifact_client.delete(scope=scope,
                                blueprint_name=blueprint_name,
                                artifact_name=artifact.name)
-
-    for filename in os.listdir(os.path.join(os.path.expanduser(input_path), 'artifacts')):
-        artifact_name = filename.split('.')[0]
-        filepath = os.path.join(os.path.expanduser(input_path), 'artifacts', filename)
-        with open(filepath) as artifact_file:
-            artifact = json.load(artifact_file)
-            artifact_client.create_or_update(scope=scope,
-                                             blueprint_name=blueprint_name,
-                                             artifact_name=artifact_name,
-                                             artifact=artifact)
+    # create new artifacts
+    for artifact_name, artifact in art_dict.items():
+        artifact_client.create_or_update(scope=scope,
+                                         blueprint_name=blueprint_name,
+                                         artifact_name=artifact_name,
+                                         artifact=artifact)
 
     return blueprint_response
 
@@ -80,8 +89,7 @@ def create_blueprint(cmd,
     body['display_name'] = display_name  # str
     body['description'] = description  # str
     body['target_scope'] = target_scope  # str
-    body['parameters'] = json.loads(
-        parameters) if parameters is not None else {}  # dictionary
+    body['parameters'] = parameters if parameters is not None else {} # dictionary
 
     return client.create_or_update(scope=scope,
                                    blueprint_name=blueprint_name,
@@ -99,7 +107,7 @@ def update_blueprint(cmd,
     if description is not None:
         body['description'] = description  # str
     if parameters is not None:
-        body['parameters'] = json.loads(parameters)  # dictionary
+        body['parameters'] = parameters  # dictionary
     return client.create_or_update(scope=scope,
                                    blueprint_name=blueprint_name,
                                    blueprint=body)
@@ -189,7 +197,7 @@ def update_blueprint_resource_group(cmd,
                                     tags=None):
     body = client.get(scope=scope, blueprint_name=blueprint_name).as_dict()
     if artifact_name not in body.setdefault('resource_groups', {}):
-        raise CLIError('The specified artifact name can not be found.')
+        raise CLIError('The specified artifact name: {} can not be found.'.format(artifact_name))
     resource_group = body['resource_groups'][artifact_name]
     if rg_name is not None:
         resource_group['name'] = rg_name
@@ -254,7 +262,7 @@ def create_blueprint_artifact_policy(cmd,
         'kind': 'policyAssignment',
         'description': description,
         'depends_on': depends_on,
-        'parameters': json.loads(parameters) if parameters is not None else {},
+        'parameters': parameters,
         'resource_group': resource_group_art
     }
     return client.create_or_update(scope=scope,
@@ -278,7 +286,7 @@ def update_blueprint_artifact_policy(cmd,
                       blueprint_name=blueprint_name,
                       artifact_name=artifact_name).as_dict()
     if parameters is not None:
-        body['parameters'] = json.loads(parameters)
+        body['parameters'] = parameters
     if display_name is not None:
         body['display_name'] = display_name
     if resource_group_art is not None:
@@ -364,11 +372,11 @@ def create_blueprint_artifact_template(cmd,
                                        depends_on=None):
     body = {
         'display_name': display_name,
-        'template': json.loads(template),
+        'template': template,
         'kind': 'template',
         'description': description,
         'depends_on': depends_on,
-        'parameters': json.loads(parameters) if parameters is not None else {},
+        'parameters': parameters,
         'resource_group': resource_group_art
     }
     return client.create_or_update(scope=scope,
@@ -394,9 +402,9 @@ def update_blueprint_artifact_template(cmd,
                       artifact_name=artifact_name).as_dict()
 
     if template is not None:
-        body['template'] = json.loads(template)
+        body['template'] = template
     if parameters is not None:
-        body['parameters'] = json.loads(parameters)
+        body['parameters'] = parameters
     if display_name is not None:
         body['display_name'] = display_name
     if resource_group_art is not None:
@@ -492,14 +500,10 @@ def create_blueprint_assignment(cmd,
     body['display_name'] = display_name  # str
     body['description'] = description  # str
     body['blueprint_id'] = blueprint_id  # str
-    body['parameters'] = json.loads(
-        parameters) if parameters is not None else {}  # dictionary
+    body['parameters'] = parameters  # dictionary
     body['resource_groups'] = {rg['artifact_name']: _del_artifact_name(rg) for rg in resource_groups} if resource_groups is not None else {}
     body.setdefault('locks', {})['mode'] = locks_mode  # str
-    body.setdefault(
-        'locks', {}
-    )['excluded_principals'] = None if locks_excluded_principals is None else locks_excluded_principals.split(
-        ',')
+    body.setdefault('locks', {})['excluded_principals'] = locks_excluded_principals
     return client.create_or_update(scope=scope,
                                    assignment_name=assignment_name,
                                    assignment=body)
@@ -544,16 +548,13 @@ def update_blueprint_assignment(cmd,
     if blueprint_id is not None:
         body['blueprint_id'] = blueprint_id  # str
     if parameters is not None:
-        body['parameters'] = json.loads(parameters)  # dictionary
+        body['parameters'] = parameters  # dictionary
     if resource_groups is not None:
-        body['resource_groups'] = json.loads(resource_groups)  # dictionary
+        body['resource_groups'] = {rg['artifact_name']: _del_artifact_name(rg) for rg in resource_groups} #dictionary
     if locks_mode is not None:
         body.setdefault('locks', {})['mode'] = locks_mode  # str
     if locks_excluded_principals is not None:
-        body.setdefault(
-            'locks', {}
-        )['excluded_principals'] = None if locks_excluded_principals is None else locks_excluded_principals.split(
-            ',')
+        body.setdefault('locks', {})['excluded_principals'] = locks_excluded_principals
     return client.create_or_update(scope=scope,
                                    assignment_name=assignment_name,
                                    assignment=body)

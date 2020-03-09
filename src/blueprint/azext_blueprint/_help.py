@@ -165,11 +165,11 @@ helps['blueprint artifact show'] = """
     type: command
     short-summary: Get a blueprint artifact.
     examples:
-      - name: Sub-RoleAssignmentArtifact
+      - name: Show an artifact of a subscription blueprint
         text: |-
                az blueprint artifact show --subscription "00000000-0000-0000-0000-000000000000" \\
                --blueprint-name "simpleBlueprint" --name "ownerAssignment"
-      - name: MG-ARMTemplateArtifact
+      - name: Show an artifact of a management group blueprint
         text: |-
                az blueprint artifact show --management-group myManagementGroup --blueprint-name \\
                "simpleBlueprint" --name "storageTemplate"
@@ -179,11 +179,11 @@ helps['blueprint artifact list'] = """
     type: command
     short-summary: List artifacts for a given blueprint definition.
     examples:
-      - name: MG-ArtifactList
+      - name: List artifcats for a management group blueprint
         text: |-
                az blueprint artifact list --management-group myManagementGroup --blueprint-name \\
                "simpleBlueprint"
-      - name: Sub-ArtifactList
+      - name: List artifcats for a subscription blueprint
         text: |-
                az blueprint artifact list --subscription "00000000-0000-0000-0000-000000000000" \\
                --blueprint-name "simpleBlueprint"
