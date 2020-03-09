@@ -1,9 +1,14 @@
 interactions:
 - request:
-    body: '{"location": "Global", "properties": {"conditions": {"severity": {"operator":
-      "Equals", "values": ["Sev0", "Sev2"]}}, "status": "Enabled", "type": "Suppression",
-      "suppressionConfig": {"recurrenceType": "Daily", "schedule": {"startDate": "12/09/2018",
-      "endDate": "12/18/2018", "startTime": "06:00:00", "endTime": "14:00:00"}}}}'
+    body: 'b''{"location": "Global", "properties": {"scope": {"scopeType": "ResourceGroup",
+      "values": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001"]},
+      "conditions": {"severity": {"operator": "Equals", "values": ["Sev0", "Sev2"]},
+      "monitorService": {"operator": "Equals", "values": ["Platform", "Application
+      Insights"]}, "monitorCondition": {"operator": "Equals", "values": ["Fired"]},
+      "targetResourceType": {"operator": "NotEquals", "values": ["Microsoft.Compute/VirtualMachines"]}},
+      "status": "Enabled", "type": "Suppression", "suppressionConfig": {"recurrenceType":
+      "Daily", "schedule": {"startDate": "12/09/2018", "endDate": "12/18/2018", "startTime":
+      "06:00:00", "endTime": "14:00:00"}}}}'''
     headers:
       Accept:
       - application/json
@@ -14,33 +19,35 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '326'
+      - '778'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
-      - --resource-group --name --location --status --rule-type --severity --recurrence-type
+      - --resource-group --name --location --status --rule-type --scope-type --scope
+        --severity --monitor-service --monitor-condition --target-resource-type --recurrence-type
         --start-date --end-date --start-time --end-time
       User-Agent:
       - python/3.8.1 (Windows-10-10.0.17763-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-alertsmanagement/0.2.0rc2 Azure-SDK-For-Python AZURECLI/2.1.0
+        azure-mgmt-alertsmanagement/0.2.0rc2 Azure-SDK-For-Python AZURECLI/2.2.0
       accept-language:
       - en-US
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1?api-version=2019-05-05-preview
   response:
     body:
-      string: '{"properties":{"conditions":{"severity":{"operator":"Equals","values":["Sev0","Sev2"]}},"status":"Enabled","type":"Suppression","suppressionConfig":{"recurrenceType":"Daily","schedule":{"startDate":"12/09/2018","endDate":"12/18/2018","startTime":"06:00:00","endTime":"14:00:00"}},"createdAt":"2020-02-19T16:55:37.7744856Z","createdBy":"fey@microsoft.com","lastModifiedAt":"2020-02-19T16:55:37.7744856Z","lastModifiedBy":"fey@microsoft.com"},"location":"Global","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1","type":"Microsoft.AlertsManagement/actionRules","name":"rule1"}'
+      string: '{"properties":{"conditions":{"severity":{"operator":"Equals","values":["Sev0","Sev2"]},"monitorService":{"operator":"Equals","values":["Platform","Application
+        Insights"]},"monitorCondition":{"operator":"Equals","values":["Fired"]},"targetResourceType":{"operator":"NotEquals","values":["Microsoft.Compute/VirtualMachines"]}},"status":"Enabled","type":"Suppression","scope":{"scopeType":"ResourceGroup","values":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001"]},"suppressionConfig":{"recurrenceType":"Daily","schedule":{"startDate":"12/09/2018","endDate":"12/18/2018","startTime":"06:00:00","endTime":"14:00:00"}},"createdAt":"2020-03-09T14:16:42.8333622Z","createdBy":"fey@microsoft.com","lastModifiedAt":"2020-03-09T14:16:42.8333622Z","lastModifiedBy":"fey@microsoft.com"},"location":"Global","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1","type":"Microsoft.AlertsManagement/actionRules","name":"rule1"}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '729'
+      - '1160'
       content-security-policy:
       - script-src 'self'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 19 Feb 2020 16:55:39 GMT
+      - Mon, 09 Mar 2020 14:16:44 GMT
       expires:
       - '-1'
       pragma:
@@ -54,7 +61,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1197'
       x-xss-protection:
       - 1; mode=block
     status:
@@ -75,25 +82,26 @@ interactions:
       - --resource-group --name
       User-Agent:
       - python/3.8.1 (Windows-10-10.0.17763-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-alertsmanagement/0.2.0rc2 Azure-SDK-For-Python AZURECLI/2.1.0
+        azure-mgmt-alertsmanagement/0.2.0rc2 Azure-SDK-For-Python AZURECLI/2.2.0
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1?api-version=2019-05-05-preview
   response:
     body:
-      string: '{"properties":{"conditions":{"severity":{"operator":"Equals","values":["Sev0","Sev2"]}},"status":"Enabled","type":"Suppression","suppressionConfig":{"recurrenceType":"Daily","schedule":{"startDate":"12/09/2018","endDate":"12/18/2018","startTime":"06:00:00","endTime":"14:00:00"}},"createdAt":"2020-02-19T16:55:37.7744856Z","createdBy":"fey@microsoft.com","lastModifiedAt":"2020-02-19T16:55:37.7744856Z","lastModifiedBy":"fey@microsoft.com"},"location":"Global","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1","type":"Microsoft.AlertsManagement/actionRules","name":"rule1"}'
+      string: '{"properties":{"conditions":{"severity":{"operator":"Equals","values":["Sev0","Sev2"]},"monitorService":{"operator":"Equals","values":["Platform","Application
+        Insights"]},"monitorCondition":{"operator":"Equals","values":["Fired"]},"targetResourceType":{"operator":"NotEquals","values":["Microsoft.Compute/VirtualMachines"]}},"status":"Enabled","type":"Suppression","scope":{"scopeType":"ResourceGroup","values":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001"]},"suppressionConfig":{"recurrenceType":"Daily","schedule":{"startDate":"12/09/2018","endDate":"12/18/2018","startTime":"06:00:00","endTime":"14:00:00"}},"createdAt":"2020-03-09T14:16:42.8333622Z","createdBy":"fey@microsoft.com","lastModifiedAt":"2020-03-09T14:16:42.8333622Z","lastModifiedBy":"fey@microsoft.com"},"location":"Global","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1","type":"Microsoft.AlertsManagement/actionRules","name":"rule1"}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '729'
+      - '1160'
       content-security-policy:
       - script-src 'self'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 19 Feb 2020 16:55:41 GMT
+      - Mon, 09 Mar 2020 14:16:52 GMT
       expires:
       - '-1'
       pragma:
@@ -128,25 +136,145 @@ interactions:
       - --resource-group --name --status
       User-Agent:
       - python/3.8.1 (Windows-10-10.0.17763-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-alertsmanagement/0.2.0rc2 Azure-SDK-For-Python AZURECLI/2.1.0
+        azure-mgmt-alertsmanagement/0.2.0rc2 Azure-SDK-For-Python AZURECLI/2.2.0
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1?api-version=2019-05-05-preview
   response:
     body:
-      string: '{"properties":{"conditions":{"severity":{"operator":"Equals","values":["Sev0","Sev2"]}},"status":"Enabled","type":"Suppression","suppressionConfig":{"recurrenceType":"Daily","schedule":{"startDate":"12/09/2018","endDate":"12/18/2018","startTime":"06:00:00","endTime":"14:00:00"}},"createdAt":"2020-02-19T16:55:37.7744856Z","createdBy":"fey@microsoft.com","lastModifiedAt":"2020-02-19T16:55:37.7744856Z","lastModifiedBy":"fey@microsoft.com"},"location":"Global","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1","type":"Microsoft.AlertsManagement/actionRules","name":"rule1"}'
+      string: '{"properties":{"conditions":{"severity":{"operator":"Equals","values":["Sev0","Sev2"]},"monitorService":{"operator":"Equals","values":["Platform","Application
+        Insights"]},"monitorCondition":{"operator":"Equals","values":["Fired"]},"targetResourceType":{"operator":"NotEquals","values":["Microsoft.Compute/VirtualMachines"]}},"status":"Enabled","type":"Suppression","scope":{"scopeType":"ResourceGroup","values":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001"]},"suppressionConfig":{"recurrenceType":"Daily","schedule":{"startDate":"12/09/2018","endDate":"12/18/2018","startTime":"06:00:00","endTime":"14:00:00"}},"createdAt":"2020-03-09T14:16:42.8333622Z","createdBy":"fey@microsoft.com","lastModifiedAt":"2020-03-09T14:16:42.8333622Z","lastModifiedBy":"fey@microsoft.com"},"location":"Global","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1","type":"Microsoft.AlertsManagement/actionRules","name":"rule1"}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '729'
+      - '1160'
       content-security-policy:
       - script-src 'self'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 19 Feb 2020 16:55:44 GMT
+      - Mon, 09 Mar 2020 14:16:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '998'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: 'b''{"location": "Global", "properties": {"scope": {"scopeType": "ResourceGroup",
+      "values": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001"]},
+      "conditions": {"severity": {"operator": "Equals", "values": ["Sev0", "Sev2"]},
+      "monitorService": {"operator": "Equals", "values": ["Platform", "Application
+      Insights"]}, "monitorCondition": {"operator": "Equals", "values": ["Fired"]},
+      "targetResourceType": {"operator": "NotEquals", "values": ["Microsoft.Compute/VirtualMachines"]}},
+      "status": "Disabled", "type": "Suppression", "suppressionConfig": {"recurrenceType":
+      "Daily", "schedule": {"startDate": "12/09/2018", "endDate": "12/18/2018", "startTime":
+      "06:00:00", "endTime": "14:00:00"}}}}'''
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - alertsmanagement action-rule update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '779'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --status
+      User-Agent:
+      - python/3.8.1 (Windows-10-10.0.17763-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-alertsmanagement/0.2.0rc2 Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1?api-version=2019-05-05-preview
+  response:
+    body:
+      string: '{"properties":{"conditions":{"severity":{"operator":"Equals","values":["Sev0","Sev2"]},"monitorService":{"operator":"Equals","values":["Platform","Application
+        Insights"]},"monitorCondition":{"operator":"Equals","values":["Fired"]},"targetResourceType":{"operator":"NotEquals","values":["Microsoft.Compute/VirtualMachines"]}},"status":"Disabled","type":"Suppression","scope":{"scopeType":"ResourceGroup","values":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001"]},"suppressionConfig":{"recurrenceType":"Daily","schedule":{"startDate":"12/09/2018","endDate":"12/18/2018","startTime":"06:00:00","endTime":"14:00:00"}},"createdAt":"2020-03-09T14:16:42.8333622Z","createdBy":"fey@microsoft.com","lastModifiedAt":"2020-03-09T14:17:00.8193938Z","lastModifiedBy":"fey@microsoft.com"},"location":"Global","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1","type":"Microsoft.AlertsManagement/actionRules","name":"rule1"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '1161'
+      content-security-policy:
+      - script-src 'self'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Mar 2020 14:17:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1192'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - alertsmanagement action-rule list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python/3.8.1 (Windows-10-10.0.17763-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-alertsmanagement/0.2.0rc2 Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.AlertsManagement/actionRules?api-version=2019-05-05-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"conditions":{"severity":{"operator":"Equals","values":["Sev0","Sev2"]},"monitorService":{"operator":"Equals","values":["Platform","Application
+        Insights"]},"monitorCondition":{"operator":"Equals","values":["Fired"]},"targetResourceType":{"operator":"NotEquals","values":["Microsoft.Compute/VirtualMachines"]}},"status":"Enabled","type":"Suppression","scope":{"scopeType":"ResourceGroup","values":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fytest2"]},"suppressionConfig":{"recurrenceType":"Daily","schedule":{"startDate":"12/09/2018","endDate":"12/18/2018","startTime":"06:00:00","endTime":"14:00:00"}},"createdAt":"2020-03-09T13:39:22.3390714Z","createdBy":"fey@microsoft.com","lastModifiedAt":"2020-03-09T13:39:22.3390714Z","lastModifiedBy":"fey@microsoft.com"},"location":"Global","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fytest2/providers/Microsoft.AlertsManagement/actionRules/rule1","type":"Microsoft.AlertsManagement/actionRules","name":"rule1"},{"properties":{"conditions":{"severity":{"operator":"Equals","values":["Sev0","Sev2"]},"monitorService":{"operator":"Equals","values":["Platform","Application
+        Insights"]},"monitorCondition":{"operator":"Equals","values":["Fired"]},"targetResourceType":{"operator":"NotEquals","values":["Microsoft.Compute/VirtualMachines"]}},"status":"Disabled","type":"Suppression","scope":{"scopeType":"ResourceGroup","values":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001"]},"suppressionConfig":{"recurrenceType":"Daily","schedule":{"startDate":"12/09/2018","endDate":"12/18/2018","startTime":"06:00:00","endTime":"14:00:00"}},"createdAt":"2020-03-09T14:16:42.8333622Z","createdBy":"fey@microsoft.com","lastModifiedAt":"2020-03-09T14:17:00.8193938Z","lastModifiedBy":"fey@microsoft.com"},"location":"Global","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1","type":"Microsoft.AlertsManagement/actionRules","name":"rule1"}]}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '2198'
+      content-security-policy:
+      - script-src 'self'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Mar 2020 14:17:06 GMT
       expires:
       - '-1'
       pragma:
@@ -167,46 +295,41 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"location": "Global", "properties": {"conditions": {"severity": {"operator":
-      "Equals", "values": ["Sev0", "Sev2"]}}, "status": "Disabled", "type": "Suppression",
-      "suppressionConfig": {"recurrenceType": "Daily", "schedule": {"startDate": "12/09/2018",
-      "endDate": "12/18/2018", "startTime": "06:00:00", "endTime": "14:00:00"}}}}'
+    body: null
     headers:
       Accept:
       - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - alertsmanagement action-rule update
+      - alertsmanagement action-rule list
       Connection:
       - keep-alive
-      Content-Length:
-      - '327'
-      Content-Type:
-      - application/json; charset=utf-8
       ParameterSetName:
-      - --resource-group --name --status
+      - -g
       User-Agent:
       - python/3.8.1 (Windows-10-10.0.17763-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-alertsmanagement/0.2.0rc2 Azure-SDK-For-Python AZURECLI/2.1.0
+        azure-mgmt-alertsmanagement/0.2.0rc2 Azure-SDK-For-Python AZURECLI/2.2.0
       accept-language:
       - en-US
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1?api-version=2019-05-05-preview
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.AlertsManagement/actionRules?api-version=2019-05-05-preview
   response:
     body:
-      string: '{"properties":{"conditions":{"severity":{"operator":"Equals","values":["Sev0","Sev2"]}},"status":"Disabled","type":"Suppression","suppressionConfig":{"recurrenceType":"Daily","schedule":{"startDate":"12/09/2018","endDate":"12/18/2018","startTime":"06:00:00","endTime":"14:00:00"}},"createdAt":"2020-02-19T16:55:37.7744856Z","createdBy":"fey@microsoft.com","lastModifiedAt":"2020-02-19T16:55:46.2519341Z","lastModifiedBy":"fey@microsoft.com"},"location":"Global","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1","type":"Microsoft.AlertsManagement/actionRules","name":"rule1"}'
+      string: '{"value":[{"properties":{"conditions":{"severity":{"operator":"Equals","values":["Sev0","Sev2"]},"monitorService":{"operator":"Equals","values":["Platform","Application
+        Insights"]},"monitorCondition":{"operator":"Equals","values":["Fired"]},"targetResourceType":{"operator":"NotEquals","values":["Microsoft.Compute/VirtualMachines"]}},"status":"Enabled","type":"Suppression","scope":{"scopeType":"ResourceGroup","values":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fytest2"]},"suppressionConfig":{"recurrenceType":"Daily","schedule":{"startDate":"12/09/2018","endDate":"12/18/2018","startTime":"06:00:00","endTime":"14:00:00"}},"createdAt":"2020-03-09T13:39:22.3390714Z","createdBy":"fey@microsoft.com","lastModifiedAt":"2020-03-09T13:39:22.3390714Z","lastModifiedBy":"fey@microsoft.com"},"location":"Global","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fytest2/providers/Microsoft.AlertsManagement/actionRules/rule1","type":"Microsoft.AlertsManagement/actionRules","name":"rule1"},{"properties":{"conditions":{"severity":{"operator":"Equals","values":["Sev0","Sev2"]},"monitorService":{"operator":"Equals","values":["Platform","Application
+        Insights"]},"monitorCondition":{"operator":"Equals","values":["Fired"]},"targetResourceType":{"operator":"NotEquals","values":["Microsoft.Compute/VirtualMachines"]}},"status":"Disabled","type":"Suppression","scope":{"scopeType":"ResourceGroup","values":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001"]},"suppressionConfig":{"recurrenceType":"Daily","schedule":{"startDate":"12/09/2018","endDate":"12/18/2018","startTime":"06:00:00","endTime":"14:00:00"}},"createdAt":"2020-03-09T14:16:42.8333622Z","createdBy":"fey@microsoft.com","lastModifiedAt":"2020-03-09T14:17:00.8193938Z","lastModifiedBy":"fey@microsoft.com"},"location":"Global","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1","type":"Microsoft.AlertsManagement/actionRules","name":"rule1"}]}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '730'
+      - '2198'
       content-security-policy:
       - script-src 'self'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 19 Feb 2020 16:55:46 GMT
+      - Mon, 09 Mar 2020 14:17:08 GMT
       expires:
       - '-1'
       pragma:
@@ -219,8 +342,63 @@ interactions:
       - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '998'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - alertsmanagement action-rule delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - python/3.8.1 (Windows-10-10.0.17763-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-alertsmanagement/0.2.0rc2 Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_action_rule_000001/providers/Microsoft.AlertsManagement/actionRules/rule1?api-version=2019-05-05-preview
+  response:
+    body:
+      string: 'true'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '4'
+      content-security-policy:
+      - script-src 'self'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Mar 2020 14:17:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14998'
       x-xss-protection:
       - 1; mode=block
     status:
