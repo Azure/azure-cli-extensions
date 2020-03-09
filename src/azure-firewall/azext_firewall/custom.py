@@ -108,9 +108,11 @@ def list_azure_firewalls(cmd, resource_group_name=None):
     return _generic_list(cmd.cli_ctx, 'azure_firewalls', resource_group_name)
 
 
+# pylint: disable=unused-argument
 def create_af_ip_configuration(cmd, resource_group_name, azure_firewall_name, item_name,
-                               public_ip_address, virtual_network_name=None, subnet='AzureFirewallSubnet',  # pylint: disable=unused-argument
-                               private_ip_address=None):
+                               public_ip_address, virtual_network_name=None, subnet='AzureFirewallSubnet',
+                               private_ip_address=None, management_item_name=None, management_public_ip_address=None,
+                               management_virtual_network_name=None, management_subnet='AzureFirewallManagementSubnet'):
     AzureFirewallIPConfiguration, SubResource = cmd.get_models('AzureFirewallIPConfiguration', 'SubResource')
     client = network_client_factory(cmd.cli_ctx).azure_firewalls
     af = client.get(resource_group_name, azure_firewall_name)
@@ -121,6 +123,13 @@ def create_af_ip_configuration(cmd, resource_group_name, azure_firewall_name, it
         subnet=SubResource(id=subnet) if subnet else None
     )
     _upsert(af, 'ip_configurations', config, 'name', warn=False)
+    if management_item_name is not None:
+        management_config = AzureFirewallIPConfiguration(
+            name=management_item_name,
+            public_ip_address=SubResource(id=management_public_ip_address) if management_public_ip_address else None,
+            subnet=SubResource(id=management_subnet) if management_subnet else None
+        )
+        af.management_ip_configuration = management_config
     poller = client.create_or_update(resource_group_name, azure_firewall_name, af)
     return _get_property(poller.result().ip_configurations, item_name)
 

@@ -95,22 +95,25 @@ class AzureFirewallScenario(ScenarioTest):
             'network vnet create -g {rg} -n {management_vnet2} --subnet-name "AzureFirewallManagementSubnet" --address-prefixes 10.0.0.0/16 --subnet-prefixes 10.0.0.0/24').get_output_in_json()
         subnet_id_management_ip_config_2 = vnet_instance['newVNet']['subnets'][0]['id']
 
-        self.cmd('network firewall ip-config create -g {rg} -n {ipconfig} -f {af} --public-ip-address {pubip} --vnet-name {vnet}', checks=[
-            self.check('name', '{ipconfig}'),
-            self.check('subnet.id', subnet_id_ip_config)
-        ])
+        self.cmd('network firewall ip-config create -g {rg} -n {ipconfig} -f {af} --public-ip-address {pubip} --vnet-name {vnet} '
+                 '--m-name {management_ipconfig} --m-public-ip-address {management_pubip} --m-vnet-name {management_vnet}',
+                 checks=[
+                     self.check('name', '{ipconfig}'),
+                     self.check('subnet.id', subnet_id_ip_config)
+                 ])
 
         self.cmd('network firewall ip-config create -g {rg} -n {ipconfig3} -f {af} --public-ip-address {pubip3}', checks=[
             self.check('name', '{ipconfig3}'),
             self.check('subnet', None)
         ])
 
-        self.cmd(
-            'network firewall management-ip-config create -g {rg} -n {management_ipconfig} -f {af} --public-ip-address {management_pubip} --vnet-name {management_vnet}',
-            checks=[
-                self.check('name', '{management_ipconfig}'),
-                self.check('subnet.id', subnet_id_management_ip_config)
-            ])
+        # Disable it due to service limitation.
+        # self.cmd(
+        #    'network firewall management-ip-config create -g {rg} -n {management_ipconfig} -f {af} --public-ip-address {management_pubip} --vnet-name {management_vnet}',
+        #    checks=[
+        #        self.check('name', '{management_ipconfig}'),
+        #        self.check('subnet.id', subnet_id_management_ip_config)
+        #    ])
 
         self.cmd(
             'network firewall management-ip-config show -g {rg} -f {af}',
