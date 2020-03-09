@@ -16,3 +16,7 @@ def dms_cf_projects(cli_ctx, *_):
 
 def dms_cf_tasks(cli_ctx, *_):
     return dms_client_factory(cli_ctx).tasks
+
+
+def dms_cf_service_tasks(cli_ctx, *_):
+    return dms_client_factory(cli_ctx).service_tasks
