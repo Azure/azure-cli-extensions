@@ -53,7 +53,10 @@ def update_support_tickets(cmd, client,
     body = {}
     body["severity"] = severity
     body["status"] = status
-    body["contact_details"] = contactBody
+    if not all(x is None for x in contactBody.values()):
+        body["contact_details"] = contactBody
+    else:
+        body["contact_details"] = None
 
     return client.update(support_ticket_name=ticket_name, update_support_ticket=body)
 

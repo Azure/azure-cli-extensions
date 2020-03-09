@@ -360,7 +360,7 @@ class SupportScenarioTest(ScenarioTest):
         self.assertTrue("type" in rsp)
         self.assertTrue(rsp["type"] == "Microsoft.Support/supportTickets")
         self.assertTrue("status" in rsp)
-        self.assertTrue("Closed" == rsp["status"])
+        self.assertTrue("closed" == rsp["status"])
 
     def _build_support_tickets_show_cmd(self, test_ticket_name):
         cmd = "support tickets show "

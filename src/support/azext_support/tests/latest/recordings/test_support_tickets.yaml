@@ -19,13 +19,12 @@ interactions:
         --contact-email --contact-first-name --contact-language --contact-last-name
         --contact-method --contact-timezone --problem-classification
       User-Agent:
-      - python/3.6.9 (Linux-4.4.0-18362-Microsoft-x86_64-with-Ubuntu-18.04-bionic)
-        msrest/0.6.10 msrest_azure/0.6.2 azure-mgmt-support/2.0.0 Azure-SDK-For-Python
-        AZURECLI/2.0.78
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-support/2.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/checkNameAvailability?api-version=2019-05-01-preview
+    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/checkNameAvailability?api-version=2020-04-01
   response:
     body:
       string: '{"nameAvailable":true}'
@@ -37,7 +36,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Jan 2020 02:10:12 GMT
+      - Mon, 09 Mar 2020 22:09:44 GMT
       expires:
       - '-1'
       pragma:
@@ -64,7 +63,7 @@ interactions:
       "Foo", "lastName": "Bar", "preferredContactMethod": "email", "primaryEmailAddress":
       "azengcase@microsoft.com", "preferredTimeZone": "Pacific Standard Time", "country":
       "USA", "preferredSupportLanguage": "en-US"}, "title": "test ticket from python
-      cli test. Do not assign and close after a day.", "problemStartTime": "2020-01-15T18:10:13.000Z",
+      cli test. Do not assign and close after a day.", "problemStartTime": "2020-03-09T15:09:46.000Z",
       "serviceId": "/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc"}}'
     headers:
       Accept:
@@ -84,29 +83,28 @@ interactions:
         --contact-email --contact-first-name --contact-language --contact-last-name
         --contact-method --contact-timezone --problem-classification
       User-Agent:
-      - python/3.6.9 (Linux-4.4.0-18362-Microsoft-x86_64-with-Ubuntu-18.04-bionic)
-        msrest/0.6.10 msrest_azure/0.6.2 azure-mgmt-support/2.0.0 Azure-SDK-For-Python
-        AZURECLI/2.0.78
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-support/2.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001?api-version=2019-05-01-preview
+    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001?api-version=2020-04-01
   response:
     body:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/operationsStatus/04392bd9-c564-4d00-a746-33365833dd45?api-version=2019-05-01-preview
+      - https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/operationsStatus/b046c3a4-2719-4fba-aca3-0b99d6a4b481?api-version=2020-04-01
       cache-control:
       - no-cache
       content-length:
       - '0'
       date:
-      - Thu, 16 Jan 2020 02:10:14 GMT
+      - Mon, 09 Mar 2020 22:09:46 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/operationResults/04392bd9-c564-4d00-a746-33365833dd45?api-version=2019-05-01-preview
+      - https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/operationResults/b046c3a4-2719-4fba-aca3-0b99d6a4b481?api-version=2020-04-01
       pragma:
       - no-cache
       server:
@@ -116,7 +114,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1192'
     status:
       code: 202
       message: Accepted
@@ -136,23 +134,22 @@ interactions:
         --contact-email --contact-first-name --contact-language --contact-last-name
         --contact-method --contact-timezone --problem-classification
       User-Agent:
-      - python/3.6.9 (Linux-4.4.0-18362-Microsoft-x86_64-with-Ubuntu-18.04-bionic)
-        msrest/0.6.10 msrest_azure/0.6.2 azure-mgmt-support/2.0.0 Azure-SDK-For-Python
-        AZURECLI/2.0.78
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-support/2.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/operationsStatus/04392bd9-c564-4d00-a746-33365833dd45?api-version=2019-05-01-preview
+    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/operationsStatus/b046c3a4-2719-4fba-aca3-0b99d6a4b481?api-version=2020-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/operationsStatus/04392bd9-c564-4d00-a746-33365833dd45","status":"Succeeded"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/operationsStatus/b046c3a4-2719-4fba-aca3-0b99d6a4b481","status":"Succeeded","properties":{}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '163'
+      - '179'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Jan 2020 02:10:45 GMT
+      - Mon, 09 Mar 2020 22:10:16 GMT
       expires:
       - '-1'
       pragma:
@@ -186,27 +183,26 @@ interactions:
         --contact-email --contact-first-name --contact-language --contact-last-name
         --contact-method --contact-timezone --problem-classification
       User-Agent:
-      - python/3.6.9 (Linux-4.4.0-18362-Microsoft-x86_64-with-Ubuntu-18.04-bionic)
-        msrest/0.6.10 msrest_azure/0.6.2 azure-mgmt-support/2.0.0 Azure-SDK-For-Python
-        AZURECLI/2.0.78
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-support/2.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001?api-version=2019-05-01-preview
+    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001?api-version=2020-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001","name":"test_ticket_from_cli_000001","type":"Microsoft.Support/supportTickets","properties":{"description":"test
         ticket from python cli test. Do not assign and close after a day.","problemClassificationId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc/problemClassifications/44114011-6a66-e902-c00f-e419b6b4509f","problemClassificationDisplayName":"Cost
-        Management / Access control issues","severity":"Minimal","require24X7Response":false,"enrollmentId":"","productionOutage":false,"contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","preferredTimeZone":"Pacific
-        Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"serviceLevelAgreement":{"startTime":"2020-01-16T14:00:00Z","expirationTime":"2020-01-16T18:00:00Z","slaMinutes":240},"supportEngineer":{},"supportPlanType":"ProDirect","supportTicketId":"120011621000159","title":"test
-        ticket from python cli test. Do not assign and close after a day.","serviceId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc","serviceDisplayName":"Billing","status":"Open","problemStartTime":"2020-01-15T18:10:13Z","createdDate":"2020-01-16T02:10:22Z","modifiedDate":"2020-01-16T02:10:25Z"}}'
+        Management / I have access but cost is not loading for me","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","preferredTimeZone":"Pacific
+        Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"serviceLevelAgreement":{"startTime":"2020-03-09T22:09:51Z","expirationTime":"2020-03-10T14:09:51Z","slaMinutes":240},"supportEngineer":{},"supportPlanType":"Premier","supportTicketId":"120030921002175","title":"test
+        ticket from python cli test. Do not assign and close after a day.","serviceId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc","serviceDisplayName":"Billing","status":"Open","problemStartTime":"2020-03-09T15:09:46Z","createdDate":"2020-03-09T22:09:51Z","modifiedDate":"2020-03-09T22:09:53Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1419'
+      - '1415'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Jan 2020 02:13:35 GMT
+      - Mon, 09 Mar 2020 22:10:17 GMT
       expires:
       - '-1'
       pragma:
@@ -245,26 +241,25 @@ interactions:
       - --debug --ticket-name --communication-name --communication-sender --communication-subject
         --communication-body
       User-Agent:
-      - python/3.6.9 (Linux-4.4.0-18362-Microsoft-x86_64-with-Ubuntu-18.04-bionic)
-        msrest/0.6.10 msrest_azure/0.6.2 azure-mgmt-support/2.0.0 Azure-SDK-For-Python
-        AZURECLI/2.0.78
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-support/2.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/12345678-1234-1234-1234-123412341234?api-version=2019-05-01-preview
+    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/12345678-1234-1234-1234-123412341234?api-version=2020-04-01
   response:
     body:
-      string: '{"Error":{"Code":"InvalidData","Message":"Communication resource name
-        is invalid. Please provide a valid name.","Target":null,"InnerError":null,"Details":[]}}'
+      string: '{"error":{"code":"InvalidData","message":"Communication resource name
+        is invalid. Please provide a valid name.","details":[]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '158'
+      - '126'
       content-type:
       - application/json
       date:
-      - Thu, 16 Jan 2020 02:13:37 GMT
+      - Mon, 09 Mar 2020 22:10:19 GMT
       expires:
       - '-1'
       pragma:
@@ -276,7 +271,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1174'
     status:
       code: 400
       message: Bad Request
@@ -301,29 +296,28 @@ interactions:
       - --debug --ticket-name --communication-name --communication-sender --communication-subject
         --communication-body
       User-Agent:
-      - python/3.6.9 (Linux-4.4.0-18362-Microsoft-x86_64-with-Ubuntu-18.04-bionic)
-        msrest/0.6.10 msrest_azure/0.6.2 azure-mgmt-support/2.0.0 Azure-SDK-For-Python
-        AZURECLI/2.0.78
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-support/2.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/test_communication_from_cli_000002?api-version=2019-05-01-preview
+    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/test_communication_from_cli_000002?api-version=2020-04-01
   response:
     body:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/operationsStatus/f2203b7f-92a6-4eb0-b147-98318ee8a5a1?api-version=2019-05-01-preview
+      - https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/operationsStatus/d619d35a-47f5-457a-af80-1a6d685d0400?api-version=2020-04-01
       cache-control:
       - no-cache
       content-length:
       - '0'
       date:
-      - Thu, 16 Jan 2020 02:13:38 GMT
+      - Mon, 09 Mar 2020 22:10:20 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/operationResults/f2203b7f-92a6-4eb0-b147-98318ee8a5a1?api-version=2019-05-01-preview
+      - https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/operationResults/d619d35a-47f5-457a-af80-1a6d685d0400?api-version=2020-04-01
       pragma:
       - no-cache
       server:
@@ -333,7 +327,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1191'
     status:
       code: 202
       message: Accepted
@@ -352,23 +346,22 @@ interactions:
       - --debug --ticket-name --communication-name --communication-sender --communication-subject
         --communication-body
       User-Agent:
-      - python/3.6.9 (Linux-4.4.0-18362-Microsoft-x86_64-with-Ubuntu-18.04-bionic)
-        msrest/0.6.10 msrest_azure/0.6.2 azure-mgmt-support/2.0.0 Azure-SDK-For-Python
-        AZURECLI/2.0.78
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-support/2.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/operationsStatus/f2203b7f-92a6-4eb0-b147-98318ee8a5a1?api-version=2019-05-01-preview
+    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/operationsStatus/d619d35a-47f5-457a-af80-1a6d685d0400?api-version=2020-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/operationsStatus/f2203b7f-92a6-4eb0-b147-98318ee8a5a1","status":"Succeeded"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/operationsStatus/d619d35a-47f5-457a-af80-1a6d685d0400","status":"Succeeded","properties":{}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '163'
+      - '179'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Jan 2020 02:14:09 GMT
+      - Mon, 09 Mar 2020 22:10:51 GMT
       expires:
       - '-1'
       pragma:
@@ -401,16 +394,15 @@ interactions:
       - --debug --ticket-name --communication-name --communication-sender --communication-subject
         --communication-body
       User-Agent:
-      - python/3.6.9 (Linux-4.4.0-18362-Microsoft-x86_64-with-Ubuntu-18.04-bionic)
-        msrest/0.6.10 msrest_azure/0.6.2 azure-mgmt-support/2.0.0 Azure-SDK-For-Python
-        AZURECLI/2.0.78
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-support/2.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/test_communication_from_cli_000002?api-version=2019-05-01-preview
+    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/test_communication_from_cli_000002?api-version=2020-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/test_communication_from_cli_000002","name":"test_communication_from_cli_000002","type":"Microsoft.Support/communications","properties":{"communicationType":"Web","communicationDirection":"Inbound","sender":"nichheda@microsoft.com","subject":"test
         subject for communication posted from azure python cli","body":"test body
-        for communication posted from azure python cli","createdDate":"2020-01-16T02:13:40Z"}}'
+        for communication posted from azure python cli","createdDate":"2020-03-09T22:10:21Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -419,7 +411,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Jan 2020 02:14:10 GMT
+      - Mon, 09 Mar 2020 22:10:51 GMT
       expires:
       - '-1'
       pragma:
@@ -448,23 +440,20 @@ interactions:
       - support tickets communications list
       Connection:
       - keep-alive
-      Content-Type:
-      - application/json; charset=utf-8
       ParameterSetName:
       - --ticket-name
       User-Agent:
-      - python/3.6.9 (Linux-4.4.0-18362-Microsoft-x86_64-with-Ubuntu-18.04-bionic)
-        msrest/0.6.10 msrest_azure/0.6.2 azure-mgmt-support/2.0.0 Azure-SDK-For-Python
-        AZURECLI/2.0.78
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-support/2.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications?api-version=2019-05-01-preview
+    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications?api-version=2020-04-01
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/test_communication_from_cli_000002","name":"test_communication_from_cli_000002","type":"Microsoft.Support/communications","properties":{"communicationType":"Web","communicationDirection":"Inbound","sender":"nichheda@microsoft.com","subject":"test
         subject for communication posted from azure python cli","body":"test body
-        for communication posted from azure python cli","createdDate":"2020-01-16T02:13:40Z"}}]}'
+        for communication posted from azure python cli","createdDate":"2020-03-09T22:10:21Z"}}]}'
     headers:
       cache-control:
       - no-cache
@@ -473,7 +462,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Jan 2020 02:14:11 GMT
+      - Mon, 09 Mar 2020 22:10:53 GMT
       expires:
       - '-1'
       pragma:
@@ -502,23 +491,20 @@ interactions:
       - support tickets communications show
       Connection:
       - keep-alive
-      Content-Type:
-      - application/json; charset=utf-8
       ParameterSetName:
       - --ticket-name --communication-name
       User-Agent:
-      - python/3.6.9 (Linux-4.4.0-18362-Microsoft-x86_64-with-Ubuntu-18.04-bionic)
-        msrest/0.6.10 msrest_azure/0.6.2 azure-mgmt-support/2.0.0 Azure-SDK-For-Python
-        AZURECLI/2.0.78
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-support/2.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/test_communication_from_cli_000002?api-version=2019-05-01-preview
+    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/test_communication_from_cli_000002?api-version=2020-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/test_communication_from_cli_000002","name":"test_communication_from_cli_000002","type":"Microsoft.Support/communications","properties":{"communicationType":"Web","communicationDirection":"Inbound","sender":"nichheda@microsoft.com","subject":"test
         subject for communication posted from azure python cli","body":"test body
-        for communication posted from azure python cli","createdDate":"2020-01-16T02:13:40Z"}}'
+        for communication posted from azure python cli","createdDate":"2020-03-09T22:10:21Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -527,7 +513,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Jan 2020 02:14:13 GMT
+      - Mon, 09 Mar 2020 22:10:55 GMT
       expires:
       - '-1'
       pragma:
@@ -556,34 +542,41 @@ interactions:
       - support tickets list
       Connection:
       - keep-alive
-      Content-Type:
-      - application/json; charset=utf-8
       ParameterSetName:
       - --filters
       User-Agent:
-      - python/3.6.9 (Linux-4.4.0-18362-Microsoft-x86_64-with-Ubuntu-18.04-bionic)
-        msrest/0.6.10 msrest_azure/0.6.2 azure-mgmt-support/2.0.0 Azure-SDK-For-Python
-        AZURECLI/2.0.78
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-support/2.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets?$top=100&$filter=status%20eq%20%27Open%27&api-version=2019-05-01-preview
+    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets?$top=100&$filter=status%20eq%20%27Open%27&api-version=2020-04-01
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001","name":"test_ticket_from_cli_000001","type":"Microsoft.Support/supportTickets","properties":{"description":"test
         ticket from python cli test. Do not assign and close after a day.","problemClassificationId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc/problemClassifications/44114011-6a66-e902-c00f-e419b6b4509f","problemClassificationDisplayName":"Cost
-        Management / Access control issues","severity":"Minimal","require24X7Response":false,"enrollmentId":"","productionOutage":false,"contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","preferredTimeZone":"Pacific
-        Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"serviceLevelAgreement":{"startTime":"2020-01-16T14:00:00Z","expirationTime":"2020-01-16T18:00:00Z","slaMinutes":240},"supportEngineer":{},"supportPlanType":"ProDirect","supportTicketId":"120011621000159","title":"test
-        ticket from python cli test. Do not assign and close after a day.","serviceId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc","serviceDisplayName":"Billing","status":"Open","problemStartTime":"2020-01-15T18:10:13Z","createdDate":"2020-01-16T02:10:22Z","modifiedDate":"2020-01-16T02:10:25Z"}}]}'
+        Management / I have access but cost is not loading for me","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","preferredTimeZone":"Pacific
+        Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"serviceLevelAgreement":{"startTime":"2020-03-09T22:09:51Z","expirationTime":"2020-03-10T14:09:51Z","slaMinutes":240},"supportEngineer":{},"supportPlanType":"Premier","supportTicketId":"120030921002175","title":"test
+        ticket from python cli test. Do not assign and close after a day.","serviceId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc","serviceDisplayName":"Billing","status":"Open","problemStartTime":"2020-03-09T15:09:46Z","createdDate":"2020-03-09T22:09:51Z","modifiedDate":"2020-03-09T22:09:53Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/120030521002318","name":"120030521002318","type":"Microsoft.Support/supportTickets","properties":{"description":"Request
+        Summary / New Limit: \nResource Manager, WESTUS2, Av2 Series / 101","problemClassificationId":"/providers/Microsoft.Support/services/06bfd9d3-516b-d5c6-5802-169c800dec89/problemClassifications/e12e3d1d-7fa0-af33-c6d0-3c50df9658a3","problemClassificationDisplayName":"Compute-VM
+        (cores-vCPUs) subscription limit increases","severity":"Moderate","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Ayush","lastName":"Goyal","preferredContactMethod":"Email","primaryEmailAddress":"aygoya@microsoft.com","preferredTimeZone":"Pacific
+        Standard Time","country":"USA","preferredSupportLanguage":"en-us"},"serviceLevelAgreement":{"startTime":"2020-03-05T19:21:12Z","expirationTime":"2020-03-05T23:21:12Z","slaMinutes":240},"supportEngineer":{"emailAddress":"savarghe@microsoft.com"},"supportPlanType":"Unified","supportTicketId":"120030521002318","title":"ag","serviceId":"/providers/Microsoft.Support/services/06bfd9d3-516b-d5c6-5802-169c800dec89","serviceDisplayName":"Service
+        and subscription limits (quotas)","status":"Open","createdDate":"2020-03-05T19:21:12Z","modifiedDate":"2020-03-06T11:33:43Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/TMP-B37DD5090728D8FD","name":"TMP-B37DD5090728D8FD","type":"Microsoft.Support/supportTickets","properties":{"problemClassificationId":"","severity":"Minimal","require24X7Response":false,"supportPlanType":"Unknown","supportTicketId":"TMP-B37DD5090728D8FD","title":"Quota
+        request for Compute-VM (cores-vCPUs) subscription limit increases","serviceId":"/providers/Microsoft.Support/services/06bfd9d3-516b-d5c6-5802-169c800dec89","status":"Open","createdDate":"2020-02-21T23:23:15Z","modifiedDate":"2020-02-21T23:23:15Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test","name":"test","type":"Microsoft.Support/supportTickets","properties":{"description":"This
+        support ticket was created specifically to track an Azure chat","problemClassificationId":"/providers/Microsoft.Support/services/cddd3eb5-1830-b494-44fd-782f691479dc/problemClassifications/01ed3ac2-367f-aaa3-5464-fbbb9c7eade8","problemClassificationDisplayName":"Cannot
+        create a VM / Troubleshoot custom image deployment failures","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Wilson","lastName":"Huang","preferredContactMethod":"Email","primaryEmailAddress":"wihua@microsoft.com","preferredTimeZone":"Dateline
+        Standard Time","country":"USA","preferredSupportLanguage":"en-us"},"serviceLevelAgreement":{"startTime":"2019-12-04T23:56:09Z","expirationTime":"2019-12-05T19:56:09Z","slaMinutes":480},"supportEngineer":{"emailAddress":"wihua@microsoft.com"},"supportPlanType":"Azure
+        Internal","supportTicketId":"119120421002007","title":"test","serviceId":"/providers/Microsoft.Support/services/cddd3eb5-1830-b494-44fd-782f691479dc","serviceDisplayName":"Virtual
+        Machine running Linux","status":"Open","createdDate":"2019-12-04T23:56:09Z","modifiedDate":"2019-12-04T23:56:24Z"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1431'
+      - '4717'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Jan 2020 02:14:14 GMT
+      - Mon, 09 Mar 2020 22:10:55 GMT
       expires:
       - '-1'
       pragma:
@@ -620,29 +613,28 @@ interactions:
       ParameterSetName:
       - --ticket-name --severity --contact-method --contact-phone-number
       User-Agent:
-      - python/3.6.9 (Linux-4.4.0-18362-Microsoft-x86_64-with-Ubuntu-18.04-bionic)
-        msrest/0.6.10 msrest_azure/0.6.2 azure-mgmt-support/2.0.0 Azure-SDK-For-Python
-        AZURECLI/2.0.78
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-support/2.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001?api-version=2019-05-01-preview
+    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001?api-version=2020-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001","name":"test_ticket_from_cli_000001","type":"Microsoft.Support/supportTickets","properties":{"description":"test
         ticket from python cli test. Do not assign and close after a day.","problemClassificationId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc/problemClassifications/44114011-6a66-e902-c00f-e419b6b4509f","problemClassificationDisplayName":"Cost
-        Management / Access control issues","severity":"Moderate","require24X7Response":false,"enrollmentId":"","productionOutage":false,"contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Phone","primaryEmailAddress":"azengcase@microsoft.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
-        Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"serviceLevelAgreement":{"startTime":"2020-01-16T14:00:00Z","expirationTime":"2020-01-16T18:00:00Z","slaMinutes":240},"supportEngineer":{},"supportPlanType":"ProDirect","supportTicketId":"120011621000159","title":"test
-        ticket from python cli test. Do not assign and close after a day.","serviceId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc","serviceDisplayName":"Billing","status":"Open","problemStartTime":"2020-01-15T18:10:13Z","createdDate":"2020-01-16T02:10:22Z","modifiedDate":"2020-01-16T02:14:15Z"}}'
+        Management / I have access but cost is not loading for me","severity":"Moderate","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Phone","primaryEmailAddress":"azengcase@microsoft.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
+        Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"serviceLevelAgreement":{"startTime":"2020-03-09T22:09:51Z","expirationTime":"2020-03-10T14:09:51Z","slaMinutes":240},"supportEngineer":{},"supportPlanType":"Premier","supportTicketId":"120030921002175","title":"test
+        ticket from python cli test. Do not assign and close after a day.","serviceId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc","serviceDisplayName":"Billing","status":"Open","problemStartTime":"2020-03-09T15:09:46Z","createdDate":"2020-03-09T22:09:51Z","modifiedDate":"2020-03-09T22:10:57Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1449'
+      - '1445'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Jan 2020 02:14:17 GMT
+      - Mon, 09 Mar 2020 22:10:59 GMT
       expires:
       - '-1'
       pragma:
@@ -658,7 +650,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1186'
     status:
       code: 200
       message: OK
@@ -680,29 +672,28 @@ interactions:
       ParameterSetName:
       - --ticket-name --severity --contact-method
       User-Agent:
-      - python/3.6.9 (Linux-4.4.0-18362-Microsoft-x86_64-with-Ubuntu-18.04-bionic)
-        msrest/0.6.10 msrest_azure/0.6.2 azure-mgmt-support/2.0.0 Azure-SDK-For-Python
-        AZURECLI/2.0.78
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-support/2.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001?api-version=2019-05-01-preview
+    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001?api-version=2020-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001","name":"test_ticket_from_cli_000001","type":"Microsoft.Support/supportTickets","properties":{"description":"test
         ticket from python cli test. Do not assign and close after a day.","problemClassificationId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc/problemClassifications/44114011-6a66-e902-c00f-e419b6b4509f","problemClassificationDisplayName":"Cost
-        Management / Access control issues","severity":"Minimal","require24X7Response":false,"enrollmentId":"","productionOutage":false,"contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
-        Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"serviceLevelAgreement":{"startTime":"2020-01-16T14:00:00Z","expirationTime":"2020-01-16T16:00:00Z","slaMinutes":120},"supportEngineer":{},"supportPlanType":"ProDirect","supportTicketId":"120011621000159","title":"test
-        ticket from python cli test. Do not assign and close after a day.","serviceId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc","serviceDisplayName":"Billing","status":"Open","problemStartTime":"2020-01-15T18:10:13Z","createdDate":"2020-01-16T02:10:22Z","modifiedDate":"2020-01-16T02:14:18Z"}}'
+        Management / I have access but cost is not loading for me","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
+        Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"serviceLevelAgreement":{"startTime":"2020-03-09T22:10:57Z","expirationTime":"2020-03-10T00:10:57Z","slaMinutes":120},"supportEngineer":{},"supportPlanType":"Premier","supportTicketId":"120030921002175","title":"test
+        ticket from python cli test. Do not assign and close after a day.","serviceId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc","serviceDisplayName":"Billing","status":"Open","problemStartTime":"2020-03-09T15:09:46Z","createdDate":"2020-03-09T22:09:51Z","modifiedDate":"2020-03-09T22:11:00Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1448'
+      - '1444'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Jan 2020 02:14:20 GMT
+      - Mon, 09 Mar 2020 22:11:03 GMT
       expires:
       - '-1'
       pragma:
@@ -723,6 +714,65 @@ interactions:
       code: 200
       message: OK
 - request:
+    body: '{"status": "closed"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support tickets update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '20'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --ticket-name --status
+      User-Agent:
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-support/2.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      accept-language:
+      - en-US
+    method: PATCH
+    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001?api-version=2020-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001","name":"test_ticket_from_cli_000001","type":"Microsoft.Support/supportTickets","properties":{"description":"test
+        ticket from python cli test. Do not assign and close after a day.","problemClassificationId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc/problemClassifications/44114011-6a66-e902-c00f-e419b6b4509f","problemClassificationDisplayName":"Cost
+        Management / I have access but cost is not loading for me","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
+        Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"serviceLevelAgreement":{"startTime":"2020-03-09T22:10:57Z","expirationTime":"2020-03-10T14:10:57Z","slaMinutes":240},"supportEngineer":{},"supportPlanType":"Premier","supportTicketId":"120030921002175","title":"test
+        ticket from python cli test. Do not assign and close after a day.","serviceId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc","serviceDisplayName":"Billing","status":"closed","problemStartTime":"2020-03-09T15:09:46Z","createdDate":"2020-03-09T22:09:51Z","modifiedDate":"2020-03-09T22:11:04Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1446'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Mar 2020 22:11:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1185'
+    status:
+      code: 200
+      message: OK
+- request:
     body: null
     headers:
       Accept:
@@ -733,34 +783,31 @@ interactions:
       - support tickets show
       Connection:
       - keep-alive
-      Content-Type:
-      - application/json; charset=utf-8
       ParameterSetName:
       - --ticket-name
       User-Agent:
-      - python/3.6.9 (Linux-4.4.0-18362-Microsoft-x86_64-with-Ubuntu-18.04-bionic)
-        msrest/0.6.10 msrest_azure/0.6.2 azure-mgmt-support/2.0.0 Azure-SDK-For-Python
-        AZURECLI/2.0.78
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-support/2.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001?api-version=2019-05-01-preview
+    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001?api-version=2020-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001","name":"test_ticket_from_cli_000001","type":"Microsoft.Support/supportTickets","properties":{"description":"test
         ticket from python cli test. Do not assign and close after a day.","problemClassificationId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc/problemClassifications/44114011-6a66-e902-c00f-e419b6b4509f","problemClassificationDisplayName":"Cost
-        Management / Access control issues","severity":"Minimal","require24X7Response":false,"enrollmentId":"","productionOutage":false,"contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
-        Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"serviceLevelAgreement":{"startTime":"2020-01-16T14:00:00Z","expirationTime":"2020-01-16T18:00:00Z","slaMinutes":240},"supportEngineer":{},"supportPlanType":"ProDirect","supportTicketId":"120011621000159","title":"test
-        ticket from python cli test. Do not assign and close after a day.","serviceId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc","serviceDisplayName":"Billing","status":"Open","problemStartTime":"2020-01-15T18:10:13Z","createdDate":"2020-01-16T02:10:22Z","modifiedDate":"2020-01-16T02:14:21Z"}}'
+        Management / I have access but cost is not loading for me","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
+        Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"serviceLevelAgreement":{"startTime":"2020-03-09T22:10:57Z","expirationTime":"2020-03-10T14:10:57Z","slaMinutes":240},"supportEngineer":{},"supportPlanType":"Premier","supportTicketId":"120030921002175","title":"test
+        ticket from python cli test. Do not assign and close after a day.","serviceId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc","serviceDisplayName":"Billing","status":"Closed","problemStartTime":"2020-03-09T15:09:46Z","createdDate":"2020-03-09T22:09:51Z","modifiedDate":"2020-03-09T22:11:04Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1448'
+      - '1446'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Jan 2020 02:14:22 GMT
+      - Mon, 09 Mar 2020 22:11:05 GMT
       expires:
       - '-1'
       pragma:
