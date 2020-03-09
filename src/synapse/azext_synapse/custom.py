@@ -32,7 +32,7 @@ def create_spark_batch_job(cmd, client, workspace_name, spark_pool_name, job_nam
 
     if language.upper() != "DOTNET" and (not file or not class_name):
         raise CLIError('Scala and Python spark batch job must provide value for parameter file and class_name.'
-                       'If you want to create a DotNet spark batch job please add `--job-type DOTNET`.')
+                       'If you want to create a DotNet spark batch job please add `--language DOTNET`.')
 
     if language.upper() == "DOTNET":
         file = dotnet_file
