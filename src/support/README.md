@@ -103,7 +103,7 @@ az extension add --name support
 
     # Update support ticket severity, status and customer contact details properties.
     az support tickets update --ticket-name "TestTicketName" \
-        --status "closed" \
+        --status "open" \
         --contact-additional-emails "xyz@contoso.com" "devs@contoso.com" \
         --contact-country "USA" \
         --contact-email "abc@contoso.com" \
