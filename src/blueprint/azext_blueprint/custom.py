@@ -89,7 +89,7 @@ def create_blueprint(cmd,
     body['display_name'] = display_name  # str
     body['description'] = description  # str
     body['target_scope'] = target_scope  # str
-    body['parameters'] = parameters if parameters is not None else {} # dictionary
+    body['parameters'] = parameters if parameters is not None else {}  # dictionary
 
     return client.create_or_update(scope=scope,
                                    blueprint_name=blueprint_name,
@@ -550,7 +550,7 @@ def update_blueprint_assignment(cmd,
     if parameters is not None:
         body['parameters'] = parameters  # dictionary
     if resource_groups is not None:
-        body['resource_groups'] = {rg['artifact_name']: _del_artifact_name(rg) for rg in resource_groups} #dictionary
+        body['resource_groups'] = {rg['artifact_name']: _del_artifact_name(rg) for rg in resource_groups}  # dictionary
     if locks_mode is not None:
         body.setdefault('locks', {})['mode'] = locks_mode  # str
     if locks_excluded_principals is not None:
