@@ -196,7 +196,7 @@ helps['aks create'] = """
           short-summary: Grant the 'acrpull' role assignment to the ACR specified by name or resource ID.
         - name: --enable-private-cluster
           type: string
-          short-summary: (PREVIEW) Enable private cluster.
+          short-summary: Enable private cluster.
         - name: --enable-managed-identity
           type: bool
           short-summary: (PREVIEW) Using a system assigned managed identity to manage cluster resource group.
