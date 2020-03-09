@@ -23,23 +23,23 @@ def list_spark_batch_jobs(cmd, client, workspace_name, spark_pool_name, from_ind
 
 
 def create_spark_batch_job(cmd, client, workspace_name, spark_pool_name, job_name, args, driver_memory, driver_cores,
-                           executor_memory, executor_cores, num_executors, job_type="SCALA",
+                           executor_memory, executor_cores, num_executors, language="SCALA",
                            file=None, class_name=None, jars=None, files=None,
-                           archives=None, conf=None, artifact_id=None,
+                           archives=None, conf=None,
                            tags=None, detailed=True):
     dotnet_file = "local:///usr/hdp/current/spark2-client/jars/microsoft-spark.jar"
     dotnet_class = "org.apache.spark.deploy.dotnet.DotnetRunner"
 
-    if job_type.upper() != "DOTNET" and (not file or not class_name):
+    if language.upper() != "DOTNET" and (not file or not class_name):
         raise CLIError('Scala and Python spark batch job must provide value for parameter file and class_name.'
                        'If you want to create a DotNet spark batch job please add `--job-type DOTNET`.')
 
-    if job_type.upper() == "DOTNET":
+    if language.upper() == "DOTNET":
         file = dotnet_file
         class_name = dotnet_class
 
     livy_batch_request = ExtendedLivyBatchRequest(
-        tags=tags, artifact_id=artifact_id,
+        tags=tags,
         name=job_name, file=file, class_name=class_name, args=args, jars=jars, files=files, archives=archives,
         conf=conf, driver_memory=driver_memory, driver_cores=driver_cores, executor_memory=executor_memory,
         executor_cores=executor_cores, num_executors=num_executors)
@@ -62,10 +62,10 @@ def list_spark_session_jobs(cmd, client, workspace_name, spark_pool_name, from_i
 
 def create_spark_session_job(cmd, client, workspace_name, spark_pool_name, driver_memory, driver_cores,
                              executor_memory, executor_cores, num_executors, job_name=None, file=None, class_name=None,
-                             args=None, jars=None, files=None, archives=None, conf=None, artifact_id=None,
+                             args=None, jars=None, files=None, archives=None, conf=None,
                              tags=None, detailed=True):
     livy_session_request = ExtendedLivySessionRequest(
-        tags=tags, artifact_id=artifact_id,
+        tags=tags,
         name=job_name, file=file, class_name=class_name, args=args, jars=jars, files=files, archives=archives,
         conf=conf, driver_memory=driver_memory, driver_cores=driver_cores, executor_memory=executor_memory,
         executor_cores=executor_cores, num_executors=num_executors)

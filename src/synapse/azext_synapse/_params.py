@@ -3,7 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
-from azure.cli.core.commands.parameters import name_type, tags_type, get_three_state_flag, get_enum_type
+from azure.cli.core.commands.parameters import name_type, tags_type, get_three_state_flag, get_enum_type, \
+    resource_group_name_type
 
 
 # pylint: disable=too-many-statements
@@ -17,7 +18,6 @@ def load_arguments(self, _):
 
     for scope in ['synapse spark batch', 'synapse spark session']:
         with self.argument_context(scope + ' create') as c:
-            c.argument('artifact_id', help='The artifact id.')
             c.argument('job_name', arg_type=name_type, help='The spark batch or session job name.')
             c.argument('file', help='The URI of file.')
             c.argument('class_name', help='The class name.')
@@ -32,19 +32,19 @@ def load_arguments(self, _):
             c.argument('executor_cores', help='The number of cores in each executor.')
             c.argument('num_executors', help='The number of executors.')
             c.argument('tags', arg_type=tags_type, help='The tags of spark batch job.')
-            c.argument('detailed', arg_type=get_three_state_flag(),
+            c.argument('detailed', action='store_true',
                        help='Optional query parameter specifying whether detailed response is returned beyond plain livy.')
 
         with self.argument_context(scope + ' list') as c:
             c.argument('from_index', help='Optional parameter specifying which index the list should begin from.')
-            c.argument('detailed', arg_type=get_three_state_flag(),
+            c.argument('detailed', action='store_true',
                        help='Optional query parameter specifying whether detailed response is returned beyond plain livy.')
             c.argument('size',
                        help='The size of the returned list.By default it is 20 and that is the maximum.')
 
     with self.argument_context('synapse spark batch create') as c:
-        c.argument('job_type', arg_type=get_enum_type(['SCALA', 'PYTHON', 'DOTNET'], default='SCALA'),
-                   help='The spark batch job type.')
+        c.argument('language', arg_type=get_enum_type(['SCALA', 'PYTHON', 'DOTNET'], default='SCALA'),
+                   help='The spark batch job language.')
 
     for scope in ['show', 'cancel']:
         with self.argument_context('synapse spark batch ' + scope) as c:
@@ -52,7 +52,7 @@ def load_arguments(self, _):
                        help='The id of the spark batch job.')
 
     with self.argument_context('synapse spark batch show') as c:
-        c.argument('detailed', arg_type=get_three_state_flag(),
+        c.argument('detailed', action='store_true',
                    help='Optional query parameter specifying whether detailed response is returned beyond plain livy.')
 
     for scope in ['show', 'cancel', 'reset-timeout']:
@@ -61,7 +61,7 @@ def load_arguments(self, _):
                        help='The id of the spark session job.')
 
     with self.argument_context('synapse spark session show') as c:
-        c.argument('detailed', arg_type=get_three_state_flag(),
+        c.argument('detailed', action='store_true',
                    help='Optional query parameter specifying whether detailed response is returned beyond plain livy.')
 
     with self.argument_context('synapse spark session-statement') as c:
@@ -79,7 +79,7 @@ def load_arguments(self, _):
     # synapse workspace
     for scope in ['synapse workspace', 'synapse spark pool', 'synapse sql pool']:
         with self.argument_context(scope) as c:
-            c.argument('resource_group_name', help='The resource group name.')
+            c.argument('resource_group_name', arg_type=resource_group_name_type, help='The resource group name.')
 
     for scope in ['show', 'create', 'update', 'delete']:
         with self.argument_context('synapse workspace ' + scope) as c:
@@ -135,7 +135,7 @@ def load_arguments(self, _):
         c.argument('default_spark_log_folder', arg_group='Default Folder', help='The default spark log folder.')
 
         # Component Version
-        c.argument('spark_version', arg_group='Component Version', help='The spark version.')
+        c.argument('spark_version', arg_group='Component Version', help='The supported spark version is 2.4 now.')
 
         c.argument('force', help='The flag of force operation.')
         c.argument('tags', arg_type=tags_type, help='The tags of spark pool.')
