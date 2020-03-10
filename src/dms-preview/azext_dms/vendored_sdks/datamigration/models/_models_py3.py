@@ -303,7 +303,7 @@ class CheckOCIDriverTaskOutput(Model):
     }
 
     _attribute_map = {
-        'installed_driver': {'key': 'installedDriver', 'type': '{[OracleOCIDriverInfo]}'},
+        'installed_driver': {'key': 'installedDriver', 'type': 'OracleOCIDriverInfo'},
         'validation_errors': {'key': 'validationErrors', 'type': '[ReportableException]'},
     }
 
