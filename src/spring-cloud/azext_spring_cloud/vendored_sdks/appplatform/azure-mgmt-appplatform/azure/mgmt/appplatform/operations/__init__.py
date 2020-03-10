@@ -9,12 +9,12 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .services_operations import ServicesOperations
-from .apps_operations import AppsOperations
-from .bindings_operations import BindingsOperations
-from .deployments_operations import DeploymentsOperations
-from .operations import Operations
-from .runtime_versions_operations import RuntimeVersionsOperations
+from ._services_operations import ServicesOperations
+from ._apps_operations import AppsOperations
+from ._bindings_operations import BindingsOperations
+from ._deployments_operations import DeploymentsOperations
+from ._operations import Operations
+from ._runtime_versions_operations import RuntimeVersionsOperations
 
 __all__ = [
     'ServicesOperations',

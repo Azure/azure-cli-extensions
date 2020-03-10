@@ -9,10 +9,11 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .app_platform_management_client import AppPlatformManagementClient
-from .version import VERSION
+from ._configuration import AppPlatformManagementClientConfiguration
+from ._app_platform_management_client import AppPlatformManagementClient
+__all__ = ['AppPlatformManagementClient', 'AppPlatformManagementClientConfiguration']
 
-__all__ = ['AppPlatformManagementClient']
+from .version import VERSION
 
 __version__ = VERSION
 

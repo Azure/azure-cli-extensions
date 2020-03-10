@@ -21,6 +21,8 @@ from .. import models
 class DeploymentsOperations(object):
     """DeploymentsOperations operations.
 
+    You should not instantiate directly this class, but create a Client instance that will create it for you and attach it as attribute.
+
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -98,7 +100,6 @@ class DeploymentsOperations(object):
             raise exp
 
         deserialized = None
-
         if response.status_code == 200:
             deserialized = self._deserialize('DeploymentResource', response)
 
@@ -424,8 +425,7 @@ class DeploymentsOperations(object):
          ~azure.mgmt.appplatform.models.DeploymentResourcePaged[~azure.mgmt.appplatform.models.DeploymentResource]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
-        def internal_paging(next_link=None, raw=False):
-
+        def prepare_request(next_link=None):
             if not next_link:
                 # Construct URL
                 url = self.list.metadata['url']
@@ -459,6 +459,11 @@ class DeploymentsOperations(object):
 
             # Construct and send request
             request = self._client.get(url, query_parameters, header_parameters)
+            return request
+
+        def internal_paging(next_link=None):
+            request = prepare_request(next_link)
+
             response = self._client.send(request, stream=False, **operation_config)
 
             if response.status_code not in [200]:
@@ -469,12 +474,10 @@ class DeploymentsOperations(object):
             return response
 
         # Deserialize response
-        deserialized = models.DeploymentResourcePaged(internal_paging, self._deserialize.dependencies)
-
+        header_dict = None
         if raw:
             header_dict = {}
-            client_raw_response = models.DeploymentResourcePaged(internal_paging, self._deserialize.dependencies, header_dict)
-            return client_raw_response
+        deserialized = models.DeploymentResourcePaged(internal_paging, self._deserialize.dependencies, header_dict)
 
         return deserialized
     list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/deployments'}
@@ -501,8 +504,7 @@ class DeploymentsOperations(object):
          ~azure.mgmt.appplatform.models.DeploymentResourcePaged[~azure.mgmt.appplatform.models.DeploymentResource]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
-        def internal_paging(next_link=None, raw=False):
-
+        def prepare_request(next_link=None):
             if not next_link:
                 # Construct URL
                 url = self.list_cluster_all_deployments.metadata['url']
@@ -535,6 +537,11 @@ class DeploymentsOperations(object):
 
             # Construct and send request
             request = self._client.get(url, query_parameters, header_parameters)
+            return request
+
+        def internal_paging(next_link=None):
+            request = prepare_request(next_link)
+
             response = self._client.send(request, stream=False, **operation_config)
 
             if response.status_code not in [200]:
@@ -545,12 +552,10 @@ class DeploymentsOperations(object):
             return response
 
         # Deserialize response
-        deserialized = models.DeploymentResourcePaged(internal_paging, self._deserialize.dependencies)
-
+        header_dict = None
         if raw:
             header_dict = {}
-            client_raw_response = models.DeploymentResourcePaged(internal_paging, self._deserialize.dependencies, header_dict)
-            return client_raw_response
+        deserialized = models.DeploymentResourcePaged(internal_paging, self._deserialize.dependencies, header_dict)
 
         return deserialized
     list_cluster_all_deployments.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/deployments'}
@@ -881,7 +886,6 @@ class DeploymentsOperations(object):
             raise exp
 
         deserialized = None
-
         if response.status_code == 200:
             deserialized = self._deserialize('LogFileUrlResponse', response)
 
