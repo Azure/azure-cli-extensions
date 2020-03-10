@@ -27,6 +27,8 @@ def account_subscription_create_subscription_in_enrollment_account(cmd, client,
                                                                    body_management_group_id=None,
                                                                    body_owners=None,
                                                                    body_offer_type=None):
+    if body_owners is not None:
+        body_owners=[{'object_id': x} for x in body_owners]
     return client.begin_create_subscription_in_enrollment_account(enrollment_account_name=enrollment_account_name, display_name=body_display_name, management_group_id=body_management_group_id, owners=body_owners, offer_type=body_offer_type)
 
 

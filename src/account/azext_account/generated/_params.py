@@ -30,7 +30,7 @@ def load_arguments(self, _):
         c.argument('enrollment_account_name', help='The name of the enrollment account to which the subscription will be billed.')
         c.argument('body_display_name', help='The display name of the subscription.')
         c.argument('body_management_group_id', help='The Management Group Id.')
-        c.argument('body_owners', help='The list of principals that should be granted Owner access on the subscription. Principals should be of type User, Service Principal or Security Group.', action=AddOwners, nargs='+')
+        c.argument('body_owners', help='The list of principals that should be granted Owner access on the subscription. Principals should be of type User, Service Principal or Security Group.', nargs='+')
         c.argument('body_offer_type', arg_type=get_enum_type(['MS-AZR-0017P', 'MS-AZR-0148P']), help='The offer type of the subscription. For example, MS-AZR-0017P (EnterpriseAgreement) and MS-AZR-0148P (EnterpriseAgreement devTest) are available. Only valid when creating a subscription in a enrollment account scope.')
 
     with self.argument_context('account subscription create-csp-subscription') as c:
