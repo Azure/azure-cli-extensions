@@ -12,6 +12,7 @@ from azure.cli.core.commands.parameters import (
     get_location_type,
     file_type
 )
+from azure.cli.core.util import shell_safe_json_parse
 from knack.arguments import CLIArgumentType
 from argcomplete.completers import FilesCompleter
 from ._validators import blueprint_validator
@@ -23,13 +24,15 @@ from .vendored_sdks.blueprint.models._blueprint_management_client_enums import (
 
 
 parameter_type = CLIArgumentType(
+    type=shell_safe_json_parse,
     options_list=['--parameters'],
-    help='Parameters in JSON format or file path to Json file with "@" prefix.'
+    help='Parameters in JSON string or path to JSON file with "@" prefix.'
 )
 
 template_type = CLIArgumentType(
+    type=shell_safe_json_parse,
     options_list=['--template'],
-    help='ARM template in JSON format or file path to Json file with "@" prefix.'
+    help='ARM template in JSON string or path to JSON file with "@" prefix.'
 )
 
 
@@ -44,7 +47,7 @@ def load_arguments(self, _):
         c.argument('display_name', help='One-liner string explain this resource.')
         c.argument('description', help='Multi-line explain this resource.')
         c.argument('target_scope', arg_type=get_enum_type(BlueprintTargetScope), help='The scope where this blueprint definition can be assigned.')
-        c.argument('parameters', arg_type=parameter_type, help='Parameters required by this blueprint definition.')
+        c.argument('parameters', arg_type=parameter_type, help='Parameters required by this blueprint definition. It can be a JSON string or JSON file path with "@" prefix.')
 
     with self.argument_context('blueprint import') as c:
         c.argument('blueprint_name', options_list=['--name', '-n'], help='Name of the blueprint definition.')
@@ -53,7 +56,7 @@ def load_arguments(self, _):
     with self.argument_context('blueprint update') as c:
         c.argument('blueprint_name', options_list=['--name', '-n'], help='Name of the blueprint definition.')
         c.argument('description', help='Multi-line explain this resource.')
-        c.argument('parameters', arg_type=parameter_type, help='Parameters required by this blueprint definition.')
+        c.argument('parameters', arg_type=parameter_type, help='Parameters required by this blueprint definition. It can be a JSON string or JSON file path with "@" prefix.')
 
     with self.argument_context('blueprint delete') as c:
         c.argument('blueprint_name', options_list=['--name', '-n'], help='Name of the blueprint definition.')
@@ -114,7 +117,7 @@ def load_arguments(self, _):
         c.argument('depends_on', nargs='+', help='Artifacts which need to be deployed before the specified artifact.')
         c.argument('policy_definition_id', options_list=['--policy-definition'], help='The full policy definition id.')
         c.argument('resource_group_art', help='Name of the resource group artifact to which the policy will be assigned.')
-        c.argument('parameters', arg_type=parameter_type)
+        c.argument('parameters', arg_type=parameter_type, help='Parameters for policy assignment artifact. It can be a JSON string or JSON file path with "@" prefix.')
 
     with self.argument_context('blueprint artifact policy update') as c:
         c.argument('blueprint_name', help='Name of the blueprint definition.')
@@ -123,7 +126,7 @@ def load_arguments(self, _):
         c.argument('description', help='Description of the blueprint artifact.')
         c.argument('depends_on', nargs='+', help='Artifacts which need to be deployed before the specified artifact.')
         c.argument('resource_group_art', help='Name of the resource group artifact to which the policy will be assigned.')
-        c.argument('parameters', arg_type=parameter_type)
+        c.argument('parameters', arg_type=parameter_type, help='Parameters for policy assignment artifact. It can be a JSON string or JSON file path with "@" prefix.')
 
     with self.argument_context('blueprint artifact role create') as c:
         c.argument('blueprint_name', help='Name of the blueprint definition.')
@@ -150,7 +153,7 @@ def load_arguments(self, _):
         c.argument('description', help='Description of the blueprint artifact.')
         c.argument('depends_on', nargs='+', help='Artifacts which need to be deployed before the specified artifact.')
         c.argument('resource_group_art', help='Name of the resource group artifact to which the policy will be assigned.')
-        c.argument('parameters', arg_type=parameter_type)
+        c.argument('parameters', arg_type=parameter_type, help='Parameters for ARM template artifact. It can be a JSON string or JSON file path with "@" prefix.')
         c.argument('template', arg_type=template_type)
 
     with self.argument_context('blueprint artifact template update') as c:
@@ -160,7 +163,7 @@ def load_arguments(self, _):
         c.argument('description', help='Description of the blueprint artifact.')
         c.argument('depends_on', nargs='+', help='Artifacts which need to be deployed before the specified artifact.')
         c.argument('resource_group_art', help='Name of the resource group artifact to which the policy will be assigned.')
-        c.argument('parameters', arg_type=parameter_type)
+        c.argument('parameters', arg_type=parameter_type, help='Parameters for ARM template artifact. It can be a JSON string or JSON file path with "@" prefix.')
         c.argument('template', arg_type=template_type)
 
     with self.argument_context('blueprint publish') as c:
@@ -200,7 +203,7 @@ def load_arguments(self, _):
             c.argument('display_name', help='One-liner string explain this resource.')
             c.argument('description', help='Multi-line explain this resource.')
             c.argument('blueprint_id', help='ID of the published version of a blueprint definition.')
-            c.argument('parameters', arg_type=parameter_type, help='Blueprint assignment parameter values.')
+            c.argument('parameters', arg_type=parameter_type, help='Blueprint assignment parameter values. It can be a JSON string or JSON file path with "@" prefix.')
             c.argument('resource_groups', options_list=['--resource-group'], action=ResourceGroupAssignAddAction, nargs='+', help="Key=Value pairs for a resource group. Keys include 'artifact_name'(required), 'name', 'location'.")
             c.argument('locks_mode', arg_type=get_enum_type(AssignmentLockMode), help='Lock mode.')
             c.argument('locks_excluded_principals', help='List of AAD principals excluded from blueprint locks. Up to 5 principals are permitted.', nargs='+')
