@@ -374,7 +374,7 @@ def cli_event_subscription_list(   # pylint: disable=too-many-return-statements
         resource_id=None,
         source_resource_id=None,
         location=None,
-        resource_group_name= None,
+        resource_group_name=None,
         topic_type_name=None,
         odata_query=None):
     if source_resource_id is not None:
