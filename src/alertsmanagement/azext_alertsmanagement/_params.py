@@ -23,8 +23,7 @@ def load_arguments(self, _):
                                        id_part='name')
 
     with self.argument_context('alertsmanagement action-rule create') as c:
-        c.argument('resource_group', resource_group_name_type)
-        c.argument('name', action_rule_name)
+        c.argument('action_rule_name', action_rule_name)
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('tags', tags_type)
         c.argument('status', arg_type=get_enum_type(['Enabled', 'Disabled']), id_part=None, help='Indicates if the given action rule is enabled or disabled')
@@ -46,22 +45,18 @@ def load_arguments(self, _):
         c.argument('end_time', help='End date for suppression')
 
     with self.argument_context('alertsmanagement action-rule update') as c:
-        c.argument('resource_group', resource_group_name_type)
         c.argument('action_rule_name', action_rule_name)
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('tags', tags_type)
         c.argument('status', arg_type=get_enum_type(['Enabled', 'Disabled']), id_part=None, help='Indicates if the given action rule is enabled or disabled')
 
     with self.argument_context('alertsmanagement action-rule delete') as c:
-        c.argument('resource_group', resource_group_name_type)
-        c.argument('name', action_rule_name)
+        c.argument('action_rule_name', action_rule_name)
 
     with self.argument_context('alertsmanagement action-rule show') as c:
-        c.argument('resource_group', resource_group_name_type)
-        c.argument('name', action_rule_name)
+        c.argument('action_rule_name', action_rule_name)
 
     with self.argument_context('alertsmanagement action-rule list') as c:
-        c.argument('resource_group', resource_group_name_type)
         c.argument('target_resource_group', id_part=None, help='Filter by target resource group name. Default value is select all.')
         c.argument('target_resource_type', id_part=None, help='Filter by target resource type. Default value is select all.')
         c.argument('target_resource', id_part=None, help='Filter by target resource( which is full ARM ID) Default value is select all.')

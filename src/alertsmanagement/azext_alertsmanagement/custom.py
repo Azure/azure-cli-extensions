@@ -130,8 +130,8 @@ def _transform_condition(condition):
 
 
 def create_alertsmanagement_action_rule(cmd, client,
-                                        resource_group,
-                                        name,
+                                        resource_group_name,
+                                        action_rule_name,
                                         location,
                                         rule_type,
                                         description=None,
@@ -199,7 +199,7 @@ def create_alertsmanagement_action_rule(cmd, client,
     }
     body['properties'] = properties
 
-    return client.create_update(resource_group_name=resource_group, action_rule_name=name, action_rule=body)
+    return client.create_update(resource_group_name=resource_group_name, action_rule_name=action_rule_name, action_rule=body)
 
 
 def update_alertsmanagement_action_rule(instance, client,
@@ -216,19 +216,19 @@ def update_alertsmanagement_action_rule(instance, client,
 
 
 def delete_alertsmanagement_action_rule(cmd, client,
-                                        resource_group,
-                                        name):
-    return client.delete(resource_group_name=resource_group, action_rule_name=name)
+                                        resource_group_name,
+                                        action_rule_name):
+    return client.delete(resource_group_name=resource_group_name, action_rule_name=action_rule_name)
 
 
 def get_alertsmanagement_action_rule(cmd, client,
-                                     resource_group,
-                                     name):
-    return client.get_by_name(resource_group_name=resource_group, action_rule_name=name)
+                                     resource_group_name,
+                                     action_rule_name):
+    return client.get_by_name(resource_group_name=resource_group_name, action_rule_name=action_rule_name)
 
 
 def list_alertsmanagement_action_rule(cmd, client,
-                                      resource_group=None,
+                                      resource_group_name=None,
                                       target_resource_group=None,
                                       target_resource_type=None,
                                       target_resource=None,
@@ -239,8 +239,8 @@ def list_alertsmanagement_action_rule(cmd, client,
                                       alert_rule_id=None,
                                       action_group=None,
                                       name=None):
-    if resource_group is not None and target_resource_group is not None and target_resource_type is not None and target_resource is not None and severity is not None and monitor_service is not None and impacted_scope is not None and description is not None and alert_rule_id is not None and action_group is not None and name is not None:
-        return client.list_by_resource_group(resource_group_name=resource_group, target_resource_group=target_resource_group, target_resource_type=target_resource_type, target_resource=target_resource, severity=severity, monitor_service=monitor_service, impacted_scope=impacted_scope, description=description, alert_rule_id=alert_rule_id, action_group=action_group, name=name)
+    if resource_group_name is not None and target_resource_group is not None and target_resource_type is not None and target_resource is not None and severity is not None and monitor_service is not None and impacted_scope is not None and description is not None and alert_rule_id is not None and action_group is not None and name is not None:
+        return client.list_by_resource_group(resource_group_name=resource_group_name, target_resource_group=target_resource_group, target_resource_type=target_resource_type, target_resource=target_resource, severity=severity, monitor_service=monitor_service, impacted_scope=impacted_scope, description=description, alert_rule_id=alert_rule_id, action_group=action_group, name=name)
     return client.list_by_subscription(target_resource_group=target_resource_group, target_resource_type=target_resource_type, target_resource=target_resource, severity=severity, monitor_service=monitor_service, impacted_scope=impacted_scope, description=description, alert_rule_id=alert_rule_id, action_group=action_group, name=name)
 
 
