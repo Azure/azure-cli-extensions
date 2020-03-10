@@ -151,9 +151,7 @@ def create_alertsmanagement_action_rule(cmd, client,
                                         end_date=None,
                                         start_time=None,
                                         end_time=None):
-    body = {}
-    body['location'] = location  # str
-    body['tags'] = tags  # unknown-primary[object]
+    body = {'location': location, 'tags': tags}
 
     properties = {}
     if status is not None:

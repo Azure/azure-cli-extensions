@@ -5,7 +5,7 @@
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
-
+from azext_alertsmanagement.vendored_sdks.alertsmanagement.models import ActionRuleStatus
 from azure.cli.core.commands.parameters import (
     tags_type,
     get_enum_type,
@@ -26,8 +26,8 @@ def load_arguments(self, _):
         c.argument('action_rule_name', action_rule_name)
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('tags', tags_type)
-        c.argument('status', arg_type=get_enum_type(['Enabled', 'Disabled']), id_part=None, help='Indicates if the given action rule is enabled or disabled')
-        c.argument('rule_type', arg_type=get_enum_type(['Suppression', 'ActionGroup', 'Diagnostics']), help='Indicates type of action rule')
+        c.argument('status', arg_type=get_enum_type(ActionRuleStatus), id_part=None, help='Indicate if the given action rule is enabled or disabled. Default to enabled.')
+        c.argument('rule_type', arg_type=get_enum_type(['Suppression', 'ActionGroup', 'Diagnostics']), help='Indicate type of action rule')
         c.argument('description', help='Description of action rule')
         c.argument('scope_type', help='Type of target scope', arg_type=get_enum_type(['ResourceGroup', 'Resource']))
         c.argument('scope', nargs='+', help='List of ARM IDs (space-delimited) of the given scope type which will be the target of the given action rule.')
