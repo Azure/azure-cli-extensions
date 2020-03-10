@@ -219,10 +219,7 @@ def cli_eventgrid_event_subscription_create(   # pylint: disable=too-many-locals
         client,
         event_subscription_name,
         endpoint,
-        resource_id=None,
         source_resource_id=None,
-        resource_group_name=None,
-        topic_name=None,
         endpoint_type=WEBHOOK_DESTINATION,
         included_event_types=None,
         subject_begins_with=None,
@@ -247,13 +244,6 @@ def cli_eventgrid_event_subscription_create(   # pylint: disable=too-many-locals
                        ' domains case) or default event types (for other topic types case). In any future calls,'
                        ' please consider leaving --included-event-types unspecified or use None instead.')
         included_event_types = None
-
-    scope = _get_scope_for_event_subscription(
-        cli_ctx=cmd.cli_ctx,
-        source_resource_id=source_resource_id,
-        resource_id=resource_id,
-        topic_name=topic_name,
-        resource_group_name=resource_group_name)
 
     # Construct RetryPolicy based on max_delivery_attempts and event_ttl
     max_delivery_attempts = int(max_delivery_attempts)
@@ -335,7 +325,7 @@ def cli_eventgrid_event_subscription_create(   # pylint: disable=too-many-locals
     _warn_if_manual_handshake_needed(endpoint_type, endpoint)
 
     return client.create_or_update(
-        scope,
+        source_resource_id,
         event_subscription_name,
         event_subscription_info)
 
@@ -344,18 +334,9 @@ def cli_eventgrid_event_subscription_delete(
         cmd,
         client,
         event_subscription_name,
-        resource_id=None,
-        source_resource_id=None,
-        resource_group_name=None,
-        topic_name=None):
-    scope = _get_scope_for_event_subscription(
-        cli_ctx=cmd.cli_ctx,
-        source_resource_id=source_resource_id,
-        resource_id=resource_id,
-        topic_name=topic_name,
-        resource_group_name=resource_group_name)
+        source_resource_id=None):
     return client.delete(
-        scope,
+        source_resource_id,
         event_subscription_name)
 
 
@@ -364,19 +345,10 @@ def event_subscription_setter(
         client,
         parameters,
         event_subscription_name,
-        source_resource_id=None,
-        resource_id=None,
-        resource_group_name=None,
-        topic_name=None):
-    scope = _get_scope_for_event_subscription(
-        cli_ctx=cmd.cli_ctx,
-        source_resource_id=source_resource_id,
-        resource_id=resource_id,
-        topic_name=topic_name,
-        resource_group_name=resource_group_name)
+        source_resource_id=None):
 
     return client.update(
-        scope,
+        source_resource_id,
         event_subscription_name,
         parameters)
 
@@ -386,21 +358,12 @@ def cli_eventgrid_event_subscription_get(
         client,
         event_subscription_name,
         source_resource_id=None,
-        resource_id=None,
-        resource_group_name=None,
-        topic_name=None,
         include_full_endpoint_url=False):
-    scope = _get_scope_for_event_subscription(
-        cli_ctx=cmd.cli_ctx,
-        source_resource_id=source_resource_id,
-        resource_id=resource_id,
-        topic_name=topic_name,
-        resource_group_name=resource_group_name)
 
-    retrieved_event_subscription = client.get(scope, event_subscription_name)
+    retrieved_event_subscription = client.get(source_resource_id, event_subscription_name)
     destination = retrieved_event_subscription.destination
     if include_full_endpoint_url and isinstance(destination, WebHookEventSubscriptionDestination):
-        full_endpoint_url = client.get_full_url(scope, event_subscription_name)
+        full_endpoint_url = client.get_full_url(source_resource_id, event_subscription_name)
         destination.endpoint_url = full_endpoint_url.endpoint_url
 
     return retrieved_event_subscription
@@ -410,9 +373,8 @@ def cli_event_subscription_list(   # pylint: disable=too-many-return-statements
         client,
         resource_id=None,
         source_resource_id=None,
-        topic_name=None,
-        resource_group_name=None,
         location=None,
+        resource_group_name= None,
         topic_type_name=None,
         odata_query=None):
     if source_resource_id is not None:
@@ -424,30 +386,6 @@ def cli_event_subscription_list(   # pylint: disable=too-many-return-statements
                            'be specified.')
 
         return _list_event_subscriptions_by_resource_id(client, source_resource_id, odata_query, DEFAULT_TOP)
-
-    if resource_id is not None:
-        # DEPRECATED
-        # If resource ID is specified, we need to list event subscriptions for that particular resource.
-        # Since a full resource ID is specified, it should override all other defaults such as default location and RG
-        # No other parameters must be specified
-        if topic_type_name is not None:
-            raise CLIError('usage error: Since --resource-id is specified, none of the other parameters must '
-                           'be specified.')
-
-        return _list_event_subscriptions_by_resource_id(client, resource_id, odata_query, DEFAULT_TOP)
-
-    if topic_name:
-        # DEPRECATED
-        if resource_group_name is None:
-            raise CLIError('Since --topic-name is specified, --resource-group must also be specified.')
-
-        return client.list_by_resource(
-            resource_group_name,
-            EVENTGRID_NAMESPACE,
-            EVENTGRID_TOPICS,
-            topic_name,
-            odata_query,
-            DEFAULT_TOP)
 
     if location is None:
         # Since resource-id was not specified, location must be specified: e.g. "westus2" or "global". If not error
@@ -525,66 +463,12 @@ def _get_scope(
 
     return scope
 
-
-def _get_scope_for_event_subscription(
-        cli_ctx,
-        resource_id,
-        source_resource_id,
-        topic_name,
-        resource_group_name):
-    if all([resource_id, source_resource_id]):
-        raise CLIError('usage error: specify either "--resource-id" or "--source-resource-id", not both.')
-
-    if all([resource_id, topic_name]):
-        raise CLIError('usage error: specify either "--topic-name" or "--resource-id", not both.')
-
-    if all([source_resource_id, topic_name]):
-        raise CLIError('usage error: specify either "--topic-name" or "--source-resource-id", not both.')
-
-    # A default resource Group Name could have been configured
-    # but if --resource-id or --source-resource-id is provided, it always overrides it.
-
-    if source_resource_id:
-        # Source Resource ID is provided, use that as the scope for the event subscription.
-        # This is the latest non-deprecated way of specifying the source resource.
-        scope = source_resource_id
-    elif resource_id:
-        # Deprecated
-        scope = resource_id
-    elif topic_name:
-        # DEPRECATED: Topic name is provided, use the topic and resource group to build a scope for the user topic
-        if resource_group_name is None:
-            raise CLIError("When --topic-name is specified, the --resource-group-name must also be specified.")
-
-        scope = _get_scope(cli_ctx, resource_group_name, EVENTGRID_NAMESPACE, EVENTGRID_TOPICS, topic_name)
-    elif resource_group_name:
-        # DEPRECATED: Event subscription to a resource group.
-        scope = _get_scope(cli_ctx, resource_group_name, RESOURCES_NAMESPACE, RESOURCE_GROUPS, resource_group_name)
-    else:
-        # DEPRECATED
-        logger.warning('This default option uses Azure subscription as the source resource.'
-                       ' This is deprecated and will be removed in a future release.'
-                       ' Use `--source-resource-id /subscriptions/{subid}` instead.')
-        scope = _get_scope(cli_ctx, None, RESOURCES_NAMESPACE, SUBSCRIPTIONS, get_subscription_id(cli_ctx))
-
-    return scope
-
-
 def event_subscription_getter(
         cmd,
         client,
         event_subscription_name,
-        source_resource_id=None,
-        resource_id=None,
-        resource_group_name=None,
-        topic_name=None):
-    scope = _get_scope_for_event_subscription(
-        cli_ctx=cmd.cli_ctx,
-        source_resource_id=source_resource_id,
-        resource_id=resource_id,
-        topic_name=topic_name,
-        resource_group_name=resource_group_name)
-    return client.get(scope, event_subscription_name)
+        source_resource_id=None):
+    return client.get(source_resource_id, event_subscription_name)
 
 
 def get_input_schema_mapping(
