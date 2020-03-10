@@ -85,6 +85,9 @@ az extension add --name support
     ```
     # Update support ticket severity.
     az support tickets update --ticket-name "TestTicketName" --severity "moderate"
+  
+    # Update support ticket status.
+    az support tickets update --ticket-name "TestTicketName" --status "closed"
 
     # Update support ticket customer contact details properties.
     az support tickets update --ticket-name "TestTicketName" \
@@ -98,8 +101,9 @@ az extension add --name support
         --contact-phone-number "123-456-7890" \
         --contact-timezone "Pacific Standard Time"
 
-    # Update support ticket severity and customer contact details properties.
+    # Update support ticket severity, status and customer contact details properties.
     az support tickets update --ticket-name "TestTicketName" \
+        --status "open" \
         --contact-additional-emails "xyz@contoso.com" "devs@contoso.com" \
         --contact-country "USA" \
         --contact-email "abc@contoso.com" \
@@ -179,7 +183,22 @@ az extension add --name support
         --ticket-name "BillingTestTicketName" \
         --title "BillingTicketTitle" \
         --partner-tenant-id "CSPPartnerTenantIdGuid"
-        
+  
+    # Create a ticket for Generic Quota increase for any Azure Service.
+    az support tickets create \\
+            --contact-country "USA" \\
+            --contact-email "abc@contoso.com" \\
+            --contact-first-name "Foo" \\
+            --contact-language "en-US" \\
+            --contact-last-name "Bar" \\
+            --contact-method "email" \\
+            --contact-timezone "Pacific Standard Time" \\
+            --description "QuotaTicketDescription" \\
+            --problem-classification "/providers/Microsoft.Support/services/QuotaServiceNameGuid/problemClassifications/GenericProblemClassificationNameGuid" \\
+            --severity "minimal" \\
+            --ticket-name "QuotaTestTicketName" \\
+            --title "QuotaTicketTitle"
+  
     # Create a ticket to request Quota increase for Compute VM Cores.
     az support tickets create \
         --contact-country "USA" \

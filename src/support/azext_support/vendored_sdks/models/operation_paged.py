@@ -9,16 +9,19 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .operations import Operations
-from .services_operations import ServicesOperations
-from .problem_classifications_operations import ProblemClassificationsOperations
-from .support_tickets_operations import SupportTicketsOperations
-from .communications_operations import CommunicationsOperations
+from msrest.paging import Paged
 
-__all__ = [
-    'Operations',
-    'ServicesOperations',
-    'ProblemClassificationsOperations',
-    'SupportTicketsOperations',
-    'CommunicationsOperations',
-]
+
+class OperationPaged(Paged):
+    """
+    A paging container for iterating over a list of :class:`Operation <azure.mgmt.support.models.Operation>` object
+    """
+
+    _attribute_map = {
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+        'current_page': {'key': 'value', 'type': '[Operation]'}
+    }
+
+    def __init__(self, *args, **kwargs):
+
+        super(OperationPaged, self).__init__(*args, **kwargs)
