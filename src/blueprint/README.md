@@ -129,7 +129,6 @@ An example assignment_params.json may look like this:
 ```
 az blueprint assignment wait \
     --name assignmentName \
-    --custom "provisioningState=='succeeded'" \
     --created
 ```
 

@@ -97,20 +97,17 @@ def create_blueprint(cmd,
 
 
 def update_blueprint(cmd,
-                     client,
+                     instance,
                      blueprint_name,
                      management_group=None,
                      scope=None,
                      description=None,
                      parameters=None):
-    body = client.get(scope=scope, blueprint_name=blueprint_name).as_dict()
     if description is not None:
-        body['description'] = description  # str
+        instance.description = description  # str
     if parameters is not None:
-        body['parameters'] = parameters  # dictionary
-    return client.create_or_update(scope=scope,
-                                   blueprint_name=blueprint_name,
-                                   blueprint=body)
+        instance.parameters = parameters  # dictionary
+    return instance
 
 
 def delete_blueprint(cmd, client, blueprint_name, management_group=None, scope=None):

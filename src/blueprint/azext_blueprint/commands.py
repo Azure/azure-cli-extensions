@@ -19,6 +19,9 @@ def load_command_table(self, _):
     with self.command_group('blueprint', blueprint_blueprints, client_factory=cf_blueprints, is_preview=True) as g:
         g.custom_command('create', 'create_blueprint')
         g.custom_command('update', 'update_blueprint')
+        g.generic_update_command('update', custom_func_name='update_blueprint',
+                                 setter_arg_name='blueprint',
+                                 setter_name='create_or_update')
         g.custom_command('delete', 'delete_blueprint', confirmation=True)
         g.custom_show_command('show', 'get_blueprint')
         g.custom_command('list', 'list_blueprint')
