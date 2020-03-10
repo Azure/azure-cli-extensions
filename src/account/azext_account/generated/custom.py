@@ -18,7 +18,7 @@ def account_subscription_create_subscription(cmd, client,
                                              body_cost_center=None,
                                              body_owner=None,
                                              body_management_group_id=None):
-    return client.begin_create_subscription(billing_account_name=billing_account_name, billing_profile_name=billing_profile_name, invoice_section_name=invoice_section_name, display_name=body_display_name, sku_id=body_sku_id, cost_center=body_cost_center, owner=body_owner, management_group_id=body_management_group_id)
+    return client.begin_create_subscription(billing_account_name=billing_account_name, billing_profile_name=billing_profile_name, invoice_section_name=invoice_section_name, display_name=body_display_name, sku_id=body_sku_id, cost_center=body_cost_center, owner={'object_id': body_owner}, management_group_id=body_management_group_id)
 
 
 def account_subscription_create_subscription_in_enrollment_account(cmd, client,
