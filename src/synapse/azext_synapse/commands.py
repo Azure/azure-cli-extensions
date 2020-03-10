@@ -50,7 +50,7 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'get_spark_pool')
         g.command('list', 'list_by_workspace')
         g.custom_command('create', 'create_spark_pool', supports_no_wait=True)
-        g.custom_command('update', 'update_spark_pool', supports_no_wait=True)
+        g.custom_command('update', 'update_spark_pool')
         g.custom_command('delete', 'delete_spark_pool', confirmation=True, supports_no_wait=True)
         g.wait_command('wait')
 

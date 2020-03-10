@@ -12,19 +12,19 @@ interactions:
       Content-Length:
       - '126'
       Content-Type:
-      - application/json
+      - application/json; charset=utf-8
       User-Agent:
-      - azsdk-python-core/1.2.2 Python/3.7.4 (Windows-10-10.0.18362-SP0) azsdk-python-synapseclient/0.1.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 azure-synapse/0.1.0
     method: POST
     uri: https://testsynapseworkspace1234.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/testsparkpool/sessions?detailed=true
   response:
     body:
-      string: '{"livyInfo":{"notStartedAt":null,"startingAt":null,"idleAt":null,"deadAt":null,"shuttingDownAt":null,"killedAt":null,"recoveringAt":null,"busyAt":null,"errorAt":null,"currentState":"not_started","jobCreationRequest":{"name":"session_job","conf":{},"driverMemory":"4g","driverCores":4,"executorMemory":"4g","executorCores":4,"numExecutors":2}},"name":"session_job","workspaceName":"testsynapseworkspace1234","computeName":"testsparkpool","sparkPoolName":"testsparkpool","submitterName":"zhezhou@microsoft.com","submitterId":"8f51e348-1fa6-4194-8d13-8e0368e3298a","artifactId":"Livy","jobType":"SparkSession","result":"Uncertain","schedulerInfo":{"submittedAt":"2020-02-27T04:16:20.4922641+00:00","scheduledAt":null,"endedAt":null,"cancellationRequestedAt":null,"currentState":"Queued"},"pluginInfo":{"preparationStartedAt":null,"resourceAcquisitionStartedAt":null,"submissionStartedAt":null,"monitoringStartedAt":null,"cleanupStartedAt":null,"currentState":"Preparation"},"tags":{},"id":57,"appId":null,"appInfo":null,"state":"not_started","log":null}'
+      string: '{"livyInfo":{"notStartedAt":null,"startingAt":null,"idleAt":null,"deadAt":null,"shuttingDownAt":null,"killedAt":null,"recoveringAt":null,"busyAt":null,"errorAt":null,"currentState":"not_started","jobCreationRequest":{"name":"session_job","conf":{},"driverMemory":"4g","driverCores":4,"executorMemory":"4g","executorCores":4,"numExecutors":2}},"name":"session_job","workspaceName":"testsynapseworkspace1234","computeName":"testsparkpool","sparkPoolName":"testsparkpool","submitterName":"zhezhou@microsoft.com","submitterId":"8f51e348-1fa6-4194-8d13-8e0368e3298a","artifactId":"Livy","jobType":"SparkSession","result":"Uncertain","schedulerInfo":{"submittedAt":"2020-03-10T10:44:56.6733194+00:00","scheduledAt":null,"endedAt":null,"cancellationRequestedAt":null,"currentState":"Queued"},"pluginInfo":{"preparationStartedAt":null,"resourceAcquisitionStartedAt":null,"submissionStartedAt":null,"monitoringStartedAt":null,"cleanupStartedAt":null,"currentState":"Preparation"},"tags":{},"id":72,"appId":null,"appInfo":null,"state":"not_started","log":null}'
     headers:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 27 Feb 2020 04:16:20 GMT
+      - Tue, 10 Mar 2020 10:44:56 GMT
       server:
       - Kestrel Microsoft-HTTPAPI/2.0
       strict-transport-security:
@@ -32,13 +32,13 @@ interactions:
       transfer-encoding:
       - chunked
       x-ms-activity-id:
-      - 7cd981b1-a5b4-4e11-8265-1159e913d61c
+      - e2ab1922-e3b0-48ea-b873-921841f4ca3d
       x-ms-job-clusterrequested-on:
       - 1/1/0001 12:00:00 AM +00:00
       x-ms-job-ended-on:
       - ''
       x-ms-job-internal-id:
-      - '57'
+      - '72'
       x-ms-job-livysubmission-on:
       - 1/1/0001 12:00:00 AM +00:00
       x-ms-job-queued-on:
@@ -52,11 +52,11 @@ interactions:
       x-ms-job-submitted-by-name:
       - zhezhou@microsoft.com
       x-ms-job-submitted-on:
-      - 2/27/2020 4:16:20 AM +00:00
+      - 3/10/2020 10:44:56 AM +00:00
       x-ms-job-type:
       - SparkServiceSession
       x-ms-response-time-ms:
-      - '176'
+      - '106'
     status:
       code: 200
       message: OK
@@ -69,27 +69,29 @@ interactions:
       - gzip, deflate
       Connection:
       - keep-alive
+      Content-Type:
+      - application/json; charset=utf-8
       User-Agent:
-      - azsdk-python-core/1.2.2 Python/3.7.4 (Windows-10-10.0.18362-SP0) azsdk-python-synapseclient/0.1.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 azure-synapse/0.1.0
     method: GET
-    uri: https://testsynapseworkspace1234.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/testsparkpool/sessions/57?detailed=true
+    uri: https://testsynapseworkspace1234.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/testsparkpool/sessions/72?detailed=true
   response:
     body:
-      string: '{"livyInfo":{"notStartedAt":null,"startingAt":"2020-02-27T04:16:24.3185833+00:00","idleAt":"2020-02-27T04:16:45.5614194+00:00","deadAt":null,"shuttingDownAt":null,"killedAt":null,"recoveringAt":null,"busyAt":null,"errorAt":null,"currentState":"idle","jobCreationRequest":{"name":"session_job","conf":{},"driverMemory":"4g","driverCores":4,"executorMemory":"4g","executorCores":4,"numExecutors":2}},"name":"session_job","workspaceName":"testsynapseworkspace1234","computeName":"testsparkpool","sparkPoolName":"testsparkpool","submitterName":"zhezhou@microsoft.com","submitterId":"8f51e348-1fa6-4194-8d13-8e0368e3298a","artifactId":"Livy","jobType":"SparkSession","result":"Uncertain","schedulerInfo":{"submittedAt":"2020-02-27T04:16:20.4922641+00:00","scheduledAt":"2020-02-27T04:16:20.6576263+00:00","endedAt":null,"cancellationRequestedAt":null,"currentState":"Scheduled"},"pluginInfo":{"preparationStartedAt":"2020-02-27T04:16:20.6699983+00:00","resourceAcquisitionStartedAt":"2020-02-27T04:16:21.0170444+00:00","submissionStartedAt":"2020-02-27T04:16:23.9887091+00:00","monitoringStartedAt":"2020-02-27T04:16:24.333677+00:00","cleanupStartedAt":null,"currentState":"Monitoring"},"tags":{},"id":57,"appId":"application_1582770999899_0009","appInfo":{"driverLogUrl":"http://b50c2ae5022b43d0a9a8b293074617ef001b6d10128:8042/node/containerlogs/container_1582770999899_0009_01_000001/trusted-service-user","sparkUiUrl":"http://b50c2ae5022b43d0a9a8b293074617ef000a6688148:8088/proxy/application_1582770999899_0009/"},"state":"idle","log":["\t
-        final status: UNDEFINED","\t tracking URL: http://b50c2ae5022b43d0a9a8b293074617ef000a6688148:8088/proxy/application_1582770999899_0009/","\t
-        user: trusted-service-user","20/02/27 04:16:28 INFO ShutdownHookManager: Shutdown
-        hook called","20/02/27 04:16:28 INFO ShutdownHookManager: Deleting directory
-        /tmp/spark-8de64710-5be4-44a4-ba96-750725d49127","20/02/27 04:16:28 INFO ShutdownHookManager:
-        Deleting directory /tmp/spark-cde2b3dc-194b-4eaa-9f3e-0c2621e0d151","20/02/27
-        04:16:28 INFO MetricsSystemImpl: Stopping azure-file-system metrics system...","20/02/27
-        04:16:28 INFO MetricsSystemImpl: azure-file-system metrics system stopped.","20/02/27
-        04:16:28 INFO MetricsSystemImpl: azure-file-system metrics system shutdown
+      string: '{"livyInfo":{"notStartedAt":null,"startingAt":"2020-03-10T10:45:50.0342941+00:00","idleAt":"2020-03-10T10:47:06.4074592+00:00","deadAt":null,"shuttingDownAt":null,"killedAt":null,"recoveringAt":null,"busyAt":null,"errorAt":null,"currentState":"idle","jobCreationRequest":{"name":"session_job","conf":{},"driverMemory":"4g","driverCores":4,"executorMemory":"4g","executorCores":4,"numExecutors":2}},"name":"session_job","workspaceName":"testsynapseworkspace1234","computeName":"testsparkpool","sparkPoolName":"testsparkpool","submitterName":"zhezhou@microsoft.com","submitterId":"8f51e348-1fa6-4194-8d13-8e0368e3298a","artifactId":"Livy","jobType":"SparkSession","result":"Uncertain","schedulerInfo":{"submittedAt":"2020-03-10T10:44:56.6733194+00:00","scheduledAt":"2020-03-10T10:44:57.7864405+00:00","endedAt":null,"cancellationRequestedAt":null,"currentState":"Scheduled"},"pluginInfo":{"preparationStartedAt":"2020-03-10T10:44:57.7984449+00:00","resourceAcquisitionStartedAt":"2020-03-10T10:44:57.9984502+00:00","submissionStartedAt":"2020-03-10T10:45:18.222537+00:00","monitoringStartedAt":"2020-03-10T10:45:50.0507082+00:00","cleanupStartedAt":null,"currentState":"Monitoring"},"tags":{},"id":72,"appId":"application_1583837137811_0002","appInfo":{"driverLogUrl":"http://a3125a5895a04558ab5de2a9b4c1183d00144368748:8042/node/containerlogs/container_1583837137811_0002_01_000001/trusted-service-user","sparkUiUrl":"http://a3125a5895a04558ab5de2a9b4c1183d002be785418:8088/proxy/application_1583837137811_0002/"},"state":"idle","log":["\t
+        final status: UNDEFINED","\t tracking URL: http://a3125a5895a04558ab5de2a9b4c1183d002be785418:8088/proxy/application_1583837137811_0002/","\t
+        user: trusted-service-user","20/03/10 10:46:00 INFO ShutdownHookManager: Shutdown
+        hook called","20/03/10 10:46:00 INFO ShutdownHookManager: Deleting directory
+        /tmp/spark-6f8c7fea-04ba-45ff-aeb9-90f74bd745fd","20/03/10 10:46:00 INFO ShutdownHookManager:
+        Deleting directory /tmp/spark-56ddb299-38b4-4df8-8a58-3938ac7261f0","20/03/10
+        10:46:00 INFO MetricsSystemImpl: Stopping azure-file-system metrics system...","20/03/10
+        10:46:00 INFO MetricsSystemImpl: azure-file-system metrics system stopped.","20/03/10
+        10:46:00 INFO MetricsSystemImpl: azure-file-system metrics system shutdown
         complete.","\nYARN Diagnostics: "]}'
     headers:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 27 Feb 2020 04:22:22 GMT
+      - Tue, 10 Mar 2020 10:50:58 GMT
       server:
       - Kestrel Microsoft-HTTPAPI/2.0
       strict-transport-security:
@@ -97,33 +99,33 @@ interactions:
       transfer-encoding:
       - chunked
       x-ms-activity-id:
-      - 5057edcf-0418-4bd5-8616-01ecee2fa327
+      - 8ae53fbd-5f82-4216-a388-fc661e2b3465
       x-ms-job-cluster:
-      - http://171.0.202.6:8998/
+      - http://171.5.122.7:8998/
       x-ms-job-clusterrequested-on:
-      - 2/27/2020 4:16:21 AM +00:00
+      - 3/10/2020 10:44:57 AM +00:00
       x-ms-job-ended-on:
       - ''
       x-ms-job-internal-id:
-      - '57'
+      - '72'
       x-ms-job-livysubmission-on:
-      - 2/27/2020 4:16:24 AM +00:00
+      - 3/10/2020 10:45:50 AM +00:00
       x-ms-job-queued-on:
-      - 2/27/2020 4:16:23 AM +00:00
+      - 3/10/2020 10:45:18 AM +00:00
       x-ms-job-result:
       - Uncertain
       x-ms-job-scheduled-on:
-      - 2/27/2020 4:16:20 AM +00:00
+      - 3/10/2020 10:44:57 AM +00:00
       x-ms-job-scheduler-state:
       - Scheduled
       x-ms-job-submitted-by-name:
       - zhezhou@microsoft.com
       x-ms-job-submitted-on:
-      - 2/27/2020 4:16:20 AM +00:00
+      - 3/10/2020 10:44:56 AM +00:00
       x-ms-job-type:
       - SparkServiceSession
       x-ms-response-time-ms:
-      - '16'
+      - '84'
     status:
       code: 200
       message: OK
@@ -136,8 +138,10 @@ interactions:
       - gzip, deflate
       Connection:
       - keep-alive
+      Content-Type:
+      - application/json; charset=utf-8
       User-Agent:
-      - azsdk-python-core/1.2.2 Python/3.7.4 (Windows-10-10.0.18362-SP0) azsdk-python-synapseclient/0.1.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 azure-synapse/0.1.0
     method: GET
     uri: https://testsynapseworkspace1234.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/testsparkpool/sessions?detailed=true
   response:
@@ -373,7 +377,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 27 Feb 2020 04:22:24 GMT
+      - Tue, 10 Mar 2020 10:51:07 GMT
       server:
       - Kestrel Microsoft-HTTPAPI/2.0
       strict-transport-security:
@@ -381,9 +385,9 @@ interactions:
       transfer-encoding:
       - chunked
       x-ms-activity-id:
-      - 9cd48269-94cc-4209-b3ad-a48981f00079
+      - be96e7d6-fb7f-4718-83ae-b9c3785e7e0d
       x-ms-response-time-ms:
-      - '122'
+      - '6937'
     status:
       code: 200
       message: OK
@@ -391,17 +395,19 @@ interactions:
     body: null
     headers:
       Accept:
-      - '*/*'
+      - application/json
       Accept-Encoding:
       - gzip, deflate
       Connection:
       - keep-alive
       Content-Length:
       - '0'
+      Content-Type:
+      - application/json; charset=utf-8
       User-Agent:
-      - azsdk-python-core/1.2.2 Python/3.7.4 (Windows-10-10.0.18362-SP0) azsdk-python-synapseclient/0.1.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 azure-synapse/0.1.0
     method: PUT
-    uri: https://testsynapseworkspace1234.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/testsparkpool/sessions/57/reset-timeout
+    uri: https://testsynapseworkspace1234.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/testsparkpool/sessions/72/reset-timeout
   response:
     body:
       string: ''
@@ -409,15 +415,15 @@ interactions:
       content-length:
       - '0'
       date:
-      - Thu, 27 Feb 2020 04:22:27 GMT
+      - Tue, 10 Mar 2020 10:51:09 GMT
       server:
       - Kestrel Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-ms-activity-id:
-      - 942b7d6b-ccb7-408e-838b-98c8d374c9d1
+      - f57497e9-0755-4b34-a757-d7a2fc7ac3f1
       x-ms-response-time-ms:
-      - '17'
+      - '23'
     status:
       code: 200
       message: OK
@@ -434,11 +440,11 @@ interactions:
       Content-Length:
       - '83'
       Content-Type:
-      - application/json
+      - application/json; charset=utf-8
       User-Agent:
-      - azsdk-python-core/1.2.2 Python/3.7.4 (Windows-10-10.0.18362-SP0) azsdk-python-synapseclient/0.1.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 azure-synapse/0.1.0
     method: POST
-    uri: https://testsynapseworkspace1234.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/testsparkpool/sessions/57/statements
+    uri: https://testsynapseworkspace1234.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/testsparkpool/sessions/72/statements
   response:
     body:
       string: '{"id":0,"code":"import time\ntime.sleep(10)\nprint(''hello from cli'')","state":"waiting","output":null}'
@@ -446,7 +452,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 27 Feb 2020 04:22:28 GMT
+      - Tue, 10 Mar 2020 10:51:11 GMT
       server:
       - Kestrel Microsoft-HTTPAPI/2.0
       strict-transport-security:
@@ -454,9 +460,9 @@ interactions:
       transfer-encoding:
       - chunked
       x-ms-activity-id:
-      - 66413ef9-d8c7-4772-b341-84ed48e90201
+      - a8b0628c-6c88-4955-b9a3-757bfc9c3398
       x-ms-response-time-ms:
-      - '41'
+      - '72'
     status:
       code: 200
       message: OK
@@ -469,18 +475,20 @@ interactions:
       - gzip, deflate
       Connection:
       - keep-alive
+      Content-Type:
+      - application/json; charset=utf-8
       User-Agent:
-      - azsdk-python-core/1.2.2 Python/3.7.4 (Windows-10-10.0.18362-SP0) azsdk-python-synapseclient/0.1.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 azure-synapse/0.1.0
     method: GET
-    uri: https://testsynapseworkspace1234.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/testsparkpool/sessions/57/statements/0
+    uri: https://testsynapseworkspace1234.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/testsparkpool/sessions/72/statements/0
   response:
     body:
-      string: '{"id":0,"code":"import time\ntime.sleep(10)\nprint(''hello from cli'')","state":"running","output":null}'
+      string: '{"id":0,"code":"import time\ntime.sleep(10)\nprint(''hello from cli'')","state":"waiting","output":null}'
     headers:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 27 Feb 2020 04:22:30 GMT
+      - Tue, 10 Mar 2020 10:51:12 GMT
       server:
       - Kestrel Microsoft-HTTPAPI/2.0
       strict-transport-security:
@@ -488,9 +496,9 @@ interactions:
       transfer-encoding:
       - chunked
       x-ms-activity-id:
-      - a7542c5a-97b1-4aec-959f-0d2f373f55be
+      - cfb42459-a0a4-4a65-953c-d0238c801c4e
       x-ms-response-time-ms:
-      - '19'
+      - '21'
     status:
       code: 200
       message: OK
@@ -503,19 +511,21 @@ interactions:
       - gzip, deflate
       Connection:
       - keep-alive
+      Content-Type:
+      - application/json; charset=utf-8
       User-Agent:
-      - azsdk-python-core/1.2.2 Python/3.7.4 (Windows-10-10.0.18362-SP0) azsdk-python-synapseclient/0.1.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 azure-synapse/0.1.0
     method: GET
-    uri: https://testsynapseworkspace1234.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/testsparkpool/sessions/57/statements
+    uri: https://testsynapseworkspace1234.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/testsparkpool/sessions/72/statements
   response:
     body:
       string: '{"total_statements":1,"statements":[{"id":0,"code":"import time\ntime.sleep(10)\nprint(''hello
-        from cli'')","state":"running","output":null}]}'
+        from cli'')","state":"waiting","output":null}]}'
     headers:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 27 Feb 2020 04:22:31 GMT
+      - Tue, 10 Mar 2020 10:51:14 GMT
       server:
       - Kestrel Microsoft-HTTPAPI/2.0
       strict-transport-security:
@@ -523,9 +533,9 @@ interactions:
       transfer-encoding:
       - chunked
       x-ms-activity-id:
-      - e0b1b83d-c684-4779-a263-20a80c4b6a65
+      - f3c81417-b429-4f12-b462-b6407fa42064
       x-ms-response-time-ms:
-      - '18'
+      - '42'
     status:
       code: 200
       message: OK
@@ -540,10 +550,12 @@ interactions:
       - keep-alive
       Content-Length:
       - '0'
+      Content-Type:
+      - application/json; charset=utf-8
       User-Agent:
-      - azsdk-python-core/1.2.2 Python/3.7.4 (Windows-10-10.0.18362-SP0) azsdk-python-synapseclient/0.1.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 azure-synapse/0.1.0
     method: POST
-    uri: https://testsynapseworkspace1234.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/testsparkpool/sessions/57/statements/0/cancel
+    uri: https://testsynapseworkspace1234.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/testsparkpool/sessions/72/statements/0/cancel
   response:
     body:
       string: '{"msg":"canceled"}'
@@ -551,7 +563,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 27 Feb 2020 04:22:33 GMT
+      - Tue, 10 Mar 2020 10:51:15 GMT
       server:
       - Kestrel Microsoft-HTTPAPI/2.0
       strict-transport-security:
@@ -559,9 +571,9 @@ interactions:
       transfer-encoding:
       - chunked
       x-ms-activity-id:
-      - d0f9ff88-0d8c-49f6-85c5-18702c4ed0e6
+      - e02054b6-de32-4f10-a5de-379491e4be5b
       x-ms-response-time-ms:
-      - '15'
+      - '35'
     status:
       code: 200
       message: OK
@@ -569,17 +581,19 @@ interactions:
     body: null
     headers:
       Accept:
-      - '*/*'
+      - application/json
       Accept-Encoding:
       - gzip, deflate
       Connection:
       - keep-alive
       Content-Length:
       - '0'
+      Content-Type:
+      - application/json; charset=utf-8
       User-Agent:
-      - azsdk-python-core/1.2.2 Python/3.7.4 (Windows-10-10.0.18362-SP0) azsdk-python-synapseclient/0.1.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 azure-synapse/0.1.0
     method: DELETE
-    uri: https://testsynapseworkspace1234.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/testsparkpool/sessions/57
+    uri: https://testsynapseworkspace1234.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/testsparkpool/sessions/72
   response:
     body:
       string: ''
@@ -587,13 +601,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Thu, 27 Feb 2020 04:22:34 GMT
+      - Tue, 10 Mar 2020 10:51:19 GMT
       server:
       - Kestrel Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-ms-activity-id:
-      - a47aec0a-3f0c-4c49-a277-a7ca05ed2935
+      - 493d698d-5761-4b44-b439-f0e221301ce8
       x-ms-response-time-ms:
       - '25'
     status:

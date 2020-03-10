@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
+from azure.cli.core.util import sdk_no_wait
 from knack.log import get_logger  # pylint: disable=unused-import
 from knack.util import CLIError
 
@@ -107,7 +107,7 @@ def list_workspaces(cmd, client, resource_group_name=None):  # pylint: disable=u
 
 
 def create_workspace(cmd, client, resource_group_name, workspace_name, account_url, file_system, sql_admin_login_user,
-                     sql_admin_login_password, location, tags=None, identity_type="SystemAssigned"):
+                     sql_admin_login_password, location, tags=None, identity_type="SystemAssigned", no_wait=False):
     identity = ManagedIdentity(type=identity_type)
     default_data_lake_storage = DataLakeStorageAccountDetails(account_url=account_url, filesystem=file_system)
     workspace_info = Workspace(
@@ -117,18 +117,18 @@ def create_workspace(cmd, client, resource_group_name, workspace_name, account_u
         sql_administrator_login_password=sql_admin_login_password,
         location=location
     )
-    return client.create_or_update(resource_group_name, workspace_name, workspace_info)
+    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, workspace_name, workspace_info)
 
 
 def update_workspace(cmd, client, resource_group_name, workspace_name, sql_admin_login_password=None,
-                     identity_type="SystemAssigned", principal_id=None, tags=None):
+                     identity_type="SystemAssigned", principal_id=None, tags=None, no_wait=False):
     identity = ManagedIdentity(type=identity_type)
     workspace_patch_info = WorkspacePatchInfo(
         tags=tags,
         identity=identity,
         sql_administrator_login_password=sql_admin_login_password
     )
-    return client.update(resource_group_name, workspace_name, workspace_patch_info)
+    return sdk_no_wait(no_wait, client.update, resource_group_name, workspace_name, workspace_patch_info)
 
 
 def get_spark_pool(cmd, client, resource_group_name, workspace_name, spark_pool_name):
@@ -141,7 +141,7 @@ def create_spark_pool(cmd, client, resource_group_name, workspace_name, spark_po
                       min_node_count=3,
                       max_node_count=40, auto_pause_enabled=True, delay_in_minutes=15, spark_events_folder="/events",
                       library_requirements_filename=None, library_requirements_content=None,
-                      default_spark_log_folder="/logs", force=False, tags=None):
+                      default_spark_log_folder="/logs", force=False, tags=None, no_wait=False):
     big_data_pool_info = BigDataPoolResourceInfo(location=location, spark_version=spark_version, node_size=node_size,
                                                  node_count=node_count, node_size_family=node_size_family,
                                                  spark_events_folder=spark_events_folder,
@@ -156,23 +156,24 @@ def create_spark_pool(cmd, client, resource_group_name, workspace_name, spark_po
     if library_requirements_filename or library_requirements_content:
         big_data_pool_info.library_requirements = LibraryRequirements(filename=library_requirements_filename,
                                                                       content=library_requirements_content)
-    return client.create_or_update(resource_group_name, workspace_name, spark_pool_name, big_data_pool_info, force)
+    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, workspace_name, spark_pool_name,
+                       big_data_pool_info, force)
 
 
 def update_spark_pool(cmd, client, resource_group_name, workspace_name, spark_pool_name, tags=None):
     return client.update(resource_group_name, workspace_name, spark_pool_name, tags)
 
 
-def delete_spark_pool(cmd, client, resource_group_name, workspace_name, spark_pool_name):
-    return client.delete(resource_group_name, workspace_name, spark_pool_name)
+def delete_spark_pool(cmd, client, resource_group_name, workspace_name, spark_pool_name, no_wait=False):
+    return sdk_no_wait(no_wait, client.delete, resource_group_name, workspace_name, spark_pool_name)
 
 
 def create_sql_pool(cmd, client, resource_group_name, workspace_name, sql_pool_name, location, sku_name,
                     sku_tier=None, max_size_bytes=None, source_database_id=None, recoverable_database_id=None,
-                    create_mode=None, tags=None):
+                    create_mode=None, tags=None, no_wait=False):
     sku = Sku(tier=sku_tier, name=sku_name)
     sql_pool_info = SqlPool(sku=sku, location=location, max_size_bytes=max_size_bytes,
                             source_database_id=source_database_id, recoverable_database_id=recoverable_database_id,
                             create_mode=create_mode, tags=tags)
 
-    return client.create(resource_group_name, workspace_name, sql_pool_name, sql_pool_info)
+    return sdk_no_wait(no_wait, client.create, resource_group_name, workspace_name, sql_pool_name, sql_pool_info)

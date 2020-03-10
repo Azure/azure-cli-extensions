@@ -31,7 +31,7 @@ def load_arguments(self, _):
             c.argument('executor_memory', help='The memory of executor.')
             c.argument('executor_cores', help='The number of cores in each executor.')
             c.argument('num_executors', help='The number of executors.')
-            c.argument('tags', arg_type=tags_type, help='The tags of spark batch job.')
+            c.argument('tags', arg_type=tags_type)
             c.argument('detailed', action='store_true',
                        help='Optional query parameter specifying whether detailed response is returned beyond plain livy.')
 
@@ -88,7 +88,7 @@ def load_arguments(self, _):
     for scope in ['create', 'update']:
         with self.argument_context('synapse workspace ' + scope) as c:
             c.argument('sql_admin_login_password', help='The sql administrator login password.')
-            c.argument('tags', arg_type=tags_type, help='The tag of workspace.')
+            c.argument('tags', arg_type=tags_type)
             c.argument('identity_type', help='The type of managed identity.')
 
     with self.argument_context('synapse workspace create') as c:
@@ -138,10 +138,10 @@ def load_arguments(self, _):
         c.argument('spark_version', arg_group='Component Version', help='The supported spark version is 2.4 now.')
 
         c.argument('force', help='The flag of force operation.')
-        c.argument('tags', arg_type=tags_type, help='The tags of spark pool.')
+        c.argument('tags', arg_type=tags_type)
 
     with self.argument_context('synapse spark pool update') as c:
-        c.argument('tags', arg_type=tags_type, help='The tags of spark pool.')
+        c.argument('tags', arg_type=tags_type)
 
     # synapse sql pool
     with self.argument_context('synapse sql pool') as c:
@@ -158,4 +158,4 @@ def load_arguments(self, _):
         c.argument('source_database_id', help='The source database id.')
         c.argument('recoverable_database_id', help='The recoverable database id.')
         c.argument('create_mode', help='The create mode.')
-        c.argument('tags', arg_type=tags_type, help='The tags.')
+        c.argument('tags', arg_type=tags_type)
