@@ -367,7 +367,6 @@ def cli_eventgrid_event_subscription_get(
 
 def cli_event_subscription_list(   # pylint: disable=too-many-return-statements
         client,
-        resource_id=None,
         source_resource_id=None,
         location=None,
         resource_group_name=None,
@@ -377,7 +376,7 @@ def cli_event_subscription_list(   # pylint: disable=too-many-return-statements
         # If Source Resource ID is specified, we need to list event subscriptions for that particular resource.
         # Since a full resource ID is specified, it should override all other defaults such as default location and RG
         # No other parameters must be specified
-        if (topic_type_name is not None or resource_id is not None):
+        if topic_type_name is not None:
             raise CLIError('usage error: Since --source-resource-id is specified, none of the other parameters must '
                            'be specified.')
 
