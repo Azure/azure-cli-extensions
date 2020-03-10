@@ -9,6 +9,9 @@
 # pylint: disable=unused-argument
 
 
+from azure.cli.core.util import sdk_no_wait
+
+
 def create_databricks_workspace(cmd, client,
                                 resource_group_name,
                                 workspace_name,
@@ -26,7 +29,8 @@ def create_databricks_workspace(cmd, client,
                                 storage_account_name=None,
                                 storage_account_sku_name=None,
                                 vnet_address_prefix=None,
-                                tags=None):
+                                tags=None,
+                                no_wait=False):
     body = {}
     body['tags'] = tags  # dictionary
     body['location'] = location  # str
@@ -54,7 +58,10 @@ def create_databricks_workspace(cmd, client,
     _set_parameter_value(parameters, 'vnet_address_prefix', vnet_address_prefix)  # str
     body['parameters'] = parameters
 
-    return client.create_or_update(resource_group_name=resource_group_name, workspace_name=workspace_name, parameters=body)
+    return sdk_no_wait(no_wait, client.create_or_update,
+                       resource_group_name=resource_group_name,
+                       workspace_name=workspace_name,
+                       parameters=body)
 
 
 def _set_parameter_value(parameters, field, value):
@@ -64,16 +71,20 @@ def _set_parameter_value(parameters, field, value):
 def update_databricks_workspace(cmd, client,  # pylint: disable=too-many-branches
                                 resource_group_name,
                                 workspace_name,
-                                tags=None):
-    return client.update(resource_group_name=resource_group_name,
-                         workspace_name=workspace_name,
-                         tags=tags)
+                                tags=None,
+                                no_wait=False):
+    return sdk_no_wait(no_wait, client.update,
+                       resource_group_name=resource_group_name,
+                       workspace_name=workspace_name,
+                       tags=tags)
 
 
 def delete_databricks_workspace(cmd, client, resource_group_name,
-                                workspace_name):
-    return client.delete(resource_group_name=resource_group_name,
-                         workspace_name=workspace_name)
+                                workspace_name,
+                                no_wait=False):
+    return sdk_no_wait(no_wait, client.delete,
+                       resource_group_name=resource_group_name,
+                       workspace_name=workspace_name)
 
 
 def get_databricks_workspace(cmd, client, resource_group_name, workspace_name):
@@ -81,7 +92,7 @@ def get_databricks_workspace(cmd, client, resource_group_name, workspace_name):
                       workspace_name=workspace_name)
 
 
-def list_databricks_workspace(cmd, client, resource_group_name=None, list_all=None):
-    if list_all or resource_group_name is None:
-        return client.list_by_subscription()
+def list_databricks_workspace(cmd, client, resource_group_name=None):
+    if not resource_group_name:
+        return client.list_by_subscription()  # todo service 502
     return client.list_by_resource_group(resource_group_name=resource_group_name)

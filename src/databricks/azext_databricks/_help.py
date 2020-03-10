@@ -16,60 +16,57 @@ helps['databricks workspace'] = """
 
 helps['databricks workspace create'] = """
     type: command
-    short-summary: Creates a new workspace.
+    short-summary: Create a new workspace.
     examples:
-      - name: Create or update workspace
+      - name: Create a workspace
         text: |-
-               az databricks workspace create --resource-group "rg" --name "myWorkspace" --location \\
+               az databricks workspace create --resource-group "myResourceGroup" --name "myWorkspace" --location \\
                "westus"  --sku standard
-      - name: Create or update workspace with custom parameters
+      - name: Create a workspace with custom parameters
         text: |-
-               az databricks workspace create --resource-group "rg" --name "myWorkspace" --location \\
-               "westus" --managed-resource-group "myResourceGroup" --sku premium \\
+               az databricks workspace create --resource-group "myResourceGroup" --name "myWorkspace" --location \\
+               "westus" --managed-resource-group "managedResourceGroup" --sku premium \\
                --relay-namespace-name "mydbrelay" --storage-account-name "mystorageaccount"
 """
 
 helps['databricks workspace update'] = """
     type: command
-    short-summary: Update workspace.
+    short-summary: Update the workspace.
     examples:
-      - name: Update a workspace's tags.
+      - name: Update the workspace's tags.
         text: |-
-               az databricks workspace update --resource-group "rg" --name "myWorkspace" --tags key1=value1 key2=value2
-      - name: Clean a workspace's tags.
+               az databricks workspace update --resource-group "myResourceGroup" --name "myWorkspace" --tags key1=value1 key2=value2
+      - name: Clean the workspace's tags.
         text: |-
-               az databricks workspace update --resource-group "rg" --name "myWorkspace" --tags ""
+               az databricks workspace update --resource-group "myResourceGroup" --name "myWorkspace" --tags ""
 """
 
 helps['databricks workspace delete'] = """
     type: command
-    short-summary: Deletes the workspace.
+    short-summary: Delete the workspace.
     examples:
-      - name: Delete a workspace
+      - name: Delete the workspace
         text: |-
-               az databricks workspace delete --resource-group "rg" --name "myWorkspace"
+               az databricks workspace delete --resource-group "myResourceGroup" --name "myWorkspace"
 """
 
 helps['databricks workspace show'] = """
     type: command
     short-summary: Show the workspace.
     examples:
-      - name: Show a workspace with custom parameters
+      - name: Show the workspace
         text: |-
-               az databricks workspace show --resource-group "rg" --name "myWorkspace"
-      - name: Show a workspace
-        text: |-
-               az databricks workspace show --resource-group "rg" --name "myWorkspace"
+               az databricks workspace show --resource-group "myResourceGroup" --name "myWorkspace"
 """
 
 helps['databricks workspace list'] = """
     type: command
-    short-summary: Gets all the workspaces within a resource group.
+    short-summary: Get all the workspaces.
     examples:
-      - name: Lists workspaces
+      - name: List workspaces within a resource group
         text: |-
-               az databricks workspace list --resource-group "rg"
-      - name: Lists workspaces
+               az databricks workspace list --resource-group "myResourceGroup"
+      - name: List workspaces within the default subscription
         text: |-
                az databricks workspace list
 """
@@ -79,6 +76,6 @@ helps['databricks workspace wait'] = """
     short-summary: Place the CLI in a waiting state until a condition of the Databricks workspace is met.
     examples:
         - name: Pause executing next line of CLI script until the Databricks workspace is successfully provisioned.
-          text: az databricks workspace wait --resource-group "rg" --name "myWorkspace" \\
+          text: az databricks workspace wait --resource-group "myResourceGroup" --name "myWorkspace" \\
                 --created
 """
