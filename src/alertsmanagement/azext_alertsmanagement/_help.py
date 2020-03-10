@@ -16,42 +16,39 @@ helps['alertsmanagement action-rule'] = """
 
 helps['alertsmanagement action-rule create'] = """
     type: command
-    short-summary: Creates/Updates a specific action rule
+    short-summary: Create an action rule
     examples:
-      - name: Create an action rule.
+      - name: Create an action rule with suppression type
         text: |-
-               az alertsmanagement action-rule create --resource-group "alertscorrelationrg" --name "rule" --location "Global" --status "Enabled" --rule-type Suppression --severity Equals Sev0 Sev2 --recurrence-type Daily --start-date 12/09/2018 --end-date 12/18/2018 --start-time 06:00:00 --end-time 14:00:00
+               az alertsmanagement action-rule create --resource-group "rg" --name "rule" --location "Global" --status "Enabled" --rule-type Suppression --severity Equals Sev0 Sev2 --recurrence-type Daily --start-date 12/09/2018 --end-date 12/18/2018 --start-time 06:00:00 --end-time 14:00:00
 
 """
 
 helps['alertsmanagement action-rule update'] = """
     type: command
-    short-summary: Creates/Updates a specific action rule
+    short-summary: Update an action rule
     examples:
-      - name: Update an action rule.
+      - name: Update an action rule
         text: |-
-               az alertsmanagement action-rule update --resource-group "alertscorrelationrg" --name \\
-               "WeeklySuppression" --status "Disabled"
+               az alertsmanagement action-rule update --resource-group "rg" --name "rule" --status "Disabled"
 """
 
 helps['alertsmanagement action-rule delete'] = """
     type: command
-    short-summary: Delete a given action rule
+    short-summary: Delete an action rule
     examples:
-      - name: DeleteActionRule
+      - name: Delete an action rule
         text: |-
-               az alertsmanagement action-rule delete --resource-group "alertscorrelationrg" --name \\
-               "DailySuppression"
+               az alertsmanagement action-rule delete --resource-group "rg" --name "rule"
 """
 
 helps['alertsmanagement action-rule show'] = """
     type: command
     short-summary: Get a specific action rule
     examples:
-      - name: GetActionRuleById
+      - name: Get a specific action rule
         text: |-
-               az alertsmanagement action-rule show --resource-group "alertscorrelationrg" --name \\
-               "DailySuppression"
+               az alertsmanagement action-rule show --resource-group "rg" --name "rule"
 """
 
 helps['alertsmanagement action-rule list'] = """
@@ -63,5 +60,5 @@ helps['alertsmanagement action-rule list'] = """
                az alertsmanagement action-rule list
       - name: List action rules of the resource group
         text: |-
-               az alertsmanagement action-rule list --resource-group "alertscorrelationrg"
+               az alertsmanagement action-rule list --resource-group "rg"
 """
