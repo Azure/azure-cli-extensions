@@ -215,7 +215,6 @@ def cli_domain_topic_list(
 
 
 def cli_eventgrid_event_subscription_create(   # pylint: disable=too-many-locals
-        cmd,
         client,
         event_subscription_name,
         endpoint,
@@ -331,7 +330,6 @@ def cli_eventgrid_event_subscription_create(   # pylint: disable=too-many-locals
 
 
 def cli_eventgrid_event_subscription_delete(
-        cmd,
         client,
         event_subscription_name,
         source_resource_id=None):
@@ -341,7 +339,6 @@ def cli_eventgrid_event_subscription_delete(
 
 
 def event_subscription_setter(
-        cmd,
         client,
         parameters,
         event_subscription_name,
@@ -354,7 +351,6 @@ def event_subscription_setter(
 
 
 def cli_eventgrid_event_subscription_get(
-        cmd,
         client,
         event_subscription_name,
         source_resource_id=None,
@@ -463,8 +459,8 @@ def _get_scope(
 
     return scope
 
+
 def event_subscription_getter(
-        cmd,
         client,
         event_subscription_name,
         source_resource_id=None):
