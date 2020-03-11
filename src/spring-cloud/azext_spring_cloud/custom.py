@@ -99,6 +99,7 @@ def app_create(cmd, client, resource_group, service, name,
                instance_count=None,
                runtime_version=None,
                jvm_options=None,
+               net_core_main_entry_path=None,
                env=None,
                enable_persistent_storage=None):
     apps = _get_all_apps(client, resource_group, service)
@@ -127,6 +128,7 @@ def app_create(cmd, client, resource_group, service, name,
         instance_count=instance_count,
         environment_variables=env,
         jvm_options=jvm_options,
+        net_core_main_entry_path=net_core_main_entry_path,
         runtime_version=runtime_version,)
     user_source_info = models.UserSourceInfo(
         relative_path='<default>', type='Jar')
@@ -163,6 +165,7 @@ def app_update(cmd, client, resource_group, service, name,
                deployment=None,
                runtime_version=None,
                jvm_options=None,
+               net_core_main_entry_path=None,
                env=None,
                enable_persistent_storage=None):
     properties = models.AppResourceProperties(public=is_public)
@@ -196,6 +199,7 @@ def app_update(cmd, client, resource_group, service, name,
         instance_count=None,
         environment_variables=env,
         jvm_options=jvm_options,
+        net_core_main_entry_path=net_core_main_entry_path,
         runtime_version=runtime_version,)
     properties = models.DeploymentResourceProperties(
         deployment_settings=deployment_settings)
@@ -299,6 +303,7 @@ def app_deploy(cmd, client, resource_group, service, name,
                target_module=None,
                runtime_version=None,
                jvm_options=None,
+               net_core_main_entry_path=None,
                cpu=None,
                memory=None,
                instance_count=None,
@@ -331,7 +336,8 @@ def app_deploy(cmd, client, resource_group, service, name,
                        target_module,
                        no_wait,
                        file_type,
-                       True)
+                       True,
+                       net_core_main_entry_path)
 
 
 def app_scale(cmd, client, resource_group, service, name,
@@ -441,6 +447,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                       target_module=None,
                       runtime_version=None,
                       jvm_options=None,
+                      net_core_main_entry_path=None,
                       cpu=None,
                       memory=None,
                       instance_count=None,
@@ -473,7 +480,9 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                        env,
                        target_module,
                        no_wait,
-                       file_type)
+                       file_type,
+                       False,
+                       net_core_main_entry_path)
 
 
 def deployment_list(cmd, client, resource_group, service, app):
@@ -947,7 +956,8 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
                 target_module=None,
                 no_wait=False,
                 file_type="Jar",
-                update=False):
+                update=False,
+                net_core_main_entry_path=None):
     upload_url = None
     relative_path = None
     logger.warning("[1/3] Requesting for upload URL")
@@ -976,6 +986,7 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
         memory_in_gb=memory,
         environment_variables=env,
         jvm_options=jvm_options,
+        net_core_main_entry_path=net_core_main_entry_path,
         runtime_version=runtime_version,
         instance_count=instance_count,)
     user_source_info = models.UserSourceInfo(
