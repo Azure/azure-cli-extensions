@@ -35,10 +35,10 @@ class AlertsScenarioTest(ScenarioTest):
                  '--monitor-condition Equals Fired '
                  '--target-resource-type NotEquals Microsoft.Compute/VirtualMachines '
                  '--recurrence-type Daily '
-                 '--start-date 12/09/2018 '
-                 '--end-date 12/18/2018 '
-                 '--start-time 06:00:00 '
-                 '--end-time 14:00:00',
+                 '--suppression-start-date 12/09/2018 '
+                 '--suppression-end-date 12/18/2018 '
+                 '--suppression-start-time 06:00:00 '
+                 '--suppression-end-time 14:00:00',
                  checks=[])
 
         self.cmd('az alertsmanagement action-rule show '

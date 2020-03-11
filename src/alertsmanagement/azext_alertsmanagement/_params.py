@@ -39,10 +39,10 @@ def load_arguments(self, _):
         c.argument('alert_description', nargs='+', help='Filter alerts by alert rule description')
         c.argument('alert_context', nargs='+', help='Filter alerts by alert context (payload)')
         c.argument('recurrence_type', arg_type=get_enum_type(SuppressionType), help='Specifies when the suppression should be applied')
-        c.argument('start_date', help='Start date for suppression')
-        c.argument('end_date', help='End date for suppression')
-        c.argument('start_time', help='Start time for suppression')
-        c.argument('end_time', help='End date for suppression')
+        c.argument('suppression_start_date', help='Start date for suppression. Format: MM/DD/YYYY')
+        c.argument('suppression_end_date', help='End date for suppression. Format: MM/DD/YYYY')
+        c.argument('suppression_start_time', help='Start time for suppression. Format: hh:mm:ss')
+        c.argument('suppression_end_time', help='End time for suppression. Format: hh:mm:ss')
 
     with self.argument_context('alertsmanagement action-rule update') as c:
         c.argument('action_rule_name', action_rule_name)

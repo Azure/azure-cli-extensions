@@ -20,7 +20,7 @@ helps['alertsmanagement action-rule create'] = """
     examples:
       - name: Create an action rule with suppression type
         text: |-
-               az alertsmanagement action-rule create --resource-group "rg" --name "rule" --location "Global" --status "Enabled" --rule-type Suppression --severity Equals Sev0 Sev2 --recurrence-type Daily --start-date 12/09/2018 --end-date 12/18/2018 --start-time 06:00:00 --end-time 14:00:00
+               az alertsmanagement action-rule create --resource-group "rg" --name "rule" --location "Global" --status "Enabled" --rule-type Suppression --severity Equals Sev0 Sev2 --recurrence-type Daily --suppression-start-date 12/09/2018 --suppression-end-date 12/18/2018 --suppression-start-time 06:00:00 --suppression-end-time 14:00:00
 
 """
 

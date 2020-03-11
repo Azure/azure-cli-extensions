@@ -156,10 +156,10 @@ def create_alertsmanagement_action_rule(cmd, client,
                                         tags=None,
                                         status=None,
                                         recurrence_type=None,
-                                        start_date=None,
-                                        end_date=None,
-                                        start_time=None,
-                                        end_time=None):
+                                        suppression_start_date=None,
+                                        suppression_end_date=None,
+                                        suppression_start_time=None,
+                                        suppression_end_time=None):
     body = {'location': location, 'tags': tags}
 
     properties = {}
@@ -199,10 +199,10 @@ def create_alertsmanagement_action_rule(cmd, client,
     properties['suppressionConfig'] = {
         'recurrenceType': recurrence_type,
         'schedule': {
-            'startDate': start_date,
-            'endDate': end_date,
-            'startTime': start_time,
-            'endTime': end_time
+            'startDate': suppression_start_date,
+            'endDate': suppression_end_date,
+            'startTime': suppression_start_time,
+            'endTime': suppression_end_time
         }
     }
     body['properties'] = properties
