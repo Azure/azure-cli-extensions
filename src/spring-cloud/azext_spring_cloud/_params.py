@@ -84,6 +84,8 @@ def load_arguments(self, _):
                        help='Runtime version of used language')
             c.argument('jvm_options', type=str,
                        help="A string containing jvm options, use '=' instead of ' ' for this argument to avoid bash parse error, eg: --jvm-options='-Xms1024m -Xmx2048m'")
+            c.argument('net_core_main_entry_path', type=str,
+                       help="A string containing the path to the .NET executable relative to zip root")
             c.argument('env', env_type)
 
     for scope in ['spring-cloud app create', 'spring-cloud app deployment create']:
