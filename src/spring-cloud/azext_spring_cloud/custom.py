@@ -333,11 +333,11 @@ def app_deploy(cmd, client, resource_group, service, name,
                        memory,
                        instance_count,
                        env,
+                       net_core_main_entry_path,
                        target_module,
                        no_wait,
                        file_type,
-                       True,
-                       net_core_main_entry_path)
+                       True)
 
 
 def app_scale(cmd, client, resource_group, service, name,
@@ -478,11 +478,10 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                        memory,
                        instance_count,
                        env,
+                       net_core_main_entry_path,
                        target_module,
                        no_wait,
-                       file_type,
-                       False,
-                       net_core_main_entry_path)
+                       file_type)
 
 
 def deployment_list(cmd, client, resource_group, service, app):
@@ -953,11 +952,11 @@ def _get_all_apps(client, resource_group, service):
 def _app_deploy(client, resource_group, service, app, name, version, path, runtime_version, jvm_options, cpu, memory,
                 instance_count,
                 env,
+                net_core_main_entry_path=None,
                 target_module=None,
                 no_wait=False,
                 file_type="Jar",
-                update=False,
-                net_core_main_entry_path=None):
+                update=False):
     upload_url = None
     relative_path = None
     logger.warning("[1/3] Requesting for upload URL")
