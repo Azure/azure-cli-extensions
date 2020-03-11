@@ -5,7 +5,7 @@
 
 from azure.cli.core import AzCommandsLoader
 
-#from azext_connectedk8s._help import helps  # pylint: disable=unused-import
+from azext_connectedk8s._help import helps  # pylint: disable=unused-import
 
 
 class Connectedk8sCommandsLoader(AzCommandsLoader):

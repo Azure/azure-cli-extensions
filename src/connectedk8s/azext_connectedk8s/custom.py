@@ -29,29 +29,17 @@ import json
 import uuid
 import datetime
 import time
-from applicationinsights import TelemetryClient
 
 
 logger = get_logger(__name__)
-APP_KEY = '9a93ae7c-eaf8-4e21-a1f2-6a424cc48a44'
 
 
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name,
                         onboarding_spn_id=None, onboarding_spn_secret=None,
-                        location=None, kube_config=None, kube_context=None, no_wait=False,
-                        location_data_name=None, location_data_country_or_region=None,
-                        location_data_district=None, location_data_city=None):
+                        location=None, kube_config=None, kube_context=None, no_wait=False,):
     print("Ensure that you have the latest helm version installed before proceeding to avoid unexpected errors.")
+    return
     print("This operation might take a while...\n")
-
-    tc = TelemetryClient(APP_KEY)
-    tc.track_event('testEvent')
-    tc.flush()
-
-    # Checking location data info
-    if location_data_name is None:
-        if ((location_data_country_or_region is not None) or (location_data_district is not None) or (location_data_city is not None)):
-            raise CLIError("--location-data-name is required when providing location data info.")
 
     # Setting subscription id
     subscription_id = get_subscription_id(cmd.cli_ctx)
@@ -63,7 +51,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name,
         try:
             location = resourceClient.resource_groups.get(resource_group_name).location
         except:
-            raise CLIError("Resource Group Creation Failed. Please provide location to create the Resource Group")
+            raise CLIError("The provided resource group does not exist. Please provide location to create the Resource Group")
 
     rp_locations = []
     providerDetails = resourceClient.providers.get('Microsoft.Kubernetes')
@@ -79,7 +67,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name,
         try:
             resourceClient.resource_groups.create_or_update(resource_group_name, resource_group_params)
         except Exception as e:
-            raise CLIError("Resource Group Creation Failed." + str(e.message))
+            raise CLIError("Resource Group Creation Failed." + str(e.message))   
 
     # SPN creation
     graph_client = _graph_client_factory(cmd.cli_ctx)
@@ -108,7 +96,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name,
             onboarding_spn_id = principal_obj.get('service_principal')
             onboarding_spn_secret = principal_obj.get('client_secret')
         else:
-            #print("Creating New SPN ...")
+            # Creating New SPN
             graph_client = _graph_client_factory(cmd.cli_ctx)
             role_client = _auth_client_factory(cmd.cli_ctx).role_assignments
             scopes = ['/subscriptions/' + role_client.config.subscription_id]
@@ -275,22 +263,10 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name,
         raise CLIError("Helm unable to add repository: " + error1.decode("ascii"))
 
     # Install agents
-    cmd4 = ["helm", "install", "azure-arc", "azurearcfork8s/azure-arc-k8sagents", "--set", "global.subscriptionId={}".format(subscription_id), "--set", "global.resourceGroupName={}".format(resource_group_name), "--set", "global.resourceName={}".format(cluster_name), "--set", "global.location={}".format(location), "--set", "global.tenantId={}".format(onboarding_tenant_id), "--set", "global.clientId={}".format(onboarding_spn_id), "--set", "global.clientSecret={}".format(onboarding_spn_secret), "--kubeconfig", kube_config, "--output", "json"]
-    if kube_context:
-        cmd.extend(["--kube-context", kube_context])
-    if location_data_name:
-        cmd.extend(["--set", "global.locationDataName={}".format(location_data_name)])
-    if location_data_country_or_region:
-        cmd.extend(["--set", "global.locationDataCountryOrRegion={}".format(location_data_country_or_region)])
-    if location_data_district:
-        cmd.extend(["--set", "global.locationDataDistrict={}".format(location_data_district)])
-    if location_data_city:
-        cmd.extend(["--set", "global.locationDataCity={}".format(location_data_city)])
-    
-    #if kube_context is None:
-    #    cmd4 = ["helm", "install", "azure-arc", "azurearcfork8s/azure-arc-k8sagents", "--set", "global.subscriptionId={}".format(subscription_id), "--set", "global.resourceGroupName={}".format(resource_group_name), "--set", "global.resourceName={}".format(cluster_name), "--set", "global.location={}".format(location), "--set", "global.tenantId={}".format(onboarding_tenant_id), "--set", "global.clientId={}".format(onboarding_spn_id), "--set", "global.clientSecret={}".format(onboarding_spn_secret), "--kubeconfig", kube_config, "--output", "json"]
-    #else:
-    #    cmd4 = ["helm", "install", "azure-arc", "azurearcfork8s/azure-arc-k8sagents", "--set", "global.subscriptionId={}".format(subscription_id), "--set", "global.resourceGroupName={}".format(resource_group_name), "--set", "global.resourceName={}".format(cluster_name), "--set", "global.location={}".format(location), "--set", "global.tenantId={}".format(onboarding_tenant_id), "--set", "global.clientId={}".format(onboarding_spn_id), "--set", "global.clientSecret={}".format(onboarding_spn_secret), "--kubeconfig", kube_config, "--kube-context", kube_context, "--output", "json"]
+    if kube_context is None:
+        cmd4 = ["helm", "install", "azure-arc", "azurearcfork8s/azure-arc-k8sagents", "--set", "global.subscriptionId={}".format(subscription_id), "--set", "global.resourceGroupName={}".format(resource_group_name), "--set", "global.resourceName={}".format(cluster_name), "--set", "global.location={}".format(location), "--set", "global.tenantId={}".format(onboarding_tenant_id), "--set", "global.clientId={}".format(onboarding_spn_id), "--set", "global.clientSecret={}".format(onboarding_spn_secret), "--kubeconfig", kube_config, "--output", "json"]
+    else:
+        cmd4 = ["helm", "install", "azure-arc", "azurearcfork8s/azure-arc-k8sagents", "--set", "global.subscriptionId={}".format(subscription_id), "--set", "global.resourceGroupName={}".format(resource_group_name), "--set", "global.resourceName={}".format(cluster_name), "--set", "global.location={}".format(location), "--set", "global.tenantId={}".format(onboarding_tenant_id), "--set", "global.clientId={}".format(onboarding_spn_id), "--set", "global.clientSecret={}".format(onboarding_spn_secret), "--kubeconfig", kube_config, "--kube-context", kube_context, "--output", "json"]
     response4 = subprocess.Popen(cmd4, stdout=PIPE, stderr=PIPE)
     output4, error4 = response4.communicate()
     if response4.returncode != 0:
