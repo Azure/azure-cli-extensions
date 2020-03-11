@@ -15,6 +15,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class BlueprintScenarioTest(ScenarioTest):
+    @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_blueprint')
     def test_blueprint(self, resource_group):
 
@@ -53,7 +54,7 @@ class BlueprintScenarioTest(ScenarioTest):
             '--display-name "[User group or application name] : Reader" '
             '--resource-group-art "myRgArt" '
             '--role-definition "/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7" '
-            r'''--principal-ids "[parameters('[Usergrouporapplicationname]:Reader_RoleAssignmentName')]"''',
+            '''--principal-ids "[parameters('reader')]"''',
             checks=[JMESPathCheck('name', 'reader-role-art')])
 
         self.cmd(
@@ -79,7 +80,7 @@ class BlueprintScenarioTest(ScenarioTest):
             '--change-notes "First release"',
             checks=[])
 
-        self.cmd(
+        assignment = self.cmd(
             'az blueprint assignment create '
             '--name "{assignmentName}" '
             '--location "westus2" '
@@ -88,13 +89,37 @@ class BlueprintScenarioTest(ScenarioTest):
             '--locks-mode "None" '
             '--resource-group artifact_name=myRgArt name=blueprint-rg location=westus2 '
             '--parameters @src/blueprint/azext_blueprint/tests/latest/input/create/assignment_params.json',
-            checks=[])
+            checks=[JMESPathCheckExists('identity.principalId')]).get_output_in_json()
+        
+        principal_id = assignment['identity']['principalId']
+
+        # Sometimes automatic role assignment by blueprint fails, we may need the following.
+        # Assign owner of target subscription to the service principal created by blueprint assignment
+        # self.cmd(
+        #     'az role assignment create '
+        #     '--role owner '
+        #     '--assignee-object-id {} '
+        #     '--scope "/subscriptions/{}" '
+        #     '--assignee-principal-type ServicePrincipal '
+        #     '-g='.format(principal_id, self.kwargs.get('subscription', '')),
+        #     checks=[JMESPathCheck('principalId', principal_id)]
+        # )
 
         self.cmd(
             'az blueprint assignment wait '
             '--name "{assignmentName}" '
             '--created',
             checks=[])
+
+        # remove owner role after resources created
+        # self.cmd(
+        #     'az role assignment delete '
+        #     '--role owner '
+        #     '--assignee {} '
+        #     '--scope "/subscriptions/{}" '
+        #     '-g='.format(principal_id, self.kwargs.get('subscription', '')),
+        #     checks=[]
+        # )
 
         self.cmd(
             'az blueprint assignment show '
@@ -132,6 +157,7 @@ class BlueprintScenarioTest(ScenarioTest):
                  '--name "blueprint-rg" '
                  '-y')
 
+    @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_blueprint_import')
     def test_blueprint_import(self, resource_group):
 
@@ -173,7 +199,7 @@ class BlueprintScenarioTest(ScenarioTest):
             '--change-notes "First release"',
             checks=[JMESPathCheck('name', '1.0')])
 
-        self.cmd(
+        assignment = self.cmd(
             'az blueprint assignment create '
             '--name "{assignmentName}" '
             '--location "westus2" '
@@ -182,13 +208,37 @@ class BlueprintScenarioTest(ScenarioTest):
             '--locks-mode "None" '
             '--resource-group artifact_name=storageRG name=storage-rg location=westus2 '
             '--parameters @src/blueprint/azext_blueprint/tests/latest/input/import_with_artifacts/assignment_params.json',
-            checks=[])
+            checks=[JMESPathCheckExists('identity.principalId')]).get_output_in_json()
+        
+        principal_id = assignment['identity']['principalId']
+
+        # Sometimes automatic role assignment by blueprint fails, we may need the following.
+        # Assign owner of target subscription to the service principal created by blueprint assignment
+        # self.cmd(
+        #     'az role assignment create '
+        #     '--role owner '
+        #     '--assignee-object-id {} '
+        #     '--scope "/subscriptions/{}" '
+        #     '--assignee-principal-type ServicePrincipal '
+        #     '-g='.format(principal_id, self.kwargs.get('subscription', '')),
+        #     checks=[JMESPathCheck('principalId', principal_id)]
+        # )
 
         self.cmd(
             'az blueprint assignment wait '
             '--name "{assignmentName}" '
             '--created',
             checks=[])
+
+        # remove owner role after resources created
+        # self.cmd(
+        #     'az role assignment delete '
+        #     '--role owner '
+        #     '--assignee {} '
+        #     '--scope "/subscriptions/{}" '
+        #     '-g='.format(principal_id, self.kwargs.get('subscription', '')),
+        #     self.checks=[]
+        # )
 
         self.cmd(
             'az blueprint assignment show '

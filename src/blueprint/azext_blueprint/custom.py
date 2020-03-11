@@ -311,6 +311,10 @@ def create_blueprint_artifact_role(cmd,
                                    resource_group_art=None,
                                    description=None,
                                    depends_on=None):
+    # princial_ids can be a parameter reference that resolves to a principal ID string
+    # or a list of real principal IDs
+    if len(principal_ids) == 1 and principal_ids[0].startswith('[parameters'):
+        principal_ids = principal_ids[0]
     body = {
         'display_name': display_name,
         'role_definition_id': role_definition_id,
