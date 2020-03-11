@@ -99,26 +99,6 @@ jobs:
         python -m virtualenv venv/
         source ./venv/bin/activate
 
-        ./scripts/ci/verify_modified_index.sh
-      displayName: "CLI Linter on Modified Extension"
-
-- job: LintModifiedExtensionsNew
-  displayName: "CLI Linter on Modified Extensions (New)"
-  pool:
-    vmImage: 'ubuntu-16.04'
-  steps:
-    - task: UsePythonVersion@0
-      displayName: 'Use Python 3.6'
-      inputs:
-        versionSpec: 3.6
-    - bash: |
-        set -ev
-
-        # prepare and activate virtualenv
-        pip install virtualenv
-        python -m virtualenv venv/
-        source ./venv/bin/activate
-
         # clone azure-cli
         git clone --single-branch -b dev https://github.com/Azure/azure-cli.git ../azure-cli
 
@@ -131,7 +111,7 @@ jobs:
         az --version
 
         python scripts/ci/verify_linter.py
-      displayName: "CLI Linter on Modified Extension (New)"
+      displayName: "CLI Linter on Modified Extension"
       env:
         ADO_PULL_REQUEST_LATEST_COMMIT: $(System.PullRequest.SourceCommitId)
         ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
