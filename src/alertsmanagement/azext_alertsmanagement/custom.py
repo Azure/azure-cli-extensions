@@ -46,7 +46,13 @@ def get_all_alertsmanagement_alert(cmd, client,
                                    select=None,
                                    time_range=None,
                                    custom_time_range=None):
-    return client.get_all(target_resource=target_resource, target_resource_type=target_resource_type, target_resource_group=target_resource_group, monitor_service=monitor_service, monitor_condition=monitor_condition, severity=severity, alert_state=alert_state, alert_rule=alert_rule, smart_group_id=smart_group_id, include_context=include_context, include_egress_config=include_egress_config, page_count=page_count, sort_by=sort_by, sort_order=sort_order, select=select, time_range=time_range, custom_time_range=custom_time_range)
+    return client.get_all(target_resource=target_resource, target_resource_type=target_resource_type,
+                          target_resource_group=target_resource_group, monitor_service=monitor_service,
+                          monitor_condition=monitor_condition, severity=severity, alert_state=alert_state,
+                          alert_rule=alert_rule, smart_group_id=smart_group_id, include_context=include_context,
+                          include_egress_config=include_egress_config, page_count=page_count, sort_by=sort_by,
+                          sort_order=sort_order, select=select, time_range=time_range,
+                          custom_time_range=custom_time_range)
 
 
 def get_by_id_alertsmanagement_alert(cmd, client,
@@ -72,7 +78,11 @@ def get_summary_alertsmanagement_alert(cmd, client,
                                        alert_rule=None,
                                        time_range=None,
                                        custom_time_range=None):
-    return client.get_summary(groupby=groupby, include_smart_groups_count=include_smart_groups_count, target_resource=target_resource, target_resource_type=target_resource_type, target_resource_group=target_resource_group, monitor_service=monitor_service, monitor_condition=monitor_condition, severity=severity, alert_state=alert_state, alert_rule=alert_rule, time_range=time_range, custom_time_range=custom_time_range)
+    return client.get_summary(groupby=groupby, include_smart_groups_count=include_smart_groups_count,
+                              target_resource=target_resource, target_resource_type=target_resource_type,
+                              target_resource_group=target_resource_group, monitor_service=monitor_service,
+                              monitor_condition=monitor_condition, severity=severity, alert_state=alert_state,
+                              alert_rule=alert_rule, time_range=time_range, custom_time_range=custom_time_range)
 
 
 def change_state_alertsmanagement_smart_group(cmd, client,
@@ -93,7 +103,10 @@ def get_all_alertsmanagement_smart_group(cmd, client,
                                          page_count=None,
                                          sort_by=None,
                                          sort_order=None):
-    return client.get_all(target_resource=target_resource, target_resource_group=target_resource_group, target_resource_type=target_resource_type, monitor_service=monitor_service, monitor_condition=monitor_condition, severity=severity, smart_group_state=smart_group_state, time_range=time_range, page_count=page_count, sort_by=sort_by, sort_order=sort_order)
+    return client.get_all(target_resource=target_resource, target_resource_group=target_resource_group,
+                          target_resource_type=target_resource_type, monitor_service=monitor_service,
+                          monitor_condition=monitor_condition, severity=severity, smart_group_state=smart_group_state,
+                          time_range=time_range, page_count=page_count, sort_by=sort_by, sort_order=sort_order)
 
 
 def get_by_id_alertsmanagement_smart_group(cmd, client,
@@ -207,7 +220,8 @@ def create_alertsmanagement_action_rule(cmd, client,
     }
     body['properties'] = properties
 
-    return client.create_update(resource_group_name=resource_group_name, action_rule_name=action_rule_name, action_rule=body)
+    return client.create_update(resource_group_name=resource_group_name, action_rule_name=action_rule_name,
+                                action_rule=body)
 
 
 def update_alertsmanagement_action_rule(instance, client,
