@@ -5,7 +5,7 @@
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
-from azext_alertsmanagement.vendored_sdks.alertsmanagement.models import ActionRuleStatus
+from azext_alertsmanagement.vendored_sdks.alertsmanagement.models import ActionRuleStatus, SuppressionType
 from azure.cli.core.commands.parameters import (
     tags_type,
     get_enum_type,
@@ -38,7 +38,7 @@ def load_arguments(self, _):
         c.argument('alert_rule_id', nargs='+', help='Filter alerts by alert rule ID')
         c.argument('alert_description', nargs='+', help='Filter alerts by alert rule description')
         c.argument('alert_context', nargs='+', help='Filter alerts by alert context (payload)')
-        c.argument('recurrence_type', arg_type=get_enum_type(['Always', 'Once', 'Daily', 'Weekly', 'Monthly']), help='Specifies when the suppression should be applied')
+        c.argument('recurrence_type', arg_type=get_enum_type(SuppressionType), help='Specifies when the suppression should be applied')
         c.argument('start_date', help='Start date for suppression')
         c.argument('end_date', help='End date for suppression')
         c.argument('start_time', help='Start time for suppression')
