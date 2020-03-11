@@ -285,7 +285,7 @@ helps['aks upgrade'] = """
 
 helps['aks update'] = """
     type: command
-    short-summary: Update a managed Kubernetes cluster properties, such as enable/disable cluster-autoscaler 
+    short-summary: Update a managed Kubernetes cluster properties, such as enable/disable cluster-autoscaler
     parameters:
         - name: --enable-cluster-autoscaler -e
           type: bool
