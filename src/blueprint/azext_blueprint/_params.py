@@ -202,7 +202,7 @@ def load_arguments(self, _):
             c.argument('identity_user_assigned_identities', arg_group='identity', nargs='+', help='The list of user-assigned managed identities associated with the resource. Key is the Azure resource Id of the managed identity.')
             c.argument('display_name', help='One-liner string explain this resource.')
             c.argument('description', help='Multi-line explain this resource.')
-            c.argument('blueprint_id', help='ID of the published version of a blueprint definition.')
+            c.argument('blueprint_id', options_list=['--blueprint-version'], help='Resource ID of the published version of a blueprint definition.')
             c.argument('parameters', arg_type=parameter_type, help='Blueprint assignment parameter values. It can be a JSON string or JSON file path with "@" prefix.')
             c.argument('resource_groups', options_list=['--resource-group'], action=ResourceGroupAssignAddAction, nargs='+', help="Key=Value pairs for a resource group. Keys include 'artifact_name'(required), 'name', 'location'.")
             c.argument('locks_mode', arg_type=get_enum_type(AssignmentLockMode), help='Lock mode.')

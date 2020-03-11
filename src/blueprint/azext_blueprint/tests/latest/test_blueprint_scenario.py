@@ -84,7 +84,7 @@ class BlueprintScenarioTest(ScenarioTest):
             '--name "{assignmentName}" '
             '--location "westus2" '
             '--identity-type "SystemAssigned" '
-            '--blueprint-id "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/{blueprintName}/versions/1.0" '
+            '--blueprint-version "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/{blueprintName}/versions/1.0" '
             '--locks-mode "None" '
             '--resource-group artifact_name=myRgArt name=blueprint-rg location=westus2 '
             '--parameters @src/blueprint/azext_blueprint/tests/latest/input/create/assignment_params.json',
@@ -178,7 +178,7 @@ class BlueprintScenarioTest(ScenarioTest):
             '--name "{assignmentName}" '
             '--location "westus2" '
             '--identity-type "SystemAssigned" '
-            '--blueprint-id "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/{blueprintName}/versions/1.0" '
+            '--blueprint-version "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/{blueprintName}/versions/1.0" '
             '--locks-mode "None" '
             '--resource-group artifact_name=storageRG name=storage-rg location=westus2 '
             '--parameters @src/blueprint/azext_blueprint/tests/latest/input/import_with_artifacts/assignment_params.json',

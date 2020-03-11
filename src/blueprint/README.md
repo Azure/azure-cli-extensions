@@ -106,7 +106,7 @@ az blueprint assignment create \
     --name assignmentName \
     --location "westus2" \
     --identity-type "SystemAssigned" \
-    --blueprint-id "/subscriptions/{subscriptionId}/providers/Microsoft.Blueprint/blueprints/blueprintName/versions/1.0" \
+    --blueprint-version "/subscriptions/{subscriptionId}/providers/Microsoft.Blueprint/blueprints/blueprintName/versions/1.0" \
     --locks-mode "None" \
     --resource-group artifact_name=myRgArt name=blueprint-rg location=westus \
     --parameters @/path/to/assignment_params.json
