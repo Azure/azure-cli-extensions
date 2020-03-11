@@ -20,13 +20,13 @@ helps['databricks workspace create'] = """
     examples:
       - name: Create a workspace
         text: |-
-               az databricks workspace create --resource-group "myResourceGroup" --name "myWorkspace" --location \\
-               "westus"  --sku standard
+               az databricks workspace create --resource-group MyResourceGroup --name MyWorkspace --location \\
+               westus  --sku standard
       - name: Create a workspace with custom parameters
         text: |-
-               az databricks workspace create --resource-group "myResourceGroup" --name "myWorkspace" --location \\
-               "westus" --managed-resource-group "managedResourceGroup" --sku premium \\
-               --relay-namespace-name "mydbrelay" --storage-account-name "mystorageaccount"
+               az databricks workspace create --resource-group MyResourceGroup --name MyWorkspace --location \\
+               westus --managed-resource-group MyManagedResourceGroup --sku premium \\
+               --relay-namespace-name mydbrelay --storage-account-name mystorageaccount
 """
 
 helps['databricks workspace update'] = """
@@ -35,10 +35,10 @@ helps['databricks workspace update'] = """
     examples:
       - name: Update the workspace's tags.
         text: |-
-               az databricks workspace update --resource-group "myResourceGroup" --name "myWorkspace" --tags key1=value1 key2=value2
+               az databricks workspace update --resource-group MyResourceGroup --name MyWorkspace --tags key1=value1 key2=value2
       - name: Clean the workspace's tags.
         text: |-
-               az databricks workspace update --resource-group "myResourceGroup" --name "myWorkspace" --tags ""
+               az databricks workspace update --resource-group MyResourceGroup --name MyWorkspace --tags ""
 """
 
 helps['databricks workspace delete'] = """
@@ -47,7 +47,7 @@ helps['databricks workspace delete'] = """
     examples:
       - name: Delete the workspace
         text: |-
-               az databricks workspace delete --resource-group "myResourceGroup" --name "myWorkspace"
+               az databricks workspace delete --resource-group MyResourceGroup --name MyWorkspace
 """
 
 helps['databricks workspace show'] = """
@@ -56,7 +56,7 @@ helps['databricks workspace show'] = """
     examples:
       - name: Show the workspace
         text: |-
-               az databricks workspace show --resource-group "myResourceGroup" --name "myWorkspace"
+               az databricks workspace show --resource-group MyResourceGroup --name MyWorkspace
 """
 
 helps['databricks workspace list'] = """
@@ -65,7 +65,7 @@ helps['databricks workspace list'] = """
     examples:
       - name: List workspaces within a resource group
         text: |-
-               az databricks workspace list --resource-group "myResourceGroup"
+               az databricks workspace list --resource-group MyResourceGroup
       - name: List workspaces within the default subscription
         text: |-
                az databricks workspace list
@@ -76,6 +76,6 @@ helps['databricks workspace wait'] = """
     short-summary: Place the CLI in a waiting state until a condition of the Databricks workspace is met.
     examples:
         - name: Pause executing next line of CLI script until the Databricks workspace is successfully provisioned.
-          text: az databricks workspace wait --resource-group "myResourceGroup" --name "myWorkspace" \\
+          text: az databricks workspace wait --resource-group MyResourceGroup --name MyWorkspace \\
                 --created
 """
