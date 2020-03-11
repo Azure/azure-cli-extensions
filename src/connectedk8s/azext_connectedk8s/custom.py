@@ -38,7 +38,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name,
                         onboarding_spn_id=None, onboarding_spn_secret=None,
                         location=None, kube_config=None, kube_context=None, no_wait=False,):
     print("Ensure that you have the latest helm version installed before proceeding to avoid unexpected errors.")
-    return
     print("This operation might take a while...\n")
 
     # Setting subscription id
