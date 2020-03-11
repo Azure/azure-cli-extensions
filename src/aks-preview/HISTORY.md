@@ -4,7 +4,7 @@ Release History
 ===============
 0.4.35
 +++++
-* Adding --paid-high-availability for paid service
+* Adding --uptime-sla for paid service
 
 0.4.34
 +++++

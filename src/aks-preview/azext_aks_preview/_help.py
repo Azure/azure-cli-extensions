@@ -191,9 +191,9 @@ helps['aks create'] = """
         - name: --node-resource-group
           type: string
           short-summary: The node resource group is the resource group where all customer's resources will be created in, such as virtual machines.
-        - name: --paid-high-availability
+        - name: --uptime-sla
           type: bool
-          short-summary: paid managed cluster service with high availability.
+          short-summary: Enable paid managed cluster service with high availability.
         - name: --attach-acr
           type: string
           short-summary: Grant the 'acrpull' role assignment to the ACR specified by name or resource ID.
@@ -331,9 +331,9 @@ helps['aks update'] = """
         - name: --disable-pod-security-policy
           type: bool
           short-summary: (PREVIEW) Disable pod security policy.
-        - name: --paid-high-availability
+        - name: --uptime-sla
           type: bool
-          short-summary: paid managed cluster service with high availability.
+          short-summary: enable paid managed cluster service with high availability.
         - name: --attach-acr
           type: string
           short-summary: Grant the 'acrpull' role assignment to the ACR specified by name or resource ID.

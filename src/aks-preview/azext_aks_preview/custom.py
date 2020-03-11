@@ -736,7 +736,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                generate_ssh_keys=False,  # pylint: disable=unused-argument
                enable_pod_security_policy=False,
                node_resource_group=None,
-               paid_high_availability=False,
+               uptime_sla=False,
                attach_acr=None,
                enable_private_cluster=False,
                enable_managed_identity=False,
@@ -985,8 +985,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         mc.api_server_access_profile = ManagedClusterAPIServerAccessProfile(
             enable_private_cluster=True
         )
-    
-    if paid_high_availability:
+
+    if uptime_sla:
         mc.sku = ManagedClusterSKU(
             name="Basic",
             tier="Paid"
@@ -1067,7 +1067,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                disable_cluster_autoscaler=False,
                update_cluster_autoscaler=False,
                cluster_autoscaler_profile=None,
-               paid_high_availability=False,
+               uptime_sla=False,
                min_count=None, max_count=None, no_wait=False,
                load_balancer_managed_outbound_ip_count=None,
                load_balancer_outbound_ips=None,
@@ -1091,7 +1091,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
     if not update_autoscaler and \
        cluster_autoscaler_profile is None and \
        not update_acr and \
-       not paid_high_availability and \
+       not uptime_sla and \
        not update_lb_profile \
        and api_server_authorized_ip_ranges is None and \
        not update_pod_security and \
@@ -1105,7 +1105,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--api-server-authorized-ip-ranges" or '
                        '"--attach-acr" or '
                        '"--detach-acr" or '
-                       '"--paid-high-availability" or '
+                       '"--uptime-sla" or '
                        '"--load-balancer-managed-outbound-ip-count" or '
                        '"--load-balancer-outbound-ips" or '
                        '"--load-balancer-outbound-ip-prefixes"')
@@ -1185,7 +1185,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
     if attach_acr and detach_acr:
         raise CLIError('Cannot specify "--attach-acr" and "--detach-acr" at the same time.')
 
-    if paid_high_availability:
+    if uptime_sla:
         instance.sku = ManagedClusterSKU(
             name="Basic",
             tier="Paid"
