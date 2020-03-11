@@ -129,6 +129,15 @@ def _transform_condition(condition):
     }
 
 
+def _alert_rule_id(subscription, resource_group, alert):
+    if alert is None:
+        return None
+    from msrestazure.tools import resource_id, is_valid_resource_id
+    if not is_valid_resource_id(alert):
+        return resource_id(subscription=subscription, resource_group=resource_group,
+                           namespace='microsoft.insights', type='alertrules', name=alert)
+
+
 def create_alertsmanagement_action_rule(cmd, client,
                                         resource_group_name,
                                         action_rule_name,
@@ -141,7 +150,7 @@ def create_alertsmanagement_action_rule(cmd, client,
                                         monitor_service=None,
                                         monitor_condition=None,
                                         target_resource_type=None,
-                                        alert_rule_id=None,
+                                        alert_rule=None,
                                         alert_description=None,
                                         alert_context=None,
                                         tags=None,
@@ -168,7 +177,8 @@ def create_alertsmanagement_action_rule(cmd, client,
     monitor_service = _transform_condition(monitor_service)
     monitor_condition = _transform_condition(monitor_condition)
     target_resource_type = _transform_condition(target_resource_type)
-    alert_rule_id = _transform_condition(alert_rule_id)
+    alert_rule = _alert_rule_id(client.config.subscription_id, resource_group_name, alert_rule)
+    alert_rule = _transform_condition(alert_rule)
     alert_description = _transform_condition(alert_description)
     alert_context = _transform_condition(alert_context)
     properties['conditions'] = {}
@@ -180,8 +190,8 @@ def create_alertsmanagement_action_rule(cmd, client,
         properties['conditions']['monitorCondition'] = monitor_condition
     if target_resource_type is not None:
         properties['conditions']['targetResourceType'] = target_resource_type
-    if alert_rule_id is not None:
-        properties['conditions']['alertRuleId'] = alert_rule_id
+    if alert_rule is not None:
+        properties['conditions']['alertRuleId'] = alert_rule
     if alert_description is not None:
         properties['conditions']['description'] = alert_description
     if alert_context is not None:

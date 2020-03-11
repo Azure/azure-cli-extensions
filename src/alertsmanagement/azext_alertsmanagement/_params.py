@@ -35,7 +35,7 @@ def load_arguments(self, _):
         c.argument('monitor_service', nargs='+', help='Filter alerts by monitor service')
         c.argument('monitor_condition', nargs='+', help='Filter alerts by monitor condition')
         c.argument('target_resource_type', nargs='+', help='Filter alerts by target resource type')
-        c.argument('alert_rule_id', nargs='+', help='Filter alerts by alert rule ID')
+        c.argument('alert_rule', nargs='+', help='Filter alerts by alert rule name or ID')
         c.argument('alert_description', nargs='+', help='Filter alerts by alert rule description')
         c.argument('alert_context', nargs='+', help='Filter alerts by alert context (payload)')
         c.argument('recurrence_type', arg_type=get_enum_type(SuppressionType), help='Specifies when the suppression should be applied')
