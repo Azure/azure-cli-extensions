@@ -11,7 +11,7 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 helps['synapse'] = """
 type: group
-short-summary: Manage and operate Synapse Workspace, Spark Pool, Sql Pool.
+short-summary: Manage and operate Synapse Workspace, Spark Pool, SQL Pool.
 """
 
 helps['synapse workspace'] = """
@@ -48,7 +48,7 @@ short-summary: Get a Synapse workspaces with workspace name.
 examples:
   - name: Get a Synapse workspaces with workspace name.
     text: |-
-        az synapse workspace show --name testsynapseworkspace --resource-group rg --name testsynapseworkspace
+        az synapse workspace show --name testsynapseworkspace --resource-group rg
 """
 
 helps['synapse workspace update'] = """
@@ -72,12 +72,12 @@ examples:
 
 helps['synapse workspace wait'] = """
 type: command
-short-summary: Place the CLI in a waiting state until an operation is complete.
+short-summary: Place the CLI in a waiting state a condition of a workspace is met.
 """
 
 helps['synapse spark'] = """
 type: group
-short-summary: Manage Spark pool and submit spark batch, session,statement job.
+short-summary: Manage Spark pool and submit Spark Batch, Session, Statement job.
 """
 
 helps['synapse spark pool'] = """
@@ -138,7 +138,7 @@ examples:
 
 helps['synapse spark pool wait'] = """
 type: command
-short-summary: Place the CLI in a waiting state until an operation is complete.
+short-summary: Place the CLI in a waiting state until a condition of a Spark pool is met.
 """
 
 helps['synapse sql'] = """
@@ -219,12 +219,12 @@ examples:
 
 helps['synapse sql pool wait'] = """
 type: command
-short-summary: Place the CLI in a waiting state until an operation is complete.
+short-summary: Place the CLI in a waiting state until a condition of a SQL pool is met.
 """
 
 helps['synapse spark batch'] = """
 type: group
-short-summary: Create, Get, List, Delete spark batch job.
+short-summary: Manage Synapse Spark batch jobs.
 """
 
 helps['synapse spark batch create'] = """
@@ -274,7 +274,7 @@ examples:
 
 helps['synapse spark session'] = """
 type: group
-short-summary: Create, Get, List, Cancel spark session job and reset the spark session timeout.
+short-summary: Manage Synapse Spark Session jobs and reset the Spark Session timeout.
 """
 
 helps['synapse spark session create'] = """
@@ -330,7 +330,7 @@ examples:
 
 helps['synapse spark session-statement'] = """
 type: group
-short-summary: Create, Get, List, Cancel spark statement.
+short-summary: Manage Synapse Spark Session Statements.
 """
 
 helps['synapse spark session-statement create'] = """

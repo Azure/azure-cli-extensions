@@ -13,7 +13,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '471'
+      - '469'
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
@@ -22,12 +22,12 @@ interactions:
     uri: https://testsynapseworkspace1234.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/testsparkpool/batches?detailed=true
   response:
     body:
-      string: '{"livyInfo":{"notStartedAt":null,"startingAt":null,"runningAt":null,"deadAt":null,"successAt":null,"killedAt":null,"recoveringAt":null,"currentState":"not_started","jobCreationRequest":{"name":"WordCount_Java","file":"abfss://testfilesystem@adlsgen2account.dfs.core.windows.net/samples/java/wordcount/wordcount.jar","className":"WordCount","args":["[abfss://testfilesystem@adlsgen2account.dfs.core.windows.net/samples/java/wordcount/shakespeare.txt,","abfss://testfilesystem@adlsgen2account.dfs.core.windows.net/samples/java/wordcount/result/]"],"conf":{},"driverMemory":"4g","driverCores":4,"executorMemory":"4g","executorCores":4,"numExecutors":2}},"name":"WordCount_Java","workspaceName":"testsynapseworkspace1234","computeName":"testsparkpool","sparkPoolName":"testsparkpool","submitterName":"zhezhou@microsoft.com","submitterId":"8f51e348-1fa6-4194-8d13-8e0368e3298a","artifactId":"Livy","jobType":"SparkBatch","result":"Uncertain","schedulerInfo":{"submittedAt":"2020-03-10T10:43:14.8745033+00:00","scheduledAt":null,"endedAt":null,"cancellationRequestedAt":null,"currentState":"Queued"},"pluginInfo":{"preparationStartedAt":null,"resourceAcquisitionStartedAt":null,"submissionStartedAt":null,"monitoringStartedAt":null,"cleanupStartedAt":null,"currentState":"Preparation"},"tags":{},"id":71,"appId":null,"appInfo":null,"state":"not_started","log":null}'
+      string: '{"livyInfo":{"notStartedAt":null,"startingAt":null,"runningAt":null,"deadAt":null,"successAt":null,"killedAt":null,"recoveringAt":null,"currentState":"not_started","jobCreationRequest":{"name":"WordCount_Java","file":"abfss://testfilesystem@adlsgen2account.dfs.core.windows.net/samples/java/wordcount/wordcount.jar","className":"WordCount","args":["[abfss://testfilesystem@adlsgen2account.dfs.core.windows.net/samples/java/wordcount/shakespeare.txt,","abfss://testfilesystem@adlsgen2account.dfs.core.windows.net/samples/java/wordcount/result/]"],"conf":{},"driverMemory":"4g","driverCores":4,"executorMemory":"4g","executorCores":4,"numExecutors":2}},"name":"WordCount_Java","workspaceName":"testsynapseworkspace1234","computeName":"testsparkpool","sparkPoolName":"testsparkpool","submitterName":"zhezhou@microsoft.com","submitterId":"8f51e348-1fa6-4194-8d13-8e0368e3298a","artifactId":"Livy","jobType":"SparkBatch","result":"Uncertain","schedulerInfo":{"submittedAt":"2020-03-11T05:52:50.3884024+00:00","scheduledAt":null,"endedAt":null,"cancellationRequestedAt":null,"currentState":"Queued"},"pluginInfo":{"preparationStartedAt":null,"resourceAcquisitionStartedAt":null,"submissionStartedAt":null,"monitoringStartedAt":null,"cleanupStartedAt":null,"currentState":"Preparation"},"tags":{},"id":79,"appId":null,"appInfo":null,"state":"not_started","log":null}'
     headers:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Mar 2020 10:43:15 GMT
+      - Wed, 11 Mar 2020 05:52:50 GMT
       server:
       - Kestrel Microsoft-HTTPAPI/2.0
       strict-transport-security:
@@ -35,13 +35,13 @@ interactions:
       transfer-encoding:
       - chunked
       x-ms-activity-id:
-      - d2c82f63-51d5-41de-8c38-78659151fdce
+      - 590a9e5d-efb3-4952-bd7b-4a995c24a2bb
       x-ms-job-clusterrequested-on:
       - 1/1/0001 12:00:00 AM +00:00
       x-ms-job-ended-on:
       - ''
       x-ms-job-internal-id:
-      - '71'
+      - '79'
       x-ms-job-livysubmission-on:
       - 1/1/0001 12:00:00 AM +00:00
       x-ms-job-queued-on:
@@ -55,11 +55,11 @@ interactions:
       x-ms-job-submitted-by-name:
       - zhezhou@microsoft.com
       x-ms-job-submitted-on:
-      - 3/10/2020 10:43:14 AM +00:00
+      - 3/11/2020 5:52:50 AM +00:00
       x-ms-job-type:
       - SparkServiceBatch
       x-ms-response-time-ms:
-      - '546'
+      - '114'
     status:
       code: 200
       message: OK
@@ -77,24 +77,15 @@ interactions:
       User-Agent:
       - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 azure-synapse/0.1.0
     method: GET
-    uri: https://testsynapseworkspace1234.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/testsparkpool/batches/1?detailed=true
+    uri: https://testsynapseworkspace1234.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/testsparkpool/batches/79?detailed=true
   response:
     body:
-      string: '{"livyInfo":{"notStartedAt":null,"startingAt":"2019-12-13T08:13:59.1372088+00:00","runningAt":"2019-12-13T08:14:54.2434247+00:00","deadAt":null,"successAt":"2019-12-13T08:15:38.4077027+00:00","killedAt":null,"recoveringAt":null,"currentState":"success","jobCreationRequest":{"name":"WordCount_DotNET","file":"abfss://testfilesystem@adlsgen2account.dfs.core.windows.net/samples/dotnet/wordcount/microsoft-spark-2.4.x-0.6.0.jar","className":"org.apache.spark.deploy.dotnet.DotnetRunner","args":["abfss://testfilesystem@adlsgen2account.dfs.core.windows.net/samples/dotnet/wordcount/wordcount.zip","WordCount","abfss://testfilesystem@adlsgen2account.dfs.core.windows.net/samples/dotnet/wordcount/shakespeare.txt","abfss://testfilesystem@adlsgen2account.dfs.core.windows.net/samples/dotnet/wordcount/result"],"conf":{},"driverMemory":"4G","driverCores":2,"executorMemory":"4G","executorCores":2,"numExecutors":2}},"name":"WordCount_DotNET","workspaceName":"testsynapseworkspace1234","computeName":"testsparkpool","sparkPoolName":"testsparkpool","submitterId":"ca728363-7297-4e35-a9c3-c6400837883e","artifactId":"Livy","jobType":"SparkBatch","result":"Succeeded","schedulerInfo":{"submittedAt":"2019-12-13T08:12:11.7282739+00:00","scheduledAt":"2019-12-13T08:12:12.8105461+00:00","endedAt":"2019-12-13T08:15:38.5885609+00:00","cancellationRequestedAt":null,"currentState":"Ended"},"pluginInfo":{"preparationStartedAt":"2019-12-13T08:12:12.8252672+00:00","resourceAcquisitionStartedAt":"2019-12-13T08:12:13.0474066+00:00","submissionStartedAt":"2019-12-13T08:13:58.738487+00:00","monitoringStartedAt":"2019-12-13T08:13:59.1818926+00:00","cleanupStartedAt":"2019-12-13T08:15:38.4532754+00:00","currentState":"Ended"},"tags":{},"id":1,"appId":"application_1576224831757_0001","appInfo":{"driverLogUrl":"http://53e52930712f4bd2a64da26879c4751c03817035090:8042/node/containerlogs/container_1576224831757_0001_01_000001/trusted-service-user","sparkUiUrl":"http://53e52930712f4bd2a64da26879c4751c01223913297:8088/proxy/application_1576224831757_0001/"},"state":"success","log":["\t
-        tracking URL: http://53e52930712f4bd2a64da26879c4751c01223913297:8088/proxy/application_1576224831757_0001/","\t
-        user: trusted-service-user","19/12/13 08:14:22 INFO ShutdownHookManager: Shutdown
-        hook called","19/12/13 08:14:22 INFO ShutdownHookManager: Deleting directory
-        /tmp/spark-080c8c63-d0dd-487d-a757-faf7b5efd9f1","19/12/13 08:14:22 INFO ShutdownHookManager:
-        Deleting directory /tmp/spark-aaed5be7-2685-4c28-a43c-8f37b9521d4f","19/12/13
-        08:14:22 INFO MetricsSystemImpl: Stopping azure-file-system metrics system...","19/12/13
-        08:14:22 INFO MetricsSystemImpl: azure-file-system metrics system stopped.","19/12/13
-        08:14:22 INFO MetricsSystemImpl: azure-file-system metrics system shutdown
-        complete.","\nstderr: ","\nYARN Diagnostics: "]}'
+      string: '{"livyInfo":{"notStartedAt":null,"startingAt":null,"runningAt":null,"deadAt":null,"successAt":null,"killedAt":null,"recoveringAt":null,"currentState":"not_started","jobCreationRequest":{"name":"WordCount_Java","file":"abfss://testfilesystem@adlsgen2account.dfs.core.windows.net/samples/java/wordcount/wordcount.jar","className":"WordCount","args":["[abfss://testfilesystem@adlsgen2account.dfs.core.windows.net/samples/java/wordcount/shakespeare.txt,","abfss://testfilesystem@adlsgen2account.dfs.core.windows.net/samples/java/wordcount/result/]"],"conf":{},"driverMemory":"4g","driverCores":4,"executorMemory":"4g","executorCores":4,"numExecutors":2}},"name":"WordCount_Java","workspaceName":"testsynapseworkspace1234","computeName":"testsparkpool","sparkPoolName":"testsparkpool","submitterName":"zhezhou@microsoft.com","submitterId":"8f51e348-1fa6-4194-8d13-8e0368e3298a","artifactId":"Livy","jobType":"SparkBatch","result":"Uncertain","schedulerInfo":{"submittedAt":"2020-03-11T05:52:50.3884024+00:00","scheduledAt":"2020-03-11T05:52:51.4611941+00:00","endedAt":null,"cancellationRequestedAt":null,"currentState":"Scheduled"},"pluginInfo":{"preparationStartedAt":"2020-03-11T05:52:51.4732672+00:00","resourceAcquisitionStartedAt":null,"submissionStartedAt":null,"monitoringStartedAt":null,"cleanupStartedAt":null,"currentState":"ResourceAcquisition"},"tags":{},"id":79,"appId":null,"appInfo":null,"state":"not_started","log":null}'
     headers:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Mar 2020 10:43:18 GMT
+      - Wed, 11 Mar 2020 05:52:51 GMT
       server:
       - Kestrel Microsoft-HTTPAPI/2.0
       strict-transport-security:
@@ -102,33 +93,31 @@ interactions:
       transfer-encoding:
       - chunked
       x-ms-activity-id:
-      - 0b0bc65a-5ed7-4302-ada9-ffb2ae574b38
-      x-ms-job-cluster:
-      - http://171.1.154.21:8998/
+      - 32bd1eb4-8990-4124-85c8-1ff77dc8166f
       x-ms-job-clusterrequested-on:
-      - 12/13/2019 8:12:13 AM +00:00
+      - 1/1/0001 12:00:00 AM +00:00
       x-ms-job-ended-on:
-      - 12/13/2019 8:15:38 AM +00:00
+      - ''
       x-ms-job-internal-id:
-      - '1'
+      - '79'
       x-ms-job-livysubmission-on:
-      - 12/13/2019 8:13:59 AM +00:00
+      - 1/1/0001 12:00:00 AM +00:00
       x-ms-job-queued-on:
-      - 12/13/2019 8:13:58 AM +00:00
+      - 1/1/0001 12:00:00 AM +00:00
       x-ms-job-result:
-      - Succeeded
+      - Uncertain
       x-ms-job-scheduled-on:
-      - 12/13/2019 8:12:12 AM +00:00
+      - 3/11/2020 5:52:51 AM +00:00
       x-ms-job-scheduler-state:
-      - Ended
+      - Scheduled
       x-ms-job-submitted-by-name:
-      - ca728363-7297-4e35-a9c3-c6400837883e
+      - zhezhou@microsoft.com
       x-ms-job-submitted-on:
-      - 12/13/2019 8:12:11 AM +00:00
+      - 3/11/2020 5:52:50 AM +00:00
       x-ms-job-type:
       - SparkServiceBatch
       x-ms-response-time-ms:
-      - '23'
+      - '12'
     status:
       code: 200
       message: OK
@@ -314,7 +303,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 10 Mar 2020 10:43:20 GMT
+      - Wed, 11 Mar 2020 05:52:54 GMT
       server:
       - Kestrel Microsoft-HTTPAPI/2.0
       strict-transport-security:
@@ -322,9 +311,9 @@ interactions:
       transfer-encoding:
       - chunked
       x-ms-activity-id:
-      - b96aa439-8af4-4ff3-bd6b-9753041dc48d
+      - 1c31eccc-1f38-40d4-8889-564d1fc3f99b
       x-ms-response-time-ms:
-      - '68'
+      - '44'
     status:
       code: 200
       message: OK
@@ -344,7 +333,7 @@ interactions:
       User-Agent:
       - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 azure-synapse/0.1.0
     method: DELETE
-    uri: https://testsynapseworkspace1234.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/testsparkpool/batches/1
+    uri: https://testsynapseworkspace1234.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/testsparkpool/batches/79
   response:
     body:
       string: ''
@@ -352,15 +341,76 @@ interactions:
       content-length:
       - '0'
       date:
-      - Tue, 10 Mar 2020 10:43:23 GMT
+      - Wed, 11 Mar 2020 05:52:56 GMT
       server:
       - Kestrel Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-ms-activity-id:
-      - 43763c86-6159-4b69-a6ce-83a33267ca2a
+      - b972fac1-7148-4411-9592-cdcb14c9ec22
       x-ms-response-time-ms:
-      - '41'
+      - '25'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json; charset=utf-8
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 azure-synapse/0.1.0
+    method: GET
+    uri: https://testsynapseworkspace1234.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/testsparkpool/batches/79?detailed=true
+  response:
+    body:
+      string: '{"livyInfo":{"notStartedAt":null,"startingAt":"2020-03-11T05:52:55.1416596+00:00","runningAt":null,"deadAt":null,"successAt":null,"killedAt":null,"recoveringAt":null,"currentState":"killed","jobCreationRequest":{"name":"WordCount_Java","file":"abfss://testfilesystem@adlsgen2account.dfs.core.windows.net/samples/java/wordcount/wordcount.jar","className":"WordCount","args":["[abfss://testfilesystem@adlsgen2account.dfs.core.windows.net/samples/java/wordcount/shakespeare.txt,","abfss://testfilesystem@adlsgen2account.dfs.core.windows.net/samples/java/wordcount/result/]"],"conf":{},"driverMemory":"4g","driverCores":4,"executorMemory":"4g","executorCores":4,"numExecutors":2}},"name":"WordCount_Java","workspaceName":"testsynapseworkspace1234","computeName":"testsparkpool","sparkPoolName":"testsparkpool","submitterName":"zhezhou@microsoft.com","submitterId":"8f51e348-1fa6-4194-8d13-8e0368e3298a","artifactId":"Livy","jobType":"SparkBatch","result":"Cancelled","schedulerInfo":{"submittedAt":"2020-03-11T05:52:50.3884024+00:00","scheduledAt":"2020-03-11T05:52:51.4611941+00:00","endedAt":"2020-03-11T05:53:06.0316697+00:00","cancellationRequestedAt":"2020-03-11T05:53:05.1721224+00:00","currentState":"Ended"},"pluginInfo":{"preparationStartedAt":"2020-03-11T05:52:51.4732672+00:00","resourceAcquisitionStartedAt":"2020-03-11T05:52:51.8077445+00:00","submissionStartedAt":"2020-03-11T05:52:55.0676385+00:00","monitoringStartedAt":"2020-03-11T05:52:55.1575933+00:00","cleanupStartedAt":"2020-03-11T05:53:05.1721257+00:00","currentState":"Ended"},"tags":{},"id":79,"appId":null,"appInfo":{"driverLogUrl":null,"sparkUiUrl":null},"state":"killed","log":["stdout:
+        ","\nstderr: ","\nYARN Diagnostics: "]}'
+    headers:
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Mar 2020 05:53:58 GMT
+      server:
+      - Kestrel Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-ms-activity-id:
+      - a936e046-2f32-4038-bddf-2b1422cc5ca2
+      x-ms-job-cluster:
+      - http://171.0.4.7:8998/
+      x-ms-job-clusterrequested-on:
+      - 3/11/2020 5:52:51 AM +00:00
+      x-ms-job-ended-on:
+      - 3/11/2020 5:53:06 AM +00:00
+      x-ms-job-internal-id:
+      - '79'
+      x-ms-job-livysubmission-on:
+      - 3/11/2020 5:52:55 AM +00:00
+      x-ms-job-queued-on:
+      - 3/11/2020 5:52:55 AM +00:00
+      x-ms-job-result:
+      - Cancelled
+      x-ms-job-scheduled-on:
+      - 3/11/2020 5:52:51 AM +00:00
+      x-ms-job-scheduler-state:
+      - Ended
+      x-ms-job-submitted-by-name:
+      - zhezhou@microsoft.com
+      x-ms-job-submitted-on:
+      - 3/11/2020 5:52:50 AM +00:00
+      x-ms-job-type:
+      - SparkServiceBatch
+      x-ms-response-time-ms:
+      - '15'
     status:
       code: 200
       message: OK
