@@ -81,7 +81,7 @@ def create_blueprint(cmd,
                      blueprint_name,
                      management_group=None,
                      scope=None,
-                     target_scope='subscription',
+                     target_scope=None,
                      display_name=None,
                      description=None,
                      parameters=None):

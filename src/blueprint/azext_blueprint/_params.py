@@ -46,7 +46,7 @@ def load_arguments(self, _):
         c.argument('blueprint_name', options_list=['--name', '-n'], help='Name of the blueprint definition.')
         c.argument('display_name', help='One-liner string explain this resource.')
         c.argument('description', help='Multi-line explain this resource.')
-        c.argument('target_scope', arg_type=get_enum_type(BlueprintTargetScope), help='The scope where this blueprint definition can be assigned.')
+        c.argument('target_scope', arg_type=get_enum_type(BlueprintTargetScope), default='subscription', help='The scope where this blueprint definition can be assigned.')
         c.argument('parameters', arg_type=parameter_type, help='Parameters required by this blueprint definition. It can be a JSON string or JSON file path with "@" prefix.')
 
     with self.argument_context('blueprint import') as c:
