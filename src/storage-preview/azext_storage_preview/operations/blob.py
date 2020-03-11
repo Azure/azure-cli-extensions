@@ -130,9 +130,59 @@ def list_directory(client, container_name, directory_path, prefix=None, num_resu
                              delimiter, marker, timeout)
 
 
-def rename_directory(client, container_name, destination_path, source_path):
+def rename_directory(client, container_name, new_path, source_path,
+                     mode=None, lease_id=None, source_lease_id=None,
+                     source_if_modified_since=None, source_if_unmodified_since=None,
+                     source_if_match=None, source_if_none_match=None, timeout=None):
+    """
+     Rename a directory(which can contain other directories or blobs).
 
-    marker = client.rename_path(container_name, destination_path, source_path)
+     :param str container_name:
+         Name of existing container.
+     :param str new_path:
+         New path for source_path. Ex: 'topdir1/dirsubfoo'.
+         Note that the path should be an absolute path under the container.
+     :param str source_path:
+         Path to be renamed. Ex: 'topdir1/dirbar'.
+         Note that the path should be an absolute path under the container.
+     :param mode:
+         Optional. Valid only when namespace is enabled.
+         This parameter determines the behavior of the move operation.
+         The value must be "legacy" or "posix", and the default value will be "posix".
+         Legacy: if the destination of the move is an existing directory and that directory is empty,
+         the source will overwrite the destination. If the directory is not empty, the move will fail.
+         Posix: if the destination of the move is an existing empty directory,
+         destination will be overwritten. Otherwise, the source will be moved into the destination directory.
+         If the destination is an existing file, the file will be overwritten.
+     :param str lease_id:
+         Optional. A lease ID for the new_path.
+         The new_path must have an active lease and the lease ID must match.
+     :param str source_lease_id:
+         Optional. A lease ID for the source_path.
+         The source_path must have an active lease and the lease ID must match.
+     :param datetime source_if_modified_since:
+         Optional. A date and time value. Specify this header to perform the move operation
+         only if the source has been modified since the specified date and time.
+     :param datetime source_if_unmodified_since:
+         Optional. A date and time value. Specify this header to perform the move operation
+         only if the source has not been modified since the specified date and time.
+     :param str source_if_match:
+         Optional. An ETag value. Specify this header to perform the move operation
+         only if the source's ETag matches the value specified.
+     :param str source_if_none_match:
+         Optional. An ETag value or the special wildcard ("*") value.
+         Specify this header to perform the move operation
+         only if the source's ETag does not match the value specified.
+     :param int timeout:
+         The timeout parameter is expressed in seconds.
+
+     """
+    marker = client.rename_path(container_name, new_path, source_path,
+                                mode=mode, lease_id=lease_id, source_lease_id=source_lease_id,
+                                source_if_modified_since=source_if_modified_since,
+                                source_if_unmodified_since=source_if_unmodified_since,
+                                source_if_match=source_if_match, source_if_none_match=source_if_none_match,
+                                timeout=timeout)
 
     # if HNS is enabled, the rename operation is atomic and no marker is returned
     # if HNS is not enabled, and there are too more files/subdirectories in the directories to be renamed
@@ -141,6 +191,6 @@ def rename_directory(client, container_name, destination_path, source_path):
 
     count = 1
     while marker is not None:
-        marker = client.rename_path(container_name, destination_path, source_path, marker=marker)
+        marker = client.rename_path(container_name, new_path, source_path, marker=marker)
         count += 1
     logger.info("Took {} call(s) to finish moving.".format(count))

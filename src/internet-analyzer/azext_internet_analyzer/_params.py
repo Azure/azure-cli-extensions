@@ -22,7 +22,6 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('tags', tags_type)
         c.argument('enabled_state', arg_type=get_enum_type(['Enabled', 'Disabled']), id_part=None, help='The state of the Experiment')
-        c.argument('etag', id_part=None, help='Gets a unique read-only string that changes whenever the resource is updated.')
 
     with self.argument_context('internet-analyzer profile update') as c:
         c.argument('resource_group', resource_group_name_type)
@@ -30,7 +29,6 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('tags', tags_type)
         c.argument('enabled_state', arg_type=get_enum_type(['Enabled', 'Disabled']), id_part=None, help='The state of the Experiment')
-        c.argument('etag', id_part=None, help='Gets a unique read-only string that changes whenever the resource is updated.')
 
     with self.argument_context('internet-analyzer profile delete') as c:
         c.argument('resource_group', resource_group_name_type)
@@ -86,3 +84,22 @@ def load_arguments(self, _):
         c.argument('resource_group', resource_group_name_type)
         c.argument('profile_name', id_part=None, help='The name of the Internet Analyzer profile under which the test exists')
         c.argument('name', id_part=None, help='The name of the Internet Analyzer test to show')
+
+    with self.argument_context('internet-analyzer show-scorecard') as c:
+        c.argument('resource_group', resource_group_name_type)
+        c.argument('profile_name', id_part=None, help='The name of the Internet Analyzer profile under which the test exists')
+        c.argument('test_name', id_part=None, help='The name of the Internet Analyzer test.')
+        c.argument('aggregation_interval', id_part=None, help='The aggregation interval of the Latency Scorecard.')
+        c.argument('country', id_part=None, help='The country associated with the Latency Scorecard. Values are country ISO codes as specified here - https://www.iso.org/iso-3166-country-codes.html.')
+        c.argument('end_date_time_utc', id_part=None, help='The end DateTime of the Latency Scorecard in UTC.')
+
+    with self.argument_context('internet-analyzer show-timeseries') as c:
+        c.argument('resource_group', resource_group_name_type)
+        c.argument('profile_name', id_part=None, help='The name of the Internet Analyzer profile under which the test exists')
+        c.argument('test_name', id_part=None, help='The name of the Internet Analyzer test.')
+        c.argument('aggregation_interval', id_part=None, help='The aggregation interval of the Timeseries.')
+        c.argument('country', id_part=None, help='The country associated with the Latency Scorecard. Values are country ISO codes as specified here - https://www.iso.org/iso-3166-country-codes.html.')
+        c.argument('start_date_time_utc', id_part=None, help='The start DateTime of the Timeseries in UTC.')
+        c.argument('end_date_time_utc', id_part=None, help='The end DateTime of the Timeseries in UTC.')
+        c.argument('timeseries_type', id_part=None, help='The type of Timeseries.')
+        c.argument('endpoint', id_part=None, help='The specific endpoint.')

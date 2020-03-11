@@ -25,7 +25,7 @@ class TopicsOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: Version of the API to be used with the client request. Constant value: "2019-02-01-preview".
+    :ivar api_version: Version of the API to be used with the client request. Constant value: "2020-04-01-preview".
     """
 
     models = models
@@ -35,7 +35,7 @@ class TopicsOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2019-02-01-preview"
+        self.api_version = "2020-04-01-preview"
 
         self.config = config
 
@@ -48,7 +48,7 @@ class TopicsOperations(object):
         :param resource_group_name: The name of the resource group within the
          user's subscription.
         :type resource_group_name: str
-        :param topic_name: Name of the topic
+        :param topic_name: Name of the topic.
         :type topic_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
@@ -56,7 +56,7 @@ class TopicsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: Topic or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.eventgrid.models.Topic or
+        :rtype: ~azext_eventgrid.models.Topic or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -163,10 +163,10 @@ class TopicsOperations(object):
         :param resource_group_name: The name of the resource group within the
          user's subscription.
         :type resource_group_name: str
-        :param topic_name: Name of the topic
+        :param topic_name: Name of the topic.
         :type topic_name: str
-        :param topic_info: Topic information
-        :type topic_info: ~azure.mgmt.eventgrid.models.Topic
+        :param topic_info: Topic information.
+        :type topic_info: ~azext_eventgrid.models.Topic
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
@@ -175,9 +175,9 @@ class TopicsOperations(object):
         :return: An instance of LROPoller that returns Topic or
          ClientRawResponse<Topic> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.eventgrid.models.Topic]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azext_eventgrid.models.Topic]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.eventgrid.models.Topic]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azext_eventgrid.models.Topic]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._create_or_update_initial(
@@ -254,7 +254,7 @@ class TopicsOperations(object):
         :param resource_group_name: The name of the resource group within the
          user's subscription.
         :type resource_group_name: str
-        :param topic_name: Name of the topic
+        :param topic_name: Name of the topic.
         :type topic_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
@@ -291,9 +291,7 @@ class TopicsOperations(object):
 
 
     def _update_initial(
-            self, resource_group_name, topic_name, tags=None, custom_headers=None, raw=False, **operation_config):
-        topic_update_parameters = models.TopicUpdateParameters(tags=tags)
-
+            self, resource_group_name, topic_name, topic_update_parameters, custom_headers=None, raw=False, **operation_config):
         # Construct URL
         url = self.update.metadata['url']
         path_format_arguments = {
@@ -342,7 +340,7 @@ class TopicsOperations(object):
         return deserialized
 
     def update(
-            self, resource_group_name, topic_name, tags=None, custom_headers=None, raw=False, polling=True, **operation_config):
+            self, resource_group_name, topic_name, topic_update_parameters, custom_headers=None, raw=False, polling=True, **operation_config):
         """Update a topic.
 
         Asynchronously updates a topic with the specified parameters.
@@ -350,10 +348,11 @@ class TopicsOperations(object):
         :param resource_group_name: The name of the resource group within the
          user's subscription.
         :type resource_group_name: str
-        :param topic_name: Name of the topic
+        :param topic_name: Name of the topic.
         :type topic_name: str
-        :param tags: Tags of the resource
-        :type tags: dict[str, str]
+        :param topic_update_parameters: Topic update information.
+        :type topic_update_parameters:
+         ~azext_eventgrid.models.TopicUpdateParameters
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
@@ -362,15 +361,15 @@ class TopicsOperations(object):
         :return: An instance of LROPoller that returns Topic or
          ClientRawResponse<Topic> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.eventgrid.models.Topic]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azext_eventgrid.models.Topic]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.eventgrid.models.Topic]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azext_eventgrid.models.Topic]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._update_initial(
             resource_group_name=resource_group_name,
             topic_name=topic_name,
-            tags=tags,
+            topic_update_parameters=topic_update_parameters,
             custom_headers=custom_headers,
             raw=True,
             **operation_config
@@ -400,9 +399,19 @@ class TopicsOperations(object):
 
         List all the topics under an Azure subscription.
 
-        :param filter: Filter the results using OData syntax.
+        :param filter: The query used to filter the search results using OData
+         syntax. Filtering is permitted on the 'name' property only and with
+         limited number of OData operations. These operations are: the
+         'contains' function as well as the following logical operations: not,
+         and, or, eq (for equal), and ne (for not equal). No arithmetic
+         operations are supported. The following is a valid filter example:
+         $filter=contains(namE, 'PATTERN') and name ne 'PATTERN-1'. The
+         following is not a valid filter example: $filter=location eq 'westus'.
         :type filter: str
-        :param top: The number of results to return.
+        :param top: The number of results to return per page for the list
+         operation. Valid range for top parameter is 1 to 100. If not
+         specified, the default number of results to be returned is 20 items
+         per page.
         :type top: int
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
@@ -411,7 +420,7 @@ class TopicsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of Topic
         :rtype:
-         ~azure.mgmt.eventgrid.models.TopicPaged[~azure.mgmt.eventgrid.models.Topic]
+         ~azext_eventgrid.models.TopicPaged[~azext_eventgrid.models.Topic]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
@@ -477,9 +486,19 @@ class TopicsOperations(object):
         :param resource_group_name: The name of the resource group within the
          user's subscription.
         :type resource_group_name: str
-        :param filter: Filter the results using OData syntax.
+        :param filter: The query used to filter the search results using OData
+         syntax. Filtering is permitted on the 'name' property only and with
+         limited number of OData operations. These operations are: the
+         'contains' function as well as the following logical operations: not,
+         and, or, eq (for equal), and ne (for not equal). No arithmetic
+         operations are supported. The following is a valid filter example:
+         $filter=contains(namE, 'PATTERN') and name ne 'PATTERN-1'. The
+         following is not a valid filter example: $filter=location eq 'westus'.
         :type filter: str
-        :param top: The number of results to return.
+        :param top: The number of results to return per page for the list
+         operation. Valid range for top parameter is 1 to 100. If not
+         specified, the default number of results to be returned is 20 items
+         per page.
         :type top: int
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
@@ -488,7 +507,7 @@ class TopicsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of Topic
         :rtype:
-         ~azure.mgmt.eventgrid.models.TopicPaged[~azure.mgmt.eventgrid.models.Topic]
+         ~azext_eventgrid.models.TopicPaged[~azext_eventgrid.models.Topic]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
@@ -555,7 +574,7 @@ class TopicsOperations(object):
         :param resource_group_name: The name of the resource group within the
          user's subscription.
         :type resource_group_name: str
-        :param topic_name: Name of the topic
+        :param topic_name: Name of the topic.
         :type topic_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
@@ -563,7 +582,7 @@ class TopicsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: TopicSharedAccessKeys or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.eventgrid.models.TopicSharedAccessKeys or
+        :rtype: ~azext_eventgrid.models.TopicSharedAccessKeys or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -620,7 +639,7 @@ class TopicsOperations(object):
         :param resource_group_name: The name of the resource group within the
          user's subscription.
         :type resource_group_name: str
-        :param topic_name: Name of the topic
+        :param topic_name: Name of the topic.
         :type topic_name: str
         :param key_name: Key name to regenerate key1 or key2
         :type key_name: str
@@ -630,7 +649,7 @@ class TopicsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: TopicSharedAccessKeys or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.eventgrid.models.TopicSharedAccessKeys or
+        :rtype: ~azext_eventgrid.models.TopicSharedAccessKeys or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -693,11 +712,11 @@ class TopicsOperations(object):
         :param resource_group_name: The name of the resource group within the
          user's subscription.
         :type resource_group_name: str
-        :param provider_namespace: Namespace of the provider of the topic
+        :param provider_namespace: Namespace of the provider of the topic.
         :type provider_namespace: str
-        :param resource_type_name: Name of the topic type
+        :param resource_type_name: Name of the topic type.
         :type resource_type_name: str
-        :param resource_name: Name of the topic
+        :param resource_name: Name of the topic.
         :type resource_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
@@ -706,7 +725,7 @@ class TopicsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of EventType
         :rtype:
-         ~azure.mgmt.eventgrid.models.EventTypePaged[~azure.mgmt.eventgrid.models.EventType]
+         ~azext_eventgrid.models.EventTypePaged[~azext_eventgrid.models.EventType]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):

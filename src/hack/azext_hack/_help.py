@@ -21,3 +21,11 @@ helps['hack create'] = """
         - name: Create website using Node.js, SQL and Cognitive Services key
           text: az hack create --name samplename --runtime node --location westus2 --database sql --ai
 """
+
+helps['hack show'] = """
+    type: command
+    short-summary: Display settings for created resources, including database name and password, Git url, and website url.
+    examples:
+        - name: Display settings
+          text: az hack show --name samplename
+"""

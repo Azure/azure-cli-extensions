@@ -18,6 +18,7 @@ class HackExtCommandLoader(AzCommandsLoader):
     def load_command_table(self, _):
         with self.command_group('hack') as g:
             g.custom_command('create', 'create_hack')
+            g.custom_command('show', 'show_hack')
         return self.command_table
 
     def load_arguments(self, _):
@@ -31,7 +32,7 @@ class HackExtCommandLoader(AzCommandsLoader):
                        options_list=['--database', '-d'],
                        help='Database type - { sql | mysql | cosmosdb }',
                        choices=['sql', 'mysql', 'cosmosdb'],
-                       default='sql',
+                       default=None,
                        type=str.lower)
             c.argument('runtime',
                        options_list=['--runtime', '-r'],
@@ -45,6 +46,11 @@ class HackExtCommandLoader(AzCommandsLoader):
                        default=None,
                        action='store_true')
             c.argument(get_location_type(self.cli_ctx))
+        with self.argument_context('hack show') as c:
+            c.argument('name',
+                       options_list=['--name', '-n'],
+                       help='Name of the application',
+                       type=str.lower)
 
 
 COMMAND_LOADER_CLS = HackExtCommandLoader

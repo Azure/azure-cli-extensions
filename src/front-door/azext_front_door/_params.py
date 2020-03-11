@@ -157,7 +157,7 @@ def load_arguments(self, _):
     with self.argument_context('network front-door waf-policy managed-rules add') as c:
         c.argument('policy_name', waf_policy_name_type)
         c.argument('action', arg_type=get_enum_type(ActionType), help='Action for applied rulesets.')
-        c.argument('rule_set_type', options_list=['--type'], help='Name of the ruleset to apply.')
+        c.argument('rule_set_type', options_list=['--type'], help='ID of the ruleset to apply.')
         c.argument('version', help='Rule set version.')
 
     with self.argument_context('network front-door waf-policy managed-rules list') as c:
@@ -166,24 +166,48 @@ def load_arguments(self, _):
     with self.argument_context('network front-door waf-policy managed-rules override add') as c:
         c.argument('policy_name', waf_policy_name_type)
         c.argument('action', arg_type=get_enum_type(ActionType), help='Action for applied rulesets.')
-        c.argument('rule_set_type', options_list=['--type'], help='Name of the ruleset to override.')
-        c.argument('rule_group_id', help='Name of the rule group containing the rule to override.')
-        c.argument('rule_id', help='Name of the rule to override.')
+        c.argument('rule_set_type', options_list=['--type'], help='ID of the ruleset to override.')
+        c.argument('rule_group_id', help='ID of the rule group containing the rule to override.')
+        c.argument('rule_id', help='ID of the rule to override.')
         c.argument('disabled', help='Whether to disable the rule.')
 
     with self.argument_context('network front-door waf-policy managed-rules override remove') as c:
         c.argument('policy_name', waf_policy_name_type)
-        c.argument('rule_set_type', options_list=['--type'], help='Name of the ruleset with the override to remove.')
-        c.argument('rule_group_id', help='Name of the rule group containing the override to remove.')
-        c.argument('rule_id', help='Name of the rule override to remove.')
+        c.argument('rule_set_type', options_list=['--type'], help='ID of the ruleset with the override to remove.')
+        c.argument('rule_group_id', help='ID of the rule group containing the override to remove.')
+        c.argument('rule_id', help='ID of the rule override to remove.')
 
     with self.argument_context('network front-door waf-policy managed-rules override list') as c:
         c.argument('policy_name', waf_policy_name_type, id_part=None)
-        c.argument('rule_set_type', options_list=['--type'], help='Name of the ruleset with the overrides to list.')
+        c.argument('rule_set_type', options_list=['--type'], help='ID of the ruleset with the overrides to list.')
+
+    with self.argument_context('network front-door waf-policy managed-rules exclusion add') as c:
+        c.argument('policy_name', waf_policy_name_type)
+        c.argument('rule_set_type', options_list=['--type'], help='ID of the ruleset to exclusion.')
+        c.argument('rule_group_id', help='ID of the rule group containing the rule to exclusion.')
+        c.argument('rule_id', help='ID of the rule to apply exclusion.')
+        c.argument('match_variable', help='Which kind of variable\'s content will be ignored, e.g. RequestHeaderNames, RequestCookieNames, QueryStringArgNames, RequestBodyPostArgNames.')
+        c.argument('operator', help='Operator used to compare the variable name to the value, e.g. Equals, Contains, StartsWith, EndsWith, EqualsAny.')
+        c.argument('value', help='Values to match the variable name against.')
+
+    with self.argument_context('network front-door waf-policy managed-rules exclusion remove') as c:
+        c.argument('policy_name', waf_policy_name_type)
+        c.argument('rule_set_type', options_list=['--type'], help='ID of the ruleset with the exclusion to remove.')
+        c.argument('rule_group_id', help='ID of the rule group containing the exclusion to remove.')
+        c.argument('rule_id', help='ID of the rule to remove from exclusion.')
+        c.argument('match_variable', help='Which kind of variable\'s content will be ignored, e.g. RequestHeaderNames, RequestCookieNames, QueryStringArgNames, RequestBodyPostArgNames.')
+        c.argument('operator', help='Operator used to compare the variable name to the value, e.g. Equals, Contains, StartsWith, EndsWith, EqualsAny.')
+        c.argument('value', help='Values to match the variable name against.')
+
+    with self.argument_context('network front-door waf-policy managed-rules exclusion list') as c:
+        c.argument('policy_name', waf_policy_name_type, id_part=None)
+        c.argument('rule_set_type', options_list=['--type'], help='ID of the ruleset with the exclusions to list.')
+        c.argument('rule_group_id', help='ID of the rule group containing the exclusions to list.')
+        c.argument('rule_id', help='ID of the rule to list exclusion for.')
 
     with self.argument_context('network front-door waf-policy managed-rules remove') as c:
         c.argument('policy_name', waf_policy_name_type)
-        c.argument('rule_set_type', options_list=['--type'], help='Name of the ruleset to remove.')
+        c.argument('rule_set_type', options_list=['--type'], help='ID of the ruleset to remove.')
 
     with self.argument_context('network front-door waf-policy managed-rule-definition list') as c:
         c.argument('policy_name', waf_policy_name_type)

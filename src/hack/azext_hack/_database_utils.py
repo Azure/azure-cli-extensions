@@ -107,12 +107,12 @@ class Database():
         return _DATABASES[self.database_type]['port']
 
     def __get_cosmosdb_steps(self, cmd, name, location):
-        from azure.mgmt.cosmosdb import CosmosDB
+        from azure.mgmt.cosmosdb import CosmosDBManagementClient
         from azure.cli.core.commands.client_factory import get_mgmt_service_client
 
         steps = []
 
-        cosmosdb_client = get_mgmt_service_client(cmd.cli_ctx, CosmosDB)
+        cosmosdb_client = get_mgmt_service_client(cmd.cli_ctx, CosmosDBManagementClient)
 
         from azure.mgmt.cosmosdb.models import (
             DatabaseAccountCreateUpdateParameters,
@@ -149,7 +149,7 @@ class Database():
             'options': {}
         }
         steps.append(DatabaseCreationStep(
-            'database', cosmosdb_client.database_accounts.create_update_mongo_db_database, database_params))
+            'database', cosmosdb_client.mongo_db_resources.create_update_mongo_db_database, database_params))
 
         def retrieve_password():
             result = cosmosdb_client.database_accounts.list_keys(
@@ -233,14 +233,14 @@ class Database():
         from azure.cli.command_modules.sql.custom import (
             server_create as sql_server_create,
             db_create as sql_database_create,
-            firewall_rule_allow_all_azure_ips as sql_firewall_allow_azure
+            firewall_rule_allow_all_azure_ips as sql_firewall_allow_azure,
+            ComputeModelType
         )
         from azure.mgmt.sql.models import (
             Sku
         )
 
         sql_client = get_sql_management_client(cmd.cli_ctx)
-        sku = Sku(capacity=10, name='Standard', tier='Standard')
 
         steps = []
 
@@ -256,6 +256,8 @@ class Database():
         steps.append(DatabaseCreationStep(
             'server', sql_server_create, server_parameters))
 
+        sku = Sku(capacity=10, name='Standard', tier='Standard', family='Gen5')
+
         database_parameters = {
             'cmd': cmd,
             'client': sql_client.databases,
@@ -264,7 +266,8 @@ class Database():
             'resource_group_name': name,
             'location': location,
             'sku': sku,
-            'elastic_pool_id': None
+            'elastic_pool_id': None,
+            'compute_model': ComputeModelType('Serverless')
         }
         steps.append(DatabaseCreationStep(
             'database', sql_database_create, database_parameters))

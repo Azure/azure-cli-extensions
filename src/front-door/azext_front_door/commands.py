@@ -145,6 +145,11 @@ def load_command_table(self, _):
         g.custom_command('remove', 'remove_override_azure_managed_rule_set')
         g.custom_command('list', 'list_override_azure_managed_rule_set')
 
+    with self.command_group('network front-door waf-policy managed-rules exclusion', waf_policy_sdk) as g:
+        g.custom_command('add', 'add_exclusion_azure_managed_rule_set')
+        g.custom_command('remove', 'remove_exclusion_azure_managed_rule_set')
+        g.custom_command('list', 'list_exclusion_azure_managed_rule_set')
+
     with self.command_group('network front-door waf-policy managed-rule-definition', waf_policy_sdk) as g:
         g.custom_command('list', 'list_managed_rules_definitions')
 

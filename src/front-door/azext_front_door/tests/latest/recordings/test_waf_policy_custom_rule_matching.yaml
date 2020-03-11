@@ -1,55 +1,5 @@
 interactions:
 - request:
-    body: '{"location": "westus", "tags": {"product": "azurecli", "cause": "automation",
-      "date": "2019-06-21T18:55:33Z"}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - group create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '110'
-      Content-Type:
-      - application/json; charset=utf-8
-      ParameterSetName:
-      - --location --name --tag
-      User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.1 resourcemanagementclient/2.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.66
-      accept-language:
-      - en-US
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2018-05-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2019-06-21T18:55:33Z"},"properties":{"provisioningState":"Succeeded"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '384'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 21 Jun 2019 18:55:38 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-    status:
-      code: 201
-      message: Created
-- request:
     body: '{"location": "global", "properties": {"policySettings": {"enabledState":
       "Enabled"}, "customRules": {"rules": []}, "managedRules": {}}}'
     headers:
@@ -68,12 +18,12 @@ interactions:
       ParameterSetName:
       - --resource-group --name
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.66
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+        Azure-SDK-For-Python AZURECLI/2.0.68
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2019-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2019-10-01
   response:
     body:
       string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
@@ -90,7 +40,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 21 Jun 2019 18:55:42 GMT
+      - Wed, 13 Nov 2019 22:16:57 GMT
       expires:
       - '-1'
       odata-version:
@@ -106,7 +56,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1196'
       x-powered-by:
       - ASP.NET
     status:
@@ -126,12 +76,12 @@ interactions:
       ParameterSetName:
       - -g --policy-name -n --priority --rule-type --action --defer
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.66
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+        Azure-SDK-For-Python AZURECLI/2.0.68
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2019-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2019-10-01
   response:
     body:
       string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
@@ -148,7 +98,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 21 Jun 2019 18:55:44 GMT
+      - Wed, 13 Nov 2019 22:16:57 GMT
       expires:
       - '-1'
       odata-version:
@@ -173,12 +123,11 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: 'b''{"location": "Global", "tags": {}, "properties": {"policySettings":
-      {"enabledState": "Enabled", "mode": "Prevention"}, "customRules": {"rules":
-      [{"name": "cli000003", "priority": 6, "enabledState": "Enabled", "ruleType":
-      "MatchRule", "matchConditions": [{"matchVariable": "RequestBody", "operator":
-      "RegEx", "matchValue": ["something"]}], "action": "Block"}]}, "managedRules":
-      {"managedRuleSets": []}}}'''
+    body: '{"location": "Global", "tags": {}, "properties": {"policySettings": {"enabledState":
+      "Enabled", "mode": "Prevention"}, "customRules": {"rules": [{"name": "cli000003",
+      "priority": 6, "enabledState": "Enabled", "ruleType": "MatchRule", "matchConditions":
+      [{"matchVariable": "RequestBody", "operator": "RegEx", "matchValue": ["something"]}],
+      "action": "Block"}]}, "managedRules": {"managedRuleSets": []}}}'
     headers:
       Accept:
       - application/json
@@ -195,18 +144,18 @@ interactions:
       ParameterSetName:
       - -g --policy-name -n --match-variable --operator --values
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.66
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+        Azure-SDK-For-Python AZURECLI/2.0.68
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2019-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2019-10-01
   response:
     body:
       string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
         \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
         \     \"enabledState\":\"Enabled\",\"mode\":\"Prevention\",\"redirectUrl\":null,\"customBlockResponseStatusCode\":null,\"customBlockResponseBody\":null\r\n
-        \   },\"customRules\":{\r\n      \"rules\":[\r\n        {\r\n          \"name\":\"cli000003\",\"enabledState\":\"Enabled\",\"priority\":6,\"ruleType\":\"MatchRule\",\"rateLimitDurationInMinutes\":0,\"rateLimitThreshold\":0,\"matchConditions\":[\r\n
+        \   },\"customRules\":{\r\n      \"rules\":[\r\n        {\r\n          \"name\":\"cli000003\",\"enabledState\":\"Enabled\",\"priority\":6,\"ruleType\":\"MatchRule\",\"rateLimitDurationInMinutes\":null,\"rateLimitThreshold\":null,\"matchConditions\":[\r\n
         \           {\r\n              \"matchVariable\":\"RequestBody\",\"selector\":null,\"operator\":\"RegEx\",\"negateCondition\":false,\"matchValue\":[\r\n
         \               \"something\"\r\n              ],\"transforms\":[\r\n                \r\n
         \             ]\r\n            }\r\n          ],\"action\":\"Block\"\r\n        }\r\n
@@ -216,11 +165,11 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '1276'
+      - '1282'
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 21 Jun 2019 18:55:45 GMT
+      - Wed, 13 Nov 2019 22:17:01 GMT
       expires:
       - '-1'
       odata-version:
@@ -247,8 +196,8 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: 'b''b\''{"location": "global", "properties": {"friendlyName": "cli000004",
-      "routingRules": [{"properties": {"frontendEndpoints": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],
+    body: 'b''{"location": "global", "properties": {"friendlyName": "cli000004", "routingRules":
+      [{"properties": {"frontendEndpoints": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],
       "acceptedProtocols": ["Http"], "patternsToMatch": ["/*"], "enabledState": "Enabled",
       "routeConfiguration": {"@odata.type": "#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration",
       "forwardingProtocol": "MatchRequest", "backendPool": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"}},
@@ -256,16 +205,17 @@ interactions:
       [{"properties": {"sampleSize": 4, "successfulSamplesRequired": 2, "additionalLatencyMilliseconds":
       0, "resourceState": "Enabled"}, "name": "DefaultLoadBalancingSettings"}], "healthProbeSettings":
       [{"properties": {"path": "/", "protocol": "Https", "intervalInSeconds": 30,
-      "resourceState": "Enabled"}, "name": "DefaultProbeSettings"}], "backendPools":
-      [{"properties": {"backends": [{"address": "www.example.com", "httpPort": 80,
-      "httpsPort": 443, "enabledState": "Enabled", "priority": 1, "weight": 50, "backendHostHeader":
-      "www.example.com"}], "loadBalancingSettings": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"},
+      "healthProbeMethod": "HEAD", "resourceState": "Enabled"}, "name": "DefaultProbeSettings"}],
+      "backendPools": [{"properties": {"backends": [{"address": "www.example.com",
+      "httpPort": 80, "httpsPort": 443, "enabledState": "Enabled", "priority": 1,
+      "weight": 50, "backendHostHeader": "www.example.com"}], "loadBalancingSettings":
+      {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"},
       "healthProbeSettings": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"},
       "resourceState": "Enabled"}, "name": "DefaultBackendPool"}], "frontendEndpoints":
       [{"properties": {"hostName": "cli000004.azurefd.net", "sessionAffinityEnabledState":
       "Disabled", "resourceState": "Enabled"}, "name": "DefaultFrontendEndpoint"}],
       "backendPoolsSettings": {"enforceCertificateNameCheck": "Enabled"}, "enabledState":
-      "Enabled"}}\'''''
+      "Enabled"}}'''
     headers:
       Accept:
       - application/json
@@ -276,18 +226,18 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '2456'
+      - '2485'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
       - --resource-group --backend-address --name
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.66
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+        Azure-SDK-For-Python AZURECLI/2.0.68
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2019-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2019-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"cli000004\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004\",\"type\":\"Microsoft.Network/frontdoors\",\"tags\":{\r\n
@@ -298,7 +248,7 @@ interactions:
         \         },\"loadBalancingSettings\":{\r\n            \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings\"\r\n
         \         },\"resourceState\":\"Creating\"\r\n        }\r\n      }\r\n    ],\"healthProbeSettings\":[\r\n
         \     {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings\",\"name\":\"DefaultProbeSettings\",\"type\":\"Microsoft.Network/Frontdoors/HealthProbeSettings\",\"properties\":{\r\n
-        \         \"intervalInSeconds\":30,\"path\":\"/\",\"protocol\":\"Https\",\"resourceState\":\"Creating\"\r\n
+        \         \"intervalInSeconds\":30,\"path\":\"/\",\"protocol\":\"Https\",\"resourceState\":\"Creating\",\"enabledState\":\"Enabled\",\"healthProbeMethod\":\"Head\"\r\n
         \       }\r\n      }\r\n    ],\"frontendEndpoints\":[\r\n      {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint\",\"name\":\"DefaultFrontendEndpoint\",\"type\":\"Microsoft.Network/Frontdoors/FrontendEndpoints\",\"properties\":{\r\n
         \         \"hostName\":\"cli000004.azurefd.net\",\"sessionAffinityEnabledState\":\"Disabled\",\"sessionAffinityTtlSeconds\":0,\"webApplicationFirewallPolicyLink\":null,\"customHttpsProvisioningState\":null,\"customHttpsProvisioningSubstate\":null,\"customHttpsConfiguration\":null,\"resourceState\":\"Creating\"\r\n
         \       }\r\n      }\r\n    ],\"loadBalancingSettings\":[\r\n      {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings\",\"name\":\"DefaultLoadBalancingSettings\",\"type\":\"Microsoft.Network/Frontdoors/LoadBalancingSettings\",\"properties\":{\r\n
@@ -310,19 +260,20 @@ interactions:
         \           \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration\",\"customForwardingPath\":null,\"forwardingProtocol\":\"MatchRequest\",\"cacheConfiguration\":null,\"backendPool\":{\r\n
         \             \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool\"\r\n
         \           }\r\n          }\r\n        }\r\n      }\r\n    ],\"backendPoolsSettings\":{\r\n
-        \     \"enforceCertificateNameCheck\":\"Enabled\"\r\n    },\"enabledState\":\"Enabled\",\"cName\":\"cli000004.azurefd.net\",\"friendlyName\":\"cli000004\"\r\n
+        \     \"enforceCertificateNameCheck\":\"Enabled\",\"sendRecvTimeoutSeconds\":30\r\n
+        \   },\"enabledState\":\"Enabled\",\"cName\":\"cli000004.azurefd.net\",\"friendlyName\":\"cli000004\"\r\n
         \ }\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/edbb5f32-c2d1-4d78-a6aa-895a8e3e844a?api-version=2019-04-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/76ada10e-e46e-4be6-ae84-ae1d22daff18?api-version=2019-05-01
       cache-control:
       - no-cache
       content-length:
-      - '5126'
+      - '5206'
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 21 Jun 2019 18:55:50 GMT
+      - Wed, 13 Nov 2019 22:17:08 GMT
       expires:
       - '-1'
       odata-version:
@@ -338,7 +289,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1194'
       x-powered-by:
       - ASP.NET
     status:
@@ -358,22 +309,23 @@ interactions:
       ParameterSetName:
       - --resource-group --backend-address --name
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.66
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+        Azure-SDK-For-Python AZURECLI/2.0.68
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/edbb5f32-c2d1-4d78-a6aa-895a8e3e844a?api-version=2019-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/76ada10e-e46e-4be6-ae84-ae1d22daff18?api-version=2019-05-01
   response:
     body:
-      string: "{\r\n  \"status\":\"InProgress\",\"error\":{\r\n    \r\n  }\r\n}"
+      string: "{\r\n  \"status\":\"InProgress\",\"error\":{\r\n    \"code\":\"None\",\"message\":null\r\n
+        \ }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '50'
+      - '78'
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 21 Jun 2019 18:56:01 GMT
+      - Wed, 13 Nov 2019 22:17:19 GMT
       expires:
       - '-1'
       odata-version:
@@ -411,22 +363,23 @@ interactions:
       ParameterSetName:
       - --resource-group --backend-address --name
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.66
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+        Azure-SDK-For-Python AZURECLI/2.0.68
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/edbb5f32-c2d1-4d78-a6aa-895a8e3e844a?api-version=2019-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/76ada10e-e46e-4be6-ae84-ae1d22daff18?api-version=2019-05-01
   response:
     body:
-      string: "{\r\n  \"status\":\"Succeeded\",\"error\":{\r\n    \r\n  }\r\n}"
+      string: "{\r\n  \"status\":\"Succeeded\",\"error\":{\r\n    \"code\":\"None\",\"message\":null\r\n
+        \ }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '49'
+      - '77'
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 21 Jun 2019 18:56:31 GMT
+      - Wed, 13 Nov 2019 22:17:49 GMT
       expires:
       - '-1'
       odata-version:
@@ -464,10 +417,10 @@ interactions:
       ParameterSetName:
       - --resource-group --backend-address --name
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.66
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+        Azure-SDK-For-Python AZURECLI/2.0.68
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2019-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2019-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"cli000004\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004\",\"type\":\"Microsoft.Network/frontdoors\",\"tags\":{\r\n
@@ -478,7 +431,7 @@ interactions:
         \         },\"loadBalancingSettings\":{\r\n            \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings\"\r\n
         \         },\"resourceState\":\"Enabled\"\r\n        }\r\n      }\r\n    ],\"healthProbeSettings\":[\r\n
         \     {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings\",\"name\":\"DefaultProbeSettings\",\"type\":\"Microsoft.Network/Frontdoors/HealthProbeSettings\",\"properties\":{\r\n
-        \         \"intervalInSeconds\":30,\"path\":\"/\",\"protocol\":\"Https\",\"resourceState\":\"Enabled\"\r\n
+        \         \"intervalInSeconds\":30,\"path\":\"/\",\"protocol\":\"Https\",\"resourceState\":\"Enabled\",\"enabledState\":\"Enabled\",\"healthProbeMethod\":\"Head\"\r\n
         \       }\r\n      }\r\n    ],\"frontendEndpoints\":[\r\n      {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint\",\"name\":\"DefaultFrontendEndpoint\",\"type\":\"Microsoft.Network/Frontdoors/FrontendEndpoints\",\"properties\":{\r\n
         \         \"hostName\":\"cli000004.azurefd.net\",\"sessionAffinityEnabledState\":\"Disabled\",\"sessionAffinityTtlSeconds\":0,\"webApplicationFirewallPolicyLink\":null,\"customHttpsProvisioningState\":null,\"customHttpsProvisioningSubstate\":null,\"customHttpsConfiguration\":null,\"resourceState\":\"Enabled\"\r\n
         \       }\r\n      }\r\n    ],\"loadBalancingSettings\":[\r\n      {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings\",\"name\":\"DefaultLoadBalancingSettings\",\"type\":\"Microsoft.Network/Frontdoors/LoadBalancingSettings\",\"properties\":{\r\n
@@ -490,17 +443,18 @@ interactions:
         \           \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration\",\"customForwardingPath\":null,\"forwardingProtocol\":\"MatchRequest\",\"cacheConfiguration\":null,\"backendPool\":{\r\n
         \             \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool\"\r\n
         \           }\r\n          }\r\n        }\r\n      }\r\n    ],\"backendPoolsSettings\":{\r\n
-        \     \"enforceCertificateNameCheck\":\"Enabled\"\r\n    },\"enabledState\":\"Enabled\",\"cName\":\"cli000004.azurefd.net\",\"friendlyName\":\"cli000004\"\r\n
+        \     \"enforceCertificateNameCheck\":\"Enabled\",\"sendRecvTimeoutSeconds\":30\r\n
+        \   },\"enabledState\":\"Enabled\",\"cName\":\"cli000004.azurefd.net\",\"friendlyName\":\"cli000004\"\r\n
         \ }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '5121'
+      - '5201'
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 21 Jun 2019 18:56:33 GMT
+      - Wed, 13 Nov 2019 22:17:50 GMT
       expires:
       - '-1'
       odata-version:
@@ -538,12 +492,12 @@ interactions:
       ParameterSetName:
       - --name --resource-group --set
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.66
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+        Azure-SDK-For-Python AZURECLI/2.0.68
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2019-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2019-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"cli000004\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004\",\"type\":\"Microsoft.Network/frontdoors\",\"tags\":{\r\n
@@ -554,7 +508,7 @@ interactions:
         \         },\"loadBalancingSettings\":{\r\n            \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings\"\r\n
         \         },\"resourceState\":\"Enabled\"\r\n        }\r\n      }\r\n    ],\"healthProbeSettings\":[\r\n
         \     {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings\",\"name\":\"DefaultProbeSettings\",\"type\":\"Microsoft.Network/Frontdoors/HealthProbeSettings\",\"properties\":{\r\n
-        \         \"intervalInSeconds\":30,\"path\":\"/\",\"protocol\":\"Https\",\"resourceState\":\"Enabled\"\r\n
+        \         \"intervalInSeconds\":30,\"path\":\"/\",\"protocol\":\"Https\",\"resourceState\":\"Enabled\",\"enabledState\":\"Enabled\",\"healthProbeMethod\":\"Head\"\r\n
         \       }\r\n      }\r\n    ],\"frontendEndpoints\":[\r\n      {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint\",\"name\":\"DefaultFrontendEndpoint\",\"type\":\"Microsoft.Network/Frontdoors/FrontendEndpoints\",\"properties\":{\r\n
         \         \"hostName\":\"cli000004.azurefd.net\",\"sessionAffinityEnabledState\":\"Disabled\",\"sessionAffinityTtlSeconds\":0,\"webApplicationFirewallPolicyLink\":null,\"customHttpsProvisioningState\":null,\"customHttpsProvisioningSubstate\":null,\"customHttpsConfiguration\":null,\"resourceState\":\"Enabled\"\r\n
         \       }\r\n      }\r\n    ],\"loadBalancingSettings\":[\r\n      {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings\",\"name\":\"DefaultLoadBalancingSettings\",\"type\":\"Microsoft.Network/Frontdoors/LoadBalancingSettings\",\"properties\":{\r\n
@@ -566,17 +520,18 @@ interactions:
         \           \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration\",\"customForwardingPath\":null,\"forwardingProtocol\":\"MatchRequest\",\"cacheConfiguration\":null,\"backendPool\":{\r\n
         \             \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool\"\r\n
         \           }\r\n          }\r\n        }\r\n      }\r\n    ],\"backendPoolsSettings\":{\r\n
-        \     \"enforceCertificateNameCheck\":\"Enabled\"\r\n    },\"enabledState\":\"Enabled\",\"cName\":\"cli000004.azurefd.net\",\"friendlyName\":\"cli000004\"\r\n
+        \     \"enforceCertificateNameCheck\":\"Enabled\",\"sendRecvTimeoutSeconds\":30\r\n
+        \   },\"enabledState\":\"Enabled\",\"cName\":\"cli000004.azurefd.net\",\"friendlyName\":\"cli000004\"\r\n
         \ }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '5121'
+      - '5201'
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 21 Jun 2019 18:56:34 GMT
+      - Wed, 13 Nov 2019 22:17:51 GMT
       expires:
       - '-1'
       odata-version:
@@ -601,8 +556,8 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: 'b''b\''b\\\''{"location": "Global", "tags": {}, "properties": {"friendlyName":
-      "cli000004", "routingRules": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule",
+    body: 'b''{"location": "Global", "tags": {}, "properties": {"friendlyName": "cli000004",
+      "routingRules": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule",
       "properties": {"frontendEndpoints": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],
       "acceptedProtocols": ["Http"], "patternsToMatch": ["/*"], "enabledState": "Enabled",
       "routeConfiguration": {"@odata.type": "#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration",
@@ -612,8 +567,9 @@ interactions:
       "properties": {"sampleSize": 4, "successfulSamplesRequired": 2, "additionalLatencyMilliseconds":
       0, "resourceState": "Enabled"}, "name": "DefaultLoadBalancingSettings"}], "healthProbeSettings":
       [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings",
-      "properties": {"path": "/", "protocol": "Https", "intervalInSeconds": 30, "resourceState":
-      "Enabled"}, "name": "DefaultProbeSettings"}], "backendPools": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool",
+      "properties": {"path": "/", "protocol": "Https", "intervalInSeconds": 30, "healthProbeMethod":
+      "Head", "enabledState": "Enabled", "resourceState": "Enabled"}, "name": "DefaultProbeSettings"}],
+      "backendPools": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool",
       "properties": {"backends": [{"address": "www.example.com", "httpPort": 80, "httpsPort":
       443, "enabledState": "Enabled", "priority": 1, "weight": 50, "backendHostHeader":
       "www.example.com"}], "loadBalancingSettings": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"},
@@ -624,7 +580,8 @@ interactions:
       "Disabled", "sessionAffinityTtlSeconds": 0, "webApplicationFirewallPolicyLink":
       {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002"},
       "resourceState": "Enabled"}, "name": "DefaultFrontendEndpoint"}], "backendPoolsSettings":
-      {}, "enabledState": "Enabled", "resourceState": "Enabled"}}\\\''\'''''
+      {"enforceCertificateNameCheck": "Enabled", "sendRecvTimeoutSeconds": 30}, "enabledState":
+      "Enabled", "resourceState": "Enabled"}}'''
     headers:
       Accept:
       - application/json
@@ -635,18 +592,18 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '4049'
+      - '4175'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
       - --name --resource-group --set
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.66
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+        Azure-SDK-For-Python AZURECLI/2.0.68
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2019-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2019-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"cli000004\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004\",\"type\":\"Microsoft.Network/frontdoors\",\"tags\":{\r\n
@@ -657,7 +614,7 @@ interactions:
         \         },\"loadBalancingSettings\":{\r\n            \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings\"\r\n
         \         },\"resourceState\":\"Enabled\"\r\n        }\r\n      }\r\n    ],\"healthProbeSettings\":[\r\n
         \     {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings\",\"name\":\"DefaultProbeSettings\",\"type\":\"Microsoft.Network/Frontdoors/HealthProbeSettings\",\"properties\":{\r\n
-        \         \"intervalInSeconds\":30,\"path\":\"/\",\"protocol\":\"Https\",\"resourceState\":\"Enabled\"\r\n
+        \         \"intervalInSeconds\":30,\"path\":\"/\",\"protocol\":\"Https\",\"resourceState\":\"Enabled\",\"enabledState\":\"Enabled\",\"healthProbeMethod\":\"Head\"\r\n
         \       }\r\n      }\r\n    ],\"frontendEndpoints\":[\r\n      {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint\",\"name\":\"DefaultFrontendEndpoint\",\"type\":\"Microsoft.Network/Frontdoors/FrontendEndpoints\",\"properties\":{\r\n
         \         \"hostName\":\"cli000004.azurefd.net\",\"sessionAffinityEnabledState\":\"Disabled\",\"sessionAffinityTtlSeconds\":0,\"webApplicationFirewallPolicyLink\":{\r\n
         \           \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\"\r\n
@@ -671,23 +628,24 @@ interactions:
         \           \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration\",\"customForwardingPath\":null,\"forwardingProtocol\":\"MatchRequest\",\"cacheConfiguration\":null,\"backendPool\":{\r\n
         \             \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool\"\r\n
         \           }\r\n          }\r\n        }\r\n      }\r\n    ],\"backendPoolsSettings\":{\r\n
-        \     \"enforceCertificateNameCheck\":\"Enabled\"\r\n    },\"enabledState\":\"Enabled\",\"cName\":\"cli000004.azurefd.net\",\"friendlyName\":\"cli000004\"\r\n
+        \     \"enforceCertificateNameCheck\":\"Enabled\",\"sendRecvTimeoutSeconds\":30\r\n
+        \   },\"enabledState\":\"Enabled\",\"cName\":\"cli000004.azurefd.net\",\"friendlyName\":\"cli000004\"\r\n
         \ }\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/988f1fa1-d9e9-4675-98df-7fc2dce0e84b?api-version=2019-04-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/f25f9c97-37e8-4399-b20d-f7980dc41316?api-version=2019-05-01
       cache-control:
       - no-cache
       content-length:
-      - '5387'
+      - '5467'
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 21 Jun 2019 18:56:36 GMT
+      - Wed, 13 Nov 2019 22:17:56 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/988f1fa1-d9e9-4675-98df-7fc2dce0e84b/frontdoorresults/cli000004?api-version=2019-04-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/f25f9c97-37e8-4399-b20d-f7980dc41316/frontdoorresults/cli000004?api-version=2019-05-01
       odata-version:
       - '4.0'
       pragma:
@@ -721,22 +679,23 @@ interactions:
       ParameterSetName:
       - --name --resource-group --set
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.66
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+        Azure-SDK-For-Python AZURECLI/2.0.68
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/988f1fa1-d9e9-4675-98df-7fc2dce0e84b?api-version=2019-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/f25f9c97-37e8-4399-b20d-f7980dc41316?api-version=2019-05-01
   response:
     body:
-      string: "{\r\n  \"status\":\"InProgress\",\"error\":{\r\n    \r\n  }\r\n}"
+      string: "{\r\n  \"status\":\"InProgress\",\"error\":{\r\n    \"code\":\"None\",\"message\":null\r\n
+        \ }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '50'
+      - '78'
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 21 Jun 2019 18:56:47 GMT
+      - Wed, 13 Nov 2019 22:18:07 GMT
       expires:
       - '-1'
       odata-version:
@@ -774,22 +733,23 @@ interactions:
       ParameterSetName:
       - --name --resource-group --set
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.66
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+        Azure-SDK-For-Python AZURECLI/2.0.68
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/988f1fa1-d9e9-4675-98df-7fc2dce0e84b?api-version=2019-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/f25f9c97-37e8-4399-b20d-f7980dc41316?api-version=2019-05-01
   response:
     body:
-      string: "{\r\n  \"status\":\"Succeeded\",\"error\":{\r\n    \r\n  }\r\n}"
+      string: "{\r\n  \"status\":\"Succeeded\",\"error\":{\r\n    \"code\":\"None\",\"message\":null\r\n
+        \ }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '49'
+      - '77'
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 21 Jun 2019 18:57:19 GMT
+      - Wed, 13 Nov 2019 22:18:37 GMT
       expires:
       - '-1'
       odata-version:
@@ -827,10 +787,10 @@ interactions:
       ParameterSetName:
       - --name --resource-group --set
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.66
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+        Azure-SDK-For-Python AZURECLI/2.0.68
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2019-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2019-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"cli000004\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004\",\"type\":\"Microsoft.Network/frontdoors\",\"tags\":{\r\n
@@ -841,7 +801,7 @@ interactions:
         \         },\"loadBalancingSettings\":{\r\n            \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings\"\r\n
         \         },\"resourceState\":\"Enabled\"\r\n        }\r\n      }\r\n    ],\"healthProbeSettings\":[\r\n
         \     {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings\",\"name\":\"DefaultProbeSettings\",\"type\":\"Microsoft.Network/Frontdoors/HealthProbeSettings\",\"properties\":{\r\n
-        \         \"intervalInSeconds\":30,\"path\":\"/\",\"protocol\":\"Https\",\"resourceState\":\"Enabled\"\r\n
+        \         \"intervalInSeconds\":30,\"path\":\"/\",\"protocol\":\"Https\",\"resourceState\":\"Enabled\",\"enabledState\":\"Enabled\",\"healthProbeMethod\":\"Head\"\r\n
         \       }\r\n      }\r\n    ],\"frontendEndpoints\":[\r\n      {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint\",\"name\":\"DefaultFrontendEndpoint\",\"type\":\"Microsoft.Network/Frontdoors/FrontendEndpoints\",\"properties\":{\r\n
         \         \"hostName\":\"cli000004.azurefd.net\",\"sessionAffinityEnabledState\":\"Disabled\",\"sessionAffinityTtlSeconds\":0,\"webApplicationFirewallPolicyLink\":{\r\n
         \           \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\"\r\n
@@ -855,17 +815,18 @@ interactions:
         \           \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration\",\"customForwardingPath\":null,\"forwardingProtocol\":\"MatchRequest\",\"cacheConfiguration\":null,\"backendPool\":{\r\n
         \             \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool\"\r\n
         \           }\r\n          }\r\n        }\r\n      }\r\n    ],\"backendPoolsSettings\":{\r\n
-        \     \"enforceCertificateNameCheck\":\"Enabled\"\r\n    },\"enabledState\":\"Enabled\",\"cName\":\"cli000004.azurefd.net\",\"friendlyName\":\"cli000004\"\r\n
+        \     \"enforceCertificateNameCheck\":\"Enabled\",\"sendRecvTimeoutSeconds\":30\r\n
+        \   },\"enabledState\":\"Enabled\",\"cName\":\"cli000004.azurefd.net\",\"friendlyName\":\"cli000004\"\r\n
         \ }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '5387'
+      - '5467'
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 21 Jun 2019 18:57:19 GMT
+      - Wed, 13 Nov 2019 22:18:38 GMT
       expires:
       - '-1'
       odata-version:
@@ -890,7 +851,7 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '''key'':''value'''
+    body: '''key'':''something'''
     headers:
       Accept:
       - '*/*'
@@ -899,7 +860,701 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '13'
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Wed, 13 Nov 2019 22:18:38 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: 80D50BBCC628401BBF572A15A71AFF0C Ref B: WSTEDGE0608 Ref C: 2019-11-13T22:18:39Z'
+    status:
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:f3590267-a01e-0043-4370-9a0214000000\nTime:2019-11-13T22:18:39.3627317Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 13 Nov 2019 22:18:38 GMT
+      x-msedge-ref:
+      - 'Ref A: 11D845DDEC6A49B88AB3FB5ABE59CBCC Ref B: WSTEDGE0608 Ref C: 2019-11-13T22:18:39Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Wed, 13 Nov 2019 22:18:49 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: 428AE12C08FD4594AA3EA0DA88863142 Ref B: WSTEDGE0622 Ref C: 2019-11-13T22:18:49Z'
+    status:
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:2647faa4-901e-0062-4e70-9a6f25000000\nTime:2019-11-13T22:18:49.5849002Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 13 Nov 2019 22:18:49 GMT
+      x-msedge-ref:
+      - 'Ref A: D7A7D93672344EAF9AB077BED83FF53A Ref B: WSTEDGE0622 Ref C: 2019-11-13T22:18:49Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Wed, 13 Nov 2019 22:18:59 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: 4C03F6F39B8F43B98DC376517D5DEE77 Ref B: WSTEDGE0614 Ref C: 2019-11-13T22:18:59Z'
+    status:
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:3f8c199f-b01e-011c-3970-9ab6bf000000\nTime:2019-11-13T22:18:59.7898402Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 13 Nov 2019 22:18:59 GMT
+      x-msedge-ref:
+      - 'Ref A: 59F20260A9664A5AAFC749A51EC9A30A Ref B: WSTEDGE0614 Ref C: 2019-11-13T22:18:59Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Wed, 13 Nov 2019 22:19:09 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: A32D7D6AA6CE44758FC5A200E5DD32A9 Ref B: WSTEDGE0618 Ref C: 2019-11-13T22:19:09Z'
+    status:
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:930d00b3-b01e-00df-4670-9a79a9000000\nTime:2019-11-13T22:19:09.9759444Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 13 Nov 2019 22:19:09 GMT
+      x-msedge-ref:
+      - 'Ref A: 0301CCD4CB354955834CDE446769BA4C Ref B: WSTEDGE0618 Ref C: 2019-11-13T22:19:09Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Wed, 13 Nov 2019 22:19:19 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: BB6B5796874E4DB0B32692CCD1F61FB3 Ref B: WSTEDGE0622 Ref C: 2019-11-13T22:19:20Z'
+    status:
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:26481dd1-901e-0062-4a70-9a6f25000000\nTime:2019-11-13T22:19:20.0939693Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 13 Nov 2019 22:19:19 GMT
+      x-msedge-ref:
+      - 'Ref A: 83004EBC8CC448298913DF6232E99560 Ref B: WSTEDGE0622 Ref C: 2019-11-13T22:19:20Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Wed, 13 Nov 2019 22:19:29 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: 46240F48BDC74B3493C005445BC64129 Ref B: WSTEDGE0615 Ref C: 2019-11-13T22:19:30Z'
+    status:
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:e69be870-b01e-0018-6470-9a0568000000\nTime:2019-11-13T22:19:30.2983656Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 13 Nov 2019 22:19:29 GMT
+      x-msedge-ref:
+      - 'Ref A: BE2B7759758A4E48BDDCC93878D4D056 Ref B: WSTEDGE0615 Ref C: 2019-11-13T22:19:30Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Wed, 13 Nov 2019 22:19:39 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: 553B731BFFAD45B287AB80A502775072 Ref B: WSTEDGE0618 Ref C: 2019-11-13T22:19:40Z'
+    status:
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:930d3a3b-b01e-00df-5370-9a79a9000000\nTime:2019-11-13T22:19:40.5147302Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 13 Nov 2019 22:19:39 GMT
+      x-msedge-ref:
+      - 'Ref A: F62F358E30B74656AA8159CD96EECEE0 Ref B: WSTEDGE0618 Ref C: 2019-11-13T22:19:40Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Wed, 13 Nov 2019 22:19:49 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: 5417366FD05D499CB2BB78D6E0DBC5E6 Ref B: WSTEDGE0618 Ref C: 2019-11-13T22:19:50Z'
+    status:
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:930d4e3b-b01e-00df-1370-9a79a9000000\nTime:2019-11-13T22:19:50.6379377Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 13 Nov 2019 22:19:50 GMT
+      x-msedge-ref:
+      - 'Ref A: C1961B7968FC4B62A5B32FB7A36BF68D Ref B: WSTEDGE0618 Ref C: 2019-11-13T22:19:50Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Wed, 13 Nov 2019 22:19:59 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: 4BAE9E0AABC648A5BBAB56F8803A73B2 Ref B: WSTEDGE0611 Ref C: 2019-11-13T22:20:00Z'
+    status:
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:27ea98d1-601e-00ff-3170-9a1565000000\nTime:2019-11-13T22:20:00.8754865Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 13 Nov 2019 22:19:59 GMT
+      x-msedge-ref:
+      - 'Ref A: F6B5D20610054A9AAF85B35BE3ED0877 Ref B: WSTEDGE0611 Ref C: 2019-11-13T22:20:00Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Wed, 13 Nov 2019 22:20:10 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: 862F9373934A4B1C9FC2551352AC549E Ref B: WSTEDGE0608 Ref C: 2019-11-13T22:20:10Z'
+    status:
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:f3597ce5-a01e-0043-0570-9a0214000000\nTime:2019-11-13T22:20:11.0571478Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 13 Nov 2019 22:20:10 GMT
+      x-msedge-ref:
+      - 'Ref A: 14332CD202AD4E9E850D66CA3C2B27E2 Ref B: WSTEDGE0608 Ref C: 2019-11-13T22:20:10Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: '<!DOCTYPE html PUBLIC ''-//W3C//DTD XHTML 1.0 Transitional//EN'' ''http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd''><html
+        xmlns=''http://www.w3.org/1999/xhtml''><head><meta content=''text/html; charset=utf-8''
+        http-equiv=''content-type''/><style type=''text/css''>body {font-family:Arial;
+        margin-left:40px; }img  { border:0 none; }#content { margin-left: auto; margin-right:
+        auto }#message h2 { font-size: 20px; font-weight: normal; color: #000000;
+        margin: 34px 0px 0px 0px }#message p  { font-size: 13px; color: #000000; margin:
+        7px 0px 0px0px}#errorref { font-size: 11px; color: #737373; margin-top: 41px
+        }</style><title>Service unavailable</title></head><body><div id=''content''><div
+        id=''message''><h2>Our services aren''t available right now</h2><p>We''re
+        working to restore all services as soon as possible. Please check back soon.</p></div><div
+        id=''errorref''><span>0pYHMXQAAAABX06ZKQzQ/SI4c+JA07jdhV1NURURHRTA2MjEANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk</span></div></div></body></html>'
+    headers:
+      cache-control:
+      - no-store
+      content-length:
+      - '994'
+      content-type:
+      - text/html
+      date:
+      - Wed, 13 Nov 2019 22:20:20 GMT
+      x-azure-ref:
+      - 0pYHMXQAAAABX06ZKQzQ/SI4c+JA07jdhV1NURURHRTA2MjEANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 503
+      message: Service Unavailable
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: '<!DOCTYPE html PUBLIC ''-//W3C//DTD XHTML 1.0 Transitional//EN'' ''http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd''><html
+        xmlns=''http://www.w3.org/1999/xhtml''><head><meta content=''text/html; charset=utf-8''
+        http-equiv=''content-type''/><style type=''text/css''>body {font-family:Arial;
+        margin-left:40px; }img  { border:0 none; }#content { margin-left: auto; margin-right:
+        auto }#message h2 { font-size: 20px; font-weight: normal; color: #000000;
+        margin: 34px 0px 0px 0px }#message p  { font-size: 13px; color: #000000; margin:
+        7px 0px 0px0px}#errorref { font-size: 11px; color: #737373; margin-top: 41px
+        }</style><title>Service unavailable</title></head><body><div id=''content''><div
+        id=''message''><h2>Our services aren''t available right now</h2><p>We''re
+        working to restore all services as soon as possible. Please check back soon.</p></div><div
+        id=''errorref''><span>0r4HMXQAAAACpyYxS5qw1Q4ksapJV0/WYV1NURURHRTA2MTEANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk</span></div></div></body></html>'
+    headers:
+      cache-control:
+      - no-store
+      content-length:
+      - '994'
+      content-type:
+      - text/html
+      date:
+      - Wed, 13 Nov 2019 22:20:31 GMT
+      x-azure-ref:
+      - 0r4HMXQAAAACpyYxS5qw1Q4ksapJV0/WYV1NURURHRTA2MTEANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 503
+      message: Service Unavailable
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
       User-Agent:
       - python-requests/2.22.0
     method: POST
@@ -910,18 +1565,18 @@ interactions:
         \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
         charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
         initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: \"Open
-        Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n        \n    }\n
-        \   div {\n        width: 600px;\n        margin: 5em auto;\n        padding:
-        50px;\n        background-color: #fff;\n        border-radius: 1em;\n    }\n
-        \   a:link, a:visited {\n        color: #38488f;\n        text-decoration:
-        none;\n    }\n    @media (max-width: 700px) {\n        body {\n            background-color:
-        #fff;\n        }\n        div {\n            width: auto;\n            margin:
-        0 auto;\n            border-radius: 0;\n            padding: 1em;\n        }\n
-        \   }\n    </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is established to be used for illustrative examples in
-        documents. You may use this\n    domain in examples without prior coordination
-        or asking for permission.</p>\n    <p><a href=\"http://www.iana.org/domains/example\">More
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
         information...</a></p>\n</div>\n</body>\n</html>\n"
     headers:
       accept-ranges:
@@ -929,23 +1584,2243 @@ interactions:
       cache-control:
       - max-age=604800
       content-length:
-      - '1270'
+      - '1256'
       content-type:
       - text/html; charset=UTF-8
       date:
-      - Fri, 21 Jun 2019 19:05:20 GMT
+      - Wed, 13 Nov 2019 22:20:40 GMT
       etag:
-      - '"1541025663+gzip"'
+      - '"3147526947+gzip"'
       expires:
-      - Fri, 28 Jun 2019 19:05:20 GMT
+      - Wed, 20 Nov 2019 22:20:41 GMT
       last-modified:
-      - Fri, 09 Aug 2013 23:54:35 GMT
+      - Thu, 17 Oct 2019 07:18:26 GMT
       transfer-encoding:
       - chunked
       vary:
       - Accept-Encoding
       x-azure-ref:
-      - 0cCoNXQAAAAB2EN5RdaCfRo5Ntgf+pBcTV1NURURHRTA2MTkAZTU2ODMyNWItNjhjNS00ZDY3LWFiOGYtYzZhZmM1YTU2OWZi
+      - 0uYHMXQAAAACD17SA13KGTZLIJOYadxEIV1NURURHRTA2MTcANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:20:50 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:20:51 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 0w4HMXQAAAAA4uvOvPwFZQK1ykCgVNy85V1NURURHRTA2MTgANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:21:00 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:21:01 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 0zYHMXQAAAABi+E88shJ4S6DBUmL6d3jQV1NURURHRTA2MTYANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:21:11 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:21:11 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 014HMXQAAAADnV9W69uqjSbgR6eeQJSkIV1NURURHRTA2MTUANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:21:21 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:21:21 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 04YHMXQAAAACqavNxRvXBTa2gwPb2qpxqV1NURURHRTA2MTcANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:21:31 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:21:31 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 064HMXQAAAABJMvYO0J+XR7wb5p7HWxelV1NURURHRTA2MTEANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:21:41 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:21:41 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 09YHMXQAAAAB3KkGHSvjxT6/3vuUzCVinV1NURURHRTA2MjAANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:21:51 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:21:51 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 0/4HMXQAAAADkBUkClof4Q4uxgxqmwgx2V1NURURHRTA2MDcANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:22:01 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:22:02 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 0CYLMXQAAAACVvGmFnaCKQo+S7vWo+dh2V1NURURHRTA2MTUANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:22:11 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:22:12 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 0FILMXQAAAABzQRSFgFWRSaasdso/eSaVV1NURURHRTA2MTUANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:22:21 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:22:22 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 0HoLMXQAAAAAtVxn7vAsrQIX6KK4GPO2jV1NURURHRTA2MTMANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:22:31 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:22:32 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 0KILMXQAAAADIofAPeCRiTJSEZ45FwoSkV1NURURHRTA2MTgANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:22:42 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:22:42 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 0MoLMXQAAAAAIfMFaHbnxSL7om84V+craV1NURURHRTA2MDgANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:22:51 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:22:52 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 0PILMXQAAAABMbqES0aarRLTvQWri4RnzV1NURURHRTA2MDcANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:23:02 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:23:02 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 0RoLMXQAAAACRjsDNiepVRLsm57v1OgsTV1NURURHRTA2MjAANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:23:11 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:23:12 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 0UILMXQAAAACaVZSYZIA/TZL5go/HcwtwV1NURURHRTA2MDcANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:23:21 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:23:22 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 0WoLMXQAAAABszxKNkVJ1Q6rXIj0EEva4V1NURURHRTA2MjEANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:23:32 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:23:32 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 0ZILMXQAAAADc8MpHv7rTRYNR+qjb8k77V1NURURHRTA2MjAANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:23:41 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:23:42 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 0boLMXQAAAADoiZus4vUXT6DBVXGyt3GRV1NURURHRTA2MTgANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:23:52 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:23:52 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 0eILMXQAAAACnVkWMUZZ/SqXK/5KiqsaXV1NURURHRTA2MjIANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:24:02 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:24:03 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 0goLMXQAAAABQ/RfwqLrdTKpKWPYfeo0fV1NURURHRTA2MTMANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:24:12 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:24:13 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 0jYLMXQAAAAAolFFbdgDiS491zsNtcOVGV1NURURHRTA2MjEANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:24:22 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:24:23 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 0l4LMXQAAAAD+elBNpYxLRKEHcKEA+inRV1NURURHRTA2MjEANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:24:32 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:24:33 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 0oYLMXQAAAACDSC8LEI1/RrYlilhbF98pV1NURURHRTA2MjEANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:24:43 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:24:43 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 0q4LMXQAAAABXnlYbndERRrcMT50noEQKV1NURURHRTA2MjAANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:24:52 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:24:53 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 0tYLMXQAAAAAZsh8zvC5XQJp1FbcTfSs7V1NURURHRTA2MjEANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:25:03 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:25:03 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 0v4LMXQAAAAAOIKgv+anZRaZVWXyrPLWzV1NURURHRTA2MjAANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:25:12 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:25:13 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 0yYLMXQAAAABvkZDIi7NuTL9zaCMyDJd9V1NURURHRTA2MTAANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:25:23 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:25:23 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 004LMXQAAAAA6uRHB4Vg4TbplT8fuQYdCV1NURURHRTA2MTgANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:25:33 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:25:33 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 03YLMXQAAAAD6vlf0DspmSoRasPQ7EgblV1NURURHRTA2MDkANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:25:43 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:25:43 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 054LMXQAAAAAZH/jCqLChRaSObsHDW8jDV1NURURHRTA2MTkANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:25:53 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:25:53 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 08YLMXQAAAACIKiMA6MzMRL86HMHsiMqDV1NURURHRTA2MjIANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:26:03 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:26:03 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 0+4LMXQAAAAC/g5aZP8jDSqDSXaNqaH2pV1NURURHRTA2MTgANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:26:13 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:26:14 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 0BoPMXQAAAABpIo1APvk1SrqizpECg3ZYV1NURURHRTA2MTEANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:26:23 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:26:24 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 0EIPMXQAAAACxsQFD9dSzT7pHuuuSSi8bV1NURURHRTA2MTEANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:26:34 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:26:34 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 0GoPMXQAAAADPrWGKvS21T7Vz9IxkE+ILV1NURURHRTA2MDgANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:26:44 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:26:44 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 0JIPMXQAAAADL4BCuO/XPTY9b+YM5G5PCV1NURURHRTA2MTUANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Wed, 13 Nov 2019 22:26:54 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Wed, 20 Nov 2019 22:26:54 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 0LoPMXQAAAABy/zuU2NuUSo2UWXpC1j7NV1NURURHRTA2MTUANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
     status:
       code: 200
       message: OK
@@ -974,62 +3849,75 @@ interactions:
         margin: 34px 0px 0px 0px }#message p  { font-size: 13px; color: #000000; margin:
         7px 0px 0px 0px }#errorref { font-size: 11px; color: #737373; margin-top:
         41px }</style><title>Microsoft</title></head><body><div id=''content''><div
-        id=''message''><h2>The request is blocked.</h2></div><div id=''errorref''><span>0cCoNXQAAAAD8TZjXczlDRL9/HOy5qqsMV1NURURHRTA2MTIAZTU2ODMyNWItNjhjNS00ZDY3LWFiOGYtYzZhZmM1YTU2OWZi</span></div></div></body></html>'
+        id=''message''><h2>The request is blocked.</h2></div><div id=''errorref''><span>0OIPMXQAAAAB1cJmM7tDoTpT+xCrtuhhSV1NURURHRTA2MTgANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk</span></div></div></body></html>'
     headers:
       date:
-      - Fri, 21 Jun 2019 19:05:20 GMT
+      - Wed, 13 Nov 2019 22:27:04 GMT
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 0cCoNXQAAAAD8TZjXczlDRL9/HOy5qqsMV1NURURHRTA2MTIAZTU2ODMyNWItNjhjNS00ZDY3LWFiOGYtYzZhZmM1YTU2OWZi
+      - 0OIPMXQAAAAB1cJmM7tDoTpT+xCrtuhhSV1NURURHRTA2MTgANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
     status:
       code: 403
       message: Forbidden
 - request:
-    body: null
+    body: '''key'':''value'''
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
-      CommandName:
-      - group delete
       Connection:
       - keep-alive
       Content-Length:
-      - '0'
-      ParameterSetName:
-      - --name --yes --no-wait
+      - '13'
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.1 resourcemanagementclient/2.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.66
-      accept-language:
-      - en-US
-    method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2018-05-01
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
   response:
     body:
-      string: ''
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
     headers:
+      accept-ranges:
+      - bytes
       cache-control:
-      - no-cache
+      - max-age=604800
       content-length:
-      - '0'
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
       date:
-      - Fri, 21 Jun 2019 19:05:22 GMT
+      - Wed, 13 Nov 2019 22:27:04 GMT
+      etag:
+      - '"3147526947+gzip"'
       expires:
-      - '-1'
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1DTElURVNUOjJFUkdWSlVHQ0JaRTJQTkJWRUxTWUhKUkFQUVBMS1lOS1dVVUFSRXxCRTA3NjNDMjAyRTY2NUY1LVdFU1RVUyIsImpvYkxvY2F0aW9uIjoid2VzdHVzIn0?api-version=2018-05-01
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      - Wed, 20 Nov 2019 22:27:04 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 0OIPMXQAAAACZ4ddzrgGCQpJh0nCCmljVV1NURURHRTA2MTIANWIwODI5MTEtOGY1Ny00MWIyLTg2ODItYmJhZmUyNWYwNzJk
     status:
-      code: 202
-      message: Accepted
+      code: 200
+      message: OK
 version: 1

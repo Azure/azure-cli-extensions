@@ -85,7 +85,8 @@ def _find_item_at_path(instance, path):
 # region VirtualWAN
 def create_virtual_wan(cmd, resource_group_name, virtual_wan_name, tags=None, location=None,
                        security_provider_name=None, branch_to_branch_traffic=None,
-                       vnet_to_vnet_traffic=None, office365_category=None, disable_vpn_encryption=None):
+                       vnet_to_vnet_traffic=None, office365_category=None, disable_vpn_encryption=None,
+                       vwan_type=None):
     client = network_client_factory(cmd.cli_ctx).virtual_wans
     VirtualWAN = cmd.get_models('VirtualWAN')
     wan = VirtualWAN(
@@ -95,13 +96,15 @@ def create_virtual_wan(cmd, resource_group_name, virtual_wan_name, tags=None, lo
         security_provider_name=security_provider_name,
         allow_branch_to_branch_traffic=branch_to_branch_traffic,
         allow_vnet_to_vnet_traffic=vnet_to_vnet_traffic,
-        office365_local_breakout_category=office365_category
+        office365_local_breakout_category=office365_category,
+        type=vwan_type
     )
     return client.create_or_update(resource_group_name, virtual_wan_name, wan)
 
 
 def update_virtual_wan(instance, tags=None, security_provider_name=None, branch_to_branch_traffic=None,
-                       vnet_to_vnet_traffic=None, office365_category=None, disable_vpn_encryption=None):
+                       vnet_to_vnet_traffic=None, office365_category=None, disable_vpn_encryption=None,
+                       vwan_type=None):
     with UpdateContext(instance) as c:
         c.update_param('tags', tags, True)
         c.update_param('security_provider_name', security_provider_name, False)
@@ -109,6 +112,7 @@ def update_virtual_wan(instance, tags=None, security_provider_name=None, branch_
         c.update_param('allow_vnet_to_vnet_traffic', vnet_to_vnet_traffic, False)
         c.update_param('office365_local_breakout_category', office365_category, False)
         c.update_param('disable_vpn_encryption', disable_vpn_encryption, False)
+        c.update_param('type', vwan_type, False)
     return instance
 
 
@@ -119,25 +123,27 @@ def list_virtual_wans(cmd, resource_group_name=None):
 
 # region VirtualHubs
 def create_virtual_hub(cmd, resource_group_name, virtual_hub_name, address_prefix, virtual_wan,
-                       location=None, tags=None, no_wait=False):
+                       location=None, tags=None, no_wait=False, sku=None):
     client = network_client_factory(cmd.cli_ctx).virtual_hubs
     VirtualHub, SubResource = cmd.get_models('VirtualHub', 'SubResource')
     hub = VirtualHub(
         tags=tags,
         location=location,
         address_prefix=address_prefix,
-        virtual_wan=SubResource(id=virtual_wan)
+        virtual_wan=SubResource(id=virtual_wan),
+        sku=sku
     )
     return sdk_no_wait(no_wait, client.create_or_update,
                        resource_group_name, virtual_hub_name, hub)
 
 
-def update_virtual_hub(instance, cmd, address_prefix=None, virtual_wan=None, tags=None):
+def update_virtual_hub(instance, cmd, address_prefix=None, virtual_wan=None, tags=None, sku=None):
     SubResource = cmd.get_models('SubResource')
     with UpdateContext(instance) as c:
         c.update_param('tags', tags, True)
         c.update_param('address_prefix', address_prefix, False)
         c.update_param('virtual_wan', SubResource(id=virtual_wan) if virtual_wan else None, False)
+        c.update_param('sku', sku, False)
     return instance
 
 

@@ -29,7 +29,7 @@ def main(args):
             continue
         file_itr = (os.path.join(current_dir, p) for p in files if p.endswith('.py'))
         for python_file in file_itr:
-            with open(python_file, 'r') as f:
+            with open(python_file, 'r', encoding='utf-8') as f:
                 file_text = f.read().replace('\r\n', '\n')
                 file_text = file_text.replace('\n#', '')
                 if file_text and (LICENSE_HEADER not in file_text):

@@ -1,0 +1,1859 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Charset:
+      - utf-8
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+      return-client-request-id:
+      - 'true'
+      x-client-CPU:
+      - x64
+      x-client-OS:
+      - linux
+      x-client-SKU:
+      - Python
+      x-client-Ver:
+      - 1.2.2
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body:
+      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
+    headers:
+      access-control-allow-methods:
+      - GET, OPTIONS
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - private, max-age=86400
+      content-length:
+      - '131'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 04 Nov 2019 02:39:03 GMT
+      p3p:
+      - CP="DSP CUR OTPi IND OTRi ONL FIN"
+      set-cookie:
+      - fpc=AvhdNwayAmRCoxkB44m4R_0; expires=Wed, 04-Dec-2019 02:39:03 GMT; path=/;
+        secure; HttpOnly; SameSite=None
+      - esctx=AQABAAAAAACQN9QBRU3jT6bcBQLZNUj7v3eMNcFILz1YO0DfhiosRLbWlqwIdkRM6tiALdr91t7A5dJkFw1r3vr6WXCAKzt075A4HsYS3xOXKzwz4f_sIZ7LA2tKJjAYftbvG2nbocm2Q0csNm2u379C_nQYsO7cuCxvMuTCMwZBSnFhmsKoqDoAlSPCuYDKDK4GBZvq-UwgAA;
+        domain=.login.windows.net; path=/; secure; HttpOnly; SameSite=None
+      - x-ms-gateway-slice=corp; path=/; SameSite=None; secure; HttpOnly
+      - stsservicecookie=estscorp; path=/; SameSite=None; secure; HttpOnly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ests-server:
+      - 2.1.9645.6 - SIN1 ProdSlices
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "WestUs", "properties": {"enabledState": "Enabled"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - internet-analyzer profile create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '65'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --enabled-state --location
+      User-Agent:
+      - python/3.6.8 (Linux-4.9.184-linuxkit-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.10
+        msrest_azure/0.6.2 azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.0.75
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/NetworkExperimentProfiles/MyProfile?api-version=2019-11-01
+  response:
+    body:
+      string: "{\r\n  \"name\":\"MyProfile\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile\"\
+        ,\"type\":\"Microsoft.Network/networkexperimentprofiles\",\"tags\":{\r\n \
+        \   \r\n  },\"location\":\"WestUs\",\"properties\":{\r\n    \"enabledState\"\
+        :\"Enabled\",\"resourceState\":\"Enabled\"\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '409'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Mon, 04 Nov 2019 02:39:23 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Charset:
+      - utf-8
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+      return-client-request-id:
+      - 'true'
+      x-client-CPU:
+      - x64
+      x-client-OS:
+      - linux
+      x-client-SKU:
+      - Python
+      x-client-Ver:
+      - 1.2.2
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body:
+      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
+    headers:
+      access-control-allow-methods:
+      - GET, OPTIONS
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - private, max-age=86400
+      content-length:
+      - '131'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 04 Nov 2019 02:39:53 GMT
+      p3p:
+      - CP="DSP CUR OTPi IND OTRi ONL FIN"
+      set-cookie:
+      - fpc=AuiJWH_5tSxMhiHo-LWrdOY; expires=Wed, 04-Dec-2019 02:39:54 GMT; path=/;
+        secure; HttpOnly; SameSite=None
+      - esctx=AQABAAAAAACQN9QBRU3jT6bcBQLZNUj7-P80IbReVj2DFyCsCq_2j6N6c_nzvWsHvIO4Jx8NPX_lTq3UUDt9WlBHgCI9rJ-KA_OGYzOTNU9UxO7YRd14SvDxmUMvVf7osRciM-cbNK8_ejrqf1u5dorP7bbUOmEXFYoMKKzX1AgFSKx1qDQlC_19ZkpVnB46lXs6TnL6hJsgAA;
+        domain=.login.windows.net; path=/; secure; HttpOnly; SameSite=None
+      - x-ms-gateway-slice=corp; path=/; SameSite=None; secure; HttpOnly
+      - stsservicecookie=estscorp; path=/; SameSite=None; secure; HttpOnly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ests-server:
+      - 2.1.9645.6 - SIN1 ProdSlices
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - internet-analyzer profile create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --enabled-state --location
+      User-Agent:
+      - python/3.6.8 (Linux-4.9.184-linuxkit-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.10
+        msrest_azure/0.6.2 azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.0.75
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/NetworkExperimentProfiles/MyProfile?api-version=2019-11-01
+  response:
+    body:
+      string: "{\r\n  \"name\":\"MyProfile\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile\"\
+        ,\"type\":\"Microsoft.Network/networkexperimentprofiles\",\"tags\":{\r\n \
+        \   \r\n  },\"location\":\"WestUs\",\"properties\":{\r\n    \"enabledState\"\
+        :\"Enabled\",\"resourceState\":\"Enabled\"\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '409'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Mon, 04 Nov 2019 02:39:58 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Charset:
+      - utf-8
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+      return-client-request-id:
+      - 'true'
+      x-client-CPU:
+      - x64
+      x-client-OS:
+      - linux
+      x-client-SKU:
+      - Python
+      x-client-Ver:
+      - 1.2.2
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body:
+      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
+    headers:
+      access-control-allow-methods:
+      - GET, OPTIONS
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - private, max-age=86400
+      content-length:
+      - '131'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 04 Nov 2019 02:40:00 GMT
+      p3p:
+      - CP="DSP CUR OTPi IND OTRi ONL FIN"
+      set-cookie:
+      - fpc=AoNpVfIDbOVApj5dU1ivL7g; expires=Wed, 04-Dec-2019 02:40:00 GMT; path=/;
+        secure; HttpOnly; SameSite=None
+      - esctx=AQABAAAAAACQN9QBRU3jT6bcBQLZNUj72PmpbDqUm6Niolwo3BSfZbTgLa7Pz3oN8phcwM2aEZGlBM_PMXbHDL3bxweHgAPjnce43INfwrZ6dfYGTpr7Sohh0-hdTOp48YbaiCwuW7wbvBZlm8fdP1AXsQoPfg6_aKYrnTmaddx5yKZhiAHicd_vef_6n97219fUKE3MPEIgAA;
+        domain=.login.windows.net; path=/; secure; HttpOnly; SameSite=None
+      - x-ms-gateway-slice=corp; path=/; SameSite=None; secure; HttpOnly
+      - stsservicecookie=estscorp; path=/; SameSite=None; secure; HttpOnly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ests-server:
+      - 2.1.9645.6 - SIN1 ProdSlices
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"description": "this is my first experiment!", "endpointA":
+      {"name": "endpoint A", "endpoint": "endpointA.net"}, "endpointB": {"name": "endpoint
+      B", "endpoint": "endpointB.net"}, "enabledState": "Enabled"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - internet-analyzer test create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '222'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --profile-name --name --description --endpoint-a-name --endpoint-a-endpoint
+        --endpoint-b-name --endpoint-b-endpoint --enabled-state
+      User-Agent:
+      - python/3.6.8 (Linux-4.9.184-linuxkit-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.10
+        msrest_azure/0.6.2 azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.0.75
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/NetworkExperimentProfiles/MyProfile/Experiments/MyExperiment?api-version=2019-11-01
+  response:
+    body:
+      string: "{\r\n  \"name\":\"MyExperiment\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/experiments/MyExperiment\"\
+        ,\"type\":\"Microsoft.Network/networkexperimentprofiles/experiments\",\"properties\"\
+        :{\r\n    \"enabledState\":\"Enabled\",\"resourceState\":\"Enabled\",\"description\"\
+        :\"this is my first experiment!\",\"scriptFileUri\":\"https://fpc.msedge.net/client/v2/dbfbc53f164a47e5ae7b4294d26e8aec/ab.min.js\"\
+        ,\"status\":null,\"endpointA\":{\r\n      \"name\":\"endpoint A\",\"endpoint\"\
+        :\"endpointA.net\"\r\n    },\"endpointB\":{\r\n      \"name\":\"endpoint B\"\
+        ,\"endpoint\":\"endpointB.net\"\r\n    }\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '712'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Mon, 04 Nov 2019 02:40:07 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Charset:
+      - utf-8
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+      return-client-request-id:
+      - 'true'
+      x-client-CPU:
+      - x64
+      x-client-OS:
+      - linux
+      x-client-SKU:
+      - Python
+      x-client-Ver:
+      - 1.2.2
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body:
+      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
+    headers:
+      access-control-allow-methods:
+      - GET, OPTIONS
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - private, max-age=86400
+      content-length:
+      - '131'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 04 Nov 2019 02:40:39 GMT
+      p3p:
+      - CP="DSP CUR OTPi IND OTRi ONL FIN"
+      set-cookie:
+      - fpc=AvOn4xRmizpCouz61S4KMNc; expires=Wed, 04-Dec-2019 02:40:39 GMT; path=/;
+        secure; HttpOnly; SameSite=None
+      - esctx=AQABAAAAAACQN9QBRU3jT6bcBQLZNUj7GlWdaxWNtGrauSiqdAwSxGG2FGWjPJH7W78R9-V7HQt2rg2gYd_zHeBDVUcaK-IoY-SAfPdA09lVNUJ6n91hI8TGiMokJsnA_1VMIkVkw2pB2RWPipMgB3L-SiSPzxyXJDxgh7HVqZMGxlLWSqcarRv0VJy-hxc9PH6A5rlvZcEgAA;
+        domain=.login.windows.net; path=/; secure; HttpOnly; SameSite=None
+      - x-ms-gateway-slice=corp; path=/; SameSite=None; secure; HttpOnly
+      - stsservicecookie=estscorp; path=/; SameSite=None; secure; HttpOnly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ests-server:
+      - 2.1.9645.6 - SIN1 ProdSlices
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - internet-analyzer test create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --profile-name --name --description --endpoint-a-name --endpoint-a-endpoint
+        --endpoint-b-name --endpoint-b-endpoint --enabled-state
+      User-Agent:
+      - python/3.6.8 (Linux-4.9.184-linuxkit-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.10
+        msrest_azure/0.6.2 azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.0.75
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/NetworkExperimentProfiles/MyProfile/Experiments/MyExperiment?api-version=2019-11-01
+  response:
+    body:
+      string: "{\r\n  \"name\":\"MyExperiment\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/experiments/MyExperiment\"\
+        ,\"type\":\"Microsoft.Network/networkexperimentprofiles/experiments\",\"properties\"\
+        :{\r\n    \"enabledState\":\"Enabled\",\"resourceState\":\"Enabled\",\"description\"\
+        :\"this is my first experiment!\",\"scriptFileUri\":\"https://fpc.msedge.net/client/v2/dbfbc53f164a47e5ae7b4294d26e8aec/ab.min.js\"\
+        ,\"status\":\"Enabled\",\"endpointA\":{\r\n      \"name\":\"endpoint A\",\"\
+        endpoint\":\"endpointA.net\"\r\n    },\"endpointB\":{\r\n      \"name\":\"\
+        endpoint B\",\"endpoint\":\"endpointB.net\"\r\n    }\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '717'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Mon, 04 Nov 2019 02:40:43 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Charset:
+      - utf-8
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+      return-client-request-id:
+      - 'true'
+      x-client-CPU:
+      - x64
+      x-client-OS:
+      - linux
+      x-client-SKU:
+      - Python
+      x-client-Ver:
+      - 1.2.2
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body:
+      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
+    headers:
+      access-control-allow-methods:
+      - GET, OPTIONS
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - private, max-age=86400
+      content-length:
+      - '131'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 04 Nov 2019 02:40:43 GMT
+      p3p:
+      - CP="DSP CUR OTPi IND OTRi ONL FIN"
+      set-cookie:
+      - fpc=Anda_RoeuadKkGlISsdohdk; expires=Wed, 04-Dec-2019 02:40:44 GMT; path=/;
+        secure; HttpOnly; SameSite=None
+      - esctx=AQABAAAAAACQN9QBRU3jT6bcBQLZNUj7noSGeNHU-1M3nwnCvJUlBGF-NrjtCo-GFZOb3yQgVuidwWrPSWmae1lXmQ2prh2eygG-3Xdiwu9q4hy_iqr7DAammZvGpRYhSbjaB3uh31peNJJQyQqDdykxX5hpvus8t3yhifALln4_fAvVkE5AuLmlzUARMOI_M7Na7edkLtogAA;
+        domain=.login.windows.net; path=/; secure; HttpOnly; SameSite=None
+      - x-ms-gateway-slice=corp; path=/; SameSite=None; secure; HttpOnly
+      - stsservicecookie=estscorp; path=/; SameSite=None; secure; HttpOnly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ests-server:
+      - 2.1.9645.6 - SIN1 ProdSlices
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - internet-analyzer profile list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - python/3.6.8 (Linux-4.9.184-linuxkit-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.10
+        msrest_azure/0.6.2 azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.0.75
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/NetworkExperimentProfiles?api-version=2019-11-01
+  response:
+    body:
+      string: "{\r\n  \"value\":[\r\n    {\r\n      \"name\":\"MyProfile\",\"id\"\
+        :\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile\"\
+        ,\"type\":\"Microsoft.Network/networkexperimentprofiles\",\"tags\":{\r\n \
+        \       \r\n      },\"location\":\"WestUs\",\"properties\":{\r\n        \"\
+        enabledState\":\"Enabled\",\"resourceState\":\"Enabled\"\r\n      }\r\n  \
+        \  }\r\n  ]\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '461'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Mon, 04 Nov 2019 02:40:49 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Charset:
+      - utf-8
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+      return-client-request-id:
+      - 'true'
+      x-client-CPU:
+      - x64
+      x-client-OS:
+      - linux
+      x-client-SKU:
+      - Python
+      x-client-Ver:
+      - 1.2.2
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body:
+      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
+    headers:
+      access-control-allow-methods:
+      - GET, OPTIONS
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - private, max-age=86400
+      content-length:
+      - '131'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 04 Nov 2019 02:40:49 GMT
+      p3p:
+      - CP="DSP CUR OTPi IND OTRi ONL FIN"
+      set-cookie:
+      - fpc=AoGZsnisBxxKj-nPrzE-60g; expires=Wed, 04-Dec-2019 02:40:49 GMT; path=/;
+        secure; HttpOnly; SameSite=None
+      - esctx=AQABAAAAAACQN9QBRU3jT6bcBQLZNUj7Z-mMpwOTyHt0oIYA0B6TpcvztwAOpbcdEXO0HaREryvLgJlNvcRXXUBLRdMte-zAQLqC3E8MykQL8it0rJdV5R729W_wxSE4uD9xtDeABeU-KmNO0iVKcURy8-XzWjaZ1tFd7V0KnfZxPi7clsOREpeuXTpb_vZCV6M8fQolL34gAA;
+        domain=.login.windows.net; path=/; secure; HttpOnly; SameSite=None
+      - x-ms-gateway-slice=corp; path=/; SameSite=None; secure; HttpOnly
+      - stsservicecookie=estscorp; path=/; SameSite=None; secure; HttpOnly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ests-server:
+      - 2.1.9645.6 - SIN1 ProdSlices
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - internet-analyzer profile show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name
+      User-Agent:
+      - python/3.6.8 (Linux-4.9.184-linuxkit-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.10
+        msrest_azure/0.6.2 azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.0.75
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/NetworkExperimentProfiles/MyProfile?api-version=2019-11-01
+  response:
+    body:
+      string: "{\r\n  \"name\":\"MyProfile\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile\"\
+        ,\"type\":\"Microsoft.Network/networkexperimentprofiles\",\"tags\":{\r\n \
+        \   \r\n  },\"location\":\"WestUs\",\"properties\":{\r\n    \"enabledState\"\
+        :\"Enabled\",\"resourceState\":\"Enabled\"\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '409'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Mon, 04 Nov 2019 02:40:52 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Charset:
+      - utf-8
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+      return-client-request-id:
+      - 'true'
+      x-client-CPU:
+      - x64
+      x-client-OS:
+      - linux
+      x-client-SKU:
+      - Python
+      x-client-Ver:
+      - 1.2.2
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body:
+      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
+    headers:
+      access-control-allow-methods:
+      - GET, OPTIONS
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - private, max-age=86400
+      content-length:
+      - '131'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 04 Nov 2019 02:40:53 GMT
+      p3p:
+      - CP="DSP CUR OTPi IND OTRi ONL FIN"
+      set-cookie:
+      - fpc=Avz9jPUzBmVNiZoZNP8fw_g; expires=Wed, 04-Dec-2019 02:40:54 GMT; path=/;
+        secure; HttpOnly; SameSite=None
+      - esctx=AQABAAAAAACQN9QBRU3jT6bcBQLZNUj7OwJXgZs3SyC5NByG3YNmVPhucCbgEXHTbVvcKoYjLsFv65pnQN_R5mntYR0f9fi9YS66aWwu-z1ae5enAoCA3Ru0E0PQZpUQ4ccVwMuDZfWjIud0wrpYxVmJsGm3OyavIr1UTh1RiIYm7Y1fmhvcKb5qGR-MijXnzZKbpnIh9jQgAA;
+        domain=.login.windows.net; path=/; secure; HttpOnly; SameSite=None
+      - x-ms-gateway-slice=corp; path=/; SameSite=None; secure; HttpOnly
+      - stsservicecookie=estscorp; path=/; SameSite=None; secure; HttpOnly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ests-server:
+      - 2.1.9645.6 - SIN1 ProdSlices
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - internet-analyzer test show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --profile-name --name
+      User-Agent:
+      - python/3.6.8 (Linux-4.9.184-linuxkit-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.10
+        msrest_azure/0.6.2 azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.0.75
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/NetworkExperimentProfiles/MyProfile/Experiments/MyExperiment?api-version=2019-11-01
+  response:
+    body:
+      string: "{\r\n  \"name\":\"MyExperiment\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/experiments/MyExperiment\"\
+        ,\"type\":\"Microsoft.Network/networkexperimentprofiles/experiments\",\"properties\"\
+        :{\r\n    \"enabledState\":\"Enabled\",\"resourceState\":\"Enabled\",\"description\"\
+        :\"this is my first experiment!\",\"scriptFileUri\":\"https://fpc.msedge.net/client/v2/dbfbc53f164a47e5ae7b4294d26e8aec/ab.min.js\"\
+        ,\"status\":\"Enabled\",\"endpointA\":{\r\n      \"name\":\"endpoint A\",\"\
+        endpoint\":\"endpointA.net\"\r\n    },\"endpointB\":{\r\n      \"name\":\"\
+        endpoint B\",\"endpoint\":\"endpointB.net\"\r\n    }\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '717'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Mon, 04 Nov 2019 02:40:56 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Charset:
+      - utf-8
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+      return-client-request-id:
+      - 'true'
+      x-client-CPU:
+      - x64
+      x-client-OS:
+      - linux
+      x-client-SKU:
+      - Python
+      x-client-Ver:
+      - 1.2.2
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body:
+      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
+    headers:
+      access-control-allow-methods:
+      - GET, OPTIONS
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - private, max-age=86400
+      content-length:
+      - '131'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 04 Nov 2019 02:40:57 GMT
+      p3p:
+      - CP="DSP CUR OTPi IND OTRi ONL FIN"
+      set-cookie:
+      - fpc=ArxDCTwvnuhLvfFVdpmhk4I; expires=Wed, 04-Dec-2019 02:40:57 GMT; path=/;
+        secure; HttpOnly; SameSite=None
+      - esctx=AQABAAAAAACQN9QBRU3jT6bcBQLZNUj7kbtfqkMvcYmHoVQXPxn_o0g2KvSIPTo4bKzXVu78xupXrKgyRhngCmq8aqWiARSVw-tqhyBYc2Aa89RpFUqeZusMAZUpfY8jFWUMIZKIxJVbM-3tS3frJ747PeFkBcotAjjOG5JZ0Kjj7XL1zp1IYz2mQ8j8zXjWTsi_iDlLs6ggAA;
+        domain=.login.windows.net; path=/; secure; HttpOnly; SameSite=None
+      - x-ms-gateway-slice=corp; path=/; SameSite=None; secure; HttpOnly
+      - stsservicecookie=estscorp; path=/; SameSite=None; secure; HttpOnly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ests-server:
+      - 2.1.9645.6 - SIN1 ProdSlices
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - internet-analyzer test list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --profile-name
+      User-Agent:
+      - python/3.6.8 (Linux-4.9.184-linuxkit-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.10
+        msrest_azure/0.6.2 azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.0.75
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/NetworkExperimentProfiles/MyProfile/Experiments?api-version=2019-11-01
+  response:
+    body:
+      string: "{\r\n  \"value\":[\r\n    {\r\n      \"name\":\"MyExperiment\",\"id\"\
+        :\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/experiments/MyExperiment\"\
+        ,\"type\":\"Microsoft.Network/networkexperimentprofiles/experiments\",\"properties\"\
+        :{\r\n        \"enabledState\":\"Enabled\",\"resourceState\":\"Enabled\",\"\
+        description\":\"this is my first experiment!\",\"scriptFileUri\":\"https://fpc.msedge.net/client/v2/dbfbc53f164a47e5ae7b4294d26e8aec/ab.min.js\"\
+        ,\"status\":\"Enabled\",\"endpointA\":{\r\n          \"name\":\"endpoint A\"\
+        ,\"endpoint\":\"endpointA.net\"\r\n        },\"endpointB\":{\r\n         \
+        \ \"name\":\"endpoint B\",\"endpoint\":\"endpointB.net\"\r\n        }\r\n\
+        \      }\r\n    }\r\n  ]\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '777'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Mon, 04 Nov 2019 02:40:58 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Charset:
+      - utf-8
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+      return-client-request-id:
+      - 'true'
+      x-client-CPU:
+      - x64
+      x-client-OS:
+      - linux
+      x-client-SKU:
+      - Python
+      x-client-Ver:
+      - 1.2.2
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body:
+      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
+    headers:
+      access-control-allow-methods:
+      - GET, OPTIONS
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - private, max-age=86400
+      content-length:
+      - '131'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 04 Nov 2019 02:40:59 GMT
+      p3p:
+      - CP="DSP CUR OTPi IND OTRi ONL FIN"
+      set-cookie:
+      - fpc=Ahiod70QI_JIjVHvF-W-mXE; expires=Wed, 04-Dec-2019 02:40:59 GMT; path=/;
+        secure; HttpOnly; SameSite=None
+      - esctx=AQABAAAAAACQN9QBRU3jT6bcBQLZNUj7ziAF4oV4wwYHmqE0fyrwzCp1HrzJJMv4zwkzslfOGci79Fyrit3cgQUh-jHKm4sN-8Rm0et9Kbe3Bztx0mFY0O_-8joDAIFGySh17zUahtn9HicOOfbfMI8VjHQ7serDGMgs5oOEPRkUpyONuDKF8p_3-ldIbUgDAz6cdC1I31QgAA;
+        domain=.login.windows.net; path=/; secure; HttpOnly; SameSite=None
+      - x-ms-gateway-slice=corp; path=/; SameSite=None; secure; HttpOnly
+      - stsservicecookie=estscorp; path=/; SameSite=None; secure; HttpOnly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ests-server:
+      - 2.1.9645.6 - SIN1 ProdSlices
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - internet-analyzer preconfigured-endpoint list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --profile-name
+      User-Agent:
+      - python/3.6.8 (Linux-4.9.184-linuxkit-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.10
+        msrest_azure/0.6.2 azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.0.75
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/NetworkExperimentProfiles/MyProfile/PreconfiguredEndpoints?api-version=2019-11-01
+  response:
+    body:
+      string: "{\r\n  \"nextLink\":null,\"value\":[\r\n    {\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"Azure West Europe Region\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"am2prdapp01-canary.azr.footprintdns.com\"\
+        ,\"description\":\"West Europe Region\",\"backend\":\"West Europe\",\"endpointType\"\
+        :\"AzureRegion\"\r\n      }\r\n    },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"Azure East US Region\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"bl2prdapp01-canary.azr.footprintdns.com\"\
+        ,\"description\":\"East US Region\",\"backend\":\"East US\",\"endpointType\"\
+        :\"AzureRegion\"\r\n      }\r\n    },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"Azure West US Region\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"by1prdapp01-canary.azr.footprintdns.com\"\
+        ,\"description\":\"West US Region\",\"backend\":\"West US\",\"endpointType\"\
+        :\"AzureRegion\"\r\n      }\r\n    },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"Azure Brazil South Region\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"cq1prdapp01-canary.azr.footprintdns.com\"\
+        ,\"description\":\"Brazil South Region\",\"backend\":\"Brazil South\",\"endpointType\"\
+        :\"AzureRegion\"\r\n      }\r\n    },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"Azure UK West Region\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"cw1prdapp01-canary.azr.footprintdns.com\"\
+        ,\"description\":\"UK West Region\",\"backend\":\"UK West\",\"endpointType\"\
+        :\"AzureRegion\"\r\n      }\r\n    },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"Azure North Europe Region\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"db3prdapp01-canary.azr.footprintdns.com\"\
+        ,\"description\":\"North Europe Region\",\"backend\":\"North Europe\",\"endpointType\"\
+        :\"AzureRegion\"\r\n      }\r\n    },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"Azure Central US Region\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"dm1prdapp01-canary.azr.footprintdns.com\"\
+        ,\"description\":\"Central US Region\",\"backend\":\"Central US\",\"endpointType\"\
+        :\"AzureRegion\"\r\n      }\r\n    },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"Azure UAE North Region\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"dxb20prdapp02-canary-opaph.azr.footprintdns.com\"\
+        ,\"description\":\"UAE North Region\",\"backend\":\"UAE North\",\"endpointType\"\
+        :\"AzureRegion\"\r\n      }\r\n    },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"Azure East Asia Region\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"hk2prdapp02-canary.azr.footprintdns.com\"\
+        ,\"description\":\"East Asia Region\",\"backend\":\"East Asia\",\"endpointType\"\
+        :\"AzureRegion\"\r\n      }\r\n    },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"Azure South Africa North Region\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"jnb20prdapp02-canary-opaph.azr.footprintdns.com\"\
+        ,\"description\":\"South Africa North Region\",\"backend\":\"South Africa\
+        \ North\",\"endpointType\":\"AzureRegion\"\r\n      }\r\n    },{\r\n     \
+        \ \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"ATM - West US, West Europe\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maiaatm-multiregion1.azr.footprintdns.com\"\
+        ,\"description\":\"Azure Traffic Manager routing requests to the best performing\
+        \ region out of West US, West Europe\",\"backend\":\"West US, West Europe\"\
+        ,\"endpointType\":\"ATM\"\r\n      }\r\n    },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"ATM - West Europe, UAE North, Southeast Asia\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maiaatm-multiregion10.azr.footprintdns.com\"\
+        ,\"description\":\"Azure Traffic Manager routing requests to the best performing\
+        \ region out of West Europe, UAE North, Southeast Asia\",\"backend\":\"West\
+        \ Europe, UAE North, Southeast Asia\",\"endpointType\":\"ATM\"\r\n      }\r\
+        \n    },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"ATM - West US, North Europe, Southeast Asia, UAE North, South\
+        \ Africa North\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maiaatm-multiregion11.azr.footprintdns.com\"\
+        ,\"description\":\"Azure Traffic Manager routing requests to the best performing\
+        \ region out of West US, North Europe, Southeast Asia, UAE North, South Africa\
+        \ North\",\"backend\":\"West US, North Europe, Southeast Asia, UAE North,\
+        \ South Africa North\",\"endpointType\":\"ATM\"\r\n      }\r\n    },{\r\n\
+        \      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"ATM - East US, East Asia\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maiaatm-multiregion2.azr.footprintdns.com\"\
+        ,\"description\":\"Azure Traffic Manager routing requests to the best performing\
+        \ region out of East US, East Asia\",\"backend\":\"East US, East Asia\",\"\
+        endpointType\":\"ATM\"\r\n      }\r\n    },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"ATM - West US, East US\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maiaatm-multiregion3.azr.footprintdns.com\"\
+        ,\"description\":\"Azure Traffic Manager routing requests to the best performing\
+        \ region out of West US, East US\",\"backend\":\"West US, East US\",\"endpointType\"\
+        :\"ATM\"\r\n      }\r\n    },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"ATM - West US, UAE North\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maiaatm-multiregion4.azr.footprintdns.com\"\
+        ,\"description\":\"Azure Traffic Manager routing requests to the best performing\
+        \ region out of West US, UAE North\",\"backend\":\"West US, UAE North\",\"\
+        endpointType\":\"ATM\"\r\n      }\r\n    },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"ATM - East US, Brazil South\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maiaatm-multiregion5.azr.footprintdns.com\"\
+        ,\"description\":\"Azure Traffic Manager routing requests to the best performing\
+        \ region out of East US, Brazil South\",\"backend\":\"East US, Brazil South\"\
+        ,\"endpointType\":\"ATM\"\r\n      }\r\n    },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"ATM - West Europe, Southeast Asia\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maiaatm-multiregion6.azr.footprintdns.com\"\
+        ,\"description\":\"Azure Traffic Manager routing requests to the best performing\
+        \ region out of West Europe, Southeast Asia\",\"backend\":\"West Europe, Southeast\
+        \ Asia\",\"endpointType\":\"ATM\"\r\n      }\r\n    },{\r\n      \"id\":\"\
+        /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"ATM - West Europe, Brazil South\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maiaatm-multiregion7.azr.footprintdns.com\"\
+        ,\"description\":\"Azure Traffic Manager routing requests to the best performing\
+        \ region out of West Europe, Brazil South\",\"backend\":\"West Europe, Brazil\
+        \ South\",\"endpointType\":\"ATM\"\r\n      }\r\n    },{\r\n      \"id\":\"\
+        /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"ATM - West Europe, UAE North\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maiaatm-multiregion8.azr.footprintdns.com\"\
+        ,\"description\":\"Azure Traffic Manager routing requests to the best performing\
+        \ region out of West Europe, UAE North\",\"backend\":\"West Europe, UAE North\"\
+        ,\"endpointType\":\"ATM\"\r\n      }\r\n    },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"ATM - West US, West Europe, East Asia\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maiaatm-multiregion9.azr.footprintdns.com\"\
+        ,\"description\":\"Azure Traffic Manager routing requests to the best performing\
+        \ region out of West US, West Europe, East Asia\",\"backend\":\"West US, West\
+        \ Europe, East Asia\",\"endpointType\":\"ATM\"\r\n      }\r\n    },{\r\n \
+        \     \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"CDN - Brazil South\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-brazilsouth.azureedge.net\"\
+        ,\"description\":\"Microsoft Azure CDN instance with a Brazil South origin\"\
+        ,\"backend\":\"Brazil South\",\"endpointType\":\"CDN\"\r\n      }\r\n    },{\r\
+        \n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"AFD - Brazil South\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-brazilsouth.azurefd.net\"\
+        ,\"description\":\"Azure Front Door instance forwarding requests to a Brazil\
+        \ South endpoint\",\"backend\":\"Brazil South\",\"endpointType\":\"AFD\"\r\
+        \n      }\r\n    },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"CDN - Central India\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-centralindia.azureedge.net\"\
+        ,\"description\":\"Microsoft Azure CDN instance with a Central India origin\"\
+        ,\"backend\":\"Central India\",\"endpointType\":\"CDN\"\r\n      }\r\n   \
+        \ },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"AFD - Central India\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-centralindia.azurefd.net\"\
+        ,\"description\":\"Azure Front Door instance forwarding requests to a Central\
+        \ India endpoint\",\"backend\":\"Central India\",\"endpointType\":\"AFD\"\r\
+        \n      }\r\n    },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"CDN - Central US\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-centralus.azureedge.net\"\
+        ,\"description\":\"Microsoft Azure CDN instance with a Central US origin\"\
+        ,\"backend\":\"Central US\",\"endpointType\":\"CDN\"\r\n      }\r\n    },{\r\
+        \n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"AFD - Central US\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-centralus.azurefd.net\",\"\
+        description\":\"Azure Front Door instance forwarding requests to a Central\
+        \ US endpoint\",\"backend\":\"Central US\",\"endpointType\":\"AFD\"\r\n  \
+        \    }\r\n    },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"CDN - East Asia\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-eastasia.azureedge.net\"\
+        ,\"description\":\"Microsoft Azure CDN instance with a East Asia origin\"\
+        ,\"backend\":\"East Asia\",\"endpointType\":\"CDN\"\r\n      }\r\n    },{\r\
+        \n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"AFD - East Asia\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-eastasia.azurefd.net\",\"\
+        description\":\"Azure Front Door instance forwarding requests to a East Asia\
+        \ endpoint\",\"backend\":\"East Asia\",\"endpointType\":\"AFD\"\r\n      }\r\
+        \n    },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"CDN - East US\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-eastus.azureedge.net\",\"\
+        description\":\"Microsoft Azure CDN instance with a East US origin\",\"backend\"\
+        :\"East US\",\"endpointType\":\"CDN\"\r\n      }\r\n    },{\r\n      \"id\"\
+        :\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"AFD - East US\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-eastus.azurefd.net\",\"description\"\
+        :\"Azure Front Door instance forwarding requests to a East US endpoint\",\"\
+        backend\":\"East US\",\"endpointType\":\"AFD\"\r\n      }\r\n    },{\r\n \
+        \     \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"CDN - Japan West\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-japanwest.azureedge.net\"\
+        ,\"description\":\"Microsoft Azure CDN instance with a Japan West origin\"\
+        ,\"backend\":\"Japan West\",\"endpointType\":\"CDN\"\r\n      }\r\n    },{\r\
+        \n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"AFD - Japan West\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-japanwest.azurefd.net\",\"\
+        description\":\"Azure Front Door instance forwarding requests to a Japan West\
+        \ endpoint\",\"backend\":\"Japan West\",\"endpointType\":\"AFD\"\r\n     \
+        \ }\r\n    },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"AFD - West US, West Europe\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-multiregion1.azurefd.net\"\
+        ,\"description\":\"Azure Front Door instance forwarding requests to the best\
+        \ performing region out of West US, West Europe\",\"backend\":\"West US, West\
+        \ Europe\",\"endpointType\":\"AFD\"\r\n      }\r\n    },{\r\n      \"id\"\
+        :\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"AFD - West Europe, UAE North, Southeast Asia\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-multiregion10.azurefd.net\"\
+        ,\"description\":\"Azure Front Door instance forwarding requests to the best\
+        \ performing region out of West Europe, UAE North, Southeast Asia\",\"backend\"\
+        :\"West Europe, UAE North, Southeast Asia\",\"endpointType\":\"AFD\"\r\n \
+        \     }\r\n    },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"AFD - West US, North Europe, Southeast Asia, UAE North, South\
+        \ Africa North\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-multiregion11.azurefd.net\"\
+        ,\"description\":\"Azure Front Door instance forwarding requests to the best\
+        \ performing region out of West US, North Europe, Southeast Asia, UAE North,\
+        \ South Africa North\",\"backend\":\"West US, North Europe, Southeast Asia,\
+        \ UAE North, South Africa North\",\"endpointType\":\"AFD\"\r\n      }\r\n\
+        \    },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"AFD - East US, East Asia\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-multiregion2.azurefd.net\"\
+        ,\"description\":\"Azure Front Door instance forwarding requests to the best\
+        \ performing region out of East US, East Asia\",\"backend\":\"East US, East\
+        \ Asia\",\"endpointType\":\"AFD\"\r\n      }\r\n    },{\r\n      \"id\":\"\
+        /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"AFD - West US, East US\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-multiregion3.azurefd.net\"\
+        ,\"description\":\"Azure Front Door instance forwarding requests to the best\
+        \ performing region out of West US, East US\",\"backend\":\"West US, East\
+        \ US\",\"endpointType\":\"AFD\"\r\n      }\r\n    },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"AFD - West US, UAE North\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-multiregion4.azurefd.net\"\
+        ,\"description\":\"Azure Front Door instance forwarding requests to the best\
+        \ performing region out of West US, UAE North\",\"backend\":\"West US, UAE\
+        \ North\",\"endpointType\":\"AFD\"\r\n      }\r\n    },{\r\n      \"id\":\"\
+        /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"AFD - East US, Brazil South\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-multiregion5.azurefd.net\"\
+        ,\"description\":\"Azure Front Door instance forwarding requests to the best\
+        \ performing region out of East US, Brazil South\",\"backend\":\"East US,\
+        \ Brazil South\",\"endpointType\":\"AFD\"\r\n      }\r\n    },{\r\n      \"\
+        id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"AFD - West Europe, Southeast Asia\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-multiregion6.azurefd.net\"\
+        ,\"description\":\"Azure Front Door instance forwarding requests to the best\
+        \ performing region out of West Europe, Southeast Asia\",\"backend\":\"West\
+        \ Europe, Southeast Asia\",\"endpointType\":\"AFD\"\r\n      }\r\n    },{\r\
+        \n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"AFD - West Europe, Brazil South\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-multiregion7.azurefd.net\"\
+        ,\"description\":\"Azure Front Door instance forwarding requests to the best\
+        \ performing region out of West Europe, Brazil South\",\"backend\":\"West\
+        \ Europe, Brazil South\",\"endpointType\":\"AFD\"\r\n      }\r\n    },{\r\n\
+        \      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"AFD - West Europe, UAE North\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-multiregion8.azurefd.net\"\
+        ,\"description\":\"Azure Front Door instance forwarding requests to the best\
+        \ performing region out of West Europe, UAE North\",\"backend\":\"West Europe,\
+        \ UAE North\",\"endpointType\":\"AFD\"\r\n      }\r\n    },{\r\n      \"id\"\
+        :\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"AFD - West US, West Europe, East Asia\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-multiregion9.azurefd.net\"\
+        ,\"description\":\"Azure Front Door instance forwarding requests to the best\
+        \ performing region out of West US, West Europe, East Asia\",\"backend\":\"\
+        West US, West Europe, East Asia\",\"endpointType\":\"AFD\"\r\n      }\r\n\
+        \    },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"CDN - North Europe\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-northeurope.azureedge.net\"\
+        ,\"description\":\"Microsoft Azure CDN instance with a North Europe origin\"\
+        ,\"backend\":\"North Europe\",\"endpointType\":\"CDN\"\r\n      }\r\n    },{\r\
+        \n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"AFD - North Europe\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-northeurope.azurefd.net\"\
+        ,\"description\":\"Azure Front Door instance forwarding requests to a North\
+        \ Europe endpoint\",\"backend\":\"North Europe\",\"endpointType\":\"AFD\"\r\
+        \n      }\r\n    },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"CDN - South Africa North\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-southafricanorth.azureedge.net\"\
+        ,\"description\":\"Microsoft Azure CDN instance with a South Africa North\
+        \ origin\",\"backend\":\"South Africa North\",\"endpointType\":\"CDN\"\r\n\
+        \      }\r\n    },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"AFD - South Africa North\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-southafricanorth.azurefd.net\"\
+        ,\"description\":\"Azure Front Door instance forwarding requests to a South\
+        \ Africa North endpoint\",\"backend\":\"South Africa North\",\"endpointType\"\
+        :\"AFD\"\r\n      }\r\n    },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"CDN - Southeast Asia\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-southeastasia.azureedge.net\"\
+        ,\"description\":\"Microsoft Azure CDN instance with a Southeast Asia origin\"\
+        ,\"backend\":\"Southeast Asia\",\"endpointType\":\"CDN\"\r\n      }\r\n  \
+        \  },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"AFD - Southeast Asia\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-southeastasia.azurefd.net\"\
+        ,\"description\":\"Azure Front Door instance forwarding requests to a Southeast\
+        \ Asia endpoint\",\"backend\":\"Southeast Asia\",\"endpointType\":\"AFD\"\r\
+        \n      }\r\n    },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"CDN - UAE North\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-uaenorth.azureedge.net\"\
+        ,\"description\":\"Microsoft Azure CDN instance with a UAE North origin\"\
+        ,\"backend\":\"UAE North\",\"endpointType\":\"CDN\"\r\n      }\r\n    },{\r\
+        \n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"AFD - UAE North\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-uaenorth.azurefd.net\",\"\
+        description\":\"Azure Front Door instance forwarding requests to a UAE North\
+        \ endpoint\",\"backend\":\"UAE North\",\"endpointType\":\"AFD\"\r\n      }\r\
+        \n    },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"CDN - UK West\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-ukwest.azureedge.net\",\"\
+        description\":\"Microsoft Azure CDN instance with a UK West origin\",\"backend\"\
+        :\"UK West\",\"endpointType\":\"CDN\"\r\n      }\r\n    },{\r\n      \"id\"\
+        :\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"AFD - UK West\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-ukwest.azurefd.net\",\"description\"\
+        :\"Azure Front Door instance forwarding requests to a UK West endpoint\",\"\
+        backend\":\"UK West\",\"endpointType\":\"AFD\"\r\n      }\r\n    },{\r\n \
+        \     \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"CDN - West Europe\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-westeurope.azureedge.net\"\
+        ,\"description\":\"Microsoft Azure CDN instance with a West Europe origin\"\
+        ,\"backend\":\"West Europe\",\"endpointType\":\"CDN\"\r\n      }\r\n    },{\r\
+        \n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"AFD - West Europe\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-westeurope.azurefd.net\"\
+        ,\"description\":\"Azure Front Door instance forwarding requests to a West\
+        \ Europe endpoint\",\"backend\":\"West Europe\",\"endpointType\":\"AFD\"\r\
+        \n      }\r\n    },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"CDN - West US\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-westus.azureedge.net\",\"\
+        description\":\"Microsoft Azure CDN instance with a West US origin\",\"backend\"\
+        :\"West US\",\"endpointType\":\"CDN\"\r\n      }\r\n    },{\r\n      \"id\"\
+        :\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"AFD - West US\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-westus.azurefd.net\",\"description\"\
+        :\"Azure Front Door instance forwarding requests to a West US endpoint\",\"\
+        backend\":\"West US\",\"endpointType\":\"AFD\"\r\n      }\r\n    },{\r\n \
+        \     \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"CDN - West US 2\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-westus2.azureedge.net\",\"\
+        description\":\"Microsoft Azure CDN instance with a West US 2 origin\",\"\
+        backend\":\"West US 2\",\"endpointType\":\"CDN\"\r\n      }\r\n    },{\r\n\
+        \      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"AFD - West US 2\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"maia-westus2.azurefd.net\",\"\
+        description\":\"Azure Front Door instance forwarding requests to a West US\
+        \ 2 endpoint\",\"backend\":\"West US 2\",\"endpointType\":\"AFD\"\r\n    \
+        \  }\r\n    },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"Azure West US 2 Region\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"mwh01prdapp02-canary.azr.footprintdns.com\"\
+        ,\"description\":\"West US 2 Region\",\"backend\":\"West US 2\",\"endpointType\"\
+        :\"AzureRegion\"\r\n      }\r\n    },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"Azure Japan West Region\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"os1prdapp01-canary.azr.footprintdns.com\"\
+        ,\"description\":\"Japan West Region\",\"backend\":\"Japan West\",\"endpointType\"\
+        :\"AzureRegion\"\r\n      }\r\n    },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"Azure Central India Region\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"pn1prdapp01-canary.azr.footprintdns.com\"\
+        ,\"description\":\"Central India Region\",\"backend\":\"Central India\",\"\
+        endpointType\":\"AzureRegion\"\r\n      }\r\n    },{\r\n      \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/preconfiguredendpoints\"\
+        ,\"name\":\"Azure Southeast Asia Region\",\"type\":\"networkexperimentprofile/preconfiguredendpoints\"\
+        ,\"properties\":{\r\n        \"endpoint\":\"sg1prdapp02-canary.azr.footprintdns.com\"\
+        ,\"description\":\"Southeast Asia Region\",\"backend\":\"Southeast Asia\"\
+        ,\"endpointType\":\"AzureRegion\"\r\n      }\r\n    }\r\n  ]\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '35940'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Mon, 04 Nov 2019 02:41:04 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Charset:
+      - utf-8
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+      return-client-request-id:
+      - 'true'
+      x-client-CPU:
+      - x64
+      x-client-OS:
+      - linux
+      x-client-SKU:
+      - Python
+      x-client-Ver:
+      - 1.2.2
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body:
+      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
+    headers:
+      access-control-allow-methods:
+      - GET, OPTIONS
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - private, max-age=86400
+      content-length:
+      - '131'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 04 Nov 2019 02:41:04 GMT
+      p3p:
+      - CP="DSP CUR OTPi IND OTRi ONL FIN"
+      set-cookie:
+      - fpc=AgnILYSQkFpJq-5kkaOKyFc; expires=Wed, 04-Dec-2019 02:41:05 GMT; path=/;
+        secure; HttpOnly; SameSite=None
+      - esctx=AQABAAAAAACQN9QBRU3jT6bcBQLZNUj7c_1NnKxGbpnOsBA8Eik6q9P1dbJV22ne2MdIW_Hkx_jemNgU84xpoy02G8JWUMmNmA8OQS6TdjSbi5Yzww0liqpebKxEzQ9nmMx4T-QK8MeS44ozcPkrlCIs64uo8hhzUQL4IwPW6Ku7Z96bVZQB3_xY6yX4kh3trfCFiIXRv7QgAA;
+        domain=.login.windows.net; path=/; secure; HttpOnly; SameSite=None
+      - x-ms-gateway-slice=corp; path=/; SameSite=None; secure; HttpOnly
+      - stsservicecookie=estscorp; path=/; SameSite=None; secure; HttpOnly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ests-server:
+      - 2.1.9645.6 - SIN1 ProdSlices
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - internet-analyzer show-scorecard
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --profile-name --test-name --aggregation-interval --end-date-time-utc
+      User-Agent:
+      - python/3.6.8 (Linux-4.9.184-linuxkit-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.10
+        msrest_azure/0.6.2 azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.0.75
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/NetworkExperimentProfiles/MyProfile/Experiments/MyExperiment/LatencyScorecard?api-version=2019-11-01&endDateTimeUTC=2019-09-21T17%3A32%3A28Z&aggregationInterval=Daily
+  response:
+    body:
+      string: "{\r\n  \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/experiments/MyExperiment/latencyscorecard\"\
+        ,\"name\":\"Latency scorecard for experiment 'MyExperiment' between 9/20/2019\
+        \ 5:32:28 PM and 9/21/2019 5:32:28 PM.\",\"type\":\"networkexperiment/latencyscorecard\"\
+        ,\"properties\":{\r\n    \"description\":\"Latency scorecard for experiment\
+        \ 'MyExperiment' between 9/20/2019 5:32:28 PM and 9/21/2019 5:32:28 PM.\"\
+        ,\"endpointA\":\"endpointA.net\",\"endpointB\":\"endpointB.net\",\"startDateTimeUTC\"\
+        :\"2019-09-20T17:32:28Z\",\"endDateTimeUTC\":\"2019-09-21T17:32:28Z\",\"country\"\
+        :null,\"latencyMetrics\":[\r\n      \r\n    ]\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '750'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Mon, 04 Nov 2019 02:41:15 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Charset:
+      - utf-8
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+      return-client-request-id:
+      - 'true'
+      x-client-CPU:
+      - x64
+      x-client-OS:
+      - linux
+      x-client-SKU:
+      - Python
+      x-client-Ver:
+      - 1.2.2
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body:
+      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
+    headers:
+      access-control-allow-methods:
+      - GET, OPTIONS
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - private, max-age=86400
+      content-length:
+      - '131'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 04 Nov 2019 02:41:16 GMT
+      p3p:
+      - CP="DSP CUR OTPi IND OTRi ONL FIN"
+      set-cookie:
+      - fpc=AmKdYKppbXdPuGAT1EbbgmA; expires=Wed, 04-Dec-2019 02:41:16 GMT; path=/;
+        secure; HttpOnly; SameSite=None
+      - esctx=AQABAAAAAACQN9QBRU3jT6bcBQLZNUj75kAfO-G7t3gBAma-EVjHLnEdqRW-l807bFH34WCW6Pd-ZhSeIK1jXf2D6Ov7Yr3AY4T5HyNaqYPs3xFkNIQAdoBvNJJ_lAHOYwhQjo7XYnuIkNhpwnjJdrzHxd_vW1oXcpil4rTXyMAwoybETkSyR4-Ar520EXfqrla3qQqu6E0gAA;
+        domain=.login.windows.net; path=/; secure; HttpOnly; SameSite=None
+      - x-ms-gateway-slice=corp; path=/; SameSite=None; secure; HttpOnly
+      - stsservicecookie=estscorp; path=/; SameSite=None; secure; HttpOnly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ests-server:
+      - 2.1.9645.6 - SIN1 ProdSlices
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - internet-analyzer show-timeseries
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --profile-name --test-name --aggregation-interval --start-date-time-utc
+        --end-date-time-utc --timeseries-type --endpoint
+      User-Agent:
+      - python/3.6.8 (Linux-4.9.184-linuxkit-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.10
+        msrest_azure/0.6.2 azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.0.75
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/NetworkExperimentProfiles/MyProfile/Experiments/MyExperiment/Timeseries?api-version=2019-11-01&startDateTimeUTC=2019-07-21T17%3A32%3A28.000Z&endDateTimeUTC=2019-09-21T17%3A32%3A28.000Z&aggregationInterval=Hourly&timeseriesType=MeasurementCounts&endpoint=endpoint1.net
+  response:
+    body:
+      string: "{\r\n  \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/networkexperimentprofiles/MyProfile/experiments/MyExperiment/timeseries\"\
+        ,\"name\":null,\"type\":\"networkexperiment/timeseries\",\"properties\":{\r\
+        \n    \"endpoint\":\"endpoint1.net\",\"startDateTimeUTC\":\"2019-07-21T17:32:28Z\"\
+        ,\"endDateTimeUTC\":\"2019-09-21T17:32:28Z\",\"aggregationInterval\":\"Hourly\"\
+        ,\"timeseriesType\":\"CountsLatency\",\"country\":null,\"timeseriesData\"\
+        :[\r\n      \r\n    ]\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '554'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Mon, 04 Nov 2019 02:41:31 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Charset:
+      - utf-8
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+      return-client-request-id:
+      - 'true'
+      x-client-CPU:
+      - x64
+      x-client-OS:
+      - linux
+      x-client-SKU:
+      - Python
+      x-client-Ver:
+      - 1.2.2
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body:
+      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
+    headers:
+      access-control-allow-methods:
+      - GET, OPTIONS
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - private, max-age=86400
+      content-length:
+      - '131'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 04 Nov 2019 02:41:32 GMT
+      p3p:
+      - CP="DSP CUR OTPi IND OTRi ONL FIN"
+      set-cookie:
+      - fpc=At61tSdZ75pFn-m_WuzftDI; expires=Wed, 04-Dec-2019 02:41:33 GMT; path=/;
+        secure; HttpOnly; SameSite=None
+      - esctx=AQABAAAAAACQN9QBRU3jT6bcBQLZNUj7QW4sRsjsKzhHwlgtXzemGlE9lNLYgaAd-irDEXN_pTnzEMkBGS0kq7LO9SC2lifzqZoYV5igzKSa6fEKwVwa9-MEw1_3lm5rWybUKSgDTL0CxsYGiWANt5lGkGIt8pHZarPHhQOK9xkNitjz83VeCpWO4i_A4u4JkBxsl0e0CscgAA;
+        domain=.login.windows.net; path=/; secure; HttpOnly; SameSite=None
+      - x-ms-gateway-slice=corp; path=/; SameSite=None; secure; HttpOnly
+      - stsservicecookie=estscorp; path=/; SameSite=None; secure; HttpOnly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ests-server:
+      - 2.1.9645.6 - SIN1 ProdSlices
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - internet-analyzer test delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --profile-name --name
+      User-Agent:
+      - python/3.6.8 (Linux-4.9.184-linuxkit-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.10
+        msrest_azure/0.6.2 azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.0.75
+      accept-language:
+      - en-US
+    method: DELETE
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/NetworkExperimentProfiles/MyProfile/Experiments/MyExperiment?api-version=2019-11-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 04 Nov 2019 02:41:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Charset:
+      - utf-8
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+      return-client-request-id:
+      - 'true'
+      x-client-CPU:
+      - x64
+      x-client-OS:
+      - linux
+      x-client-SKU:
+      - Python
+      x-client-Ver:
+      - 1.2.2
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body:
+      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
+    headers:
+      access-control-allow-methods:
+      - GET, OPTIONS
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - private, max-age=86400
+      content-length:
+      - '131'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 04 Nov 2019 02:41:39 GMT
+      p3p:
+      - CP="DSP CUR OTPi IND OTRi ONL FIN"
+      set-cookie:
+      - fpc=AsQuPmjnevNBrolFXpsbPpI; expires=Wed, 04-Dec-2019 02:41:39 GMT; path=/;
+        secure; HttpOnly; SameSite=None
+      - esctx=AQABAAAAAACQN9QBRU3jT6bcBQLZNUj7Knbul6ztLlS34SXEyhyNPO-p3wyqxQHsgcxT8PrGzs9CM0tfVHgn12pFNCwwVR-5NJec9WndDgseyeGlU7L8wm-EzGcBOq8cLEWgMXxRehqoR5QrPw8SsQNKksfJ-2vRzgQxqKCIJXI38_8xmIZxN9N51WsBjszX_j7p5tit-m0gAA;
+        domain=.login.windows.net; path=/; secure; HttpOnly; SameSite=None
+      - x-ms-gateway-slice=corp; path=/; SameSite=None; secure; HttpOnly
+      - stsservicecookie=estscorp; path=/; SameSite=None; secure; HttpOnly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ests-server:
+      - 2.1.9645.6 - SIN1 ProdSlices
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - internet-analyzer profile delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --name
+      User-Agent:
+      - python/3.6.8 (Linux-4.9.184-linuxkit-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.10
+        msrest_azure/0.6.2 azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.0.75
+      accept-language:
+      - en-US
+    method: DELETE
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_internet_analyzer000001/providers/Microsoft.Network/NetworkExperimentProfiles/MyProfile?api-version=2019-11-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 04 Nov 2019 02:41:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1

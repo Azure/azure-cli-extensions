@@ -25,7 +25,7 @@ class DomainsOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: Version of the API to be used with the client request. Constant value: "2019-02-01-preview".
+    :ivar api_version: Version of the API to be used with the client request. Constant value: "2020-04-01-preview".
     """
 
     models = models
@@ -35,7 +35,7 @@ class DomainsOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2019-02-01-preview"
+        self.api_version = "2020-04-01-preview"
 
         self.config = config
 
@@ -48,7 +48,7 @@ class DomainsOperations(object):
         :param resource_group_name: The name of the resource group within the
          user's subscription.
         :type resource_group_name: str
-        :param domain_name: Name of the domain
+        :param domain_name: Name of the domain.
         :type domain_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
@@ -56,7 +56,7 @@ class DomainsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: Domain or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.eventgrid.models.Domain or
+        :rtype: ~azext_eventgrid.models.Domain or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -164,10 +164,10 @@ class DomainsOperations(object):
         :param resource_group_name: The name of the resource group within the
          user's subscription.
         :type resource_group_name: str
-        :param domain_name: Name of the domain
+        :param domain_name: Name of the domain.
         :type domain_name: str
-        :param domain_info: Domain information
-        :type domain_info: ~azure.mgmt.eventgrid.models.Domain
+        :param domain_info: Domain information.
+        :type domain_info: ~azext_eventgrid.models.Domain
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
@@ -176,9 +176,9 @@ class DomainsOperations(object):
         :return: An instance of LROPoller that returns Domain or
          ClientRawResponse<Domain> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.eventgrid.models.Domain]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azext_eventgrid.models.Domain]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.eventgrid.models.Domain]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azext_eventgrid.models.Domain]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._create_or_update_initial(
@@ -255,7 +255,7 @@ class DomainsOperations(object):
         :param resource_group_name: The name of the resource group within the
          user's subscription.
         :type resource_group_name: str
-        :param domain_name: Name of the domain
+        :param domain_name: Name of the domain.
         :type domain_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
@@ -292,9 +292,7 @@ class DomainsOperations(object):
 
 
     def _update_initial(
-            self, resource_group_name, domain_name, tags=None, custom_headers=None, raw=False, **operation_config):
-        domain_update_parameters = models.DomainUpdateParameters(tags=tags)
-
+            self, resource_group_name, domain_name, domain_update_parameters, custom_headers=None, raw=False, **operation_config):
         # Construct URL
         url = self.update.metadata['url']
         path_format_arguments = {
@@ -343,7 +341,7 @@ class DomainsOperations(object):
         return deserialized
 
     def update(
-            self, resource_group_name, domain_name, tags=None, custom_headers=None, raw=False, polling=True, **operation_config):
+            self, resource_group_name, domain_name, domain_update_parameters, custom_headers=None, raw=False, polling=True, **operation_config):
         """Update a domain.
 
         Asynchronously updates a domain with the specified parameters.
@@ -351,10 +349,11 @@ class DomainsOperations(object):
         :param resource_group_name: The name of the resource group within the
          user's subscription.
         :type resource_group_name: str
-        :param domain_name: Name of the domain
+        :param domain_name: Name of the domain.
         :type domain_name: str
-        :param tags: Tags of the domains resource
-        :type tags: dict[str, str]
+        :param domain_update_parameters: Domain update information.
+        :type domain_update_parameters:
+         ~azext_eventgrid.models.DomainUpdateParameters
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
@@ -363,15 +362,15 @@ class DomainsOperations(object):
         :return: An instance of LROPoller that returns Domain or
          ClientRawResponse<Domain> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.eventgrid.models.Domain]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azext_eventgrid.models.Domain]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.eventgrid.models.Domain]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azext_eventgrid.models.Domain]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._update_initial(
             resource_group_name=resource_group_name,
             domain_name=domain_name,
-            tags=tags,
+            domain_update_parameters=domain_update_parameters,
             custom_headers=custom_headers,
             raw=True,
             **operation_config
@@ -401,9 +400,19 @@ class DomainsOperations(object):
 
         List all the domains under an Azure subscription.
 
-        :param filter: Filter the results using OData syntax.
+        :param filter: The query used to filter the search results using OData
+         syntax. Filtering is permitted on the 'name' property only and with
+         limited number of OData operations. These operations are: the
+         'contains' function as well as the following logical operations: not,
+         and, or, eq (for equal), and ne (for not equal). No arithmetic
+         operations are supported. The following is a valid filter example:
+         $filter=contains(namE, 'PATTERN') and name ne 'PATTERN-1'. The
+         following is not a valid filter example: $filter=location eq 'westus'.
         :type filter: str
-        :param top: The number of results to return.
+        :param top: The number of results to return per page for the list
+         operation. Valid range for top parameter is 1 to 100. If not
+         specified, the default number of results to be returned is 20 items
+         per page.
         :type top: int
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
@@ -412,7 +421,7 @@ class DomainsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of Domain
         :rtype:
-         ~azure.mgmt.eventgrid.models.DomainPaged[~azure.mgmt.eventgrid.models.Domain]
+         ~azext_eventgrid.models.DomainPaged[~azext_eventgrid.models.Domain]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
@@ -478,9 +487,19 @@ class DomainsOperations(object):
         :param resource_group_name: The name of the resource group within the
          user's subscription.
         :type resource_group_name: str
-        :param filter: Filter the results using OData syntax.
+        :param filter: The query used to filter the search results using OData
+         syntax. Filtering is permitted on the 'name' property only and with
+         limited number of OData operations. These operations are: the
+         'contains' function as well as the following logical operations: not,
+         and, or, eq (for equal), and ne (for not equal). No arithmetic
+         operations are supported. The following is a valid filter example:
+         $filter=contains(namE, 'PATTERN') and name ne 'PATTERN-1'. The
+         following is not a valid filter example: $filter=location eq 'westus'.
         :type filter: str
-        :param top: The number of results to return.
+        :param top: The number of results to return per page for the list
+         operation. Valid range for top parameter is 1 to 100. If not
+         specified, the default number of results to be returned is 20 items
+         per page.
         :type top: int
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
@@ -489,7 +508,7 @@ class DomainsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of Domain
         :rtype:
-         ~azure.mgmt.eventgrid.models.DomainPaged[~azure.mgmt.eventgrid.models.Domain]
+         ~azext_eventgrid.models.DomainPaged[~azext_eventgrid.models.Domain]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
@@ -556,7 +575,7 @@ class DomainsOperations(object):
         :param resource_group_name: The name of the resource group within the
          user's subscription.
         :type resource_group_name: str
-        :param domain_name: Name of the domain
+        :param domain_name: Name of the domain.
         :type domain_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
@@ -564,7 +583,7 @@ class DomainsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: DomainSharedAccessKeys or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.eventgrid.models.DomainSharedAccessKeys or
+        :rtype: ~azext_eventgrid.models.DomainSharedAccessKeys or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -621,9 +640,9 @@ class DomainsOperations(object):
         :param resource_group_name: The name of the resource group within the
          user's subscription.
         :type resource_group_name: str
-        :param domain_name: Name of the domain
+        :param domain_name: Name of the domain.
         :type domain_name: str
-        :param key_name: Key name to regenerate key1 or key2
+        :param key_name: Key name to regenerate key1 or key2.
         :type key_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
@@ -631,7 +650,7 @@ class DomainsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: DomainSharedAccessKeys or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.eventgrid.models.DomainSharedAccessKeys or
+        :rtype: ~azext_eventgrid.models.DomainSharedAccessKeys or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """

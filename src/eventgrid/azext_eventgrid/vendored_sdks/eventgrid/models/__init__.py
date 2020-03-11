@@ -11,6 +11,7 @@
 
 try:
     from .input_schema_mapping_py3 import InputSchemaMapping
+    from .inbound_ip_rule_py3 import InboundIpRule
     from .resource_py3 import Resource
     from .json_field_py3 import JsonField
     from .json_field_with_default_py3 import JsonFieldWithDefault
@@ -44,6 +45,8 @@ try:
     from .storage_queue_event_subscription_destination_py3 import StorageQueueEventSubscriptionDestination
     from .hybrid_connection_event_subscription_destination_py3 import HybridConnectionEventSubscriptionDestination
     from .service_bus_queue_event_subscription_destination_py3 import ServiceBusQueueEventSubscriptionDestination
+    from .service_bus_topic_event_subscription_destination_py3 import ServiceBusTopicEventSubscriptionDestination
+    from .azure_function_event_subscription_destination_py3 import AzureFunctionEventSubscriptionDestination
     from .event_subscription_py3 import EventSubscription
     from .event_subscription_update_parameters_py3 import EventSubscriptionUpdateParameters
     from .event_subscription_full_url_py3 import EventSubscriptionFullUrl
@@ -57,6 +60,7 @@ try:
     from .topic_type_info_py3 import TopicTypeInfo
 except (SyntaxError, ImportError):
     from .input_schema_mapping import InputSchemaMapping
+    from .inbound_ip_rule import InboundIpRule
     from .resource import Resource
     from .json_field import JsonField
     from .json_field_with_default import JsonFieldWithDefault
@@ -90,6 +94,8 @@ except (SyntaxError, ImportError):
     from .storage_queue_event_subscription_destination import StorageQueueEventSubscriptionDestination
     from .hybrid_connection_event_subscription_destination import HybridConnectionEventSubscriptionDestination
     from .service_bus_queue_event_subscription_destination import ServiceBusQueueEventSubscriptionDestination
+    from .service_bus_topic_event_subscription_destination import ServiceBusTopicEventSubscriptionDestination
+    from .azure_function_event_subscription_destination import AzureFunctionEventSubscriptionDestination
     from .event_subscription import EventSubscription
     from .event_subscription_update_parameters import EventSubscriptionUpdateParameters
     from .event_subscription_full_url import EventSubscriptionFullUrl
@@ -111,6 +117,7 @@ from .topic_type_info_paged import TopicTypeInfoPaged
 from .event_grid_management_client_enums import (
     DomainProvisioningState,
     InputSchema,
+    IpActionType,
     DomainTopicProvisioningState,
     EventSubscriptionProvisioningState,
     EventDeliverySchema,
@@ -121,6 +128,7 @@ from .event_grid_management_client_enums import (
 
 __all__ = [
     'InputSchemaMapping',
+    'InboundIpRule',
     'Resource',
     'JsonField',
     'JsonFieldWithDefault',
@@ -154,6 +162,8 @@ __all__ = [
     'StorageQueueEventSubscriptionDestination',
     'HybridConnectionEventSubscriptionDestination',
     'ServiceBusQueueEventSubscriptionDestination',
+    'ServiceBusTopicEventSubscriptionDestination',
+    'AzureFunctionEventSubscriptionDestination',
     'EventSubscription',
     'EventSubscriptionUpdateParameters',
     'EventSubscriptionFullUrl',
@@ -174,6 +184,7 @@ __all__ = [
     'TopicTypeInfoPaged',
     'DomainProvisioningState',
     'InputSchema',
+    'IpActionType',
     'DomainTopicProvisioningState',
     'EventSubscriptionProvisioningState',
     'EventDeliverySchema',

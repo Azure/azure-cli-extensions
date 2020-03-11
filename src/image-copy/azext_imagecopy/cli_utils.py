@@ -23,6 +23,17 @@ def run_cli_command(cmd, return_as_json=False):
 
         if return_as_json:
             if cmd_output:
+                # cleanup to resolve invalid JSON in underlying azure cli  - issue #979
+                # Related to: https://github.com/Azure/azure-cli/issues/10687
+                json_start_chars = {"{", "["}
+                json_start_at = next((i for i, ch in enumerate(str(cmd_output)) if ch in json_start_chars), -1)
+                logger.debug('json output starts at position: %i ', json_start_at)
+                if json_start_at > 0:
+                    logger.debug("json output did not start at position 0, stripping the prefix.")
+                    cmd_output = str(cmd_output)[json_start_at:]
+                    logger.debug("json output after fix:")
+                    logger.debug(cmd_output)
+
                 json_output = json.loads(cmd_output)
                 return json_output
 
