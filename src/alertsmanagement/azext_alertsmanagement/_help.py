@@ -9,56 +9,56 @@
 from knack.help_files import helps  # pylint: disable=unused-import
 
 
-helps['alertsmanagement action-rule'] = """
+helps['monitor action-rule'] = """
     type: group
-    short-summary: Commands to manage alertsmanagement action rule.
+    short-summary: Commands to manage action rule.
 """
 
-helps['alertsmanagement action-rule create'] = """
+helps['monitor action-rule create'] = """
     type: command
     short-summary: Create an action rule
     examples:
       - name: Create an action rule with suppression type
         text: |-
-               az alertsmanagement action-rule create --resource-group "rg" --name "rule" --location "Global" --status "Enabled" --rule-type Suppression --severity Equals Sev0 Sev2 --recurrence-type Daily --suppression-start-date 12/09/2018 --suppression-end-date 12/18/2018 --suppression-start-time 06:00:00 --suppression-end-time 14:00:00
+               az monitor action-rule create --resource-group "rg" --name "rule" --location "Global" --status "Enabled" --rule-type Suppression --severity Equals Sev0 Sev2 --recurrence-type Daily --suppression-start-date 12/09/2018 --suppression-end-date 12/18/2018 --suppression-start-time 06:00:00 --suppression-end-time 14:00:00
 
 """
 
-helps['alertsmanagement action-rule update'] = """
+helps['monitor action-rule update'] = """
     type: command
     short-summary: Update an action rule
     examples:
       - name: Update an action rule
         text: |-
-               az alertsmanagement action-rule update --resource-group "rg" --name "rule" --status "Disabled"
+               az monitor action-rule update --resource-group "rg" --name "rule" --status "Disabled"
 """
 
-helps['alertsmanagement action-rule delete'] = """
+helps['monitor action-rule delete'] = """
     type: command
     short-summary: Delete an action rule
     examples:
       - name: Delete an action rule
         text: |-
-               az alertsmanagement action-rule delete --resource-group "rg" --name "rule"
+               az monitor action-rule delete --resource-group "rg" --name "rule"
 """
 
-helps['alertsmanagement action-rule show'] = """
+helps['monitor action-rule show'] = """
     type: command
     short-summary: Get a specific action rule
     examples:
       - name: Get a specific action rule
         text: |-
-               az alertsmanagement action-rule show --resource-group "rg" --name "rule"
+               az monitor action-rule show --resource-group "rg" --name "rule"
 """
 
-helps['alertsmanagement action-rule list'] = """
+helps['monitor action-rule list'] = """
     type: command
     short-summary: List all action rules of the subscription, created in given resource group and given input filters
     examples:
       - name: List action rules of the subscription
         text: |-
-               az alertsmanagement action-rule list
+               az monitor action-rule list
       - name: List action rules of the resource group
         text: |-
-               az alertsmanagement action-rule list --resource-group "rg"
+               az monitor action-rule list --resource-group "rg"
 """

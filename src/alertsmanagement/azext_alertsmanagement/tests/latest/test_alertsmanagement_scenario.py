@@ -22,7 +22,7 @@ class AlertsScenarioTest(ScenarioTest):
         self.kwargs.update({
             'rg_id': rg_id
         })
-        self.cmd('az alertsmanagement action-rule create '
+        self.cmd('az monitor action-rule create '
                  '--resource-group {rg} '
                  '--name rule1 '
                  '--location Global '
@@ -41,7 +41,7 @@ class AlertsScenarioTest(ScenarioTest):
                  '--suppression-end-time 14:00:00',
                  checks=[])
 
-        self.cmd('az alertsmanagement action-rule show '
+        self.cmd('az monitor action-rule show '
                  '--resource-group {rg} '
                  '--name "rule1"',
                  checks=[
@@ -64,7 +64,7 @@ class AlertsScenarioTest(ScenarioTest):
                      self.check('properties.suppressionConfig.schedule.startTime', '06:00:00'),
                  ])
 
-        self.cmd('az alertsmanagement action-rule update '
+        self.cmd('az monitor action-rule update '
                  '--resource-group {rg} '
                  '--name "rule1" '
                  '--status Disabled',
@@ -72,10 +72,10 @@ class AlertsScenarioTest(ScenarioTest):
                      self.check('properties.status', 'Disabled')
                  ])
 
-        self.cmd('az alertsmanagement action-rule list',
+        self.cmd('az monitor action-rule list',
                  checks=self.check('[0].name', 'rule1'))
 
-        self.cmd('az alertsmanagement action-rule list -g {rg}',
+        self.cmd('az monitor action-rule list -g {rg}',
                  checks=self.check('[0].name', 'rule1'))
 
-        self.cmd('az alertsmanagement action-rule delete -g {rg} -n rule1')
+        self.cmd('az monitor action-rule delete -g {rg} -n rule1')
