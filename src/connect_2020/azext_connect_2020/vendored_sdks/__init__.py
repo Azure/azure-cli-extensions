@@ -5,4 +5,10 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-VERSION = "2020-01-01-preview"
+from .k8_connect_rp import K8ConnectRP
+from .version import VERSION
+
+__all__ = ['K8ConnectRP']
+
+__version__ = VERSION
+

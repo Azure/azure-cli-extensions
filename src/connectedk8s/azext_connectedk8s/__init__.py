@@ -5,7 +5,7 @@
 
 from azure.cli.core import AzCommandsLoader
 
-from azext_connectedk8s._help import helps  # pylint: disable=unused-import
+#from azext_connectedk8s._help import helps  # pylint: disable=unused-import
 
 
 class Connectedk8sCommandsLoader(AzCommandsLoader):
@@ -16,8 +16,7 @@ class Connectedk8sCommandsLoader(AzCommandsLoader):
         connectedk8s_custom = CliCommandType(
             operations_tmpl='azext_connectedk8s.custom#{}',
             client_factory=cf_connectedk8s)
-        super(Connectedk8sCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                  custom_command_type=connectedk8s_custom)
+        super(Connectedk8sCommandsLoader, self).__init__(cli_ctx=cli_ctx, custom_command_type=connectedk8s_custom)
 
     def load_command_table(self, args):
         from azext_connectedk8s.commands import load_command_table

@@ -19,22 +19,20 @@ class Connectedk8sScenarioTest(ScenarioTest):
     def test_connectedk8s(self, resource_group):
 
         self.kwargs.update({
-            'name': 'test1'
+            'name': 'test1',
+            'rg': resource_group
         })
 
-        self.cmd('connectedk8s create -g {rg} -n {name} --tags foo=doo', checks=[
-            self.check('tags.foo', 'doo'),
+        self.cmd('connectedk8s connect -g akkeshar3 -n {name}', checks=[
             self.check('name', '{name}')
         ])
-        self.cmd('connectedk8s update -g {rg} -n {name} --tags foo=boo', checks=[
-            self.check('tags.foo', 'boo')
-        ])
+        #self.cmd('connectedk8s update -g {rg} -n {name}', checks=[
+        #])
         count = len(self.cmd('connectedk8s list').get_output_in_json())
-        self.cmd('connectedk8s show - {rg} -n {name}', checks=[
+        self.cmd('connectedk8s show -g {rg} -n {name}', checks=[
             self.check('name', '{name}'),
-            self.check('resourceGroup', '{rg}'),
-            self.check('tags.foo', 'boo')
+            self.check('resourceGroup', '{rg}')
         ])
-        self.cmd('connectedk8s delete -g {rg} -n {name}')
+        self.cmd('connectedk8s delete -g {rg} -n {name} --yes')
         final_count = len(self.cmd('connectedk8s list').get_output_in_json())
         self.assertTrue(final_count, count - 1)

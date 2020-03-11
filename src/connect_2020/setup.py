@@ -16,7 +16,7 @@ except ImportError:
 
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
-VERSION = '0.1.1'
+VERSION = '0.1.0'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -36,9 +36,7 @@ CLASSIFIERS = [
 
 # TODO: Add any additional SDK dependencies here
 DEPENDENCIES = [
-    'azure-cli-core',
-    'kubernetes~=11.0.0b2',
-    'knack'
+    'azure-cli-core'
 ]
 
 with open('README.rst', 'r', encoding='utf-8') as f:
@@ -47,12 +45,12 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='connectedk8s',
+    name='connect_2020',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools Connectedk8s Extension',
+    description='Microsoft Azure Command-Line Tools Connect_2020 Extension',
     # TODO: Update author and email, if applicable
     author='Microsoft Corporation',
-    author_email='k8connect@microsoft.com',
+    author_email='azpycli@microsoft.com',
     # TODO: consider pointing directly to your source code instead of the generic repo
     url='https://github.com/Azure/azure-cli-extensions',
     long_description=README + '\n\n' + HISTORY,
@@ -60,5 +58,5 @@ setup(
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_connectedk8s': ['azext_metadata.json']},
+    package_data={'azext_connect_2020': ['azext_metadata.json']},
 )

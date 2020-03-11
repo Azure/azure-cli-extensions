@@ -5,4 +5,10 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-VERSION = "2020-01-01-preview"
+from .connected_cluster_operations import ConnectedClusterOperations
+from .operations import Operations
+
+__all__ = [
+    'ConnectedClusterOperations',
+    'Operations',
+]

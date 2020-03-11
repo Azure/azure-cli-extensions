@@ -2,25 +2,33 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azure.cli.core.profiles import ResourceType
+from azure.cli.core._profile import Profile
+from azure.cli.core.commands.client_factory import configure_common_settings
+from azure.graphrbac import GraphRbacManagementClient
+import re
+
 
 def cf_connectedk8s(cli_ctx, *_):
-
-    from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from azext_connectedk8s.vendored_sdks import K8ConnectRP
     return get_mgmt_service_client(cli_ctx, K8ConnectRP)
+
 
 def cf_connected_cluster(cli_ctx, _):
     return cf_connectedk8s(cli_ctx).connected_cluster
 
-def _resource_client_factory(cli_ctx):
-    from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from azure.cli.core.profiles import ResourceType
-    return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)
+
+def cf_resource_groups(cli_ctx, subscription_id=None):
+    return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES,
+                                   subscription_id=subscription_id).resource_groups
+
+
+def _resource_client_factory(cli_ctx, subscription_id=None):
+    return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES, subscription_id=subscription_id)
+
 
 def _graph_client_factory(cli_ctx, **_):
-    from azure.cli.core._profile import Profile
-    from azure.cli.core.commands.client_factory import configure_common_settings
-    from azure.graphrbac import GraphRbacManagementClient
     profile = Profile(cli_ctx=cli_ctx)
     cred, _, tenant_id = profile.get_login_credentials(
         resource=cli_ctx.cloud.endpoints.active_directory_graph_resource_id)
@@ -29,12 +37,9 @@ def _graph_client_factory(cli_ctx, **_):
     configure_common_settings(cli_ctx, client)
     return client
 
+
 def _auth_client_factory(cli_ctx, scope=None):
-    import re
-    from azure.cli.core.profiles import ResourceType
-    from azure.cli.core.commands.client_factory import get_mgmt_service_client
     subscription_id = None
-    #print(subscription_id)
     if scope:
         matched = re.match('/subscriptions/(?P<subscription>[^/]*)/', scope)
         if matched:
