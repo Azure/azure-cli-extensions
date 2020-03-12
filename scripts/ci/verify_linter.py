@@ -111,11 +111,19 @@ def contain_extension_code(files):
     with open('src/index.json', 'r') as fd:
         current_extensions = json.loads(fd.read()).get("extensions")
 
-    extensions_home_prefixes = set('src/{}'.format(name) for name in current_extensions)
+    current_extension_homes = set('src/{}'.format(name) for name in current_extensions)
 
     for file in files:
-        if any([file.startswith(prefix) for prefix in extensions_home_prefixes]):
+        if any([file.startswith(prefix) for prefix in current_extension_homes]):
             return True
+
+    # for new added extensions
+    for file in files:
+        if 'src/' in file and os.path.isfile(file) and os.path.isdir(os.path.dirname(file)):
+            new_extension_home = os.path.dirname(file)
+
+            if os.path.isfile(os.path.join(new_extension_home, 'setup.py')):
+                return True
 
     return False
 
