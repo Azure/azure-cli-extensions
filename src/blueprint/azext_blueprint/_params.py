@@ -191,20 +191,20 @@ def load_arguments(self, _):
         c.argument('blueprint_name', help='Name of the blueprint definition.')
         c.argument('version_id', options_list=['--version'], help='Version of the published blueprint definition.')
 
-    for scope in ['blueprint assignment create', 'blueprint assignment update']:
-        with self.argument_context(scope) as c:
+    for scope in ['create', 'update']:
+        with self.argument_context('blueprint assignment ' + scope) as c:
             from .action import ResourceGroupAssignAddAction
             c.argument('assignment_name', options_list=['--name', '-n'], help='Name of the blueprint assignment.')
             c.argument('location', arg_type=get_location_type(self.cli_ctx))
             c.argument('identity_type', arg_type=get_enum_type(ManagedServiceIdentityType), arg_group='identity', help='Type of the managed identity.')
-            c.argument('identity_principal_id', arg_group='identity', help='Azure Active Directory principal ID associated with this Identity.')
-            c.argument('identity_tenant_id', arg_group='identity', help='ID of the Azure Active Directory.')
-            c.argument('identity_user_assigned_identities', arg_group='identity', nargs='+', help='The list of user-assigned managed identities associated with the resource. Key is the Azure resource Id of the managed identity.')
+            c.argument('identity_principal_id', options_list=['--principal-id'], arg_group='identity', help='Azure Active Directory principal ID associated with this Identity.')
+            c.argument('identity_tenant_id', options_list=['--tenant-id'], arg_group='identity', help='ID of the Azure Active Directory.')
+            c.argument('identity_user_assigned_identities', options_list=['--user-assigned-identities'], arg_group='identity', nargs='+', help='The list of user-assigned managed identities associated with the resource. Key is the Azure resource Id of the managed identity.')
             c.argument('display_name', help='One-liner string explain this resource.')
             c.argument('description', help='Multi-line explain this resource.')
             c.argument('blueprint_id', options_list=['--blueprint-version'], help='Resource ID of the published version of a blueprint definition.')
             c.argument('parameters', arg_type=parameter_type, help='Blueprint assignment parameter values. It can be a JSON string or JSON file path with "@" prefix.')
-            c.argument('resource_groups', options_list=['--resource-group'], action=ResourceGroupAssignAddAction, nargs='+', help="Key=Value pairs for a resource group. Keys include 'artifact_name'(required), 'name', 'location'.")
+            c.argument('resource_groups', options_list=['--resource-group-value'], action=ResourceGroupAssignAddAction, nargs='+', help="Key=Value pairs for a resource group. Keys include 'artifact_name'(required), 'name', 'location'.")
             c.argument('locks_mode', arg_type=get_enum_type(AssignmentLockMode), help='Lock mode.')
             c.argument('locks_excluded_principals', help='List of AAD principals excluded from blueprint locks. Up to 5 principals are permitted.', nargs='+')
 

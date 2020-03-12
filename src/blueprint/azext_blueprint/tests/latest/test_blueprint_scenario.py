@@ -87,7 +87,7 @@ class BlueprintScenarioTest(ScenarioTest):
             '--identity-type "SystemAssigned" '
             '--blueprint-version "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/{blueprintName}/versions/1.0" '
             '--locks-mode "None" '
-            '--resource-group artifact_name=myRgArt name=blueprint-rg location=westus2 '
+            '--resource-group-value artifact_name=myRgArt name=blueprint-rg location=westus2 '
             '--parameters @src/blueprint/azext_blueprint/tests/latest/input/create/assignment_params.json',
             checks=[JMESPathCheckExists('identity.principalId')]).get_output_in_json()
 
@@ -207,7 +207,7 @@ class BlueprintScenarioTest(ScenarioTest):
             '--identity-type "SystemAssigned" '
             '--blueprint-version "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/{blueprintName}/versions/1.0" '
             '--locks-mode "None" '
-            '--resource-group artifact_name=storageRG name=storage-rg location=westus2 '
+            '--resource-group-value artifact_name=storageRG name=storage-rg location=westus2 '
             '--parameters @src/blueprint/azext_blueprint/tests/latest/input/import_with_artifacts/assignment_params.json',
             checks=[JMESPathCheckExists('identity.principalId')]).get_output_in_json()
 

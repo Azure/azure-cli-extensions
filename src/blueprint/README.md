@@ -108,7 +108,7 @@ az blueprint assignment create \
     --identity-type "SystemAssigned" \
     --blueprint-version "/subscriptions/{subscriptionId}/providers/Microsoft.Blueprint/blueprints/blueprintName/versions/1.0" \
     --locks-mode "None" \
-    --resource-group artifact_name=myRgArt name=blueprint-rg location=westus \
+    --resource-group-value artifact_name=myRgArt name=blueprint-rg location=westus \
     --parameters @/path/to/assignment_params.json
 ```
 Values need to be assigned for the parameters when assigning a blueprint.

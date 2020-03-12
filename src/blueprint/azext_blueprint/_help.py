@@ -383,17 +383,18 @@ helps['blueprint assignment create'] = """
                --description "Enforce pre-defined MyBlueprint to this subscription." \\
                --blueprint-version "/providers/Microsoft.Management/managementGroups/ContosoOnlineGroup/provid \\
                ers/Microsoft.Blueprint/blueprints/MyBlueprint/versions/v2" \\
-               --resource-group artifact_name=rg-art-1 name=rg1 location=westus \\
-               --resource-group artifact_name=rg-art-2 name=rg2 location=eastus \\
+               --resource-group-value artifact_name=rg-art-1 name=rg1 location=westus \\
+               --resource-group-value artifact_name=rg-art-2 name=rg2 location=eastus \\
                --parameters "@path/to/parameter/file" \\
       - name: Assignment with user-assigned managed identity
         text: |-
                az blueprint assignment create --subscription MySubscription --name \\
                MyBlueprintAssignment --location eastus --identity-type UserAssigned \\
+               --user-assigned-identities identity-id \\
                --description "Enforce pre-defined MyBlueprint to this subscription." \\
                --blueprint-version "/providers/Microsoft.Management/managementGroups/ContosoOnlineGroup \\
                /providers/Microsoft.Blueprint/blueprints/MyBlueprint/versions/v2" \\
-               --resource-group artifact_name=rg-art-1 name=rg1 location=eastus \\
+               --resource-group-value artifact_name=rg-art-1 name=rg1 location=eastus \\
                --parameters "@path/to/parameter/file" \\
 """
 
