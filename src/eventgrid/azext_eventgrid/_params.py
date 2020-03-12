@@ -72,7 +72,6 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
         c.argument('labels', arg_type=labels_type)
         c.argument('endpoint_type', arg_type=get_enum_type(['webhook', 'eventhub', 'storagequeue', 'hybridconnection', 'servicebusqueue', 'servicebustopic', 'azurefunction'], default='webhook'))
         c.argument('source_resource_id', help="Fully qualified identifier of the source Azure resource.")
-        c.argument('resource_id', deprecate_info=c.deprecate(redirect="--source-resource-id", expiration='2.1.0', hide=True), help="Fully qualified identifier of the Azure resource.")
         c.argument('endpoint', help="Endpoint where EventGrid should deliver events matching this event subscription. For webhook endpoint type, this should be the corresponding webhook URL. For other endpoint types, this should be the Azure resource identifier of the endpoint.")
         c.argument('event_subscription_name', help="Name of the event subscription.")
         c.argument('subject_begins_with', help="An optional string to filter events for an event subscription based on a prefix. Wildcard characters are not supported.")
@@ -115,7 +114,6 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
         c.argument('odata_query', arg_type=odata_query_type, id_part=None)
 
     with self.argument_context('eventgrid event-subscription') as c:
-        c.argument('topic_name', deprecate_info=c.deprecate(expiration='2.1.0', hide=True), help='Name of Event Grid topic.', options_list=['--topic-name'], completer=get_resource_name_completion_list('Microsoft.EventGrid/topics'))
         c.argument('event_subscription_name', arg_type=name_type, help='Name of the event subscription.')
         c.argument('event_delivery_schema', arg_type=get_enum_type(['eventgridschema', 'custominputschema', 'cloudeventschemav1_0']), help='The schema in which events should be delivered for this event subscription. By default, events will be delivered in the same schema in which they are published (based on the corresponding topic\'s input schema).')
         c.argument('max_delivery_attempts', help="Maximum number of delivery attempts. Must be a number between 1 and 30.")
@@ -128,20 +126,10 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
         c.argument('azure_active_directory_tenant_id', help="The Azure Active Directory Tenant Id to get the access token that will be included as the bearer token in delivery requests. Applicable only for webhook as a destination")
         c.argument('azure_active_directory_application_id_or_uri', help="The Azure Active Directory Application Id or Uri to get the access token that will be included as the bearer token in delivery requests. Applicable only for webhook as a destination")
 
-    with self.argument_context('eventgrid event-subscription create') as c:
-        c.argument('resource_group_name', deprecate_info=c.deprecate(expiration='2.1.0', hide=True), arg_type=resource_group_name_type)
-
-    with self.argument_context('eventgrid event-subscription delete') as c:
-        c.argument('resource_group_name', deprecate_info=c.deprecate(expiration='2.1.0', hide=True), arg_type=resource_group_name_type)
-
-    with self.argument_context('eventgrid event-subscription update') as c:
-        c.argument('resource_group_name', deprecate_info=c.deprecate(expiration='2.1.0', hide=True), arg_type=resource_group_name_type)
-
     with self.argument_context('eventgrid event-subscription list') as c:
         c.argument('odata_query', arg_type=odata_query_type, id_part=None)
 
     with self.argument_context('eventgrid event-subscription show') as c:
-        c.argument('resource_group_name', deprecate_info=c.deprecate(expiration='2.1.0', hide=True), arg_type=resource_group_name_type)
         c.argument('include_full_endpoint_url', arg_type=get_three_state_flag(), options_list=['--include-full-endpoint-url'], help="Specify to indicate whether the full endpoint URL should be returned. True if flag present.", )
 
     with self.argument_context('eventgrid topic-type') as c:
