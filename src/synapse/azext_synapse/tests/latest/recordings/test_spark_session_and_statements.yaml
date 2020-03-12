@@ -1,0 +1,685 @@
+interactions:
+- request:
+    body: '{"name": "session_job", "driverMemory": "4g", "driverCores": 4, "executorMemory":
+      "4g", "executorCores": 4, "numExecutors": 2}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '126'
+      Content-Type:
+      - application/json; charset=utf-8
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 azure-synapse/0.1.0
+    method: POST
+    uri: https://testsynapseworkspace1234.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/testsparkpool/sessions?detailed=true
+  response:
+    body:
+      string: '{"livyInfo":{"notStartedAt":null,"startingAt":null,"idleAt":null,"deadAt":null,"shuttingDownAt":null,"killedAt":null,"recoveringAt":null,"busyAt":null,"errorAt":null,"currentState":"not_started","jobCreationRequest":{"name":"session_job","conf":{},"driverMemory":"4g","driverCores":4,"executorMemory":"4g","executorCores":4,"numExecutors":2}},"name":"session_job","workspaceName":"testsynapseworkspace1234","computeName":"testsparkpool","sparkPoolName":"testsparkpool","submitterName":"zhezhou@microsoft.com","submitterId":"8f51e348-1fa6-4194-8d13-8e0368e3298a","artifactId":"Livy","jobType":"SparkSession","result":"Uncertain","schedulerInfo":{"submittedAt":"2020-03-11T07:40:17.7543078+00:00","scheduledAt":null,"endedAt":null,"cancellationRequestedAt":null,"currentState":"Queued"},"pluginInfo":{"preparationStartedAt":null,"resourceAcquisitionStartedAt":null,"submissionStartedAt":null,"monitoringStartedAt":null,"cleanupStartedAt":null,"currentState":"Preparation"},"tags":{},"id":89,"appId":null,"appInfo":null,"state":"not_started","log":null}'
+    headers:
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Mar 2020 07:40:17 GMT
+      server:
+      - Kestrel Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-ms-activity-id:
+      - 3e701fe6-f4b8-45c7-bb75-7579d752196c
+      x-ms-job-clusterrequested-on:
+      - 1/1/0001 12:00:00 AM +00:00
+      x-ms-job-ended-on:
+      - ''
+      x-ms-job-internal-id:
+      - '89'
+      x-ms-job-livysubmission-on:
+      - 1/1/0001 12:00:00 AM +00:00
+      x-ms-job-queued-on:
+      - 1/1/0001 12:00:00 AM +00:00
+      x-ms-job-result:
+      - Uncertain
+      x-ms-job-scheduled-on:
+      - 1/1/0001 12:00:00 AM +00:00
+      x-ms-job-scheduler-state:
+      - Queued
+      x-ms-job-submitted-by-name:
+      - zhezhou@microsoft.com
+      x-ms-job-submitted-on:
+      - 3/11/2020 7:40:17 AM +00:00
+      x-ms-job-type:
+      - SparkServiceSession
+      x-ms-response-time-ms:
+      - '267'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json; charset=utf-8
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 azure-synapse/0.1.0
+    method: GET
+    uri: https://testsynapseworkspace1234.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/testsparkpool/sessions/89?detailed=true
+  response:
+    body:
+      string: '{"livyInfo":{"notStartedAt":null,"startingAt":"2020-03-11T07:40:22.1520203+00:00","idleAt":"2020-03-11T07:40:41.287338+00:00","deadAt":null,"shuttingDownAt":null,"killedAt":null,"recoveringAt":null,"busyAt":null,"errorAt":null,"currentState":"idle","jobCreationRequest":{"name":"session_job","conf":{},"driverMemory":"4g","driverCores":4,"executorMemory":"4g","executorCores":4,"numExecutors":2}},"name":"session_job","workspaceName":"testsynapseworkspace1234","computeName":"testsparkpool","sparkPoolName":"testsparkpool","submitterName":"zhezhou@microsoft.com","submitterId":"8f51e348-1fa6-4194-8d13-8e0368e3298a","artifactId":"Livy","jobType":"SparkSession","result":"Uncertain","schedulerInfo":{"submittedAt":"2020-03-11T07:40:17.7543078+00:00","scheduledAt":"2020-03-11T07:40:19.0215068+00:00","endedAt":null,"cancellationRequestedAt":null,"currentState":"Scheduled"},"pluginInfo":{"preparationStartedAt":"2020-03-11T07:40:19.0340075+00:00","resourceAcquisitionStartedAt":"2020-03-11T07:40:19.3529912+00:00","submissionStartedAt":"2020-03-11T07:40:22.0524783+00:00","monitoringStartedAt":"2020-03-11T07:40:22.1657+00:00","cleanupStartedAt":null,"currentState":"Monitoring"},"tags":{},"id":89,"appId":"application_1583905381782_0015","appInfo":{"driverLogUrl":"http://284b17c0c2dc4a37bde77cb7c5642f2900085497131:8042/node/containerlogs/container_1583905381782_0015_01_000001/trusted-service-user","sparkUiUrl":"http://284b17c0c2dc4a37bde77cb7c5642f2900085497131:8088/proxy/application_1583905381782_0015/"},"state":"idle","log":["\t
+        final status: UNDEFINED","\t tracking URL: http://284b17c0c2dc4a37bde77cb7c5642f2900085497131:8088/proxy/application_1583905381782_0015/","\t
+        user: trusted-service-user","20/03/11 07:40:25 INFO ShutdownHookManager: Shutdown
+        hook called","20/03/11 07:40:25 INFO ShutdownHookManager: Deleting directory
+        /tmp/spark-ecceb79c-6efd-4f48-8b91-24c6353ccefd","20/03/11 07:40:25 INFO ShutdownHookManager:
+        Deleting directory /tmp/spark-96caaab8-5196-425d-b41a-5bd053df0d1f","20/03/11
+        07:40:25 INFO MetricsSystemImpl: Stopping azure-file-system metrics system...","20/03/11
+        07:40:25 INFO MetricsSystemImpl: azure-file-system metrics system stopped.","20/03/11
+        07:40:25 INFO MetricsSystemImpl: azure-file-system metrics system shutdown
+        complete.","\nYARN Diagnostics: "]}'
+    headers:
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Mar 2020 07:46:19 GMT
+      server:
+      - Kestrel Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-ms-activity-id:
+      - a0ccf6b0-3c1d-41a6-b003-edb43930c878
+      x-ms-job-cluster:
+      - http://171.0.4.7:8998/
+      x-ms-job-clusterrequested-on:
+      - 3/11/2020 7:40:19 AM +00:00
+      x-ms-job-ended-on:
+      - ''
+      x-ms-job-internal-id:
+      - '89'
+      x-ms-job-livysubmission-on:
+      - 3/11/2020 7:40:22 AM +00:00
+      x-ms-job-queued-on:
+      - 3/11/2020 7:40:22 AM +00:00
+      x-ms-job-result:
+      - Uncertain
+      x-ms-job-scheduled-on:
+      - 3/11/2020 7:40:19 AM +00:00
+      x-ms-job-scheduler-state:
+      - Scheduled
+      x-ms-job-submitted-by-name:
+      - zhezhou@microsoft.com
+      x-ms-job-submitted-on:
+      - 3/11/2020 7:40:17 AM +00:00
+      x-ms-job-type:
+      - SparkServiceSession
+      x-ms-response-time-ms:
+      - '112'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json; charset=utf-8
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 azure-synapse/0.1.0
+    method: GET
+    uri: https://testsynapseworkspace1234.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/testsparkpool/sessions?detailed=true
+  response:
+    body:
+      string: '{"from":0,"total":20,"sessions":[{"livyInfo":{"notStartedAt":null,"startingAt":"2019-12-13T08:31:43.5770995+00:00","idleAt":"2019-12-13T08:33:26.3486022+00:00","deadAt":null,"shuttingDownAt":null,"killedAt":null,"recoveringAt":null,"busyAt":"2019-12-13T08:33:43.4783228+00:00","errorAt":null,"currentState":"killed","jobCreationRequest":{"name":"Synapse_testsparkpool_1576225747245","conf":{},"driverMemory":"28g","driverCores":4,"executorMemory":"28g","executorCores":4,"numExecutors":2}},"name":"Synapse_testsparkpool_1576225747245","workspaceName":"testsynapseworkspace1234","computeName":"testsparkpool","sparkPoolName":"testsparkpool","submitterName":"zhezhou@microsoft.com","submitterId":"8f51e348-1fa6-4194-8d13-8e0368e3298a","artifactId":"Livy","jobType":"SparkSession","result":"Cancelled","schedulerInfo":{"submittedAt":"2019-12-13T08:29:09.2436131+00:00","scheduledAt":"2019-12-13T08:29:10.4002931+00:00","endedAt":"2019-12-13T09:12:57.8277203+00:00","cancellationRequestedAt":"2019-12-13T09:12:56.2729655+00:00","currentState":"Ended"},"pluginInfo":{"preparationStartedAt":"2019-12-13T08:29:10.4143043+00:00","resourceAcquisitionStartedAt":"2019-12-13T08:29:10.6402742+00:00","submissionStartedAt":"2019-12-13T08:31:00.7261948+00:00","monitoringStartedAt":"2019-12-13T08:31:43.6002601+00:00","cleanupStartedAt":"2019-12-13T09:12:56.2729689+00:00","currentState":"Ended"},"tags":{},"id":2,"appId":"application_1576225874089_0001","appInfo":{"driverLogUrl":"http://008b79baa75e493ba50798a50e751b9d03116310046:8042/node/containerlogs/container_1576225874089_0001_01_000001/trusted-service-user","sparkUiUrl":"http://008b79baa75e493ba50798a50e751b9d04071d71770:8088/proxy/application_1576225874089_0001/"},"state":"killed","log":["\t
+        final status: UNDEFINED","\t tracking URL: http://008b79baa75e493ba50798a50e751b9d04071d71770:8088/proxy/application_1576225874089_0001/","\t
+        user: trusted-service-user","19/12/13 08:31:59 INFO ShutdownHookManager: Shutdown
+        hook called","19/12/13 08:31:59 INFO ShutdownHookManager: Deleting directory
+        /tmp/spark-13f31a03-7633-4467-bf81-3fe3309fb856","19/12/13 08:31:59 INFO ShutdownHookManager:
+        Deleting directory /tmp/spark-40fe5680-835f-462d-bcbb-c8fffa1bbe6f","19/12/13
+        08:31:59 INFO MetricsSystemImpl: Stopping azure-file-system metrics system...","19/12/13
+        08:31:59 INFO MetricsSystemImpl: azure-file-system metrics system stopped.","19/12/13
+        08:31:59 INFO MetricsSystemImpl: azure-file-system metrics system shutdown
+        complete.","\nYARN Diagnostics: "]},{"livyInfo":{"notStartedAt":null,"startingAt":"2019-12-25T08:09:18.9670567+00:00","idleAt":"2019-12-25T08:09:56.3148292+00:00","deadAt":"2019-12-25T08:40:14.7658052+00:00","shuttingDownAt":"2019-12-25T08:40:14.721545+00:00","killedAt":null,"recoveringAt":null,"busyAt":null,"errorAt":null,"currentState":"dead","jobCreationRequest":{"name":"testsession1","conf":{},"driverMemory":"4g","driverCores":4,"executorMemory":"4g","executorCores":4,"numExecutors":2}},"name":"testsession1","workspaceName":"testsynapseworkspace1234","computeName":"testsparkpool","sparkPoolName":"testsparkpool","submitterName":"zhezhou@microsoft.com","submitterId":"8f51e348-1fa6-4194-8d13-8e0368e3298a","artifactId":"Livy","jobType":"SparkSession","result":"Failed","schedulerInfo":{"submittedAt":"2019-12-25T08:07:25.6229908+00:00","scheduledAt":"2019-12-25T08:07:26.0849816+00:00","endedAt":"2019-12-25T08:40:15.5381693+00:00","cancellationRequestedAt":null,"currentState":"Ended"},"pluginInfo":{"preparationStartedAt":"2019-12-25T08:07:26.0987488+00:00","resourceAcquisitionStartedAt":"2019-12-25T08:07:26.4220811+00:00","submissionStartedAt":"2019-12-25T08:09:17.7853685+00:00","monitoringStartedAt":"2019-12-25T08:09:18.9833925+00:00","cleanupStartedAt":"2019-12-25T08:40:14.782367+00:00","currentState":"Ended"},"errorInfo":[{"message":"[plugins.testsynapseworkspace1234.testsparkpool.6]
+        [Monitoring] Livy Endpoint=[http://171.4.176.47:8998/]. Livy Id=[0]  Job failed
+        during run time with state=[dead].","errorCode":"LIVY_JOB_FAILED","source":"Dependency"}],"tags":{},"id":6,"appId":"application_1577261347028_0001","appInfo":{"driverLogUrl":"http://0756e27931b1442da8fded6fb5a384ad039fdf58075:8042/node/containerlogs/container_1577261347028_0001_01_000001/trusted-service-user","sparkUiUrl":"http://0756e27931b1442da8fded6fb5a384ad022bdb15619:8088/proxy/application_1577261347028_0001/"},"state":"dead","log":["\t
+        final status: UNDEFINED","\t tracking URL: http://0756e27931b1442da8fded6fb5a384ad022bdb15619:8088/proxy/application_1577261347028_0001/","\t
+        user: trusted-service-user","19/12/25 08:09:25 INFO ShutdownHookManager: Shutdown
+        hook called","19/12/25 08:09:25 INFO ShutdownHookManager: Deleting directory
+        /tmp/spark-3f94f2c6-cc2f-4497-833b-3c40c96cfb2e","19/12/25 08:09:25 INFO ShutdownHookManager:
+        Deleting directory /tmp/spark-4070576f-39e7-4003-b73e-878a2e176454","19/12/25
+        08:09:25 INFO MetricsSystemImpl: Stopping azure-file-system metrics system...","19/12/25
+        08:09:25 INFO MetricsSystemImpl: azure-file-system metrics system stopped.","19/12/25
+        08:09:25 INFO MetricsSystemImpl: azure-file-system metrics system shutdown
+        complete.","\nYARN Diagnostics: "]},{"livyInfo":{"notStartedAt":null,"startingAt":"2019-12-25T08:16:43.6481846+00:00","idleAt":"2019-12-25T08:17:16.9900454+00:00","deadAt":null,"shuttingDownAt":null,"killedAt":null,"recoveringAt":null,"busyAt":"2019-12-25T08:17:22.0747764+00:00","errorAt":null,"currentState":"killed","jobCreationRequest":{"name":"Synapse_testsparkpool_1577261797747","conf":{},"driverMemory":"28g","driverCores":4,"executorMemory":"28g","executorCores":4,"numExecutors":2}},"name":"Synapse_testsparkpool_1577261797747","workspaceName":"testsynapseworkspace1234","computeName":"testsparkpool","sparkPoolName":"testsparkpool","submitterName":"zhezhou@microsoft.com","submitterId":"8f51e348-1fa6-4194-8d13-8e0368e3298a","artifactId":"Livy","jobType":"SparkSession","result":"Cancelled","schedulerInfo":{"submittedAt":"2019-12-25T08:16:39.6456234+00:00","scheduledAt":"2019-12-25T08:16:40.8153578+00:00","endedAt":"2019-12-25T08:49:30.8083094+00:00","cancellationRequestedAt":"2019-12-25T08:49:29.403481+00:00","currentState":"Ended"},"pluginInfo":{"preparationStartedAt":"2019-12-25T08:16:40.8648594+00:00","resourceAcquisitionStartedAt":"2019-12-25T08:16:41.1247595+00:00","submissionStartedAt":"2019-12-25T08:16:43.5622353+00:00","monitoringStartedAt":"2019-12-25T08:16:43.6958208+00:00","cleanupStartedAt":"2019-12-25T08:49:29.4034849+00:00","currentState":"Ended"},"tags":{},"id":7,"appId":"application_1577261347028_0002","appInfo":{"driverLogUrl":"http://0756e27931b1442da8fded6fb5a384ad00453758611:8042/node/containerlogs/container_1577261347028_0002_01_000001/trusted-service-user","sparkUiUrl":"http://0756e27931b1442da8fded6fb5a384ad022bdb15619:8088/proxy/application_1577261347028_0002/"},"state":"killed","log":["\t
+        final status: UNDEFINED","\t tracking URL: http://0756e27931b1442da8fded6fb5a384ad022bdb15619:8088/proxy/application_1577261347028_0002/","\t
+        user: trusted-service-user","19/12/25 08:16:47 INFO ShutdownHookManager: Shutdown
+        hook called","19/12/25 08:16:47 INFO ShutdownHookManager: Deleting directory
+        /tmp/spark-5829aff6-088b-4496-afc5-147214d18c51","19/12/25 08:16:47 INFO ShutdownHookManager:
+        Deleting directory /tmp/spark-e4f0d452-bbb4-4719-b2d1-fe34dc28d4f9","19/12/25
+        08:16:47 INFO MetricsSystemImpl: Stopping azure-file-system metrics system...","19/12/25
+        08:16:47 INFO MetricsSystemImpl: azure-file-system metrics system stopped.","19/12/25
+        08:16:47 INFO MetricsSystemImpl: azure-file-system metrics system shutdown
+        complete.","\nYARN Diagnostics: "]},{"livyInfo":{"notStartedAt":null,"startingAt":"2019-12-25T08:29:45.0291761+00:00","idleAt":"2019-12-25T08:30:19.2684447+00:00","deadAt":null,"shuttingDownAt":null,"killedAt":null,"recoveringAt":null,"busyAt":null,"errorAt":null,"currentState":"error","jobCreationRequest":{"name":"testsession2","conf":{},"driverMemory":"4g","driverCores":4,"executorMemory":"4g","executorCores":4,"numExecutors":2}},"name":"testsession2","workspaceName":"testsynapseworkspace1234","computeName":"testsparkpool","sparkPoolName":"testsparkpool","submitterName":"zhezhou@microsoft.com","submitterId":"8f51e348-1fa6-4194-8d13-8e0368e3298a","artifactId":"Livy","jobType":"SparkSession","result":"Failed","schedulerInfo":{"submittedAt":"2019-12-25T08:29:41.018165+00:00","scheduledAt":"2019-12-25T08:29:42.1131557+00:00","endedAt":"2019-12-25T09:09:15.0121197+00:00","cancellationRequestedAt":null,"currentState":"Ended"},"pluginInfo":{"preparationStartedAt":"2019-12-25T08:29:42.1265139+00:00","resourceAcquisitionStartedAt":"2019-12-25T08:29:42.3552757+00:00","submissionStartedAt":"2019-12-25T08:29:44.9373709+00:00","monitoringStartedAt":"2019-12-25T08:29:45.0445645+00:00","cleanupStartedAt":"2019-12-25T09:09:14.9925617+00:00","currentState":"Ended"},"errorInfo":[{"message":"Submission
+        failed due to error content =[\"Session ''2'' not found.\"]","errorCode":"LIVY_STATUS_CODE_NotFound","source":"User"},{"message":"[plugins.testsynapseworkspace1234.testsparkpool.8].
+        [Cleanup] -> [Ended] JobResult=[Failed] LivyJobState=[idle]. Unable to kill
+        livy job.","errorCode":"EXCEPTION_DURING_SPARK_JOB_CLEANUP","source":"Dependency"}],"tags":{},"id":8,"appId":"application_1577261347028_0003","appInfo":{"driverLogUrl":"http://0756e27931b1442da8fded6fb5a384ad032f0488094:8042/node/containerlogs/container_1577261347028_0003_01_000001/trusted-service-user","sparkUiUrl":"http://0756e27931b1442da8fded6fb5a384ad022bdb15619:8088/proxy/application_1577261347028_0003/"},"state":"error","log":["\t
+        final status: UNDEFINED","\t tracking URL: http://0756e27931b1442da8fded6fb5a384ad022bdb15619:8088/proxy/application_1577261347028_0003/","\t
+        user: trusted-service-user","19/12/25 08:29:49 INFO ShutdownHookManager: Shutdown
+        hook called","19/12/25 08:29:49 INFO ShutdownHookManager: Deleting directory
+        /tmp/spark-de484530-d317-4435-8145-c82ade1aebdb","19/12/25 08:29:49 INFO ShutdownHookManager:
+        Deleting directory /tmp/spark-2d468982-7533-4d5a-a601-73d568abc9b1","19/12/25
+        08:29:49 INFO MetricsSystemImpl: Stopping azure-file-system metrics system...","19/12/25
+        08:29:49 INFO MetricsSystemImpl: azure-file-system metrics system stopped.","19/12/25
+        08:29:49 INFO MetricsSystemImpl: azure-file-system metrics system shutdown
+        complete.","\nYARN Diagnostics: "]},{"livyInfo":{"notStartedAt":null,"startingAt":"2019-12-25T09:11:35.1175228+00:00","idleAt":"2019-12-25T09:12:12.4344439+00:00","deadAt":null,"shuttingDownAt":null,"killedAt":null,"recoveringAt":null,"busyAt":"2019-12-25T09:12:17.5316964+00:00","errorAt":null,"currentState":"killed","jobCreationRequest":{"name":"Synapse_testsparkpool_1577265088910","conf":{},"driverMemory":"28g","driverCores":4,"executorMemory":"28g","executorCores":4,"numExecutors":2}},"name":"Synapse_testsparkpool_1577265088910","workspaceName":"testsynapseworkspace1234","computeName":"testsparkpool","sparkPoolName":"testsparkpool","submitterName":"zhezhou@microsoft.com","submitterId":"8f51e348-1fa6-4194-8d13-8e0368e3298a","artifactId":"Livy","jobType":"SparkSession","result":"Cancelled","schedulerInfo":{"submittedAt":"2019-12-25T09:11:30.7148268+00:00","scheduledAt":"2019-12-25T09:11:31.8054677+00:00","endedAt":"2019-12-25T10:05:23.9430388+00:00","cancellationRequestedAt":"2019-12-25T10:05:22.3928176+00:00","currentState":"Ended"},"pluginInfo":{"preparationStartedAt":"2019-12-25T09:11:31.8181382+00:00","resourceAcquisitionStartedAt":"2019-12-25T09:11:32.3420557+00:00","submissionStartedAt":"2019-12-25T09:11:35.032948+00:00","monitoringStartedAt":"2019-12-25T09:11:35.1329369+00:00","cleanupStartedAt":"2019-12-25T10:05:22.392821+00:00","currentState":"Ended"},"tags":{},"id":9,"appId":"application_1577261347028_0004","appInfo":{"driverLogUrl":"http://0756e27931b1442da8fded6fb5a384ad017a7497707:8042/node/containerlogs/container_1577261347028_0004_01_000001/trusted-service-user","sparkUiUrl":"http://0756e27931b1442da8fded6fb5a384ad022bdb15619:8088/proxy/application_1577261347028_0004/"},"state":"killed","log":["\t
+        final status: UNDEFINED","\t tracking URL: http://0756e27931b1442da8fded6fb5a384ad022bdb15619:8088/proxy/application_1577261347028_0004/","\t
+        user: trusted-service-user","19/12/25 09:11:39 INFO ShutdownHookManager: Shutdown
+        hook called","19/12/25 09:11:39 INFO ShutdownHookManager: Deleting directory
+        /tmp/spark-298699c6-1a19-43f4-b0e7-77ff38765146","19/12/25 09:11:39 INFO ShutdownHookManager:
+        Deleting directory /tmp/spark-bdf130b2-b3c9-4ff0-9205-d8e9bbc6489d","19/12/25
+        09:11:39 INFO MetricsSystemImpl: Stopping azure-file-system metrics system...","19/12/25
+        09:11:39 INFO MetricsSystemImpl: azure-file-system metrics system stopped.","19/12/25
+        09:11:39 INFO MetricsSystemImpl: azure-file-system metrics system shutdown
+        complete.","\nYARN Diagnostics: "]},{"livyInfo":{"notStartedAt":null,"startingAt":"2019-12-25T10:06:22.8763612+00:00","idleAt":"2019-12-25T10:06:48.1805816+00:00","deadAt":null,"shuttingDownAt":null,"killedAt":null,"recoveringAt":null,"busyAt":null,"errorAt":null,"currentState":"error","jobCreationRequest":{"name":"Synapse_testsparkpool_1577268374812","conf":{},"driverMemory":"28g","driverCores":4,"executorMemory":"28g","executorCores":4,"numExecutors":2}},"name":"Synapse_testsparkpool_1577268374812","workspaceName":"testsynapseworkspace1234","computeName":"testsparkpool","sparkPoolName":"testsparkpool","submitterName":"zhezhou@microsoft.com","submitterId":"8f51e348-1fa6-4194-8d13-8e0368e3298a","artifactId":"Livy","jobType":"SparkSession","result":"Failed","schedulerInfo":{"submittedAt":"2019-12-25T10:06:18.9725189+00:00","scheduledAt":"2019-12-25T10:06:20.0830938+00:00","endedAt":"2019-12-25T10:37:15.5820709+00:00","cancellationRequestedAt":null,"currentState":"Ended"},"pluginInfo":{"preparationStartedAt":"2019-12-25T10:06:20.0956556+00:00","resourceAcquisitionStartedAt":"2019-12-25T10:06:20.384205+00:00","submissionStartedAt":"2019-12-25T10:06:22.7652888+00:00","monitoringStartedAt":"2019-12-25T10:06:22.8902869+00:00","cleanupStartedAt":"2019-12-25T10:37:15.5643434+00:00","currentState":"Ended"},"errorInfo":[{"message":"Submission
+        failed due to error content =[\"Session ''4'' not found.\"]","errorCode":"LIVY_STATUS_CODE_NotFound","source":"User"},{"message":"[plugins.testsynapseworkspace1234.testsparkpool.10].
+        [Cleanup] -> [Ended] JobResult=[Failed] LivyJobState=[idle]. Unable to kill
+        livy job.","errorCode":"EXCEPTION_DURING_SPARK_JOB_CLEANUP","source":"Dependency"}],"tags":{},"id":10,"appId":"application_1577261347028_0005","appInfo":{"driverLogUrl":"http://0756e27931b1442da8fded6fb5a384ad017a7497707:8042/node/containerlogs/container_1577261347028_0005_01_000001/trusted-service-user","sparkUiUrl":"http://0756e27931b1442da8fded6fb5a384ad022bdb15619:8088/proxy/application_1577261347028_0005/"},"state":"error","log":["\t
+        final status: UNDEFINED","\t tracking URL: http://0756e27931b1442da8fded6fb5a384ad022bdb15619:8088/proxy/application_1577261347028_0005/","\t
+        user: trusted-service-user","19/12/25 10:06:26 INFO ShutdownHookManager: Shutdown
+        hook called","19/12/25 10:06:26 INFO ShutdownHookManager: Deleting directory
+        /tmp/spark-56d5b827-6412-4628-a521-a8caa8ad5c3e","19/12/25 10:06:26 INFO ShutdownHookManager:
+        Deleting directory /tmp/spark-df53ebea-f06c-486a-a903-db2f7806843d","19/12/25
+        10:06:27 INFO MetricsSystemImpl: Stopping azure-file-system metrics system...","19/12/25
+        10:06:27 INFO MetricsSystemImpl: azure-file-system metrics system stopped.","19/12/25
+        10:06:27 INFO MetricsSystemImpl: azure-file-system metrics system shutdown
+        complete.","\nYARN Diagnostics: "]},{"livyInfo":{"notStartedAt":null,"startingAt":"2019-12-25T10:07:01.2766304+00:00","idleAt":"2019-12-25T10:07:36.6821106+00:00","deadAt":null,"shuttingDownAt":"2019-12-25T11:10:14.9923607+00:00","killedAt":null,"recoveringAt":null,"busyAt":"2019-12-25T10:07:40.7440414+00:00","errorAt":null,"currentState":"error","jobCreationRequest":{"name":"Synapse_testsparkpool_1577268415433","conf":{},"driverMemory":"28g","driverCores":4,"executorMemory":"28g","executorCores":4,"numExecutors":1}},"name":"Synapse_testsparkpool_1577268415433","workspaceName":"testsynapseworkspace1234","computeName":"testsparkpool","sparkPoolName":"testsparkpool","submitterName":"zhezhou@microsoft.com","submitterId":"8f51e348-1fa6-4194-8d13-8e0368e3298a","artifactId":"Livy","jobType":"SparkSession","result":"Failed","schedulerInfo":{"submittedAt":"2019-12-25T10:06:57.2093124+00:00","scheduledAt":"2019-12-25T10:06:58.2710909+00:00","endedAt":"2019-12-25T11:10:19.1668193+00:00","cancellationRequestedAt":null,"currentState":"Ended"},"pluginInfo":{"preparationStartedAt":"2019-12-25T10:06:58.2841284+00:00","resourceAcquisitionStartedAt":"2019-12-25T10:06:58.4424254+00:00","submissionStartedAt":"2019-12-25T10:07:01.1962163+00:00","monitoringStartedAt":"2019-12-25T10:07:01.2907107+00:00","cleanupStartedAt":"2019-12-25T11:10:19.1477697+00:00","currentState":"Ended"},"errorInfo":[{"message":"Submission
+        failed due to error content =[\"Session ''5'' not found.\"]","errorCode":"LIVY_STATUS_CODE_NotFound","source":"User"},{"message":"[plugins.testsynapseworkspace1234.testsparkpool.11].
+        [Cleanup] -> [Ended] JobResult=[Failed] LivyJobState=[shutting_down]. Unable
+        to kill livy job.","errorCode":"EXCEPTION_DURING_SPARK_JOB_CLEANUP","source":"Dependency"}],"tags":{},"id":11,"appId":"application_1577261347028_0006","appInfo":{"driverLogUrl":"http://0756e27931b1442da8fded6fb5a384ad0358bf44418:8042/node/containerlogs/container_1577261347028_0006_01_000001/trusted-service-user","sparkUiUrl":"http://0756e27931b1442da8fded6fb5a384ad022bdb15619:8088/proxy/application_1577261347028_0006/"},"state":"error","log":["\t
+        final status: UNDEFINED","\t tracking URL: http://0756e27931b1442da8fded6fb5a384ad022bdb15619:8088/proxy/application_1577261347028_0006/","\t
+        user: trusted-service-user","19/12/25 10:07:05 INFO ShutdownHookManager: Shutdown
+        hook called","19/12/25 10:07:05 INFO ShutdownHookManager: Deleting directory
+        /tmp/spark-57dae334-2360-4782-9ed5-4dace6dc8e1f","19/12/25 10:07:05 INFO ShutdownHookManager:
+        Deleting directory /tmp/spark-c5c5be5d-c63d-4cac-8d7a-dea35ce2278f","19/12/25
+        10:07:05 INFO MetricsSystemImpl: Stopping azure-file-system metrics system...","19/12/25
+        10:07:05 INFO MetricsSystemImpl: azure-file-system metrics system stopped.","19/12/25
+        10:07:05 INFO MetricsSystemImpl: azure-file-system metrics system shutdown
+        complete.","\nYARN Diagnostics: "]},{"livyInfo":{"notStartedAt":null,"startingAt":"2020-02-19T03:54:33.1085427+00:00","idleAt":"2020-02-19T03:55:09.4485483+00:00","deadAt":null,"shuttingDownAt":"2020-02-19T04:20:51.1051073+00:00","killedAt":null,"recoveringAt":null,"busyAt":null,"errorAt":null,"currentState":"error","jobCreationRequest":{"name":"testsession_2_19_1","conf":{},"driverMemory":"4g","driverCores":4,"executorMemory":"4g","executorCores":4,"numExecutors":2}},"name":"testsession_2_19_1","workspaceName":"testsynapseworkspace1234","computeName":"testsparkpool","sparkPoolName":"testsparkpool","submitterName":"zhezhou@microsoft.com","submitterId":"8f51e348-1fa6-4194-8d13-8e0368e3298a","artifactId":"Livy","jobType":"SparkSession","result":"Failed","schedulerInfo":{"submittedAt":"2020-02-19T03:54:27.7312747+00:00","scheduledAt":"2020-02-19T03:54:29.1946448+00:00","endedAt":"2020-02-19T04:20:51.4364079+00:00","cancellationRequestedAt":null,"currentState":"Ended"},"pluginInfo":{"preparationStartedAt":"2020-02-19T03:54:29.2069805+00:00","resourceAcquisitionStartedAt":"2020-02-19T03:54:29.5411406+00:00","submissionStartedAt":"2020-02-19T03:54:32.662098+00:00","monitoringStartedAt":"2020-02-19T03:54:33.1229193+00:00","cleanupStartedAt":"2020-02-19T04:20:51.4169558+00:00","currentState":"Ended"},"errorInfo":[{"message":"Submission
+        failed due to error content =[\"Session ''0'' not found.\"]","errorCode":"LIVY_STATUS_CODE_NotFound","source":"User"},{"message":"[plugins.testsynapseworkspace1234.testsparkpool.34].
+        [Cleanup] -> [Ended] JobResult=[Failed] LivyJobState=[shutting_down]. Unable
+        to kill livy job.","errorCode":"EXCEPTION_DURING_SPARK_JOB_CLEANUP","source":"Dependency"}],"tags":{},"id":34,"appId":"application_1582083768945_0003","appInfo":{"driverLogUrl":"http://3024a670da1f4cc38f1f3560864f4d8604113d45195:8042/node/containerlogs/container_1582083768945_0003_01_000001/trusted-service-user","sparkUiUrl":"http://3024a670da1f4cc38f1f3560864f4d8601071373522:8088/proxy/application_1582083768945_0003/"},"state":"error","log":["\t
+        final status: UNDEFINED","\t tracking URL: http://3024a670da1f4cc38f1f3560864f4d8601071373522:8088/proxy/application_1582083768945_0003/","\t
+        user: trusted-service-user","20/02/19 03:54:36 INFO ShutdownHookManager: Shutdown
+        hook called","20/02/19 03:54:36 INFO ShutdownHookManager: Deleting directory
+        /tmp/spark-82194c9f-17d1-4b83-a6df-112f812edfda","20/02/19 03:54:36 INFO ShutdownHookManager:
+        Deleting directory /tmp/spark-e92ea88c-8603-4ae7-84ca-b40198ebae2e","20/02/19
+        03:54:36 INFO MetricsSystemImpl: Stopping azure-file-system metrics system...","20/02/19
+        03:54:36 INFO MetricsSystemImpl: azure-file-system metrics system stopped.","20/02/19
+        03:54:36 INFO MetricsSystemImpl: azure-file-system metrics system shutdown
+        complete.","\nYARN Diagnostics: "]},{"livyInfo":{"notStartedAt":null,"startingAt":"2020-02-26T12:49:11.291034+00:00","idleAt":"2020-02-26T12:49:44.6581545+00:00","deadAt":null,"shuttingDownAt":"2020-02-26T13:00:08.82301+00:00","killedAt":null,"recoveringAt":null,"busyAt":null,"errorAt":null,"currentState":"error","jobCreationRequest":{"name":"session_job","conf":{},"driverMemory":"4g","driverCores":4,"executorMemory":"4g","executorCores":4,"numExecutors":2}},"name":"session_job","workspaceName":"testsynapseworkspace1234","computeName":"testsparkpool","sparkPoolName":"testsparkpool","submitterName":"zhezhou@microsoft.com","submitterId":"8f51e348-1fa6-4194-8d13-8e0368e3298a","artifactId":"Livy","jobType":"SparkSession","result":"Failed","schedulerInfo":{"submittedAt":"2020-02-26T12:47:31.2811622+00:00","scheduledAt":"2020-02-26T12:47:32.3544819+00:00","endedAt":"2020-02-26T13:00:10.0668942+00:00","cancellationRequestedAt":null,"currentState":"Ended"},"pluginInfo":{"preparationStartedAt":"2020-02-26T12:47:32.3677451+00:00","resourceAcquisitionStartedAt":"2020-02-26T12:47:32.6621041+00:00","submissionStartedAt":"2020-02-26T12:49:04.1818237+00:00","monitoringStartedAt":"2020-02-26T12:49:11.3061938+00:00","cleanupStartedAt":"2020-02-26T13:00:10.0166866+00:00","currentState":"Ended"},"errorInfo":[{"message":"Submission
+        failed due to error content =[\"Session ''0'' not found.\"]","errorCode":"LIVY_STATUS_CODE_NotFound","source":"User"},{"message":"[plugins.testsynapseworkspace1234.testsparkpool.43].
+        [Cleanup] -> [Ended] JobResult=[Failed] LivyJobState=[shutting_down]. Unable
+        to kill livy job.","errorCode":"EXCEPTION_DURING_SPARK_JOB_CLEANUP","source":"Dependency"}],"tags":{},"id":43,"appId":"application_1582721346528_0001","appInfo":{"driverLogUrl":"http://e32f1ba891454e2c8934108fad734b37004bf001189:8042/node/containerlogs/container_1582721346528_0001_01_000001/trusted-service-user","sparkUiUrl":"http://e32f1ba891454e2c8934108fad734b37001df758198:8088/proxy/application_1582721346528_0001/"},"state":"error","log":["\t
+        final status: UNDEFINED","\t tracking URL: http://e32f1ba891454e2c8934108fad734b37001df758198:8088/proxy/application_1582721346528_0001/","\t
+        user: trusted-service-user","20/02/26 12:49:18 INFO ShutdownHookManager: Shutdown
+        hook called","20/02/26 12:49:18 INFO ShutdownHookManager: Deleting directory
+        /tmp/spark-582cc476-8e5a-40a3-a62f-a243142b1482","20/02/26 12:49:18 INFO ShutdownHookManager:
+        Deleting directory /tmp/spark-772512fd-dcfa-4642-ad14-786d4adaf96b","20/02/26
+        12:49:18 INFO MetricsSystemImpl: Stopping azure-file-system metrics system...","20/02/26
+        12:49:18 INFO MetricsSystemImpl: azure-file-system metrics system stopped.","20/02/26
+        12:49:18 INFO MetricsSystemImpl: azure-file-system metrics system shutdown
+        complete.","\nYARN Diagnostics: "]},{"livyInfo":{"notStartedAt":null,"startingAt":"2020-02-26T13:00:46.9296381+00:00","idleAt":"2020-02-26T13:01:07.0973705+00:00","deadAt":null,"shuttingDownAt":null,"killedAt":null,"recoveringAt":null,"busyAt":null,"errorAt":null,"currentState":"error","jobCreationRequest":{"name":"session_job","conf":{},"driverMemory":"4g","driverCores":4,"executorMemory":"4g","executorCores":4,"numExecutors":2}},"name":"session_job","workspaceName":"testsynapseworkspace1234","computeName":"testsparkpool","sparkPoolName":"testsparkpool","submitterName":"zhezhou@microsoft.com","submitterId":"8f51e348-1fa6-4194-8d13-8e0368e3298a","artifactId":"Livy","jobType":"SparkSession","result":"Failed","schedulerInfo":{"submittedAt":"2020-02-26T13:00:34.467748+00:00","scheduledAt":"2020-02-26T13:00:35.8701615+00:00","endedAt":"2020-02-26T13:11:09.2031503+00:00","cancellationRequestedAt":null,"currentState":"Ended"},"pluginInfo":{"preparationStartedAt":"2020-02-26T13:00:35.9090905+00:00","resourceAcquisitionStartedAt":"2020-02-26T13:00:36.2089486+00:00","submissionStartedAt":"2020-02-26T13:00:44.9985968+00:00","monitoringStartedAt":"2020-02-26T13:00:46.945944+00:00","cleanupStartedAt":"2020-02-26T13:11:09.1809598+00:00","currentState":"Ended"},"errorInfo":[{"message":"Submission
+        failed due to error content =[\"Session ''1'' not found.\"]","errorCode":"LIVY_STATUS_CODE_NotFound","source":"User"},{"message":"[plugins.testsynapseworkspace1234.testsparkpool.44].
+        [Cleanup] -> [Ended] JobResult=[Failed] LivyJobState=[idle]. Unable to kill
+        livy job.","errorCode":"EXCEPTION_DURING_SPARK_JOB_CLEANUP","source":"Dependency"}],"tags":{},"id":44,"appId":"application_1582721346528_0002","appInfo":{"driverLogUrl":"http://e32f1ba891454e2c8934108fad734b37004bf001189:8042/node/containerlogs/container_1582721346528_0002_01_000001/trusted-service-user","sparkUiUrl":"http://e32f1ba891454e2c8934108fad734b37001df758198:8088/proxy/application_1582721346528_0002/"},"state":"error","log":["\t
+        final status: UNDEFINED","\t tracking URL: http://e32f1ba891454e2c8934108fad734b37001df758198:8088/proxy/application_1582721346528_0002/","\t
+        user: trusted-service-user","20/02/26 13:00:50 INFO ShutdownHookManager: Shutdown
+        hook called","20/02/26 13:00:50 INFO ShutdownHookManager: Deleting directory
+        /tmp/spark-9965e88e-6be2-4ca3-934a-42ea892b3bc0","20/02/26 13:00:50 INFO ShutdownHookManager:
+        Deleting directory /tmp/spark-032cd2e4-f7a8-4ed6-9990-6ee26b79c56c","20/02/26
+        13:00:50 INFO MetricsSystemImpl: Stopping azure-file-system metrics system...","20/02/26
+        13:00:50 INFO MetricsSystemImpl: azure-file-system metrics system stopped.","20/02/26
+        13:00:50 INFO MetricsSystemImpl: azure-file-system metrics system shutdown
+        complete.","\nYARN Diagnostics: "]},{"livyInfo":{"notStartedAt":null,"startingAt":"2020-02-26T13:24:14.9537704+00:00","idleAt":"2020-02-26T13:24:34.1754657+00:00","deadAt":null,"shuttingDownAt":"2020-02-26T13:41:08.9562069+00:00","killedAt":null,"recoveringAt":null,"busyAt":null,"errorAt":null,"currentState":"error","jobCreationRequest":{"name":"session_job","conf":{},"driverMemory":"4g","driverCores":4,"executorMemory":"4g","executorCores":4,"numExecutors":2}},"name":"session_job","workspaceName":"testsynapseworkspace1234","computeName":"testsparkpool","sparkPoolName":"testsparkpool","submitterName":"zhezhou@microsoft.com","submitterId":"8f51e348-1fa6-4194-8d13-8e0368e3298a","artifactId":"Livy","jobType":"SparkSession","result":"Failed","schedulerInfo":{"submittedAt":"2020-02-26T13:24:11.7704941+00:00","scheduledAt":"2020-02-26T13:24:11.8995632+00:00","endedAt":"2020-02-26T13:41:10.1225868+00:00","cancellationRequestedAt":null,"currentState":"Ended"},"pluginInfo":{"preparationStartedAt":"2020-02-26T13:24:11.9112015+00:00","resourceAcquisitionStartedAt":"2020-02-26T13:24:12.147992+00:00","submissionStartedAt":"2020-02-26T13:24:14.8644578+00:00","monitoringStartedAt":"2020-02-26T13:24:14.9677964+00:00","cleanupStartedAt":"2020-02-26T13:41:10.1042034+00:00","currentState":"Ended"},"errorInfo":[{"message":"Submission
+        failed due to error content =[\"Session ''2'' not found.\"]","errorCode":"LIVY_STATUS_CODE_NotFound","source":"User"},{"message":"[plugins.testsynapseworkspace1234.testsparkpool.45].
+        [Cleanup] -> [Ended] JobResult=[Failed] LivyJobState=[shutting_down]. Unable
+        to kill livy job.","errorCode":"EXCEPTION_DURING_SPARK_JOB_CLEANUP","source":"Dependency"}],"tags":{},"id":45,"appId":"application_1582721346528_0003","appInfo":{"driverLogUrl":"http://e32f1ba891454e2c8934108fad734b37004bf001189:8042/node/containerlogs/container_1582721346528_0003_01_000001/trusted-service-user","sparkUiUrl":"http://e32f1ba891454e2c8934108fad734b37001df758198:8088/proxy/application_1582721346528_0003/"},"state":"error","log":["\t
+        final status: UNDEFINED","\t tracking URL: http://e32f1ba891454e2c8934108fad734b37001df758198:8088/proxy/application_1582721346528_0003/","\t
+        user: trusted-service-user","20/02/26 13:24:19 INFO ShutdownHookManager: Shutdown
+        hook called","20/02/26 13:24:19 INFO ShutdownHookManager: Deleting directory
+        /tmp/spark-ef65ba0c-16bb-4f15-89c3-574fd62060c5","20/02/26 13:24:19 INFO ShutdownHookManager:
+        Deleting directory /tmp/spark-12b9d723-511b-4148-bb90-2f9713afdf4c","20/02/26
+        13:24:19 INFO MetricsSystemImpl: Stopping azure-file-system metrics system...","20/02/26
+        13:24:19 INFO MetricsSystemImpl: azure-file-system metrics system stopped.","20/02/26
+        13:24:19 INFO MetricsSystemImpl: azure-file-system metrics system shutdown
+        complete.","\nYARN Diagnostics: "]},{"livyInfo":{"notStartedAt":null,"startingAt":"2020-02-26T13:32:22.9708881+00:00","idleAt":"2020-02-26T13:32:43.2043975+00:00","deadAt":null,"shuttingDownAt":null,"killedAt":null,"recoveringAt":null,"busyAt":null,"errorAt":null,"currentState":"error","jobCreationRequest":{"name":"session_job","conf":{},"driverMemory":"4g","driverCores":4,"executorMemory":"4g","executorCores":4,"numExecutors":2}},"name":"session_job","workspaceName":"testsynapseworkspace1234","computeName":"testsparkpool","sparkPoolName":"testsparkpool","submitterName":"zhezhou@microsoft.com","submitterId":"8f51e348-1fa6-4194-8d13-8e0368e3298a","artifactId":"Livy","jobType":"SparkSession","result":"Failed","schedulerInfo":{"submittedAt":"2020-02-26T13:32:18.2632746+00:00","scheduledAt":"2020-02-26T13:32:19.4622221+00:00","endedAt":"2020-02-26T13:43:09.5019056+00:00","cancellationRequestedAt":null,"currentState":"Ended"},"pluginInfo":{"preparationStartedAt":"2020-02-26T13:32:19.4949518+00:00","resourceAcquisitionStartedAt":"2020-02-26T13:32:19.775898+00:00","submissionStartedAt":"2020-02-26T13:32:22.8556977+00:00","monitoringStartedAt":"2020-02-26T13:32:22.9854222+00:00","cleanupStartedAt":"2020-02-26T13:43:09.4880995+00:00","currentState":"Ended"},"errorInfo":[{"message":"Submission
+        failed due to error content =[\"Session ''3'' not found.\"]","errorCode":"LIVY_STATUS_CODE_NotFound","source":"User"},{"message":"[plugins.testsynapseworkspace1234.testsparkpool.46].
+        [Cleanup] -> [Ended] JobResult=[Failed] LivyJobState=[idle]. Unable to kill
+        livy job.","errorCode":"EXCEPTION_DURING_SPARK_JOB_CLEANUP","source":"Dependency"}],"tags":{},"id":46,"appId":"application_1582721346528_0004","appInfo":{"driverLogUrl":"http://e32f1ba891454e2c8934108fad734b37004bf001189:8042/node/containerlogs/container_1582721346528_0004_01_000001/trusted-service-user","sparkUiUrl":"http://e32f1ba891454e2c8934108fad734b37001df758198:8088/proxy/application_1582721346528_0004/"},"state":"error","log":["\t
+        final status: UNDEFINED","\t tracking URL: http://e32f1ba891454e2c8934108fad734b37001df758198:8088/proxy/application_1582721346528_0004/","\t
+        user: trusted-service-user","20/02/26 13:32:27 INFO ShutdownHookManager: Shutdown
+        hook called","20/02/26 13:32:27 INFO ShutdownHookManager: Deleting directory
+        /tmp/spark-4e0480e3-2240-4f3d-a55e-7cefa30cf7dd","20/02/26 13:32:27 INFO ShutdownHookManager:
+        Deleting directory /tmp/spark-aef49187-6e10-4c1c-876d-efe62cbb67f8","20/02/26
+        13:32:27 INFO MetricsSystemImpl: Stopping azure-file-system metrics system...","20/02/26
+        13:32:27 INFO MetricsSystemImpl: azure-file-system metrics system stopped.","20/02/26
+        13:32:27 INFO MetricsSystemImpl: azure-file-system metrics system shutdown
+        complete.","\nYARN Diagnostics: "]},{"livyInfo":{"notStartedAt":null,"startingAt":"2020-02-26T13:35:47.0038103+00:00","idleAt":"2020-02-26T13:39:09.9514434+00:00","deadAt":null,"shuttingDownAt":null,"killedAt":null,"recoveringAt":null,"busyAt":null,"errorAt":null,"currentState":"error","jobCreationRequest":{"name":"session_job","conf":{},"driverMemory":"4g","driverCores":4,"executorMemory":"4g","executorCores":4,"numExecutors":2}},"name":"session_job","workspaceName":"testsynapseworkspace1234","computeName":"testsparkpool","sparkPoolName":"testsparkpool","submitterName":"zhezhou@microsoft.com","submitterId":"8f51e348-1fa6-4194-8d13-8e0368e3298a","artifactId":"Livy","jobType":"SparkSession","result":"Failed","schedulerInfo":{"submittedAt":"2020-02-26T13:35:42.9455691+00:00","scheduledAt":"2020-02-26T13:35:43.3069414+00:00","endedAt":"2020-02-26T13:46:09.1559834+00:00","cancellationRequestedAt":null,"currentState":"Ended"},"pluginInfo":{"preparationStartedAt":"2020-02-26T13:35:43.3199256+00:00","resourceAcquisitionStartedAt":"2020-02-26T13:35:43.5880677+00:00","submissionStartedAt":"2020-02-26T13:35:46.8955651+00:00","monitoringStartedAt":"2020-02-26T13:35:47.0197063+00:00","cleanupStartedAt":"2020-02-26T13:46:09.1381179+00:00","currentState":"Ended"},"errorInfo":[{"message":"Submission
+        failed due to error content =[\"Session ''4'' not found.\"]","errorCode":"LIVY_STATUS_CODE_NotFound","source":"User"},{"message":"[plugins.testsynapseworkspace1234.testsparkpool.47].
+        [Cleanup] -> [Ended] JobResult=[Failed] LivyJobState=[idle]. Unable to kill
+        livy job.","errorCode":"EXCEPTION_DURING_SPARK_JOB_CLEANUP","source":"Dependency"}],"tags":{},"id":47,"appId":"application_1582721346528_0005","appInfo":{"driverLogUrl":"http://e32f1ba891454e2c8934108fad734b37000b9a60506:8042/node/containerlogs/container_1582721346528_0005_01_000001/trusted-service-user","sparkUiUrl":"http://e32f1ba891454e2c8934108fad734b37001df758198:8088/proxy/application_1582721346528_0005/"},"state":"error","log":["\t
+        final status: UNDEFINED","\t tracking URL: http://e32f1ba891454e2c8934108fad734b37001df758198:8088/proxy/application_1582721346528_0005/","\t
+        user: trusted-service-user","20/02/26 13:35:50 INFO ShutdownHookManager: Shutdown
+        hook called","20/02/26 13:35:50 INFO ShutdownHookManager: Deleting directory
+        /tmp/spark-9ced194a-7983-4496-8693-b7da925d645f","20/02/26 13:35:50 INFO ShutdownHookManager:
+        Deleting directory /tmp/spark-c6a899cd-049d-4aee-8ad4-5a588e466800","20/02/26
+        13:35:50 INFO MetricsSystemImpl: Stopping azure-file-system metrics system...","20/02/26
+        13:35:50 INFO MetricsSystemImpl: azure-file-system metrics system stopped.","20/02/26
+        13:35:50 INFO MetricsSystemImpl: azure-file-system metrics system shutdown
+        complete.","\nYARN Diagnostics: "]},{"livyInfo":{"notStartedAt":null,"startingAt":"2020-02-26T13:38:46.5622419+00:00","idleAt":"2020-02-26T13:41:52.4492752+00:00","deadAt":null,"shuttingDownAt":"2020-02-26T13:54:08.8711808+00:00","killedAt":null,"recoveringAt":null,"busyAt":null,"errorAt":null,"currentState":"error","jobCreationRequest":{"name":"session_job","conf":{},"driverMemory":"4g","driverCores":4,"executorMemory":"4g","executorCores":4,"numExecutors":2}},"name":"session_job","workspaceName":"testsynapseworkspace1234","computeName":"testsparkpool","sparkPoolName":"testsparkpool","submitterName":"zhezhou@microsoft.com","submitterId":"8f51e348-1fa6-4194-8d13-8e0368e3298a","artifactId":"Livy","jobType":"SparkSession","result":"Failed","schedulerInfo":{"submittedAt":"2020-02-26T13:38:42.1488228+00:00","scheduledAt":"2020-02-26T13:38:43.2490535+00:00","endedAt":"2020-02-26T13:54:09.9375145+00:00","cancellationRequestedAt":null,"currentState":"Ended"},"pluginInfo":{"preparationStartedAt":"2020-02-26T13:38:43.2611115+00:00","resourceAcquisitionStartedAt":"2020-02-26T13:38:43.4717458+00:00","submissionStartedAt":"2020-02-26T13:38:46.4800159+00:00","monitoringStartedAt":"2020-02-26T13:38:46.5803176+00:00","cleanupStartedAt":"2020-02-26T13:54:09.9231338+00:00","currentState":"Ended"},"errorInfo":[{"message":"Submission
+        failed due to error content =[\"Session ''5'' not found.\"]","errorCode":"LIVY_STATUS_CODE_NotFound","source":"User"},{"message":"[plugins.testsynapseworkspace1234.testsparkpool.48].
+        [Cleanup] -> [Ended] JobResult=[Failed] LivyJobState=[shutting_down]. Unable
+        to kill livy job.","errorCode":"EXCEPTION_DURING_SPARK_JOB_CLEANUP","source":"Dependency"}],"tags":{},"id":48,"appId":"application_1582721346528_0006","appInfo":{"driverLogUrl":"http://e32f1ba891454e2c8934108fad734b37003c1491642:8042/node/containerlogs/container_1582721346528_0006_01_000001/trusted-service-user","sparkUiUrl":"http://e32f1ba891454e2c8934108fad734b37001df758198:8088/proxy/application_1582721346528_0006/"},"state":"error","log":["\t
+        final status: UNDEFINED","\t tracking URL: http://e32f1ba891454e2c8934108fad734b37001df758198:8088/proxy/application_1582721346528_0006/","\t
+        user: trusted-service-user","20/02/26 13:38:50 INFO ShutdownHookManager: Shutdown
+        hook called","20/02/26 13:38:50 INFO ShutdownHookManager: Deleting directory
+        /tmp/spark-0433623f-ef0c-493b-93a9-9588507f53a4","20/02/26 13:38:50 INFO ShutdownHookManager:
+        Deleting directory /tmp/spark-0dbc3f4d-e5af-43b3-9585-0ea51ff02b6e","20/02/26
+        13:38:50 INFO MetricsSystemImpl: Stopping azure-file-system metrics system...","20/02/26
+        13:38:50 INFO MetricsSystemImpl: azure-file-system metrics system stopped.","20/02/26
+        13:38:50 INFO MetricsSystemImpl: azure-file-system metrics system shutdown
+        complete.","\nYARN Diagnostics: "]},{"livyInfo":{"notStartedAt":null,"startingAt":"2020-02-27T02:36:44.2725094+00:00","idleAt":"2020-02-27T02:37:37.883093+00:00","deadAt":null,"shuttingDownAt":null,"killedAt":null,"recoveringAt":null,"busyAt":"2020-02-27T02:37:46.9616186+00:00","errorAt":null,"currentState":"killed","jobCreationRequest":{"name":"Synapse_testsparkpool_1582770923791","conf":{},"driverMemory":"28g","driverCores":4,"executorMemory":"28g","executorCores":4,"numExecutors":1}},"name":"Synapse_testsparkpool_1582770923791","workspaceName":"testsynapseworkspace1234","computeName":"testsparkpool","sparkPoolName":"testsparkpool","submitterName":"zhezhou@microsoft.com","submitterId":"8f51e348-1fa6-4194-8d13-8e0368e3298a","artifactId":"Livy","jobType":"SparkSession","result":"Cancelled","schedulerInfo":{"submittedAt":"2020-02-27T02:35:24.2786793+00:00","scheduledAt":"2020-02-27T02:35:25.5806175+00:00","endedAt":"2020-02-27T03:09:06.9495977+00:00","cancellationRequestedAt":"2020-02-27T03:09:05.0822936+00:00","currentState":"Ended"},"pluginInfo":{"preparationStartedAt":"2020-02-27T02:35:25.5970004+00:00","resourceAcquisitionStartedAt":"2020-02-27T02:35:25.9637188+00:00","submissionStartedAt":"2020-02-27T02:36:36.4094821+00:00","monitoringStartedAt":"2020-02-27T02:36:44.2921585+00:00","cleanupStartedAt":"2020-02-27T03:09:05.0822972+00:00","currentState":"Ended"},"tags":{},"id":49,"appId":"application_1582770999899_0001","appInfo":{"driverLogUrl":"http://b50c2ae5022b43d0a9a8b293074617ef00417f90807:8042/node/containerlogs/container_1582770999899_0001_01_000001/trusted-service-user","sparkUiUrl":"http://b50c2ae5022b43d0a9a8b293074617ef000a6688148:8088/proxy/application_1582770999899_0001/"},"state":"killed","log":["\t
+        final status: UNDEFINED","\t tracking URL: http://b50c2ae5022b43d0a9a8b293074617ef000a6688148:8088/proxy/application_1582770999899_0001/","\t
+        user: trusted-service-user","20/02/27 02:36:51 INFO ShutdownHookManager: Shutdown
+        hook called","20/02/27 02:36:51 INFO ShutdownHookManager: Deleting directory
+        /tmp/spark-b1ace93c-cd17-4893-b509-511dac50cb32","20/02/27 02:36:51 INFO ShutdownHookManager:
+        Deleting directory /tmp/spark-fdc5c58b-8359-481a-a6a7-7fa64112672a","20/02/27
+        02:36:51 INFO MetricsSystemImpl: Stopping azure-file-system metrics system...","20/02/27
+        02:36:51 INFO MetricsSystemImpl: azure-file-system metrics system stopped.","20/02/27
+        02:36:51 INFO MetricsSystemImpl: azure-file-system metrics system shutdown
+        complete.","\nYARN Diagnostics: "]},{"livyInfo":{"notStartedAt":null,"startingAt":"2020-02-27T02:43:29.3403079+00:00","idleAt":"2020-02-27T02:43:48.5543281+00:00","deadAt":null,"shuttingDownAt":null,"killedAt":null,"recoveringAt":null,"busyAt":null,"errorAt":null,"currentState":"error","jobCreationRequest":{"name":"session_job","conf":{},"driverMemory":"4g","driverCores":4,"executorMemory":"4g","executorCores":4,"numExecutors":2}},"name":"session_job","workspaceName":"testsynapseworkspace1234","computeName":"testsparkpool","sparkPoolName":"testsparkpool","submitterName":"zhezhou@microsoft.com","submitterId":"8f51e348-1fa6-4194-8d13-8e0368e3298a","artifactId":"Livy","jobType":"SparkSession","result":"Failed","schedulerInfo":{"submittedAt":"2020-02-27T02:43:25.4295714+00:00","scheduledAt":"2020-02-27T02:43:25.8737897+00:00","endedAt":"2020-02-27T02:58:43.7263147+00:00","cancellationRequestedAt":null,"currentState":"Ended"},"pluginInfo":{"preparationStartedAt":"2020-02-27T02:43:25.9006408+00:00","resourceAcquisitionStartedAt":"2020-02-27T02:43:26.1816647+00:00","submissionStartedAt":"2020-02-27T02:43:29.2324353+00:00","monitoringStartedAt":"2020-02-27T02:43:29.3546266+00:00","cleanupStartedAt":"2020-02-27T02:58:43.7059165+00:00","currentState":"Ended"},"errorInfo":[{"message":"Submission
+        failed due to error content =[\"Session ''1'' not found.\"]","errorCode":"LIVY_STATUS_CODE_NotFound","source":"User"},{"message":"[plugins.testsynapseworkspace1234.testsparkpool.50].
+        [Cleanup] -> [Ended] JobResult=[Failed] LivyJobState=[idle]. Unable to kill
+        livy job.","errorCode":"EXCEPTION_DURING_SPARK_JOB_CLEANUP","source":"Dependency"}],"tags":{},"id":50,"appId":"application_1582770999899_0002","appInfo":{"driverLogUrl":"http://b50c2ae5022b43d0a9a8b293074617ef00417f90807:8042/node/containerlogs/container_1582770999899_0002_01_000001/trusted-service-user","sparkUiUrl":"http://b50c2ae5022b43d0a9a8b293074617ef000a6688148:8088/proxy/application_1582770999899_0002/"},"state":"error","log":["\t
+        final status: UNDEFINED","\t tracking URL: http://b50c2ae5022b43d0a9a8b293074617ef000a6688148:8088/proxy/application_1582770999899_0002/","\t
+        user: trusted-service-user","20/02/27 02:43:32 INFO ShutdownHookManager: Shutdown
+        hook called","20/02/27 02:43:32 INFO ShutdownHookManager: Deleting directory
+        /tmp/spark-f86b4a4c-dcec-49f7-a18a-ab89e59feb2f","20/02/27 02:43:32 INFO ShutdownHookManager:
+        Deleting directory /tmp/spark-f1eb01ba-c9e7-4b04-907e-8a452dd61b6f","20/02/27
+        02:43:32 INFO MetricsSystemImpl: Stopping azure-file-system metrics system...","20/02/27
+        02:43:32 INFO MetricsSystemImpl: azure-file-system metrics system stopped.","20/02/27
+        02:43:32 INFO MetricsSystemImpl: azure-file-system metrics system shutdown
+        complete.","\nYARN Diagnostics: "]},{"livyInfo":{"notStartedAt":null,"startingAt":"2020-02-27T02:54:52.0887823+00:00","idleAt":"2020-02-27T02:55:43.849074+00:00","deadAt":null,"shuttingDownAt":null,"killedAt":null,"recoveringAt":null,"busyAt":null,"errorAt":null,"currentState":"error","jobCreationRequest":{"name":"session_job","conf":{},"driverMemory":"4g","driverCores":4,"executorMemory":"4g","executorCores":4,"numExecutors":2}},"name":"session_job","workspaceName":"testsynapseworkspace1234","computeName":"testsparkpool","sparkPoolName":"testsparkpool","submitterName":"zhezhou@microsoft.com","submitterId":"8f51e348-1fa6-4194-8d13-8e0368e3298a","artifactId":"Livy","jobType":"SparkSession","result":"Failed","schedulerInfo":{"submittedAt":"2020-02-27T02:54:47.0038754+00:00","scheduledAt":"2020-02-27T02:54:48.2865042+00:00","endedAt":"2020-02-27T03:10:43.1437219+00:00","cancellationRequestedAt":null,"currentState":"Ended"},"pluginInfo":{"preparationStartedAt":"2020-02-27T02:54:48.317401+00:00","resourceAcquisitionStartedAt":"2020-02-27T02:54:48.8166098+00:00","submissionStartedAt":"2020-02-27T02:54:51.9591169+00:00","monitoringStartedAt":"2020-02-27T02:54:52.1033179+00:00","cleanupStartedAt":"2020-02-27T03:10:43.1278011+00:00","currentState":"Ended"},"errorInfo":[{"message":"Submission
+        failed due to error content =[\"Session ''2'' not found.\"]","errorCode":"LIVY_STATUS_CODE_NotFound","source":"User"},{"message":"[plugins.testsynapseworkspace1234.testsparkpool.51].
+        [Cleanup] -> [Ended] JobResult=[Failed] LivyJobState=[idle]. Unable to kill
+        livy job.","errorCode":"EXCEPTION_DURING_SPARK_JOB_CLEANUP","source":"Dependency"}],"tags":{},"id":51,"appId":"application_1582770999899_0003","appInfo":{"driverLogUrl":"http://b50c2ae5022b43d0a9a8b293074617ef001b6d10128:8042/node/containerlogs/container_1582770999899_0003_01_000001/trusted-service-user","sparkUiUrl":"http://b50c2ae5022b43d0a9a8b293074617ef000a6688148:8088/proxy/application_1582770999899_0003/"},"state":"error","log":["\t
+        final status: UNDEFINED","\t tracking URL: http://b50c2ae5022b43d0a9a8b293074617ef000a6688148:8088/proxy/application_1582770999899_0003/","\t
+        user: trusted-service-user","20/02/27 02:54:55 INFO ShutdownHookManager: Shutdown
+        hook called","20/02/27 02:54:55 INFO ShutdownHookManager: Deleting directory
+        /tmp/spark-97f232e3-86d7-4324-92aa-2741a6220350","20/02/27 02:54:55 INFO ShutdownHookManager:
+        Deleting directory /tmp/spark-7e75314e-ef8d-4d94-9e9e-b2202080c05d","20/02/27
+        02:54:55 INFO MetricsSystemImpl: Stopping azure-file-system metrics system...","20/02/27
+        02:54:55 INFO MetricsSystemImpl: azure-file-system metrics system stopped.","20/02/27
+        02:54:55 INFO MetricsSystemImpl: azure-file-system metrics system shutdown
+        complete.","\nYARN Diagnostics: "]},{"livyInfo":{"notStartedAt":null,"startingAt":"2020-02-27T03:06:14.4048515+00:00","idleAt":"2020-02-27T03:06:38.6103286+00:00","deadAt":"2020-02-27T03:21:42.9769064+00:00","shuttingDownAt":"2020-02-27T03:21:42.9276918+00:00","killedAt":null,"recoveringAt":null,"busyAt":null,"errorAt":null,"currentState":"dead","jobCreationRequest":{"name":"session_job","conf":{},"driverMemory":"4g","driverCores":4,"executorMemory":"4g","executorCores":4,"numExecutors":2}},"name":"session_job","workspaceName":"testsynapseworkspace1234","computeName":"testsparkpool","sparkPoolName":"testsparkpool","submitterName":"zhezhou@microsoft.com","submitterId":"8f51e348-1fa6-4194-8d13-8e0368e3298a","artifactId":"Livy","jobType":"SparkSession","result":"Failed","schedulerInfo":{"submittedAt":"2020-02-27T03:06:04.780415+00:00","scheduledAt":"2020-02-27T03:06:06.1117092+00:00","endedAt":"2020-02-27T03:21:43.6800065+00:00","cancellationRequestedAt":null,"currentState":"Ended"},"pluginInfo":{"preparationStartedAt":"2020-02-27T03:06:06.1234248+00:00","resourceAcquisitionStartedAt":"2020-02-27T03:06:06.4371846+00:00","submissionStartedAt":"2020-02-27T03:06:13.3892695+00:00","monitoringStartedAt":"2020-02-27T03:06:14.4208941+00:00","cleanupStartedAt":"2020-02-27T03:21:42.9909765+00:00","currentState":"Ended"},"errorInfo":[{"message":"[plugins.testsynapseworkspace1234.testsparkpool.52]
+        [Monitoring] Livy Endpoint=[http://171.0.202.6:8998/]. Livy Id=[3]  Job failed
+        during run time with state=[dead].","errorCode":"LIVY_JOB_FAILED","source":"Dependency"}],"tags":{},"id":52,"appId":"application_1582770999899_0004","appInfo":{"driverLogUrl":"http://b50c2ae5022b43d0a9a8b293074617ef000a6688148:8042/node/containerlogs/container_1582770999899_0004_01_000001/trusted-service-user","sparkUiUrl":"http://b50c2ae5022b43d0a9a8b293074617ef000a6688148:8088/proxy/application_1582770999899_0004/"},"state":"dead","log":["\t
+        final status: UNDEFINED","\t tracking URL: http://b50c2ae5022b43d0a9a8b293074617ef000a6688148:8088/proxy/application_1582770999899_0004/","\t
+        user: trusted-service-user","20/02/27 03:06:18 INFO ShutdownHookManager: Shutdown
+        hook called","20/02/27 03:06:18 INFO ShutdownHookManager: Deleting directory
+        /tmp/spark-be8f21d0-dbb3-4c77-ae12-a0b65961ed74","20/02/27 03:06:18 INFO ShutdownHookManager:
+        Deleting directory /tmp/spark-5d5a6b27-8aba-4d48-ab7a-b652ee820922","20/02/27
+        03:06:18 INFO MetricsSystemImpl: Stopping azure-file-system metrics system...","20/02/27
+        03:06:18 INFO MetricsSystemImpl: azure-file-system metrics system stopped.","20/02/27
+        03:06:18 INFO MetricsSystemImpl: azure-file-system metrics system shutdown
+        complete.","\nYARN Diagnostics: "]},{"livyInfo":{"notStartedAt":null,"startingAt":"2020-02-27T03:13:47.5228658+00:00","idleAt":"2020-02-27T03:14:05.67951+00:00","deadAt":null,"shuttingDownAt":null,"killedAt":null,"recoveringAt":null,"busyAt":null,"errorAt":null,"currentState":"error","jobCreationRequest":{"name":"session_job","conf":{},"driverMemory":"4g","driverCores":4,"executorMemory":"4g","executorCores":4,"numExecutors":2}},"name":"session_job","workspaceName":"testsynapseworkspace1234","computeName":"testsparkpool","sparkPoolName":"testsparkpool","submitterName":"zhezhou@microsoft.com","submitterId":"8f51e348-1fa6-4194-8d13-8e0368e3298a","artifactId":"Livy","jobType":"SparkSession","result":"Failed","schedulerInfo":{"submittedAt":"2020-02-27T03:13:42.4571909+00:00","scheduledAt":"2020-02-27T03:13:43.7342691+00:00","endedAt":"2020-02-27T03:29:43.4723463+00:00","cancellationRequestedAt":null,"currentState":"Ended"},"pluginInfo":{"preparationStartedAt":"2020-02-27T03:13:43.7715697+00:00","resourceAcquisitionStartedAt":"2020-02-27T03:13:44.1233532+00:00","submissionStartedAt":"2020-02-27T03:13:47.4068122+00:00","monitoringStartedAt":"2020-02-27T03:13:47.5388984+00:00","cleanupStartedAt":"2020-02-27T03:29:43.4478536+00:00","currentState":"Ended"},"errorInfo":[{"message":"Submission
+        failed due to error content =[\"Session ''4'' not found.\"]","errorCode":"LIVY_STATUS_CODE_NotFound","source":"User"},{"message":"[plugins.testsynapseworkspace1234.testsparkpool.53].
+        [Cleanup] -> [Ended] JobResult=[Failed] LivyJobState=[idle]. Unable to kill
+        livy job.","errorCode":"EXCEPTION_DURING_SPARK_JOB_CLEANUP","source":"Dependency"}],"tags":{},"id":53,"appId":"application_1582770999899_0005","appInfo":{"driverLogUrl":"http://b50c2ae5022b43d0a9a8b293074617ef00417f90807:8042/node/containerlogs/container_1582770999899_0005_01_000001/trusted-service-user","sparkUiUrl":"http://b50c2ae5022b43d0a9a8b293074617ef000a6688148:8088/proxy/application_1582770999899_0005/"},"state":"error","log":["\t
+        final status: UNDEFINED","\t tracking URL: http://b50c2ae5022b43d0a9a8b293074617ef000a6688148:8088/proxy/application_1582770999899_0005/","\t
+        user: trusted-service-user","20/02/27 03:13:51 INFO ShutdownHookManager: Shutdown
+        hook called","20/02/27 03:13:51 INFO ShutdownHookManager: Deleting directory
+        /tmp/spark-874f6de2-32c5-40f3-b96e-bf965a970868","20/02/27 03:13:51 INFO ShutdownHookManager:
+        Deleting directory /tmp/spark-a7726951-3c1c-4f91-9480-e554126696ce","20/02/27
+        03:13:51 INFO MetricsSystemImpl: Stopping azure-file-system metrics system...","20/02/27
+        03:13:51 INFO MetricsSystemImpl: azure-file-system metrics system stopped.","20/02/27
+        03:13:51 INFO MetricsSystemImpl: azure-file-system metrics system shutdown
+        complete.","\nYARN Diagnostics: "]},{"livyInfo":{"notStartedAt":null,"startingAt":"2020-02-27T03:39:02.0129491+00:00","idleAt":"2020-02-27T03:39:21.2509628+00:00","deadAt":null,"shuttingDownAt":"2020-02-27T03:54:42.8654154+00:00","killedAt":null,"recoveringAt":null,"busyAt":"2020-02-27T03:44:11.3168942+00:00","errorAt":null,"currentState":"error","jobCreationRequest":{"name":"session_job","conf":{},"driverMemory":"4g","driverCores":4,"executorMemory":"4g","executorCores":4,"numExecutors":2}},"name":"session_job","workspaceName":"testsynapseworkspace1234","computeName":"testsparkpool","sparkPoolName":"testsparkpool","submitterName":"zhezhou@microsoft.com","submitterId":"8f51e348-1fa6-4194-8d13-8e0368e3298a","artifactId":"Livy","jobType":"SparkSession","result":"Failed","schedulerInfo":{"submittedAt":"2020-02-27T03:38:56.8804329+00:00","scheduledAt":"2020-02-27T03:38:58.3501847+00:00","endedAt":"2020-02-27T03:54:43.9730872+00:00","cancellationRequestedAt":null,"currentState":"Ended"},"pluginInfo":{"preparationStartedAt":"2020-02-27T03:38:58.3830454+00:00","resourceAcquisitionStartedAt":"2020-02-27T03:38:58.741869+00:00","submissionStartedAt":"2020-02-27T03:39:01.5378748+00:00","monitoringStartedAt":"2020-02-27T03:39:02.0277926+00:00","cleanupStartedAt":"2020-02-27T03:54:43.9546204+00:00","currentState":"Ended"},"errorInfo":[{"message":"Submission
+        failed due to error content =[\"Session ''5'' not found.\"]","errorCode":"LIVY_STATUS_CODE_NotFound","source":"User"},{"message":"[plugins.testsynapseworkspace1234.testsparkpool.54].
+        [Cleanup] -> [Ended] JobResult=[Failed] LivyJobState=[shutting_down]. Unable
+        to kill livy job.","errorCode":"EXCEPTION_DURING_SPARK_JOB_CLEANUP","source":"Dependency"}],"tags":{},"id":54,"appId":"application_1582770999899_0006","appInfo":{"driverLogUrl":"http://b50c2ae5022b43d0a9a8b293074617ef001b6d10128:8042/node/containerlogs/container_1582770999899_0006_01_000001/trusted-service-user","sparkUiUrl":"http://b50c2ae5022b43d0a9a8b293074617ef000a6688148:8088/proxy/application_1582770999899_0006/"},"state":"error","log":["\t
+        final status: UNDEFINED","\t tracking URL: http://b50c2ae5022b43d0a9a8b293074617ef000a6688148:8088/proxy/application_1582770999899_0006/","\t
+        user: trusted-service-user","20/02/27 03:39:05 INFO ShutdownHookManager: Shutdown
+        hook called","20/02/27 03:39:05 INFO ShutdownHookManager: Deleting directory
+        /tmp/spark-2e61a99f-1f01-45b8-a8db-324cc4453ab0","20/02/27 03:39:05 INFO ShutdownHookManager:
+        Deleting directory /tmp/spark-68cf840b-3e84-4d7d-89cf-f17f5cb6b80e","20/02/27
+        03:39:05 INFO MetricsSystemImpl: Stopping azure-file-system metrics system...","20/02/27
+        03:39:05 INFO MetricsSystemImpl: azure-file-system metrics system stopped.","20/02/27
+        03:39:05 INFO MetricsSystemImpl: azure-file-system metrics system shutdown
+        complete.","\nYARN Diagnostics: "]}]}'
+    headers:
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Mar 2020 07:46:23 GMT
+      server:
+      - Kestrel Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-ms-activity-id:
+      - f8165de9-cb5c-4bfd-9ec5-a30f269788af
+      x-ms-response-time-ms:
+      - '83'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      Content-Type:
+      - application/json; charset=utf-8
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 azure-synapse/0.1.0
+    method: PUT
+    uri: https://testsynapseworkspace1234.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/testsparkpool/sessions/89/reset-timeout
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Wed, 11 Mar 2020 07:46:25 GMT
+      server:
+      - Kestrel Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-ms-activity-id:
+      - 7d37653f-5204-40fb-9019-26e9e7252bd2
+      x-ms-response-time-ms:
+      - '18'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"code": "import time\ntime.sleep(10)\nprint(''hello from cli'')", "kind":
+      "pyspark"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '83'
+      Content-Type:
+      - application/json; charset=utf-8
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 azure-synapse/0.1.0
+    method: POST
+    uri: https://testsynapseworkspace1234.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/testsparkpool/sessions/89/statements
+  response:
+    body:
+      string: '{"id":0,"code":"import time\ntime.sleep(10)\nprint(''hello from cli'')","state":"waiting","output":null}'
+    headers:
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Mar 2020 07:46:28 GMT
+      server:
+      - Kestrel Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-ms-activity-id:
+      - 384a2425-86a5-426d-8220-8c35d77bde8e
+      x-ms-response-time-ms:
+      - '45'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json; charset=utf-8
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 azure-synapse/0.1.0
+    method: GET
+    uri: https://testsynapseworkspace1234.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/testsparkpool/sessions/89/statements/0
+  response:
+    body:
+      string: '{"id":0,"code":"import time\ntime.sleep(10)\nprint(''hello from cli'')","state":"running","output":null}'
+    headers:
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Mar 2020 07:46:29 GMT
+      server:
+      - Kestrel Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-ms-activity-id:
+      - 2431dbcc-98f9-4cdb-9e4b-11b9dc5b10e1
+      x-ms-response-time-ms:
+      - '19'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json; charset=utf-8
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 azure-synapse/0.1.0
+    method: GET
+    uri: https://testsynapseworkspace1234.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/testsparkpool/sessions/89/statements
+  response:
+    body:
+      string: '{"total_statements":1,"statements":[{"id":0,"code":"import time\ntime.sleep(10)\nprint(''hello
+        from cli'')","state":"running","output":null}]}'
+    headers:
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Mar 2020 07:46:30 GMT
+      server:
+      - Kestrel Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-ms-activity-id:
+      - e043601b-ab34-4391-8488-c32f2df8ae35
+      x-ms-response-time-ms:
+      - '23'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      Content-Type:
+      - application/json; charset=utf-8
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 azure-synapse/0.1.0
+    method: POST
+    uri: https://testsynapseworkspace1234.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/testsparkpool/sessions/89/statements/0/cancel
+  response:
+    body:
+      string: '{"msg":"canceled"}'
+    headers:
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Mar 2020 07:46:32 GMT
+      server:
+      - Kestrel Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-ms-activity-id:
+      - 80c35c54-88a9-4a3d-a74b-06c608748f14
+      x-ms-response-time-ms:
+      - '16'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      Content-Type:
+      - application/json; charset=utf-8
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 azure-synapse/0.1.0
+    method: DELETE
+    uri: https://testsynapseworkspace1234.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/testsparkpool/sessions/89
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Wed, 11 Mar 2020 07:46:33 GMT
+      server:
+      - Kestrel Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-ms-activity-id:
+      - 9ec22b56-551c-432e-a1e2-86e1547c82b3
+      x-ms-response-time-ms:
+      - '25'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json; charset=utf-8
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 azure-synapse/0.1.0
+    method: GET
+    uri: https://testsynapseworkspace1234.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/testsparkpool/sessions/89?detailed=true
+  response:
+    body:
+      string: '{"livyInfo":{"notStartedAt":null,"startingAt":"2020-03-11T07:40:22.1520203+00:00","idleAt":"2020-03-11T07:40:41.287338+00:00","deadAt":null,"shuttingDownAt":null,"killedAt":null,"recoveringAt":null,"busyAt":"2020-03-11T07:46:29.7273691+00:00","errorAt":null,"currentState":"killed","jobCreationRequest":{"name":"session_job","conf":{},"driverMemory":"4g","driverCores":4,"executorMemory":"4g","executorCores":4,"numExecutors":2}},"name":"session_job","workspaceName":"testsynapseworkspace1234","computeName":"testsparkpool","sparkPoolName":"testsparkpool","submitterName":"zhezhou@microsoft.com","submitterId":"8f51e348-1fa6-4194-8d13-8e0368e3298a","artifactId":"Livy","jobType":"SparkSession","result":"Cancelled","schedulerInfo":{"submittedAt":"2020-03-11T07:40:17.7543078+00:00","scheduledAt":"2020-03-11T07:40:19.0215068+00:00","endedAt":"2020-03-11T07:46:44.7171112+00:00","cancellationRequestedAt":"2020-03-11T07:46:33.6636168+00:00","currentState":"Ended"},"pluginInfo":{"preparationStartedAt":"2020-03-11T07:40:19.0340075+00:00","resourceAcquisitionStartedAt":"2020-03-11T07:40:19.3529912+00:00","submissionStartedAt":"2020-03-11T07:40:22.0524783+00:00","monitoringStartedAt":"2020-03-11T07:40:22.1657+00:00","cleanupStartedAt":"2020-03-11T07:46:33.6636196+00:00","currentState":"Ended"},"tags":{},"id":89,"appId":"application_1583905381782_0015","appInfo":{"driverLogUrl":"http://284b17c0c2dc4a37bde77cb7c5642f2900085497131:8042/node/containerlogs/container_1583905381782_0015_01_000001/trusted-service-user","sparkUiUrl":"http://284b17c0c2dc4a37bde77cb7c5642f2900085497131:8088/proxy/application_1583905381782_0015/"},"state":"killed","log":["\t
+        final status: UNDEFINED","\t tracking URL: http://284b17c0c2dc4a37bde77cb7c5642f2900085497131:8088/proxy/application_1583905381782_0015/","\t
+        user: trusted-service-user","20/03/11 07:40:25 INFO ShutdownHookManager: Shutdown
+        hook called","20/03/11 07:40:25 INFO ShutdownHookManager: Deleting directory
+        /tmp/spark-ecceb79c-6efd-4f48-8b91-24c6353ccefd","20/03/11 07:40:25 INFO ShutdownHookManager:
+        Deleting directory /tmp/spark-96caaab8-5196-425d-b41a-5bd053df0d1f","20/03/11
+        07:40:25 INFO MetricsSystemImpl: Stopping azure-file-system metrics system...","20/03/11
+        07:40:25 INFO MetricsSystemImpl: azure-file-system metrics system stopped.","20/03/11
+        07:40:25 INFO MetricsSystemImpl: azure-file-system metrics system shutdown
+        complete.","\nYARN Diagnostics: "]}'
+    headers:
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Mar 2020 07:48:36 GMT
+      server:
+      - Kestrel Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-ms-activity-id:
+      - 875d2478-d33d-4cf1-be70-a9bfd8541bb6
+      x-ms-job-cluster:
+      - http://171.0.4.7:8998/
+      x-ms-job-clusterrequested-on:
+      - 3/11/2020 7:40:19 AM +00:00
+      x-ms-job-ended-on:
+      - 3/11/2020 7:46:44 AM +00:00
+      x-ms-job-internal-id:
+      - '89'
+      x-ms-job-livysubmission-on:
+      - 3/11/2020 7:40:22 AM +00:00
+      x-ms-job-queued-on:
+      - 3/11/2020 7:40:22 AM +00:00
+      x-ms-job-result:
+      - Cancelled
+      x-ms-job-scheduled-on:
+      - 3/11/2020 7:40:19 AM +00:00
+      x-ms-job-scheduler-state:
+      - Ended
+      x-ms-job-submitted-by-name:
+      - zhezhou@microsoft.com
+      x-ms-job-submitted-on:
+      - 3/11/2020 7:40:17 AM +00:00
+      x-ms-job-type:
+      - SparkServiceSession
+      x-ms-response-time-ms:
+      - '18'
+    status:
+      code: 200
+      message: OK
+version: 1

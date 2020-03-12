@@ -12,7 +12,9 @@ from azure.cli.command_modules.appservice.custom import (
     list_publishing_credentials
 )
 from azure.cli.command_modules.resource.custom import move_resource
+from azure.cli.core.profiles import ResourceType
 from knack.log import get_logger
+
 
 logger = get_logger(__name__)
 
@@ -54,6 +56,9 @@ class Website:
         self.resource_group = None
         self.id = None
         self.__cmd = cmd
+        self.__cmd.command_kwargs = {
+            'resource_type': ResourceType.MGMT_APPSERVICE,
+        }
         self.__deployment_info = None
 
     def create(self):
@@ -122,6 +127,9 @@ class Website:
         logger.warning(
             'Creating free App Service plan named free_app_service_plan...')
         default_free_plan_name = 'free_app_service_plan'
+
+        # app_service_cmd = cf_plans(self.__cmd, None)
+
         app_service_plan = create_app_service_plan(self.__cmd, resource_group_name=self.name, sku='F1',
                                                    name=default_free_plan_name, is_linux=True, hyper_v=False).result()
         self.resource_group = app_service_plan.resource_group
