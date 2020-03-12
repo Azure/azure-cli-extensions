@@ -42,7 +42,7 @@ class ModifiedFilesNotAllowedError(Exception):
         return msg
 
 
-class AzExtension:
+class AzExtensionHelper:
     def __init__(self, extension_name):
         self.extension_name = extension_name
 
@@ -58,7 +58,7 @@ class AzExtension:
         self._cmd('az extension remove -n {}'.format(self.extension_name))
 
 
-class AzdevExtension:
+class AzdevExtensionHelper:
     def __init__(self, extension_name):
         self.extension_name = extension_name
 
@@ -145,10 +145,10 @@ def linter_on_external_extension(index_json):
 
         latest_entry = max(modified_entries, key=lambda c: parse_version(c['metadata']['version']))
 
-        az_extension = AzExtension(name)
+        az_extension = AzExtensionHelper(name)
         az_extension.add_from_url(latest_entry['downloadUrl'])
 
-        azdev_extension = AzdevExtension(name)
+        azdev_extension = AzdevExtensionHelper(name)
         azdev_extension.linter()
 
         az_extension.remove()
@@ -169,7 +169,7 @@ def linter_on_internal_extension(modified_files):
     for name in extension_names:
         separator_line()
 
-        azdev_extension = AzdevExtension(name)
+        azdev_extension = AzdevExtensionHelper(name)
         azdev_extension.add_from_code()
         azdev_extension.linter()
         azdev_extension.remove()
