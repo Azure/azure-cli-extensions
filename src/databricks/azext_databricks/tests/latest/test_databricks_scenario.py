@@ -34,8 +34,8 @@ class DatabricksClientScenarioTest(ScenarioTest):
                  '--location "westus" '
                  '--sku standard',
                  checks=[JMESPathCheck('name', self.kwargs.get('workspace_name', '')),
-                 JMESPathCheck('sku.name', self.kwargs.get('sku.name', 'standard')),])
-        
+                         JMESPathCheck('sku.name', self.kwargs.get('sku.name', 'standard'))])
+
         managed_resource_group_id = '/subscriptions/{}/resourceGroups/{}'.format(self.kwargs.get('subscription', ''), self.kwargs.get('managed_resource_group', ''))
         self.cmd('az databricks workspace create '
                  '--resource-group {rg} '
@@ -47,11 +47,10 @@ class DatabricksClientScenarioTest(ScenarioTest):
                  '--storage-account-name customdbstorage '
                  '--storage-account-sku Standard_LRS',
                  checks=[JMESPathCheck('name', self.kwargs.get('custom_workspace_name', '')),
-                 JMESPathCheck('parameters.relayNamespaceName.value', 'custom-relay-space'),
-                 JMESPathCheck('parameters.storageAccountName.value', 'customdbstorage'),
-                 JMESPathCheck('parameters.storageAccountSkuName.value', 'Standard_LRS'),
-                 JMESPathCheck('managedResourceGroupId', managed_resource_group_id)
-                 ])
+                         JMESPathCheck('parameters.relayNamespaceName.value', 'custom-relay-space'),
+                         JMESPathCheck('parameters.storageAccountName.value', 'customdbstorage'),
+                         JMESPathCheck('parameters.storageAccountSkuName.value', 'Standard_LRS'),
+                         JMESPathCheck('managedResourceGroupId', managed_resource_group_id)])
 
         self.cmd('az databricks workspace update '
                  '--resource-group {rg} '
