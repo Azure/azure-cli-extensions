@@ -131,7 +131,7 @@ def app_create(cmd, client, resource_group, service, name,
         main_entry=None,
         runtime_version=runtime_version)
 
-    file_type = ("Jar", "NetCoreZip")[runtime_version == AppPlatformEnums.RuntimeVersion.net_core_31]
+    file_type = "NetCoreZip" if runtime_version == AppPlatformEnums.RuntimeVersion.net_core_31 else "Jar"
 
     user_source_info = models.UserSourceInfo(
         relative_path='<default>', type=file_type)
@@ -962,6 +962,7 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
                 update=False):
     upload_url = None
     relative_path = None
+    logger.warning("file_type is {}".format(file_type))
     logger.warning("[1/3] Requesting for upload URL")
     try:
         response = client.apps.get_resource_upload_url(resource_group,

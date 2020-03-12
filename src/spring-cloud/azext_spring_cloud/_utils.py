@@ -23,7 +23,7 @@ logger = get_logger(__name__)
 
 def _get_upload_local_file(runtime_version, artifact_path=None):
     file_path = artifact_path
-    file_type = ("NetCoreZip", "Jar")[runtime_version == AppPlatformEnums.RuntimeVersion.net_core_31]
+    file_type = "NetCoreZip" if runtime_version == AppPlatformEnums.RuntimeVersion.net_core_31 else "Jar"
 
     if file_path is None:
         file_type = "Source"
