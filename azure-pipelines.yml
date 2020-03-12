@@ -99,8 +99,22 @@ jobs:
         python -m virtualenv venv/
         source ./venv/bin/activate
 
-        ./scripts/ci/verify_modified_index.sh
+        # clone azure-cli
+        git clone --single-branch -b dev https://github.com/Azure/azure-cli.git ../azure-cli
+
+        pip install azdev
+
+        azdev --version
+
+        azdev setup -c ../azure-cli -r ./
+
+        az --version
+
+        python scripts/ci/verify_linter.py
       displayName: "CLI Linter on Modified Extension"
+      env:
+        ADO_PULL_REQUEST_LATEST_COMMIT: $(System.PullRequest.SourceCommitId)
+        ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
 
 - job: IndexRefDocVerify
   displayName: "Verify Ref Docs"
