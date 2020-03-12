@@ -90,8 +90,9 @@ class BlueprintScenarioTest(ScenarioTest):
             '--resource-group artifact_name=myRgArt name=blueprint-rg location=westus2 '
             '--parameters @src/blueprint/azext_blueprint/tests/latest/input/create/assignment_params.json',
             checks=[JMESPathCheckExists('identity.principalId')]).get_output_in_json()
-        
+
         principal_id = assignment['identity']['principalId']
+        assert len(principal_id) > 0
 
         # Sometimes automatic role assignment by blueprint fails, we may need the following.
         # Assign owner of target subscription to the service principal created by blueprint assignment
@@ -209,8 +210,9 @@ class BlueprintScenarioTest(ScenarioTest):
             '--resource-group artifact_name=storageRG name=storage-rg location=westus2 '
             '--parameters @src/blueprint/azext_blueprint/tests/latest/input/import_with_artifacts/assignment_params.json',
             checks=[JMESPathCheckExists('identity.principalId')]).get_output_in_json()
-        
+
         principal_id = assignment['identity']['principalId']
+        assert len(principal_id) > 0
 
         # Sometimes automatic role assignment by blueprint fails, we may need the following.
         # Assign owner of target subscription to the service principal created by blueprint assignment
