@@ -320,6 +320,9 @@ def app_deploy(cmd, client, resource_group, service, name,
 
     file_type, file_path = _get_upload_local_file(jar_path)
 
+    if runtime_version == "NetCore_31":
+        file_type = "NetCoreZip"
+
     return _app_deploy(client,
                        resource_group,
                        service,
