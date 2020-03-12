@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.1.3
++++++
+
+* Remove the limitation of max compatible cli core version
+
 0.1.2
 +++++
 
