@@ -84,8 +84,6 @@ def load_arguments(self, _):
                        help='Runtime version of used language')
             c.argument('jvm_options', type=str,
                        help="A string containing jvm options, use '=' instead of ' ' for this argument to avoid bash parse error, eg: --jvm-options='-Xms1024m -Xmx2048m'")
-            c.argument('net_core_main_entry_path', type=str,
-                       help="A string containing the path to the .NET executable relative to zip root")
             c.argument('env', env_type)
 
     for scope in ['spring-cloud app create', 'spring-cloud app deployment create']:
@@ -109,7 +107,11 @@ def load_arguments(self, _):
     for scope in ['spring-cloud app deploy', 'spring-cloud app deployment create']:
         with self.argument_context(scope) as c:
             c.argument(
-                'jar_path', help='If provided, deploy jar, otherwise deploy current folder as tar.')
+                'artifact_path', options_list=[
+                    '--artifact_path', '--jar_path', '-p'], help='If provided, deploy pre-built artifact (jar or netcore zip), otherwise deploy current folder as tar.')
+            c.argument(
+                'main_entry', options_list=[
+                    '--main_entry', '-m'], help="A string containing the path to the .NET executable relative to zip root")
             c.argument(
                 'target_module', help='Child module to be deployed, required for multiple jar packages built from source code')
             c.argument(

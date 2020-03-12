@@ -13,6 +13,7 @@ from msrestazure.tools import parse_resource_id
 from ._utils import _get_upload_local_file
 from knack.util import CLIError
 from .vendored_sdks.appplatform import models
+from .vendored_sdks.appplatform.models import _app_platform_management_client_enums as AppPlatformEnums
 from knack.log import get_logger
 from .azure_storage_file import FileService
 from azure.cli.core.util import sdk_no_wait
@@ -99,7 +100,6 @@ def app_create(cmd, client, resource_group, service, name,
                instance_count=None,
                runtime_version=None,
                jvm_options=None,
-               net_core_main_entry_path=None,
                env=None,
                enable_persistent_storage=None):
     apps = _get_all_apps(client, resource_group, service)
@@ -128,10 +128,13 @@ def app_create(cmd, client, resource_group, service, name,
         instance_count=instance_count,
         environment_variables=env,
         jvm_options=jvm_options,
-        net_core_main_entry_path=net_core_main_entry_path,
-        runtime_version=runtime_version,)
+        main_entry=None,
+        runtime_version=runtime_version)
+
+    file_type = ("Jar", "NetCoreZip")[runtime_version == AppPlatformEnums.RuntimeVersion.net_core_31]
+
     user_source_info = models.UserSourceInfo(
-        relative_path='<default>', type='Jar')
+        relative_path='<default>', type=file_type)
     properties = models.DeploymentResourceProperties(
         deployment_settings=deployment_settings,
         source=user_source_info)
@@ -165,7 +168,7 @@ def app_update(cmd, client, resource_group, service, name,
                deployment=None,
                runtime_version=None,
                jvm_options=None,
-               net_core_main_entry_path=None,
+               main_entry=None,
                env=None,
                enable_persistent_storage=None):
     properties = models.AppResourceProperties(public=is_public)
@@ -199,7 +202,7 @@ def app_update(cmd, client, resource_group, service, name,
         instance_count=None,
         environment_variables=env,
         jvm_options=jvm_options,
-        net_core_main_entry_path=net_core_main_entry_path,
+        main_entry=main_entry,
         runtime_version=runtime_version,)
     properties = models.DeploymentResourceProperties(
         deployment_settings=deployment_settings)
@@ -299,11 +302,11 @@ def app_get(cmd, client,
 def app_deploy(cmd, client, resource_group, service, name,
                version=None,
                deployment=None,
-               jar_path=None,
+               artifact_path=None,
                target_module=None,
                runtime_version=None,
                jvm_options=None,
-               net_core_main_entry_path=None,
+               main_entry=None,
                cpu=None,
                memory=None,
                instance_count=None,
@@ -318,10 +321,7 @@ def app_deploy(cmd, client, resource_group, service, name,
 
     client.deployments.get(resource_group, service, name, deployment)
 
-    file_type, file_path = _get_upload_local_file(jar_path)
-
-    if runtime_version == "NetCore_31":
-        file_type = "NetCoreZip"
+    file_type, file_path = _get_upload_local_file(runtime_version, artifact_path)
 
     return _app_deploy(client,
                        resource_group,
@@ -336,7 +336,7 @@ def app_deploy(cmd, client, resource_group, service, name,
                        memory,
                        instance_count,
                        env,
-                       net_core_main_entry_path,
+                       main_entry,
                        target_module,
                        no_wait,
                        file_type,
@@ -372,8 +372,8 @@ def app_get_build_log(cmd, client, resource_group, service, name, deployment=Non
         raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
     deployment_properties = client.deployments.get(
         resource_group, service, name, deployment).properties
-    if deployment_properties.source.type == "Jar":
-        raise CLIError("Jar deployment has no build logs.")
+    if deployment_properties.source.type == "Jar" or deployment_properties.source.type == "NetCoreZip":
+        raise CLIError("{} deployment has no build logs.".format(deployment_properties.source.type))
     return stream_logs(client.deployments, resource_group, service, name, deployment)
 
 
@@ -446,11 +446,11 @@ def app_set_deployment(cmd, client, resource_group, service, name, deployment):
 def deployment_create(cmd, client, resource_group, service, app, name,
                       skip_clone_settings=False,
                       version=None,
-                      jar_path=None,
+                      artifact_path=None,
                       target_module=None,
                       runtime_version=None,
                       jvm_options=None,
-                      net_core_main_entry_path=None,
+                      main_entry=None,
                       cpu=None,
                       memory=None,
                       instance_count=None,
@@ -473,7 +473,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
             jvm_options = jvm_options or active_deployment.properties.deployment_settings.jvm_options
             env = env or active_deployment.properties.deployment_settings.environment_variables
 
-    file_type, file_path = _get_upload_local_file(jar_path)
+    file_type, file_path = _get_upload_local_file(runtime_version, artifact_path)
     return _app_deploy(client, resource_group, service, app, name, version, file_path,
                        runtime_version,
                        jvm_options,
@@ -481,7 +481,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                        memory,
                        instance_count,
                        env,
-                       net_core_main_entry_path,
+                       main_entry,
                        target_module,
                        no_wait,
                        file_type)
@@ -955,7 +955,7 @@ def _get_all_apps(client, resource_group, service):
 def _app_deploy(client, resource_group, service, app, name, version, path, runtime_version, jvm_options, cpu, memory,
                 instance_count,
                 env,
-                net_core_main_entry_path=None,
+                main_entry=None,
                 target_module=None,
                 no_wait=False,
                 file_type="Jar",
@@ -988,7 +988,7 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
         memory_in_gb=memory,
         environment_variables=env,
         jvm_options=jvm_options,
-        net_core_main_entry_path=net_core_main_entry_path,
+        main_entry=main_entry,
         runtime_version=runtime_version,
         instance_count=instance_count,)
     user_source_info = models.UserSourceInfo(

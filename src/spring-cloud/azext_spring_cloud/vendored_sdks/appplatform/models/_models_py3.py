@@ -633,9 +633,9 @@ class DeploymentSettings(Model):
     :type memory_in_gb: int
     :param jvm_options: JVM parameter
     :type jvm_options: str
-    :param net_core_main_entry_path: The path to the .NET executable relative
+    :param main_entry: The path to the .NET executable relative
      to zip root
-    :type net_core_main_entry_path: str
+    :type main_entry: str
     :param instance_count: Instance count. Default value: 1 .
     :type instance_count: int
     :param environment_variables: Collection of environment variables
@@ -656,18 +656,18 @@ class DeploymentSettings(Model):
         'cpu': {'key': 'cpu', 'type': 'int'},
         'memory_in_gb': {'key': 'memoryInGB', 'type': 'int'},
         'jvm_options': {'key': 'jvmOptions', 'type': 'str'},
-        'net_core_main_entry_path': {'key': 'netCoreMainEntryPath', 'type': 'str'},
+        'main_entry': {'key': 'netCoreMainEntryPath', 'type': 'str'},
         'instance_count': {'key': 'instanceCount', 'type': 'int'},
         'environment_variables': {'key': 'environmentVariables', 'type': '{str}'},
         'runtime_version': {'key': 'runtimeVersion', 'type': 'str'},
     }
 
-    def __init__(self, *, cpu: int=1, memory_in_gb: int=1, jvm_options: str=None, net_core_main_entry_path: str=None, instance_count: int=1, environment_variables=None, runtime_version=None, **kwargs) -> None:
+    def __init__(self, *, cpu: int=1, memory_in_gb: int=1, jvm_options: str=None, main_entry: str=None, instance_count: int=1, environment_variables=None, runtime_version=None, **kwargs) -> None:
         super(DeploymentSettings, self).__init__(**kwargs)
         self.cpu = cpu
         self.memory_in_gb = memory_in_gb
         self.jvm_options = jvm_options
-        self.net_core_main_entry_path = net_core_main_entry_path
+        self.main_entry = main_entry
         self.instance_count = instance_count
         self.environment_variables = environment_variables
         self.runtime_version = runtime_version
