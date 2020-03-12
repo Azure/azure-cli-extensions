@@ -8,7 +8,6 @@
 # pylint: disable=too-many-locals
 # pylint: disable=unused-argument
 # pylint: disable=too-many-boolean-expressions
-import json
 
 from knack.util import CLIError
 
@@ -37,12 +36,20 @@ def _transform_condition(condition):
 
 
 def _alert_rule_id(subscription, resource_group, alert):
+    """
+    Transform alert rule name or ID to alert rule ID
+    :param subscription:
+    :param resource_group:
+    :param alert:
+    :return: alert rule ID
+    """
     if alert is None:
         return None
     from msrestazure.tools import resource_id, is_valid_resource_id
     if not is_valid_resource_id(alert):
         return resource_id(subscription=subscription, resource_group=resource_group,
                            namespace='microsoft.insights', type='alertrules', name=alert)
+    return alert
 
 
 def create_alertsmanagement_action_rule(cmd, client,
