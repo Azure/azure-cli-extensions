@@ -13,9 +13,7 @@ from azure.cli.core.commands.parameters import (
     get_location_type
 )
 
-# from azext_databricks.action import (
-#     PeeringAddAuthorizations
-# )
+from azure.cli.core.commands.validators import get_default_location_from_resource_group
 
 
 def load_arguments(self, _):
@@ -23,7 +21,7 @@ def load_arguments(self, _):
     with self.argument_context('databricks workspace create') as c:
         c.argument('workspace_name', options_list=['--name', '-n'], help='The name of the workspace.')
         c.argument('tags', tags_type)
-        c.argument('location', arg_type=get_location_type(self.cli_ctx))
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
         c.argument('managed_resource_group', help='The managed resource group to create. It can be either a name or a resource ID.')
         c.argument('aml_workspace_id', help='Azure Machine Learning workspace guid.')
         c.argument('custom_virtual_network_id', options_list=['--virtual-network'], help='Virtual network name or resource ID.')
