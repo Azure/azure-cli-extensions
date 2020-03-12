@@ -21,7 +21,7 @@ logger = get_logger(__name__)
 
 def create_hack(cmd, name, runtime, location, database=None, ai=None):
     # TODO: Update this to use a default location, or prompt??
-    name = name + str(uuid4())[:5]
+    name = f'{name}-{str(uuid4())[:5]}'
     # # Create RG
     logger.warning("Creating resource group...")
     _create_resource_group(cmd, name, location)
