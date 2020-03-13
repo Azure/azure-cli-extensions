@@ -439,6 +439,23 @@ parameters:
         For EventGrid domain topic: --source-resource-id /subscriptions/{SubID}/resourceGroups/rg1/providers/Microsoft.EventGrid/domains/d1/topics/t1
   - name: --endpoint-type
     short-summary: The type of the destination endpoint.
+  - name: --advanced-filter
+    short-summary: An advanced filter enables filtering of events based on a specific event property.
+    long-summary: |
+        Usage:                     --advanced-filter KEY[.INNERKEY] FILTEROPERATOR VALUE [VALUE ...]
+        StringIn:                  --advanced-filter data.Color StringIn Blue Red Orange Yellow
+        StringNotIn:               --advanced-filter data.Color StringNotIn Blue Red Orange Yellow
+        StringContains:            --advanced-filter subject StringContains Blue Red
+        StringBeginsWith:          --advanced-filter subject StringBeginsWith Blue Red
+        StringEndsWith:            --advanced-filter subject StringEndsWith img png jpg
+        NumberIn:                  --advanced-filter data.property1 NumberIn 5 10 20
+        NumberNotIn:               --advanced-filter data.property2 NumberNotIn 100 200 300
+        NumberLessThan:            --advanced-filter data.property3 NumberLessThan 100
+        NumberLessThanOrEquals:    --advanced-filter data.property2 NumberLessThanOrEquals 100
+        NumberGreaterThan:         --advanced-filter data.property3 NumberGreaterThan 100
+        NumberGreaterThanOrEquals: --advanced-filter data.property2 NumberGreaterThanOrEquals 100
+        BoolEquals:                --advanced-filter data.property3 BoolEquals true
+        Multiple advanced filters can be specified by using more than one `--advanced-filter` argument.
 examples:
   - name: Update an event subscription for an Event Grid topic to specify a new endpoint.
     text: |
@@ -466,6 +483,14 @@ examples:
         az eventgrid event-subscription update --name es2 \\
             --source-resource-id "/subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.Storage/storageaccounts/kalsegblob" \\
             --deadletter-endpoint /subscriptions/{SubID}/resourceGroups/TestRG/providers/Microsoft.Storage/storageAccounts/sa1/blobServices/default/containers/blobcontainer1
+  - name: Update an event subscription for a storage account, using advanced filters.
+    text: |
+        az eventgrid event-subscription update --name es3 \\
+            --source-resource-id "/subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.Storage/storageaccounts/s1" \\
+            --endpoint https://contoso.azurewebsites.net/api/f1?code=code
+            --advanced-filter data.blobType StringIn BlockBlob
+            --advanced-filter data.url StringBeginsWith https://myaccount.blob.core.windows.net
+
 """
 
 helps['eventgrid topic'] = """
