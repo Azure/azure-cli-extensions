@@ -11,6 +11,7 @@
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType
+from azure.cli.core.util import sdk_no_wait
 EXPANDED_FIELDS = ['inputs', 'transformation', 'outputs', 'functions']
 EXPANDED_ALL_STRING = ','.join(EXPANDED_FIELDS)
 
@@ -24,7 +25,7 @@ def _get_resource_group_location(cli_ctx, resource_group_name):
 def create_stream_analytics_job(cmd, client, resource_group, name, location=None, tags=None, sku_name='Standard',
                                 output_error_policy=None, events_outoforder_policy=None,
                                 events_outoforder_max_delay=None, events_late_arrival_max_delay=None, data_locale=None,
-                                compatibility_level='1.0'):
+                                compatibility_level='1.0', no_wait=False):
 
     body = {
         'location': location or _get_resource_group_location(cmd.cli_ctx, resource_group),
@@ -40,7 +41,8 @@ def create_stream_analytics_job(cmd, client, resource_group, name, location=None
         }
     }
 
-    return client.create_or_replace(streaming_job=body, resource_group_name=resource_group, job_name=name)
+    return sdk_no_wait(no_wait, client.create_or_replace, streaming_job=body, resource_group_name=resource_group,
+                       job_name=name)
 
 
 def update_stream_analytics_job(cmd, client, resource_group, name, tags=None, output_error_policy=None,
@@ -63,8 +65,8 @@ def update_stream_analytics_job(cmd, client, resource_group, name, tags=None, ou
     return client.create_or_replace(streaming_job=job, resource_group_name=resource_group, job_name=name)
 
 
-def delete_stream_analytics_job(cmd, client, resource_group, name):
-    return client.delete(resource_group_name=resource_group, job_name=name)
+def delete_stream_analytics_job(cmd, client, resource_group, name, no_wait=False):
+    return sdk_no_wait(no_wait, client.delete, resource_group_name=resource_group, job_name=name)
 
 
 def get_stream_analytics_job(cmd, client, resource_group, name, expand_all=False):
@@ -80,16 +82,17 @@ def list_stream_analytics_job(cmd, client, resource_group=None, expand_all=False
 
 
 def start_stream_analytics_job(cmd, client, resource_group, name, output_start_mode='JobStartTime',
-                               output_start_time=None):
-    return client.start(resource_group_name=resource_group, job_name=name, output_start_mode=output_start_mode,
-                        output_start_time=output_start_time)
+                               output_start_time=None, no_wait=False):
+    return sdk_no_wait(no_wait, client.start, resource_group_name=resource_group, job_name=name,
+                       output_start_mode=output_start_mode, output_start_time=output_start_time)
 
 
-def stop_stream_analytics_job(cmd, client, resource_group, name):
-    return client.stop(resource_group_name=resource_group, job_name=name)
+def stop_stream_analytics_job(cmd, client, resource_group, name, no_wait=False):
+    return sdk_no_wait(no_wait, client.stop, resource_group_name=resource_group, job_name=name)
 
 
 def create_stream_analytics_input(cmd, client, resource_group, job_name, name, type, datasource, serialization):
+    # pylint: disable=redefined-builtin
     properties = {
         'type': type,
         'datasource': datasource,
@@ -111,8 +114,8 @@ def list_stream_analytics_input(cmd, client, resource_group, job_name):
     return client.list_by_streaming_job(resource_group_name=resource_group, job_name=job_name)
 
 
-def test_stream_analytics_input(cmd, client, resource_group, job_name, name):
-    return client.test(resource_group_name=resource_group, job_name=job_name, input_name=name)
+def test_stream_analytics_input(cmd, client, resource_group, job_name, name, no_wait=False):
+    return sdk_no_wait(no_wait, client.test, resource_group_name=resource_group, job_name=job_name, input_name=name)
 
 
 def create_stream_analytics_output(cmd, client, resource_group, job_name, name, datasource, serialization=None):
@@ -141,8 +144,8 @@ def list_stream_analytics_output(cmd, client, resource_group, job_name):
     return client.list_by_streaming_job(resource_group_name=resource_group, job_name=job_name)
 
 
-def test_stream_analytics_output(cmd, client, resource_group, job_name, name):
-    return client.test(resource_group_name=resource_group, job_name=job_name, output_name=name)
+def test_stream_analytics_output(cmd, client, resource_group, job_name, name, no_wait=False):
+    return sdk_no_wait(no_wait, client.test, resource_group_name=resource_group, job_name=job_name, output_name=name)
 
 
 def create_stream_analytics_transformation(cmd, client, resource_group, job_name, name, streaming_units=None,
@@ -172,6 +175,7 @@ def get_stream_analytics_transformation(cmd, client, resource_group, job_name, n
 
 def create_stream_analytics_function(cmd, client, resource_group, job_name, name, inputs, function_output, binding,
                                      type='Scalar'):
+    # pylint: disable=redefined-builtin
     properties = {
         'type': type,
         'inputs': inputs,
@@ -194,8 +198,8 @@ def list_stream_analytics_function(cmd, client, resource_group, job_name):
     return client.list_by_streaming_job(resource_group_name=resource_group, job_name=job_name)
 
 
-def test_stream_analytics_function(cmd, client, resource_group, job_name, name):
-    return client.test(resource_group_name=resource_group, job_name=job_name, function_name=name)
+def test_stream_analytics_function(cmd, client, resource_group, job_name, name, no_wait=False):
+    return sdk_no_wait(no_wait, client.test, resource_group_name=resource_group, job_name=job_name, function_name=name)
 
 
 def show_stream_analytics_quotas(cmd, client, location):
