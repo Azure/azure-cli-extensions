@@ -39,7 +39,7 @@ template_type = CLIArgumentType(
 def load_arguments(self, _):
 
     with self.argument_context('blueprint', validator=blueprint_validator) as c:
-        c.argument('management_group', help='The management group for the scope of the resource. The scope could either be a subscription or a management group. For blueprint assignments management group scope is reserved for future use. If management-group is not specified, will use subscription as scope')
+        c.argument('management_group', help='The management group for the scope of the blueprint. The scope could either be a subscription or a management group. If --management-group is not specified, will use --subscription as scope')
         c.ignore('scope')
 
     with self.argument_context('blueprint create') as c:
@@ -51,7 +51,7 @@ def load_arguments(self, _):
 
     with self.argument_context('blueprint import') as c:
         c.argument('blueprint_name', options_list=['--name', '-n'], help='Name of the blueprint definition.')
-        c.argument('input_path', type=file_type, help='The directory path for json definitions of the blueprint and artifacts. Artifacts json files should be in input-path/artifacts/.', completer=FilesCompleter())
+        c.argument('input_path', type=file_type, help='The directory path for json definitions of the blueprint and artifacts. The blueprint definition file should be named blueprint.json. Artifacts json files should be in a subdirectory named artifacts.', completer=FilesCompleter())
 
     with self.argument_context('blueprint update') as c:
         c.argument('blueprint_name', options_list=['--name', '-n'], help='Name of the blueprint definition.')
@@ -212,14 +212,15 @@ def load_arguments(self, _):
         c.argument('assignment_name', options_list=['--name', '-n'], help='Name of the blueprint assignment.')
 
     with self.argument_context('blueprint assignment show') as c:
-        # c.argument('management_group', help='The management group for the scope of the resource. The scope could either be a subscription or a management group. For blueprint assignments management group scope is reserved for future use. If management-group is not specified, will use subscription as scope')
         c.argument('assignment_name', options_list=['--name', '-n'], help='Name of the blueprint assignment.')
 
     with self.argument_context('blueprint assignment list') as c:
         pass
 
     with self.argument_context('blueprint assignment wait') as c:
-        c.extra('management_group', help='The management group for the scope of the resource. The scope could either be a subscription or a management group. For blueprint assignments management group scope is reserved for future use. If management-group is not specified, will use subscription as scope')
+        # extra argument cannot be registered to a group-level scope, have to redefine management_group as extra at command level here
+        # for a non-custom command.
+        c.extra('management_group', help='The management group for the scope of the blueprint. The scope could either be a subscription or a management group. If --management-group is not specified, will use --subscription as scope')
         c.argument('assignment_name', options_list=['--name', '-n'], help='Name of the blueprint assignment.')
 
     with self.argument_context('blueprint assignment who-is-blueprint') as c:
