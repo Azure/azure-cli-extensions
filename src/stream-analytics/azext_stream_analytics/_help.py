@@ -106,9 +106,10 @@ helps['stream-analytics input create'] = """
     examples:
       - name: Create an input
         text: |-
-               az stream-analytics input create --resource-group MyResourceGroup --job-name MyJobName --name \\
-               MyInputName --type Stream --datasource @datasource.json --serialization @serialization.json
-               ("datasource.json" contains the following content)
+               az stream-analytics input create --resource-group MyResourceGroup --job-name MyJobName \\
+               --name MyInputName --type Stream --datasource @datasource.json --serialization \\
+               @serialization.json
+                (below is an example of Blob Storage for "datasource.json")
                 {
                     "type": "Microsoft.Storage/Blob",
                     "properties": {
@@ -121,16 +122,50 @@ helps['stream-analytics input create'] = """
                         "container": "state",
                         "pathPattern": "{date}/{time}",
                         "dateFormat": "yyyy/MM/dd",
-                        "timeFormat": "HH"
+                        "timeFormat": "HH",
+                        "sourcePartitionCount": 16
                     }
                 }
-               ("serialization.json" contains the following content)
+                (below is an example of Event Hub for "datasource.json")
+                {
+                    "type": "Microsoft.ServiceBus/EventHub",
+                    "properties": {
+                        "serviceBusNamespace": "sdktest",
+                        "sharedAccessPolicyName": "RootManageSharedAccessKey",
+                        "sharedAccessPolicyKey": "someSharedAccessPolicyKey==",
+                        "eventHubName": "sdkeventhub",
+                        "consumerGroupName": "sdkconsumergroup"
+                    }
+                }
+                (below is an example of Iot Hub for "datasource.json")
+                {
+                    "type": "Microsoft.Devices/IotHubs",
+                    "properties": {
+                        "iotHubNamespace": "iothub",
+                        "sharedAccessPolicyName": "owner",
+                        "sharedAccessPolicyKey": "sharedAccessPolicyKey=",
+                        "consumerGroupName": "sdkconsumergroup",
+                        "endpoint": "messages/events"
+                    }
+                }
+                (below is an example of Csv for "serialization.json")
                 {
                     "type": "Csv",
                     "properties": {
                         "fieldDelimiter": ",",
                         "encoding": "UTF8"
                     }
+                }
+                (below is an example of Json for "serialization.json")
+                {
+                    "type": "Json",
+                    "properties": {
+                        "encoding": "UTF8"
+                    }
+                }
+                (below is an example of Avro for "serialization.json")
+                {
+                    "type": "Avro"
                 }
 """
 
@@ -181,9 +216,9 @@ helps['stream-analytics output create'] = """
     examples:
       - name: Create an output
         text: |-
-               az stream-analytics output create --resource-group MyResourceGroup --job-name MyJobName --name \\
-               MyOutputName --datasource @datasource.json --serialization @serialization.json
-               ("datasource.json" contains the following content)
+               az stream-analytics output create --resource-group MyResourceGroup --job-name MyJobName \\
+               --name MyOutputName --datasource @datasource.json --serialization @serialization.json
+                (below is an example of DataLake for "datasource.json")
                 {
                     "type": "Microsoft.DataLake/Accounts",
                     "properties": {
@@ -197,13 +232,132 @@ helps['stream-analytics output create'] = """
                         "timeFormat": "HH"
                     }
                 }
-               ("serialization.json" contains the following content)
+                (below is an example of SQL Database for "datasource.json")
+                {
+                    "type": "Microsoft.Sql/Server/Database",
+                    "properties": {
+                        "server": "someServer",
+                        "database": "someDatabase",
+                        "user": "someUser",
+                        "password": "somePassword",
+                        "table": "someTable"
+                    }
+                }
+                (below is an example of Table Storage for "datasource.json")
+                {
+                    "type": "Microsoft.Storage/Table",
+                    "properties": {
+                        "accountName": "someAccountName",
+                        "accountKey": "accountKey==",
+                        "table": "samples",
+                        "partitionKey": "partitionKey",
+                        "rowKey": "rowKey",
+                        "columnsToRemove": [
+                            "column1",
+                            "column2"
+                        ],
+                        "batchSize": 25
+                    }
+                }
+                (below is an example of Blob Storage for "datasource.json")
+                {
+                    "type": "Microsoft.Storage/Blob",
+                    "properties": {
+                        "storageAccounts": [
+                            {
+                                "accountName": "someAccountName",
+                                "accountKey": "accountKey=="
+                            }
+                        ],
+                        "container": "state",
+                        "pathPattern": "{date}/{time}",
+                        "dateFormat": "yyyy/MM/dd",
+                        "timeFormat": "HH"
+                    }
+                }
+                (below is an example of DocumentDB for "datasource.json")
+                {
+                    "type": "Microsoft.Storage/DocumentDB",
+                    "properties": {
+                        "accountId": "someAccountId",
+                        "accountKey": "accountKey==",
+                        "database": "db01",
+                        "collectionNamePattern": "collection",
+                        "partitionKey": "key",
+                        "documentId": "documentId"
+                    }
+                }
+                (below is an example of Event Hub for "datasource.json")
+                {
+                    "type": "Microsoft.ServiceBus/EventHub",
+                    "properties": {
+                        "serviceBusNamespace": "sdktest",
+                        "sharedAccessPolicyName": "RootManageSharedAccessKey",
+                        "sharedAccessPolicyKey": "sharedAccessPolicyKey=",
+                        "eventHubName": "sdkeventhub",
+                        "partitionKey": "partitionKey"
+                    }
+                }
+                (below is an example of PowerBI for "datasource.json")
+                {
+                    "type": "PowerBI",
+                    "properties": {
+                        "dataset": "someDataset",
+                        "table": "someTable",
+                        "refreshToken": "someRefreshToken==",
+                        "tokenUserPrincipalName": "bobsmith@contoso.com",
+                        "tokenUserDisplayName": "Bob Smith",
+                        "groupId": "ac40305e-3e8d-43ac-8161-c33799f43e95",
+                        "groupName": "MyPowerBIGroup"
+                    }
+                }
+                (below is an example of Service Bus Queue for "datasource.json")
+                {
+                    "type": "Microsoft.ServiceBus/Queue",
+                    "properties": {
+                        "serviceBusNamespace": "sdktest",
+                        "sharedAccessPolicyName": "RootManageSharedAccessKey",
+                        "sharedAccessPolicyKey": "sharedAccessPolicyKey=",
+                        "queueName": "sdkqueue",
+                        "propertyColumns": [
+                            "column1",
+                            "column2"
+                        ]
+                    }
+                }
+                (below is an example of Service Bus Topic for "datasource.json")
+                {
+                    "type": "Microsoft.ServiceBus/Topic",
+                    "properties": {
+                        "serviceBusNamespace": "sdktest",
+                        "sharedAccessPolicyName": "RootManageSharedAccessKey",
+                        "sharedAccessPolicyKey": "sharedAccessPolicyKey=",
+                        "topicName": "sdktopic",
+                        "propertyColumns": [
+                            "column1",
+                            "column2"
+                        ]
+                    }
+                }
+                (below is an example of Csv for "serialization.json")
+                {
+                    "type": "Csv",
+                    "properties": {
+                        "fieldDelimiter": ",",
+                        "encoding": "UTF8"
+                    }
+                }
+                (below is an example of Json for "serialization.json")
                 {
                     "type": "Json",
                     "properties": {
                         "encoding": "UTF8",
                         "format": "Array"
                     }
+                }
+                (below is an example of Avro for "serialization.json")
+                {
+                    "type": "Avro"
                 }
 """
 
@@ -292,23 +446,49 @@ helps['stream-analytics function create'] = """
     examples:
       - name: Create a function
         text: |-
-               az stream-analytics function create --resource-group MyResourceGroup --job-name MyJobName --name \\
-               MyFunctionName --inputs @inputs.json --function-output @output.json --binding @binding.json
-               ("inputs.json" contains the following content)
+               az stream-analytics function create --resource-group MyResourceGroup --job-name MyJobName \\
+               --name MyFunctionName --inputs @inputs.json --function-output @output.json --binding \\
+               @binding.json
+                (below is an example for "inputs.json")
                 [
                     {
                         "dataType": "Any"
                     }
                 ]
-               ("output.json" contains the following content)
+                (below is an example for "output.json")
                 {
                     "dataType": "Any"
                 }
-               ("binding.json" contains the following content)
+                (below is an example of JavascripUDF for "binding.json")
                 {
                     "type": "Microsoft.StreamAnalytics/JavascriptUdf",
                     "properties": {
                         "script": "function (x, y) { return x + y; }"
+                    }
+                }
+                (below is an example of Azure Machine Learning for "binding.json")
+                {
+                    "type": "Microsoft.MachineLearning/WebService",
+                    "properties": {
+                        "endpoint": "someAzureMLEndpointURL",
+                        "apiKey": "someApiKey==",
+                        "inputs": {
+                            "name": "input1",
+                            "columnNames": [
+                                {
+                                    "name": "tweet",
+                                    "dataType": "string",
+                                    "mapTo": 0
+                                }
+                            ]
+                        },
+                        "outputs": [
+                            {
+                                "name": "Sentiment",
+                                "dataType": "string"
+                            }
+                        ],
+                        "batchSize": 1000
                     }
                 }
 """

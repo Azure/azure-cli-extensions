@@ -35,7 +35,7 @@ def load_arguments(self, _):
         c.argument('events_late_arrival_max_delay', type=int,
                    help='The maximum tolerable delay in seconds where events arriving late could be included.  Supported range is -1 to 1814399 (20.23:59:59 days) and -1 is used to specify wait indefinitely.')
         c.argument('data_locale',
-                   help='The data locale of the stream analytics job. Defaults to \'en-US\' if none specified.')
+                   help='The data locale of the stream analytics job. Value should be the name of a supported .NET Culture from the set https://msdn.microsoft.com/en-us/library/system.globalization.culturetypes(v=vs.110).aspx. Defaults to "en-US" if none specified.')
         c.argument('compatibility_level', arg_type=get_enum_type(CompatibilityLevel),
                    help='Controls certain runtime behaviors of the streaming job.')
 
@@ -52,7 +52,7 @@ def load_arguments(self, _):
         c.argument('events_late_arrival_max_delay', type=int,
                    help='The maximum tolerable delay in seconds where events arriving late could be included.  Supported range is -1 to 1814399 (20.23:59:59 days) and -1 is used to specify wait indefinitely.')
         c.argument('data_locale',
-                   help='The data locale of the stream analytics job.')
+                   help='The data locale of the stream analytics job. Value should be the name of a supported .NET Culture from the set https://msdn.microsoft.com/en-us/library/system.globalization.culturetypes(v=vs.110).aspx.')
 
     with self.argument_context('stream-analytics job delete') as c:
         c.argument('resource_group', resource_group_name_type)
