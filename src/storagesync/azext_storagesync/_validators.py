@@ -4,9 +4,26 @@
 # --------------------------------------------------------------------------------------------
 
 
+def parse_server_id(cmd, namespace):
+    from azure.cli.core.commands.client_factory import get_subscription_id
+    from msrestazure.tools import is_valid_resource_id, resource_id
+
+    if namespace.server_resource_id and not is_valid_resource_id(namespace.server_resource_id):
+        namespace.server_resource_id = resource_id(
+            subscription=get_subscription_id(cmd.cli_ctx),
+            resource_group=namespace.resource_group_name,
+            namespace='Microsoft.StorageSync',
+            type='storageSyncServices',
+            name=namespace.storage_sync_service_name,
+            child_type_1='registeredServers',
+            child_name_1=namespace.server_resource_id
+        )
+
+
 def parse_storage_account(cmd, namespace):
     from azure.cli.core.commands.client_factory import get_subscription_id
     from msrestazure.tools import is_valid_resource_id, resource_id
+
     if namespace.storage_account_resource_id:
         if not is_valid_resource_id(namespace.storage_account_resource_id):
             namespace.storage_account_resource_id = resource_id(

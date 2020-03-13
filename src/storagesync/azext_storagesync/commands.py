@@ -37,29 +37,30 @@ def load_command_table(self, _):
         operations_tmpl='azext_storagesync.vendored_sdks.storagesync.operations._cloud_endpoints_operations#CloudEndpointsOperations.{}',
         client_factory=cf_cloud_endpoints)
     with self.command_group('storagesync cloud-endpoint', storagesync_cloud_endpoints, client_factory=cf_cloud_endpoints) as g:
-        g.custom_command('create', 'create_storagesync_cloud_endpoint')
-        g.custom_command('delete', 'delete_storagesync_cloud_endpoint', confirmation=True)
+        g.custom_command('create', 'create_storagesync_cloud_endpoint', supports_no_wait=True)
+        g.custom_command('delete', 'delete_storagesync_cloud_endpoint', supports_no_wait=True, confirmation=True)
         g.custom_show_command('show', 'get_storagesync_cloud_endpoint')
         g.custom_command('list', 'list_storagesync_cloud_endpoint')
+        g.wait_command('wait')
 
     from ._client_factory import cf_server_endpoints
     storagesync_server_endpoints = CliCommandType(
         operations_tmpl='azext_storagesync.vendored_sdks.storagesync.operations._server_endpoints_operations#ServerEndpointsOperations.{}',
         client_factory=cf_server_endpoints)
     with self.command_group('storagesync server-endpoint', storagesync_server_endpoints, client_factory=cf_server_endpoints) as g:
-        g.custom_command('create', 'create_storagesync_server_endpoint')
-        g.custom_command('update', 'update_storagesync_server_endpoint')
-        g.custom_command('delete', 'delete_storagesync_server_endpoint', confirmation=True)
+        g.custom_command('create', 'create_storagesync_server_endpoint', supports_no_wait=True)
+        g.custom_command('update', 'update_storagesync_server_endpoint', supports_no_wait=True)
+        g.custom_command('delete', 'delete_storagesync_server_endpoint', supports_no_wait=True, confirmation=True)
         g.custom_show_command('show', 'get_storagesync_server_endpoint')
         g.custom_command('list', 'list_storagesync_server_endpoint')
+        g.wait_command('wait')
 
     from ._client_factory import cf_registered_servers
     storagesync_registered_servers = CliCommandType(
         operations_tmpl='azext_storagesync.vendored_sdks.storagesync.operations._registered_servers_operations#RegisteredServersOperations.{}',
         client_factory=cf_registered_servers)
     with self.command_group('storagesync registered-server', storagesync_registered_servers, client_factory=cf_registered_servers) as g:
-        g.custom_command('create', 'create_storagesync_registered_server')
-        g.custom_command('delete', 'delete_storagesync_registered_server', confirmation=True)
+        g.custom_command('delete', 'delete_storagesync_registered_server', supports_no_wait=True, confirmation=True)
         g.custom_show_command('show', 'get_storagesync_registered_server')
         g.custom_command('list', 'list_storagesync_registered_server')
-        g.custom_command('rollover-certificate', 'rollover_certificate_storagesync_registered_server')
+        g.wait_command('wait')

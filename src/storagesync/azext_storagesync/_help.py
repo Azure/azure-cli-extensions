@@ -26,7 +26,7 @@ helps['storagesync storage-sync-service create'] = """
       - name: Create a new storage sync service "SampleStorageSyncService" in resource group 'SampleResourceGroup'.
         text: |-
                az storagesync storage-sync-service create --resource-group "SampleResourceGroup" \\
-               --storage-sync-service-name "SampleStorageSyncService" --location "WestUS"
+               --name "SampleStorageSyncService" --location "WestUS" --tags key1=value1
 """
 
 helps['storagesync storage-sync-service delete'] = """
@@ -36,7 +36,7 @@ helps['storagesync storage-sync-service delete'] = """
       - name: Delete a storage sync service "SampleStorageSyncService" in resource group 'SampleResourceGroup'.
         text: |-
                az storagesync storage-sync-service delete --resource-group "SampleResourceGroup" \\
-               --storage-sync-service-name "SampleStorageSyncService"
+               --name "SampleStorageSyncService"
 """
 
 helps['storagesync storage-sync-service show'] = """
@@ -45,7 +45,7 @@ helps['storagesync storage-sync-service show'] = """
     examples:
       - name: Show the properties for storage sync service "SampleStorageSyncService" in resource group 'SampleResourceGroup'.
         text: |-
-               az storagesync storage-sync-service show --resource-group "SampleResourceGroup" --storage-sync-service-name \\
+               az storagesync storage-sync-service show --resource-group "SampleResourceGroup" --name \\
                "SampleStorageSyncService"
 """
 
@@ -73,7 +73,7 @@ helps['storagesync sync-group create'] = """
       - name: Create a new sync group "SampleSyncGroup" in storage sync service "SampleStorageSyncService".
         text: |-
                az storagesync sync-group create --resource-group "SampleResourceGroup" \\
-               --storage-sync-service-name "SampleStorageSyncService" --sync-group-name "SampleSyncGroup"
+               --storage-sync-service-name "SampleStorageSyncService" --name "SampleSyncGroup"
 """
 
 helps['storagesync sync-group delete'] = """
@@ -83,7 +83,7 @@ helps['storagesync sync-group delete'] = """
       - name: Delete sync group "SampleSyncGroup" in storage sync service "SampleStorageSyncService".
         text: |-
                az storagesync sync-group delete --resource-group "SampleResourceGroup" \\
-               --storage-sync-service-name "SampleStorageSyncService" --sync-group-name "SampleSyncGroup"
+               --storage-sync-service-name "SampleStorageSyncService" --name "SampleSyncGroup"
 """
 
 helps['storagesync sync-group show'] = """
@@ -93,7 +93,7 @@ helps['storagesync sync-group show'] = """
       - name: Show the properties for sync group "SampleSyncGroup" in storage sync service "SampleStorageSyncService".
         text: |-
                az storagesync sync-group show --resource-group "SampleResourceGroup" \\
-               --storage-sync-service-name "SampleStorageSyncService" --sync-group-name "SampleSyncGroup"
+               --storage-sync-service-name "SampleStorageSyncService" --name "SampleSyncGroup"
 """
 
 helps['storagesync sync-group list'] = """
@@ -119,9 +119,8 @@ helps['storagesync cloud-endpoint create'] = """
         text: |-
                az storagesync cloud-endpoint create --resource-group "SampleResourceGroup" \\
                --storage-sync-service-name "SampleStorageSyncService" --sync-group-name \\
-               "SampleSyncGroup" --cloud-endpoint-name "SampleCloudEndpoint" --storage-account "storage_account_name" --azure-file-share-name \\
-               "cvcloud-afscv-0719-058-a94a1354-a1fd-4e9a-9a50-919fad8c4ba4" --storage-account-tenant-id \\
-               "72f988bf-86f1-41af-91ab-2d7cd011db47"
+               "SampleSyncGroup" --name "SampleCloudEndpoint" --storage-account storageaccountnameorid --azure-file-share-name \\
+               "cvcloud-afscv-0719-058-a94a1354-a1fd-4e9a-9a50-919fad8c4ba4"
 """
 
 helps['storagesync cloud-endpoint delete'] = """
@@ -132,7 +131,7 @@ helps['storagesync cloud-endpoint delete'] = """
         text: |-
                az storagesync cloud-endpoint delete --resource-group "SampleResourceGroup" \\
                --storage-sync-service-name "SampleStorageSyncService" --sync-group-name \\
-               "SampleSyncGroup" --cloud-endpoint-name "SampleCloudEndpoint"
+               "SampleSyncGroup" --name "SampleCloudEndpoint"
 """
 
 helps['storagesync cloud-endpoint show'] = """
@@ -143,7 +142,7 @@ helps['storagesync cloud-endpoint show'] = """
         text: |-
                az storagesync cloud-endpoint show --resource-group "SampleResourceGroup" \\
                --storage-sync-service-name "SampleStorageSyncService" --sync-group-name \\
-               "SampleSyncGroup" --cloud-endpoint-name "SampleCloudEndpoint"
+               "SampleSyncGroup" --name "SampleCloudEndpoint"
 """
 
 helps['storagesync cloud-endpoint list'] = """
@@ -155,6 +154,17 @@ helps['storagesync cloud-endpoint list'] = """
                az storagesync cloud-endpoint list --resource-group "SampleResourceGroup" \\
                --storage-sync-service-name "SampleStorageSyncService" --sync-group-name \\
                "SampleSyncGroup"
+"""
+
+helps['storagesync cloud-endpoint wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of a cloud endpoint is met.
+    examples:
+      - name: Place the CLI in a waiting state until a condition of a cloud endpoint is created.
+        text: |-
+               az storagesync cloud-endpoint wait --resource-group "SampleResourceGroup" \\
+               --storage-sync-service-name "SampleStorageSyncService" --sync-group-name \\
+               "SampleSyncGroup" --name "SampleCloudEndpoint" --created
 """
 
 helps['storagesync server-endpoint'] = """
@@ -170,8 +180,7 @@ helps['storagesync server-endpoint create'] = """
         text: |-
                az storagesync server-endpoint create --resource-group "SampleResourceGroup" \\
                --storage-sync-service-name "SampleStorageSyncService" --sync-group-name \\
-               "SampleSyncGroup" --server-endpoint-name "SampleServerEndpoint" --server-resource-id \\
-               /subscriptions/sub/resourceGroups/rg/providers/microsoft.storagesync/storageSyncServices/ss/registeredServers/91beed22-7e9e-4bda-9313-fec96cf286e0 \\
+               "SampleSyncGroup" --name "SampleServerEndpoint" --server-id 91beed22-7e9e-4bda-9313-fec96cf286e0 \\
                --server-local-path "d:\\abc"
 """
 
@@ -183,7 +192,7 @@ helps['storagesync server-endpoint update'] = """
         text: |-
                az storagesync server-endpoint update --resource-group "SampleResourceGroup" \\
                --storage-sync-service-name "SampleStorageSyncService" --sync-group-name \\
-               "SampleSyncGroup" --server-endpoint-name "SampleServerEndpoint" --cloud-tiering "off" \\
+               "SampleSyncGroup" --name "SampleServerEndpoint" --cloud-tiering "off" \\
                --volume-free-space-percent "100" --tier-files-older-than-days "0" \\
                --offline-data-transfer "off"
 """
@@ -196,7 +205,7 @@ helps['storagesync server-endpoint delete'] = """
         text: |-
                az storagesync server-endpoint delete --resource-group "SampleResourceGroup" \\
                --storage-sync-service-name "SampleStorageSyncService" --sync-group-name \\
-               "SampleSyncGroup" --server-endpoint-name "SampleServerEndpoint"
+               "SampleSyncGroup" --name "SampleServerEndpoint"
 """
 
 helps['storagesync server-endpoint show'] = """
@@ -207,7 +216,7 @@ helps['storagesync server-endpoint show'] = """
         text: |-
                az storagesync server-endpoint show --resource-group "SampleResourceGroup" \\
                --storage-sync-service-name "SampleStorageSyncService" --sync-group-name \\
-               "SampleSyncGroup" --server-endpoint-name "SampleServerEndpoint"
+               "SampleSyncGroup" --name "SampleServerEndpoint"
 """
 
 helps['storagesync server-endpoint list'] = """
@@ -221,19 +230,20 @@ helps['storagesync server-endpoint list'] = """
                "SampleSyncGroup"
 """
 
+helps['storagesync server-endpoint wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of a server endpoint is met.
+    examples:
+      - name: Place the CLI in a waiting state until a condition of a server endpoint is created.
+        text: |-
+               az storagesync server-endpoint wait --resource-group "SampleResourceGroup" \\
+               --storage-sync-service-name "SampleStorageSyncService" --sync-group-name \\
+               "SampleSyncGroup" --name "SampleServerEndpoint" --created
+"""
+
 helps['storagesync registered-server'] = """
     type: group
     short-summary: Manage registered server.
-"""
-
-helps['storagesync registered-server create'] = """
-    type: command
-    short-summary: Register an on-premises server to a storage sync service which creates a trust relationship.
-    examples:
-      - name: Register an on-premises server to storage sync service "SampleStorageSyncService".
-        text: |-
-               az storagesync registered-server create --resource-group "SampleResourceGroup" --storage-sync-service-name \\
-               "SampleStorageSyncService"
 """
 
 helps['storagesync registered-server delete'] = """
@@ -267,13 +277,13 @@ helps['storagesync registered-server list'] = """
                "SampleStorageSyncService"
 """
 
-helps['storagesync registered-server rollover-certificate'] = """
+helps['storagesync registered-server wait'] = """
     type: command
-    short-summary: Rollover the local server certificate used to describe the server identity to the storage sync service.
-    long-summary: Rollover the local server certificate and inform the corresponding storage sync service of the server's new identity, in a secure way.
+    short-summary: Place the CLI in a waiting state until a condition of a registered server is met.
     examples:
-      - name: Rollover local server certificate and inform storage sync service "SampleStorageSyncService".
+      - name: Place the CLI in a waiting state until a condition of a registered server is deleted.
         text: |-
-               az storagesync registered-server rollover-certificate--resource-group \\
-               "SampleResourceGroup" --storage-sync-service-name "SampleStorageSyncService"
+               az storagesync registered-server wait --resource-group "SampleResourceGroup" \\
+               --storage-sync-service-name "SampleStorageSyncService" \\
+               --server-id "080d4133-bdb5-40a0-96a0-71a6057bfe9a" --deleted
 """

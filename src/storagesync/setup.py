@@ -39,7 +39,7 @@ DEPENDENCIES = [
     'pywin32==227'
 ]
 
-with open('README.rst', 'r', encoding='utf-8') as f:
+with open('README.md', 'r', encoding='utf-8') as f:
     README = f.read()
 with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
@@ -48,7 +48,7 @@ setup(
     name='storagesync',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools MicrosoftStorageSync Extension',
-   # TODO: Update author and email, if applicable
+    # TODO: Update author and email, if applicable
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
     # TODO: consider pointing directly to your source code instead of the generic repo
