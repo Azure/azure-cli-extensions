@@ -37,11 +37,12 @@ def load_arguments(self, _):
         c.argument('alert_rule', nargs='+', help='Filter alerts by alert rule name or ID')
         c.argument('alert_description', nargs='+', help='Filter alerts by alert rule description')
         c.argument('alert_context', nargs='+', help='Filter alerts by alert context (payload)')
-        c.argument('recurrence_type', arg_type=get_enum_type(SuppressionType), help='Specifies when the suppression should be applied')
+        c.argument('suppression_recurrence_type', arg_type=get_enum_type(SuppressionType), help='Specifies when the suppression should be applied')
         c.argument('suppression_start_date', help='Start date for suppression. Format: MM/DD/YYYY')
         c.argument('suppression_end_date', help='End date for suppression. Format: MM/DD/YYYY')
         c.argument('suppression_start_time', help='Start time for suppression. Format: hh:mm:ss')
         c.argument('suppression_end_time', help='End time for suppression. Format: hh:mm:ss')
+        c.argument('suppression_recurrence', nargs='+', help='List of recurrence pattern values, delimited by space. If recurrence type is weekly, 0 stands for Sunday, 1 stands for Monday, and so on.')
 
     with self.argument_context('monitor action-rule update') as c:
         c.argument('action_rule_name', action_rule_name)

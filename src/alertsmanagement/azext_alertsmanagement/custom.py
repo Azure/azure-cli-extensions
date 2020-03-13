@@ -69,11 +69,12 @@ def create_alertsmanagement_action_rule(cmd, client,
                                         alert_context=None,
                                         tags=None,
                                         status=None,
-                                        recurrence_type=None,
+                                        suppression_recurrence_type=None,
                                         suppression_start_date=None,
                                         suppression_end_date=None,
                                         suppression_start_time=None,
-                                        suppression_end_time=None):
+                                        suppression_end_time=None,
+                                        suppression_recurrence=None):
     body = {'location': location, 'tags': tags}
 
     properties = {}
@@ -111,14 +112,17 @@ def create_alertsmanagement_action_rule(cmd, client,
     if alert_context is not None:
         properties['conditions']['alertContext'] = alert_context
     properties['suppressionConfig'] = {
-        'recurrenceType': recurrence_type,
-        'schedule': {
+        'recurrenceType': suppression_recurrence_type
+    }
+    if suppression_recurrence_type not in ['Always', 'Once']:
+        properties['suppressionConfig']['schedule'] = {
             'startDate': suppression_start_date,
             'endDate': suppression_end_date,
             'startTime': suppression_start_time,
-            'endTime': suppression_end_time
+            'endTime': suppression_end_time,
+            'recurrenceValues': suppression_recurrence
         }
-    }
+
     body['properties'] = properties
 
     return client.create_update(resource_group_name=resource_group_name, action_rule_name=action_rule_name,

@@ -34,7 +34,7 @@ class AlertsScenarioTest(ScenarioTest):
                  '--monitor-service Equals Platform "Application Insights" '
                  '--monitor-condition Equals Fired '
                  '--target-resource-type NotEquals Microsoft.Compute/VirtualMachines '
-                 '--recurrence-type Daily '
+                 '--suppression-recurrence-type Daily '
                  '--suppression-start-date 12/09/2018 '
                  '--suppression-end-date 12/18/2018 '
                  '--suppression-start-time 06:00:00 '
