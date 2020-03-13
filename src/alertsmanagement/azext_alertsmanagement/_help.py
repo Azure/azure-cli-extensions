@@ -35,7 +35,7 @@ helps['monitor action-rule update'] = """
     examples:
       - name: Update an action rule
         text: |-
-               az monitor action-rule update --resource-group "rg" --name "rule" --status "Disabled"
+               az monitor action-rule update --resource-group rg --name rule --status Disabled
 """
 
 helps['monitor action-rule delete'] = """
@@ -44,16 +44,16 @@ helps['monitor action-rule delete'] = """
     examples:
       - name: Delete an action rule
         text: |-
-               az monitor action-rule delete --resource-group "rg" --name "rule"
+               az monitor action-rule delete --resource-group rg --name rule
 """
 
 helps['monitor action-rule show'] = """
     type: command
-    short-summary: Get a specific action rule
+    short-summary: Get an action rule
     examples:
-      - name: Get a specific action rule
+      - name: Get an action rule
         text: |-
-               az monitor action-rule show --resource-group "rg" --name "rule"
+               az monitor action-rule show --resource-group rg --name rule
 """
 
 helps['monitor action-rule list'] = """
@@ -65,5 +65,5 @@ helps['monitor action-rule list'] = """
                az monitor action-rule list
       - name: List action rules of the resource group
         text: |-
-               az monitor action-rule list --resource-group "rg"
+               az monitor action-rule list --resource-group rg
 """
