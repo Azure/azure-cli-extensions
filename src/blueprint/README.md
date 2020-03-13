@@ -99,6 +99,16 @@ You can use the following command to get the policy definition id based on polic
 az policy definition show -n policy-name --query "id"
 ```
 
+##### Add an ARM Template Artifact
+```
+az blueprint artifact template add \
+    --blueprint-name blueprintName \
+    --artifact-name my-template-art \
+    --display-name "My Template Name" \
+    --parameters @/path/to/params.json \
+    --template @/path/to/template.json
+```
+
 ##### Publish a Blueprint
 ```
 az blueprint publish \
