@@ -559,23 +559,47 @@ def create_fd_routing_rules(cmd, resource_group_name, front_door_name, item_name
     return _upsert_frontdoor_subresource(cmd, resource_group_name, front_door_name, 'routing_rules', rule, 'name')
 
 
-def update_fd_routing_rules(instance, frontend_endpoints=None, accepted_protocols=None, patterns_to_match=None,
-                            custom_forwarding_path=None, forwarding_protocol=None, backend_pool=None, enabled=None,
-                            dynamic_compression=None, query_parameter_strip_directive=None):
+def update_fd_routing_rule(parent, instance, item_name, frontend_endpoints=None, accepted_protocols=None,  # pylint: disable=unused-argument
+                           patterns_to_match=None, custom_forwarding_path=None, forwarding_protocol=None,
+                           backend_pool=None, enabled=None, dynamic_compression=None,
+                           caching=None, query_parameter_strip_directive=None, redirect_type=None,
+                           redirect_protocol=None, custom_host=None, custom_path=None,
+                           custom_fragment=None, custom_query_string=None):
     from azext_front_door.vendored_sdks.models import SubResource
-    with UpdateContext(instance) as c:
-        c.update_param('frontend_endpoints', [SubResource(id=x) for x in frontend_endpoints]
-                       if frontend_endpoints else None, False)
-        c.update_param('accepted_protocols', accepted_protocols, False)
-        c.update_param('patterns_to_match', patterns_to_match, False)
-        c.update_param('custom_forwarding_path', custom_forwarding_path, False)
-        c.update_param('forwarding_protocol', forwarding_protocol, False)
-        c.update_param('backend_pool', SubResource(id=backend_pool) if backend_pool else None, False)
-        c.update_param('enabled_state', enabled, False)
-    with UpdateContext(instance.cache_configuration) as c:
-        c.update_param('dynamic_compression', dynamic_compression, False)
-        c.update_param('query_parameter_strip_directive', query_parameter_strip_directive, False)
-    return instance
+    if instance:
+        if hasattr(instance.route_configuration, 'forwarding_protocol'):
+            with UpdateContext(instance) as c:
+                c.update_param('frontend_endpoints', [SubResource(id=x) for x in frontend_endpoints]
+                               if frontend_endpoints else None, False)
+                c.update_param('accepted_protocols', accepted_protocols, False)
+                c.update_param('patterns_to_match', patterns_to_match, False)
+                c.update_param('enabled_state', enabled, False)
+            with UpdateContext(instance.route_configuration) as c:
+                c.update_param('custom_forwarding_path', custom_forwarding_path, False)
+                c.update_param('forwarding_protocol', forwarding_protocol, False)
+                c.update_param('backend_pool', SubResource(id=backend_pool) if backend_pool else None, False)
+            if caching:
+                with UpdateContext(instance.route_configuration.cache_configuration) as c:
+                    c.update_param('dynamic_compression', dynamic_compression, False)
+                    c.update_param('query_parameter_strip_directive', query_parameter_strip_directive, False)
+            else:
+                if hasattr(instance.route_configuration, 'cache_configuration'):
+                    instance.route_configuration.cache_configuration = None
+        elif hasattr(instance.route_configuration, 'redirect_protocol'):
+            with UpdateContext(instance) as c:
+                c.update_param('frontend_endpoints', [SubResource(id=x) for x in frontend_endpoints]
+                               if frontend_endpoints else None, False)
+                c.update_param('accepted_protocols', accepted_protocols, False)
+                c.update_param('patterns_to_match', patterns_to_match, False)
+                c.update_param('enabled_state', enabled, False)
+            with UpdateContext(instance.route_configuration) as c:
+                c.update_param('redirect_type', redirect_type, False)
+                c.update_param('redirect_protocol', redirect_protocol, False)
+                c.update_param('custom_host', custom_host, False)
+                c.update_param('custom_path', custom_path, False)
+                c.update_param('custom_fragment', custom_fragment, False)
+                c.update_param('custom_query_string', custom_query_string, False)
+    return parent
 # endregion
 
 
