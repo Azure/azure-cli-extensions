@@ -50,10 +50,10 @@ helps['stream-analytics job show'] = """
     examples:
       - name: Get a streaming job
         text: |-
-               az stream-analytics streaming-job show --resource-group MyResourceGroup --name MyJobName
+               az stream-analytics job show --resource-group MyResourceGroup --name MyJobName
       - name: Get a streaming job and expand its inputs, outputs, transformation, and functions
         text: |-
-               az stream-analytics streaming-job show --resource-group MyResourceGroup --name MyJobName --expand-all
+               az stream-analytics job show --resource-group MyResourceGroup --name MyJobName --expand-all
 """
 
 helps['stream-analytics job list'] = """
@@ -83,7 +83,7 @@ helps['stream-analytics job start'] = """
                az stream-analytics job start --resource-group MyResourceGroup --name MyJobName --output-start-mode JobStartTime
       - name: Start a streaming job with CustomTime output start mode
         text: |-
-               az stream-analytics streaming-job start --resource-group MyResourceGroup --name MyJobName --output-start-mode CustomTime --output-start-time 2020-01-01T00:00:00Z
+               az stream-analytics job start --resource-group MyResourceGroup --name MyJobName --output-start-mode CustomTime --output-start-time 2020-01-01T00:00:00Z
 """
 
 helps['stream-analytics job stop'] = """
@@ -258,7 +258,7 @@ helps['stream-analytics transformation create'] = """
       - name: Create a transformation
         text: |-
                az stream-analytics transformation create --resource-group MyResourceGroup --job-name MyJobName \\
-               --name Transformation --streaming-units "6" --query-string "Select Id, Name from inputtest"
+               --name Transformation --streaming-units "6" --transformation-query "Select Id, Name from inputtest"
 """
 
 helps['stream-analytics transformation update'] = """
@@ -268,7 +268,7 @@ helps['stream-analytics transformation update'] = """
       - name: Update a transformation
         text: |-
                az stream-analytics transformation update --resource-group MyResourceGroup --job-name MyJobName \\
-               --name Transformation --query-string "New query"
+               --name Transformation --transformation-query "New query"
 """
 
 helps['stream-analytics transformation show'] = """
