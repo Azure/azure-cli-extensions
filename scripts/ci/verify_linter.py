@@ -49,7 +49,7 @@ class AzExtensionHelper:
     @staticmethod
     def _cmd(cmd):
         print(cmd)
-        check_call(cmd.split(), shell=True)
+        check_call(cmd, shell=True)
 
     def add_from_url(self, url):
         self._cmd('az extension add -s {} -y'.format(url))
