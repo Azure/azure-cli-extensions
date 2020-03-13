@@ -69,13 +69,13 @@ def delete_stream_analytics_job(cmd, client, resource_group, name, no_wait=False
     return sdk_no_wait(no_wait, client.delete, resource_group_name=resource_group, job_name=name)
 
 
-def get_stream_analytics_job(cmd, client, resource_group, name, expand_all=False):
-    expand = EXPANDED_ALL_STRING if expand_all else None
+def get_stream_analytics_job(cmd, client, resource_group, name, expand=False):
+    expand = EXPANDED_ALL_STRING if expand else None
     return client.get(resource_group_name=resource_group, job_name=name, expand=expand)
 
 
-def list_stream_analytics_job(cmd, client, resource_group=None, expand_all=False):
-    expand = EXPANDED_ALL_STRING if expand_all else None
+def list_stream_analytics_job(cmd, client, resource_group=None, expand=False):
+    expand = EXPANDED_ALL_STRING if expand else None
     if resource_group is None:
         return client.list(expand=expand)
     return client.list_by_resource_group(resource_group_name=resource_group, expand=expand)

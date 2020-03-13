@@ -61,12 +61,12 @@ def load_arguments(self, _):
     with self.argument_context('stream-analytics job show') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('name', options_list=['--name', '-n'], help='The name of the streaming job.')
-        c.argument('expand_all', action='store_true',
+        c.argument('expand', action='store_true',
                    help='Expand inputs, transformation, outputs and functions of the streaming job')
 
     with self.argument_context('stream-analytics job list') as c:
         c.argument('resource_group', resource_group_name_type)
-        c.argument('expand_all', action='store_true',
+        c.argument('expand', action='store_true',
                    help='Expand inputs, transformation, outputs and functions of the streaming job')
 
     with self.argument_context('stream-analytics job start') as c:

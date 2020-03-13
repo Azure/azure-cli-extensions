@@ -170,7 +170,7 @@ class StreamAnalyticsScenarioTest(ScenarioTest):
                  '--resource-group {rg} '
                  '--name {job_name}')
 
-        self.kwargs['function_inputs'] = json.dumps([
+        self.kwargs['inputs'] = json.dumps([
             {
                 'dataType': 'Any'
             }
@@ -178,7 +178,7 @@ class StreamAnalyticsScenarioTest(ScenarioTest):
         self.kwargs['function_output'] = json.dumps({
             "dataType": "Any"
         })
-        self.kwargs['function_binding'] = json.dumps({
+        self.kwargs['binding'] = json.dumps({
             "type": "Microsoft.StreamAnalytics/JavascriptUdf",
             "properties": {
                 "script": "function (x, y) { return x + y; }"
@@ -188,9 +188,9 @@ class StreamAnalyticsScenarioTest(ScenarioTest):
                  '--resource-group {rg} '
                  '--job-name {job_name} '
                  '--name {function_name} '
-                 "--inputs '{function_inputs}' "
+                 "--inputs '{inputs}' "
                  "--function-output '{function_output}' "
-                 "--binding '{function_binding}'",
+                 "--binding '{binding}'",
                  checks=[self.check('name', '{function_name}')])
         self.cmd('stream-analytics function list '
                  '--resource-group {rg} '

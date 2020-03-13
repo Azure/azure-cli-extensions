@@ -142,11 +142,11 @@ az stream-analytics function create \
     --resource-group groupName \
     --job-name jobName \
     --name functionName \
-    --inputs @function_inputs.json \
+    --inputs @inputs.json \
     --function-output @function_output.json \
-    --binding @function_binding.json
+    --binding @binding.json
 ```
-function_inputs.json contains the following content
+inputs.json contains the following content
 ```json
 [
     {
@@ -160,7 +160,7 @@ function_output.json contains the following content
     "dataType": "Any"
 }
 ```
-function_binding.json contains the following content
+binding.json contains the following content
 ```json
 {
     "type": "Microsoft.StreamAnalytics/JavascriptUdf",

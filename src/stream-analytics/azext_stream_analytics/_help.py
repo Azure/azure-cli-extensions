@@ -53,7 +53,7 @@ helps['stream-analytics job show'] = """
                az stream-analytics job show --resource-group MyResourceGroup --name MyJobName
       - name: Get a streaming job and expand its inputs, outputs, transformation, and functions
         text: |-
-               az stream-analytics job show --resource-group MyResourceGroup --name MyJobName --expand-all
+               az stream-analytics job show --resource-group MyResourceGroup --name MyJobName --expand
 """
 
 helps['stream-analytics job list'] = """
@@ -68,7 +68,7 @@ helps['stream-analytics job list'] = """
                az stream-analytics job list --resource-group MyResourceGroup
       - name: List all streaming jobs and expand their inputs, outputs, transformation, and functions
         text: |-
-               az stream-analytics job list --resource-group MyResourceGroup --expand-all
+               az stream-analytics job list --resource-group MyResourceGroup --expand
 """
 
 helps['stream-analytics job start'] = """
