@@ -217,7 +217,7 @@ helps['network front-door routing-rule create'] = """
 
 helps['network front-door routing-rule update'] = """
     type: command
-    short-summary: Update Front Door routing rules.
+    short-summary: Update a Front Door routing rule.
 """
 
 helps['network front-door routing-rule list'] = """
