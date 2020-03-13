@@ -53,7 +53,7 @@ class BlueprintScenarioTest(ScenarioTest):
             '--artifact-name "reader-role-art" '
             '--display-name "[User group or application name] : Reader" '
             '--resource-group-art "myRgArt" '
-            '--role-definition "/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7" '
+            '--role-definition-id "/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7" '
             '''--principal-ids "[parameters('reader')]"''',
             checks=[JMESPathCheck('name', 'reader-role-art')])
 
@@ -62,7 +62,7 @@ class BlueprintScenarioTest(ScenarioTest):
             '--blueprint-name "{blueprintName}" '
             '--artifact-name "policy-audit-win-vm-art" '
             '--display-name "Audit Windows VMs in which the Administrators group does not contain only the specified members" '
-            '--policy-definition "/providers/Microsoft.Authorization/policySetDefinitions/06122b01-688c-42a8-af2e-fa97dd39aa3b" '
+            '--policy-definition-id "/providers/Microsoft.Authorization/policySetDefinitions/06122b01-688c-42a8-af2e-fa97dd39aa3b" '
             '--resource-group-art "myRgArt" '
             '--parameters @src/blueprint/azext_blueprint/tests/latest/input/create/policy_params.json',
             checks=[JMESPathCheck('name', 'policy-audit-win-vm-art')])

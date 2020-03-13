@@ -115,7 +115,7 @@ def load_arguments(self, _):
         c.argument('display_name', help='DisplayName of this artifact.')
         c.argument('description', help='Description of the blueprint artifact.')
         c.argument('depends_on', nargs='+', help='Artifacts which need to be deployed before the specified artifact.')
-        c.argument('policy_definition_id', options_list=['--policy-definition'], help='The full policy definition id.')
+        c.argument('policy_definition_id', help='The full policy definition id.')
         c.argument('resource_group_art', help='Name of the resource group artifact to which the policy will be assigned.')
         c.argument('parameters', arg_type=parameter_type, help='Parameters for policy assignment artifact. It can be a JSON string or JSON file path with "@" prefix.')
 
@@ -134,7 +134,7 @@ def load_arguments(self, _):
         c.argument('display_name', help='DisplayName of this artifact.')
         c.argument('description', help='Description of the blueprint artifact.')
         c.argument('depends_on', nargs='+', help='Artifacts which need to be deployed before the specified artifact.')
-        c.argument('role_definition_id', options_list=['--role-definition'], help='The full role definition id.')
+        c.argument('role_definition_id', help='The full role definition id. Only built-in roles are supported.')
         c.argument('resource_group_art', help='Name of the resource group artifact to which the policy will be assigned.')
         c.argument('principal_ids', nargs='+', help='Array of user or group identities in Azure Active Directory or a reference to the corresponding parameter in blueprint definiton. The roleDefinition will apply to each identity.')
 

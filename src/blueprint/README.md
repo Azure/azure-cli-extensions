@@ -69,8 +69,12 @@ az blueprint artifact role create \
     --artifact-name my-role-art \
     --display-name "My Role Name" \
     --resource-group-art myRgArt \
-    --role-definition "/providers/Microsoft.Authorization/roleDefinitions/00000000-0000-0000-0000-000000000000" \
+    --role-definition-id "/providers/Microsoft.Authorization/roleDefinitions/00000000-0000-0000-0000-000000000000" \
     --principal-ids "[parameters('MyRoleName_RoleAssignmentName')]"
+```
+You can use the following command to get the role definition id based on role name:
+```
+az role definition list --name "Owner" --scope "/" --resource-group "" --query "[0].id"
 ```
 
 ##### Add a Policy Assignment Artifact
@@ -79,7 +83,7 @@ az blueprint artifact policy create \
     --blueprint-name blueprintName \
     --artifact-name my-policy-art \
     --display-name "My Policy Name" \
-    --policy-definition "/providers/Microsoft.Authorization/policySetDefinitions/00000000-0000-0000-0000-000000000000" \
+    --policy-definition-id "/providers/Microsoft.Authorization/policyDefinitions/00000000-0000-0000-0000-000000000000" \
     --parameters @/path/to/policy_params.json
 ```
 An example policy_params.json may look like this:
@@ -90,7 +94,10 @@ An example policy_params.json may look like this:
     }
 }
 ```
-
+You can use the following command to get the policy definition id based on policy name:
+```
+az policy definition show -n policy-name --query "id"
+```
 
 ##### Publish a Blueprint
 ```

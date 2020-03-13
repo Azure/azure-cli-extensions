@@ -201,8 +201,8 @@ helps['blueprint artifact policy create'] = """
       - name: Create a policy artifact
         text: |-
                az blueprint artifact policy create \\
-               --blueprint-name MyBlueprint --artifact-name MyPolicy --policy-definition \\
-               "/providers/Microsoft.Authorization/policySetDefinitions/00000000-0000-0000-0000-000000000000" \\
+               --blueprint-name MyBlueprint --artifact-name MyPolicy --policy-definition-id \\
+               "/providers/Microsoft.Authorization/policyDefinitions/00000000-0000-0000-0000-000000000000" \\
                --parameters @/path/to/file --display-name "Policy to do sth"
 """
 
@@ -228,7 +228,7 @@ helps['blueprint artifact role create'] = """
       - name: Create a role artifact
         text: |-
                az blueprint artifact role create \\
-               --blueprint-name MyBlueprint --artifact-name MyRole --role-definition \\
+               --blueprint-name MyBlueprint --artifact-name MyRole --role-definition-id \\
                "/providers/Microsoft.Authorization/roleDefinitions/00000000-0000-0000-0000-000000000000" \\
                --principal-ids "[parameters('[Usergrouporapplicationname]:MyRoleAssignmentName')]"
 """
