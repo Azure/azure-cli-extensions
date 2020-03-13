@@ -41,16 +41,16 @@ def account_subscription_create_csp_subscription(cmd, client,
     return client.begin_create_csp_subscription(billing_account_name=billing_account_name, customer_name=customer_name, display_name=body_display_name, sku_id=body_sku_id, reseller_id=body_reseller_id)
 
 
-def account_subscription_rename(cmd, client,subscription_id,
+def account_subscription_rename(cmd, client, subscription_id,
                                 body_subscription_name=None):
     return client.rename(subscription_id=subscription_id,subscription_name=body_subscription_name)
 
 
-def account_subscription_cancel(cmd, client,subscription_id):
+def account_subscription_cancel(cmd, client, subscription_id):
     return client.cancel(subscription_id=subscription_id)
 
 
-def account_subscription_enable(cmd, client,subscription_id):
+def account_subscription_enable(cmd, client, subscription_id):
     return client.enable(subscription_id=subscription_id)
 
 
