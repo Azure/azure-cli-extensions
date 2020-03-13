@@ -96,6 +96,7 @@ def find_modified_files_against_master_branch():
     files = [f for f in files if len(f) > 0]
 
     if files:
+        print('modified files:')
         separator_line()
         for f in files:
             print(f)
