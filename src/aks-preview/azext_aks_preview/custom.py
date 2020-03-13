@@ -1067,7 +1067,6 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                disable_cluster_autoscaler=False,
                update_cluster_autoscaler=False,
                cluster_autoscaler_profile=None,
-               uptime_sla=False,
                min_count=None, max_count=None, no_wait=False,
                load_balancer_managed_outbound_ip_count=None,
                load_balancer_outbound_ips=None,
@@ -1091,7 +1090,6 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
     if not update_autoscaler and \
        cluster_autoscaler_profile is None and \
        not update_acr and \
-       not uptime_sla and \
        not update_lb_profile \
        and api_server_authorized_ip_ranges is None and \
        not update_pod_security and \
@@ -1105,7 +1103,6 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--api-server-authorized-ip-ranges" or '
                        '"--attach-acr" or '
                        '"--detach-acr" or '
-                       '"--uptime-sla" or '
                        '"--load-balancer-managed-outbound-ip-count" or '
                        '"--load-balancer-outbound-ips" or '
                        '"--load-balancer-outbound-ip-prefixes"')
@@ -1184,12 +1181,6 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
 
     if attach_acr and detach_acr:
         raise CLIError('Cannot specify "--attach-acr" and "--detach-acr" at the same time.')
-
-    if uptime_sla:
-        instance.sku = ManagedClusterSKU(
-            name="Basic",
-            tier="Paid"
-        )
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
     client_id = ""

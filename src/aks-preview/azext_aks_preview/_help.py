@@ -331,9 +331,6 @@ helps['aks update'] = """
         - name: --disable-pod-security-policy
           type: bool
           short-summary: (PREVIEW) Disable pod security policy.
-        - name: --uptime-sla
-          type: bool
-          short-summary: enable paid managed cluster service with high availability.
         - name: --attach-acr
           type: string
           short-summary: Grant the 'acrpull' role assignment to the ACR specified by name or resource ID.
