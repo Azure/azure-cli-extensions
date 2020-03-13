@@ -37,7 +37,7 @@ az stream-analytics input create \
     --resource-group groupName \
     --job-name jobName \
     --name inputName \
-    --input-type Stream \
+    --type Stream \
     --datasource @datasource.json \
     --serialization @serialization.json
 ```
@@ -142,9 +142,9 @@ az stream-analytics function create \
     --resource-group groupName \
     --job-name jobName \
     --name functionName \
-    --function-inputs @function_inputs.json \
+    --inputs @function_inputs.json \
     --function-output @function_output.json \
-    --function-binding @function_binding.json
+    --binding @function_binding.json
 ```
 function_inputs.json contains the following content
 ```json

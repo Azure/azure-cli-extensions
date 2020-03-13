@@ -20,10 +20,9 @@ helps['stream-analytics job create'] = """
     examples:
       - name: Create a streaming job
         text: |-
-               az stream-analytics job create --resource-group "sjrg6936" --name "sj59" \\
-               --location "West US" --events-out-of-order-policy "Drop" \\
-               --output-error-policy "Drop" --events-out-of-order-max-delay-in-seconds "5" \\
-               --events-late-arrival-max-delay-in-seconds "16" --data-locale "en-US"
+               az stream-analytics job create --resource-group MyResourceGroup --name MyJobName \\
+               --location "West US" --output-error-policy "Drop" --events-outoforder-policy "Drop" \\
+               --events-outoforder-max-delay 5 --events-late-arrival-max-delay 16 --data-locale "en-US"
 """
 
 helps['stream-analytics job update'] = """
@@ -32,9 +31,8 @@ helps['stream-analytics job update'] = """
     examples:
       - name: Update a streaming job
         text: |-
-               az stream-analytics job update --resource-group "sjrg6936" --name "sj59" \\
-               --events-out-of-order-max-delay-in-seconds "21" \\
-               --events-late-arrival-max-delay-in-seconds "13"
+               az stream-analytics job update --resource-group MyResourceGroup --name MyJobName \\
+               --events-outoforder-max-delay 21 --events-late-arrival-max-delay 13
 """
 
 helps['stream-analytics job delete'] = """
@@ -43,7 +41,7 @@ helps['stream-analytics job delete'] = """
     examples:
       - name: Delete a streaming job
         text: |-
-               az stream-analytics job delete --resource-group "sjrg6936" --name "sj59"
+               az stream-analytics job delete --resource-group MyResourceGroup --name MyJobName
 """
 
 helps['stream-analytics job show'] = """
@@ -52,22 +50,25 @@ helps['stream-analytics job show'] = """
     examples:
       - name: Get a streaming job
         text: |-
-               az stream-analytics streaming-job show --resource-group "sjrg6936" --name "sj59"
+               az stream-analytics streaming-job show --resource-group MyResourceGroup --name MyJobName
       - name: Get a streaming job and expand its inputs, outputs, transformation, and functions
         text: |-
-               az stream-analytics streaming-job show --resource-group "sjrg3276" --name "sj7804" --expand
+               az stream-analytics streaming-job show --resource-group MyResourceGroup --name MyJobName --expand-all
 """
 
 helps['stream-analytics job list'] = """
     type: command
     short-summary: Lists all of the streaming jobs in the specified resource group.
     examples:
-      - name: List all streaming jobs
+      - name: List all streaming jobs in current subscription
         text: |-
-               az stream-analytics job list --resource-group "sjrg3276"
+               az stream-analytics job list
+      - name: List all streaming jobs in a resource group
+        text: |-
+               az stream-analytics job list --resource-group MyResourceGroup
       - name: List all streaming jobs and expand their inputs, outputs, transformation, and functions
         text: |-
-               az stream-analytics job list --resource-group "sjrg6936" --expand
+               az stream-analytics job list --resource-group MyResourceGroup --expand-all
 """
 
 helps['stream-analytics job start'] = """
@@ -76,13 +77,13 @@ helps['stream-analytics job start'] = """
     examples:
       - name: Start a streaming job with LastOutputEventTime output start mode
         text: |-
-               az stream-analytics job start --resource-group "sjrg6936" --name "sj59" --output-start-mode LastOutputEventTime
+               az stream-analytics job start --resource-group MyResourceGroup --name MyJobName --output-start-mode LastOutputEventTime
       - name: Start a streaming job with JobStartTime output start mode
         text: |-
-               az stream-analytics job start --resource-group "sjrg6936" --name "sj59" --output-start-mode JobStartTime
+               az stream-analytics job start --resource-group MyResourceGroup --name MyJobName --output-start-mode JobStartTime
       - name: Start a streaming job with CustomTime output start mode
         text: |-
-               az stream-analytics streaming-job start --resource-group "sjrg6936" --name "sj59" --output-start-mode CustomTime --output-start-time 2020-01-01T00:00:00Z
+               az stream-analytics streaming-job start --resource-group MyResourceGroup --name MyJobName --output-start-mode CustomTime --output-start-time 2020-01-01T00:00:00Z
 """
 
 helps['stream-analytics job stop'] = """
@@ -91,7 +92,7 @@ helps['stream-analytics job stop'] = """
     examples:
       - name: Stop a streaming job
         text: |-
-               az stream-analytics job stop --resource-group "sjrg6936" --name "sj59"
+               az stream-analytics job stop --resource-group MyResourceGroup --name MyJobName
 """
 
 helps['stream-analytics input'] = """
@@ -105,8 +106,8 @@ helps['stream-analytics input create'] = """
     examples:
       - name: Create an input
         text: |-
-               az stream-analytics input create --resource-group "sjrg8440" --job-name "sj9597" --name \\
-               "input7225" --datasource @datasource.json --serialization @serialization.json
+               az stream-analytics input create --resource-group MyResourceGroup --job-name MyJobName --name \\
+               MyInputName --type Stream --datasource @datasource.json --serialization @serialization.json
                ("datasource.json" contains the following content)
                 {
                     "type": "Microsoft.Storage/Blob",
@@ -139,8 +140,7 @@ helps['stream-analytics input delete'] = """
     examples:
       - name: Delete an input
         text: |-
-               az stream-analytics input delete --resource-group "sjrg8440" --job-name "sj9597" --name \\
-               "input7225"
+               az stream-analytics input delete --resource-group MyResourceGroup --job-name MyJobName --name MyInputName
 """
 
 helps['stream-analytics input show'] = """
@@ -149,8 +149,7 @@ helps['stream-analytics input show'] = """
     examples:
       - name: Get details about specified input
         text: |-
-               az stream-analytics input show --resource-group "sjrg8161" --job-name "sj6695" --name \\
-               "input8899"
+               az stream-analytics input show --resource-group MyResourceGroup --job-name MyJobName --name MyInputName
 """
 
 helps['stream-analytics input list'] = """
@@ -159,7 +158,7 @@ helps['stream-analytics input list'] = """
     examples:
       - name: List all inputs in a streaming job
         text: |-
-               az stream-analytics input list --resource-group "sjrg3276" --job-name "sj7804"
+               az stream-analytics input list --resource-group MyResourceGroup --job-name MyJobName
 """
 
 helps['stream-analytics input test'] = """
@@ -168,8 +167,7 @@ helps['stream-analytics input test'] = """
     examples:
       - name: Test the connection for an input
         text: |-
-               az stream-analytics input test --resource-group "sjrg8440" --job-name "sj9597" --name \\
-               "input7225"
+               az stream-analytics input test --resource-group MyResourceGroup --job-name MyJobName --name MyInputName
 """
 
 helps['stream-analytics output'] = """
@@ -183,8 +181,8 @@ helps['stream-analytics output create'] = """
     examples:
       - name: Create an output
         text: |-
-               az stream-analytics output create --resource-group "sjrg5176" --job-name "sj2790" --name \\
-               "output958" --datasource @datasource.json --serialization @serialization.json
+               az stream-analytics output create --resource-group MyResourceGroup --job-name MyJobName --name \\
+               MyOutputName --datasource @datasource.json --serialization @serialization.json
                ("datasource.json" contains the following content)
                 {
                     "type": "Microsoft.DataLake/Accounts",
@@ -215,8 +213,8 @@ helps['stream-analytics output delete'] = """
     examples:
       - name: Delete an output
         text: |-
-               az stream-analytics output delete --resource-group "sjrg2157" --job-name "sj6458" --name \\
-               "output1755"
+               az stream-analytics output delete --resource-group MyResourceGroup --job-name MyJobName --name \\
+               MyOutputName
 """
 
 helps['stream-analytics output show'] = """
@@ -225,8 +223,8 @@ helps['stream-analytics output show'] = """
     examples:
       - name: Get details about an output
         text: |-
-               az stream-analytics output show --resource-group "sjrg3410" --job-name "sj5095" --name \\
-               "output3456"
+               az stream-analytics output show --resource-group MyResourceGroup --job-name MyJobName --name \\
+               MyOutputName
 """
 
 helps['stream-analytics output list'] = """
@@ -235,17 +233,17 @@ helps['stream-analytics output list'] = """
     examples:
       - name: List all outputs in a streaming job
         text: |-
-               az stream-analytics output list --resource-group "sjrg2157" --job-name "sj6458"
+               az stream-analytics output list --resource-group MyResourceGroup --job-name MyJobName
 """
 
 helps['stream-analytics output test'] = """
     type: command
-    short-summary: Tests whether an output’s datasource is reachable and usable by the Azure Stream Analytics service.
+    short-summary: Tests an output
     examples:
       - name: Test the connection for an output
         text: |-
-               az stream-analytics output test --resource-group "sjrg2157" --job-name "sj6458" --name \\
-               "output1755"
+               az stream-analytics output test --resource-group MyResourceGroup --job-name MyJobName --name \\
+               MyOutputName
 """
 
 helps['stream-analytics transformation'] = """
@@ -259,8 +257,8 @@ helps['stream-analytics transformation create'] = """
     examples:
       - name: Create a transformation
         text: |-
-               az stream-analytics transformation create --resource-group "sjrg4423" --job-name "sj8374" \\
-               --name "transformation952" --streaming-units "6" --query-string "Select Id, Name from inputtest"
+               az stream-analytics transformation create --resource-group MyResourceGroup --job-name MyJobName \\
+               --name Transformation --streaming-units "6" --query-string "Select Id, Name from inputtest"
 """
 
 helps['stream-analytics transformation update'] = """
@@ -269,8 +267,8 @@ helps['stream-analytics transformation update'] = """
     examples:
       - name: Update a transformation
         text: |-
-               az stream-analytics transformation update --resource-group "sjrg4423" --job-name "sj8374" \\
-               --name "transformation952" --query-string "New query"
+               az stream-analytics transformation update --resource-group MyResourceGroup --job-name MyJobName \\
+               --name Transformation --query-string "New query"
 """
 
 helps['stream-analytics transformation show'] = """
@@ -279,8 +277,8 @@ helps['stream-analytics transformation show'] = """
     examples:
       - name: Get a transformation
         text: |-
-               az stream-analytics transformation show --resource-group "sjrg4423" --job-name "sj8374" \\
-               --name "transformation952"
+               az stream-analytics transformation show --resource-group MyResourceGroup --job-name MyJobName \\
+               --name Transformation
 """
 
 helps['stream-analytics function'] = """
@@ -294,9 +292,8 @@ helps['stream-analytics function create'] = """
     examples:
       - name: Create a function
         text: |-
-               az stream-analytics function create --resource-group "sjrg7" --job-name "sj9093" --name \\
-               "function588" --function-inputs @inputs.json --function-output @output.json --function-binding \\
-               @binding.json
+               az stream-analytics function create --resource-group MyResourceGroup --job-name MyJobName --name \\
+               MyFunctionName --inputs @inputs.json --function-output @output.json --binding @binding.json
                ("inputs.json" contains the following content)
                 [
                     {
@@ -322,8 +319,8 @@ helps['stream-analytics function delete'] = """
     examples:
       - name: Delete a function
         text: |-
-               az stream-analytics function delete --resource-group "sjrg1637" --job-name "sj8653" \\
-               --name "function8197"
+               az stream-analytics function delete --resource-group MyResourceGroup --job-name MyJobName \\
+               --name MyFunctionName
 """
 
 helps['stream-analytics function show'] = """
@@ -332,8 +329,8 @@ helps['stream-analytics function show'] = """
     examples:
       - name: Get details about a function
         text: |-
-               az stream-analytics function show --resource-group "sjrg1637" --job-name "sj8653" --name \\
-               "function8197"
+               az stream-analytics function show --resource-group MyResourceGroup --job-name MyJobName --name \\
+               MyFunctionName
 """
 
 helps['stream-analytics function list'] = """
@@ -342,7 +339,7 @@ helps['stream-analytics function list'] = """
     examples:
       - name: List all functions in a streaming job
         text: |-
-               az stream-analytics function list --resource-group "sjrg1637" --job-name "sj8653"
+               az stream-analytics function list --resource-group MyResourceGroup --job-name MyJobName
 """
 
 helps['stream-analytics function test'] = """
@@ -351,8 +348,8 @@ helps['stream-analytics function test'] = """
     examples:
       - name: Test the connection for a function
         text: |-
-               az stream-analytics function test --resource-group "sjrg7" --job-name "sj9093" --name \\
-               "function588"
+               az stream-analytics function test --resource-group MyResourceGroup --job-name MyJobName --name \\
+               MyFunctionName
 """
 
 helps['stream-analytics quota'] = """
@@ -364,7 +361,7 @@ helps['stream-analytics quota show'] = """
     type: command
     short-summary: Retrieves quota information in a particular region.
     examples:
-      - name: List subscription quota information in West US
+      - name: List quota information in West US
         text: |-
                az stream-analytics quota show --location "West US"
 """

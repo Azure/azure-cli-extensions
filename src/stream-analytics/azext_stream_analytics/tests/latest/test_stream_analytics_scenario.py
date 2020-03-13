@@ -34,17 +34,17 @@ class StreamAnalyticsScenarioTest(ScenarioTest):
                  '--resource-group {rg} '
                  '--name {job_name} '
                  '--location "West US" '
-                 '--events-out-of-order-policy "Drop" '
                  '--output-error-policy "Drop" '
-                 '--events-out-of-order-max-delay-in-seconds "0" '
-                 '--events-late-arrival-max-delay-in-seconds "5" '
+                 '--events-outoforder-policy "Drop" '
+                 '--events-outoforder-max-delay "0" '
+                 '--events-late-arrival-max-delay "5" '
                  '--data-locale "en-US" ',
                  checks=[self.check('name', '{job_name}')])
         self.cmd('stream-analytics job update '
                  '--resource-group {rg} '
                  '--name {job_name} '
-                 '--events-out-of-order-max-delay-in-seconds 21 '
-                 '--events-late-arrival-max-delay-in-seconds 13',
+                 '--events-outoforder-max-delay 21 '
+                 '--events-late-arrival-max-delay 13',
                  checks=[self.check('eventsOutOfOrderMaxDelayInSeconds', 21),
                          self.check('eventsLateArrivalMaxDelayInSeconds', 13)])
         self.cmd('stream-analytics job list '
@@ -105,7 +105,7 @@ class StreamAnalyticsScenarioTest(ScenarioTest):
                  '--resource-group {rg} '
                  '--job-name {job_name} '
                  '--name {input_name} '
-                 '--input-type Stream '
+                 '--type Stream '
                  "--datasource '{input_datasource}' "
                  "--serialization '{input_serialization}'")
         self.cmd('stream-analytics input list '
@@ -188,9 +188,9 @@ class StreamAnalyticsScenarioTest(ScenarioTest):
                  '--resource-group {rg} '
                  '--job-name {job_name} '
                  '--name {function_name} '
-                 "--function-inputs '{function_inputs}' "
+                 "--inputs '{function_inputs}' "
                  "--function-output '{function_output}' "
-                 "--function-binding '{function_binding}'",
+                 "--binding '{function_binding}'",
                  checks=[self.check('name', '{function_name}')])
         self.cmd('stream-analytics function list '
                  '--resource-group {rg} '
