@@ -215,6 +215,11 @@ helps['network front-door routing-rule create'] = """
         -n redirectRouteRule1 --patterns /redirect1 --custom-query-string querystring
 """
 
+helps['network front-door routing-rule update'] = """
+    type: command
+    short-summary: Update a Front Door routing rule.
+"""
+
 helps['network front-door routing-rule list'] = """
     type: command
     short-summary: List Front Door routing rules.
