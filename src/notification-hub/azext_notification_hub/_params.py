@@ -142,7 +142,7 @@ def load_arguments(self, _):
         c.argument('namespace_name', help='The namespace name.')
         c.argument('notification_hub_name', help='The notification hub name.')
         c.argument('rule_name', options_list=['--name', '-n'], help='The authorization rule name.')
-        c.argument('rights', nargs='+', help='The rights associated with the rule. Separated by comma.')
+        c.argument('rights', nargs='+', help='The rights associated with the rule.')
 
     with self.argument_context('notification-hub authorization-rule delete') as c:
         c.argument('namespace_name', id_part="name", help='The namespace name.')

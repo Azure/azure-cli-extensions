@@ -57,7 +57,7 @@ def get_notificationhubs_namespace(cmd, client,
 
 def list_notificationhubs_namespace(cmd, client,
                                     resource_group_name=None):
-    if resource_group_name is not None:
+    if resource_group_name:
         return client.list(resource_group_name=resource_group_name)
     return client.list_all()
 
