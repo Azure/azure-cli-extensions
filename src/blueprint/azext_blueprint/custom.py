@@ -225,7 +225,7 @@ def remove_blueprint_resource_group(cmd, client, blueprint_name,
                                     artifact_name, management_group=None, subscription=None, scope=None):
     body = client.get(scope=scope, blueprint_name=blueprint_name).as_dict()
     if artifact_name not in body.setdefault('resource_groups', {}):
-        raise CLIError('The specified artifact name can not be found.')
+        raise CLIError('The specified artifact name: {} can not be found.'.format(artifact_name))
     deleted_rg = body['resource_groups'][artifact_name]
     del body['resource_groups'][artifact_name]
     client.create_or_update(scope=scope,
