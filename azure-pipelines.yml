@@ -84,6 +84,7 @@ jobs:
 
 - job: LintModifiedExtensions
   displayName: "CLI Linter on Modified Extensions"
+  condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
   pool:
     vmImage: 'ubuntu-16.04'
   steps:
