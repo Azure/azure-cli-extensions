@@ -12,10 +12,12 @@ from azure.cli.core.commands.parameters import (
     get_location_type,
     file_type
 )
-from azure.cli.core.util import shell_safe_json_parse
+from azure.cli.core.commands.validators import validate_file_or_dict
 from knack.arguments import CLIArgumentType
 from argcomplete.completers import FilesCompleter
-from ._validators import blueprint_validator
+
+from ._validators import blueprint_validator, blueprint_assignment_validator
+
 from .vendored_sdks.blueprint.models._blueprint_management_client_enums import (
     BlueprintTargetScope,
     ManagedServiceIdentityType,
@@ -24,23 +26,37 @@ from .vendored_sdks.blueprint.models._blueprint_management_client_enums import (
 
 
 parameter_type = CLIArgumentType(
-    type=shell_safe_json_parse,
-    options_list=['--parameters'],
+    type=validate_file_or_dict,
+    options_list=['--parameters', '-p'],
     help='Parameters in JSON string or path to JSON file with "@" prefix.'
 )
 
 template_type = CLIArgumentType(
-    type=shell_safe_json_parse,
-    options_list=['--template'],
+    type=validate_file_or_dict,
+    options_list=['--template', '-t'],
     help='ARM template in JSON string or path to JSON file with "@" prefix.'
+)
+
+subscription_type = CLIArgumentType(
+    arg_group='Scope',
+    options_list=['--subscription', '-s'],
+    help='Use subscription for the scope of the blueprint. If --management-group is not specified, --subscription value or the default subscription will be used as the scope.'
+)
+
+management_group_type = CLIArgumentType(
+    arg_group='Scope',
+    options_list=['--management-group', '-m'],
+    help='Use management group for the scope of the blueprint.'
 )
 
 
 def load_arguments(self, _):
 
     with self.argument_context('blueprint', validator=blueprint_validator) as c:
-        c.argument('management_group', help='The management group for the scope of the blueprint. The scope could either be a subscription or a management group. If --management-group is not specified, will use --subscription as scope')
-        c.ignore('scope')
+        c.ignore('scope')  # scope is divided into management_group and subscription
+        c.ignore('_subscription')  # ignore the global subscription param
+        c.argument('subscription', arg_type=subscription_type)
+        c.argument('management_group', arg_type=management_group_type)
 
     with self.argument_context('blueprint create') as c:
         c.argument('blueprint_name', options_list=['--name', '-n'], help='Name of the blueprint definition.')
@@ -191,15 +207,20 @@ def load_arguments(self, _):
         c.argument('blueprint_name', help='Name of the blueprint definition.')
         c.argument('version_id', options_list=['--version'], help='Version of the published blueprint definition.')
 
+    with self.argument_context('blueprint assignment', validator=blueprint_assignment_validator) as c:
+        # override help
+        c.argument('subscription', help='Use subscription for the target scope of the blueprint assignment. Default susbcription will be used if option not specified.')
+        c.argument('management_group', help='Use management group for the target scope of the blueprint assignment. It is reserved for future use. Use --subscription instead.')
+
     for scope in ['create', 'update']:
         with self.argument_context('blueprint assignment ' + scope) as c:
             from .action import ResourceGroupAssignAddAction
             c.argument('assignment_name', options_list=['--name', '-n'], help='Name of the blueprint assignment.')
             c.argument('location', arg_type=get_location_type(self.cli_ctx))
-            c.argument('identity_type', arg_type=get_enum_type(ManagedServiceIdentityType), arg_group='identity', help='Type of the managed identity.')
-            c.argument('identity_principal_id', options_list=['--principal-id'], arg_group='identity', help='Azure Active Directory principal ID associated with this Identity.')
-            c.argument('identity_tenant_id', options_list=['--tenant-id'], arg_group='identity', help='ID of the Azure Active Directory.')
-            c.argument('identity_user_assigned_identities', options_list=['--user-assigned-identities'], arg_group='identity', nargs='+', help='The list of user-assigned managed identities associated with the resource. Key is the Azure resource Id of the managed identity.')
+            c.argument('identity_type', arg_type=get_enum_type(ManagedServiceIdentityType), default='SystemAssigned', arg_group='Identity', help='Type of the managed identity.')
+            c.argument('identity_principal_id', options_list=['--principal-id'], arg_group='Identity', help='Azure Active Directory principal ID associated with this Identity.')
+            c.argument('identity_tenant_id', options_list=['--tenant-id'], arg_group='Identity', help='ID of the Azure Active Directory.')
+            c.argument('identity_user_assigned_identities', options_list=['--user-assigned-identities'], arg_group='Identity', nargs='+', help='The list of user-assigned managed identities associated with the resource. Key is the Azure resource Id of the managed identity.')
             c.argument('display_name', help='One-liner string explain this resource.')
             c.argument('description', help='Multi-line explain this resource.')
             c.argument('blueprint_id', options_list=['--blueprint-version'], help='Resource ID of the published version of a blueprint definition.')
@@ -218,10 +239,12 @@ def load_arguments(self, _):
         pass
 
     with self.argument_context('blueprint assignment wait') as c:
-        # extra argument cannot be registered to a group-level scope, have to redefine management_group as extra at command level here
+        # extra argument cannot be registered to a group-level scope, have to redefine
+        # management_group and subscription as extra at command level here
         # for a non-custom command.
-        c.extra('management_group', help='The management group for the scope of the blueprint. The scope could either be a subscription or a management group. If --management-group is not specified, will use --subscription as scope')
+        c.extra('subscription', arg_type=subscription_type, help='Use subscription for the target scope of the blueprint assignment. Default susbcription will be used if option not specified.')
+        c.extra('management_group', arg_type=management_group_type, help='Use management group for the target scope of the blueprint assignment. It is reserved for future use. Use --subscription instead.')
         c.argument('assignment_name', options_list=['--name', '-n'], help='Name of the blueprint assignment.')
 
-    with self.argument_context('blueprint assignment who-is-blueprint') as c:
+    with self.argument_context('blueprint assignment who') as c:
         c.argument('assignment_name', options_list=['--name', '-n'], help='Name of the blueprint assignment.')

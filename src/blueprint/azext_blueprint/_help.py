@@ -441,12 +441,12 @@ helps['blueprint assignment wait'] = """
                 --name MyBlueprintAssignment --created
 """
 
-helps['blueprint assignment who-is-blueprint'] = """
+helps['blueprint assignment who'] = """
     type: command
-    short-summary: Get Blueprints service SPN objectId
+    short-summary: Get Blueprint Servie Principal Name objectId
     examples:
       - name: Get SPN objectId
         text: |-
-               az blueprint assignment who-is-blueprint --subscription MySubscription \\
+               az blueprint assignment who --subscription MySubscription \\
                --name MyBlueprintAssignment
 """

@@ -84,4 +84,4 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'get_blueprint_assignment')
         g.custom_command('list', 'list_blueprint_assignment')
         g.wait_command('wait')
-        g.custom_command('who-is-blueprint', 'who_is_blueprint_blueprint_assignment')
+        g.custom_command('who', 'who_is_blueprint_blueprint_assignment')

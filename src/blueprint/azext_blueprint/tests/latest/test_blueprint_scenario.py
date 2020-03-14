@@ -94,33 +94,11 @@ class BlueprintScenarioTest(ScenarioTest):
         principal_id = assignment['identity']['principalId']
         assert len(principal_id) > 0
 
-        # Sometimes automatic role assignment by blueprint fails, we may need the following.
-        # Assign owner of target subscription to the service principal created by blueprint assignment
-        # self.cmd(
-        #     'az role assignment create '
-        #     '--role owner '
-        #     '--assignee-object-id {} '
-        #     '--scope "/subscriptions/{}" '
-        #     '--assignee-principal-type ServicePrincipal '
-        #     '-g='.format(principal_id, self.kwargs.get('subscription', '')),
-        #     checks=[JMESPathCheck('principalId', principal_id)]
-        # )
-
         self.cmd(
             'az blueprint assignment wait '
             '--name "{assignmentName}" '
             '--created',
             checks=[])
-
-        # remove owner role after resources created
-        # self.cmd(
-        #     'az role assignment delete '
-        #     '--role owner '
-        #     '--assignee {} '
-        #     '--scope "/subscriptions/{}" '
-        #     '-g='.format(principal_id, self.kwargs.get('subscription', '')),
-        #     checks=[]
-        # )
 
         self.cmd(
             'az blueprint assignment show '

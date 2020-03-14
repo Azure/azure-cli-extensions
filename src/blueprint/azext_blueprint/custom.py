@@ -18,6 +18,7 @@ def import_blueprint_with_artifacts(cmd,
                                     blueprint_name,
                                     input_path,
                                     management_group=None,
+                                    subscription=None,
                                     scope=None):
     from ._client_factory import cf_artifacts
 
@@ -80,6 +81,7 @@ def create_blueprint(cmd,
                      client,
                      blueprint_name,
                      management_group=None,
+                     subscription=None,
                      scope=None,
                      target_scope=None,
                      display_name=None,
@@ -100,6 +102,7 @@ def update_blueprint(cmd,
                      instance,
                      blueprint_name,
                      management_group=None,
+                     subscription=None,
                      scope=None,
                      description=None,
                      parameters=None):
@@ -110,32 +113,32 @@ def update_blueprint(cmd,
     return instance
 
 
-def delete_blueprint(cmd, client, blueprint_name, management_group=None, scope=None):
+def delete_blueprint(cmd, client, blueprint_name, management_group=None, subscription=None, scope=None):
     return client.delete(scope=scope, blueprint_name=blueprint_name)
 
 
-def get_blueprint(cmd, client, blueprint_name, management_group=None, scope=None):
+def get_blueprint(cmd, client, blueprint_name, management_group=None, subscription=None, scope=None):
     return client.get(scope=scope, blueprint_name=blueprint_name)
 
 
-def list_blueprint(cmd, client, management_group=None, scope=None):
+def list_blueprint(cmd, client, management_group=None, subscription=None, scope=None, **kwargs):
     return client.list(scope=scope)
 
 
 def delete_blueprint_artifact(cmd, client, blueprint_name, artifact_name,
-                              management_group=None, scope=None):
+                              management_group=None, subscription=None, scope=None):
     return client.delete(scope=scope,
                          blueprint_name=blueprint_name,
                          artifact_name=artifact_name)
 
 
-def get_blueprint_artifact(cmd, client, blueprint_name, artifact_name, management_group=None, scope=None):
+def get_blueprint_artifact(cmd, client, blueprint_name, artifact_name, management_group=None, subscription=None, scope=None):
     return client.get(scope=scope,
                       blueprint_name=blueprint_name,
                       artifact_name=artifact_name)
 
 
-def list_blueprint_artifact(cmd, client, blueprint_name, management_group=None, scope=None):
+def list_blueprint_artifact(cmd, client, blueprint_name, management_group=None, subscription=None, scope=None):
     return client.list(scope=scope, blueprint_name=blueprint_name)
 
 
@@ -143,6 +146,7 @@ def add_blueprint_resource_group(cmd,
                                  client,
                                  blueprint_name,
                                  management_group=None,
+                                 subscription=None,
                                  scope=None,
                                  artifact_name=None,
                                  display_name=None,
@@ -185,6 +189,7 @@ def update_blueprint_resource_group(cmd,
                                     blueprint_name,
                                     artifact_name,
                                     management_group=None,
+                                    subscription=None,
                                     scope=None,
                                     rg_name=None,
                                     rg_location=None,
@@ -217,7 +222,7 @@ def update_blueprint_resource_group(cmd,
 
 # todo test
 def remove_blueprint_resource_group(cmd, client, blueprint_name,
-                                    artifact_name, management_group=None, scope=None):
+                                    artifact_name, management_group=None, subscription=None, scope=None):
     body = client.get(scope=scope, blueprint_name=blueprint_name).as_dict()
     if artifact_name not in body.setdefault('resource_groups', {}):
         raise CLIError('The specified artifact name can not be found.')
@@ -230,13 +235,13 @@ def remove_blueprint_resource_group(cmd, client, blueprint_name,
 
 
 def get_blueprint_resource_group(cmd, client, blueprint_name,
-                                 artifact_name, management_group=None, scope=None):
+                                 artifact_name, management_group=None, subscription=None, scope=None):
     rgs = client.get(scope=scope,
                      blueprint_name=blueprint_name).resource_groups
     return {k: v for k, v in rgs.items() if k == artifact_name}
 
 
-def list_blueprint_resource_group(cmd, client, blueprint_name, management_group=None, scope=None):
+def list_blueprint_resource_group(cmd, client, blueprint_name, management_group=None, subscription=None, scope=None):
     body = client.get(scope=scope, blueprint_name=blueprint_name)
     return body.resource_groups
 
@@ -247,6 +252,7 @@ def create_blueprint_artifact_policy(cmd,
                                      policy_definition_id,
                                      artifact_name,
                                      management_group=None,
+                                     subscription=None,
                                      scope=None,
                                      parameters=None,
                                      display_name=None,
@@ -273,6 +279,7 @@ def update_blueprint_artifact_policy(cmd,
                                      blueprint_name,
                                      artifact_name,
                                      management_group=None,
+                                     subscription=None,
                                      scope=None,
                                      parameters=None,
                                      display_name=None,
@@ -306,6 +313,7 @@ def create_blueprint_artifact_role(cmd,
                                    principal_ids,
                                    artifact_name,
                                    management_group=None,
+                                   subscription=None,
                                    scope=None,
                                    display_name=None,
                                    resource_group_art=None,
@@ -335,6 +343,7 @@ def update_blueprint_artifact_role(cmd,
                                    blueprint_name,
                                    artifact_name,
                                    management_group=None,
+                                   subscription=None,
                                    scope=None,
                                    display_name=None,
                                    resource_group_art=None,
@@ -365,6 +374,7 @@ def create_blueprint_artifact_template(cmd,
                                        template,
                                        artifact_name,
                                        management_group=None,
+                                       subscription=None,
                                        scope=None,
                                        parameters=None,
                                        display_name=None,
@@ -391,6 +401,7 @@ def update_blueprint_artifact_template(cmd,
                                        blueprint_name,
                                        artifact_name,
                                        management_group=None,
+                                       subscription=None,
                                        scope=None,
                                        template=None,
                                        parameters=None,
@@ -426,6 +437,7 @@ def publish_blueprint(cmd,
                       blueprint_name,
                       version_id,
                       management_group=None,
+                      subscription=None,
                       scope=None,
                       change_notes=None):
     body = {}
@@ -436,24 +448,24 @@ def publish_blueprint(cmd,
                          published_blueprint=body)
 
 
-def delete_blueprint_version(cmd, client, blueprint_name, version_id, management_group=None, scope=None):
+def delete_blueprint_version(cmd, client, blueprint_name, version_id, management_group=None, subscription=None, scope=None):
     return client.delete(scope=scope,
                          blueprint_name=blueprint_name,
                          version_id=version_id)
 
 
-def get_blueprint_version(cmd, client, blueprint_name, version_id, management_group=None, scope=None):
+def get_blueprint_version(cmd, client, blueprint_name, version_id, management_group=None, subscription=None, scope=None):
     return client.get(scope=scope,
                       blueprint_name=blueprint_name,
                       version_id=version_id)
 
 
-def list_blueprint_version(cmd, client, blueprint_name, management_group=None, scope=None):
+def list_blueprint_version(cmd, client, blueprint_name, management_group=None, subscription=None, scope=None):
     return client.list(scope=scope, blueprint_name=blueprint_name)
 
 
 def get_blueprint_version_artifact(cmd, client, blueprint_name,
-                                   version_id, artifact_name, management_group=None, scope=None):
+                                   version_id, artifact_name, management_group=None, subscription=None, scope=None):
     return client.get(scope=scope,
                       blueprint_name=blueprint_name,
                       version_id=version_id,
@@ -461,7 +473,7 @@ def get_blueprint_version_artifact(cmd, client, blueprint_name,
 
 
 def list_blueprint_version_artifact(cmd, client, blueprint_name,
-                                    version_id, management_group=None, scope=None):
+                                    version_id, management_group=None, subscription=None, scope=None):
     return client.list(scope=scope,
                        blueprint_name=blueprint_name,
                        version_id=version_id)
@@ -475,8 +487,9 @@ def _del_artifact_name(rg):
 def create_blueprint_assignment(cmd,
                                 client,
                                 assignment_name,
-                                identity_type,
+                                identity_type=None,
                                 management_group=None,
+                                subscription=None,
                                 scope=None,
                                 location=None,
                                 resource_groups=None,
@@ -489,6 +502,14 @@ def create_blueprint_assignment(cmd,
                                 locks_mode=None,
                                 locks_excluded_principals=None,
                                 parameters=None):
+    from msrestazure.azure_exceptions import CloudError
+    from .vendored_sdks.blueprint.models._blueprint_management_client_enums import ManagedServiceIdentityType
+    try:
+        result = client.get(scope=scope, assignment_name=assignment_name)
+        if result is not None:
+            raise CLIError("An assignment with name '{}' in subscription '{}' already exists. Please use 'az blueprint assignment update' to update an existing assignment.".format(assignment_name, scope))
+    except CloudError:  # AssignmentNotFound
+        pass
     body = {}
     body['location'] = location  # str
     body.setdefault('identity', {})['type'] = identity_type  # str
@@ -505,15 +526,32 @@ def create_blueprint_assignment(cmd,
     body['resource_groups'] = {rg['artifact_name']: _del_artifact_name(rg) for rg in resource_groups} if resource_groups is not None else {}
     body.setdefault('locks', {})['mode'] = locks_mode  # str
     body.setdefault('locks', {})['excluded_principals'] = locks_excluded_principals
-    return client.create_or_update(scope=scope,
-                                   assignment_name=assignment_name,
-                                   assignment=body)
+
+    # Assign owner permission to Blueprint SPN only if assignment is being done using
+    # system assigned identity.
+    # This is a no-op for user assigned identity.
+    if identity_type != ManagedServiceIdentityType.user_assigned.value:
+        result = client.who_is_blueprint(scope=scope, assignment_name=assignment_name)
+        if result is None:
+            raise CLIError("Blueprint service failed to return the SPN for assignment:{}".format(assignment_name))
+        spn = result.object_id
+        _assign_owner_role_in_target_scope(cmd, scope, spn)
+    return client.create_or_update(scope=scope, assignment_name=assignment_name, assignment=body)
+
+
+def _assign_owner_role_in_target_scope(cmd, role_scope, spn_object_id,):
+    from azure.cli.command_modules.role.custom import list_role_assignments, create_role_assignment
+    role_assignments = list_role_assignments(cmd, assignee=spn_object_id, role='Owner', scope=role_scope)
+    if not role_assignments:
+        create_role_assignment(cmd, role='Owner', assignee_object_id=spn_object_id, scope=role_scope,
+                               assignee_principal_type='ServicePrincipal')
 
 
 def update_blueprint_assignment(cmd,
                                 client,
                                 assignment_name,
                                 management_group=None,
+                                subscription=None,
                                 scope=None,
                                 location=None,
                                 identity_type=None,
@@ -527,6 +565,8 @@ def update_blueprint_assignment(cmd,
                                 resource_groups=None,
                                 locks_mode=None,
                                 locks_excluded_principals=None):
+    from .vendored_sdks.blueprint.models._blueprint_management_client_enums import ManagedServiceIdentityType
+
     body = client.get(scope=scope, assignment_name=assignment_name).as_dict()
     if location is not None:
         body['location'] = location  # str
@@ -556,27 +596,36 @@ def update_blueprint_assignment(cmd,
         body.setdefault('locks', {})['mode'] = locks_mode  # str
     if locks_excluded_principals is not None:
         body.setdefault('locks', {})['excluded_principals'] = locks_excluded_principals
+
+    # Assign owner permission to Blueprint SPN only if assignment is being done using
+    # system assigned identity.
+    # This is a no-op for user assigned identity.
+    if identity_type != ManagedServiceIdentityType.user_assigned.value:
+        result = client.who_is_blueprint(scope=scope, assignment_name=assignment_name)
+        if result is None:
+            raise CLIError("Blueprint service failed to return the SPN for assignment:{}".format(assignment_name))
+        spn = result.object_id
+        _assign_owner_role_in_target_scope(cmd, scope, spn)
     return client.create_or_update(scope=scope,
                                    assignment_name=assignment_name,
                                    assignment=body)
 
 
-def delete_blueprint_assignment(cmd, client, assignment_name, management_group=None, scope=None):
+def delete_blueprint_assignment(cmd, client, assignment_name, management_group=None, subscription=None, scope=None):
     return client.delete(scope=scope, assignment_name=assignment_name)
 
 
-def get_blueprint_assignment(cmd, client, assignment_name, management_group=None, scope=None):
+def get_blueprint_assignment(cmd, client, assignment_name, management_group=None, subscription=None, scope=None):
     return client.get(scope=scope, assignment_name=assignment_name)
 
 
-def list_blueprint_assignment(cmd, client, management_group=None, scope=None):
+def list_blueprint_assignment(cmd, client, management_group=None, subscription=None, scope=None):
     return client.list(scope=scope)
 
 
-def wait_for_blueprint_assignment(cmd, client, assignment_name, management_group=None, scope=None):
+def wait_for_blueprint_assignment(cmd, client, assignment_name, management_group=None, subscription=None, scope=None):
     client.wait(scope=scope, assignment_name=assignment_name)
 
 
-def who_is_blueprint_blueprint_assignment(cmd, client, assignment_name, management_group=None, scope=None):
-    return client.who_is_blueprint(scope=scope,
-                                   assignment_name=assignment_name)
+def who_is_blueprint_blueprint_assignment(cmd, client, assignment_name, management_group=None, subscription=None, scope=None):
+    return client.who_is_blueprint(scope=scope, assignment_name=assignment_name)
