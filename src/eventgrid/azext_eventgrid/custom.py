@@ -30,7 +30,12 @@ from azext_eventgrid.vendored_sdks.eventgrid.models import (
     StorageBlobDeadLetterDestination,
     EventSubscriptionFilter,
     TopicUpdateParameters,
-    DomainUpdateParameters)
+    DomainUpdateParameters,
+    ResourceSku,
+    IdentityInfo)
+
+# SystemTopic,
+# SystemTopicUpdateParameters)
 
 logger = get_logger(__name__)
 
@@ -41,6 +46,15 @@ RESOURCE_GROUPS = "resourcegroups"
 EVENTGRID_DOMAINS = "domains"
 EVENTGRID_TOPICS = "topics"
 EVENTGRID_DOMAIN_TOPICS = "domaintopics"
+EVENTGRID_SYSTEM_TOPICS = "systemtopics"
+EVENTGRID_PRIVATE_ENDPOINT_CONNECTION = "privateendpointconnections"
+EVENTGRID_RESOURCE_SKU = "resourceSku"
+SKU_BASIC = "Basic"
+SKU_PREMIUM = "Premium"
+IDENTITY_NO_IDENTITY = "NoIdentity"
+IDENTITY_NONE = "None"
+IDENTITY_SYSTEM_ASSIGNED = "SystemAssigned"
+
 WEBHOOK_DESTINATION = "webhook"
 EVENTHUB_DESTINATION = "eventhub"
 STORAGEQUEUE_DESTINATION = "storagequeue"
@@ -88,19 +102,32 @@ def cli_topic_create_or_update(
         input_schema=EVENTGRID_SCHEMA,
         input_mapping_fields=None,
         input_mapping_default_values=None,
-        allow_traffic_from_all_ips=None,
-        inbound_ip_rules=None):
+        public_network_access=None,
+        inbound_ip_rules=None,
+        sku=SKU_BASIC,
+        identity=None):
+
     final_input_schema, input_schema_mapping = _get_input_schema_and_mapping(
         input_schema,
         input_mapping_fields,
         input_mapping_default_values)
+    sku_name = _get_sku(sku)
+    sku_info = ResourceSku(name=sku_name)
+    identity_info = None
+
+    if (identity is not None and identity.lower() != IDENTITY_NONE.lower()):
+        identity_type_name = _get_identity_type(identity)
+        identity_info = IdentityInfo(type=identity_type_name)
+
     topic_info = Topic(
         location=location,
         tags=tags,
         input_schema=final_input_schema,
         input_schema_mapping=input_schema_mapping,
-        allow_traffic_from_all_ips=allow_traffic_from_all_ips,
-        inbound_ip_rules=inbound_ip_rules)
+        public_network_access=public_network_access,
+        inbound_ip_rules=inbound_ip_rules,
+        sku=sku_info,
+        identity=identity_info)
 
     return client.create_or_update(
         resource_group_name,
@@ -113,12 +140,25 @@ def cli_topic_update(
         resource_group_name,
         topic_name,
         tags=None,
-        allow_traffic_from_all_ips=None,
-        inbound_ip_rules=None):
+        public_network_access=None,
+        inbound_ip_rules=None,
+        sku=None,
+        identity=None):
+    sku_name = _get_sku(sku)
+    sku_info = ResourceSku(name=sku_name)
+
+    identity_info = None
+
+    if (identity is not None and identity.lower() != IDENTITY_NONE.lower()):
+        identity_type_name = _get_identity_type(identity)
+        identity_info = IdentityInfo(type=identity_type_name)
+
     topic_update_parameters = TopicUpdateParameters(
         tags=tags,
-        allow_traffic_from_all_ips=allow_traffic_from_all_ips,
-        inbound_ip_rules=inbound_ip_rules)
+        public_network_access=public_network_access,
+        inbound_ip_rules=inbound_ip_rules,
+        sku=sku_info,
+        identity=identity_info)
 
     return client.update(
         resource_group_name=resource_group_name,
@@ -131,12 +171,25 @@ def cli_domain_update(
         resource_group_name,
         domain_name,
         tags=None,
-        allow_traffic_from_all_ips=None,
-        inbound_ip_rules=None):
+        public_network_access=None,
+        inbound_ip_rules=None,
+        sku=None,
+        identity=None):
+    sku_name = _get_sku(sku)
+    sku_info = ResourceSku(
+        name=sku_name)
+
+    identity_info = None
+    if (identity is not None and identity.lower() != IDENTITY_NONE.lower()):
+        identity_type_name = _get_identity_type(identity)
+        identity_info = IdentityInfo(type=identity_type_name)
+
     domain_update_parameters = DomainUpdateParameters(
         tags=tags,
-        allow_traffic_from_all_ips=allow_traffic_from_all_ips,
-        inbound_ip_rules=inbound_ip_rules)
+        public_network_access=public_network_access,
+        inbound_ip_rules=inbound_ip_rules,
+        sku=sku_info,
+        identity=identity_info)
 
     return client.update(
         resource_group_name,
@@ -164,19 +217,32 @@ def cli_domain_create_or_update(
         input_schema=EVENTGRID_SCHEMA,
         input_mapping_fields=None,
         input_mapping_default_values=None,
-        allow_traffic_from_all_ips=None,
-        inbound_ip_rules=None):
+        public_network_access=None,
+        inbound_ip_rules=None,
+        sku=SKU_BASIC,
+        identity=None):
     final_input_schema, input_schema_mapping = _get_input_schema_and_mapping(
         input_schema,
         input_mapping_fields,
         input_mapping_default_values)
+    sku_name = _get_sku(sku)
+    sku_info = ResourceSku(name=sku_name)
+
+    identity_info = None
+
+    if (identity is not None and identity.lower() != IDENTITY_NONE.lower()):
+        identity_type_name = _get_identity_type(identity)
+        identity_info = IdentityInfo(type=identity_type_name)
+
     domain_info = Domain(
         location=location,
         tags=tags,
         input_schema=final_input_schema,
         input_schema_mapping=input_schema_mapping,
-        allow_traffic_from_all_ips=allow_traffic_from_all_ips,
-        inbound_ip_rules=inbound_ip_rules)
+        public_network_access=public_network_access,
+        inbound_ip_rules=inbound_ip_rules,
+        sku=sku_info,
+        identity=identity_info)
 
     return client.create_or_update(
         resource_group_name,
@@ -429,12 +495,97 @@ def cli_event_subscription_list(   # pylint: disable=too-many-return-statements
         DEFAULT_TOP)
 
 
+def cli_topic_private_endpoint_connection_get(
+        client,
+        resource_group_name,
+        topic_name,
+        private_endpoint_connection_name):
+
+    return client.get(resource_group_name, EVENTGRID_TOPICS, topic_name, private_endpoint_connection_name)
+
+
+def cli_topic_private_endpoint_connection_delete(
+        client,
+        resource_group_name,
+        topic_name,
+        private_endpoint_connection_name):
+
+    return client.delete(resource_group_name, EVENTGRID_TOPICS, topic_name, private_endpoint_connection_name)
+
+
+def cli_topic_private_endpoint_connection_list(
+        client,
+        resource_group_name,
+        topic_name):
+
+    return client.list_by_resource(resource_group_name, EVENTGRID_TOPICS, topic_name)
+
+
+def cli_domain_private_endpoint_connection_get(
+        client,
+        resource_group_name,
+        domain_name,
+        private_endpoint_connection_name):
+
+    return client.get(resource_group_name, EVENTGRID_DOMAINS, domain_name, private_endpoint_connection_name)
+
+
+def cli_domain_private_endpoint_connection_list(
+        client,
+        resource_group_name,
+        domain_name):
+
+    return client.list_by_resource(resource_group_name, EVENTGRID_DOMAINS, domain_name)
+
+def cli_domain_private_endpoint_connection_delete(
+        client,
+        resource_group_name,
+        domain_name,
+        private_endpoint_connection_name):
+
+    return client.delete(resource_group_name, EVENTGRID_DOMAINS, domain_name, private_endpoint_connection_name)
+
+def cli_topic_private_link_resource_get(
+        client,
+        resource_group_name,
+        topic_name,
+        private_link_resource_name):
+
+    return client.get(resource_group_name, EVENTGRID_TOPICS, topic_name, private_link_resource_name)
+
+
+def cli_topic_private_link_resource_list(
+        client,
+        resource_group_name,
+        topic_name):
+
+    return client.list_by_resource(resource_group_name, EVENTGRID_TOPICS, topic_name)
+
+
+def cli_domain_private_link_resource_get(
+        client,
+        resource_group_name,
+        domain_name,
+        private_link_resource_name):
+
+    return client.get(resource_group_name, EVENTGRID_DOMAINS, domain_name, private_link_resource_name)
+
+
+def cli_domain_private_link_resource_list(
+        client,
+        resource_group_name,
+        domain_name):
+
+    return client.list_by_resource(resource_group_name, EVENTGRID_DOMAINS, domain_name)
+
+
 def _get_scope(
         cli_ctx,
         resource_group_name,
         provider_namespace,
         resource_type,
         resource_name):
+
     subscription_id = get_subscription_id(cli_ctx)
 
     if provider_namespace == RESOURCES_NAMESPACE:
@@ -692,6 +843,24 @@ def _warn_if_manual_handshake_needed(endpoint_type, endpoint):
                        'subscription validation event, in order to complete the event '
                        'subscription creation or update. For more details, '
                        'please visit http://aka.ms/esvalidation')
+
+
+def _get_sku(sku_name):
+    if sku_name.lower() == 'basic':
+        result = SKU_BASIC
+    elif sku_name.lower() == 'premium':
+        result = SKU_PREMIUM
+
+    return result
+
+
+def _get_identity_type(identity_type_name=IDENTITY_NONE):
+    if identity_type_name.lower() == IDENTITY_NO_IDENTITY.lower():
+        result = IDENTITY_NONE
+    elif identity_type_name.lower() == IDENTITY_SYSTEM_ASSIGNED.lower():
+        result = IDENTITY_SYSTEM_ASSIGNED
+
+    return result
 
 
 def _get_input_schema_and_mapping(

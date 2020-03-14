@@ -4,33 +4,54 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
+# pylint: disable=too-many-statements
 
 from azure.cli.core.commands import CliCommandType
-from ._client_factory import (topics_factory, domains_factory, domain_topics_factory, event_subscriptions_factory, topic_types_factory)
+from ._client_factory import (
+    topics_factory,
+    domains_factory,
+    domain_topics_factory,
+    event_subscriptions_factory,
+    topic_types_factory,
+    private_endpoint_connections_factory,
+    private_link_resources_factory
+)
 
 
 def load_command_table(self, _):
     topics_mgmt_util = CliCommandType(
-        operations_tmpl='azext_eventgrid.vendored_sdks.eventgrid.operations.topics_operations#TopicsOperations.{}',
+        operations_tmpl='azext_eventgrid.vendored_sdks.eventgrid.operations._topics_operations#TopicsOperations.{}',
         client_factory=topics_factory,
         client_arg_name='self'
     )
 
     domains_mgmt_util = CliCommandType(
-        operations_tmpl='azext_eventgrid.vendored_sdks.eventgrid.operations.domains_operations#DomainsOperations.{}',
+        operations_tmpl='azext_eventgrid.vendored_sdks.eventgrid.operations._domains_operations#DomainsOperations.{}',
         client_factory=domains_factory,
         client_arg_name='self'
     )
 
     domain_topics_mgmt_util = CliCommandType(
-        operations_tmpl='azext_eventgrid.vendored_sdks.eventgrid.operations.domain_topics_operations#DomainTopicsOperations.{}',
+        operations_tmpl='azext_eventgrid.vendored_sdks.eventgrid.operations._domain_topics_operations#DomainTopicsOperations.{}',
         client_factory=domain_topics_factory,
         client_arg_name='self'
     )
 
     topic_type_mgmt_util = CliCommandType(
-        operations_tmpl='azext_eventgrid.vendored_sdks.eventgrid.operations.topic_types_operations#TopicTypesOperations.{}',
+        operations_tmpl='azext_eventgrid.vendored_sdks.eventgrid.operations._topic_types_operations#TopicTypesOperations.{}',
         client_factory=topic_types_factory,
+        client_arg_name='self'
+    )
+
+    private_endpoint_connections_mgmt_util = CliCommandType(
+        operations_tmpl='azext_eventgrid.vendored_sdks.eventgrid.operations._private_endpoint_connections_operations#PrivateEndpointConnectionsOperations.{}',
+        client_factory=private_endpoint_connections_factory,
+        client_arg_name='self'
+    )
+
+    private_link_resources_mgmt_util = CliCommandType(
+        operations_tmpl='azext_eventgrid.vendored_sdks.eventgrid.operations._private_link_resources_operations#PrivateLinkResourcesOperations.{}',
+        client_factory=private_link_resources_factory,
         client_arg_name='self'
     )
 
@@ -57,6 +78,24 @@ def load_command_table(self, _):
         g.custom_command('create', 'cli_domain_create_or_update')
         g.command('delete', 'delete')
         g.custom_command('update', 'cli_domain_update')
+
+    with self.command_group('eventgrid topic private-endpoint-connection', private_endpoint_connections_mgmt_util, client_factory=private_endpoint_connections_factory) as g:
+        g.custom_command('show', 'cli_topic_private_endpoint_connection_get')
+        g.custom_command('list', 'cli_topic_private_endpoint_connection_list')
+        g.custom_command('delete', 'cli_topic_private_endpoint_connection_delete')
+
+    with self.command_group('eventgrid domain private-endpoint-connection', private_endpoint_connections_mgmt_util, client_factory=private_endpoint_connections_factory) as g:
+        g.custom_command('show', 'cli_domain_private_endpoint_connection_get')
+        g.custom_command('list', 'cli_domain_private_endpoint_connection_list')
+        g.custom_command('delete', 'cli_domain_private_endpoint_connection_delete')
+
+    with self.command_group('eventgrid topic private-link-resource', private_link_resources_mgmt_util, client_factory=private_link_resources_factory) as g:
+        g.custom_command('show', 'cli_topic_private_link_resource_get')
+        g.custom_command('list', 'cli_topic_private_link_resource_list')
+
+    with self.command_group('eventgrid domain private-link-resource', private_link_resources_mgmt_util, client_factory=private_link_resources_factory) as g:
+        g.custom_command('show', 'cli_domain_private_link_resource_get')
+        g.custom_command('list', 'cli_domain_private_link_resource_list')
 
     custom_tmpl = 'azext_eventgrid.custom#{}'
     eventgrid_custom = CliCommandType(operations_tmpl=custom_tmpl)

@@ -35,6 +35,24 @@ input_schema_type = CLIArgumentType(
     arg_type=get_enum_type(['eventgridschema', 'customeventschema', 'cloudeventschemav1_0'], default='eventgridschema')
 )
 
+public_network_access_type = CLIArgumentType(
+    help="This determines if traffic is allowed over public network. By default it is enabled. You can further restrict to specific IPs by configuring.",
+    arg_type=get_enum_type(['enabled', 'disabled']),
+    options_list=['--public-network-access']
+)
+
+sku_type = CLIArgumentType(
+    help="The Sku name of the resource. The possible values are basic or premium.",
+    arg_type=get_enum_type(['basic', 'premium']),
+    options_list=['--sku']
+)
+
+identity_type = CLIArgumentType(
+    help="The identity type of the resource. The possible values are noidentity or systemassigned.",
+    arg_type=get_enum_type(['noidentity', 'systemassigned']),
+    options_list=['--identity']
+)
+
 input_mapping_fields_type = CLIArgumentType(
     help="When input-schema is specified as customeventschema, this parameter is used to specify input mappings based on field names. Specify space separated mappings in 'key=value' format. Allowed key names are 'id', 'topic', 'eventtime', 'subject', 'eventtype', 'dataversion'. The corresponding value names should specify the names of the fields in the custom input schema. If a mapping for either 'id' or 'eventtime' is not provided, Event Grid will auto-generate a default value for these two fields.",
     arg_type=tags_type
@@ -50,6 +68,12 @@ odata_query_type = CLIArgumentType(
     options_list=['--odata-query']
 )
 
+topic_name_type = CLIArgumentType(
+    help='Name of the topic.',
+    arg_type=name_type,
+    options_list=['--topic-name'],
+    completer=get_resource_name_completion_list('Microsoft.EventGrid/topics'))
+
 domain_name_type = CLIArgumentType(
     help='Name of the domain.',
     arg_type=name_type,
@@ -61,6 +85,20 @@ domain_topic_name_type = CLIArgumentType(
     arg_type=name_type,
     options_list=['--domain-topic-name'],
     completer=get_resource_name_completion_list('Microsoft.EventGrid/domains/topic'))
+
+
+private_endpoint_connection_name_type = CLIArgumentType(
+    help='Name of the private endpoint connection.',
+    arg_type=name_type,
+    options_list=['--private-endpoint-connection-name']
+)
+
+
+private_link_resource_name_type = CLIArgumentType(
+    help='Name of the private link resource.',
+    arg_type=name_type,
+    options_list=['--private-link-resource-name']
+)
 
 
 def load_arguments(self, _):    # pylint: disable=too-many-statements
@@ -84,8 +122,12 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
         c.argument('odata_query', arg_type=odata_query_type)
         c.argument('domain_name', arg_type=domain_name_type)
         c.argument('domain_topic_name', arg_type=domain_topic_name_type)
-        c.argument('allow_traffic_from_all_ips', arg_type=get_three_state_flag(), options_list=['--allow-traffic-from-all-ips'], help="Allow traffic from all IPs.")
+        c.argument('private_endpoint_connection_name', arg_type=private_endpoint_connection_name_type)
+        c.argument('private_link_resource_name', arg_type=private_link_resource_name_type)
+        c.argument('public_network_access', arg_type=public_network_access_type)
         c.argument('inbound_ip_rules', action=AddInboundIpRule, nargs='+')
+        c.argument('sku', arg_type=sku_type)
+        c.argument('identity', arg_type=identity_type)
 
     with self.argument_context('eventgrid topic') as c:
         c.argument('topic_name', arg_type=name_type, help='Name of the topic.', id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/topics'))
@@ -95,6 +137,20 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
 
     with self.argument_context('eventgrid topic list') as c:
         c.argument('odata_query', arg_type=odata_query_type, id_part=None)
+
+    with self.argument_context('eventgrid topic private-endpoint-connection') as c:
+        c.argument('topic_name', arg_type=topic_name_type, id_part='name')
+        c.argument('private_endpoint_connection_name', arg_type=private_endpoint_connection_name_type, options_list=['--name', '-n'], id_part='privateendpointconnections')
+
+    with self.argument_context('eventgrid topic private-endpoint-connection list') as c:
+        c.argument('topic_name', arg_type=topic_name_type, options_list=['--name', '-n'], id_part='name')
+
+    with self.argument_context('eventgrid topic private-link-resource') as c:
+        c.argument('topic_name', arg_type=topic_name_type, id_part='name')
+        c.argument('private_link_resource_name', arg_type=private_link_resource_name_type, options_list=['--name', '-n'], id_part='privatelinkresources')
+
+    with self.argument_context('eventgrid topic private-link-resource list') as c:
+        c.argument('topic_name', arg_type=topic_name_type, options_list=['--name', '-n'], id_part='name')
 
     with self.argument_context('eventgrid domain') as c:
         c.argument('domain_name', arg_type=domain_name_type, options_list=['--name', '-n'], id_part='name')
@@ -112,6 +168,20 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
     with self.argument_context('eventgrid domain topic list') as c:
         c.argument('domain_name', arg_type=domain_name_type, id_part=None)
         c.argument('odata_query', arg_type=odata_query_type, id_part=None)
+
+    with self.argument_context('eventgrid domain private-endpoint-connection') as c:
+        c.argument('domain_name', arg_type=domain_name_type, id_part='name')
+        c.argument('private_endpoint_connection_name', arg_type=private_endpoint_connection_name_type, options_list=['--name', '-n'], id_part='privateendpointconnections')
+
+    with self.argument_context('eventgrid domain private-endpoint-connection list') as c:
+        c.argument('domain_name', arg_type=domain_name_type, options_list=['--name', '-n'], id_part='name')
+
+    with self.argument_context('eventgrid domain private-link-resource') as c:
+        c.argument('domain_name', arg_type=domain_name_type, id_part='name')
+        c.argument('private_link_resource_name', arg_type=private_link_resource_name_type, options_list=['--name', '-n'], id_part='privatelinkresources')
+
+    with self.argument_context('eventgrid domain private-link-resource list') as c:
+        c.argument('domain_name', arg_type=domain_name_type, options_list=['--name', '-n'], id_part='name')
 
     with self.argument_context('eventgrid event-subscription') as c:
         c.argument('event_subscription_name', arg_type=name_type, help='Name of the event subscription.')

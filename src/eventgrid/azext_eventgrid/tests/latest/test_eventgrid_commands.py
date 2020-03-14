@@ -30,7 +30,7 @@ class EventGridTests(ScenarioTest):
 
     @ResourceGroupPreparer()
     def test_create_domain(self, resource_group):
-        endpoint_url = 'https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid?functionName=EventGridTrigger1&code=<HIDDEN>'
+        endpoint_url = 'https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid?functionName=EventGridTrigger1&code=an3f31ORDSQ/llPPTaUDJiEJGoebE9ha7dODRhb1nIyg/LiYLfSVCA=='
         endpoint_baseurl = 'https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid'
 
         domain_name = self.create_random_name(prefix='cli', length=40)
@@ -60,11 +60,15 @@ class EventGridTests(ScenarioTest):
             self.check('type', 'Microsoft.EventGrid/domains'),
             self.check('name', self.kwargs['domain_name']),
             self.check('provisioningState', 'Succeeded'),
+            self.check('sku', {'name': 'Basic'}),
+            self.check('identity', None)
         ]).get_output_in_json()['id']
 
         self.cmd('az eventgrid domain show --name {domain_name} --resource-group {rg}', checks=[
             self.check('type', 'Microsoft.EventGrid/domains'),
             self.check('name', self.kwargs['domain_name']),
+            self.check('sku', {'name': 'Basic'}),
+            self.check('identity', None)
         ])
 
         # Test various failure conditions
@@ -80,31 +84,55 @@ class EventGridTests(ScenarioTest):
             self.check('type', 'Microsoft.EventGrid/domains'),
             self.check('name', self.kwargs['domain_name2']),
             self.check('provisioningState', 'Succeeded'),
+            self.check('sku', {'name': 'Basic'}),
+            self.check('identity', None)
         ])
 
-        self.cmd('az eventgrid domain create --name {domain_name3} --resource-group {rg} --location {location} --input-schema Customeventschema --input-mapping-fields domain=mydomainField eventType=myEventTypeField topic=myTopic --input-mapping-default-values subject=DefaultSubject dataVersion=1.0', checks=[
-            self.check('type', 'Microsoft.EventGrid/domains'),
-            self.check('name', self.kwargs['domain_name3']),
-            self.check('provisioningState', 'Succeeded'),
-        ])
+        # Comment this test until we fix service side bug.
+        # self.cmd('az eventgrid domain create --name {domain_name3} --resource-group {rg} --location {location} --input-schema Customeventschema --input-mapping-fields domain=mydomainField eventType=myEventTypeField topic=myTopic --input-mapping-default-values subject=DefaultSubject dataVersion=1.0 --identity=NoidentiTY', checks=[
+        #    self.check('type', 'Microsoft.EventGrid/domains'),
+        #    self.check('name', self.kwargs['domain_name3']),
+        #    self.check('provisioningState', 'Succeeded'),
+        #    self.check('identity', None)
+        # ])
 
-        outputdomain = self.cmd('az eventgrid domain create --name {domain_name4} --resource-group {rg} --location {location} --allow-traffic-from-all-ips False --inbound-ip-rules 19.12.43.90/102 allow --inbound-ip-rules 19.12.43.70/81 allow').get_output_in_json()
+        outputdomain = self.cmd('az eventgrid domain create --name {domain_name4} --resource-group {rg} --location {location} --inbound-ip-rules 19.12.43.90/102 allow --inbound-ip-rules 19.12.43.70/81 allow --public-network-access disabled --sku preMIum --identity systemassigned').get_output_in_json()
         self.check(outputdomain['type'], 'Microsoft.EventGrid/domains')
         self.check(outputdomain['name'], self.kwargs['domain_name4'])
-        self.check(outputdomain['allowTrafficFromAllIps'], 'False')
+        self.check(outputdomain['publicNetworkAccess'], 'Disabled')
         self.check(outputdomain['inboundIpRules'][0], '19.12.43.90/102')
         self.check(outputdomain['inboundIpRules'][1], '19.12.43.70/81')
         self.check(outputdomain['provisioningState'], 'Succeeded')
+        self.check(outputdomain['sku'], 'Premium')
+        self.check(outputdomain['publicNetworkAccess'], 'Disabled')
+        self.check(outputdomain['identity'], 'SystemAssigned')
 
-        self.cmd('az eventgrid domain update --name {domain_name} --resource-group {rg} --tags Dept=IT', checks=[
-            self.check('name', self.kwargs['domain_name']),
+        self.cmd('az eventgrid domain update --name {domain_name4} --resource-group {rg} --tags Dept=IT --sku baSIc', checks=[
+            self.check('name', self.kwargs['domain_name4']),
             self.check('tags', {'Dept': 'IT'}),
+            self.check('sku', {'name': 'Basic'}),
+            self.check('type', 'Microsoft.EventGrid/domains'),
+            self.check('publicNetworkAccess', 'Disabled'),
+            self.check('provisioningState', 'Succeeded')
         ])
 
         self.cmd('az eventgrid domain list --resource-group {rg}', checks=[
             self.check('[0].type', 'Microsoft.EventGrid/domains'),
             self.check('[0].name', self.kwargs['domain_name']),
             self.check('[0].provisioningState', 'Succeeded')
+        ])
+
+        self.cmd('az eventgrid domain update --name {domain_name4} --resource-group {rg} --tags Dept=Finance --sku PREmiuM --identity NoIDENTIty', checks=[
+            self.check('name', self.kwargs['domain_name4']),
+            self.check('tags', {'Dept': 'Finance'}),
+            self.check('sku', {'name': 'Premium'}),
+            self.check('identity.type', 'None'),
+            self.check('identity.userAssignedIdentities', None),
+            self.check('identity.principalId', None),
+            self.check('identity.tenantId', None),
+            self.check('type', 'Microsoft.EventGrid/domains'),
+            self.check('publicNetworkAccess', 'Disabled'),
+            self.check('provisioningState', 'Succeeded')
         ])
 
         out2 = self.cmd('az eventgrid domain list --resource-group {rg} --odata-query "name eq \'{domain_name}\'"').get_output_in_json()
@@ -242,7 +270,7 @@ class EventGridTests(ScenarioTest):
 
     @ResourceGroupPreparer()
     def test_create_topic(self, resource_group):
-        endpoint_url = 'https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid?functionName=EventGridTrigger1&code=<HIDDEN>'
+        endpoint_url = 'https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid?functionName=EventGridTrigger1&code=an3f31ORDSQ/llPPTaUDJiEJGoebE9ha7dODRhb1nIyg/LiYLfSVCA=='
         endpoint_baseurl = 'https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid'
 
         topic_name = self.create_random_name(prefix='cli', length=40)
@@ -266,11 +294,15 @@ class EventGridTests(ScenarioTest):
             self.check('type', 'Microsoft.EventGrid/topics'),
             self.check('name', self.kwargs['topic_name']),
             self.check('provisioningState', 'Succeeded'),
+            self.check('sku', {'name': 'Basic'}),
+            self.check('identity', None)
         ]).get_output_in_json()['id']
 
         self.cmd('az eventgrid topic show --name {topic_name} --resource-group {rg}', checks=[
             self.check('type', 'Microsoft.EventGrid/topics'),
             self.check('name', self.kwargs['topic_name']),
+            self.check('sku', {'name': 'Basic'}),
+            self.check('identity', None)
         ])
 
         self.kwargs.update({
@@ -291,25 +323,48 @@ class EventGridTests(ScenarioTest):
             self.check('type', 'Microsoft.EventGrid/topics'),
             self.check('name', self.kwargs['topic_name2']),
             self.check('provisioningState', 'Succeeded'),
+            self.check('sku', {'name': 'Basic'})
         ])
 
-        self.cmd('az eventgrid topic create --name {topic_name3} --resource-group {rg} --location {location} --input-schema Customeventschema --input-mapping-fields topic=myTopicField eventType=myEventTypeField --input-mapping-default-values subject=DefaultSubject dataVersion=1.0', checks=[
-            self.check('type', 'Microsoft.EventGrid/topics'),
-            self.check('name', self.kwargs['topic_name3']),
-            self.check('provisioningState', 'Succeeded'),
-        ])
+        # commenting this out until we fix bug in service.
+        # self.cmd('az eventgrid topic create --name {topic_name3} --resource-group {rg} --location {location} --input-schema Customeventschema --input-mapping-fields topic=myTopicField eventType=myEventTypeField --input-mapping-default-values subject=DefaultSubject dataVersion=1.0 --identity noIDentitY', checks=[
+        #     self.check('type', 'Microsoft.EventGrid/topics'),
+        #     self.check('name', self.kwargs['topic_name3']),
+        #     self.check('provisioningState', 'Succeeded'),
+        #     self.check('identity', None)
+        # ])
 
-        outputtopic = self.cmd('az eventgrid topic create --name {topic_name4} --resource-group {rg} --location {location} --allow-traffic-from-all-ips False --inbound-ip-rules 19.12.43.90/102 allow --inbound-ip-rules 19.12.43.70/81 allow').get_output_in_json()
+        outputtopic = self.cmd('az eventgrid topic create --name {topic_name4} --resource-group {rg} --location {location} --public-network-access disabled --inbound-ip-rules 19.12.43.90/102 allow --inbound-ip-rules 19.12.43.70/81 allow --sku BASic --identity systemassigned').get_output_in_json()
         self.check(outputtopic['type'], 'Microsoft.EventGrid/topics')
         self.check(outputtopic['name'], self.kwargs['topic_name4'])
-        self.check(outputtopic['allowTrafficFromAllIps'], 'False')
+        self.check(outputtopic['publicNetworkAccess'], 'Disabled')
         self.check(outputtopic['inboundIpRules'][0], '19.12.43.90/102')
         self.check(outputtopic['inboundIpRules'][1], '19.12.43.70/81')
         self.check(outputtopic['provisioningState'], 'Succeeded')
+        self.check(outputtopic['sku'], 'Basic')
+        self.check(outputtopic['identity'], 'SystemAssigned')
 
-        self.cmd('az eventgrid topic update --name {topic_name} --resource-group {rg} --tags Dept=IT', checks=[
-            self.check('name', self.kwargs['topic_name']),
+        self.cmd('az eventgrid topic update --name {topic_name4} --resource-group {rg} --tags Dept=IT --sku PREMIUm', checks=[
+            self.check('name', self.kwargs['topic_name4']),
             self.check('tags', {'Dept': 'IT'}),
+            self.check('sku', {'name': 'Premium'}),
+            self.check('identity.type', 'SystemAssigned'),
+            self.check('type', 'Microsoft.EventGrid/topics'),
+            self.check('publicNetworkAccess', 'Disabled'),
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        self.cmd('az eventgrid topic update --name {topic_name4} --resource-group {rg} --tags Dept=Finance --sku BaSIC --identity NoIDENTIty', checks=[
+            self.check('name', self.kwargs['topic_name4']),
+            self.check('tags', {'Dept': 'Finance'}),
+            self.check('sku', {'name': 'Basic'}),
+            self.check('identity.type', 'None'),
+            self.check('identity.userAssignedIdentities', None),
+            self.check('identity.principalId', None),
+            self.check('identity.tenantId', None),
+            self.check('type', 'Microsoft.EventGrid/topics'),
+            self.check('publicNetworkAccess', 'Disabled'),
+            self.check('provisioningState', 'Succeeded')
         ])
 
         self.cmd('az eventgrid topic list --resource-group {rg}', checks=[
@@ -387,7 +442,7 @@ class EventGridTests(ScenarioTest):
     @unittest.skip('Will be re-enabled once global operations are enabled for 2020-01-01-preview API version')
     def test_create_event_subscriptions_to_arm_resource_group(self, resource_group):
         event_subscription_name = 'eventsubscription2'
-        endpoint_url = 'https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid?functionName=EventGridTrigger1&code=<HIDDEN>'
+        endpoint_url = 'https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid?functionName=EventGridTrigger1&code=an3f31ORDSQ/llPPTaUDJiEJGoebE9ha7dODRhb1nIyg/LiYLfSVCA=='
         endpoint_baseurl = 'https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid'
 
         scope = self.cmd('az group show -n {} -ojson'.format(resource_group)).get_output_in_json()['id']
@@ -458,7 +513,7 @@ class EventGridTests(ScenarioTest):
     @StorageAccountPreparer(name_prefix='clieventgrid', location='centraluseuap')
     def test_create_event_subscriptions_to_resource(self, resource_group, resource_group_location, storage_account):
         event_subscription_name = self.create_random_name(prefix='cli', length=40)
-        endpoint_url = 'https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid?functionName=EventGridTrigger1&code=<HIDDEN>'
+        endpoint_url = 'https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid?functionName=EventGridTrigger1&code=an3f31ORDSQ/llPPTaUDJiEJGoebE9ha7dODRhb1nIyg/LiYLfSVCA=='
         endpoint_baseurl = 'https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid'
 
         self.kwargs.update({
@@ -550,7 +605,7 @@ class EventGridTests(ScenarioTest):
     @StorageAccountPreparer(name_prefix='clieventgrid', location='centraluseuap')
     def test_create_event_subscriptions_with_filters(self, resource_group):
         event_subscription_name = 'eventsubscription2'
-        endpoint_url = 'https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid?functionName=EventGridTrigger1&code=<HIDDEN>'
+        endpoint_url = 'https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid?functionName=EventGridTrigger1&code=an3f31ORDSQ/llPPTaUDJiEJGoebE9ha7dODRhb1nIyg/LiYLfSVCA=='
         endpoint_baseurl = 'https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid'
 
         subject_ends_with = 'mysubject_suffix'
@@ -676,10 +731,10 @@ class EventGridTests(ScenarioTest):
         servicebustopic_endpoint_id = '/subscriptions/5b4b650e-28b9-4790-b3ab-ddbd88d727c4/resourceGroups/DevExpRg/providers/Microsoft.ServiceBus/namespaces/devexpservicebus/topics/devexptopic1'
         azurefunction_endpoint_id_cloudevent = '/subscriptions/5b4b650e-28b9-4790-b3ab-ddbd88d727c4/resourceGroups/DevExpRg/providers/Microsoft.Web/sites/eventgridclitestapp/functions/EventGridTrigger1'
 
-        endpoint_url = 'https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid?functionName=EventGridTrigger1&code=<HIDDEN>'
+        endpoint_url = 'https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid?functionName=EventGridTrigger1&code=an3f31ORDSQ/llPPTaUDJiEJGoebE9ha7dODRhb1nIyg/LiYLfSVCA=='
         endpoint_baseurl = 'https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid'
 
-        endpoint_url_for_validation = 'https://devexpfuncappdestination.azurewebsites.net/api/DevExpFunc?code=<HIDDEN>'
+        endpoint_url_for_validation = 'https://devexpfuncappdestination.azurewebsites.net/api/DevExpFunc?code=7jTiaEBVeYjC8X6gPDUhIhAnFRjaxZaGyS3hBbr09bmj3heQNhvrbA=='
         endpoint_baseurl_for_validation = 'https://devexpfuncappdestination.azurewebsites.net/api/DevExpFunc'
 
         # Make sure to replace these with proper values for re-recording the tests.
@@ -752,7 +807,7 @@ class EventGridTests(ScenarioTest):
 
     @ResourceGroupPreparer()
     def test_advanced_filters(self, resource_group):
-        endpoint_url = 'https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid?functionName=EventGridTrigger1&code=<HIDDEN>'
+        endpoint_url = 'https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid?functionName=EventGridTrigger1&code=an3f31ORDSQ/llPPTaUDJiEJGoebE9ha7dODRhb1nIyg/LiYLfSVCA=='
         endpoint_baseurl = 'https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid'
 
         topic_name = self.create_random_name(prefix='cli', length=40)
