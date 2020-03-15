@@ -13,7 +13,7 @@ from azure.cli.core.util import sdk_no_wait
 def create_storagesync_storage_sync_service(client,
                                             resource_group_name,
                                             storage_sync_service_name,
-                                            tags,
+                                            tags=None,
                                             location=None):
     body = {}
     body['location'] = location  # str

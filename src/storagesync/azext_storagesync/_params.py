@@ -27,7 +27,9 @@ def load_arguments(self, _):
                                            help='The name or ID of the storage account.',
                                            validator=parse_storage_account, id_part='name')
     storage_account_tenant_id_type = CLIArgumentType(help='The id of the tenant that the storage account is in.')
-    server_resource_id_type = CLIArgumentType(options_list=['--registered-server-id', '--server-id'], help='The resource id or GUID of the registered server.', validator=parse_server_id)
+    server_resource_id_type = CLIArgumentType(options_list=['--registered-server-id', '--server-id'],
+                                              help='The resource id or GUID of the registered server.',
+                                              validator=parse_server_id)
     server_id_type = CLIArgumentType(help='GUID identifying the on-premises server.')
 
     with self.argument_context('storagesync storage-sync-service create') as c:
@@ -35,7 +37,7 @@ def load_arguments(self, _):
         c.argument('storage_sync_service_name', storage_sync_service_name_type, options_list=['--name', '-n'])
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
-        c.argument('tags', tags_type)
+        c.argument('tags', tags_type, default={})  # tags must be at least an empty dictionary instead of None. (May be a bug in service and will check with service team.)
 
     with self.argument_context('storagesync storage-sync-service delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
