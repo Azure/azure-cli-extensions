@@ -20,6 +20,10 @@ def create_notificationhubs_namespace(cmd, client,
                                       sku_name,
                                       location=None,
                                       tags=None):
+    from knack.util import CLIError
+    check_result = client.check_availability(parameters={"name": namespace_name})
+    if check_result and not check_result.is_availiable:  # misspell inherited from swagger
+        raise CLIError("A Notification Hub Namespace with the name: {} already exists.".format(namespace_name))
     body = {}
     body['location'] = location  # str
     body['tags'] = tags  # dictionary
@@ -120,6 +124,13 @@ def create_notificationhubs_hub(cmd, client,
                                 location,
                                 tags=None,
                                 registration_ttl=None):
+    from knack.util import CLIError
+    check_result = client.check_notification_hub_availability(resource_group_name=resource_group_name,
+                                                              namespace_name=namespace_name,
+                                                              parameters={"name": notification_hub_name})
+    if check_result and not check_result.is_availiable:  # misspell inherited from swagger
+        raise CLIError("A Notification Hub with the name: {} already exists in {}.".format(notification_hub_name, namespace_name))
+
     body = {}
     body['location'] = location  # str
     body['tags'] = tags  # dictionary
