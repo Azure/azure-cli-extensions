@@ -43,7 +43,7 @@ def account_subscription_create_csp_subscription(cmd, client,
 
 def account_subscription_rename(cmd, client, subscription_id,
                                 body_subscription_name=None):
-    return client.rename(subscription_id=subscription_id,subscription_name=body_subscription_name)
+    return client.rename(subscription_id=subscription_id, subscription_name=body_subscription_name)
 
 
 def account_subscription_cancel(cmd, client, subscription_id):
