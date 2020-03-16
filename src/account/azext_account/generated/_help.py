@@ -22,7 +22,7 @@ helps['account subscription create-subscription'] = """
         text: |-
                az account subscription create-subscription --billing-account-name \\
                "0aa27f2b-ec7f-5a65-71f6-a5ff0897bd55:ae0dae1e-de9a-41f6-8257-76b055d98372_2019-05-31" \\
-               --billing-profile-name "27VR-HDWX-BG7-TGB" --cost-center "135366376" --body-display-name \\
+               --billing-profile-name "27VR-HDWX-BG7-TGB" --body-cost-center "135366376" --body-display-name \\
                "Contoso MCA subscription" --body-sku-id "0001" --invoice-section-name "JGF7-NSBG-PJA-TGB"
 """
 
@@ -32,10 +32,9 @@ helps['account subscription create-subscription-in-enrollment-account'] = """
     examples:
       - name: createSubscription
         text: |-
-               az account subscription create-subscription-in-enrollment-account --display-name \\
+               az account subscription create-subscription-in-enrollment-account --body-display-name \\
                "Test Ea Azure Sub" --offer-type "MS-AZR-0017P" --enrollment-account-name \\
-               "73f8ab6e-cfa0-42be-b886-be6e77c2980c" --body-display-name "My Subscription" \\
-               --body-sku-id sku-id
+               "73f8ab6e-cfa0-42be-b886-be6e77c2980c" --body-sku-id sku-id
 """
 
 helps['account subscription create-csp-subscription'] = """
