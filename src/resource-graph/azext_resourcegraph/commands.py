@@ -15,5 +15,16 @@ def load_command_table(self, _):
         client_factory=cf_resource_graph
     )
 
-    with self.command_group('graph', command_type=graph_sdk, client_factory=cf_resource_graph) as g:
+    graph_shared_query_sdk = CliCommandType(
+        operations_tmpl='azext_resourcegraph.vendored_sdks.resourcegraph.operations#GraphQueryOperations.{}',
+        client_factory=cf_resource_graph
+    )
+
+    with self.command_group('graph', client_factory=cf_resource_graph) as g:
         g.custom_command('query', 'execute_query', validator=validate_query_args)
+
+    with self.command_group('graph shared-query', graph_shared_query_sdk) as g:
+        g.custom_command('create', 'create_shared_query')
+        g.command('list', 'list')
+        g.command('delete', 'delete')
+        g.command('show', 'get')

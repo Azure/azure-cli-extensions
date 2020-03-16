@@ -87,6 +87,16 @@ def execute_query(client, graph_query, first, skip, subscriptions, include):
     return results
 
 
+def create_shared_query(client, resource_group_name, resource_name, description, graph_query, tags=None):
+    from azext_resourcegraph.vendored_sdks.resourcegraph.models import GraphQueryResource
+    graph_shared_query = GraphQueryResource(description=description,
+                                            query=graph_query,
+                                            tags=tags)
+    return client.graph_query.create_or_update(resource_group_name=resource_group_name,
+                                               resource_name=resource_name,
+                                               properties=graph_shared_query)
+
+
 def _get_cached_subscriptions():
     # type: () -> list[str]
 
