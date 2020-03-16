@@ -55,7 +55,7 @@ helps['account subscription rename'] = """
     examples:
       - name: renameSubscription
         text: |-
-               az account subscription rename
+               az account subscription rename --subscription-id xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 """
 
 helps['account subscription cancel'] = """
@@ -64,7 +64,7 @@ helps['account subscription cancel'] = """
     examples:
       - name: cancelSubscription
         text: |-
-               az account subscription cancel
+               az account subscription cancel --subscription-id xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 """
 
 helps['account subscription enable'] = """
@@ -73,7 +73,7 @@ helps['account subscription enable'] = """
     examples:
       - name: enableSubscription
         text: |-
-               az account subscription enable
+               az account subscription enable --subscription-id xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 """
 
 helps['account subscription-operation'] = """
