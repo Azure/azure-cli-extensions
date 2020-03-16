@@ -24,3 +24,8 @@ Release History
 0.4.1
 ++++++
 * Fixed small bugs
+
+0.4.2
+++++++
+* Updated code to work with App Service updates
+* Removed maxcli version
