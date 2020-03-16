@@ -16,7 +16,7 @@ helps['stream-analytics job'] = """
 
 helps['stream-analytics job create'] = """
     type: command
-    short-summary: Creates a streaming job or replaces an already existing streaming job.
+    short-summary: Create a streaming job or replaces an already existing streaming job.
     examples:
       - name: Create a streaming job
         text: |-
@@ -27,7 +27,7 @@ helps['stream-analytics job create'] = """
 
 helps['stream-analytics job update'] = """
     type: command
-    short-summary: Updates existing streaming job.
+    short-summary: Update existing streaming job.
     examples:
       - name: Update a streaming job
         text: |-
@@ -37,7 +37,7 @@ helps['stream-analytics job update'] = """
 
 helps['stream-analytics job delete'] = """
     type: command
-    short-summary: Deletes a streaming job.
+    short-summary: Delete a streaming job.
     examples:
       - name: Delete a streaming job
         text: |-
@@ -46,7 +46,7 @@ helps['stream-analytics job delete'] = """
 
 helps['stream-analytics job show'] = """
     type: command
-    short-summary: Gets details about the specified streaming job.
+    short-summary: Get details about the specified streaming job.
     examples:
       - name: Get a streaming job
         text: |-
@@ -58,7 +58,7 @@ helps['stream-analytics job show'] = """
 
 helps['stream-analytics job list'] = """
     type: command
-    short-summary: Lists all of the streaming jobs in the specified resource group.
+    short-summary: List all of the streaming jobs in the specified resource group.
     examples:
       - name: List all streaming jobs in current subscription
         text: |-
@@ -73,7 +73,7 @@ helps['stream-analytics job list'] = """
 
 helps['stream-analytics job start'] = """
     type: command
-    short-summary: Starts a streaming job.
+    short-summary: Start a streaming job.
     examples:
       - name: Start a streaming job with LastOutputEventTime output start mode
         text: |-
@@ -88,7 +88,7 @@ helps['stream-analytics job start'] = """
 
 helps['stream-analytics job stop'] = """
     type: command
-    short-summary: Stops a running streaming job.
+    short-summary: Stop a running streaming job.
     examples:
       - name: Stop a streaming job
         text: |-
@@ -102,7 +102,7 @@ helps['stream-analytics input'] = """
 
 helps['stream-analytics input create'] = """
     type: command
-    short-summary: Creates an input or replaces an already existing input under an existing streaming job.
+    short-summary: Create an input or replaces an already existing input under an existing streaming job.
     examples:
       - name: Create an input
         text: |-
@@ -171,7 +171,7 @@ helps['stream-analytics input create'] = """
 
 helps['stream-analytics input delete'] = """
     type: command
-    short-summary: Deletes an input from the streaming job.
+    short-summary: Delete an input from the streaming job.
     examples:
       - name: Delete an input
         text: |-
@@ -180,7 +180,7 @@ helps['stream-analytics input delete'] = """
 
 helps['stream-analytics input show'] = """
     type: command
-    short-summary: Gets details about the specified input.
+    short-summary: Get details about the specified input.
     examples:
       - name: Get details about specified input
         text: |-
@@ -189,7 +189,7 @@ helps['stream-analytics input show'] = """
 
 helps['stream-analytics input list'] = """
     type: command
-    short-summary: Lists all of the inputs under the specified streaming job.
+    short-summary: List all of the inputs under the specified streaming job.
     examples:
       - name: List all inputs in a streaming job
         text: |-
@@ -198,7 +198,7 @@ helps['stream-analytics input list'] = """
 
 helps['stream-analytics input test'] = """
     type: command
-    short-summary: Tests whether an input’s datasource is reachable and usable by the Azure Stream Analytics service.
+    short-summary: Test an input.
     examples:
       - name: Test the connection for an input
         text: |-
@@ -212,7 +212,7 @@ helps['stream-analytics output'] = """
 
 helps['stream-analytics output create'] = """
     type: command
-    short-summary: Creates an output or replaces an already existing output under an existing streaming job.
+    short-summary: Create an output or replaces an already existing output under an existing streaming job.
     examples:
       - name: Create an output
         text: |-
@@ -363,7 +363,7 @@ helps['stream-analytics output create'] = """
 
 helps['stream-analytics output delete'] = """
     type: command
-    short-summary: Deletes an output from the streaming job.
+    short-summary: Delete an output from the streaming job.
     examples:
       - name: Delete an output
         text: |-
@@ -373,7 +373,7 @@ helps['stream-analytics output delete'] = """
 
 helps['stream-analytics output show'] = """
     type: command
-    short-summary: Gets details about the specified output.
+    short-summary: Get details about the specified output.
     examples:
       - name: Get details about an output
         text: |-
@@ -383,7 +383,7 @@ helps['stream-analytics output show'] = """
 
 helps['stream-analytics output list'] = """
     type: command
-    short-summary: Lists all of the outputs under the specified streaming job.
+    short-summary: List all of the outputs under the specified streaming job.
     examples:
       - name: List all outputs in a streaming job
         text: |-
@@ -392,7 +392,7 @@ helps['stream-analytics output list'] = """
 
 helps['stream-analytics output test'] = """
     type: command
-    short-summary: Tests an output
+    short-summary: Test an output
     examples:
       - name: Test the connection for an output
         text: |-
@@ -407,7 +407,7 @@ helps['stream-analytics transformation'] = """
 
 helps['stream-analytics transformation create'] = """
     type: command
-    short-summary: Creates a transformation or replaces an already existing transformation under an existing streaming job.
+    short-summary: Create a transformation or replaces an already existing transformation under an existing streaming job.
     examples:
       - name: Create a transformation
         text: |-
@@ -417,7 +417,7 @@ helps['stream-analytics transformation create'] = """
 
 helps['stream-analytics transformation update'] = """
     type: command
-    short-summary: Updates transformation under an existing streaming job.
+    short-summary: Update transformation under an existing streaming job.
     examples:
       - name: Update a transformation
         text: |-
@@ -427,7 +427,7 @@ helps['stream-analytics transformation update'] = """
 
 helps['stream-analytics transformation show'] = """
     type: command
-    short-summary: Gets details about the specified transformation.
+    short-summary: Get details about the specified transformation.
     examples:
       - name: Get a transformation
         text: |-
@@ -442,7 +442,7 @@ helps['stream-analytics function'] = """
 
 helps['stream-analytics function create'] = """
     type: command
-    short-summary: Creates a function or replaces an already existing function under an existing streaming job.
+    short-summary: Create a function or replaces an already existing function under an existing streaming job.
     examples:
       - name: Create a function
         text: |-
@@ -495,7 +495,7 @@ helps['stream-analytics function create'] = """
 
 helps['stream-analytics function delete'] = """
     type: command
-    short-summary: Deletes a function from the streaming job.
+    short-summary: Delete a function from the streaming job.
     examples:
       - name: Delete a function
         text: |-
@@ -505,7 +505,7 @@ helps['stream-analytics function delete'] = """
 
 helps['stream-analytics function show'] = """
     type: command
-    short-summary: Gets details about the specified function.
+    short-summary: Get details about the specified function.
     examples:
       - name: Get details about a function
         text: |-
@@ -515,7 +515,7 @@ helps['stream-analytics function show'] = """
 
 helps['stream-analytics function list'] = """
     type: command
-    short-summary: Lists all of the functions under the specified streaming job.
+    short-summary: List all of the functions under the specified streaming job.
     examples:
       - name: List all functions in a streaming job
         text: |-
@@ -524,7 +524,7 @@ helps['stream-analytics function list'] = """
 
 helps['stream-analytics function test'] = """
     type: command
-    short-summary: Tests if the information provided for a function is valid.
+    short-summary: Test if the information provided for a function is valid.
     examples:
       - name: Test the connection for a function
         text: |-
@@ -539,7 +539,7 @@ helps['stream-analytics quota'] = """
 
 helps['stream-analytics quota show'] = """
     type: command
-    short-summary: Retrieves quota information in a particular region.
+    short-summary: Retrieve quota information in a particular region.
     examples:
       - name: List quota information in West US
         text: |-

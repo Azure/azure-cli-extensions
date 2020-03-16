@@ -25,6 +25,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_stream_analytics_job')
         g.custom_command('start', 'start_stream_analytics_job', validator=validate_streaming_job_start, supports_no_wait=True)
         g.custom_command('stop', 'stop_stream_analytics_job', supports_no_wait=True)
+        g.wait_command('wait')
 
     from ._client_factory import cf_inputs
     stream_analytics_inputs = CliCommandType(
@@ -36,6 +37,7 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'get_stream_analytics_input')
         g.custom_command('list', 'list_stream_analytics_input')
         g.custom_command('test', 'test_stream_analytics_input', supports_no_wait=True)
+        g.wait_command('wait')
 
     from ._client_factory import cf_outputs
     stream_analytics_outputs = CliCommandType(
@@ -47,6 +49,7 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'get_stream_analytics_output')
         g.custom_command('list', 'list_stream_analytics_output')
         g.custom_command('test', 'test_stream_analytics_output', supports_no_wait=True)
+        g.wait_command('wait')
 
     from ._client_factory import cf_transformations
     stream_analytics_transformations = CliCommandType(
@@ -67,6 +70,7 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'get_stream_analytics_function')
         g.custom_command('list', 'list_stream_analytics_function')
         g.custom_command('test', 'test_stream_analytics_function', supports_no_wait=True)
+        g.wait_command('wait')
 
     from ._client_factory import cf_subscriptions
     stream_analytics_subscriptions = CliCommandType(
