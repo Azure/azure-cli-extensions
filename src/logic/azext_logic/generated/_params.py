@@ -289,7 +289,9 @@ def load_arguments(self, _):
     with self.argument_context('logic integration-account update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('integration_account_name', help='The integration account name.')
-        c.argument('integration_account', help='The integration account.', action=AddIntegrationAccount, nargs='+')
+        c.argument('sku', options_list=['--sku'], help='SKU of the integration account')
+        c.argument('tags', tags_type, options_list=['--tags'])
+        #c.argument('integration_account', help='The integration account.', action=AddIntegrationAccount, nargs='+')
 
     with self.argument_context('logic integration-account delete') as c:
         c.argument('resource_group_name', resource_group_name_type)

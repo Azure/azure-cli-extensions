@@ -303,7 +303,7 @@ class IntegrationAccountOperations(object):
         self,
         resource_group_name,  # type: str
         integration_account_name,  # type: str
-        integration_account,  # type: "models.IntegrationAccount"
+        update,  # type: "models.IntegrationAccount"
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.IntegrationAccount"
@@ -342,11 +342,7 @@ class IntegrationAccountOperations(object):
         header_parameters['Accept'] = 'application/json'
         header_parameters['Content-Type'] = 'application/json'
 
-        # Construct body
-        body_content = self._serialize.body(integration_account, 'IntegrationAccount')
-
-        # Construct and send request
-        request = self._client.patch(url, query_parameters, header_parameters, body_content)
+        request = self._client.patch(url, query_parameters, header_parameters, update)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 

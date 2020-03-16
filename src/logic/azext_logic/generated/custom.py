@@ -371,8 +371,16 @@ def logic_integration_account_create(cmd, client,
 def logic_integration_account_update(cmd, client,
                                      resource_group_name,
                                      integration_account_name,
-                                     integration_account):
-    return client.update(resource_group_name=resource_group_name, integration_account_name=integration_account_name, integration_account=integration_account)
+                                     sku=None,
+                                     tags=None):
+    update_dict = {}
+    if sku:
+        update_dict['sku'] = {"name": sku}
+    if tags:
+        update_dict['tags'] = tags
+    if not update_dict:
+        raise CLIError("Nothing to update. Either --sku or --tags must be specfied")
+    return client.update(resource_group_name=resource_group_name, integration_account_name=integration_account_name, update=update_dict)
 
 
 def logic_integration_account_delete(cmd, client,
