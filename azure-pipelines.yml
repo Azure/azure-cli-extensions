@@ -5,7 +5,12 @@ trigger:
   batch: true
   branches:
     include:
-    - '*'
+      - '*'
+
+pr:
+  branches:
+    include:
+      - '*'
 
 jobs:
 - job: CredScan
