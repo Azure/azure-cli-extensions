@@ -274,36 +274,31 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name,
     if no_wait is True:
         print("Resource creation request accepted. Please run 'kubectl get pods -n azure-arc' to see whether the pods are in a running state and run 'az connectedk8s show -g {} -n {}' to check if the resource was created successfully".format(resource_group_name, cluster_name))
         return
-    time.sleep(5)
-    print()
-    
-    # Checking pod status 
+
+    # Checking availability of connect agent containers
     api_instance = kubernetes.client.CoreV1Api(kubernetes.client.ApiClient(configuration))
     namespace = 'azure-arc'
-    connect_agent_state = None
-    timeout = time.time() + 120
-    found_running = 0
-    while connect_agent_state is None:
+    timeout = time.time() + 180
+    container_available = False
+    while container_available is False:
         if(time.time()>timeout):
             break
         try:
             api_response = api_instance.list_namespaced_pod(namespace)
-            #print(api_response.items)
         except ApiException as e:
             print("Exception when calling CoreV1Api->list_namespaced_pod: %s\n" % e)
         for pod in api_response.items:
-            for container_status in pod.status.container_statuses:
-                if container_status.name == 'connect-agent':
-                    connect_agent_state = container_status.state.running
-                    if connect_agent_state is not None:
-                        found_running = found_running + 1
-                        time.sleep(2)
-        if found_running > 5:
-            break
-        else:
-            connect_agent_state = None
-    if connect_agent_state is None:
-        raise CLIError("There was a problem with connect-agent deployment. Please run 'kubectl -n azure-arc logs -l app.kubernetes.io/component=connect-agent' to debug the error.")
+            if pod.metadata.name.startswith('connect-agent'):
+                if pod.status.container_statuses is not None:
+                    # Checking container status of connect agent pod 
+                    check_pod_status(api_instance=api_instance, namespace=namespace, configuration=configuration)
+                    container_available = True
+                    break
+                else:
+                    time.sleep(5)
+                break
+    if container_available is False:
+        raise CLIError("Unable to get container status of the connect agent pod. Please run 'kubectl get pods -n azure-arc' to check whether pods are in running state.")
 
     # Checking the status of connected cluster resource
     max_retry = 30
@@ -318,7 +313,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name,
             else:
                 raise ex
     if ('not found' in retry_exception.message or 'Not Found' in retry_exception.message):
-        raise CLIError("Resource Creation Failed. Please run 'kubectl get pods -n azure-arc' to see whether the connect agent pod is in running state. If not, run 'kubectl -n azure-arc logs -l app.kubernetes.io/component=connect-agent' to debug the error.")
+        raise CLIError("Resource Creation Failed. Please run 'kubectl get pods -n azure-arc' to see whether the connect agent pod is in running state. If not, run 'kubectl -n azure-arc logs -l app.kubernetes.io/component=connect-agent -c connect-agent' to debug the error.")
     else:
         raise retry_exception
 
@@ -380,6 +375,35 @@ def list_owned_objects(client, object_type=None):
     if object_type:
         result = [r for r in result if r.object_type and r.object_type.lower() == object_type.lower()]
     return result
+
+def check_pod_status(api_instance, namespace, configuration):
+    connect_agent_state = None
+    timeout = time.time() + 300
+    found_running = 0
+    while connect_agent_state is None:
+        if(time.time()>timeout):
+            break
+        try:
+            api_response = api_instance.list_namespaced_pod(namespace)
+            #print(api_response.items)
+        except ApiException as e:
+            print("Exception when calling CoreV1Api->list_namespaced_pod: %s\n" % e)
+        for pod in api_response.items:
+            if pod.metadata.name.startswith('connect-agent'):
+                for container_status in pod.status.container_statuses:
+                    if container_status.name == 'connect-agent':
+                        connect_agent_state = container_status.state.running
+                        if connect_agent_state is not None:
+                            found_running = found_running + 1
+                            time.sleep(3)
+                        break
+                break
+        if found_running > 5:
+            break
+        else:
+            connect_agent_state = None
+    if connect_agent_state is None:
+        raise CLIError("There was a problem with connect-agent deployment. Please run 'kubectl -n azure-arc logs -l app.kubernetes.io/component=connect-agent -c connect-agent' to debug the error.")
 
 
 def get_connectedk8s(cmd, client, resource_group_name, cluster_name):
