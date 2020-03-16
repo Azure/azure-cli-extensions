@@ -239,6 +239,15 @@ def validate_user(namespace):
         raise CLIError("--user can only be clusterUser or clusterMonitoringUser")
 
 
+def validate_vnet_subnet_id(namespace):
+    if namespace.vnet_subnet_id is not None:
+        if namespace.vnet_subnet_id == '':
+            return
+        from msrestazure.tools import is_valid_resource_id
+        if not is_valid_resource_id(namespace.vnet_subnet_id):
+            raise CLIError("--vnet-subnet-id is not a valid Azure resource ID.")
+
+
 def validate_load_balancer_outbound_ports(namespace):
     """validate load balancer profile outbound allocated ports"""
     if namespace.load_balancer_outbound_ports is not None:
