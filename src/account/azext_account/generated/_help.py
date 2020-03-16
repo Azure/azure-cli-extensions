@@ -33,8 +33,8 @@ helps['account subscription create-subscription-in-enrollment-account'] = """
       - name: createSubscription
         text: |-
                az account subscription create-subscription-in-enrollment-account --body-display-name \\
-               "Test Ea Azure Sub" --offer-type "MS-AZR-0017P" --enrollment-account-name \\
-               "73f8ab6e-cfa0-42be-b886-be6e77c2980c" --body-sku-id sku-id
+               "Test Ea Azure Sub" --body-offer-type "MS-AZR-0017P" --enrollment-account-name \\
+               "73f8ab6e-cfa0-42be-b886-be6e77c2980c"
 """
 
 helps['account subscription create-csp-subscription'] = """
