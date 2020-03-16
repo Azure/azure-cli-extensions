@@ -2,6 +2,9 @@
 
 Release History
 ===============
+0.4.35
++++++
+* Adding --uptime-sla for paid service
 
 0.4.34
 +++++

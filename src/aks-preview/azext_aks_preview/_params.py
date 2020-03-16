@@ -84,6 +84,7 @@ def load_arguments(self, _):
         c.argument('workspace_resource_id')
         c.argument('skip_subnet_role_assignment', action='store_true')
         c.argument('enable_cluster_autoscaler', action='store_true')
+        c.argument('uptime_sla', action='store_true')
         c.argument('cluster_autoscaler_profile', nargs='+', validator=validate_cluster_autoscaler_profile)
         c.argument('min_count', type=int, validator=validate_nodes_count)
         c.argument('max_count', type=int, validator=validate_nodes_count)
