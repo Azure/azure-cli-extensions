@@ -11,6 +11,7 @@ def cf_account(cli_ctx, *_):
                                     subscription_bound=False,
                                     base_url_bound=False)[0]
 
+
 def cf_subscription(cli_ctx, *_):
     return cf_account(cli_ctx).subscription
 
