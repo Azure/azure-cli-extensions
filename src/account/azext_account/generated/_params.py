@@ -41,12 +41,15 @@ def load_arguments(self, _):
         c.argument('body_reseller_id', help='Reseller ID, basically MPN Id.')
 
     with self.argument_context('account subscription rename') as c:
+        c.argument('subscription_id', help='Subscription ID')
         c.argument('body_subscription_name', help='New subscription name')
 
     with self.argument_context('account subscription cancel') as c:
+        c.argument('subscription_id', help='Subscription ID')
         pass
 
     with self.argument_context('account subscription enable') as c:
+        c.argument('subscription_id', help='Subscription ID')
         pass
 
     with self.argument_context('account subscription-operation show') as c:
