@@ -46,11 +46,9 @@ def load_arguments(self, _):
 
     with self.argument_context('account subscription cancel') as c:
         c.argument('subscription_id', help='Subscription ID')
-        pass
 
     with self.argument_context('account subscription enable') as c:
         c.argument('subscription_id', help='Subscription ID')
-        pass
 
     with self.argument_context('account subscription-operation show') as c:
         c.argument('operation_id', help='The operation ID, which can be found from the Location field in the generate recommendation response header.')
