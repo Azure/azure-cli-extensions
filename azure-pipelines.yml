@@ -5,18 +5,12 @@ trigger:
   batch: true
   branches:
     include:
-      - master
-      - feature/*
-      - hotfix/*
-      - release/*
+      - '*'
 
 pr:
   branches:
     include:
-      - master
-      - feature/*
-      - hotfix/*
-      - release/*
+      - '*'
 
 jobs:
 - job: CredScan
