@@ -49,20 +49,21 @@ from azure.graphrbac.models import (ApplicationCreateParameters,
                                     KeyCredential,
                                     ServicePrincipalCreateParameters,
                                     GetObjectsParameters)
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_02_01.models import ContainerServiceLinuxProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_02_01.models import ManagedClusterWindowsProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_02_01.models import ContainerServiceNetworkProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_02_01.models import ManagedClusterServicePrincipalProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_02_01.models import ContainerServiceSshConfiguration
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_02_01.models import ContainerServiceSshPublicKey
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_02_01.models import ManagedCluster
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_02_01.models import ManagedClusterAADProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_02_01.models import ManagedClusterAddonProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_02_01.models import ManagedClusterAgentPoolProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_02_01.models import AgentPool
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_02_01.models import ContainerServiceStorageProfileTypes
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_02_01.models import ManagedClusterIdentity
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_02_01.models import ManagedClusterAPIServerAccessProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ContainerServiceLinuxProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterWindowsProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ContainerServiceNetworkProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterServicePrincipalProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ContainerServiceSshConfiguration
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ContainerServiceSshPublicKey
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedCluster
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterAADProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterAddonProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterAgentPoolProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import AgentPool
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ContainerServiceStorageProfileTypes
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterIdentity
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterAPIServerAccessProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterSKU
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
@@ -735,6 +736,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                generate_ssh_keys=False,  # pylint: disable=unused-argument
                enable_pod_security_policy=False,
                node_resource_group=None,
+               uptime_sla=False,
                attach_acr=None,
                enable_private_cluster=False,
                enable_managed_identity=False,
@@ -784,6 +786,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         count=int(node_count),
         vm_size=node_vm_size,
         os_type="Linux",
+        mode="System",
         vnet_subnet_id=vnet_subnet_id,
         availability_zones=node_zones,
         max_pods=int(max_pods) if max_pods else None,
@@ -981,6 +984,12 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             raise CLIError("Please use standard load balancer for private cluster")
         mc.api_server_access_profile = ManagedClusterAPIServerAccessProfile(
             enable_private_cluster=True
+        )
+
+    if uptime_sla:
+        mc.sku = ManagedClusterSKU(
+            name="Basic",
+            tier="Paid"
         )
 
     headers = {}
