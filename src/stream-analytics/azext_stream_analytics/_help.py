@@ -95,6 +95,15 @@ helps['stream-analytics job stop'] = """
                az stream-analytics job stop --resource-group MyResourceGroup --name MyJobName
 """
 
+helps['stream-analytics job wait'] = """
+type: command
+short-summary: Place the CLI in a waiting state until a condition of the streaming job is met.
+examples:
+  - name: Pause executing next line of CLI script until the streaming job is successfully provisioned.
+    text: |
+        az stream-analytics job wait --resource-group MyResourceGroup --name MyJobName --created
+"""
+
 helps['stream-analytics input'] = """
     type: group
     short-summary: Commands to manage stream-analytics input.

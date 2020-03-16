@@ -74,6 +74,9 @@ def load_arguments(self, _):
     with self.argument_context('stream-analytics job stop') as c:
         c.argument('name', options_list=['--name', '-n'], help='The name of the streaming job.')
 
+    with self.argument_context('stream-analytics job wait') as c:
+        c.argument('job_name', options_list=['--name', '-n'], help='The name of the streaming job.')
+
     with self.argument_context('stream-analytics input create') as c:
         c.argument('job_name', id_part='name', help='The name of the streaming job.')
         c.argument('name', id_part='child_name_1', options_list=['--name', '-n'], help='The name of the input.')
