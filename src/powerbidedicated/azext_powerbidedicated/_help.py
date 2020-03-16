@@ -25,7 +25,7 @@ helps['powerbi embedded-capacity create'] = """
       - name: Create a new PowerBI embedded capacity.
         text: |-
                az powerbi embedded-capacity create --resource-group "TestRG" --name "azsdktest" \\
-               ---location eastus -sku-name "A1" --sku-tier "PBIE_Azure" --administration-members \\
+               --location eastus --sku-name "A1" --sku-tier "PBIE_Azure" --administration-members \\
                "azsdktest@microsoft.com" "azsdktest2@microsoft.com"
       - name: Create a new PowerBI embedded capacity without waiting.
         text: |-
