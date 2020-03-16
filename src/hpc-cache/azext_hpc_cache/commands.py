@@ -31,15 +31,16 @@ def load_command_table(self, _):
         operations_tmpl='azext_hpc_cache.vendored_sdks.storagecache.operations._caches_operations#CachesOperations.{}',
         client_factory=cf_caches)
     with self.command_group('hpc-cache', hpc_cache_caches, client_factory=cf_caches) as g:
-        g.custom_command('create', 'create_hpc_cache')
+        g.custom_command('create', 'create_hpc_cache', supports_no_wait=True)
         g.custom_command('update', 'update_hpc_cache')
-        g.custom_command('delete', 'delete_hpc_cache')
+        g.custom_command('delete', 'delete_hpc_cache', supports_no_wait=True)
         g.custom_show_command('show', 'get_hpc_cache')
         g.custom_command('list', 'list_hpc_cache')
         g.custom_command('flush', 'flush_hpc_cache')
-        g.custom_command('start', 'start_hpc_cache')
-        g.custom_command('stop', 'stop_hpc_cache')
+        g.custom_command('start', 'start_hpc_cache', supports_no_wait=True)
+        g.custom_command('stop', 'stop_hpc_cache', supports_no_wait=True)
         g.custom_command('upgrade-firmware', 'upgrade_firmware_hpc_cache')
+        g.wait_command('wait')
 
     from ._client_factory import cf_storage_targets
     hpc_cache_storage_targets = CliCommandType(
@@ -51,7 +52,7 @@ def load_command_table(self, _):
 
     with self.command_group('hpc-cache storage-target', hpc_cache_storage_targets, client_factory=cf_storage_targets) as g:
         g.custom_command('remove', 'delete_hpc_cache_storage_target')
-        g.custom_command('show', 'create_hpc_cache_blob_storage_target')
+        g.custom_command('show', 'get_hpc_cache_storage_target')
         g.custom_command('list', 'list_hpc_cache_storage_target')
 
     with self.command_group('hpc-cache nfs-storage-target', hpc_cache_storage_targets, client_factory=cf_storage_targets) as g:
