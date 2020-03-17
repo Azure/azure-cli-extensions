@@ -6,7 +6,6 @@
 from azure.cli.core import AzCommandsLoader
 
 
-
 class SubscriptionClientCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
