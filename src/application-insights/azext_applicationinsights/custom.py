@@ -7,8 +7,8 @@
 
 from knack.util import CLIError
 from knack.log import get_logger
-from .util import get_id_from_azure_resource, get_query_targets, get_timespan, get_linked_properties
 from azext_applicationinsights.vendored_sdks.applicationinsights.models import ErrorResponseException
+from .util import get_id_from_azure_resource, get_query_targets, get_timespan, get_linked_properties
 
 logger = get_logger(__name__)
 
@@ -22,7 +22,7 @@ def execute_query(cmd, client, application, analytics_query, start_time=None, en
     except ErrorResponseException as ex:
         if "PathNotFoundError" in ex.message:
             raise ValueError("The Application Insight is not found. Please check the app id again.")
-        raise(ex)
+        raise ex
 
 
 def get_events(cmd, client, application, event_type, event=None, start_time=None, end_time=None, offset='1h', resource_group_name=None):
