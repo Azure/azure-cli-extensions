@@ -189,7 +189,7 @@ helps['monitor app-insights query'] = """
     examples:
       - name: Execute a simple query over past 3.5 days.
         text: |
-          az monitor app-insights query --app e292531c-eb03-4079-9bb0-fe6b56b99f8b --analytics-query 'requests | summarize count() by bin(timestamp, 1h)' --offset P3DT12H
+          az monitor app-insights query --app e292531c-eb03-4079-9bb0-fe6b56b99f8b --analytics-query 'requests | summarize count() by bin(timestamp, 1h)' --offset 1h5m
 """
 
 helps['monitor app-insights metrics show'] = """
