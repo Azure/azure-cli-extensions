@@ -9,20 +9,6 @@
 from knack.help_files import helps  # pylint: disable=unused-import
 
 
-helps['hpc-cache operation'] = """
-    type: group
-    short-summary: Commands to manage hpc cache operation.
-"""
-
-helps['hpc-cache operation list'] = """
-    type: command
-    short-summary: Lists all of the available Resource Provider operations.
-    examples:
-      - name: StorageTargets_List
-        text: |-
-               az hpc-cache operation list
-"""
-
 helps['hpc-cache skus'] = """
     type: group
     short-summary: Commands to manage hpc cache skus.
@@ -110,15 +96,6 @@ helps['hpc-cache list'] = """
                az hpc-cache list --resource-group "scgroup"
 """
 
-helps['hpc-cache flush'] = """
-    type: command
-    short-summary: Tells a Cache to write all dirty data to the Storage Target(s). During the flush, clients will see errors returned until the flush is complete.
-    examples:
-      - name: Caches_Flush
-        text: |-
-               az hpc-cache flush --resource-group "scgroup" --name "sc"
-"""
-
 helps['hpc-cache start'] = """
     type: command
     short-summary: Tells a Stopped state Cache to transition to Active state.
@@ -137,34 +114,52 @@ helps['hpc-cache stop'] = """
                az hpc-cache stop --resource-group "scgroup" --name "sc"
 """
 
-helps['hpc-cache upgrade-firmware'] = """
-    type: command
-    short-summary: Upgrade a Cache's firmware if a new version is available. Otherwise, this operation has no effect.
-    examples:
-      - name: Caches_UpgradeFirmware
-        text: |-
-               az hpc-cache upgrade-firmware --resource-group "scgroup" --name "sc1"
-"""
-
 helps['hpc-cache storage-target'] = """
     type: group
     short-summary: Commands to manage hpc cache storage target.
 """
 
-helps['hpc-cache storage-target create'] = """
+helps['hpc-cache blob-storage-target'] = """
+    type: group
+    short-summary: Commands to create hpc cache blob storage target.
+"""
+
+helps['hpc-cache nfs-storage-target'] = """
+    type: group
+    short-summary: Commands to create hpc cache nfs storage target.
+"""
+
+helps['hpc-cache blob-storage-target add'] = """
     type: command
-    short-summary: Create or update a Storage Target. This operation is allowed at any time, but if the Cache is down or unhealthy, the actual creation/modification of the Storage Target may be delayed until the Cache is healthy again.
+    short-summary: Create or update a blob Storage Target. This operation is allowed at any time, but if the Cache is down or unhealthy, the actual creation/modification of the Storage Target may be delayed until the Cache is healthy again.
     examples:
       - name: StorageTargets_CreateOrUpdate
         text: |-
-               az hpc-cache storage-target create --resource-group "scgroup" --cache-name "sc1" --name \\
-               "st1" --target-type "nfs3" --nfs3-target "10.0.44.44" --nfs3-usage-model \\
-               "READ_HEAVY_INFREQ"
+               az hpc-cache blob-storage-target add --resource-group "scgroup" --cache-name "sc1" --name \\
+               "st1" --storage-account "/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.Storage/storageAccounts/{acount_name}" \\
+                --container-name "cn" --virtual-namespace-path "/test"
 """
 
-helps['hpc-cache storage-target update'] = """
+helps['hpc-cache blob-storage-target update'] = """
     type: command
-    short-summary: Create or update a Storage Target. This operation is allowed at any time, but if the Cache is down or unhealthy, the actual creation/modification of the Storage Target may be delayed until the Cache is healthy again.
+    short-summary: Create or update a blob Storage Target. This operation is allowed at any time, but if the Cache is down or unhealthy, the actual creation/modification of the Storage Target may be delayed until the Cache is healthy again.
+"""
+
+helps['hpc-cache nfs-storage-target add'] = """
+    type: command
+    short-summary: Create or update a nfs Storage Target. This operation is allowed at any time, but if the Cache is down or unhealthy, the actual creation/modification of the Storage Target may be delayed until the Cache is healthy again.
+    examples:
+      - name: StorageTargets_CreateOrUpdate
+        text: |-
+               az hpc-cache nfs-storage-target add --resource-group "scgroup" --cache-name "sc1" --name \\
+               "st1" --nfs3-target 10.7.0.24 --nfs3-usage-model WRITE_AROUND \\
+                --junction namespace-path="/nt2" nfs-export="/export/a" target-path="/1" \\
+                --junction namespace-path="/nt3" nfs-export="/export/b" 
+"""
+
+helps['hpc-cache nfs-storage-target update'] = """
+    type: command
+    short-summary: Create or update a nfs Storage Target. This operation is allowed at any time, but if the Cache is down or unhealthy, the actual creation/modification of the Storage Target may be delayed until the Cache is healthy again.
 """
 
 helps['hpc-cache storage-target delete'] = """

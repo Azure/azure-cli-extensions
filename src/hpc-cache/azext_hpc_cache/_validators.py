@@ -5,6 +5,12 @@
 import argparse
 from knack.util import CLIError
 
+
+def transfer_cache_name(cmd, namespace):
+    namespace.cache_name = namespace.name
+    del namespace.name
+
+
 def process_container_resource(cmd, namespace):
     """Processes the resource group parameter from the storage account and container name"""
     if not namespace.storage_account or not namespace.container_name:

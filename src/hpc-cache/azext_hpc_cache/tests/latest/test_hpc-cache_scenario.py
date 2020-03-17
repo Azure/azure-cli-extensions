@@ -73,17 +73,12 @@ class StorageCacheScenarioTest(ScenarioTest):
         self.cmd('az hpc-cache skus list',
                  checks=[])
 
-        self.cmd('az hpc-cache upgrade-firmware '
-                 '--resource-group {} '
-                 '--name ""'.format(resource_group, cache_name),
-                 checks=[])
-
-        self.cmd('az hpc-cache start '
+        self.cmd('az hpc-cache stop '
                  '--resource-group {} '
                  '--name {}'.format(resource_group, cache_name),
                  checks=[])
 
-        self.cmd('az hpc-cache stop '
+        self.cmd('az hpc-cache start '
                  '--resource-group {} '
                  '--name {}'.format(resource_group, cache_name),
                  checks=[])

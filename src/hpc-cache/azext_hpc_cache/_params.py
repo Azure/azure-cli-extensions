@@ -12,7 +12,7 @@ from azure.cli.core.commands.parameters import (
     resource_group_name_type,
     get_location_type
 )
-from ._validators import process_container_resource
+from ._validators import process_container_resource, transfer_cache_name
 
 
 def load_arguments(self, _):
@@ -25,7 +25,7 @@ def load_arguments(self, _):
 
     with self.argument_context('hpc-cache create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('name', help='Name of Cache.')
+        c.argument('name', help='Name of Cache.', required=True)
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=True)
         c.argument('cache_size_gb', help='The size of this Cache, in GB.', required=True)
@@ -49,22 +49,19 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('name', help='Name of Cache.')
 
+    with self.argument_context('hpc-cache wait') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.extra('name', help='Name of Cache.', validator=transfer_cache_name, required=True)
+        c.ignore('cache_name')
+
     with self.argument_context('hpc-cache list') as c:
         c.argument('resource_group_name', resource_group_name_type, required=False)
-
-    with self.argument_context('hpc-cache flush') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('name', help='Name of Cache.')
 
     with self.argument_context('hpc-cache start') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('name', help='Name of Cache.')
 
     with self.argument_context('hpc-cache stop') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('name', help='Name of Cache.')
-
-    with self.argument_context('hpc-cache upgrade-firmware') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('name', help='Name of Cache.')
 
@@ -90,7 +87,7 @@ def load_arguments(self, _):
                 help='Resource ID of target storage account.')
         c.extra('container_name', options_list=['--container-name'], validator=process_container_resource,
                 help='Name of target storage container.')
-        c.argument('clfs_target', help='Resource ID of storage container.')
+        c.ignore('clfs_target')
 
     with self.argument_context('hpc-cache storage-target remove') as c:
         c.argument('resource_group_name', resource_group_name_type)
