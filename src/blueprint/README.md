@@ -12,6 +12,11 @@ Blueprint can be scoped in a subscription or management group, which is a group 
 az account set --subscription subscription_id
 ```
 
+Register Blueprint Resource Provider for your susbcription.
+```
+az provider register -n "Microsoft.Blueprint"
+```
+
 ### Included Features
 #### Blueprint Definition Management:
 *Examples:*
