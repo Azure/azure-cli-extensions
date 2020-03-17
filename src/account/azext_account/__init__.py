@@ -22,11 +22,21 @@ class SubscriptionClientCommandsLoader(AzCommandsLoader):
     def load_command_table(self, args):
         from azext_account.generated.commands import load_command_table
         load_command_table(self, args)
+        try:
+            from azext_account.manual.commands import load_command_table
+            load_command_table(self, args)
+        except ImportError:
+            pass
         return self.command_table
 
     def load_arguments(self, command):
         from azext_account.generated._params import load_arguments
         load_arguments(self, command)
+        try:
+            from azext_account.manual._params import load_arguments
+            load_arguments(self, command)
+        except ImportError:
+            pass
 
 
 COMMAND_LOADER_CLS = SubscriptionClientCommandsLoader
