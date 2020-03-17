@@ -432,7 +432,7 @@ class Resource(Model):
         self.type = None
         self.e_tag = kwargs.get('e_tag', None)
         self.tags = kwargs.get('tags', None)
-        self.location = 'global'
+        self.location = kwargs.get('location', None)
 
 
 class GraphQueryResource(Resource):
@@ -487,6 +487,7 @@ class GraphQueryResource(Resource):
         'description': {'key': 'properties.description', 'type': 'str'},
         'query': {'key': 'properties.query', 'type': 'str'},
         'result_kind': {'key': 'properties.resultKind', 'type': 'str'},
+        'location': {'key': 'location', 'type': 'str'}
     }
 
     def __init__(self, **kwargs):

@@ -425,14 +425,14 @@ class Resource(Model):
         'location': {'key': 'location', 'type': 'str'}
     }
 
-    def __init__(self, *, e_tag: str=None, tags=None, **kwargs) -> None:
+    def __init__(self, *, e_tag: str=None, tags=None, location=None, **kwargs) -> None:
         super(Resource, self).__init__(**kwargs)
         self.id = None
         self.name = None
         self.type = None
         self.e_tag = e_tag
         self.tags = tags
-        self.location = 'global'
+        self.location = location
 
 
 class GraphQueryResource(Resource):
@@ -487,10 +487,11 @@ class GraphQueryResource(Resource):
         'description': {'key': 'properties.description', 'type': 'str'},
         'query': {'key': 'properties.query', 'type': 'str'},
         'result_kind': {'key': 'properties.resultKind', 'type': 'str'},
+        'location': {'key': 'location', 'type': 'str'}
     }
 
-    def __init__(self, *, query: str, e_tag: str=None, tags=None, description: str=None, **kwargs) -> None:
-        super(GraphQueryResource, self).__init__(e_tag=e_tag, tags=tags, **kwargs)
+    def __init__(self, *, query: str, e_tag: str=None, tags=None, description: str=None, location: str=None, **kwargs) -> None:
+        super(GraphQueryResource, self).__init__(e_tag=e_tag, tags=tags, location=location, **kwargs)
         self.time_modified = None
         self.description = description
         self.query = query

@@ -45,3 +45,4 @@ def load_arguments(self, _):
         c.argument('resource_name', options_list=['--name', '-n'], help='Name of the graph shared query.')
         c.argument('tags', tags_type)
         c.argument('description', options_list=['-d', '--description'], help='Description of the graph shared query.')
+        c.ignore('location')
