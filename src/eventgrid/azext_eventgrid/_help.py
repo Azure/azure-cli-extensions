@@ -9,7 +9,7 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 helps['eventgrid'] = """
 type: group
-short-summary: Manage Azure Event Grid topics, event subscriptions, domains and domain topics.
+short-summary: Manage Azure Event Grid topics, domains, domain topics, system topics partner topics, event subscriptions, system topic event subscriptions and partner topic event subscriptions.
 """
 
 helps['eventgrid domain'] = """
@@ -42,6 +42,16 @@ short-summary: Delete a domain.
 examples:
   - name: Delete a domain.
     text: az eventgrid domain delete -g rg1 --name domain1
+"""
+
+helps['eventgrid domain private-endpoint-connection'] = """
+type: group
+short-summary: Manage private endpoint connection resources of a domain.
+"""
+
+helps['eventgrid domain private-link-resource'] = """
+type: group
+short-summary: Manage private link resource of a domain.
 """
 
 helps['eventgrid domain key'] = """
@@ -97,7 +107,7 @@ type: command
 short-summary: Create a domain topic under a domain.
 examples:
   - name: Create a new domain topic under domain.
-    text: az eventgrid domain topic create -g rg1 --domain-name domain1 --name domaintopic1
+    text: az eventgrid domain topic create -g rg1 --domain-name domain1 --name domaintopic1 --sku Premium --identity systemassigned
 """
 
 helps['eventgrid domain topic delete'] = """
@@ -137,7 +147,232 @@ parameters:
     long-summary: List of inbound ip rules specifying IP Address in CIDR notation e.g., 10.0.0.0/8 along with corresponding Action to perform based on the match or no match of the IpMask. Possible values include - Allow.
 examples:
   - name: Update the properties of an existing domain.
-    text: az eventgrid domain update -g rg1 --name domain1 --allow-traffic-from-all-ips false --inbound-ip-rules 10.0.0.0/8 Allow --inbound-ip-rules 10.2.0.0/8 Allow --tags Dept=IT
+    text: az eventgrid domain update -g rg1 --name domain1 --sku Basic --identity noidentity --allow-traffic-from-all-ips false --inbound-ip-rules 10.0.0.0/8 Allow --inbound-ip-rules 10.2.0.0/8 Allow --tags Dept=IT
+"""
+
+helps['eventgrid system-topic'] = """
+type: group
+short-summary: Manage system topics.
+"""
+
+helps['eventgrid system-topic create'] = """
+type: command
+short-summary: Create a system topic.
+examples:
+  - name: Create a new system topic.
+    text: az eventgrid system-topic create -g rg1 --name domain1 -l westus2
+
+"""
+
+helps['eventgrid system-topic delete'] = """
+type: command
+short-summary: Delete a system topic.
+examples:
+  - name: Delete a specific system topic.
+    text: az eventgrid system-topic delete -g rg1 --name systemtopic1
+"""
+
+helps['eventgrid system-topic list'] = """
+type: command
+short-summary: List available system topics.
+examples:
+  - name: List all system topics in the current Azure subscription.
+    text: az eventgrid system-topic list
+  - name: List all system topics in a resource group.
+    text: az eventgrid system-topic list -g rg1
+  - name: List all system topics in a resource group whose name contains the pattern "XYZ"
+    text: az eventgrid system-topic list -g rg1 --odata-query "Contains(name, 'XYZ')"
+  - name: List all system topics in a resource group except the system topic with name "name1"
+    text: az eventgrid system-topic list -g rg1 --odata-query "NOT (name eq 'name1')"
+"""
+
+helps['eventgrid system-topic show'] = """
+type: command
+short-summary: Get the details of a system topic.
+examples:
+  - name: Show the details of a system topic.
+    text: az eventgrid system-topic show -g rg1 -n systemtopic1
+  - name: Show the details of a system topic based on resource ID.
+    text: az eventgrid system-topic show --ids /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.EventGrid/domains/domain1
+"""
+
+helps['eventgrid system-topic update'] = """
+type: command
+short-summary: Update a system topic.
+examples:
+  - name: Update the properties of an existing system topic.
+    text: az eventgrid system-topic update -g rg1 --name systemtopic1 --tags Dept=IT
+"""
+
+helps['eventgrid system-topic-event-subscription'] = """
+type: group
+short-summary: Manage event subscriptions of system topic.
+"""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+helps['eventgrid system-topic-event-subscription create'] = """
+type: command
+short-summary: Create a new event subscription for a system topic
+parameters:
+  - name: --advanced-filter
+    short-summary: An advanced filter enables filtering of events based on a specific event property.
+    long-summary: |
+        Usage:                     --advanced-filter KEY[.INNERKEY] FILTEROPERATOR VALUE [VALUE ...]
+        StringIn:                  --advanced-filter data.Color StringIn Blue Red Orange Yellow
+        StringNotIn:               --advanced-filter data.Color StringNotIn Blue Red Orange Yellow
+        StringContains:            --advanced-filter subject StringContains Blue Red
+        StringBeginsWith:          --advanced-filter subject StringBeginsWith Blue Red
+        StringEndsWith:            --advanced-filter subject StringEndsWith img png jpg
+        NumberIn:                  --advanced-filter data.property1 NumberIn 5 10 20
+        NumberNotIn:               --advanced-filter data.property2 NumberNotIn 100 200 300
+        NumberLessThan:            --advanced-filter data.property3 NumberLessThan 100
+        NumberLessThanOrEquals:    --advanced-filter data.property2 NumberLessThanOrEquals 100
+        NumberGreaterThan:         --advanced-filter data.property3 NumberGreaterThan 100
+        NumberGreaterThanOrEquals: --advanced-filter data.property2 NumberGreaterThanOrEquals 100
+        BoolEquals:                --advanced-filter data.property3 BoolEquals true
+        Multiple advanced filters can be specified by using more than one `--advanced-filter` argument.
+  - name: --deadletter-endpoint
+    short-summary: The Azure resource ID of an Azure Storage blob container destination where EventGrid should deadletter undeliverable events for this event subscription.
+    long-summary: |
+        Example: --deadletter-endpoint /subscriptions/{SubID}/resourceGroups/rg1/providers/Microsoft.Storage/storageAccounts/sa1/blobServices/default/containers/containerName
+  - name: --endpoint-type
+    short-summary: The type of the destination endpoint.
+examples:
+  - name: Create a new event subscription for an Event Grid system topic, using default filters.
+    text: |
+        az eventgrid system-topic-event-subscription create --name es1 \\
+            -g rg1 --system-topic-name systemtopic1 \\
+            --endpoint https://contoso.azurewebsites.net/api/f1?code=code
+  - name: Create a new event subscription for an Event Grid system topic, with a filter specifying a subject prefix.
+    text: |
+        az system-topic-eventgrid event-subscription create --name es4 \\
+            -g rg1 --system-topic-name systemtopic1 \\
+            --endpoint https://contoso.azurewebsites.net/api/f1?code=code \\
+            --subject-begins-with mysubject_prefix
+  - name: Create a new event subscription for an Event Grid system topic, using default filters, and CloudEvent V 1.0 as the delivery schema.
+    text: |
+      az eventgrid system-topic-event-subscription create -n es2 \\
+          -g rg1 --system-topic-name systemtopic1 \\
+          --endpoint https://contoso.azurewebsites.net/api/f1?code=code \\
+          --event-delivery-schema cloudeventschemav1_0
+  - name: Create a new event subscription for an Event Grid system system topic, with a deadletter destination and custom retry policy of maximum 10 delivery attempts and an Event TTL of 2 hours (whichever happens earlier) and expiration date.
+    text: |
+        az system-topic-eventgrid event-subscription create --name es2 \\
+            -g rg1 --system-topic-name systemtopic1 \\
+            --endpoint https://contoso.azurewebsites.net/api/f1?code=code \\
+            --deadletter-endpoint /subscriptions/{SubID}/resourceGroups/TestRG/providers/Microsoft.Storage/storageAccounts/s2/blobServices/default/containers/blobcontainer1 \\
+            --max-delivery-attempts 10 --event-ttl 120 --expiration-date "2022-10-31"
+  - name: Create a new event subscription for an Event Grid system topic, using Azure Active Directory enabled Webhook as a destination .
+    text: |
+        az system-topic-eventgrid event-subscription create --name es1 \\
+            -g rg1 --system-topic-name systemtopic1 \\
+            --endpoint https://contoso.azurewebsites.net/api/f1?code=code
+            --azure_active_directory_tenant_id azureactivedirectorytenantid
+            --azure_active_directory_application_id_or_uri azureactivedirectoryapplicationidoruri
+  - name: Create a new event subscription for an Event Grid system topic, using Azure Functions as destination.
+    text: |
+        az system-topic-eventgrid event-subscription create -n es1 \\
+            -g rg1 --system-topic-name systemtopic1 \\
+            --endpoint /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.Web/sites/{functionappname}/functions/{functionname}
+
+"""
+
+helps['eventgrid system-topic-event-subscription delete'] = """
+type: command
+short-summary: Delete an event subscription of a system topic
+examples:
+  - name: Delete an event subscription for an Event Grid system topic.
+    text: |
+        az system-topic-event-subscription delete --name es1 \\
+            -g rg1 --system-topic-name systemtopic1 \\
+"""
+
+helps['eventgrid system-topic-event-subscription list'] = """
+type: command
+short-summary: List event subscriptions of a specific system topic.
+examples:
+  - name: List all event subscriptions created for an Event Grid system topic.
+    text: |
+        az system-topic-eventgrid event-subscription list -g rg1 --system-topic-name systemtopic1
+"""
+
+helps['eventgrid system-topic-event-subscription show'] = """
+type: command
+short-summary: Get the details of an event subscription of a system topic.
+examples:
+  - name: Show the details of an event subscription for an Event Grid system topic.
+    text: |
+        az system-topic-eventgrid event-subscription show --name es1 \\
+             -g rg1 --system-topic-name systemtopic1
+"""
+
+helps['eventgrid system-topic-event-subscription update'] = """
+type: command
+short-summary: Update an event subscription of a system topic.
+parameters:
+  - name: --endpoint-type
+    short-summary: The type of the destination endpoint.
+  - name: --advanced-filter
+    short-summary: An advanced filter enables filtering of events based on a specific event property.
+    long-summary: |
+        Usage:                     --advanced-filter KEY[.INNERKEY] FILTEROPERATOR VALUE [VALUE ...]
+        StringIn:                  --advanced-filter data.Color StringIn Blue Red Orange Yellow
+        StringNotIn:               --advanced-filter data.Color StringNotIn Blue Red Orange Yellow
+        StringContains:            --advanced-filter subject StringContains Blue Red
+        StringBeginsWith:          --advanced-filter subject StringBeginsWith Blue Red
+        StringEndsWith:            --advanced-filter subject StringEndsWith img png jpg
+        NumberIn:                  --advanced-filter data.property1 NumberIn 5 10 20
+        NumberNotIn:               --advanced-filter data.property2 NumberNotIn 100 200 300
+        NumberLessThan:            --advanced-filter data.property3 NumberLessThan 100
+        NumberLessThanOrEquals:    --advanced-filter data.property2 NumberLessThanOrEquals 100
+        NumberGreaterThan:         --advanced-filter data.property3 NumberGreaterThan 100
+        NumberGreaterThanOrEquals: --advanced-filter data.property2 NumberGreaterThanOrEquals 100
+        BoolEquals:                --advanced-filter data.property3 BoolEquals true
+        Multiple advanced filters can be specified by using more than one `--advanced-filter` argument.
+examples:
+  - name: Update an event subscription for an Event Grid system topic to specify a new endpoint.
+    text: |
+        az system-topic-eventgrid event-subscription update --name es1 \\
+            -g rg1 --system-topic-name systemtopic1 --endpoint https://contoso.azurewebsites.net/api/f1?code=code
+  - name: Update an event subscription for an Event Grid system topic to specify a new subject-ends-with filter.
+    text: |
+        az system-topic-eventgrid event-subscription update --name es2 \\
+            --g rg1 --system-topic-name systemtopic1 \\
+            --subject-ends-with .jpg
+  - name: Update an event subscription for an Event Grid system topic to specify a new endpoint and a new subject-ends-with filter a new list of included event types.
+    text: |
+        az system-topic-eventgrid event-subscription update --name es3 \\
+            -g rg1 --system-topic-name systemtopic1 \\
+            --subject-ends-with .png \\
+            --endpoint https://contoso.azurewebsites.net/api/f1?code=code
+            --included-event-types Microsoft.Storage.BlobCreated Microsoft.Storage.BlobDeleted
+  - name: Update an event subscription for an Azure Event Grid system topic, to include a deadletter destination.
+    text: |
+        az system-topic-eventgrid event-subscription update --name es2 \\
+            -g rg1 --system-topic-name systemtopic1 \\
+            --deadletter-endpoint /subscriptions/{SubID}/resourceGroups/TestRG/providers/Microsoft.Storage/storageAccounts/sa1/blobServices/default/containers/blobcontainer1
+  - name: Update an event subscription for an Azure Event Grid system topic, using advanced filters.
+    text: |
+        az system-topic-eventgrid event-subscription update --name es3 \\
+            -g rg1 --system-topic-name systemtopic1 \\
+            --endpoint https://contoso.azurewebsites.net/api/f1?code=code
+            --advanced-filter data.blobType StringIn BlockBlob
+            --advanced-filter data.url StringBeginsWith https://myaccount.blob.core.windows.net
+
 """
 
 helps['eventgrid event-subscription'] = """
@@ -512,8 +747,8 @@ examples:
     text: az eventgrid topic create -g rg1 --name topic1 -l westus2 --input-schema customeventschema --input-mapping-fields topic=myTopicField eventType=myEventTypeField --input-mapping-default-values subject=DefaultSubject dataVersion=1.0
   - name: Create a new topic that accepts events published in CloudEvents V1.0 schema.
     text: az eventgrid topic create -g rg1 --name topic1 -l westus2 --input-schema cloudeventschemav1_0
-  - name: Create a new topic which allows specific inbound ip rules.
-    text: az eventgrid topic create -g rg1 --name topic1 -l westus2 --allow-traffic-from-all-ips false  --inbound-ip-rules 10.0.0.0/8 Allow --inbound-ip-rules 10.2.0.0/8 Allow
+  - name: Create a new topic which allows specific inbound ip rules with Basic Sku and system assigned identity
+    text: az eventgrid topic create -g rg1 --name topic1 -l westus2 --allow-traffic-from-all-ips false  --inbound-ip-rules 10.0.0.0/8 Allow --inbound-ip-rules 10.2.0.0/8 Allow --sku Basic --identity systemassigned
 """
 
 helps['eventgrid topic delete'] = """
@@ -522,6 +757,16 @@ short-summary: Delete a topic.
 examples:
   - name: Delete a topic.
     text: az eventgrid topic delete -g rg1 --name topic1
+"""
+
+helps['eventgrid topic private-endpoint-connection'] = """
+type: group
+short-summary: Manage private endpoint connection resources of a topic.
+"""
+
+helps['eventgrid topic private-link-resource'] = """
+type: group
+short-summary: Manage private link resource of a topic.
 """
 
 helps['eventgrid topic key'] = """
@@ -576,7 +821,7 @@ parameters:
     long-summary: List of inbound ip rules specifying IP Address in CIDR notation e.g., 10.0.0.0/8 along with corresponding Action to perform based on the match or no match of the IpMask. Possible values include - Allow.
 examples:
   - name: Update the properties of an existing topic.
-    text: az eventgrid topic update -g rg1 --name topic1 --allow-traffic-from-all-ips false --inbound-ip-rules 10.0.0.0/8 Allow --inbound-ip-rules 10.2.0.0/8 Allow --tags Dept=IT
+    text: az eventgrid topic update -g rg1 --name topic1 --sku Premium --identity systemassigned --allow-traffic-from-all-ips false --inbound-ip-rules 10.0.0.0/8 Allow --inbound-ip-rules 10.2.0.0/8 Allow --tags Dept=IT
 """
 
 helps['eventgrid topic-type'] = """

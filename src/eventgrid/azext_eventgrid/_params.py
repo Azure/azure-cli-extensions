@@ -86,6 +86,11 @@ domain_topic_name_type = CLIArgumentType(
     options_list=['--domain-topic-name'],
     completer=get_resource_name_completion_list('Microsoft.EventGrid/domains/topic'))
 
+system_topic_name_type = CLIArgumentType(
+    help='Name of the system topic.',
+    arg_type=name_type,
+    options_list=['--system-topic-name'],
+    completer=get_resource_name_completion_list('Microsoft.EventGrid/systemtopics'))
 
 private_endpoint_connection_name_type = CLIArgumentType(
     help='Name of the private endpoint connection.',
@@ -122,6 +127,8 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
         c.argument('odata_query', arg_type=odata_query_type)
         c.argument('domain_name', arg_type=domain_name_type)
         c.argument('domain_topic_name', arg_type=domain_topic_name_type)
+        c.argument('system_topic_name', arg_type=system_topic_name_type)
+        c.argument('source', help="The ARM Id for the topic, e.g., /subscriptions/{SubId}/resourceGroups/{RgName}/providers/Microsoft.Storage/storageAccounts/{AccountName}")
         c.argument('private_endpoint_connection_name', arg_type=private_endpoint_connection_name_type)
         c.argument('private_link_resource_name', arg_type=private_link_resource_name_type)
         c.argument('public_network_access', arg_type=public_network_access_type)
@@ -183,6 +190,16 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
     with self.argument_context('eventgrid domain private-link-resource list') as c:
         c.argument('domain_name', arg_type=domain_name_type, options_list=['--name', '-n'], id_part='name')
 
+    with self.argument_context('eventgrid system-topic') as c:
+        c.argument('system_topic_name', arg_type=system_topic_name_type, options_list=['--name', '-n'], id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/systemtopics'))
+
+    with self.argument_context('eventgrid system-topic create') as c:
+        c.argument('topic_type_name', arg_type=name_type, help="Name of the topic type.", completer=get_resource_name_completion_list('Microsoft.EventGrid/topictypes'))
+        c.argument('source', help="The ARM Id for the topic, e.g., /subscriptions/{SubId}/resourceGroups/{RgName}/providers/Microsoft.Storage/storageAccounts/{AccountName}")
+
+    with self.argument_context('eventgrid system-topic list') as c:
+        c.argument('odata_query', arg_type=odata_query_type, id_part=None)
+
     with self.argument_context('eventgrid event-subscription') as c:
         c.argument('event_subscription_name', arg_type=name_type, help='Name of the event subscription.')
         c.argument('event_delivery_schema', arg_type=get_enum_type(['eventgridschema', 'custominputschema', 'cloudeventschemav1_0']), help='The schema in which events should be delivered for this event subscription. By default, events will be delivered in the same schema in which they are published (based on the corresponding topic\'s input schema).')
@@ -200,6 +217,28 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
         c.argument('odata_query', arg_type=odata_query_type, id_part=None)
 
     with self.argument_context('eventgrid event-subscription show') as c:
+        c.argument('include_full_endpoint_url', arg_type=get_three_state_flag(), options_list=['--include-full-endpoint-url'], help="Specify to indicate whether the full endpoint URL should be returned. True if flag present.", )
+
+    with self.argument_context('eventgrid system-topic-event-subscription') as c:
+        c.argument('event_subscription_name', arg_type=name_type, options_list=['--name', '-n'], help='Name of the event subscription.')
+        c.argument('endpoint_type', arg_type=get_enum_type(['webhook', 'eventhub', 'storagequeue', 'hybridconnection', 'servicebusqueue', 'servicebustopic', 'azurefunction'], default='webhook'))
+        c.argument('event_delivery_schema', arg_type=get_enum_type(['eventgridschema', 'custominputschema', 'cloudeventschemav1_0']), help='The schema in which events should be delivered for this event subscription. By default, events will be delivered in the same schema in which they are published (based on the corresponding topic\'s input schema).')
+        c.argument('max_delivery_attempts', help="Maximum number of delivery attempts. Must be a number between 1 and 30.")
+        c.argument('max_events_per_batch', help="Maximum number of events in a batch. Must be a number between 1 and 5000.")
+        c.argument('preferred_batch_size_in_kilobytes', help="Preferred batch size in kilobytes. Must be a number between 1 and 1024.")
+        c.argument('event_ttl', help="Event time to live (in minutes). Must be a number between 1 and 1440.")
+        c.argument('deadletter_endpoint', help="The Azure resource ID of an Azure Storage blob container destination where EventGrid should deadletter undeliverable events for this event subscription.")
+        c.argument('advanced_filter', action=EventSubscriptionAddFilter, nargs='+')
+        c.argument('expiration_date', help="Date or datetime (in UTC, e.g. '2018-11-30T11:59:59+00:00' or '2018-11-30') after which the event subscription would expire. By default, there is no expiration for the event subscription.")
+        c.argument('azure_active_directory_tenant_id', help="The Azure Active Directory Tenant Id to get the access token that will be included as the bearer token in delivery requests. Applicable only for webhook as a destination")
+        c.argument('azure_active_directory_application_id_or_uri', help="The Azure Active Directory Application Id or Uri to get the access token that will be included as the bearer token in delivery requests. Applicable only for webhook as a destination")
+        c.argument('resource_group_name', arg_type=resource_group_name_type)
+
+    with self.argument_context('eventgrid system-topic-event-subscription list') as c:
+        c.argument('odata_query', arg_type=odata_query_type, id_part=None)
+
+    with self.argument_context('eventgrid system-topic-event-subscription show') as c:
+        c.argument('system_topic_name', arg_type=system_topic_name_type, completer=get_resource_name_completion_list('Microsoft.EventGrid/systemtopics'))
         c.argument('include_full_endpoint_url', arg_type=get_three_state_flag(), options_list=['--include-full-endpoint-url'], help="Specify to indicate whether the full endpoint URL should be returned. True if flag present.", )
 
     with self.argument_context('eventgrid topic-type') as c:

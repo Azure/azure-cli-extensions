@@ -439,6 +439,104 @@ class EventGridTests(ScenarioTest):
         self.cmd('az eventgrid topic delete --name {topic_name} --resource-group {rg}')
 
     @ResourceGroupPreparer()
+    def test_create_system_topic(self, resource_group):
+        endpoint_url = 'https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid?functionName=EventGridTrigger1&code=an3f31ORDSQ/llPPTaUDJiEJGoebE9ha7dODRhb1nIyg/LiYLfSVCA=='
+        endpoint_baseurl = 'https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid'
+
+        system_topic_name = self.create_random_name(prefix='cli', length=40)
+        system_topic_name2 = self.create_random_name(prefix='cli', length=40)
+        system_topic_name3 = self.create_random_name(prefix='cli', length=40)
+        system_topic_name4 = self.create_random_name(prefix='cli', length=40)
+        event_subscription_name = self.create_random_name(prefix='cli', length=40)
+
+        self.kwargs.update({
+            'system_topic_name': system_topic_name,
+            'system_topic_name2': system_topic_name2,
+            'system_topic_name3': system_topic_name3,
+            'system_topic_name4': system_topic_name4,
+            'location': 'centraluseuap',
+            'event_subscription_name': event_subscription_name,
+            'endpoint_url': endpoint_url,
+            'endpoint_baseurl': endpoint_baseurl
+        })
+
+        scope = self.cmd('az eventgrid system-topic create --name {system_topic_name} --resource-group {rg} --location {location} --topic-type microsoft.storage.storageaccounts --source /subscriptions/5b4b650e-28b9-4790-b3ab-ddbd88d727c4/resourceGroups/testtobedeleted/providers/Microsoft.Storage/storageAccounts/trackedsource2stg', checks=[
+            self.check('type', 'Microsoft.EventGrid/systemTopics'),
+            self.check('name', self.kwargs['system_topic_name']),
+            self.check('provisioningState', 'Succeeded')
+        ]).get_output_in_json()['id']
+
+        self.cmd('az eventgrid system-topic show --name {system_topic_name} --resource-group {rg}', checks=[
+            self.check('type', 'Microsoft.EventGrid/systemTopics'),
+            self.check('name', self.kwargs['system_topic_name'])
+        ])
+
+        self.kwargs.update({
+            'scope': scope,
+        })
+
+        self.cmd('az eventgrid system-topic update --name {system_topic_name} --resource-group {rg} --tags Dept=IT', checks=[
+            self.check('name', self.kwargs['system_topic_name']),
+            self.check('tags', {'Dept': 'IT'}),
+            self.check('type', 'Microsoft.EventGrid/systemTopics'),
+            self.check('provisioningState', 'Succeeded')
+        ])
+
+        self.cmd('az eventgrid system-topic list --resource-group {rg}', checks=[
+            self.check('[0].type', 'Microsoft.EventGrid/systemTopics')
+        ])
+
+        self.cmd('az eventgrid system-topic list --resource-group {rg} --odata-query "name eq \'{system_topic_name}\'"', checks=[
+            self.check('[0].type', 'Microsoft.EventGrid/systemTopics'),
+            self.check('[0].name', self.kwargs['system_topic_name']),
+        ])
+
+        self.cmd('az eventgrid system-topic-event-subscription create --resource-group {rg} --system-topic-name {system_topic_name} --name {event_subscription_name} --endpoint \"{endpoint_url}\" --endpoint-type webhook', checks=[
+            self.check('type', 'Microsoft.EventGrid/systemTopics/eventSubscriptions'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('name', self.kwargs['event_subscription_name']),
+            self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
+        ])
+
+        self.cmd('az eventgrid system-topic-event-subscription create --resource-group {rg} --system-topic-name {system_topic_name} --name {event_subscription_name} --endpoint \"{endpoint_url}\" --endpoint-type webhook --labels label_1 label_2', checks=[
+            self.check('type', 'Microsoft.EventGrid/systemTopics/eventSubscriptions'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('name', self.kwargs['event_subscription_name'])
+        ])
+
+        self.cmd('az eventgrid system-topic-event-subscription show --resource-group {rg} --system-topic-name {system_topic_name} --name {event_subscription_name} --include-full-endpoint-url', checks=[
+            self.check('destination.endpointUrl', self.kwargs['endpoint_url']),
+            self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
+        ])
+
+        self.cmd('az eventgrid system-topic-event-subscription show --resource-group {rg} --system-topic-name {system_topic_name} --name {event_subscription_name}', checks=[
+            self.check('destination.endpointUrl', None),
+            self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
+        ])
+
+        self.cmd('az eventgrid system-topic-event-subscription update -g {rg} --system-topic-name {system_topic_name} -n {event_subscription_name} --endpoint \"{endpoint_url}\" --endpoint-type webhook --labels label11 label22', checks=[
+            self.check('type', 'Microsoft.EventGrid/systemTopics/eventSubscriptions'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('name', self.kwargs['event_subscription_name']),
+            self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
+        ])
+
+        self.cmd('az eventgrid system-topic-event-subscription list --resource-group {rg} --system-topic-name {system_topic_name}', checks=[
+            self.check('[0].type', 'Microsoft.EventGrid/systemTopics/eventSubscriptions'),
+            self.check('[0].provisioningState', 'Succeeded'),
+        ])
+
+        # Comment this one until we fix the pagable property in swagger
+        # self.cmd('az eventgrid system-topic-event-subscription list --resource-group {rg} --system-topic-name {system_topic_name} --odata-query "name eq \'{event_subscription_name}\'"', checks=[
+        #    self.check('[0].type', 'Microsoft.EventGrid/systemTopics/eventSubscriptions'),
+        #    self.check('[0].provisioningState', 'Succeeded'),
+        # ])
+
+        self.cmd('az eventgrid system-topic-event-subscription delete -g {rg} --name {event_subscription_name}  --system-topic-name {system_topic_name} ')
+
+        self.cmd('az eventgrid system-topic delete -n {system_topic_name} -g {rg}')
+
+    @ResourceGroupPreparer()
     @unittest.skip('Will be re-enabled once global operations are enabled for 2020-01-01-preview API version')
     def test_create_event_subscriptions_to_arm_resource_group(self, resource_group):
         event_subscription_name = 'eventsubscription2'
@@ -875,4 +973,61 @@ class EventGridTests(ScenarioTest):
         ])
 
         self.cmd('az eventgrid event-subscription delete --source-resource-id {scope} --name {event_subscription_name}')
+        self.cmd('az eventgrid topic delete --name {topic_name} --resource-group {rg}')
+
+    @ResourceGroupPreparer()
+    def test_private_link(self, resource_group):
+        vnet_name = self.create_random_name(prefix='cli', length=20)
+        subnet_name = self.create_random_name(prefix='cli', length=20)
+        private_endpoint_name = self.create_random_name(prefix='cli', length=20)
+        connection_name = self.create_random_name(prefix='cli', length=20)
+        topic_name = self.create_random_name(prefix='cli', length=40)
+        event_subscription_name = self.create_random_name(prefix='cli', length=40)
+
+        resource_group_net = 'DevExpRg'
+
+        self.kwargs.update({
+            'resource_group_net': resource_group_net,
+            'vnet_name': vnet_name,
+            'subnet_name': subnet_name,
+            'private_endpoint_name': private_endpoint_name,
+            'connection_name': connection_name,
+            'topic_name': topic_name,
+            'location': 'centraluseuap'
+        })
+
+        self.cmd('az network vnet create --resource-group {resource_group_net} --location {location} --name {vnet_name} --address-prefix 10.0.0.0/16')
+        self.cmd('az network vnet subnet create --resource-group {resource_group_net} --vnet-name {vnet_name} --name {subnet_name} --address-prefixes 10.0.0.0/24')
+        self.cmd('az network vnet subnet update --resource-group {resource_group_net} --vnet-name {vnet_name} --name {subnet_name} --disable-private-endpoint-network-policies true')
+
+        scope = self.cmd('az eventgrid topic create --name {topic_name} --resource-group {rg} --location {location} --sku Premium --public-network-access disabled', checks=[
+            self.check('type', 'Microsoft.EventGrid/topics'),
+            self.check('name', self.kwargs['topic_name']),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('sku', {'name': 'Premium'}),
+            self.check('publicNetworkAccess', 'Disabled'),
+            self.check('identity', None)
+        ]).get_output_in_json()['id']
+
+        self.cmd('az eventgrid topic show --name {topic_name} --resource-group {rg}', checks=[
+            self.check('type', 'Microsoft.EventGrid/topics'),
+            self.check('name', self.kwargs['topic_name']),
+            self.check('sku', {'name': 'Premium'}),
+            self.check('publicNetworkAccess', 'Disabled'),
+            self.check('identity', None)
+        ])
+
+        self.kwargs.update({
+            'scope': scope,
+        })
+
+        # Create private endpoint
+        self.cmd('az network private-endpoint create --resource-group {resource_group_net} --name {private_endpoint_name} --vnet-name {vnet_name} --subnet {subnet_name} --private-connection-resource-id {scope} --location {location} --group-ids topic --connection-name {connection_name}')
+
+        self.cmd('az eventgrid topic private-endpoint-connection list --resource-group {rg} --name {topic_name}')
+        self.cmd('az eventgrid topic private-link-resource list --resource-group {rg} --name {topic_name}')
+
+        self.cmd('az network private-endpoint delete --resource-group {resource_group_net} --name {private_endpoint_name}')
+        self.cmd('az network vnet subnet delete --resource-group {resource_group_net} --vnet-name {vnet_name} --name {subnet_name}')
+        self.cmd('az network vnet delete --resource-group {resource_group_net} --name {vnet_name}')
         self.cmd('az eventgrid topic delete --name {topic_name} --resource-group {rg}')

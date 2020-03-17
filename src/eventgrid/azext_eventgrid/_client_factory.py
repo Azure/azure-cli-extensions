@@ -22,6 +22,14 @@ def domain_topics_factory(cli_ctx, _):
     return cf_eventgrid(cli_ctx).domain_topics
 
 
+def system_topics_factory(cli_ctx, _):
+    return cf_eventgrid(cli_ctx).system_topics
+
+
+def system_topic_event_subscriptions_factory(cli_ctx, _):
+    return cf_eventgrid(cli_ctx).system_topic_event_subscriptions
+
+
 def event_subscriptions_factory(cli_ctx, _):
     return cf_eventgrid(cli_ctx).event_subscriptions
 

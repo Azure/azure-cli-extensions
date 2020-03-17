@@ -11,6 +11,8 @@ from ._client_factory import (
     topics_factory,
     domains_factory,
     domain_topics_factory,
+    system_topics_factory,
+    system_topic_event_subscriptions_factory,
     event_subscriptions_factory,
     topic_types_factory,
     private_endpoint_connections_factory,
@@ -34,6 +36,18 @@ def load_command_table(self, _):
     domain_topics_mgmt_util = CliCommandType(
         operations_tmpl='azext_eventgrid.vendored_sdks.eventgrid.operations._domain_topics_operations#DomainTopicsOperations.{}',
         client_factory=domain_topics_factory,
+        client_arg_name='self'
+    )
+
+    system_topics_mgmt_util = CliCommandType(
+        operations_tmpl='azext_eventgrid.vendored_sdks.eventgrid.operations._system_topics_operations#SystemTopicsOperations.{}',
+        client_factory=system_topics_factory,
+        client_arg_name='self'
+    )
+
+    system_topic_event_subscriptions_mgmt_util = CliCommandType(
+        operations_tmpl='azext_eventgrid.vendored_sdks.eventgrid.operations._system_topic_event_subscriptions_operations#SystemTopicEventSubscriptionsOperations.{}',
+        client_factory=system_topic_event_subscriptions_factory,
         client_arg_name='self'
     )
 
@@ -97,8 +111,22 @@ def load_command_table(self, _):
         g.custom_command('show', 'cli_domain_private_link_resource_get')
         g.custom_command('list', 'cli_domain_private_link_resource_list')
 
+    with self.command_group('eventgrid system-topic', system_topics_mgmt_util, client_factory=system_topics_factory) as g:
+        g.show_command('show', 'get')
+        g.command('delete', 'delete')
+        g.custom_command('list', 'cli_system_topic_list')
+        g.custom_command('create', 'cli_system_topic_create_or_update')
+        g.custom_command('update', 'cli_system_topic_update')
+
     custom_tmpl = 'azext_eventgrid.custom#{}'
     eventgrid_custom = CliCommandType(operations_tmpl=custom_tmpl)
+
+    with self.command_group('eventgrid system-topic-event-subscription', system_topic_event_subscriptions_mgmt_util, client_factory=system_topic_event_subscriptions_factory) as g:
+        g.custom_show_command('show', 'cli_system_topic_event_subscription_get')
+        g.command('delete', 'delete')
+        g.custom_command('list', 'cli_system_topic_event_subscription_list')
+        g.custom_command('create', 'cli_system_topic_event_subscription_create_or_update')
+        g.custom_command('update', 'cli_system_topic_event_subscription_update')
 
     with self.command_group('eventgrid event-subscription', client_factory=event_subscriptions_factory) as g:
         g.custom_command('create', 'cli_eventgrid_event_subscription_create')
