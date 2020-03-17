@@ -16,7 +16,8 @@ from ._client_factory import (
     event_subscriptions_factory,
     topic_types_factory,
     private_endpoint_connections_factory,
-    private_link_resources_factory
+    private_link_resources_factory,
+    extension_topics_factory
 )
 
 
@@ -24,6 +25,12 @@ def load_command_table(self, _):
     topics_mgmt_util = CliCommandType(
         operations_tmpl='azext_eventgrid.vendored_sdks.eventgrid.operations._topics_operations#TopicsOperations.{}',
         client_factory=topics_factory,
+        client_arg_name='self'
+    )
+
+    extension_topics_mgmt_util = CliCommandType(
+        operations_tmpl='azext_eventgrid.vendored_sdks.eventgrid.operations._extension_topics_operations#ExtensionTopicsOperations.{}',
+        client_factory=extension_topics_factory,
         client_arg_name='self'
     )
 
@@ -77,6 +84,9 @@ def load_command_table(self, _):
         g.custom_command('list', 'cli_topic_list')
         g.custom_command('create', 'cli_topic_create_or_update')
         g.custom_command('update', 'cli_topic_update')
+
+    with self.command_group('eventgrid extension-topic', extension_topics_mgmt_util, client_factory=extension_topics_factory) as g:
+        g.show_command('show', 'get')
 
     with self.command_group('eventgrid domain topic', domain_topics_mgmt_util, client_factory=domain_topics_factory) as g:
         g.show_command('show', 'get')

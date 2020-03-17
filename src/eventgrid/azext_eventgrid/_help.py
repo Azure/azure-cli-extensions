@@ -209,21 +209,6 @@ type: group
 short-summary: Manage event subscriptions of system topic.
 """
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 helps['eventgrid system-topic-event-subscription create'] = """
 type: command
 short-summary: Create a new event subscription for a system topic
@@ -726,6 +711,19 @@ examples:
             --advanced-filter data.blobType StringIn BlockBlob
             --advanced-filter data.url StringBeginsWith https://myaccount.blob.core.windows.net
 
+"""
+
+helps['eventgrid extension-topic'] = """
+type: group
+short-summary: Manage Azure Event Grid extension topics.
+"""
+
+helps['eventgrid extension-topic show'] = """
+type: command
+short-summary: Get the details of an extension topic.
+examples:
+  - name: Show the details of an extension topic.
+    text: az eventgrid extension-topic show --scope /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.Storage/storageAccounts/{StorageAccountName}
 """
 
 helps['eventgrid topic'] = """

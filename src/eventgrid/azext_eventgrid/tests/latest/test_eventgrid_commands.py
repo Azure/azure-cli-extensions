@@ -791,7 +791,7 @@ class EventGridTests(ScenarioTest):
             self.cmd('az eventgrid event-subscription create --source-resource-id {source_resource_id} --name {event_subscription_name1} --endpoint-type storagequeue --endpoint {storagequeue_endpoint_id} --max-delivery-attempts 31 --deadletter-endpoint {deadletter_endpoint_id}')
 
         # Create a storage queue destination based event subscription with cloud event schema as the delivery schema
-        self.cmd('az eventgrid event-subscription create  --source-resource-id {source_resource_id} --name {event_subscription_name1} --endpoint-type stoRAgequeue --endpoint {storagequeue_endpoint_id} --event-delivery-schema cloudeventschemav1_0 --deadletter-endpoint {deadletter_endpoint_id} --subject-begins-with SomeRandomText1 --subject-ends-with SomeRandomText2')
+        self.cmd('az eventgrid event-subscription create --source-resource-id {source_resource_id} --name {event_subscription_name1} --endpoint-type stoRAgequeue --endpoint {storagequeue_endpoint_id} --event-delivery-schema cloudeventschemav1_0 --deadletter-endpoint {deadletter_endpoint_id} --subject-begins-with SomeRandomText1 --subject-ends-with SomeRandomText2')
 
         self.cmd('az eventgrid event-subscription show --source-resource-id {source_resource_id} --name {event_subscription_name1}', checks=[
             self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
@@ -801,7 +801,7 @@ class EventGridTests(ScenarioTest):
         # Create a hybridconnection destination based event subscription with default eventgrid event schema as the delivery schema
         self.cmd('az eventgrid event-subscription create --source-resource-id {source_resource_id} --name {event_subscription_name2} --endpoint-type HybRidConnection --endpoint {hybridconnection_endpoint_id} --deadletter-endpoint {deadletter_endpoint_id} --max-delivery-attempts 20 --event-ttl 1000 --subject-begins-with SomeRandomText1 --subject-ends-with SomeRandomText2')
 
-        self.cmd('az eventgrid event-subscription show  --source-resource-id {source_resource_id} --name {event_subscription_name2}', checks=[
+        self.cmd('az eventgrid event-subscription show --source-resource-id {source_resource_id} --name {event_subscription_name2}', checks=[
             self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
             self.check('provisioningState', 'Succeeded'),
         ])
@@ -982,8 +982,6 @@ class EventGridTests(ScenarioTest):
         private_endpoint_name = self.create_random_name(prefix='cli', length=20)
         connection_name = self.create_random_name(prefix='cli', length=20)
         topic_name = self.create_random_name(prefix='cli', length=40)
-        event_subscription_name = self.create_random_name(prefix='cli', length=40)
-
         resource_group_net = 'DevExpRg'
 
         self.kwargs.update({

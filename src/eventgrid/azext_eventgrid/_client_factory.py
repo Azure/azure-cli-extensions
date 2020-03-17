@@ -30,6 +30,10 @@ def system_topic_event_subscriptions_factory(cli_ctx, _):
     return cf_eventgrid(cli_ctx).system_topic_event_subscriptions
 
 
+def extension_topics_factory(cli_ctx, _):
+    return cf_eventgrid(cli_ctx).extension_topics
+
+
 def event_subscriptions_factory(cli_ctx, _):
     return cf_eventgrid(cli_ctx).event_subscriptions
 
