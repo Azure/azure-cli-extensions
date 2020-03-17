@@ -187,9 +187,9 @@ helps['monitor app-insights query'] = """
           the start time will be calculated by subtracting the offset. If --start-time and --end-time are
           provided, then --offset will be ignored.
     examples:
-      - name: Execute a simple query over past 3.5 days.
+      - name: Execute a simple query over past 1 hour and 30 minutes.
         text: |
-          az monitor app-insights query --app e292531c-eb03-4079-9bb0-fe6b56b99f8b --analytics-query 'requests | summarize count() by bin(timestamp, 1h)' --offset P3DT12H
+          az monitor app-insights query --app e292531c-eb03-4079-9bb0-fe6b56b99f8b --analytics-query 'requests | summarize count() by bin(timestamp, 1h)' --offset 1h30m
 """
 
 helps['monitor app-insights metrics show'] = """
