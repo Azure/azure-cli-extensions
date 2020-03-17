@@ -19,7 +19,7 @@ def execute_query(cmd, client, application, analytics_query, start_time=None, en
     targets = get_query_targets(cmd.cli_ctx, application, resource_group_name)
     try:
         return client.query.execute(targets[0], QueryBody(query=analytics_query, timespan=get_timespan(cmd.cli_ctx, start_time, end_time, offset), applications=targets[1:]))
-    except Exception as ex:
+    except ErrorResponseException as ex:
         if "PathNotFoundError" in ex.message:
             raise ValueError("The Application Insight is not found. Please check the app id again.")
         raise(ex)
