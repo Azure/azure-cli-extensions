@@ -406,6 +406,8 @@ class Resource(Model):
     :type e_tag: str
     :param tags: Resource tags
     :type tags: dict[str, str]
+    :param location: Azure resource location
+    :type location: str
     """
 
     _validation = {
@@ -420,6 +422,7 @@ class Resource(Model):
         'type': {'key': 'type', 'type': 'str'},
         'e_tag': {'key': 'eTag', 'type': 'str'},
         'tags': {'key': 'tags', 'type': '{str}'},
+        'location': {'key': 'location', 'type': 'str'}
     }
 
     def __init__(self, **kwargs):
@@ -429,6 +432,7 @@ class Resource(Model):
         self.type = None
         self.e_tag = kwargs.get('e_tag', None)
         self.tags = kwargs.get('tags', None)
+        self.location = 'global'
 
 
 class GraphQueryResource(Resource):
