@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
+from azext_account.generated._help import helps
 
 
 class SubscriptionClientCommandsLoader(AzCommandsLoader):
