@@ -11,6 +11,7 @@ from azure.cli.core.commands.parameters import (
     get_enum_type,
     get_location_type
 )
+from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from knack.arguments import CLIArgumentType
 
 
@@ -23,7 +24,7 @@ def load_arguments(self, _):
 
     with self.argument_context('monitor action-rule create') as c:
         c.argument('action_rule_name', action_rule_name)
-        c.argument('location', arg_type=get_location_type(self.cli_ctx))
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
         c.argument('status', arg_type=get_enum_type(ActionRuleStatus), id_part=None, help='Indicate if the given action rule is enabled or disabled. Default to enabled.')
         c.argument('rule_type', arg_type=get_enum_type(['Suppression', 'ActionGroup', 'Diagnostics']), help='Indicate type of action rule')
@@ -63,11 +64,11 @@ def load_arguments(self, _):
     with self.argument_context('monitor action-rule list') as c:
         c.argument('target_resource_group', id_part=None, help='Filter by target resource group name. Default value is select all.')
         c.argument('target_resource_type', id_part=None, help='Filter by target resource type. Default value is select all.')
-        c.argument('target_resource', id_part=None, help='Filter by target resource( which is full ARM ID) Default value is select all.')
-        c.argument('severity', id_part=None, help='Filter by severity.  Default value is select all.')
+        c.argument('target_resource', id_part=None, help='Filter by target resource (which is full ARM ID). Default value is select all.')
+        c.argument('severity', id_part=None, help='Filter by severity. Default value is select all.')
         c.argument('monitor_service', id_part=None, help='Filter by monitor service which generates the alert instance. Default value is select all.')
         c.argument('impacted_scope', id_part=None, help='Filter by impacted/target scope (provide comma separated list for multiple scopes). The value should be an well constructed ARM id of the scope.')
         c.argument('description', id_part=None, help='Filter by alert rule description')
-        c.argument('alert_rule_id', id_part=None, help='Filter by alert rule id')
+        c.argument('alert_rule_id', id_part=None, help='Filter by alert rule ID')
         c.argument('action_group', id_part=None, help='Filter by action group configured as part of action rule')
         c.argument('name', id_part=None, help='Filter by action rule name')
