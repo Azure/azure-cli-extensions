@@ -43,9 +43,10 @@ def load_arguments(self, _):
         c.argument('suppression_start_time', help='Start time for suppression. Format: hh:mm:ss')
         c.argument('suppression_end_time', help='End time for suppression. Format: hh:mm:ss')
         c.argument('suppression_recurrence', nargs='+',
-                   help='List of recurrence pattern values, delimited by space. If recurrence type is Weekly, values '
-                   'should range from 0 to 6. 0 stands for Sunday, 1 stands for Monday, ..., 6 stands for Saturday. '
-                   'If recurrence type is Monthly, values should range from 1 to 31')
+                   help='List of recurrence pattern values, delimited by space. If --suppression-recurrence-type is '
+                        'Weekly, allowed values range from 0 to 6. 0 stands for Sunday, 1 stands for Monday, ..., 6 '
+                        'stands for Saturday. If --suppression-recurrence-type is Monthly, allowed values range from '
+                        '1 to 31, stands for day of month')
 
     with self.argument_context('monitor action-rule update') as c:
         c.argument('action_rule_name', action_rule_name)
