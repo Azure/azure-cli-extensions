@@ -10,11 +10,6 @@ from ._validators import validate_query_args
 
 def load_command_table(self, _):
 
-    graph_sdk = CliCommandType(
-        operations_tmpl='azext_resourcegraph.custom#{}',
-        client_factory=cf_resource_graph
-    )
-
     graph_shared_query_sdk = CliCommandType(
         operations_tmpl='azext_resourcegraph.vendored_sdks.resourcegraph.operations#GraphQueryOperations.{}',
         client_factory=cf_resource_graph_graph_query
