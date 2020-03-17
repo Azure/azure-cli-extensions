@@ -5,6 +5,8 @@
 import argparse
 from knack.util import CLIError
 
+# pylint: disable=unused-argument
+
 
 def transfer_cache_name(cmd, namespace):
     namespace.cache_name = namespace.name
@@ -24,6 +26,8 @@ def process_container_resource(cmd, namespace):
     del namespace.container_name
 
 
+# pylint: disable=protected-access
+# pylint: disable=too-few-public-methods
 class JunctionAddAction(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         if not namespace.junctions:
@@ -44,4 +48,3 @@ class JunctionAddAction(argparse._AppendAction):
         if 'target-path' in kwargs:
             junction['targetPath'] = kwargs['target-path']
         namespace.junctions.append(junction)
-

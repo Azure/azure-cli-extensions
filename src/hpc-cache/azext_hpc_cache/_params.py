@@ -8,7 +8,6 @@
 
 from azure.cli.core.commands.parameters import (
     tags_type,
-    get_enum_type,
     resource_group_name_type,
     get_location_type
 )
@@ -111,8 +110,8 @@ def load_arguments(self, _):
         c.extra('junction', help='List of Cache namespace junctions to target for namespace associations.',
                 action=JunctionAddAction, nargs='+', required=True)
         c.argument('nfs3_target', help='IP address or host name of an NFSv3 host (e.g., 10.0.44.44).', required=True)
-        c.argument('nfs3_usage_model', help='Identifies the primary usage model to be used for this Storage Target.'
-                   , required=True)
+        c.argument('nfs3_usage_model', help='Identifies the primary usage model to be used for this Storage Target.',
+                   required=True)
         c.ignore('junctions')
 
     with self.argument_context('hpc-cache nfs-storage-target update') as c:

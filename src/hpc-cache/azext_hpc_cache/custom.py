@@ -89,61 +89,66 @@ def stop_hpc_cache(cmd, client,
 
 
 def create_hpc_cache_blob_storage_target(cmd, client,
-                                    resource_group_name,
-                                    cache_name,
-                                    name,
-                                    virtual_namespace_path,
-                                    clfs_target):
+                                         resource_group_name,
+                                         cache_name,
+                                         name,
+                                         virtual_namespace_path,
+                                         clfs_target):
     body = {}
     body['junctions'] = [{'namespacePath': virtual_namespace_path, 'targetPath': '/'}]
     body['target_type'] = 'clfs'  # str
     body.setdefault('clfs', {})['target'] = clfs_target  # str
-    return client.create_or_update(resource_group_name=resource_group_name, cache_name=cache_name, storage_target_name=name, storagetarget=body)
+    return client.create_or_update(resource_group_name=resource_group_name, cache_name=cache_name,
+                                   storage_target_name=name, storagetarget=body)
 
 
 def create_hpc_cache_nfs_storage_target(cmd, client,
-                                    resource_group_name,
-                                    cache_name,
-                                    name,
-                                    junctions,
-                                    nfs3_target,
-                                    nfs3_usage_model):
+                                        resource_group_name,
+                                        cache_name,
+                                        name,
+                                        junctions,
+                                        nfs3_target,
+                                        nfs3_usage_model):
     body = {}
     body['junctions'] = junctions
     body['target_type'] = 'nfs3'  # str
     body.setdefault('nfs3', {})['target'] = nfs3_target  # str
     body.setdefault('nfs3', {})['usage_model'] = nfs3_usage_model  # str
-    return client.create_or_update(resource_group_name=resource_group_name, cache_name=cache_name, storage_target_name=name, storagetarget=body)
+    return client.create_or_update(resource_group_name=resource_group_name, cache_name=cache_name,
+                                   storage_target_name=name, storagetarget=body)
 
 
 def update_hpc_cache_blob_storage_target(cmd, client,
-                                    resource_group_name,
-                                    cache_name,
-                                    name,
-                                    virtual_namespace_path=None,
-                                    clfs_target=None):
+                                         resource_group_name,
+                                         cache_name,
+                                         name,
+                                         virtual_namespace_path=None,
+                                         clfs_target=None):
     body = {}
     body['target_type'] = 'clfs'
     if virtual_namespace_path is not None:
         body['junctions'] = [{'namespacePath': virtual_namespace_path, 'targetPath': '/'}]
     if clfs_target is not None:
         body.setdefault('clfs', {})['target'] = clfs_target  # str
-    return client.create_or_update(resource_group_name=resource_group_name, cache_name=cache_name, storage_target_name=name, storagetarget=body)
+    return client.create_or_update(resource_group_name=resource_group_name, cache_name=cache_name,
+                                   storage_target_name=name, storagetarget=body)
 
 
-def update_hpc_cache_nfs_storage_target(cmd, client,
-                                    resource_group_name,
-                                    cache_name,
-                                    name,
-                                    junctions=None,
-                                    nfs3_target=None,
-                                    nfs3_usage_model=None):
+def update_hpc_cache_nfs_storage_target(cmd,
+                                        client,
+                                        resource_group_name,
+                                        cache_name,
+                                        name,
+                                        junctions=None,
+                                        nfs3_target=None,
+                                        nfs3_usage_model=None):
     body = {}
     body['junctions'] = junctions
     body['target_type'] = 'nfs3'  # str
     body.setdefault('nfs3', {})['target'] = nfs3_target  # str
     body.setdefault('nfs3', {})['usage_model'] = nfs3_usage_model  # str
-    return client.create_or_update(resource_group_name=resource_group_name, cache_name=cache_name, storage_target_name=name, storagetarget=body)
+    return client.create_or_update(resource_group_name=resource_group_name, cache_name=cache_name,
+                                   storage_target_name=name, storagetarget=body)
 
 
 def delete_hpc_cache_storage_target(cmd, client,

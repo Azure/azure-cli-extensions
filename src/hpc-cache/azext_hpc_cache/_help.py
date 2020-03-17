@@ -114,6 +114,15 @@ helps['hpc-cache stop'] = """
                az hpc-cache stop --resource-group "scgroup" --name "sc"
 """
 
+helps['hpc-cache wait'] = """
+    type: command
+    short-summary: Waits a hpc Cache to specified state.
+    examples:
+      - name: Caches_Wait
+        text: |-
+               az hpc-cache wait --resource-group "scgroup" --name "sc" --created
+"""
+
 helps['hpc-cache storage-target'] = """
     type: group
     short-summary: Commands to manage hpc cache storage target.
@@ -153,8 +162,8 @@ helps['hpc-cache nfs-storage-target add'] = """
         text: |-
                az hpc-cache nfs-storage-target add --resource-group "scgroup" --cache-name "sc1" --name \\
                "st1" --nfs3-target 10.7.0.24 --nfs3-usage-model WRITE_AROUND \\
-                --junction namespace-path="/nt2" nfs-export="/export/a" target-path="/1" \\
-                --junction namespace-path="/nt3" nfs-export="/export/b" 
+               --junction namespace-path="/nt2" nfs-export="/export/a" target-path="/1" \\
+               --junction namespace-path="/nt3" nfs-export="/export/b"
 """
 
 helps['hpc-cache nfs-storage-target update'] = """
@@ -162,13 +171,13 @@ helps['hpc-cache nfs-storage-target update'] = """
     short-summary: Create or update a nfs Storage Target. This operation is allowed at any time, but if the Cache is down or unhealthy, the actual creation/modification of the Storage Target may be delayed until the Cache is healthy again.
 """
 
-helps['hpc-cache storage-target delete'] = """
+helps['hpc-cache storage-target remove'] = """
     type: command
     short-summary: Removes a Storage Target from a Cache. This operation is allowed at any time, but if the Cache is down or unhealthy, the actual removal of the Storage Target may be delayed until the Cache is healthy again. Note that if the Cache has data to flush to the Storage Target, the data will be flushed before the Storage Target will be deleted.
     examples:
       - name: StorageTargets_Delete
         text: |-
-               az hpc-cache storage-target delete --resource-group "scgroup" --cache-name "sc1" --name \\
+               az hpc-cache storage-target remove --resource-group "scgroup" --cache-name "sc1" --name \\
                "st1"
 """
 
