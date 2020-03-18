@@ -9,10 +9,11 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .microsoft_support import MicrosoftSupport
-from .version import VERSION
+from ._configuration import MicrosoftSupportConfiguration
+from ._microsoft_support import MicrosoftSupport
+__all__ = ['MicrosoftSupport', 'MicrosoftSupportConfiguration']
 
-__all__ = ['MicrosoftSupport']
+from .version import VERSION
 
 __version__ = VERSION
 

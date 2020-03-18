@@ -9,11 +9,11 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .operations import Operations
-from .services_operations import ServicesOperations
-from .problem_classifications_operations import ProblemClassificationsOperations
-from .support_tickets_operations import SupportTicketsOperations
-from .communications_operations import CommunicationsOperations
+from ._operations import Operations
+from ._services_operations import ServicesOperations
+from ._problem_classifications_operations import ProblemClassificationsOperations
+from ._support_tickets_operations import SupportTicketsOperations
+from ._communications_operations import CommunicationsOperations
 
 __all__ = [
     'Operations',
