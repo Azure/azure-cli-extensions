@@ -17,8 +17,10 @@ from msrestazure.polling.arm_polling import ARMPolling
 from .. import models
 
 
-class CommunicationsOperations(object):
-    """CommunicationsOperations operations.
+class SupportTicketsOperations(object):
+    """SupportTicketsOperations operations.
+
+    You should not instantiate directly this class, but create a Client instance that will create it for you and attach it as attribute.
 
     :param client: Client for service requests.
     :param config: Configuration of service client.
@@ -39,13 +41,11 @@ class CommunicationsOperations(object):
         self.config = config
 
     def check_name_availability(
-            self, support_ticket_name, name, type, custom_headers=None, raw=False, **operation_config):
+            self, name, type, custom_headers=None, raw=False, **operation_config):
         """Check the availability of a resource name. This API should to be used
-        to check the uniqueness of the name for adding a new communication to
-        the support ticket.
+        to check the uniqueness of the name for support ticket creation for the
+        selected subscription.
 
-        :param support_ticket_name: Support ticket name
-        :type support_ticket_name: str
         :param name: The resource name to validate
         :type name: str
         :param type: The type of resource. Possible values include:
@@ -67,7 +67,6 @@ class CommunicationsOperations(object):
         # Construct URL
         url = self.check_name_availability.metadata['url']
         path_format_arguments = {
-            'supportTicketName': self._serialize.url("support_ticket_name", support_ticket_name, 'str'),
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str')
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -98,7 +97,6 @@ class CommunicationsOperations(object):
             raise models.ExceptionResponseException(self._deserialize, response)
 
         deserialized = None
-
         if response.status_code == 200:
             deserialized = self._deserialize('CheckNameAvailabilityOutput', response)
 
@@ -107,49 +105,44 @@ class CommunicationsOperations(object):
             return client_raw_response
 
         return deserialized
-    check_name_availability.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Support/supportTickets/{supportTicketName}/checkNameAvailability'}
+    check_name_availability.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Support/checkNameAvailability'}
 
     def list(
-            self, support_ticket_name, top=None, filter=None, custom_headers=None, raw=False, **operation_config):
-        """Lists all communications (attachments not included) for a support
-        ticket. <br/></br> You can also filter support ticket communications by
-        _CreatedDate_ or _CommunicationType_ using the $filter parameter. The
-        only type of communication supported today is _Web_. Output will be a
-        paged result with _nextLink_, using which you can retrieve the next set
-        of Communication results. <br/><br/>Support ticket data is available
-        for 12 months after ticket creation. If a ticket was created more than
-        12 months ago, a request for data might cause an error.
+            self, top=None, filter=None, custom_headers=None, raw=False, **operation_config):
+        """Lists all the support tickets for an Azure subscription. You can also
+        filter the support tickets by _Status_ or _CreatedDate_ using the
+        $filter parameter. Output will be a paged result with _nextLink_, using
+        which you can retrieve the next set of support tickets.
+        <br/><br/>Support ticket data is available for 12 months after ticket
+        creation. If a ticket was created more than 12 months ago, a request
+        for data might cause an error.
 
-        :param support_ticket_name: Support ticket name
-        :type support_ticket_name: str
         :param top: The number of values to return in the collection. Default
-         is 10 and max is 10.
+         is 25 and max is 100.
         :type top: int
-        :param filter: The filter to apply on the operation. You can filter by
-         communicationType and createdDate properties. CommunicationType
-         supports Equals ('eq') operator and createdDate supports Greater Than
-         ('gt') and Greater Than or Equals ('ge') operators. You may combine
-         the CommunicationType and CreatedDate filters by Logical And ('and')
-         operator.
+        :param filter: The filter to apply on the operation. We support 'odata
+         v4.0' filter semantics. [Learn
+         more](https://docs.microsoft.com/odata/concepts/queryoptions-overview).
+         _Status_ filter can only be used with 'eq' operator. For _CreatedDate_
+         filter, the supported operators are 'gt' and 'ge'. When using both
+         filters, combine them using the logical 'AND'.
         :type filter: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: An iterator like instance of CommunicationDetails
+        :return: An iterator like instance of SupportTicketDetails
         :rtype:
-         ~azure.mgmt.support.models.CommunicationDetailsPaged[~azure.mgmt.support.models.CommunicationDetails]
+         ~azure.mgmt.support.models.SupportTicketDetailsPaged[~azure.mgmt.support.models.SupportTicketDetails]
         :raises:
          :class:`ExceptionResponseException<azure.mgmt.support.models.ExceptionResponseException>`
         """
-        def internal_paging(next_link=None, raw=False):
-
+        def prepare_request(next_link=None):
             if not next_link:
                 # Construct URL
                 url = self.list.metadata['url']
                 path_format_arguments = {
-                    'supportTicketName': self._serialize.url("support_ticket_name", support_ticket_name, 'str'),
                     'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str')
                 }
                 url = self._client.format_url(url, **path_format_arguments)
@@ -178,6 +171,11 @@ class CommunicationsOperations(object):
 
             # Construct and send request
             request = self._client.get(url, query_parameters, header_parameters)
+            return request
+
+        def internal_paging(next_link=None):
+            request = prepare_request(next_link)
+
             response = self._client.send(request, stream=False, **operation_config)
 
             if response.status_code not in [200]:
@@ -186,31 +184,29 @@ class CommunicationsOperations(object):
             return response
 
         # Deserialize response
-        deserialized = models.CommunicationDetailsPaged(internal_paging, self._deserialize.dependencies)
-
+        header_dict = None
         if raw:
             header_dict = {}
-            client_raw_response = models.CommunicationDetailsPaged(internal_paging, self._deserialize.dependencies, header_dict)
-            return client_raw_response
+        deserialized = models.SupportTicketDetailsPaged(internal_paging, self._deserialize.dependencies, header_dict)
 
         return deserialized
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Support/supportTickets/{supportTicketName}/communications'}
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Support/supportTickets'}
 
     def get(
-            self, support_ticket_name, communication_name, custom_headers=None, raw=False, **operation_config):
-        """Returns communication details for a support ticket.
+            self, support_ticket_name, custom_headers=None, raw=False, **operation_config):
+        """Get ticket details for an Azure subscription. Support ticket data is
+        available for 12 months after ticket creation. If a ticket was created
+        more than 12 months ago, a request for data might cause an error.
 
         :param support_ticket_name: Support ticket name
         :type support_ticket_name: str
-        :param communication_name: Communication name
-        :type communication_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: CommunicationDetails or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.support.models.CommunicationDetails or
+        :return: SupportTicketDetails or ClientRawResponse if raw=true
+        :rtype: ~azure.mgmt.support.models.SupportTicketDetails or
          ~msrest.pipeline.ClientRawResponse
         :raises:
          :class:`ExceptionResponseException<azure.mgmt.support.models.ExceptionResponseException>`
@@ -219,7 +215,6 @@ class CommunicationsOperations(object):
         url = self.get.metadata['url']
         path_format_arguments = {
             'supportTicketName': self._serialize.url("support_ticket_name", support_ticket_name, 'str'),
-            'communicationName': self._serialize.url("communication_name", communication_name, 'str'),
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str')
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -246,25 +241,48 @@ class CommunicationsOperations(object):
             raise models.ExceptionResponseException(self._deserialize, response)
 
         deserialized = None
-
         if response.status_code == 200:
-            deserialized = self._deserialize('CommunicationDetails', response)
+            deserialized = self._deserialize('SupportTicketDetails', response)
 
         if raw:
             client_raw_response = ClientRawResponse(deserialized, response)
             return client_raw_response
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Support/supportTickets/{supportTicketName}/communications/{communicationName}'}
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Support/supportTickets/{supportTicketName}'}
 
+    def update(
+            self, support_ticket_name, update_support_ticket, custom_headers=None, raw=False, **operation_config):
+        """This API allows you to update the severity level, ticket status, and
+        your contact information in the support ticket.<br/><br/>Note: The
+        severity levels cannot be changed if a support ticket is actively being
+        worked upon by an Azure support engineer. In such a case, contact your
+        support engineer to request severity update by adding a new
+        communication using the Communications API.<br/><br/>Changing the
+        ticket status to _closed_ is allowed only on an unassigned case. When
+        an engineer is actively working on the ticket, send your ticket closure
+        request by sending a note to your engineer.
 
-    def _create_initial(
-            self, support_ticket_name, communication_name, create_communication_parameters, custom_headers=None, raw=False, **operation_config):
+        :param support_ticket_name: Support ticket name
+        :type support_ticket_name: str
+        :param update_support_ticket: UpdateSupportTicket object
+        :type update_support_ticket:
+         ~azure.mgmt.support.models.UpdateSupportTicket
+        :param dict custom_headers: headers that will be added to the request
+        :param bool raw: returns the direct response alongside the
+         deserialized response
+        :param operation_config: :ref:`Operation configuration
+         overrides<msrest:optionsforoperations>`.
+        :return: SupportTicketDetails or ClientRawResponse if raw=true
+        :rtype: ~azure.mgmt.support.models.SupportTicketDetails or
+         ~msrest.pipeline.ClientRawResponse
+        :raises:
+         :class:`ExceptionResponseException<azure.mgmt.support.models.ExceptionResponseException>`
+        """
         # Construct URL
-        url = self.create.metadata['url']
+        url = self.update.metadata['url']
         path_format_arguments = {
             'supportTicketName': self._serialize.url("support_ticket_name", support_ticket_name, 'str'),
-            'communicationName': self._serialize.url("communication_name", communication_name, 'str'),
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str')
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -285,7 +303,54 @@ class CommunicationsOperations(object):
             header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct body
-        body_content = self._serialize.body(create_communication_parameters, 'CommunicationDetails')
+        body_content = self._serialize.body(update_support_ticket, 'UpdateSupportTicket')
+
+        # Construct and send request
+        request = self._client.patch(url, query_parameters, header_parameters, body_content)
+        response = self._client.send(request, stream=False, **operation_config)
+
+        if response.status_code not in [200]:
+            raise models.ExceptionResponseException(self._deserialize, response)
+
+        deserialized = None
+        if response.status_code == 200:
+            deserialized = self._deserialize('SupportTicketDetails', response)
+
+        if raw:
+            client_raw_response = ClientRawResponse(deserialized, response)
+            return client_raw_response
+
+        return deserialized
+    update.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Support/supportTickets/{supportTicketName}'}
+
+
+    def _create_initial(
+            self, support_ticket_name, create_support_ticket_parameters, custom_headers=None, raw=False, **operation_config):
+        # Construct URL
+        url = self.create.metadata['url']
+        path_format_arguments = {
+            'supportTicketName': self._serialize.url("support_ticket_name", support_ticket_name, 'str'),
+            'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str')
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}
+        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}
+        header_parameters['Accept'] = 'application/json'
+        header_parameters['Content-Type'] = 'application/json; charset=utf-8'
+        if self.config.generate_client_request_id:
+            header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
+        if custom_headers:
+            header_parameters.update(custom_headers)
+        if self.config.accept_language is not None:
+            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
+
+        # Construct body
+        body_content = self._serialize.body(create_support_ticket_parameters, 'SupportTicketDetails')
 
         # Construct and send request
         request = self._client.put(url, query_parameters, header_parameters, body_content)
@@ -297,7 +362,7 @@ class CommunicationsOperations(object):
         deserialized = None
 
         if response.status_code == 200:
-            deserialized = self._deserialize('CommunicationDetails', response)
+            deserialized = self._deserialize('SupportTicketDetails', response)
 
         if raw:
             client_raw_response = ClientRawResponse(deserialized, response)
@@ -306,41 +371,61 @@ class CommunicationsOperations(object):
         return deserialized
 
     def create(
-            self, support_ticket_name, communication_name, create_communication_parameters, custom_headers=None, raw=False, polling=True, **operation_config):
-        """Adds a new customer communication to an Azure support ticket.
+            self, support_ticket_name, create_support_ticket_parameters, custom_headers=None, raw=False, polling=True, **operation_config):
+        """Creates a new support ticket for Subscription and Service limits
+        (Quota), Technical, Billing, and Subscription Management issues for the
+        specified subscription. Learn the
+        [prerequisites](https://aka.ms/supportAPI) required to create a support
+        ticket.<br/><br/>Always call the Services and ProblemClassifications
+        API to get the most recent set of services and problem categories
+        required for support ticket creation.<br/><br/>Adding attachments are
+        not currently supported via the API. To add a file to an existing
+        support ticket, visit the [Manage support
+        ticket](https://portal.azure.com/#blade/Microsoft_Azure_Support/HelpAndSupportBlade/managesupportrequest)
+        page in the Azure portal, select the support ticket, and use the file
+        upload control to add a new file.<br/><br/>Providing consent to share
+        diagnostic information with Azure support is currently not supported
+        via the API. Azure support engineer, working on your ticket, will reach
+        out to you for consent if your issue requires gathering diagnostic
+        information from your Azure resources.<br/><br/>**Creating a support
+        ticket for on-behalf-of**: Include _x-ms-authorization-auxiliary_
+        header to provide an auxiliary token as per
+        [this](https://docs.microsoft.com/azure/azure-resource-manager/management/authenticate-multi-tenant).
+        The primary token will be from the tenant for whom a support ticket is
+        being raised against the subscription, i.e. Cloud solution provider
+        (CSP) customer tenant. The auxiliary token will be from the Cloud
+        solution provider (CSP) partner tenant.
 
-        :param support_ticket_name: Support ticket name
+        :param support_ticket_name: Support ticket name.
         :type support_ticket_name: str
-        :param communication_name: Communication name
-        :type communication_name: str
-        :param create_communication_parameters: Communication object
-        :type create_communication_parameters:
-         ~azure.mgmt.support.models.CommunicationDetails
+        :param create_support_ticket_parameters: Support ticket request
+         payload.
+        :type create_support_ticket_parameters:
+         ~azure.mgmt.support.models.SupportTicketDetails
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
         :param polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
-        :return: An instance of LROPoller that returns CommunicationDetails or
-         ClientRawResponse<CommunicationDetails> if raw==True
+        :return: An instance of LROPoller that returns SupportTicketDetails or
+         ClientRawResponse<SupportTicketDetails> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.support.models.CommunicationDetails]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.support.models.SupportTicketDetails]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.support.models.CommunicationDetails]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.support.models.SupportTicketDetails]]
         :raises:
          :class:`ExceptionResponseException<azure.mgmt.support.models.ExceptionResponseException>`
         """
         raw_result = self._create_initial(
             support_ticket_name=support_ticket_name,
-            communication_name=communication_name,
-            create_communication_parameters=create_communication_parameters,
+            create_support_ticket_parameters=create_support_ticket_parameters,
             custom_headers=custom_headers,
             raw=True,
             **operation_config
         )
 
         def get_long_running_output(response):
-            deserialized = self._deserialize('CommunicationDetails', response)
+            deserialized = self._deserialize('SupportTicketDetails', response)
 
             if raw:
                 client_raw_response = ClientRawResponse(deserialized, response)
@@ -355,4 +440,4 @@ class CommunicationsOperations(object):
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    create.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Support/supportTickets/{supportTicketName}/communications/{communicationName}'}
+    create.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Support/supportTickets/{supportTicketName}'}

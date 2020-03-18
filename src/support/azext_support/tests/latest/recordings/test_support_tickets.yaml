@@ -24,7 +24,7 @@ interactions:
       accept-language:
       - en-US
     method: POST
-    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/checkNameAvailability?api-version=2020-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/checkNameAvailability?api-version=2020-04-01
   response:
     body:
       string: '{"nameAvailable":true}'
@@ -88,13 +88,13 @@ interactions:
       accept-language:
       - en-US
     method: PUT
-    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001?api-version=2020-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001?api-version=2020-04-01
   response:
     body:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/operationsStatus/afd37615-7293-4ddf-8f85-8489fc1e0faa?api-version=2020-04-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/operationsStatus/afd37615-7293-4ddf-8f85-8489fc1e0faa?api-version=2020-04-01
       cache-control:
       - no-cache
       content-length:
@@ -104,7 +104,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/operationResults/afd37615-7293-4ddf-8f85-8489fc1e0faa?api-version=2020-04-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/operationResults/afd37615-7293-4ddf-8f85-8489fc1e0faa?api-version=2020-04-01
       pragma:
       - no-cache
       server:
@@ -137,7 +137,7 @@ interactions:
       - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
         azure-mgmt-support/2.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
     method: GET
-    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/operationsStatus/afd37615-7293-4ddf-8f85-8489fc1e0faa?api-version=2020-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/operationsStatus/afd37615-7293-4ddf-8f85-8489fc1e0faa?api-version=2020-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/operationsStatus/afd37615-7293-4ddf-8f85-8489fc1e0faa","status":"Succeeded","properties":{"supportTicketCreationWarning":""}}'
@@ -186,7 +186,7 @@ interactions:
       - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
         azure-mgmt-support/2.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
     method: GET
-    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001?api-version=2020-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001?api-version=2020-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001","name":"test_ticket_from_cli_000001","type":"Microsoft.Support/supportTickets","properties":{"description":"test
@@ -246,7 +246,7 @@ interactions:
       accept-language:
       - en-US
     method: PUT
-    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/12345678-1234-1234-1234-123412341234?api-version=2020-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/12345678-1234-1234-1234-123412341234?api-version=2020-04-01
   response:
     body:
       string: '{"error":{"code":"InvalidData","message":"Communication resource name
@@ -301,13 +301,13 @@ interactions:
       accept-language:
       - en-US
     method: PUT
-    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/test_communication_from_cli_000002?api-version=2020-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/test_communication_from_cli_000002?api-version=2020-04-01
   response:
     body:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/operationsStatus/2021a9ef-f442-4f48-9823-44b454b313f9?api-version=2020-04-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/operationsStatus/2021a9ef-f442-4f48-9823-44b454b313f9?api-version=2020-04-01
       cache-control:
       - no-cache
       content-length:
@@ -317,7 +317,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/operationResults/2021a9ef-f442-4f48-9823-44b454b313f9?api-version=2020-04-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/operationResults/2021a9ef-f442-4f48-9823-44b454b313f9?api-version=2020-04-01
       pragma:
       - no-cache
       server:
@@ -349,7 +349,7 @@ interactions:
       - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
         azure-mgmt-support/2.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
     method: GET
-    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/operationsStatus/2021a9ef-f442-4f48-9823-44b454b313f9?api-version=2020-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/operationsStatus/2021a9ef-f442-4f48-9823-44b454b313f9?api-version=2020-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/operationsStatus/2021a9ef-f442-4f48-9823-44b454b313f9","status":"Succeeded","properties":{"supportTicketCreationWarning":""}}'
@@ -397,7 +397,7 @@ interactions:
       - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
         azure-mgmt-support/2.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
     method: GET
-    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/test_communication_from_cli_000002?api-version=2020-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/test_communication_from_cli_000002?api-version=2020-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/test_communication_from_cli_000002","name":"test_communication_from_cli_000002","type":"Microsoft.Support/communications","properties":{"communicationType":"Web","communicationDirection":"Inbound","sender":"nichheda@microsoft.com","subject":"test
@@ -448,7 +448,7 @@ interactions:
       accept-language:
       - en-US
     method: GET
-    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications?api-version=2020-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications?api-version=2020-04-01
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/test_communication_from_cli_000002","name":"test_communication_from_cli_000002","type":"Microsoft.Support/communications","properties":{"communicationType":"Web","communicationDirection":"Inbound","sender":"nichheda@microsoft.com","subject":"test
@@ -499,7 +499,7 @@ interactions:
       accept-language:
       - en-US
     method: GET
-    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/test_communication_from_cli_000002?api-version=2020-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/test_communication_from_cli_000002?api-version=2020-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/test_communication_from_cli_000002","name":"test_communication_from_cli_000002","type":"Microsoft.Support/communications","properties":{"communicationType":"Web","communicationDirection":"Inbound","sender":"nichheda@microsoft.com","subject":"test
@@ -550,7 +550,7 @@ interactions:
       accept-language:
       - en-US
     method: GET
-    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets?$top=100&$filter=status%20eq%20%27Open%27&api-version=2020-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets?$top=100&$filter=status%20eq%20%27Open%27&api-version=2020-04-01
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001","name":"test_ticket_from_cli_000001","type":"Microsoft.Support/supportTickets","properties":{"description":"test
@@ -608,7 +608,7 @@ interactions:
       accept-language:
       - en-US
     method: PATCH
-    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001?api-version=2020-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001?api-version=2020-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001","name":"test_ticket_from_cli_000001","type":"Microsoft.Support/supportTickets","properties":{"description":"test
@@ -667,7 +667,7 @@ interactions:
       accept-language:
       - en-US
     method: PATCH
-    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001?api-version=2020-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001?api-version=2020-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001","name":"test_ticket_from_cli_000001","type":"Microsoft.Support/supportTickets","properties":{"description":"test
@@ -726,7 +726,7 @@ interactions:
       accept-language:
       - en-US
     method: PATCH
-    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001?api-version=2020-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001?api-version=2020-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001","name":"test_ticket_from_cli_000001","type":"Microsoft.Support/supportTickets","properties":{"description":"test
@@ -781,7 +781,7 @@ interactions:
       accept-language:
       - en-US
     method: GET
-    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001?api-version=2020-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001?api-version=2020-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001","name":"test_ticket_from_cli_000001","type":"Microsoft.Support/supportTickets","properties":{"description":"test
