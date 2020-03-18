@@ -14,7 +14,7 @@ az extension add --name storagesync
 ##### Create a new storage sync service.
 
 ```
-az storagesync storage-sync-service create \
+az storagesync create \
     --resource-group rg \
     --name storage_sync_service_name \ 
     --location westus \
@@ -23,24 +23,24 @@ az storagesync storage-sync-service create \
 
 ##### Delete a given storage sync service.
 ```
-az storagesync storage-sync-service delete \
+az storagesync delete \
     --resource-group rg \
     --name storage_sync_service_name
 ```
 
 ##### Show the properties for a given storage sync service.
 ```
-az storagesync storage-sync-service show \
+az storagesync show \
     --resource-group rg \
     --name storage_sync_service_name
 ```
 
 ##### List all storage sync services in a resource group or a subscription.
 ```
-az storagesync storage-sync-service list
+az storagesync list
 ```
 ```
-az storagesync storage-sync-service list \
+az storagesync list \
     --resource-group rg
 ```
 
@@ -51,7 +51,7 @@ az storagesync storage-sync-service list \
 az storagesync sync-group create \
     --resource-group rg \
     --name sync_group_name \
-    --storage-sync-service-name storage-sync-service-name
+    --storage-sync-service storage-sync-service-name
 ```
 
 ##### Delete a given sync group.
@@ -59,7 +59,7 @@ az storagesync sync-group create \
 az storagesync sync-group delete \
     --resource-group rg \
     --name sync_group_name \
-    --storage-sync-service-name storage-sync-service-name
+    --storage-sync-service storage-sync-service-name
 ```
 
 ##### Show the properties for a given sync group.
@@ -67,24 +67,24 @@ az storagesync sync-group delete \
 az storagesync sync-group show \
     --resource-group rg \
     --name sync_group_name \
-    --storage-sync-service-name storage-sync-service-name
+    --storage-sync-service storage-sync-service-name
 ```
 
 ##### List all sync groups in a storage sync service.
 ```
 az storagesync sync-group list \
     --resource-group rg \
-    --storage-sync-service-name storage-sync-service-name
+    --storage-sync-service storage-sync-service-name
 ```
 
 #### Manage cloud endpoint.
 
 ##### Create a new cloud endpoint.
 ```
-az storagesync cloud-endpoint create \
+az storagesync sync-group cloud-endpoint create \
     --resource-group rg \
     --name cloud-endpoint-name \
-    --storage-sync-service-name storage-sync-service-name \
+    --storage-sync-service storage-sync-service-name \
     --sync-group-name sync-group-name \
     --storage-account storageaccountnameorid \
     --azure-file-share-name file-share-name
@@ -92,27 +92,27 @@ az storagesync cloud-endpoint create \
 
 ##### Delete a given cloud endpoint.
 ```
-az storagesync cloud-endpoint delete \
+az storagesync sync-group cloud-endpoint delete \
     --resource-group rg \
     --name cloud-endpoint-name \
-    --storage-sync-service-name storage-sync-service-name \
+    --storage-sync-service storage-sync-service-name \
     --sync-group-name sync-group-name 
 ```
 
 ##### Show the properties for a given cloud endpoint.
 ```
-az storagesync cloud-endpoint show \
+az storagesync sync-group cloud-endpoint show \
     --resource-group rg \
     --name cloud-endpoint-name \
-    --storage-sync-service-name storage-sync-service-name \
+    --storage-sync-service storage-sync-service-name \
     --sync-group-name sync-group-name 
 ```
 
 ##### List all cloud endpoints in a sync group.
 ```
-az storagesync cloud-endpoint list \
+az storagesync sync-group cloud-endpoint list \
     --resource-group rg \
-    --storage-sync-service-name storage-sync-service-name \
+    --storage-sync-service storage-sync-service-name \
     --sync-group-name sync-group-name 
 ```
 
@@ -120,10 +120,10 @@ az storagesync cloud-endpoint list \
 
 ##### Create a new server endpoint.
 ```
-az storagesync server-endpoint create \
+az storagesync sync-group server-endpoint create \
     --resource-group rg \
     --name server-endpoint-name \
-    --storage-sync-service-name storage-sync-service-name \
+    --storage-sync-service storage-sync-service-name \
     --sync-group-name sync-group-name \
     --server-id server-id \
     --server-local-path "d:\\abc"
@@ -131,10 +131,10 @@ az storagesync server-endpoint create \
 
 ##### Update the properties for a given server endpoint.
 ```
-az storagesync server-endpoint create \
+az storagesync sync-group server-endpoint create \
     --resource-group rg \
     --name server-endpoint-name \
-    --storage-sync-service-name storage-sync-service-name \
+    --storage-sync-service storage-sync-service-name \
     --sync-group-name sync-group-name \
     --server-id server-id \
     --server-local-path "d:\\abc"
@@ -142,27 +142,27 @@ az storagesync server-endpoint create \
 
 ##### Delete a given server endpoint.
 ```
-az storagesync server-endpoint delete \
+az storagesync sync-group server-endpoint delete \
     --resource-group rg \
     --name server-endpoint-name \
-    --storage-sync-service-name storage-sync-service-name \
+    --storage-sync-service storage-sync-service-name \
     --sync-group-name sync-group-name
 ```
 
 ##### Show the properties for a given server endpoint.
 ```
-az storagesync server-endpoint show \
+az storagesync sync-group server-endpoint show \
     --resource-group rg \
     --name server-endpoint-name \
-    --storage-sync-service-name storage-sync-service-name \
+    --storage-sync-service storage-sync-service-name \
     --sync-group-name sync-group-name
 ```
 
 ##### List all server endpoints in a sync group.
 ```
-az storagesync server-endpoint list \
+az storagesync sync-group server-endpoint list \
     --resource-group rg \
-    --storage-sync-service-name storage-sync-service-name \
+    --storage-sync-service storage-sync-service-name \
     --sync-group-name sync-group-name
 ```
 
@@ -176,7 +176,7 @@ az storagesync server-endpoint list \
 ```
 az storagesync registered-server delete \
     --resource-group rg \
-    --storage-sync-service-name storage-sync-service-name \
+    --storage-sync-service storage-sync-service-name \
     --server-id server-id 
 ```
 
@@ -184,7 +184,7 @@ az storagesync registered-server delete \
 ```
 az storagesync registered-server show \
     --resource-group rg \
-    --storage-sync-service-name storage-sync-service-name \
+    --storage-sync-service storage-sync-service-name \
     --server-id server-id 
 ```
 
@@ -192,7 +192,7 @@ az storagesync registered-server show \
 ```
 az storagesync registered-server list \
     --resource-group rg \
-    --storage-sync-service-name storage-sync-service-name
+    --storage-sync-service storage-sync-service-name
 ```
 
 ##### Roll the storage sync server certificate used to describe the server identity to the storage sync service.

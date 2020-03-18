@@ -35,7 +35,7 @@ def get_storagesync_storage_sync_service(client,
 
 def list_storagesync_storage_sync_service(client,
                                           resource_group_name=None):
-    if resource_group_name is not None:
+    if resource_group_name:
         return client.list_by_resource_group(resource_group_name=resource_group_name)
     return client.list_by_subscription()
 
@@ -124,8 +124,8 @@ def create_storagesync_server_endpoint(client,
     body['server_resource_id'] = server_resource_id  # str
     body['server_local_path'] = server_local_path  # str
     body['cloud_tiering'] = cloud_tiering  # str
-    body['volume_free_space_percent'] = volume_free_space_percent  # number
-    body['tier_files_older_than_days'] = tier_files_older_than_days  # number
+    body['volume_free_space_percent'] = volume_free_space_percent  # int
+    body['tier_files_older_than_days'] = tier_files_older_than_days  # int
     body['offline_data_transfer'] = offline_data_transfer  # str
     body['offline_data_transfer_share_name'] = offline_data_transfer_share_name  # str
     return sdk_no_wait(no_wait, client.create, resource_group_name=resource_group_name, storage_sync_service_name=storage_sync_service_name, sync_group_name=sync_group_name, server_endpoint_name=server_endpoint_name, parameters=body)

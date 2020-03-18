@@ -4,6 +4,14 @@
 # --------------------------------------------------------------------------------------------
 
 
+def parse_storage_sync_service(namespace):
+    from msrestazure.tools import is_valid_resource_id, parse_resource_id
+
+    if namespace.storage_sync_service_name and is_valid_resource_id(namespace.storage_sync_service_name):
+        namespace.resource_group_name = parse_resource_id(namespace.storage_sync_service_name)['resource_group']
+        namespace.storage_sync_service_name = parse_resource_id(namespace.storage_sync_service_name)['name']
+
+
 def parse_server_id(cmd, namespace):
     from azure.cli.core.commands.client_factory import get_subscription_id
     from msrestazure.tools import is_valid_resource_id, resource_id
