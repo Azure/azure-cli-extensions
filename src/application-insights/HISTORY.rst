@@ -1,3 +1,8 @@
+0.1.5
+++++++++++++++++++
+
+* Small fixes for help messages and error messages
+
 0.1.4
 ++++++++++++++++++
 
