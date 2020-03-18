@@ -16,7 +16,7 @@ from azure_devtools.scenario_tests import AllowLargeResponse
 class SupportScenarioTest(ScenarioTest):
 
     def cmd(self, command, checks=None, expect_failure=False):
-        print("Runnig... {0}\n".format(command))
+        print("Running... {0}\n".format(command))
         rsp = super(SupportScenarioTest, self).cmd(command, checks=checks, expect_failure=expect_failure)
 
         try:
@@ -159,6 +159,11 @@ class SupportScenarioTest(ScenarioTest):
         cmd = self._build_support_tickets_update_cmd2(test_ticket_name)
         rsp = self.cmd(cmd).get_output_in_json()
         self._validate_support_tickets_update_cmd2(rsp)
+
+        # Update status
+        cmd = self._build_support_tickets_update_cmd3(test_ticket_name)
+        rsp = self.cmd(cmd).get_output_in_json()
+        self._validate_support_tickets_update_cmd3(rsp)
 
         # Show
         cmd = self._build_support_tickets_show_cmd(test_ticket_name)
@@ -342,6 +347,20 @@ class SupportScenarioTest(ScenarioTest):
         self.assertTrue("Minimal" == rsp["severity"])
         self.assertTrue("contactDetails" in rsp)
         self.assertTrue("Email" == rsp["contactDetails"]["preferredContactMethod"])
+
+    def _build_support_tickets_update_cmd3(self, test_ticket_name):
+        cmd = "support tickets update "
+        cmd += "--ticket-name '{0}' ".format(test_ticket_name)
+        cmd += "--status 'closed' "
+
+        return cmd
+
+    def _validate_support_tickets_update_cmd3(self, rsp):
+        self.assertTrue(rsp is not None)
+        self.assertTrue("type" in rsp)
+        self.assertTrue(rsp["type"] == "Microsoft.Support/supportTickets")
+        self.assertTrue("status" in rsp)
+        self.assertTrue("closed" == rsp["status"])
 
     def _build_support_tickets_show_cmd(self, test_ticket_name):
         cmd = "support tickets show "
