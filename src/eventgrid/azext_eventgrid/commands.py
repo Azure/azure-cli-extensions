@@ -17,7 +17,12 @@ from ._client_factory import (
     topic_types_factory,
     private_endpoint_connections_factory,
     private_link_resources_factory,
-    extension_topics_factory
+    extension_topics_factory,
+    partner_registrations_factory,
+    partner_namespaces_factory,
+    event_channels_factory,
+    partner_topics_factory,
+    partner_topic_event_subscriptions_factory
 )
 
 
@@ -55,6 +60,36 @@ def load_command_table(self, _):
     system_topic_event_subscriptions_mgmt_util = CliCommandType(
         operations_tmpl='azext_eventgrid.vendored_sdks.eventgrid.operations._system_topic_event_subscriptions_operations#SystemTopicEventSubscriptionsOperations.{}',
         client_factory=system_topic_event_subscriptions_factory,
+        client_arg_name='self'
+    )
+
+    partner_registrations_mgmt_util = CliCommandType(
+        operations_tmpl='azext_eventgrid.vendored_sdks.eventgrid.operations._partner_registrations_operations#PartnerRegistrationsOperations.{}',
+        client_factory=partner_registrations_factory,
+        client_arg_name='self'
+    )
+
+    partner_namespaces_mgmt_util = CliCommandType(
+        operations_tmpl='azext_eventgrid.vendored_sdks.eventgrid.operations._partner_namespaces_operations#PartnerNamespacesOperations.{}',
+        client_factory=partner_namespaces_factory,
+        client_arg_name='self'
+    )
+
+    event_channels_mgmt_util = CliCommandType(
+        operations_tmpl='azext_eventgrid.vendored_sdks.eventgrid.operations._event_channels_operations#EventChannelsOperations.{}',
+        client_factory=event_channels_factory,
+        client_arg_name='self'
+    )
+
+    partner_topics_mgmt_util = CliCommandType(
+        operations_tmpl='azext_eventgrid.vendored_sdks.eventgrid.operations._partner_topics_operations#PartnerTopicsOperations.{}',
+        client_factory=partner_topics_factory,
+        client_arg_name='self'
+    )
+
+    partner_topic_event_subscriptions_mgmt_util = CliCommandType(
+        operations_tmpl='azext_eventgrid.vendored_sdks.eventgrid.operations._partner_topic_event_subscriptions_operations#PartnerTopicEventSubscriptionsOperations.{}',
+        client_factory=partner_topic_event_subscriptions_factory,
         client_arg_name='self'
     )
 
@@ -128,15 +163,50 @@ def load_command_table(self, _):
         g.custom_command('create', 'cli_system_topic_create_or_update')
         g.custom_command('update', 'cli_system_topic_update')
 
-    custom_tmpl = 'azext_eventgrid.custom#{}'
-    eventgrid_custom = CliCommandType(operations_tmpl=custom_tmpl)
-
     with self.command_group('eventgrid system-topic-event-subscription', system_topic_event_subscriptions_mgmt_util, client_factory=system_topic_event_subscriptions_factory) as g:
         g.custom_show_command('show', 'cli_system_topic_event_subscription_get')
         g.command('delete', 'delete')
         g.custom_command('list', 'cli_system_topic_event_subscription_list')
         g.custom_command('create', 'cli_system_topic_event_subscription_create_or_update')
         g.custom_command('update', 'cli_system_topic_event_subscription_update')
+
+    with self.command_group('eventgrid partner-registration', partner_registrations_mgmt_util, client_factory=partner_registrations_factory) as g:
+        g.show_command('show', 'get')
+        g.command('delete', 'delete')
+        g.custom_command('list', 'cli_partner_registration_list')
+        g.custom_command('create', 'cli_partner_registration_create_or_update')
+        # g.custom_command('update', 'cli_partner_registration_update')
+
+    with self.command_group('eventgrid partner-namespace', partner_namespaces_mgmt_util, client_factory=partner_namespaces_factory) as g:
+        g.show_command('show', 'get')
+        g.command('delete', 'delete')
+        g.custom_command('list', 'cli_partner_namespace_list')
+        g.custom_command('create', 'cli_partner_namespace_create_or_update')
+        # g.custom_command('update', 'cli_partner_namespace_update')
+
+    with self.command_group('eventgrid event-channel', event_channels_mgmt_util, client_factory=event_channels_factory) as g:
+        g.show_command('show', 'get')
+        g.command('delete', 'delete')
+        g.custom_command('list', 'cli_event_channel_list')
+        # g.custom_command('update', 'cli_event_channel_update')
+        g.custom_command('create', 'cli_event_channel_create_or_update')
+
+    with self.command_group('eventgrid partner-topic', partner_topics_mgmt_util, client_factory=partner_topics_factory) as g:
+        g.show_command('show', 'get')
+        g.command('delete', 'delete')
+        g.custom_command('list', 'cli_partner_topic_list')
+        g.custom_command('create', 'cli_partner_topic_create_or_update')
+        # g.custom_command('update', 'cli_partner_topic_update')
+
+    with self.command_group('eventgrid partner-topic-event-subscription', partner_topic_event_subscriptions_mgmt_util, client_factory=partner_topic_event_subscriptions_factory) as g:
+        g.command('show', 'cli_partner_topic_event_subscription_get')
+        g.command('delete', 'delete')
+        g.custom_command('list', 'cli_partner_topic_event_subscription_list')
+        g.custom_command('create', 'cli_partner_topic_event_subscription_create_or_update')
+        g.custom_command('update', 'cli_partner_topic_event_subscription_update')
+
+    custom_tmpl = 'azext_eventgrid.custom#{}'
+    eventgrid_custom = CliCommandType(operations_tmpl=custom_tmpl)
 
     with self.command_group('eventgrid event-subscription', client_factory=event_subscriptions_factory) as g:
         g.custom_command('create', 'cli_eventgrid_event_subscription_create')

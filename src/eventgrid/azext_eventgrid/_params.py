@@ -30,6 +30,11 @@ labels_type = CLIArgumentType(
     nargs='+'
 )
 
+authorized_subscription_ids_type = CLIArgumentType(
+    help="A space-separated list of Azure subscription Ids that are authorized to create a partner namespace associated with this partner registration. This is an optional property. Creating partner namespaces is always permitted under the same Azure subscription as the one used for creating the partner registration.",
+    nargs='+'
+)
+
 input_schema_type = CLIArgumentType(
     help="Schema in which incoming events will be published to this topic/domain. If you specify customeventschema as the value for this parameter, you must also provide values for at least one of --input_mapping_default_values / --input_mapping_fields.",
     arg_type=get_enum_type(['eventgridschema', 'customeventschema', 'cloudeventschemav1_0'], default='eventgridschema')
@@ -92,12 +97,35 @@ system_topic_name_type = CLIArgumentType(
     options_list=['--system-topic-name'],
     completer=get_resource_name_completion_list('Microsoft.EventGrid/systemtopics'))
 
+partner_registration_name_type = CLIArgumentType(
+    help='Name of the partner registration.',
+    arg_type=name_type,
+    options_list=['--partner-registration-name'],
+    completer=get_resource_name_completion_list('Microsoft.EventGrid/partnerregistrations'))
+
+partner_namespace_name_type = CLIArgumentType(
+    help='Name of the partner namespace.',
+    arg_type=name_type,
+    options_list=['--partner-namespace-name'],
+    completer=get_resource_name_completion_list('Microsoft.EventGrid/partnernamespaces'))
+
+event_channel_name_type = CLIArgumentType(
+    help='Name of the event channel.',
+    arg_type=name_type,
+    options_list=['--event-channel-name'],
+    completer=get_resource_name_completion_list('Microsoft.EventGrid/partnernamespaces/eventchannels'))
+
+partner_topic_name_type = CLIArgumentType(
+    help='Name of the partner topic.',
+    arg_type=name_type,
+    options_list=['--partner-topic-name'],
+    completer=get_resource_name_completion_list('Microsoft.EventGrid/partnertopics'))
+
 private_endpoint_connection_name_type = CLIArgumentType(
     help='Name of the private endpoint connection.',
     arg_type=name_type,
     options_list=['--private-endpoint-connection-name']
 )
-
 
 private_link_resource_name_type = CLIArgumentType(
     help='Name of the private link resource.',
@@ -135,6 +163,17 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
         c.argument('inbound_ip_rules', action=AddInboundIpRule, nargs='+')
         c.argument('sku', arg_type=sku_type)
         c.argument('identity', arg_type=identity_type)
+        c.argument('partner_registration_name', arg_type=partner_registration_name_type)
+        c.argument('partner_namespace_name', arg_type=partner_namespace_name_type)
+        c.argument('event_channel_name', arg_type=event_channel_name_type)
+        c.argument('partner_topic_name', arg_type=partner_topic_name_type)
+        c.argument('authorized_subscription_ids', arg_type=authorized_subscription_ids_type)
+        c.argument('partner_name', help="Official name of the partner.")
+        c.argument('display_name', help="Display name for the partner topic type.")
+        c.argument('resource_type_name', help="Name of the partner topic resource type. This name should be unique among all partner topic types names.")
+        c.argument('description', help="Description of the partner topic type.")
+        c.argument('logo_uri', help="URI of the partner logo.")
+        c.argument('setup_uri', help="URI of the partner website that can be used by Azure customers to setup Event Grid integration on an event source.")
 
     with self.argument_context('eventgrid topic') as c:
         c.argument('topic_name', arg_type=name_type, help='Name of the topic.', id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/topics'))
@@ -200,6 +239,30 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
     with self.argument_context('eventgrid system-topic list') as c:
         c.argument('odata_query', arg_type=odata_query_type, id_part=None)
 
+    with self.argument_context('eventgrid partner-registration') as c:
+        c.argument('partner_registration_name', arg_type=partner_registration_name_type, options_list=['--name', '-n'], id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/partnerregistrations'))
+
+    with self.argument_context('eventgrid partner-registration list') as c:
+        c.argument('odata_query', arg_type=odata_query_type, id_part=None)
+
+    with self.argument_context('eventgrid partner-namespace') as c:
+        c.argument('partner_namespace_name', arg_type=partner_namespace_name_type, options_list=['--name', '-n'], id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/partnernamespaces'))
+
+    with self.argument_context('eventgrid partner-namespace list') as c:
+        c.argument('odata_query', arg_type=odata_query_type, id_part=None)
+
+    with self.argument_context('eventgrid event-channel') as c:
+        c.argument('event_channel_name', arg_type=event_channel_name_type, options_list=['--name', '-n'], id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/partnernamespaes/eventchannels'))
+
+    with self.argument_context('eventgridevent-channel list') as c:
+        c.argument('odata_query', arg_type=odata_query_type, id_part=None)
+
+    with self.argument_context('eventgrid partner-topic') as c:
+        c.argument('partner_topic_name', arg_type=partner_topic_name_type, options_list=['--name', '-n'], id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/partnertopics'))
+
+    with self.argument_context('eventgrid partner-topic list') as c:
+        c.argument('odata_query', arg_type=odata_query_type, id_part=None)
+
     with self.argument_context('eventgrid event-subscription') as c:
         c.argument('event_subscription_name', arg_type=name_type, help='Name of the event subscription.')
         c.argument('event_delivery_schema', arg_type=get_enum_type(['eventgridschema', 'custominputschema', 'cloudeventschemav1_0']), help='The schema in which events should be delivered for this event subscription. By default, events will be delivered in the same schema in which they are published (based on the corresponding topic\'s input schema).')
@@ -239,6 +302,28 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
 
     with self.argument_context('eventgrid system-topic-event-subscription show') as c:
         c.argument('system_topic_name', arg_type=system_topic_name_type, completer=get_resource_name_completion_list('Microsoft.EventGrid/systemtopics'))
+        c.argument('include_full_endpoint_url', arg_type=get_three_state_flag(), options_list=['--include-full-endpoint-url'], help="Specify to indicate whether the full endpoint URL should be returned. True if flag present.", )
+
+    with self.argument_context('eventgrid partner-topic-event-subscription') as c:
+        c.argument('event_subscription_name', arg_type=name_type, options_list=['--name', '-n'], help='Name of the event subscription.')
+        c.argument('endpoint_type', arg_type=get_enum_type(['webhook', 'eventhub', 'storagequeue', 'hybridconnection', 'servicebusqueue', 'servicebustopic', 'azurefunction'], default='webhook'))
+        c.argument('event_delivery_schema', arg_type=get_enum_type(['eventgridschema', 'custominputschema', 'cloudeventschemav1_0']), help='The schema in which events should be delivered for this event subscription. By default, events will be delivered in the same schema in which they are published (based on the corresponding topic\'s input schema).')
+        c.argument('max_delivery_attempts', help="Maximum number of delivery attempts. Must be a number between 1 and 30.")
+        c.argument('max_events_per_batch', help="Maximum number of events in a batch. Must be a number between 1 and 5000.")
+        c.argument('preferred_batch_size_in_kilobytes', help="Preferred batch size in kilobytes. Must be a number between 1 and 1024.")
+        c.argument('event_ttl', help="Event time to live (in minutes). Must be a number between 1 and 1440.")
+        c.argument('deadletter_endpoint', help="The Azure resource ID of an Azure Storage blob container destination where EventGrid should deadletter undeliverable events for this event subscription.")
+        c.argument('advanced_filter', action=EventSubscriptionAddFilter, nargs='+')
+        c.argument('expiration_date', help="Date or datetime (in UTC, e.g. '2018-11-30T11:59:59+00:00' or '2018-11-30') after which the event subscription would expire. By default, there is no expiration for the event subscription.")
+        c.argument('azure_active_directory_tenant_id', help="The Azure Active Directory Tenant Id to get the access token that will be included as the bearer token in delivery requests. Applicable only for webhook as a destination")
+        c.argument('azure_active_directory_application_id_or_uri', help="The Azure Active Directory Application Id or Uri to get the access token that will be included as the bearer token in delivery requests. Applicable only for webhook as a destination")
+        c.argument('resource_group_name', arg_type=resource_group_name_type)
+
+    with self.argument_context('eventgrid partner-topic-event-subscription list') as c:
+        c.argument('odata_query', arg_type=odata_query_type, id_part=None)
+
+    with self.argument_context('eventgrid partner-topic-event-subscription show') as c:
+        c.argument('partner_topic_name', arg_type=partner_topic_name_type, completer=get_resource_name_completion_list('Microsoft.EventGrid/partnertopics'))
         c.argument('include_full_endpoint_url', arg_type=get_three_state_flag(), options_list=['--include-full-endpoint-url'], help="Specify to indicate whether the full endpoint URL should be returned. True if flag present.", )
 
     with self.argument_context('eventgrid topic-type') as c:

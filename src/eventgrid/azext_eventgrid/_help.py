@@ -150,6 +150,26 @@ examples:
     text: az eventgrid domain update -g rg1 --name domain1 --sku Basic --identity noidentity --allow-traffic-from-all-ips false --inbound-ip-rules 10.0.0.0/8 Allow --inbound-ip-rules 10.2.0.0/8 Allow --tags Dept=IT
 """
 
+helps['eventgrid partner-registration'] = """
+type: group
+short-summary: Manage partner registrations.
+"""
+
+helps['eventgrid partner-namespace'] = """
+type: group
+short-summary: Manage partner namespaces.
+"""
+
+helps['eventgrid event-channel'] = """
+type: group
+short-summary: Manage event channels.
+"""
+
+helps['eventgrid partner-topic'] = """
+type: group
+short-summary: Manage partner topics.
+"""
+
 helps['eventgrid system-topic'] = """
 type: group
 short-summary: Manage system topics.
@@ -202,6 +222,11 @@ short-summary: Update a system topic.
 examples:
   - name: Update the properties of an existing system topic.
     text: az eventgrid system-topic update -g rg1 --name systemtopic1 --tags Dept=IT
+"""
+
+helps['eventgrid partner-topic-event-subscription'] = """
+type: group
+short-summary: Manage event subscriptions of partner topic.
 """
 
 helps['eventgrid system-topic-event-subscription'] = """

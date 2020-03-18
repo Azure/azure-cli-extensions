@@ -33,8 +33,12 @@ from azext_eventgrid.vendored_sdks.eventgrid.models import (
     DomainUpdateParameters,
     ResourceSku,
     IdentityInfo,
-    SystemTopic)
-
+    PartnerRegistration,
+    PartnerNamespace,
+    EventChannel,
+    PartnerTopic,
+    SystemTopic
+)
 
 logger = get_logger(__name__)
 
@@ -46,6 +50,10 @@ EVENTGRID_DOMAINS = "domains"
 EVENTGRID_TOPICS = "topics"
 EVENTGRID_DOMAIN_TOPICS = "domaintopics"
 EVENTGRID_SYSTEM_TOPICS = "systemtopics"
+EVENTGRID_PARTNER_REGISTRATIONS = "partnerregistration"
+EVENTGRID_PARTNER_NAMESPACES = "partnernamespace"
+EVENTGRID_EVENT_CHANNELS = "eventchannel"
+EVENTGRID_PARTNER_TOPIC = "partnertopic"
 EVENTGRID_PRIVATE_ENDPOINT_CONNECTION = "privateendpointconnections"
 EVENTGRID_RESOURCE_SKU = "resourceSku"
 SKU_BASIC = "Basic"
@@ -288,6 +296,263 @@ def cli_system_topic_list(
         return client.list_by_resource_group(resource_group_name, odata_query, DEFAULT_TOP)
 
     return client.list_by_subscription(odata_query, DEFAULT_TOP)
+
+
+def cli_partner_registration_list(
+        client,
+        resource_group_name=None,
+        odata_query=None):
+
+    if resource_group_name:
+        return client.list_by_resource_group(resource_group_name, odata_query, DEFAULT_TOP)
+
+    return client.list_by_subscription(odata_query, DEFAULT_TOP)
+
+
+def cli_partner_registration_create_or_update(
+        client,
+        resource_group_name,
+        partner_registration_name,
+        partner_name=None,
+        resource_type_name=None,
+        display_name=None,
+        description=None,
+        logo_uri=None,
+        setup_uri=None,
+        authorized_subscription_ids=None,
+        tags=None):
+
+    partner_registration_info = PartnerRegistration(
+        location=GLOBAL,
+        partner_name=partner_name,
+        partner_resource_type_name=resource_type_name,
+        logo_uri=logo_uri,
+        setup_uri=setup_uri,
+        partner_resource_type_display_name=display_name,
+        partner_resource_type_description=description,
+        authorized_azure_subscription_ids=authorized_subscription_ids,
+        tags=tags)
+
+    return client.create_or_update(
+        resource_group_name,
+        partner_registration_name,
+        partner_registration_info)
+
+# TODO: to be added once operation is enabled.
+#
+# def cli_partner_registration_update(
+#        client,
+#        resource_group_name,
+#        partner_registration_name,
+#        tags=None):
+
+#    return client.update(
+#        resource_group_name=resource_group_name,
+#        partner_registration_name=partner_registration_name,
+#        tags=tags)
+
+
+def cli_partner_namespace_list(
+        client,
+        resource_group_name=None,
+        odata_query=None):
+
+    if resource_group_name:
+        return client.list_by_resource_group(resource_group_name, odata_query, DEFAULT_TOP)
+
+    return client.list_by_subscription(odata_query, DEFAULT_TOP)
+
+
+def cli_partner_namespace_create_or_update(
+        client,
+        resource_group_name,
+        partner_namespace_name,
+        location,
+        tags=None):
+
+    partner_namespace_info = PartnerNamespace(
+        location=location,
+        tags=tags)
+
+    return client.create_or_update(
+        resource_group_name,
+        partner_namespace_name,
+        partner_namespace_info)
+
+
+def cli_partner_namespace_update(
+        client,
+        resource_group_name,
+        partner_namespace_name,
+        tags=None):
+
+    return client.update(
+        resource_group_name=resource_group_name,
+        partner_namespace_name=partner_namespace_name,
+        tags=tags)
+
+
+def cli_event_channel_list(
+        client,
+        resource_group_name,
+        partner_namespace_name,
+        odata_query=None):
+
+    return client.list_by_namespace(resource_group_name, partner_namespace_name, odata_query, DEFAULT_TOP)
+
+
+def cli_event_channel_create_or_update(
+        client,
+        resource_group_name,
+        partner_namespace_name,
+        event_channel_name,
+        tags=None):
+
+    event_channel_info = EventChannel(
+        tags=tags)
+
+    return client.create_or_update(
+        resource_group_name,
+        partner_namespace_name,
+        event_channel_name,
+        event_channel_info)
+
+
+def cli_event_channel_update(
+        client,
+        resource_group_name,
+        event_channel_name,
+        tags=None):
+
+    return client.update(
+        resource_group_name=resource_group_name,
+        event_channel_name=event_channel_name,
+        tags=tags)
+
+
+def cli_partner_topic_list(
+        client,
+        resource_group_name=None,
+        odata_query=None):
+
+    if resource_group_name:
+        return client.list_by_resource_group(resource_group_name, odata_query, DEFAULT_TOP)
+
+    return client.list_by_subscription(odata_query, DEFAULT_TOP)
+
+
+def cli_partner_topic_create_or_update(
+        client,
+        resource_group_name,
+        partner_topic_name,
+        location,
+        tags=None):
+
+    partner_topic_info = PartnerTopic(
+        location=location,
+        tags=tags)
+
+    return client.create_or_update(
+        resource_group_name,
+        partner_topic_name,
+        partner_topic_info)
+
+
+def cli_partner_topic_update(
+        client,
+        resource_group_name,
+        partner_topic_name,
+        tags=None):
+
+    return client.update(
+        resource_group_name=resource_group_name,
+        partner_topic_name=partner_topic_name,
+        tags=tags)
+
+
+def cli_partner_topic_event_subscription_create_or_update(    # pylint: disable=too-many-locals
+        client,
+        resource_group_name,
+        partner_topic_name,
+        event_subscription_name,
+        endpoint=None,
+        endpoint_type=None,
+        included_event_types=None,
+        subject_begins_with=None,
+        subject_ends_with=None,
+        is_subject_case_sensitive=False,
+        max_delivery_attempts=30,
+        event_ttl=1440,
+        max_events_per_batch=None,
+        preferred_batch_size_in_kilobytes=None,
+        event_delivery_schema=None,
+        deadletter_endpoint=None,
+        labels=None,
+        expiration_date=None,
+        advanced_filter=None,
+        azure_active_directory_tenant_id=None,
+        azure_active_directory_application_id_or_uri=None):
+
+    event_subscription_info = _get_event_subscription_info(
+        endpoint=endpoint,
+        endpoint_type=endpoint_type,
+        included_event_types=included_event_types,
+        subject_begins_with=subject_begins_with,
+        subject_ends_with=subject_ends_with,
+        is_subject_case_sensitive=is_subject_case_sensitive,
+        max_delivery_attempts=max_delivery_attempts,
+        event_ttl=event_ttl,
+        max_events_per_batch=max_events_per_batch,
+        preferred_batch_size_in_kilobytes=preferred_batch_size_in_kilobytes,
+        event_delivery_schema=event_delivery_schema,
+        deadletter_endpoint=deadletter_endpoint,
+        labels=labels,
+        expiration_date=expiration_date,
+        advanced_filter=advanced_filter,
+        azure_active_directory_tenant_id=azure_active_directory_tenant_id,
+        azure_active_directory_application_id_or_uri=azure_active_directory_application_id_or_uri)
+
+    return client.create_or_update(
+        resource_group_name,
+        partner_topic_name,
+        event_subscription_name,
+        event_subscription_info)
+
+
+def cli_eventgrid_partner_topic_event_subscription_delete(
+        client,
+        resource_group_name,
+        partner_topic_name,
+        event_subscription_name):
+    return client.delete(
+        resource_group_name,
+        partner_topic_name,
+        event_subscription_name)
+
+
+def cli_partner_topic_event_subscription_get(
+        client,
+        resource_group_name,
+        partner_topic_name,
+        event_subscription_name,
+        include_full_endpoint_url=False):
+
+    retrieved_event_subscription = client.get(resource_group_name, partner_topic_name, event_subscription_name)
+    destination = retrieved_event_subscription.destination
+    if include_full_endpoint_url and isinstance(destination, WebHookEventSubscriptionDestination):
+        full_endpoint_url = client.get_full_url(resource_group_name, partner_topic_name, event_subscription_name)
+        destination.endpoint_url = full_endpoint_url.endpoint_url
+
+    return retrieved_event_subscription
+
+
+def cli_partner_topic_event_subscription_list(   # pylint: disable=too-many-return-statements
+        client,
+        resource_group_name,
+        partner_topic_name,
+        odata_query=None):
+
+    return client.list_by_partner_topic(resource_group_name, partner_topic_name, odata_query, DEFAULT_TOP)
 
 
 def cli_system_topic_create_or_update(
@@ -837,6 +1102,40 @@ def cli_system_topic_event_subscription_update(
     return client.update(
         resource_group_name,
         system_topic_name,
+        event_subscription_name,
+        params)
+
+
+def cli_partner_topic_event_subscription_update(
+        client,
+        resource_group_name,
+        partner_topic_name,
+        event_subscription_name,
+        endpoint=None,
+        endpoint_type=WEBHOOK_DESTINATION,
+        subject_begins_with=None,
+        subject_ends_with=None,
+        included_event_types=None,
+        advanced_filter=None,
+        labels=None,
+        deadletter_endpoint=None):
+
+    instance = client.get(resource_group_name, partner_topic_name, event_subscription_name)
+
+    params = _update_event_subscription_internal(
+        instance=instance,
+        endpoint=endpoint,
+        endpoint_type=endpoint_type,
+        subject_begins_with=subject_begins_with,
+        subject_ends_with=subject_ends_with,
+        included_event_types=included_event_types,
+        advanced_filter=advanced_filter,
+        labels=labels,
+        deadletter_endpoint=deadletter_endpoint)
+
+    return client.update(
+        resource_group_name,
+        partner_topic_name,
         event_subscription_name,
         params)
 
