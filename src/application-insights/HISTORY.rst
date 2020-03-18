@@ -1,3 +1,13 @@
+0.1.5
+++++++++++++++++++
+
+* Small fixes for help messages and error messages
+
+0.1.4
+++++++++++++++++++
+
+* Support managing billing features of application insights component.
+
 0.1.3
 ++++++++++++++++++
 

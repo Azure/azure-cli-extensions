@@ -49,20 +49,21 @@ from azure.graphrbac.models import (ApplicationCreateParameters,
                                     KeyCredential,
                                     ServicePrincipalCreateParameters,
                                     GetObjectsParameters)
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_02_01.models import ContainerServiceLinuxProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_02_01.models import ManagedClusterWindowsProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_02_01.models import ContainerServiceNetworkProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_02_01.models import ManagedClusterServicePrincipalProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_02_01.models import ContainerServiceSshConfiguration
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_02_01.models import ContainerServiceSshPublicKey
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_02_01.models import ManagedCluster
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_02_01.models import ManagedClusterAADProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_02_01.models import ManagedClusterAddonProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_02_01.models import ManagedClusterAgentPoolProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_02_01.models import AgentPool
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_02_01.models import ContainerServiceStorageProfileTypes
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_02_01.models import ManagedClusterIdentity
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_02_01.models import ManagedClusterAPIServerAccessProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ContainerServiceLinuxProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterWindowsProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ContainerServiceNetworkProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterServicePrincipalProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ContainerServiceSshConfiguration
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ContainerServiceSshPublicKey
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedCluster
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterAADProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterAddonProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterAgentPoolProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import AgentPool
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ContainerServiceStorageProfileTypes
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterIdentity
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterAPIServerAccessProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterSKU
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
@@ -604,18 +605,18 @@ def aks_browse(cmd,     # pylint: disable=too-many-statements
         protocol = 'http'
 
     proxy_url = 'http://{0}:{1}/'.format(listen_address, listen_port)
-    dashboardURL = '{0}/api/v1/namespaces/kube-system/services/{1}:kubernetes-dashboard:/proxy'.format(proxy_url,
-                                                                                                       protocol)
+    dashboardURL = '{0}/api/v1/namespaces/kube-system/services/{1}:kubernetes-dashboard:/proxy/'.format(proxy_url,
+                                                                                                        protocol)
     # launch kubectl port-forward locally to access the remote dashboard
     if in_cloud_console():
         # TODO: better error handling here.
         response = requests.post('http://localhost:8888/openport/{0}'.format(listen_port))
         result = json.loads(response.text)
-        dashboardURL = '{0}api/v1/namespaces/kube-system/services/{1}:kubernetes-dashboard:/proxy'.format(result['url'],
-                                                                                                          protocol)
+        dashboardURL = '{0}api/v1/namespaces/kube-system/services/{1}:kubernetes-dashboard:/proxy/'.format(
+            result['url'], protocol)
         term_id = os.environ.get('ACC_TERM_ID')
         if term_id:
-            response = requests.post('http://localhost:8888/openLink/{}'.format(term_id),
+            response = requests.post('http://localhost:8888/openLink/{0}'.format(term_id),
                                      json={"url": dashboardURL})
         logger.warning('To view the console, please open %s in a new tab', dashboardURL)
     else:
@@ -697,6 +698,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                node_count=3,
                nodepool_name="nodepool1",
                nodepool_tags=None,
+               nodepool_labels=None,
                service_principal=None, client_secret=None,
                no_ssh_key=False,
                disable_rbac=None,
@@ -734,6 +736,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                generate_ssh_keys=False,  # pylint: disable=unused-argument
                enable_pod_security_policy=False,
                node_resource_group=None,
+               uptime_sla=False,
                attach_acr=None,
                enable_private_cluster=False,
                enable_managed_identity=False,
@@ -779,9 +782,11 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
     agent_pool_profile = ManagedClusterAgentPoolProfile(
         name=_trim_nodepoolname(nodepool_name),  # Must be 12 chars or less before ACS RP adds to it
         tags=nodepool_tags,
+        node_labels=nodepool_labels,
         count=int(node_count),
         vm_size=node_vm_size,
         os_type="Linux",
+        mode="System",
         vnet_subnet_id=vnet_subnet_id,
         availability_zones=node_zones,
         max_pods=int(max_pods) if max_pods else None,
@@ -979,6 +984,12 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             raise CLIError("Please use standard load balancer for private cluster")
         mc.api_server_access_profile = ManagedClusterAPIServerAccessProfile(
             enable_private_cluster=True
+        )
+
+    if uptime_sla:
+        mc.sku = ManagedClusterSKU(
+            name="Basic",
+            tier="Paid"
         )
 
     headers = {}
@@ -1244,7 +1255,8 @@ def aks_get_credentials(cmd,    # pylint: disable=unused-argument
                         admin=False,
                         user='clusterUser',
                         path=os.path.join(os.path.expanduser('~'), '.kube', 'config'),
-                        overwrite_existing=False):
+                        overwrite_existing=False,
+                        context_name=None):
     credentialResults = None
     if admin:
         credentialResults = client.list_cluster_admin_credentials(resource_group_name, name)
@@ -1260,7 +1272,7 @@ def aks_get_credentials(cmd,    # pylint: disable=unused-argument
 
     try:
         kubeconfig = credentialResults.kubeconfigs[0].value.decode(encoding='UTF-8')
-        _print_or_merge_credentials(path, kubeconfig, overwrite_existing)
+        _print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name)
     except (IndexError, ValueError):
         raise CLIError("Fail to find kubeconfig file.")
 
@@ -1453,9 +1465,8 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
     if not prompt_y_n('Do you want to see analysis results now?', default="n"):
         print(f"You can run 'az aks kanalyze -g {resource_group_name} -n {name}' "
               f"anytime to check the analysis results.")
-        return
-
-    display_diagnostics_report(temp_kubeconfig_path)
+    else:
+        display_diagnostics_report(temp_kubeconfig_path)
 
     return
 
@@ -2030,6 +2041,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       eviction_policy=CONST_SPOT_EVICTION_POLICY_DELETE,
                       spot_max_price=float('nan'),
                       public_ip_per_vm=False,
+                      labels=None,
                       no_wait=False):
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
@@ -2056,6 +2068,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
     agent_pool = AgentPool(
         name=nodepool_name,
         tags=tags,
+        node_labels=labels,
         count=int(node_count),
         vm_size=node_vm_size,
         os_type=os_type,
@@ -2375,7 +2388,7 @@ def aks_get_versions(cmd, client, location):    # pylint: disable=unused-argumen
     return client.list_orchestrators(location, resource_type='managedClusters')
 
 
-def _print_or_merge_credentials(path, kubeconfig, overwrite_existing):
+def _print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name):
     """Merge an unencrypted kubeconfig into the file at the specified path, or print it to
     stdout if the path is "-".
     """
@@ -2402,7 +2415,7 @@ def _print_or_merge_credentials(path, kubeconfig, overwrite_existing):
     try:
         additional_file.write(kubeconfig)
         additional_file.flush()
-        merge_kubernetes_configurations(path, temp_path, overwrite_existing)
+        merge_kubernetes_configurations(path, temp_path, overwrite_existing, context_name)
     except yaml.YAMLError as ex:
         logger.warning('Failed to merge credentials to kube config file: %s', ex)
     finally:
@@ -2449,9 +2462,15 @@ def load_kubernetes_configuration(filename):
         raise CLIError('Error parsing {} ({})'.format(filename, str(ex)))
 
 
-def merge_kubernetes_configurations(existing_file, addition_file, replace):
+def merge_kubernetes_configurations(existing_file, addition_file, replace, context_name=None):
     existing = load_kubernetes_configuration(existing_file)
     addition = load_kubernetes_configuration(addition_file)
+
+    if context_name is not None:
+        addition['contexts'][0]['name'] = context_name
+        addition['contexts'][0]['context']['cluster'] = context_name
+        addition['clusters'][0]['name'] = context_name
+        addition['current-context'] = context_name
 
     # rename the admin context so it doesn't overwrite the user context
     for ctx in addition.get('contexts', []):

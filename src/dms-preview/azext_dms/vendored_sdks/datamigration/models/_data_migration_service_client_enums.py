@@ -21,6 +21,50 @@ class CommandState(str, Enum):
     failed = "Failed"
 
 
+class SsisMigrationStage(str, Enum):
+
+    none = "None"
+    initialize = "Initialize"
+    in_progress = "InProgress"
+    completed = "Completed"
+
+
+class MigrationState(str, Enum):
+
+    none = "None"
+    in_progress = "InProgress"
+    failed = "Failed"
+    warning = "Warning"
+    completed = "Completed"
+    skipped = "Skipped"
+    stopped = "Stopped"
+
+
+class MigrationStatus(str, Enum):
+
+    default = "Default"
+    connecting = "Connecting"
+    source_and_target_selected = "SourceAndTargetSelected"
+    select_logins = "SelectLogins"
+    configured = "Configured"
+    running = "Running"
+    error = "Error"
+    stopped = "Stopped"
+    completed = "Completed"
+    completed_with_warnings = "CompletedWithWarnings"
+
+
+class SsisMigrationOverwriteOption(str, Enum):
+
+    ignore = "Ignore"
+    overwrite = "Overwrite"
+
+
+class SsisStoreType(str, Enum):
+
+    ssis_catalog = "SsisCatalog"
+
+
 class SqlSourcePlatform(str, Enum):
 
     sql_on_prem = "SqlOnPrem"
@@ -111,6 +155,49 @@ class SyncDatabaseMigrationReportingState(str, Enum):
     cancelling = "CANCELLING"
     cancelled = "CANCELLED"
     failed = "FAILED"
+    validating = "VALIDATING"
+    validation_complete = "VALIDATION_COMPLETE"
+    validation_failed = "VALIDATION_FAILED"
+    restore_in_progress = "RESTORE_IN_PROGRESS"
+    restore_completed = "RESTORE_COMPLETED"
+    backup_in_progress = "BACKUP_IN_PROGRESS"
+    backup_completed = "BACKUP_COMPLETED"
+
+
+class ReplicateMigrationState(str, Enum):
+
+    undefined = "UNDEFINED"
+    validating = "VALIDATING"
+    pending = "PENDING"
+    complete = "COMPLETE"
+    action_required = "ACTION_REQUIRED"
+    failed = "FAILED"
+
+
+class ScenarioTarget(str, Enum):
+
+    sql_server = "SQLServer"
+    sqldb = "SQLDB"
+    sqldw = "SQLDW"
+    sqlmi = "SQLMI"
+    azure_db_for_my_sql = "AzureDBForMySql"
+    azure_db_for_postgres_sql = "AzureDBForPostgresSQL"
+    mongo_db = "MongoDB"
+
+
+class ScenarioSource(str, Enum):
+
+    access = "Access"
+    db2 = "DB2"
+    my_sql = "MySQL"
+    oracle = "Oracle"
+    sql = "SQL"
+    sybase = "Sybase"
+    postgre_sql = "PostgreSQL"
+    mongo_db = "MongoDB"
+    sqlrds = "SQLRDS"
+    my_sqlrds = "MySQLRDS"
+    postgre_sqlrds = "PostgreSQLRDS"
 
 
 class ValidationStatus(str, Enum):
@@ -148,17 +235,6 @@ class ObjectType(str, Enum):
     function = "Function"
 
 
-class MigrationState(str, Enum):
-
-    none = "None"
-    in_progress = "InProgress"
-    failed = "Failed"
-    warning = "Warning"
-    completed = "Completed"
-    skipped = "Skipped"
-    stopped = "Stopped"
-
-
 class DatabaseMigrationStage(str, Enum):
 
     none = "None"
@@ -167,20 +243,6 @@ class DatabaseMigrationStage(str, Enum):
     file_copy = "FileCopy"
     restore = "Restore"
     completed = "Completed"
-
-
-class MigrationStatus(str, Enum):
-
-    default = "Default"
-    connecting = "Connecting"
-    source_and_target_selected = "SourceAndTargetSelected"
-    select_logins = "SelectLogins"
-    configured = "Configured"
-    running = "Running"
-    error = "Error"
-    stopped = "Stopped"
-    completed = "Completed"
-    completed_with_warnings = "CompletedWithWarnings"
 
 
 class BackupFileStatus(str, Enum):
