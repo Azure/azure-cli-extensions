@@ -1,0 +1,16 @@
+{
+    "kind": "policyAssignment",
+    "properties": {
+        "displayName": "Apply storage tag to resource group",
+        "description": "Apply storage tag and the parameter also used by the template to resource groups",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/49c88fc8-6fd1-46fd-a676-f12d1d3a4c71",
+        "parameters": {
+            "tagName": {
+                "value": "StorageType"
+            },
+            "tagValue": {
+                "value": "[parameters('storageAccountType')]"
+            }
+        }
+    }
+}
