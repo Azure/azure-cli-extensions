@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -ex
 
+echo "##vso[task.setVariable variable=ADO_PULL_REQUEST_TARGET_BRANCH]$(System.PullRequest.TargetBranch)"
+echo "$(ADO_PULL_REQUEST_TARGET_BRANCH)"
+
 # Install CLI & CLI testsdk
 echo "Installing azure-cli-testsdk and azure-cli..."
 pip install --pre azure-cli --extra-index-url https://azurecliprod.blob.core.windows.net/edge
