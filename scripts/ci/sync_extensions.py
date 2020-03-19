@@ -116,13 +116,8 @@ def main():
         # backup the old index.json
         client.create_blob_from_path(container_name=STORAGE_CONTAINER, blob_name='index.json.sav',
                                      file_path=os.path.abspath(target_index_path))
-        inital_index = \
-"""{
-"extensions": {
-},
-"formatVersion": "1"
-}"""
-        open(target_index_path, 'w').write(inital_index)
+        inital_index = {"extensions": {}, "formatVersion": "1"}
+        open(target_index_path, 'w').write(json.dumps(inital_index, indent=4, sort_keys=True))
 
     for extension_name in updated_exts:
         print('Uploading {}'.format(extension_name))
