@@ -105,6 +105,11 @@ def load_command_table(self, _):
         g.custom_command('disable-https', 'configure_fd_frontend_endpoint_disable_https')
         g.custom_command('enable-https', 'configure_fd_frontend_endpoint_enable_https')
 
+    with self.command_group('network front-door routing-rule', frontdoor_sdk) as g:
+        g.generic_update_command('update', custom_func_name='update_fd_routing_rule',
+                                 is_preview=True, setter_arg_name='front_door_parameters',
+                                 child_collection_prop_name='routing_rules')
+
     # with self.command_group('network front-door probe', frontdoor_sdk) as g:
     #     g.custom_command('create', 'create_fd_probe')
     #     g.command('delete', 'delete')

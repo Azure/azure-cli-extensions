@@ -191,6 +191,9 @@ helps['aks create'] = """
         - name: --node-resource-group
           type: string
           short-summary: The node resource group is the resource group where all customer's resources will be created in, such as virtual machines.
+        - name: --uptime-sla
+          type: bool
+          short-summary: Enable paid managed cluster service with high availability.
         - name: --attach-acr
           type: string
           short-summary: Grant the 'acrpull' role assignment to the ACR specified by name or resource ID.
@@ -282,7 +285,7 @@ helps['aks upgrade'] = """
 
 helps['aks update'] = """
     type: command
-    short-summary: Update a managed Kubernetes cluster to enable/disable cluster-autoscaler or change min-count or max-count
+    short-summary: Update a managed Kubernetes cluster properties, such as enable/disable cluster-autoscaler
     parameters:
         - name: --enable-cluster-autoscaler -e
           type: bool
