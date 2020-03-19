@@ -67,8 +67,6 @@ def _sync_wheel(ext, updated_indexes, client, overwrite, temp_dir):
 
 
 def _update_target_extension_index(updated_indexes, target_index_path):
-    import re
-
     NAME_REGEX = r'.*/([^/]*)-\d+.\d+.\d+'
     with open(target_index_path, 'r') as infile:
         curr_index = json.loads(infile.read())
