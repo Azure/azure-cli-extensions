@@ -9,9 +9,10 @@ from typing import Any, Callable, Dict, Generic, Optional, TypeVar
 import warnings
 
 from azure.core.async_paging import AsyncItemPaged, AsyncList
-from azure.core.exceptions import map_error
+from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
+from azure.mgmt.core.exceptions import ARMErrorFormat
 
 from ... import models
 
@@ -21,10 +22,11 @@ ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T
 class LinkedServiceOperations:
     """LinkedServiceOperations async operations.
 
-    You should not instantiate directly this class, but create a Client instance that will create it for you and attach it as attribute.
+    You should not instantiate this class directly. Instead, you should create a Client instance that
+    instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~data_factory_management_client.models
+    :type models: ~azure.mgmt.datafactory.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -53,11 +55,11 @@ class LinkedServiceOperations:
         :type factory_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: LinkedServiceListResponse or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.LinkedServiceListResponse
-        :raises: ~data_factory_management_client.models.CloudErrorException:
+        :rtype: ~azure.mgmt.datafactory.models.LinkedServiceListResponse
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls: ClsType["models.LinkedServiceListResponse"] = kwargs.pop('cls', None )
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.LinkedServiceListResponse"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2018-06-01"
 
         def prepare_request(next_link=None):
@@ -66,19 +68,19 @@ class LinkedServiceOperations:
                 url = self.list_by_factory.metadata['url']
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern='^[-\w\._\(\)]+$'),
-                    'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+                    'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
             else:
                 url = next_link
 
             # Construct parameters
-            query_parameters: Dict[str, Any] = {}
+            query_parameters = {}  # type: Dict[str, Any]
             query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
             # Construct headers
-            header_parameters: Dict[str, Any] = {}
+            header_parameters = {}  # type: Dict[str, Any]
             header_parameters['Accept'] = 'application/json'
 
             # Construct and send request
@@ -90,7 +92,7 @@ class LinkedServiceOperations:
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
-            return deserialized.next_link, AsyncList(list_of_elem)
+            return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
             request = prepare_request(next_link)
@@ -100,7 +102,7 @@ class LinkedServiceOperations:
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise models.CloudErrorException.from_response(response, self._deserialize)
+                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -126,55 +128,55 @@ class LinkedServiceOperations:
         :type factory_name: str
         :param linked_service_name: The linked service name.
         :type linked_service_name: str
-        :param properties: The Azure Data Factory nested object which contains the information and
-         credential which can be used to connect with related store or compute resource.
-        :type properties: ~data_factory_management_client.models.LinkedService
-        :param if_match: ETag of the factory entity. Should only be specified for update, for which it
-         should match existing entity or can be * for unconditional update.
+        :param properties: Properties of linked service.
+        :type properties: ~azure.mgmt.datafactory.models.LinkedService
+        :param if_match: ETag of the linkedService entity.  Should only be specified for update, for
+         which it should match existing entity or can be * for unconditional update.
         :type if_match: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: LinkedServiceResource or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.LinkedServiceResource
-        :raises: ~data_factory_management_client.models.CloudErrorException:
+        :rtype: ~azure.mgmt.datafactory.models.LinkedServiceResource
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls: ClsType["models.LinkedServiceResource"] = kwargs.pop('cls', None )
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.LinkedServiceResource"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        linked_service = models.LinkedServiceResource(properties=properties)
+        _linked_service = models.LinkedServiceResource(properties=properties)
         api_version = "2018-06-01"
 
         # Construct URL
         url = self.create_or_update.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern='^[-\w\._\(\)]+$'),
-            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
-            'linkedServiceName': self._serialize.url("linked_service_name", linked_service_name, 'str', max_length=260, min_length=1, pattern='^[A-Za-z0-9_][^<>*#.%&:\\+?/]*$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'linkedServiceName': self._serialize.url("linked_service_name", linked_service_name, 'str', max_length=260, min_length=1, pattern=r'^[A-Za-z0-9_][^<>*#.%&:\\+?/]*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters: Dict[str, Any] = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters: Dict[str, Any] = {}
+        header_parameters = {}  # type: Dict[str, Any]
         if if_match is not None:
             header_parameters['If-Match'] = self._serialize.header("if_match", if_match, 'str')
         header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'application/json'
-
-        # Construct body
-        body_content = self._serialize.body(linked_service, 'LinkedServiceResource')
+        header_parameters['Content-Type'] = kwargs.pop('content_type', 'application/json')
 
         # Construct and send request
-        request = self._client.put(url, query_parameters, header_parameters, body_content)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(_linked_service, 'LinkedServiceResource')
+        body_content_kwargs['content'] = body_content
+        request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
+
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('LinkedServiceResource', pipeline_response)
 
@@ -200,34 +202,35 @@ class LinkedServiceOperations:
         :type factory_name: str
         :param linked_service_name: The linked service name.
         :type linked_service_name: str
-        :param if_none_match: ETag of the factory entity. Should only be specified for get. If the ETag
-         matches the existing entity tag, or if * was provided, then no content will be returned.
+        :param if_none_match: ETag of the linked service entity. Should only be specified for get. If
+         the ETag matches the existing entity tag, or if * was provided, then no content will be
+         returned.
         :type if_none_match: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: LinkedServiceResource or  or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.LinkedServiceResource or None
-        :raises: ~data_factory_management_client.models.CloudErrorException:
+        :return: LinkedServiceResource or the result of cls(response)
+        :rtype: ~azure.mgmt.datafactory.models.LinkedServiceResource or None
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls: ClsType["models.LinkedServiceResource"] = kwargs.pop('cls', None )
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.LinkedServiceResource"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2018-06-01"
 
         # Construct URL
         url = self.get.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern='^[-\w\._\(\)]+$'),
-            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
-            'linkedServiceName': self._serialize.url("linked_service_name", linked_service_name, 'str', max_length=260, min_length=1, pattern='^[A-Za-z0-9_][^<>*#.%&:\\+?/]*$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'linkedServiceName': self._serialize.url("linked_service_name", linked_service_name, 'str', max_length=260, min_length=1, pattern=r'^[A-Za-z0-9_][^<>*#.%&:\\+?/]*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters: Dict[str, Any] = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters: Dict[str, Any] = {}
+        header_parameters = {}  # type: Dict[str, Any]
         if if_none_match is not None:
             header_parameters['If-None-Match'] = self._serialize.header("if_none_match", if_none_match, 'str')
         header_parameters['Accept'] = 'application/json'
@@ -239,7 +242,7 @@ class LinkedServiceOperations:
 
         if response.status_code not in [200, 304]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
         if response.status_code == 200:
@@ -269,28 +272,28 @@ class LinkedServiceOperations:
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None or the result of cls(response)
         :rtype: None
-        :raises: ~data_factory_management_client.models.CloudErrorException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls: ClsType[None] = kwargs.pop('cls', None )
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2018-06-01"
 
         # Construct URL
         url = self.delete.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern='^[-\w\._\(\)]+$'),
-            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
-            'linkedServiceName': self._serialize.url("linked_service_name", linked_service_name, 'str', max_length=260, min_length=1, pattern='^[A-Za-z0-9_][^<>*#.%&:\\+?/]*$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'linkedServiceName': self._serialize.url("linked_service_name", linked_service_name, 'str', max_length=260, min_length=1, pattern=r'^[A-Za-z0-9_][^<>*#.%&:\\+?/]*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters: Dict[str, Any] = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters: Dict[str, Any] = {}
+        header_parameters = {}  # type: Dict[str, Any]
 
         # Construct and send request
         request = self._client.delete(url, query_parameters, header_parameters)
@@ -299,7 +302,7 @@ class LinkedServiceOperations:
 
         if response.status_code not in [200, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if cls:
           return cls(pipeline_response, None, {})

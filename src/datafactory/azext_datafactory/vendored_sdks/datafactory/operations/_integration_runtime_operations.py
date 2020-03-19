@@ -8,11 +8,12 @@
 from typing import Any, Callable, Dict, Generic, Optional, TypeVar, Union
 import warnings
 
-from azure.core.exceptions import map_error
+from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.paging import ItemPaged
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpRequest, HttpResponse
 from azure.core.polling import LROPoller, NoPolling, PollingMethod
+from azure.mgmt.core.exceptions import ARMErrorFormat
 from azure.mgmt.core.polling.arm_polling import ARMPolling
 
 from .. import models
@@ -23,10 +24,11 @@ ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dic
 class IntegrationRuntimeOperations(object):
     """IntegrationRuntimeOperations operations.
 
-    You should not instantiate directly this class, but create a Client instance that will create it for you and attach it as attribute.
+    You should not instantiate this class directly. Instead, you should create a Client instance that
+    instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~data_factory_management_client.models
+    :type models: ~azure.mgmt.datafactory.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -56,11 +58,11 @@ class IntegrationRuntimeOperations(object):
         :type factory_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationRuntimeListResponse or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.IntegrationRuntimeListResponse
-        :raises: ~data_factory_management_client.models.CloudErrorException:
+        :rtype: ~azure.mgmt.datafactory.models.IntegrationRuntimeListResponse
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.IntegrationRuntimeListResponse"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationRuntimeListResponse"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2018-06-01"
 
         def prepare_request(next_link=None):
@@ -69,19 +71,19 @@ class IntegrationRuntimeOperations(object):
                 url = self.list_by_factory.metadata['url']
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern='^[-\w\._\(\)]+$'),
-                    'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+                    'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
             else:
                 url = next_link
 
             # Construct parameters
-            query_parameters = {}
+            query_parameters = {}  # type: Dict[str, Any]
             query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
             # Construct headers
-            header_parameters = {}
+            header_parameters = {}  # type: Dict[str, Any]
             header_parameters['Accept'] = 'application/json'
 
             # Construct and send request
@@ -93,7 +95,7 @@ class IntegrationRuntimeOperations(object):
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
-            return deserialized.next_link, iter(list_of_elem)
+            return deserialized.next_link or None, iter(list_of_elem)
 
         def get_next(next_link=None):
             request = prepare_request(next_link)
@@ -103,7 +105,7 @@ class IntegrationRuntimeOperations(object):
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise models.CloudErrorException.from_response(response, self._deserialize)
+                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -130,55 +132,55 @@ class IntegrationRuntimeOperations(object):
         :type factory_name: str
         :param integration_runtime_name: The integration runtime name.
         :type integration_runtime_name: str
-        :param properties: Azure Data Factory nested object which serves as a compute resource for
-         activities.
-        :type properties: ~data_factory_management_client.models.IntegrationRuntime
-        :param if_match: ETag of the factory entity. Should only be specified for update, for which it
-         should match existing entity or can be * for unconditional update.
+        :param properties: Integration runtime properties.
+        :type properties: ~azure.mgmt.datafactory.models.IntegrationRuntime
+        :param if_match: ETag of the integration runtime entity. Should only be specified for update,
+         for which it should match existing entity or can be * for unconditional update.
         :type if_match: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationRuntimeResource or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.IntegrationRuntimeResource
-        :raises: ~data_factory_management_client.models.CloudErrorException:
+        :rtype: ~azure.mgmt.datafactory.models.IntegrationRuntimeResource
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.IntegrationRuntimeResource"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationRuntimeResource"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        integration_runtime = models.IntegrationRuntimeResource(properties=properties)
+        _integration_runtime = models.IntegrationRuntimeResource(properties=properties)
         api_version = "2018-06-01"
 
         # Construct URL
         url = self.create_or_update.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern='^[-\w\._\(\)]+$'),
-            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
-            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
         if if_match is not None:
             header_parameters['If-Match'] = self._serialize.header("if_match", if_match, 'str')
         header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'application/json'
-
-        # Construct body
-        body_content = self._serialize.body(integration_runtime, 'IntegrationRuntimeResource')
+        header_parameters['Content-Type'] = kwargs.pop('content_type', 'application/json')
 
         # Construct and send request
-        request = self._client.put(url, query_parameters, header_parameters, body_content)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(_integration_runtime, 'IntegrationRuntimeResource')
+        body_content_kwargs['content'] = body_content
+        request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
+
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('IntegrationRuntimeResource', pipeline_response)
 
@@ -205,34 +207,35 @@ class IntegrationRuntimeOperations(object):
         :type factory_name: str
         :param integration_runtime_name: The integration runtime name.
         :type integration_runtime_name: str
-        :param if_none_match: ETag of the factory entity. Should only be specified for get. If the ETag
-         matches the existing entity tag, or if * was provided, then no content will be returned.
+        :param if_none_match: ETag of the integration runtime entity. Should only be specified for get.
+         If the ETag matches the existing entity tag, or if * was provided, then no content will be
+         returned.
         :type if_none_match: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: IntegrationRuntimeResource or  or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.IntegrationRuntimeResource or None
-        :raises: ~data_factory_management_client.models.CloudErrorException:
+        :return: IntegrationRuntimeResource or the result of cls(response)
+        :rtype: ~azure.mgmt.datafactory.models.IntegrationRuntimeResource or None
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.IntegrationRuntimeResource"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationRuntimeResource"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2018-06-01"
 
         # Construct URL
         url = self.get.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern='^[-\w\._\(\)]+$'),
-            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
-            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
         if if_none_match is not None:
             header_parameters['If-None-Match'] = self._serialize.header("if_none_match", if_none_match, 'str')
         header_parameters['Accept'] = 'application/json'
@@ -244,7 +247,7 @@ class IntegrationRuntimeOperations(object):
 
         if response.status_code not in [200, 304]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
         if response.status_code == 200:
@@ -274,52 +277,54 @@ class IntegrationRuntimeOperations(object):
         :type factory_name: str
         :param integration_runtime_name: The integration runtime name.
         :type integration_runtime_name: str
-        :param auto_update: The state of integration runtime auto update.
-        :type auto_update: str or ~data_factory_management_client.models.IntegrationRuntimeAutoUpdate
+        :param auto_update: Enables or disables the auto-update feature of the self-hosted integration
+         runtime. See https://go.microsoft.com/fwlink/?linkid=854189.
+        :type auto_update: str or ~azure.mgmt.datafactory.models.IntegrationRuntimeAutoUpdate
         :param update_delay_offset: The time offset (in hours) in the day, e.g., PT03H is 3 hours. The
          integration runtime auto update will happen on that time.
         :type update_delay_offset: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationRuntimeResource or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.IntegrationRuntimeResource
-        :raises: ~data_factory_management_client.models.CloudErrorException:
+        :rtype: ~azure.mgmt.datafactory.models.IntegrationRuntimeResource
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.IntegrationRuntimeResource"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationRuntimeResource"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        update_integration_runtime_request = models.UpdateIntegrationRuntimeRequest(auto_update=auto_update, update_delay_offset=update_delay_offset)
+        _update_integration_runtime_request = models.UpdateIntegrationRuntimeRequest(auto_update=auto_update, update_delay_offset=update_delay_offset)
         api_version = "2018-06-01"
 
         # Construct URL
         url = self.update.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern='^[-\w\._\(\)]+$'),
-            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
-            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'application/json'
-
-        # Construct body
-        body_content = self._serialize.body(update_integration_runtime_request, 'UpdateIntegrationRuntimeRequest')
+        header_parameters['Content-Type'] = kwargs.pop('content_type', 'application/json')
 
         # Construct and send request
-        request = self._client.patch(url, query_parameters, header_parameters, body_content)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(_update_integration_runtime_request, 'UpdateIntegrationRuntimeRequest')
+        body_content_kwargs['content'] = body_content
+        request = self._client.patch(url, query_parameters, header_parameters, **body_content_kwargs)
+
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('IntegrationRuntimeResource', pipeline_response)
 
@@ -348,28 +353,28 @@ class IntegrationRuntimeOperations(object):
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None or the result of cls(response)
         :rtype: None
-        :raises: ~data_factory_management_client.models.CloudErrorException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType[None]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2018-06-01"
 
         # Construct URL
         url = self.delete.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern='^[-\w\._\(\)]+$'),
-            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
-            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
 
         # Construct and send request
         request = self._client.delete(url, query_parameters, header_parameters)
@@ -378,7 +383,7 @@ class IntegrationRuntimeOperations(object):
 
         if response.status_code not in [200, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if cls:
           return cls(pipeline_response, None, {})
@@ -403,29 +408,29 @@ class IntegrationRuntimeOperations(object):
         :type integration_runtime_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationRuntimeStatusResponse or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.IntegrationRuntimeStatusResponse
-        :raises: ~data_factory_management_client.models.CloudErrorException:
+        :rtype: ~azure.mgmt.datafactory.models.IntegrationRuntimeStatusResponse
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.IntegrationRuntimeStatusResponse"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationRuntimeStatusResponse"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2018-06-01"
 
         # Construct URL
         url = self.get_status.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern='^[-\w\._\(\)]+$'),
-            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
-            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
         # Construct and send request
@@ -435,7 +440,7 @@ class IntegrationRuntimeOperations(object):
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('IntegrationRuntimeStatusResponse', pipeline_response)
 
@@ -463,29 +468,29 @@ class IntegrationRuntimeOperations(object):
         :type integration_runtime_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationRuntimeConnectionInfo or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.IntegrationRuntimeConnectionInfo
-        :raises: ~data_factory_management_client.models.CloudErrorException:
+        :rtype: ~azure.mgmt.datafactory.models.IntegrationRuntimeConnectionInfo
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.IntegrationRuntimeConnectionInfo"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationRuntimeConnectionInfo"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2018-06-01"
 
         # Construct URL
         url = self.get_connection_info.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern='^[-\w\._\(\)]+$'),
-            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
-            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
         # Construct and send request
@@ -495,7 +500,7 @@ class IntegrationRuntimeOperations(object):
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('IntegrationRuntimeConnectionInfo', pipeline_response)
 
@@ -523,48 +528,49 @@ class IntegrationRuntimeOperations(object):
         :param integration_runtime_name: The integration runtime name.
         :type integration_runtime_name: str
         :param key_name: The name of the authentication key to regenerate.
-        :type key_name: str or ~data_factory_management_client.models.IntegrationRuntimeAuthKeyName
+        :type key_name: str or ~azure.mgmt.datafactory.models.IntegrationRuntimeAuthKeyName
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationRuntimeAuthKeys or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.IntegrationRuntimeAuthKeys
-        :raises: ~data_factory_management_client.models.CloudErrorException:
+        :rtype: ~azure.mgmt.datafactory.models.IntegrationRuntimeAuthKeys
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.IntegrationRuntimeAuthKeys"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationRuntimeAuthKeys"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        regenerate_key_parameters = models.IntegrationRuntimeRegenerateKeyParameters(key_name=key_name)
+        _regenerate_key_parameters = models.IntegrationRuntimeRegenerateKeyParameters(key_name=key_name)
         api_version = "2018-06-01"
 
         # Construct URL
         url = self.regenerate_auth_key.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern='^[-\w\._\(\)]+$'),
-            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
-            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'application/json'
-
-        # Construct body
-        body_content = self._serialize.body(regenerate_key_parameters, 'IntegrationRuntimeRegenerateKeyParameters')
+        header_parameters['Content-Type'] = kwargs.pop('content_type', 'application/json')
 
         # Construct and send request
-        request = self._client.post(url, query_parameters, header_parameters, body_content)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(_regenerate_key_parameters, 'IntegrationRuntimeRegenerateKeyParameters')
+        body_content_kwargs['content'] = body_content
+        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('IntegrationRuntimeAuthKeys', pipeline_response)
 
@@ -592,29 +598,29 @@ class IntegrationRuntimeOperations(object):
         :type integration_runtime_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationRuntimeAuthKeys or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.IntegrationRuntimeAuthKeys
-        :raises: ~data_factory_management_client.models.CloudErrorException:
+        :rtype: ~azure.mgmt.datafactory.models.IntegrationRuntimeAuthKeys
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.IntegrationRuntimeAuthKeys"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationRuntimeAuthKeys"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2018-06-01"
 
         # Construct URL
         url = self.list_auth_key.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern='^[-\w\._\(\)]+$'),
-            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
-            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
         # Construct and send request
@@ -624,7 +630,7 @@ class IntegrationRuntimeOperations(object):
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('IntegrationRuntimeAuthKeys', pipeline_response)
 
@@ -642,26 +648,26 @@ class IntegrationRuntimeOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.IntegrationRuntimeStatusResponse"
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.IntegrationRuntimeStatusResponse"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationRuntimeStatusResponse"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2018-06-01"
 
         # Construct URL
         url = self._start_initial.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern='^[-\w\._\(\)]+$'),
-            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
-            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
         # Construct and send request
@@ -671,7 +677,7 @@ class IntegrationRuntimeOperations(object):
 
         if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
         if response.status_code == 200:
@@ -704,12 +710,12 @@ class IntegrationRuntimeOperations(object):
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :return: An instance of LROPoller that returns IntegrationRuntimeStatusResponse
-        :rtype: ~azure.core.polling.LROPoller[~data_factory_management_client.models.IntegrationRuntimeStatusResponse]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.datafactory.models.IntegrationRuntimeStatusResponse]
 
-        :raises ~data_factory_management_client.models.CloudErrorException:
+        :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.IntegrationRuntimeStatusResponse"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationRuntimeStatusResponse"]
         raw_result = self._start_initial(
             resource_group_name=resource_group_name,
             factory_name=factory_name,
@@ -743,26 +749,26 @@ class IntegrationRuntimeOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> None
-        cls = kwargs.pop('cls', None )  # type: ClsType[None]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2018-06-01"
 
         # Construct URL
         url = self._stop_initial.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern='^[-\w\._\(\)]+$'),
-            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
-            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
 
         # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
@@ -771,7 +777,7 @@ class IntegrationRuntimeOperations(object):
 
         if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if cls:
           return cls(pipeline_response, None, {})
@@ -801,10 +807,10 @@ class IntegrationRuntimeOperations(object):
         :return: An instance of LROPoller that returns None
         :rtype: ~azure.core.polling.LROPoller[None]
 
-        :raises ~data_factory_management_client.models.CloudErrorException:
+        :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
-        cls = kwargs.pop('cls', None )  # type: ClsType[None]
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
         raw_result = self._stop_initial(
             resource_group_name=resource_group_name,
             factory_name=factory_name,
@@ -846,28 +852,28 @@ class IntegrationRuntimeOperations(object):
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None or the result of cls(response)
         :rtype: None
-        :raises: ~data_factory_management_client.models.CloudErrorException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType[None]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2018-06-01"
 
         # Construct URL
         url = self.sync_credentials.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern='^[-\w\._\(\)]+$'),
-            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
-            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
 
         # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
@@ -876,7 +882,7 @@ class IntegrationRuntimeOperations(object):
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if cls:
           return cls(pipeline_response, None, {})
@@ -901,29 +907,29 @@ class IntegrationRuntimeOperations(object):
         :type integration_runtime_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationRuntimeMonitoringData or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.IntegrationRuntimeMonitoringData
-        :raises: ~data_factory_management_client.models.CloudErrorException:
+        :rtype: ~azure.mgmt.datafactory.models.IntegrationRuntimeMonitoringData
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.IntegrationRuntimeMonitoringData"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationRuntimeMonitoringData"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2018-06-01"
 
         # Construct URL
         url = self.get_monitoring_data.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern='^[-\w\._\(\)]+$'),
-            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
-            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
         # Construct and send request
@@ -933,7 +939,7 @@ class IntegrationRuntimeOperations(object):
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('IntegrationRuntimeMonitoringData', pipeline_response)
 
@@ -962,28 +968,28 @@ class IntegrationRuntimeOperations(object):
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None or the result of cls(response)
         :rtype: None
-        :raises: ~data_factory_management_client.models.CloudErrorException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType[None]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2018-06-01"
 
         # Construct URL
         url = self.upgrade.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern='^[-\w\._\(\)]+$'),
-            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
-            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
 
         # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
@@ -992,7 +998,7 @@ class IntegrationRuntimeOperations(object):
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if cls:
           return cls(pipeline_response, None, {})
@@ -1021,43 +1027,44 @@ class IntegrationRuntimeOperations(object):
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None or the result of cls(response)
         :rtype: None
-        :raises: ~data_factory_management_client.models.CloudErrorException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType[None]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        linked_integration_runtime_request = models.LinkedIntegrationRuntimeRequest(linked_factory_name=linked_factory_name)
+        _linked_integration_runtime_request = models.LinkedIntegrationRuntimeRequest(linked_factory_name=linked_factory_name)
         api_version = "2018-06-01"
 
         # Construct URL
         url = self.remove_link.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern='^[-\w\._\(\)]+$'),
-            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
-            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
-        header_parameters['Content-Type'] = 'application/json'
-
-        # Construct body
-        body_content = self._serialize.body(linked_integration_runtime_request, 'LinkedIntegrationRuntimeRequest')
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Content-Type'] = kwargs.pop('content_type', 'application/json')
 
         # Construct and send request
-        request = self._client.post(url, query_parameters, header_parameters, body_content)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(_linked_integration_runtime_request, 'LinkedIntegrationRuntimeRequest')
+        body_content_kwargs['content'] = body_content
+        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if cls:
           return cls(pipeline_response, None, {})
@@ -1097,45 +1104,46 @@ class IntegrationRuntimeOperations(object):
         :type data_factory_location: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationRuntimeStatusResponse or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.IntegrationRuntimeStatusResponse
-        :raises: ~data_factory_management_client.models.CloudErrorException:
+        :rtype: ~azure.mgmt.datafactory.models.IntegrationRuntimeStatusResponse
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.IntegrationRuntimeStatusResponse"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationRuntimeStatusResponse"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        create_linked_integration_runtime_request = models.CreateLinkedIntegrationRuntimeRequest(name=name, subscription_id=subscription_id, data_factory_name=data_factory_name, data_factory_location=data_factory_location)
+        _create_linked_integration_runtime_request = models.CreateLinkedIntegrationRuntimeRequest(name=name, subscription_id=subscription_id, data_factory_name=data_factory_name, data_factory_location=data_factory_location)
         api_version = "2018-06-01"
 
         # Construct URL
         url = self.create_linked_integration_runtime.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern='^[-\w\._\(\)]+$'),
-            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
-            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'application/json'
-
-        # Construct body
-        body_content = self._serialize.body(create_linked_integration_runtime_request, 'CreateLinkedIntegrationRuntimeRequest')
+        header_parameters['Content-Type'] = kwargs.pop('content_type', 'application/json')
 
         # Construct and send request
-        request = self._client.post(url, query_parameters, header_parameters, body_content)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(_create_linked_integration_runtime_request, 'CreateLinkedIntegrationRuntimeRequest')
+        body_content_kwargs['content'] = body_content
+        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('IntegrationRuntimeStatusResponse', pipeline_response)
 

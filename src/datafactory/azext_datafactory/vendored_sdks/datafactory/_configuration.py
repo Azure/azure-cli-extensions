@@ -11,10 +11,12 @@ from typing import Any
 from azure.core.configuration import Configuration
 from azure.core.pipeline import policies
 
-VERSION = "unknown"
+from ._version import VERSION
+
 
 class DataFactoryManagementClientConfiguration(Configuration):
-    """Configuration for DataFactoryManagementClient
+    """Configuration for DataFactoryManagementClient.
+
     Note that all parameters used to create this instance are saved as instance
     attributes.
 
@@ -40,8 +42,9 @@ class DataFactoryManagementClientConfiguration(Configuration):
         self.credential = credential
         self.subscription_id = subscription_id
         self.api_version = "2018-06-01"
+        self.credential_scopes = ['https://management.azure.com/.default']
+        kwargs.setdefault('sdk_moniker', 'azure-mgmt-datafactory/{}'.format(VERSION))
         self._configure(**kwargs)
-        self.user_agent_policy.add_user_agent('azsdk-python-datafactorymanagementclient/{}'.format(VERSION))
 
     def _configure(
         self,
@@ -57,4 +60,4 @@ class DataFactoryManagementClientConfiguration(Configuration):
         self.redirect_policy = kwargs.get('redirect_policy') or policies.RedirectPolicy(**kwargs)
         self.authentication_policy = kwargs.get('authentication_policy')
         if self.credential and not self.authentication_policy:
-            self.authentication_policy = policies.BearerTokenCredentialPolicy(self.credential, **kwargs)
+            self.authentication_policy = policies.BearerTokenCredentialPolicy(self.credential, *self.credential_scopes, **kwargs)

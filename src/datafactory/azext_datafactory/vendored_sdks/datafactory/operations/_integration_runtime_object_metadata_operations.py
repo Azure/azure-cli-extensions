@@ -8,10 +8,11 @@
 from typing import Any, Callable, Dict, Generic, Optional, TypeVar, Union
 import warnings
 
-from azure.core.exceptions import map_error
+from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpRequest, HttpResponse
 from azure.core.polling import LROPoller, NoPolling, PollingMethod
+from azure.mgmt.core.exceptions import ARMErrorFormat
 from azure.mgmt.core.polling.arm_polling import ARMPolling
 
 from .. import models
@@ -22,10 +23,11 @@ ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dic
 class IntegrationRuntimeObjectMetadataOperations(object):
     """IntegrationRuntimeObjectMetadataOperations operations.
 
-    You should not instantiate directly this class, but create a Client instance that will create it for you and attach it as attribute.
+    You should not instantiate this class directly. Instead, you should create a Client instance that
+    instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~data_factory_management_client.models
+    :type models: ~azure.mgmt.datafactory.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -48,26 +50,26 @@ class IntegrationRuntimeObjectMetadataOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.SsisObjectMetadataStatusResponse"
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.SsisObjectMetadataStatusResponse"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.SsisObjectMetadataStatusResponse"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2018-06-01"
 
         # Construct URL
         url = self._refresh_initial.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern='^[-\w\._\(\)]+$'),
-            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
-            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
         # Construct and send request
@@ -77,7 +79,7 @@ class IntegrationRuntimeObjectMetadataOperations(object):
 
         if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
         if response.status_code == 200:
@@ -110,12 +112,12 @@ class IntegrationRuntimeObjectMetadataOperations(object):
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :return: An instance of LROPoller that returns SsisObjectMetadataStatusResponse
-        :rtype: ~azure.core.polling.LROPoller[~data_factory_management_client.models.SsisObjectMetadataStatusResponse]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.datafactory.models.SsisObjectMetadataStatusResponse]
 
-        :raises ~data_factory_management_client.models.CloudErrorException:
+        :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.SsisObjectMetadataStatusResponse"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.SsisObjectMetadataStatusResponse"]
         raw_result = self._refresh_initial(
             resource_group_name=resource_group_name,
             factory_name=factory_name,
@@ -162,48 +164,49 @@ class IntegrationRuntimeObjectMetadataOperations(object):
         :type metadata_path: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: SsisObjectMetadataListResponse or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.SsisObjectMetadataListResponse
-        :raises: ~data_factory_management_client.models.CloudErrorException:
+        :rtype: ~azure.mgmt.datafactory.models.SsisObjectMetadataListResponse
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.SsisObjectMetadataListResponse"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.SsisObjectMetadataListResponse"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        get_metadata_request = models.GetSsisObjectMetadataRequest(metadata_path=metadata_path)
+        _get_metadata_request = models.GetSsisObjectMetadataRequest(metadata_path=metadata_path)
         api_version = "2018-06-01"
 
         # Construct URL
         url = self.get.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern='^[-\w\._\(\)]+$'),
-            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
-            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'application/json'
-
-        # Construct body
-        if get_metadata_request is not None:
-            body_content = self._serialize.body(get_metadata_request, 'GetSsisObjectMetadataRequest')
-        else:
-            body_content = None
+        header_parameters['Content-Type'] = kwargs.pop('content_type', 'application/json')
 
         # Construct and send request
-        request = self._client.post(url, query_parameters, header_parameters, body_content)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        if _get_metadata_request is not None:
+            body_content = self._serialize.body(_get_metadata_request, 'GetSsisObjectMetadataRequest')
+        else:
+            body_content = None
+        body_content_kwargs['content'] = body_content
+        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('SsisObjectMetadataListResponse', pipeline_response)
 

@@ -8,10 +8,11 @@
 from typing import Any, Callable, Dict, Generic, Optional, TypeVar
 import warnings
 
-from azure.core.exceptions import map_error
+from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.paging import ItemPaged
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpRequest, HttpResponse
+from azure.mgmt.core.exceptions import ARMErrorFormat
 
 from .. import models
 
@@ -21,10 +22,11 @@ ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dic
 class FactoryOperations(object):
     """FactoryOperations operations.
 
-    You should not instantiate directly this class, but create a Client instance that will create it for you and attach it as attribute.
+    You should not instantiate this class directly. Instead, you should create a Client instance that
+    instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~data_factory_management_client.models
+    :type models: ~azure.mgmt.datafactory.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -48,11 +50,11 @@ class FactoryOperations(object):
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: FactoryListResponse or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.FactoryListResponse
-        :raises: ~data_factory_management_client.models.CloudErrorException:
+        :rtype: ~azure.mgmt.datafactory.models.FactoryListResponse
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.FactoryListResponse"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.FactoryListResponse"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2018-06-01"
 
         def prepare_request(next_link=None):
@@ -67,11 +69,11 @@ class FactoryOperations(object):
                 url = next_link
 
             # Construct parameters
-            query_parameters = {}
+            query_parameters = {}  # type: Dict[str, Any]
             query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
             # Construct headers
-            header_parameters = {}
+            header_parameters = {}  # type: Dict[str, Any]
             header_parameters['Accept'] = 'application/json'
 
             # Construct and send request
@@ -83,7 +85,7 @@ class FactoryOperations(object):
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
-            return deserialized.next_link, iter(list_of_elem)
+            return deserialized.next_link or None, iter(list_of_elem)
 
         def get_next(next_link=None):
             request = prepare_request(next_link)
@@ -93,7 +95,7 @@ class FactoryOperations(object):
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise models.CloudErrorException.from_response(response, self._deserialize)
+                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -116,17 +118,17 @@ class FactoryOperations(object):
         :type location_id: str
         :param factory_resource_id: The factory resource id.
         :type factory_resource_id: str
-        :param repo_configuration: Factory's git repo information.
-        :type repo_configuration: ~data_factory_management_client.models.FactoryRepoConfiguration
+        :param repo_configuration: Git repo information of the factory.
+        :type repo_configuration: ~azure.mgmt.datafactory.models.FactoryRepoConfiguration
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Factory or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.Factory
-        :raises: ~data_factory_management_client.models.CloudErrorException:
+        :rtype: ~azure.mgmt.datafactory.models.Factory
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.Factory"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.Factory"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        factory_repo_update = models.FactoryRepoUpdate(factory_resource_id=factory_resource_id, repo_configuration=repo_configuration)
+        _factory_repo_update = models.FactoryRepoUpdate(factory_resource_id=factory_resource_id, repo_configuration=repo_configuration)
         api_version = "2018-06-01"
 
         # Construct URL
@@ -138,25 +140,26 @@ class FactoryOperations(object):
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'application/json'
-
-        # Construct body
-        body_content = self._serialize.body(factory_repo_update, 'FactoryRepoUpdate')
+        header_parameters['Content-Type'] = kwargs.pop('content_type', 'application/json')
 
         # Construct and send request
-        request = self._client.post(url, query_parameters, header_parameters, body_content)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(_factory_repo_update, 'FactoryRepoUpdate')
+        body_content_kwargs['content'] = body_content
+        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('Factory', pipeline_response)
 
@@ -178,11 +181,11 @@ class FactoryOperations(object):
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: FactoryListResponse or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.FactoryListResponse
-        :raises: ~data_factory_management_client.models.CloudErrorException:
+        :rtype: ~azure.mgmt.datafactory.models.FactoryListResponse
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.FactoryListResponse"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.FactoryListResponse"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2018-06-01"
 
         def prepare_request(next_link=None):
@@ -191,18 +194,18 @@ class FactoryOperations(object):
                 url = self.list_by_resource_group.metadata['url']
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern='^[-\w\._\(\)]+$'),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
             else:
                 url = next_link
 
             # Construct parameters
-            query_parameters = {}
+            query_parameters = {}  # type: Dict[str, Any]
             query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
             # Construct headers
-            header_parameters = {}
+            header_parameters = {}  # type: Dict[str, Any]
             header_parameters['Accept'] = 'application/json'
 
             # Construct and send request
@@ -214,7 +217,7 @@ class FactoryOperations(object):
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
-            return deserialized.next_link, iter(list_of_elem)
+            return deserialized.next_link or None, iter(list_of_elem)
 
         def get_next(next_link=None):
             request = prepare_request(next_link)
@@ -224,7 +227,7 @@ class FactoryOperations(object):
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise models.CloudErrorException.from_response(response, self._deserialize)
+                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -258,52 +261,53 @@ class FactoryOperations(object):
         :type location: str
         :param tags: The resource tags.
         :type tags: dict[str, str]
-        :param identity: Identity properties of the factory resource.
-        :type identity: ~data_factory_management_client.models.FactoryIdentity
-        :param repo_configuration: Factory's git repo information.
-        :type repo_configuration: ~data_factory_management_client.models.FactoryRepoConfiguration
+        :param identity: Managed service identity of the factory.
+        :type identity: ~azure.mgmt.datafactory.models.FactoryIdentity
+        :param repo_configuration: Git repo information of the factory.
+        :type repo_configuration: ~azure.mgmt.datafactory.models.FactoryRepoConfiguration
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Factory or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.Factory
-        :raises: ~data_factory_management_client.models.CloudErrorException:
+        :rtype: ~azure.mgmt.datafactory.models.Factory
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.Factory"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.Factory"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        factory = models.Factory(location=location, tags=tags, identity=identity, repo_configuration=repo_configuration)
+        _factory = models.Factory(location=location, tags=tags, identity=identity, repo_configuration=repo_configuration)
         api_version = "2018-06-01"
 
         # Construct URL
         url = self.create_or_update.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern='^[-\w\._\(\)]+$'),
-            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
         if if_match is not None:
             header_parameters['If-Match'] = self._serialize.header("if_match", if_match, 'str')
         header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'application/json'
-
-        # Construct body
-        body_content = self._serialize.body(factory, 'Factory')
+        header_parameters['Content-Type'] = kwargs.pop('content_type', 'application/json')
 
         # Construct and send request
-        request = self._client.put(url, query_parameters, header_parameters, body_content)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(_factory, 'Factory')
+        body_content_kwargs['content'] = body_content
+        request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
+
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('Factory', pipeline_response)
 
@@ -330,48 +334,49 @@ class FactoryOperations(object):
         :type factory_name: str
         :param tags: The resource tags.
         :type tags: dict[str, str]
-        :param identity: Identity properties of the factory resource.
-        :type identity: ~data_factory_management_client.models.FactoryIdentity
+        :param identity: Managed service identity of the factory.
+        :type identity: ~azure.mgmt.datafactory.models.FactoryIdentity
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Factory or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.Factory
-        :raises: ~data_factory_management_client.models.CloudErrorException:
+        :rtype: ~azure.mgmt.datafactory.models.Factory
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.Factory"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.Factory"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        factory_update_parameters = models.FactoryUpdateParameters(tags=tags, identity=identity)
+        _factory_update_parameters = models.FactoryUpdateParameters(tags=tags, identity=identity)
         api_version = "2018-06-01"
 
         # Construct URL
         url = self.update.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern='^[-\w\._\(\)]+$'),
-            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'application/json'
-
-        # Construct body
-        body_content = self._serialize.body(factory_update_parameters, 'FactoryUpdateParameters')
+        header_parameters['Content-Type'] = kwargs.pop('content_type', 'application/json')
 
         # Construct and send request
-        request = self._client.patch(url, query_parameters, header_parameters, body_content)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(_factory_update_parameters, 'FactoryUpdateParameters')
+        body_content_kwargs['content'] = body_content
+        request = self._client.patch(url, query_parameters, header_parameters, **body_content_kwargs)
+
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('Factory', pipeline_response)
 
@@ -399,29 +404,29 @@ class FactoryOperations(object):
          matches the existing entity tag, or if * was provided, then no content will be returned.
         :type if_none_match: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: Factory or  or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.Factory or None
-        :raises: ~data_factory_management_client.models.CloudErrorException:
+        :return: Factory or the result of cls(response)
+        :rtype: ~azure.mgmt.datafactory.models.Factory or None
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.Factory"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.Factory"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2018-06-01"
 
         # Construct URL
         url = self.get.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern='^[-\w\._\(\)]+$'),
-            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
         if if_none_match is not None:
             header_parameters['If-None-Match'] = self._serialize.header("if_none_match", if_none_match, 'str')
         header_parameters['Accept'] = 'application/json'
@@ -433,7 +438,7 @@ class FactoryOperations(object):
 
         if response.status_code not in [200, 304]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
         if response.status_code == 200:
@@ -461,27 +466,27 @@ class FactoryOperations(object):
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None or the result of cls(response)
         :rtype: None
-        :raises: ~data_factory_management_client.models.CloudErrorException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType[None]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2018-06-01"
 
         # Construct URL
         url = self.delete.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern='^[-\w\._\(\)]+$'),
-            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
 
         # Construct and send request
         request = self._client.delete(url, query_parameters, header_parameters)
@@ -490,7 +495,7 @@ class FactoryOperations(object):
 
         if response.status_code not in [200, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if cls:
           return cls(pipeline_response, None, {})
@@ -521,44 +526,45 @@ class FactoryOperations(object):
         :type git_hub_client_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: GitHubAccessTokenResponse or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.GitHubAccessTokenResponse
-        :raises: ~data_factory_management_client.models.CloudErrorException:
+        :rtype: ~azure.mgmt.datafactory.models.GitHubAccessTokenResponse
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.GitHubAccessTokenResponse"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.GitHubAccessTokenResponse"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        git_hub_access_token_request = models.GitHubAccessTokenRequest(git_hub_access_code=git_hub_access_code, git_hub_client_id=git_hub_client_id, git_hub_access_token_base_url=git_hub_access_token_base_url)
+        _git_hub_access_token_request = models.GitHubAccessTokenRequest(git_hub_access_code=git_hub_access_code, git_hub_client_id=git_hub_client_id, git_hub_access_token_base_url=git_hub_access_token_base_url)
         api_version = "2018-06-01"
 
         # Construct URL
         url = self.get_git_hub_access_token.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern='^[-\w\._\(\)]+$'),
-            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'application/json'
-
-        # Construct body
-        body_content = self._serialize.body(git_hub_access_token_request, 'GitHubAccessTokenRequest')
+        header_parameters['Content-Type'] = kwargs.pop('content_type', 'application/json')
 
         # Construct and send request
-        request = self._client.post(url, query_parameters, header_parameters, body_content)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(_git_hub_access_token_request, 'GitHubAccessTokenRequest')
+        body_content_kwargs['content'] = body_content
+        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('GitHubAccessTokenResponse', pipeline_response)
 
@@ -602,44 +608,45 @@ class FactoryOperations(object):
         :type expire_time: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: AccessPolicyResponse or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.AccessPolicyResponse
-        :raises: ~data_factory_management_client.models.CloudErrorException:
+        :rtype: ~azure.mgmt.datafactory.models.AccessPolicyResponse
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.AccessPolicyResponse"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.AccessPolicyResponse"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        policy = models.UserAccessPolicy(permissions=permissions, access_resource_path=access_resource_path, profile_name=profile_name, start_time=start_time, expire_time=expire_time)
+        _policy = models.UserAccessPolicy(permissions=permissions, access_resource_path=access_resource_path, profile_name=profile_name, start_time=start_time, expire_time=expire_time)
         api_version = "2018-06-01"
 
         # Construct URL
         url = self.get_data_plane_access.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern='^[-\w\._\(\)]+$'),
-            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'application/json'
-
-        # Construct body
-        body_content = self._serialize.body(policy, 'UserAccessPolicy')
+        header_parameters['Content-Type'] = kwargs.pop('content_type', 'application/json')
 
         # Construct and send request
-        request = self._client.post(url, query_parameters, header_parameters, body_content)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(_policy, 'UserAccessPolicy')
+        body_content_kwargs['content'] = body_content
+        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('AccessPolicyResponse', pipeline_response)
 

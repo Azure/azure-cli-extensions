@@ -8,9 +8,10 @@
 from typing import Any, Callable, Dict, Generic, Optional, TypeVar
 import warnings
 
-from azure.core.exceptions import map_error
+from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpRequest, HttpResponse
+from azure.mgmt.core.exceptions import ARMErrorFormat
 
 from .. import models
 
@@ -20,10 +21,11 @@ ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dic
 class ExposureControlOperations(object):
     """ExposureControlOperations operations.
 
-    You should not instantiate directly this class, but create a Client instance that will create it for you and attach it as attribute.
+    You should not instantiate this class directly. Instead, you should create a Client instance that
+    instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~data_factory_management_client.models
+    :type models: ~azure.mgmt.datafactory.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -56,13 +58,13 @@ class ExposureControlOperations(object):
         :type feature_type: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ExposureControlResponse or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.ExposureControlResponse
-        :raises: ~data_factory_management_client.models.CloudErrorException:
+        :rtype: ~azure.mgmt.datafactory.models.ExposureControlResponse
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.ExposureControlResponse"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ExposureControlResponse"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        exposure_control_request = models.ExposureControlRequest(feature_name=feature_name, feature_type=feature_type)
+        _exposure_control_request = models.ExposureControlRequest(feature_name=feature_name, feature_type=feature_type)
         api_version = "2018-06-01"
 
         # Construct URL
@@ -74,25 +76,26 @@ class ExposureControlOperations(object):
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'application/json'
-
-        # Construct body
-        body_content = self._serialize.body(exposure_control_request, 'ExposureControlRequest')
+        header_parameters['Content-Type'] = kwargs.pop('content_type', 'application/json')
 
         # Construct and send request
-        request = self._client.post(url, query_parameters, header_parameters, body_content)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(_exposure_control_request, 'ExposureControlRequest')
+        body_content_kwargs['content'] = body_content
+        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('ExposureControlResponse', pipeline_response)
 
@@ -123,44 +126,45 @@ class ExposureControlOperations(object):
         :type feature_type: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ExposureControlResponse or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.ExposureControlResponse
-        :raises: ~data_factory_management_client.models.CloudErrorException:
+        :rtype: ~azure.mgmt.datafactory.models.ExposureControlResponse
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.ExposureControlResponse"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ExposureControlResponse"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        exposure_control_request = models.ExposureControlRequest(feature_name=feature_name, feature_type=feature_type)
+        _exposure_control_request = models.ExposureControlRequest(feature_name=feature_name, feature_type=feature_type)
         api_version = "2018-06-01"
 
         # Construct URL
         url = self.get_feature_value_by_factory.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern='^[-\w\._\(\)]+$'),
-            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'application/json'
-
-        # Construct body
-        body_content = self._serialize.body(exposure_control_request, 'ExposureControlRequest')
+        header_parameters['Content-Type'] = kwargs.pop('content_type', 'application/json')
 
         # Construct and send request
-        request = self._client.post(url, query_parameters, header_parameters, body_content)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(_exposure_control_request, 'ExposureControlRequest')
+        body_content_kwargs['content'] = body_content
+        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('ExposureControlResponse', pipeline_response)
 
