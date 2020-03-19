@@ -258,6 +258,9 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
     with self.argument_context('eventgrid partner namespace') as c:
         c.argument('partner_namespace_name', arg_type=partner_namespace_name_type, options_list=['--name', '-n'], id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/partnernamespaces'))
 
+    with self.argument_context('eventgrid partner namespace key') as c:
+        c.argument('partner_namespace_name', arg_type=partner_namespace_name_type, help='Name of the partner namespace', id_part=None, completer=get_resource_name_completion_list('Microsoft.EventGrid/partnernamespaces'))
+
     with self.argument_context('eventgrid partner namespace show') as c:
         c.argument('partner_namespace_name', arg_type=partner_namespace_name_type, options_list=['--name', '-n'], id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/partnernamespaces'))
 
