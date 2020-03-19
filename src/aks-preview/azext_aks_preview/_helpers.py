@@ -8,7 +8,7 @@ from distutils.version import StrictVersion  # pylint: disable=no-name-in-module
 from knack.util import CLIError
 
 # pylint: disable=no-name-in-module,import-error
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_02_01.models import ManagedClusterAPIServerAccessProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterAPIServerAccessProfile
 from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING
 
 

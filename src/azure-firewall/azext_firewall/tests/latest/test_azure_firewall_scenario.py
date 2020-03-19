@@ -188,8 +188,11 @@ class AzureFirewallScenario(ScenarioTest):
             'coll2': 'rc2',
             'coll3': 'rc3',
             'network_rule1': 'network-rule1',
+            'network_rule2': 'network-rule2',
             'nat_rule1': 'nat-rule1',
+            'nat_rule2': 'nat-rule2',
             'app_rule1': 'app-rule1',
+            'app_rule2': 'app-rule2',
             'source_ip_group': 'sourceipgroup',
             'destination_ip_group': 'destinationipgroup'
         })
@@ -199,8 +202,11 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network ip-group create -n {destination_ip_group} -g {rg} --ip-addresses 10.0.0.2 10.0.0.3')
         self.cmd('network firewall create -g {rg} -n {af}')
         self.cmd('network firewall network-rule create -g {rg} -n {network_rule1} -c {coll} --priority 10000 --action Allow -f {af} --source-addresses 10.0.0.0 111.1.0.0/24 --protocols UDP TCP ICMP --destination-ip-groups {destination_ip_group} --destination-ports 80')
+        self.cmd('network firewall network-rule create -g {rg} -n {network_rule2} -c {coll} -f {af} --source-addresses 10.0.0.1 111.2.0.0/24 --protocols UDP TCP --destination-ip-groups {destination_ip_group} --destination-ports 81')
         self.cmd('network firewall nat-rule create -g {rg} -n {network_rule1} -c {coll2} --priority 10001 --action Dnat -f {af} --source-addresses 10.0.0.0 111.1.0.0/24 --protocols UDP TCP --translated-fqdn server1.internal.com --destination-ports 96 --destination-addresses 12.36.22.14 --translated-port 95 --source-ip-groups {source_ip_group}')
+        self.cmd('network firewall nat-rule create -g {rg} -n {network_rule2} -c {coll2} -f {af} --source-addresses 10.0.0.1 111.2.0.0/24 --protocols UDP TCP --translated-fqdn server2.internal.com --destination-ports 97 --destination-addresses 12.36.22.15 --translated-port 96 --source-ip-groups {source_ip_group}')
         self.cmd('network firewall application-rule create -f {af} -n {app_rule1} --protocols Http=80 Https=8080 -g {rg} -c {coll3} --priority 10000 --action Allow --source-ip-groups {source_ip_group} --target-fqdns www.bing.com')
+        self.cmd('network firewall application-rule create -f {af} -n {app_rule2} --protocols Http=80 Https=8080 -g {rg} -c {coll3} --source-ip-groups {source_ip_group} --target-fqdns www.microsoft.com')
         self.cmd('network firewall delete -g {rg} -n {af}')
 
     @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_zones', location='eastus')

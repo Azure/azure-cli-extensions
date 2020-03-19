@@ -2,6 +2,17 @@
 
 Release History
 ===============
+0.4.37
++++++
+* Added slb outbound ip fix
+
+0.4.36
++++++
+* Added --uptime-sla for paid service
+
+0.4.35
++++++
+* Added support for creation time node labels
 
 0.4.34
 +++++
