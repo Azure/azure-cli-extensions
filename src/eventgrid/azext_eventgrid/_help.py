@@ -185,7 +185,7 @@ type: command
 short-summary: Create a system topic.
 examples:
   - name: Create a new system topic.
-    text: az eventgrid system-topic create -g rg1 --name domain1 -l westus2
+    text: az eventgrid system-topic create -g rg1 --name systemtopic1 -l westus2
 
 """
 
@@ -218,7 +218,7 @@ examples:
   - name: Show the details of a system topic.
     text: az eventgrid system-topic show -g rg1 -n systemtopic1
   - name: Show the details of a system topic based on resource ID.
-    text: az eventgrid system-topic show --ids /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.EventGrid/domains/domain1
+    text: az eventgrid system-topic show --ids /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.EventGrid/systemtopics/systemtopic1
 """
 
 helps['eventgrid system-topic update'] = """
@@ -229,9 +229,60 @@ examples:
     text: az eventgrid system-topic update -g rg1 --name systemtopic1 --tags Dept=IT
 """
 
-helps['eventgrid partner topic event-subscription'] = """
-type: group
-short-summary: Manage event subscriptions of partner topic.
+helps['eventgrid partner topic list'] = """
+type: command
+short-summary: List available partner topics.
+examples:
+  - name: List all partner topics in the current Azure subscription.
+    text: az eventgrid partner topic list
+  - name: List all partner topics in a resource group.
+    text: az eventgrid partner topic list -g rg1
+  - name: List all partner topics in a resource group whose name contains the pattern "XYZ"
+    text: az eventgrid partner topic list -g rg1 --odata-query "Contains(name, 'XYZ')"
+  - name: List all partner topics in a resource group except the partner topic with name "name1"
+    text: az eventgrid partner topic list -g rg1 --odata-query "NOT (name eq 'name1')"
+"""
+
+helps['eventgrid partner topic delete'] = """
+type: command
+short-summary: Delete a partner topic.
+examples:
+  - name: Delete a specific partner topic.
+    text: az eventgrid partner topic delete -g rg1 --name partnertopic1
+"""
+
+helps['eventgrid partner topic show'] = """
+type: command
+short-summary: Get the details of a partner topic.
+examples:
+  - name: Show the details of a partner topic.
+    text: az eventgrid partner topic show -g rg1 -n partnertopic1
+  - name: Show the details of a partner topic based on resource ID.
+    text: az eventgrid partner topic show --ids /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.EventGrid/partnetopics/topic1
+"""
+
+helps['eventgrid partner topic activate'] = """
+type: command
+short-summary: Activate a partner topic.
+examples:
+  - name: Activate a specific partner topic.
+    text: az eventgrid partner topic activate -g rg1 -n partnertopic1
+"""
+
+helps['eventgrid partner topic deactivate'] = """
+type: command
+short-summary: Deactivate a partner topic.
+examples:
+  - name: Deactivate a specific partner topic.
+    text: az eventgrid partner topic Deactivate -g rg1 -n partnertopic1
+"""
+
+helps['eventgrid partner topic update'] = """
+type: command
+short-summary: Update a partner topic.
+examples:
+  - name: Update the properties of an existing partner topic.
+    text: az eventgrid partner topic update -g rg1 --name partner topic1 --tags Dept=IT
 """
 
 helps['eventgrid system-topic event-subscription'] = """
@@ -239,7 +290,7 @@ type: group
 short-summary: Manage event subscriptions of system topic.
 """
 
-helps['eventgrid partner-topic event-subscription create'] = """
+helps['eventgrid system-topic event-subscription create'] = """
 type: command
 short-summary: Create a new event subscription for a system topic
 parameters:
@@ -269,73 +320,73 @@ parameters:
 examples:
   - name: Create a new event subscription for an Event Grid system topic, using default filters.
     text: |
-        az eventgrid partner-topic event-subscription create --name es1 \\
+        az eventgrid system-topic event-subscription create --name es1 \\
             -g rg1 --system-topic-name systemtopic1 \\
             --endpoint https://contoso.azurewebsites.net/api/f1?code=code
   - name: Create a new event subscription for an Event Grid system topic, with a filter specifying a subject prefix.
     text: |
-        az system-topic-eventgrid event-subscription create --name es4 \\
+        az eventgrid system-topic event-subscription create --name es4 \\
             -g rg1 --system-topic-name systemtopic1 \\
             --endpoint https://contoso.azurewebsites.net/api/f1?code=code \\
             --subject-begins-with mysubject_prefix
   - name: Create a new event subscription for an Event Grid system topic, using default filters, and CloudEvent V 1.0 as the delivery schema.
     text: |
-      az eventgrid partner-topic event-subscription create -n es2 \\
+      az eventgrid system-topic event-subscription create -n es2 \\
           -g rg1 --system-topic-name systemtopic1 \\
           --endpoint https://contoso.azurewebsites.net/api/f1?code=code \\
           --event-delivery-schema cloudeventschemav1_0
-  - name: Create a new event subscription for an Event Grid system system topic, with a deadletter destination and custom retry policy of maximum 10 delivery attempts and an Event TTL of 2 hours (whichever happens earlier) and expiration date.
+  - name: Create a new event subscription for an Event Grid system topic, with a deadletter destination and custom retry policy of maximum 10 delivery attempts and an Event TTL of 2 hours (whichever happens earlier) and expiration date.
     text: |
-        az system-topic-eventgrid event-subscription create --name es2 \\
+        az eventgrid system-topic event-subscription create --name es2 \\
             -g rg1 --system-topic-name systemtopic1 \\
             --endpoint https://contoso.azurewebsites.net/api/f1?code=code \\
             --deadletter-endpoint /subscriptions/{SubID}/resourceGroups/TestRG/providers/Microsoft.Storage/storageAccounts/s2/blobServices/default/containers/blobcontainer1 \\
             --max-delivery-attempts 10 --event-ttl 120 --expiration-date "2022-10-31"
   - name: Create a new event subscription for an Event Grid system topic, using Azure Active Directory enabled Webhook as a destination .
     text: |
-        az system-topic-eventgrid event-subscription create --name es1 \\
+        az eventgrid system-topic event-subscription create --name es1 \\
             -g rg1 --system-topic-name systemtopic1 \\
             --endpoint https://contoso.azurewebsites.net/api/f1?code=code
             --azure_active_directory_tenant_id azureactivedirectorytenantid
             --azure_active_directory_application_id_or_uri azureactivedirectoryapplicationidoruri
-  - name: Create a new event subscription for an Event Grid system topic, using Azure Functions as destination.
+  - name: Create a new event subscription for an Event Grid system topic, using Azure Function as destination.
     text: |
-        az system-topic-eventgrid event-subscription create -n es1 \\
+        az eventgrid system-topic event-subscription create -n es1 \\
             -g rg1 --system-topic-name systemtopic1 \\
-            --endpoint /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.Web/sites/{functionappname}/functions/{functionname}
+            --endpoint /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.Web/sites/{functionappname}/functions/{functionname} --endpoint-type azurefunction
 
 """
 
-helps['eventgrid partner-topic event-subscription delete'] = """
+helps['eventgrid system-topic event-subscription delete'] = """
 type: command
 short-summary: Delete an event subscription of a system topic
 examples:
   - name: Delete an event subscription for an Event Grid system topic.
     text: |
-        az partner-topic event-subscription delete --name es1 \\
+        az system-topic event-subscription delete --name es1 \\
             -g rg1 --system-topic-name systemtopic1 \\
 """
 
-helps['eventgrid partner-topic event-subscription list'] = """
+helps['eventgrid system-topic event-subscription list'] = """
 type: command
 short-summary: List event subscriptions of a specific system topic.
 examples:
   - name: List all event subscriptions created for an Event Grid system topic.
     text: |
-        az system-topic-eventgrid event-subscription list -g rg1 --system-topic-name systemtopic1
+        az eventgrid system-topic event-subscription list -g rg1 --system-topic-name systemtopic1
 """
 
-helps['eventgrid partner-topic event-subscription show'] = """
+helps['eventgrid system-topic event-subscription show'] = """
 type: command
 short-summary: Get the details of an event subscription of a system topic.
 examples:
   - name: Show the details of an event subscription for an Event Grid system topic.
     text: |
-        az system-topic-eventgrid event-subscription show --name es1 \\
+        az eventgrid system-topic event-subscription show --name es1 \\
              -g rg1 --system-topic-name systemtopic1
 """
 
-helps['eventgrid partner-topic event-subscription update'] = """
+helps['eventgrid system-topic event-subscription update'] = """
 type: command
 short-summary: Update an event subscription of a system topic.
 parameters:
@@ -361,29 +412,185 @@ parameters:
 examples:
   - name: Update an event subscription for an Event Grid system topic to specify a new endpoint.
     text: |
-        az system-topic-eventgrid event-subscription update --name es1 \\
+        az eventgrid system-topic event-subscription update --name es1 \\
             -g rg1 --system-topic-name systemtopic1 --endpoint https://contoso.azurewebsites.net/api/f1?code=code
   - name: Update an event subscription for an Event Grid system topic to specify a new subject-ends-with filter.
     text: |
-        az system-topic-eventgrid event-subscription update --name es2 \\
+        az eventgrod system-topic eventgrid event-subscription update --name es2 \\
             --g rg1 --system-topic-name systemtopic1 \\
             --subject-ends-with .jpg
   - name: Update an event subscription for an Event Grid system topic to specify a new endpoint and a new subject-ends-with filter a new list of included event types.
     text: |
-        az system-topic-eventgrid event-subscription update --name es3 \\
+        az eventgrid system-topic event-subscription update --name es3 \\
             -g rg1 --system-topic-name systemtopic1 \\
             --subject-ends-with .png \\
             --endpoint https://contoso.azurewebsites.net/api/f1?code=code
             --included-event-types Microsoft.Storage.BlobCreated Microsoft.Storage.BlobDeleted
   - name: Update an event subscription for an Azure Event Grid system topic, to include a deadletter destination.
     text: |
-        az system-topic-eventgrid event-subscription update --name es2 \\
+        az eventgrid system-topic event-subscription update --name es2 \\
             -g rg1 --system-topic-name systemtopic1 \\
             --deadletter-endpoint /subscriptions/{SubID}/resourceGroups/TestRG/providers/Microsoft.Storage/storageAccounts/sa1/blobServices/default/containers/blobcontainer1
   - name: Update an event subscription for an Azure Event Grid system topic, using advanced filters.
     text: |
-        az system-topic-eventgrid event-subscription update --name es3 \\
+        az eventgrid system-topic event-subscription update --name es3 \\
             -g rg1 --system-topic-name systemtopic1 \\
+            --endpoint https://contoso.azurewebsites.net/api/f1?code=code
+            --advanced-filter data.blobType StringIn BlockBlob
+            --advanced-filter data.url StringBeginsWith https://myaccount.blob.core.windows.net
+
+"""
+
+helps['eventgrid partner topic event-subscription'] = """
+type: group
+short-summary: Manage event subscriptions of partner topic.
+"""
+
+helps['eventgrid partner topic event-subscription create'] = """
+type: command
+short-summary: Create a new event subscription for a partner topic
+parameters:
+  - name: --advanced-filter
+    short-summary: An advanced filter enables filtering of events based on a specific event property.
+    long-summary: |
+        Usage:                     --advanced-filter KEY[.INNERKEY] FILTEROPERATOR VALUE [VALUE ...]
+        StringIn:                  --advanced-filter data.Color StringIn Blue Red Orange Yellow
+        StringNotIn:               --advanced-filter data.Color StringNotIn Blue Red Orange Yellow
+        StringContains:            --advanced-filter subject StringContains Blue Red
+        StringBeginsWith:          --advanced-filter subject StringBeginsWith Blue Red
+        StringEndsWith:            --advanced-filter subject StringEndsWith img png jpg
+        NumberIn:                  --advanced-filter data.property1 NumberIn 5 10 20
+        NumberNotIn:               --advanced-filter data.property2 NumberNotIn 100 200 300
+        NumberLessThan:            --advanced-filter data.property3 NumberLessThan 100
+        NumberLessThanOrEquals:    --advanced-filter data.property2 NumberLessThanOrEquals 100
+        NumberGreaterThan:         --advanced-filter data.property3 NumberGreaterThan 100
+        NumberGreaterThanOrEquals: --advanced-filter data.property2 NumberGreaterThanOrEquals 100
+        BoolEquals:                --advanced-filter data.property3 BoolEquals true
+        Multiple advanced filters can be specified by using more than one `--advanced-filter` argument.
+  - name: --deadletter-endpoint
+    short-summary: The Azure resource ID of an Azure Storage blob container destination where EventGrid should deadletter undeliverable events for this event subscription.
+    long-summary: |
+        Example: --deadletter-endpoint /subscriptions/{SubID}/resourceGroups/rg1/providers/Microsoft.Storage/storageAccounts/sa1/blobServices/default/containers/containerName
+  - name: --endpoint-type
+    short-summary: The type of the destination endpoint.
+examples:
+  - name: Create a new event subscription for an Event Grid partner topic, using default filters.
+    text: |
+        az eventgrid partner topic event-subscription create --name es1 \\
+            -g rg1 --partner-topic-name partnertopic1 \\
+            --endpoint https://contoso.azurewebsites.net/api/f1?code=code
+  - name: Create a new event subscription for an Event Grid partner topic, with a filter specifying a subject prefix.
+    text: |
+        az eventgrid partner topic event-subscription create --name es4 \\
+            -g rg1 --partner-topic-name partnertopic1 \\
+            --endpoint https://contoso.azurewebsites.net/api/f1?code=code \\
+            --subject-begins-with mysubject_prefix
+  - name: Create a new event subscription for an Event Grid partner topic, using default filters, and CloudEvent V 1.0 as the delivery schema.
+    text: |
+      az eventgrid partner topic event-subscription create -n es2 \\
+          -g rg1 --partner-topic-name partnertopic1 \\
+          --endpoint https://contoso.azurewebsites.net/api/f1?code=code \\
+          --event-delivery-schema cloudeventschemav1_0
+  - name: Create a new event subscription for an Event Grid partnertopic, with a deadletter destination and custom retry policy of maximum 10 delivery attempts and an Event TTL of 2 hours (whichever happens earlier) and expiration date.
+    text: |
+        az eventgrid partner topic event-subscription create --name es2 \\
+            -g rg1 --partner-topic-name partnertopic1 \\
+            --endpoint https://contoso.azurewebsites.net/api/f1?code=code \\
+            --deadletter-endpoint /subscriptions/{SubID}/resourceGroups/TestRG/providers/Microsoft.Storage/storageAccounts/s2/blobServices/default/containers/blobcontainer1 \\
+            --max-delivery-attempts 10 --event-ttl 120 --expiration-date "2022-10-31"
+  - name: Create a new event subscription for an Event Grid partner topic, using Azure Active Directory enabled Webhook as a destination .
+    text: |
+        az eventgrid partner topic event-subscription create --name es1 \\
+            -g rg1 --partner-topic-name partnertopic1 \\
+            --endpoint https://contoso.azurewebsites.net/api/f1?code=code
+            --azure_active_directory_tenant_id azureactivedirectorytenantid
+            --azure_active_directory_application_id_or_uri azureactivedirectoryapplicationidoruri
+  - name: Create a new event subscription for an Event Grid partner topic, using Azure Function as destination.
+    text: |
+        az eventgrid partner topic event-subscription create -n es1 \\
+            -g rg1 --partner-topic-name partnertopic1 \\
+            --endpoint /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.Web/sites/{functionappname}/functions/{functionname} --endpoint-type azurefunction
+
+"""
+
+helps['eventgrid partner topic event-subscription delete'] = """
+type: command
+short-summary: Delete an event subscription of a partner topic
+examples:
+  - name: Delete an event subscription for an Event Grid partner topic.
+    text: |
+        az partner topic event-subscription delete --name es1 \\
+            -g rg1 --partner-topic-name partnertopic1 \\
+"""
+
+helps['eventgrid partner topic event-subscription list'] = """
+type: command
+short-summary: List event subscriptions of a specific partner topic.
+examples:
+  - name: List all event subscriptions created for an Event Grid partner topic.
+    text: |
+        az eventgrid partner topic event-subscription list -g rg1 --partner-topic-name partnertopic1
+"""
+
+helps['eventgrid partner topic event-subscription show'] = """
+type: command
+short-summary: Get the details of an event subscription of a partner topic.
+examples:
+  - name: Show the details of an event subscription for an Event Grid partner topic.
+    text: |
+        az eventgrid partner topic event-subscription show --name es1 \\
+             -g rg1 --partner-topic-name partnertopic1
+"""
+
+helps['eventgrid partner topic event-subscription update'] = """
+type: command
+short-summary: Update an event subscription of a partner topic.
+parameters:
+  - name: --endpoint-type
+    short-summary: The type of the destination endpoint.
+  - name: --advanced-filter
+    short-summary: An advanced filter enables filtering of events based on a specific event property.
+    long-summary: |
+        Usage:                     --advanced-filter KEY[.INNERKEY] FILTEROPERATOR VALUE [VALUE ...]
+        StringIn:                  --advanced-filter data.Color StringIn Blue Red Orange Yellow
+        StringNotIn:               --advanced-filter data.Color StringNotIn Blue Red Orange Yellow
+        StringContains:            --advanced-filter subject StringContains Blue Red
+        StringBeginsWith:          --advanced-filter subject StringBeginsWith Blue Red
+        StringEndsWith:            --advanced-filter subject StringEndsWith img png jpg
+        NumberIn:                  --advanced-filter data.property1 NumberIn 5 10 20
+        NumberNotIn:               --advanced-filter data.property2 NumberNotIn 100 200 300
+        NumberLessThan:            --advanced-filter data.property3 NumberLessThan 100
+        NumberLessThanOrEquals:    --advanced-filter data.property2 NumberLessThanOrEquals 100
+        NumberGreaterThan:         --advanced-filter data.property3 NumberGreaterThan 100
+        NumberGreaterThanOrEquals: --advanced-filter data.property2 NumberGreaterThanOrEquals 100
+        BoolEquals:                --advanced-filter data.property3 BoolEquals true
+        Multiple advanced filters can be specified by using more than one `--advanced-filter` argument.
+examples:
+  - name: Update an event subscription for an Event Grid partner topic to specify a new endpoint.
+    text: |
+        az eventgrid partner topic event-subscription update --name es1 \\
+            -g rg1 --partner-topic-name partnertopic1 --endpoint https://contoso.azurewebsites.net/api/f1?code=code
+  - name: Update an event subscription for an Event Grid partner topic to specify a new subject-ends-with filter.
+    text: |
+        az eventgrod partner topic eventgrid event-subscription update --name es2 \\
+            --g rg1 --partner-topic-name partnertopic1 \\
+            --subject-ends-with .jpg
+  - name: Update an event subscription for an Event Grid partner topic to specify a new endpoint and a new subject-ends-with filter a new list of included event types.
+    text: |
+        az eventgrid partner topic event-subscription update --name es3 \\
+            -g rg1 --partner-topic-name partnertopic1 \\
+            --subject-ends-with .png \\
+            --endpoint https://contoso.azurewebsites.net/api/f1?code=code
+            --included-event-types Microsoft.Storage.BlobCreated Microsoft.Storage.BlobDeleted
+  - name: Update an event subscription for an Azure Event Grid partner topic, to include a deadletter destination.
+    text: |
+        az eventgrid partner topic event-subscription update --name es2 \\
+            -g rg1 --partner-topic-name partnertopic1 \\
+            --deadletter-endpoint /subscriptions/{SubID}/resourceGroups/TestRG/providers/Microsoft.Storage/storageAccounts/sa1/blobServices/default/containers/blobcontainer1
+  - name: Update an event subscription for an Azure Event Grid partner topic, using advanced filters.
+    text: |
+        az eventgrid partner topic event-subscription update --name es3 \\
+            -g rg1 --partner-topic-name partnertopic1 \\
             --endpoint https://contoso.azurewebsites.net/api/f1?code=code
             --advanced-filter data.blobType StringIn BlockBlob
             --advanced-filter data.url StringBeginsWith https://myaccount.blob.core.windows.net
@@ -522,11 +729,11 @@ examples:
             --endpoint https://contoso.azurewebsites.net/api/f1?code=code
             --azure_active_directory_tenant_id azureactivedirectorytenantid
             --azure_active_directory_application_id_or_uri azureactivedirectoryapplicationidoruri
-  - name: Create a new event subscription for an Event Grid topic, using Azure Functions as destination.
+  - name: Create a new event subscription for an Event Grid topic, using Azure Function as destination.
     text: |
         az eventgrid event-subscription create --name es1 \\
             --source-resource-id /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.EventGrid/topics/topic1 \\
-            --endpoint /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.Web/sites/{functionappname}/functions/{functionname}
+            --endpoint /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.Web/sites/{functionappname}/functions/{functionname} --endpoint-type azurefunction
 
 """
 
