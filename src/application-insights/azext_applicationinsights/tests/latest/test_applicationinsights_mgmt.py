@@ -29,6 +29,15 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
             self.check('provisioningState', 'Succeeded'),
         ])
 
+        self.cmd('monitor app-insights component billing show --app {name_a} -g {resource_group}', checks=[
+            self.check("contains(keys(@), 'dataVolumeCap')", True)
+        ])
+
+        self.cmd('monitor app-insights component billing update --app {name_a} -g {resource_group} --cap 200 -s', checks=[
+            self.check('dataVolumeCap.cap', 200),
+            self.check('dataVolumeCap.stopSendNotificationWhenHitCap', True),
+        ])
+
         self.kwargs.update({
             'kind': 'ios'
         })
