@@ -229,17 +229,17 @@ examples:
     text: az eventgrid system-topic update -g rg1 --name systemtopic1 --tags Dept=IT
 """
 
-helps['eventgrid event-subscription partner-topic'] = """
+helps['eventgrid partner topic event-subscription'] = """
 type: group
 short-summary: Manage event subscriptions of partner topic.
 """
 
-helps['eventgrid event-subscription system-topic'] = """
+helps['eventgrid system-topic event-subscription'] = """
 type: group
 short-summary: Manage event subscriptions of system topic.
 """
 
-helps['eventgrid event-subscription system-topic create'] = """
+helps['eventgrid partner-topic event-subscription create'] = """
 type: command
 short-summary: Create a new event subscription for a system topic
 parameters:
@@ -269,7 +269,7 @@ parameters:
 examples:
   - name: Create a new event subscription for an Event Grid system topic, using default filters.
     text: |
-        az eventgrid event-subscription system-topic create --name es1 \\
+        az eventgrid partner-topic event-subscription create --name es1 \\
             -g rg1 --system-topic-name systemtopic1 \\
             --endpoint https://contoso.azurewebsites.net/api/f1?code=code
   - name: Create a new event subscription for an Event Grid system topic, with a filter specifying a subject prefix.
@@ -280,7 +280,7 @@ examples:
             --subject-begins-with mysubject_prefix
   - name: Create a new event subscription for an Event Grid system topic, using default filters, and CloudEvent V 1.0 as the delivery schema.
     text: |
-      az eventgrid event-subscription system-topic create -n es2 \\
+      az eventgrid partner-topic event-subscription create -n es2 \\
           -g rg1 --system-topic-name systemtopic1 \\
           --endpoint https://contoso.azurewebsites.net/api/f1?code=code \\
           --event-delivery-schema cloudeventschemav1_0
@@ -306,17 +306,17 @@ examples:
 
 """
 
-helps['eventgrid event-subscription system-topic delete'] = """
+helps['eventgrid partner-topic event-subscription delete'] = """
 type: command
 short-summary: Delete an event subscription of a system topic
 examples:
   - name: Delete an event subscription for an Event Grid system topic.
     text: |
-        az event-subscription system-topic delete --name es1 \\
+        az partner-topic event-subscription delete --name es1 \\
             -g rg1 --system-topic-name systemtopic1 \\
 """
 
-helps['eventgrid event-subscription system-topic list'] = """
+helps['eventgrid partner-topic event-subscription list'] = """
 type: command
 short-summary: List event subscriptions of a specific system topic.
 examples:
@@ -325,7 +325,7 @@ examples:
         az system-topic-eventgrid event-subscription list -g rg1 --system-topic-name systemtopic1
 """
 
-helps['eventgrid event-subscription system-topic show'] = """
+helps['eventgrid partner-topic event-subscription show'] = """
 type: command
 short-summary: Get the details of an event subscription of a system topic.
 examples:
@@ -335,7 +335,7 @@ examples:
              -g rg1 --system-topic-name systemtopic1
 """
 
-helps['eventgrid event-subscription system-topic update'] = """
+helps['eventgrid partner-topic event-subscription update'] = """
 type: command
 short-summary: Update an event subscription of a system topic.
 parameters:

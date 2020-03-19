@@ -163,7 +163,7 @@ def load_command_table(self, _):
         g.custom_command('create', 'cli_system_topic_create_or_update')
         g.custom_command('update', 'cli_system_topic_update')
 
-    with self.command_group('eventgrid event-subscription system-topic', system_topic_event_subscriptions_mgmt_util, client_factory=system_topic_event_subscriptions_factory) as g:
+    with self.command_group('eventgrid system-topic event-subscription', system_topic_event_subscriptions_mgmt_util, client_factory=system_topic_event_subscriptions_factory) as g:
         g.custom_show_command('show', 'cli_system_topic_event_subscription_get')
         g.command('delete', 'delete')
         g.custom_command('list', 'cli_system_topic_event_subscription_list')
@@ -202,7 +202,7 @@ def load_command_table(self, _):
         # g.custom_command('create', 'cli_partner_topic_create_or_update')
         # g.custom_command('update', 'cli_partner_topic_update')
 
-    with self.command_group('eventgrid event-subscription partner-topic', partner_topic_event_subscriptions_mgmt_util, client_factory=partner_topic_event_subscriptions_factory) as g:
+    with self.command_group('eventgrid partner topic event-subscription', partner_topic_event_subscriptions_mgmt_util, client_factory=partner_topic_event_subscriptions_factory) as g:
         g.custom_show_command('show', 'cli_partner_topic_event_subscription_get')
         g.command('delete', 'delete')
         g.custom_command('list', 'cli_partner_topic_event_subscription_list')

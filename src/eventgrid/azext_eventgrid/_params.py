@@ -301,7 +301,8 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
     with self.argument_context('eventgrid event-subscription show') as c:
         c.argument('include_full_endpoint_url', arg_type=get_three_state_flag(), options_list=['--include-full-endpoint-url'], help="Specify to indicate whether the full endpoint URL should be returned. True if flag present.", )
 
-    with self.argument_context('eventgrid event-subscription system-topic') as c:
+    with self.argument_context('eventgrid system-topic event-subscription') as c:
+        c.argument('system_topic_name', arg_type=system_topic_name_type, id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/systemtopics'))
         c.argument('event_subscription_name', arg_type=name_type, options_list=['--name', '-n'], help='Name of the event subscription.')
         c.argument('endpoint_type', arg_type=get_enum_type(['webhook', 'eventhub', 'storagequeue', 'hybridconnection', 'servicebusqueue', 'servicebustopic', 'azurefunction'], default='webhook'))
         c.argument('event_delivery_schema', arg_type=get_enum_type(['eventgridschema', 'custominputschema', 'cloudeventschemav1_0']), help='The schema in which events should be delivered for this event subscription. By default, events will be delivered in the same schema in which they are published (based on the corresponding topic\'s input schema).')
@@ -316,14 +317,15 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
         c.argument('azure_active_directory_application_id_or_uri', help="The Azure Active Directory Application Id or Uri to get the access token that will be included as the bearer token in delivery requests. Applicable only for webhook as a destination")
         c.argument('resource_group_name', arg_type=resource_group_name_type)
 
-    with self.argument_context('eventgrid event-subscription system-topic list') as c:
+    with self.argument_context('eventgrid system-topic event-subscription list') as c:
         c.argument('odata_query', arg_type=odata_query_type, id_part=None)
 
-    with self.argument_context('eventgrid event-subscription system-topic show') as c:
+    with self.argument_context('eventgrid system-topic event-subscription show') as c:
         c.argument('system_topic_name', arg_type=system_topic_name_type, completer=get_resource_name_completion_list('Microsoft.EventGrid/systemtopics'))
         c.argument('include_full_endpoint_url', arg_type=get_three_state_flag(), options_list=['--include-full-endpoint-url'], help="Specify to indicate whether the full endpoint URL should be returned. True if flag present.", )
 
-    with self.argument_context('eventgrid event-subscription partner-topic') as c:
+    with self.argument_context('eventgrid partner topic event-subscription') as c:
+        c.argument('partner_topic_name', arg_type=partner_topic_name_type, id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/partnertopics'))
         c.argument('event_subscription_name', arg_type=name_type, options_list=['--name', '-n'], help='Name of the event subscription.')
         c.argument('endpoint_type', arg_type=get_enum_type(['webhook', 'eventhub', 'storagequeue', 'hybridconnection', 'servicebusqueue', 'servicebustopic', 'azurefunction'], default='webhook'))
         c.argument('event_delivery_schema', arg_type=get_enum_type(['eventgridschema', 'custominputschema', 'cloudeventschemav1_0']), help='The schema in which events should be delivered for this event subscription. By default, events will be delivered in the same schema in which they are published (based on the corresponding topic\'s input schema).')
@@ -338,10 +340,10 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
         c.argument('azure_active_directory_application_id_or_uri', help="The Azure Active Directory Application Id or Uri to get the access token that will be included as the bearer token in delivery requests. Applicable only for webhook as a destination")
         c.argument('resource_group_name', arg_type=resource_group_name_type)
 
-    with self.argument_context('eventgrid event-subscription partner-topic list') as c:
+    with self.argument_context('eventgrid partner topic event-subscription list') as c:
         c.argument('odata_query', arg_type=odata_query_type, id_part=None)
 
-    with self.argument_context('eventgrid event-subscription partner-topic show') as c:
+    with self.argument_context('eventgrid partner topic event-subscription show') as c:
         c.argument('partner_topic_name', arg_type=partner_topic_name_type, completer=get_resource_name_completion_list('Microsoft.EventGrid/partnertopics'))
         c.argument('include_full_endpoint_url', arg_type=get_three_state_flag(), options_list=['--include-full-endpoint-url'], help="Specify to indicate whether the full endpoint URL should be returned. True if flag present.", )
 
