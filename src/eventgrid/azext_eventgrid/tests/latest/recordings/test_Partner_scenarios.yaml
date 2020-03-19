@@ -1,0 +1,311 @@
+interactions:
+- request:
+    body: '{"location": "global", "properties": {"partnerName": "cli000007", "partnerResourceTypeName":
+      "cli000008", "authorizedAzureSubscriptionIds": ["80a65a6e-697c-11ea-b9e9-a08cfdecd868"]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid partner registration create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '244'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --name --resource-group --partner-name --resource-type-name --authorized-subscription-ids
+      User-Agent:
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/partnerRegistrations/cli000002?api-version=2020-04-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","partnerName":"cli000007","partnerResourceTypeName":"cli000008","partnerResourceTypeDisplayName":null,"partnerResourceTypeDescription":null,"setupUri":null,"logoUri":null,"visibilityState":"Hidden","authorizedAzureSubscriptionIds":["80a65a6e-697c-11ea-b9e9-a08cfdecd868"]},"location":"global","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/partnerRegistrations/cli000002","name":"cli000002","type":"Microsoft.EventGrid/partnerRegistrations"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '756'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 19 Mar 2020 00:56:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1139'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "global", "properties": {"partnerName": "cli000007", "partnerResourceTypeName":
+      "cli000008", "partnerResourceTypeDisplayName": "cli000010", "partnerResourceTypeDescription":
+      "cli000009", "authorizedAzureSubscriptionIds": ["80a65a6f-697c-11ea-ada0-a08cfdecd868",
+      "80a65a70-697c-11ea-be2f-a08cfdecd868"]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid partner registration create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '440'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --name --resource-group --partner-name --resource-type-name --description
+        --display-name --authorized-subscription-ids
+      User-Agent:
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/partnerRegistrations/cli000002?api-version=2020-04-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","partnerName":"cli000007","partnerResourceTypeName":"cli000008","partnerResourceTypeDisplayName":"cli000010","partnerResourceTypeDescription":"cli000009","setupUri":null,"logoUri":null,"visibilityState":"Hidden","authorizedAzureSubscriptionIds":["80a65a6f-697c-11ea-ada0-a08cfdecd868","80a65a70-697c-11ea-be2f-a08cfdecd868"]},"location":"global","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/partnerRegistrations/cli000002","name":"cli000002","type":"Microsoft.EventGrid/partnerRegistrations"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '871'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 19 Mar 2020 00:56:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid partner registration show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/partnerRegistrations/cli000002?api-version=2020-04-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","partnerName":"cli000007","partnerResourceTypeName":"cli000008","partnerResourceTypeDisplayName":"cli000010","partnerResourceTypeDescription":"cli000009","setupUri":null,"logoUri":null,"visibilityState":"Hidden","authorizedAzureSubscriptionIds":["80a65a6f-697c-11ea-ada0-a08cfdecd868","80a65a70-697c-11ea-be2f-a08cfdecd868"]},"location":"global","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/partnerRegistrations/cli000002","name":"cli000002","type":"Microsoft.EventGrid/partnerRegistrations"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '871'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 19 Mar 2020 00:56:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid partner registration list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/partnerRegistrations?api-version=2020-04-01-preview&$top=100
+  response:
+    body:
+      string: '{"value":[{"properties":{"provisioningState":"Succeeded","partnerName":"cli000007","partnerResourceTypeName":"cli000008","partnerResourceTypeDisplayName":"cli000010","partnerResourceTypeDescription":"cli000009","setupUri":null,"logoUri":null,"visibilityState":"Hidden","authorizedAzureSubscriptionIds":["80a65a6f-697c-11ea-ada0-a08cfdecd868","80a65a70-697c-11ea-be2f-a08cfdecd868"]},"location":"global","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/partnerRegistrations/cli000002","name":"cli000002","type":"Microsoft.EventGrid/partnerRegistrations"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '883'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 19 Mar 2020 00:56:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid partner registration list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --odata-query
+      User-Agent:
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/partnerRegistrations?api-version=2020-04-01-preview&$filter=name%20eq%20%27cli000002%27&$top=100
+  response:
+    body:
+      string: '{"value":[{"properties":{"provisioningState":"Succeeded","partnerName":"cli000007","partnerResourceTypeName":"cli000008","partnerResourceTypeDisplayName":"cli000010","partnerResourceTypeDescription":"cli000009","setupUri":null,"logoUri":null,"visibilityState":"Hidden","authorizedAzureSubscriptionIds":["80a65a6f-697c-11ea-ada0-a08cfdecd868","80a65a70-697c-11ea-be2f-a08cfdecd868"]},"location":"global","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/partnerRegistrations/cli000002","name":"cli000002","type":"Microsoft.EventGrid/partnerRegistrations"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '883'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 19 Mar 2020 00:56:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid partner registration delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
+      accept-language:
+      - en-US
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/partnerRegistrations/cli000002?api-version=2020-04-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Thu, 19 Mar 2020 00:56:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+version: 1

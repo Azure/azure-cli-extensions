@@ -150,22 +150,27 @@ examples:
     text: az eventgrid domain update -g rg1 --name domain1 --sku Basic --identity noidentity --allow-traffic-from-all-ips false --inbound-ip-rules 10.0.0.0/8 Allow --inbound-ip-rules 10.2.0.0/8 Allow --tags Dept=IT
 """
 
-helps['eventgrid partner-registration'] = """
+helps['eventgrid partner'] = """
+type: group
+short-summary: Manage partner resources.
+"""
+
+helps['eventgrid partner registration'] = """
 type: group
 short-summary: Manage partner registrations.
 """
 
-helps['eventgrid partner-namespace'] = """
+helps['eventgrid partner namespace'] = """
 type: group
 short-summary: Manage partner namespaces.
 """
 
-helps['eventgrid event-channel'] = """
+helps['eventgrid partner namespace event-channel'] = """
 type: group
-short-summary: Manage event channels.
+short-summary: Manage partner event channels.
 """
 
-helps['eventgrid partner-topic'] = """
+helps['eventgrid partner topic'] = """
 type: group
 short-summary: Manage partner topics.
 """
@@ -224,17 +229,17 @@ examples:
     text: az eventgrid system-topic update -g rg1 --name systemtopic1 --tags Dept=IT
 """
 
-helps['eventgrid partner-topic-event-subscription'] = """
+helps['eventgrid event-subscription partner-topic'] = """
 type: group
 short-summary: Manage event subscriptions of partner topic.
 """
 
-helps['eventgrid system-topic-event-subscription'] = """
+helps['eventgrid event-subscription system-topic'] = """
 type: group
 short-summary: Manage event subscriptions of system topic.
 """
 
-helps['eventgrid system-topic-event-subscription create'] = """
+helps['eventgrid event-subscription system-topic create'] = """
 type: command
 short-summary: Create a new event subscription for a system topic
 parameters:
@@ -264,7 +269,7 @@ parameters:
 examples:
   - name: Create a new event subscription for an Event Grid system topic, using default filters.
     text: |
-        az eventgrid system-topic-event-subscription create --name es1 \\
+        az eventgrid event-subscription system-topic create --name es1 \\
             -g rg1 --system-topic-name systemtopic1 \\
             --endpoint https://contoso.azurewebsites.net/api/f1?code=code
   - name: Create a new event subscription for an Event Grid system topic, with a filter specifying a subject prefix.
@@ -275,7 +280,7 @@ examples:
             --subject-begins-with mysubject_prefix
   - name: Create a new event subscription for an Event Grid system topic, using default filters, and CloudEvent V 1.0 as the delivery schema.
     text: |
-      az eventgrid system-topic-event-subscription create -n es2 \\
+      az eventgrid event-subscription system-topic create -n es2 \\
           -g rg1 --system-topic-name systemtopic1 \\
           --endpoint https://contoso.azurewebsites.net/api/f1?code=code \\
           --event-delivery-schema cloudeventschemav1_0
@@ -301,17 +306,17 @@ examples:
 
 """
 
-helps['eventgrid system-topic-event-subscription delete'] = """
+helps['eventgrid event-subscription system-topic delete'] = """
 type: command
 short-summary: Delete an event subscription of a system topic
 examples:
   - name: Delete an event subscription for an Event Grid system topic.
     text: |
-        az system-topic-event-subscription delete --name es1 \\
+        az event-subscription system-topic delete --name es1 \\
             -g rg1 --system-topic-name systemtopic1 \\
 """
 
-helps['eventgrid system-topic-event-subscription list'] = """
+helps['eventgrid event-subscription system-topic list'] = """
 type: command
 short-summary: List event subscriptions of a specific system topic.
 examples:
@@ -320,7 +325,7 @@ examples:
         az system-topic-eventgrid event-subscription list -g rg1 --system-topic-name systemtopic1
 """
 
-helps['eventgrid system-topic-event-subscription show'] = """
+helps['eventgrid event-subscription system-topic show'] = """
 type: command
 short-summary: Get the details of an event subscription of a system topic.
 examples:
@@ -330,7 +335,7 @@ examples:
              -g rg1 --system-topic-name systemtopic1
 """
 
-helps['eventgrid system-topic-event-subscription update'] = """
+helps['eventgrid event-subscription system-topic update'] = """
 type: command
 short-summary: Update an event subscription of a system topic.
 parameters:

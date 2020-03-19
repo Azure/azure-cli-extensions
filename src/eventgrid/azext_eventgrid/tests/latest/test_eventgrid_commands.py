@@ -493,48 +493,48 @@ class EventGridTests(ScenarioTest):
             self.check('[0].name', self.kwargs['system_topic_name']),
         ])
 
-        self.cmd('az eventgrid system-topic-event-subscription create --resource-group {rg} --system-topic-name {system_topic_name} --name {event_subscription_name} --endpoint \"{endpoint_url}\" --endpoint-type webhook', checks=[
+        self.cmd('az eventgrid event-subscription system-topic create --resource-group {rg} --system-topic-name {system_topic_name} --name {event_subscription_name} --endpoint \"{endpoint_url}\" --endpoint-type webhook', checks=[
             self.check('type', 'Microsoft.EventGrid/systemTopics/eventSubscriptions'),
             self.check('provisioningState', 'Succeeded'),
             self.check('name', self.kwargs['event_subscription_name']),
             self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
         ])
 
-        self.cmd('az eventgrid system-topic-event-subscription create --resource-group {rg} --system-topic-name {system_topic_name} --name {event_subscription_name} --endpoint \"{endpoint_url}\" --endpoint-type webhook --labels label_1 label_2', checks=[
+        self.cmd('az eventgrid event-subscription system-topic create --resource-group {rg} --system-topic-name {system_topic_name} --name {event_subscription_name} --endpoint \"{endpoint_url}\" --endpoint-type webhook --labels label_1 label_2', checks=[
             self.check('type', 'Microsoft.EventGrid/systemTopics/eventSubscriptions'),
             self.check('provisioningState', 'Succeeded'),
             self.check('name', self.kwargs['event_subscription_name'])
         ])
 
-        self.cmd('az eventgrid system-topic-event-subscription show --resource-group {rg} --system-topic-name {system_topic_name} --name {event_subscription_name} --include-full-endpoint-url', checks=[
+        self.cmd('az eventgrid event-subscription system-topic show --resource-group {rg} --system-topic-name {system_topic_name} --name {event_subscription_name} --include-full-endpoint-url', checks=[
             self.check('destination.endpointUrl', self.kwargs['endpoint_url']),
             self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
         ])
 
-        self.cmd('az eventgrid system-topic-event-subscription show --resource-group {rg} --system-topic-name {system_topic_name} --name {event_subscription_name}', checks=[
+        self.cmd('az eventgrid event-subscription system-topic show --resource-group {rg} --system-topic-name {system_topic_name} --name {event_subscription_name}', checks=[
             self.check('destination.endpointUrl', None),
             self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
         ])
 
-        self.cmd('az eventgrid system-topic-event-subscription update -g {rg} --system-topic-name {system_topic_name} -n {event_subscription_name} --endpoint \"{endpoint_url}\" --endpoint-type webhook --labels label11 label22', checks=[
+        self.cmd('az eventgrid event-subscription system-topic update -g {rg} --system-topic-name {system_topic_name} -n {event_subscription_name} --endpoint \"{endpoint_url}\" --endpoint-type webhook --labels label11 label22', checks=[
             self.check('type', 'Microsoft.EventGrid/systemTopics/eventSubscriptions'),
             self.check('provisioningState', 'Succeeded'),
             self.check('name', self.kwargs['event_subscription_name']),
             self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
         ])
 
-        self.cmd('az eventgrid system-topic-event-subscription list --resource-group {rg} --system-topic-name {system_topic_name}', checks=[
+        self.cmd('az eventgrid event-subscription system-topic list --resource-group {rg} --system-topic-name {system_topic_name}', checks=[
             self.check('[0].type', 'Microsoft.EventGrid/systemTopics/eventSubscriptions'),
             self.check('[0].provisioningState', 'Succeeded'),
         ])
 
         # Comment this one until we fix the pagable property in swagger
-        # self.cmd('az eventgrid system-topic-event-subscription list --resource-group {rg} --system-topic-name {system_topic_name} --odata-query "name eq \'{event_subscription_name}\'"', checks=[
+        # self.cmd('az eventgrid event-subscription system-topic list --resource-group {rg} --system-topic-name {system_topic_name} --odata-query "name eq \'{event_subscription_name}\'"', checks=[
         #    self.check('[0].type', 'Microsoft.EventGrid/systemTopics/eventSubscriptions'),
         #    self.check('[0].provisioningState', 'Succeeded'),
         # ])
 
-        self.cmd('az eventgrid system-topic-event-subscription delete -g {rg} --name {event_subscription_name}  --system-topic-name {system_topic_name} ')
+        self.cmd('az eventgrid event-subscription system-topic delete -g {rg} --name {event_subscription_name}  --system-topic-name {system_topic_name} ')
 
         self.cmd('az eventgrid system-topic delete -n {system_topic_name} -g {rg}')
 
@@ -1068,7 +1068,7 @@ class EventGridTests(ScenarioTest):
             'display_name': display_name
         })
 
-        scope = self.cmd('az eventgrid partner-registration create --name {partner_registration_name} --resource-group {rg} --partner-name {partner_name} --resource-type-name {resource_type_name} --authorized-subscription-ids {guid1}', checks=[
+        scope = self.cmd('az eventgrid partner registration create --name {partner_registration_name} --resource-group {rg} --partner-name {partner_name} --resource-type-name {resource_type_name} --authorized-subscription-ids {guid1}', checks=[
             self.check('type', 'Microsoft.EventGrid/partnerRegistrations'),
             self.check('name', self.kwargs['partner_registration_name']),
             self.check('provisioningState', 'Succeeded'),
@@ -1079,24 +1079,22 @@ class EventGridTests(ScenarioTest):
             self.check('partnerName', partner_name)
         ]).get_output_in_json()['id']
 
-        scope = self.cmd('az eventgrid partner-registration create --name {partner_registration_name} --resource-group {rg} --description {description} --display_name {display_name} --authorized-subscription-ids {guid2} {guid3}', checks=[
+        scope = self.cmd('az eventgrid partner registration create --name {partner_registration_name} --resource-group {rg} --partner-name {partner_name} --resource-type-name {resource_type_name} --description {description} --display-name {display_name} --authorized-subscription-ids {guid2} {guid3}', checks=[
             self.check('type', 'Microsoft.EventGrid/partnerRegistrations'),
             self.check('name', self.kwargs['partner_registration_name']),
             self.check('provisioningState', 'Succeeded'),
             self.check('authorizedAzureSubscriptionIds[0]', guid2),
-            self.check('authorizedAzureSubscriptionIds[0]', guid3),
             self.check('partnerResourceTypeDescription', description),
             self.check('partnerResourceTypeDisplayName', display_name),
             self.check('partnerResourceTypeName', resource_type_name),
             self.check('partnerName', partner_name),
         ]).get_output_in_json()['id']
 
-        self.cmd('az eventgrid partner-registration show --name {partner_registration_name} --resource-group {rg}', checks=[
+        self.cmd('az eventgrid partner registration show --name {partner_registration_name} --resource-group {rg}', checks=[
             self.check('type', 'Microsoft.EventGrid/partnerRegistrations'),
             self.check('name', self.kwargs['partner_registration_name']),
             self.check('provisioningState', 'Succeeded'),
             self.check('authorizedAzureSubscriptionIds[0]', guid2),
-            self.check('authorizedAzureSubscriptionIds[0]', guid3),
             self.check('partnerResourceTypeDescription', description),
             self.check('partnerResourceTypeDisplayName', display_name),
             self.check('partnerResourceTypeName', resource_type_name),
@@ -1107,63 +1105,63 @@ class EventGridTests(ScenarioTest):
             'scope': scope,
         })
 
-        # self.cmd('az eventgrid partner-registration update --name {partner_registration_name} --resource-group {rg} --tags Dept=IT', checks=[
+        # self.cmd('az eventgrid partner registration update --name {partner_registration_name} --resource-group {rg} --tags Dept=IT', checks=[
         #    self.check('name', self.kwargs['partner_registration_name']),
         #    self.check('tags', {'Dept': 'IT'}),
         #    self.check('type', 'Microsoft.EventGrid/partnerRegistrations'),
         #    self.check('provisioningState', 'Succeeded')
         # ])
 
-        self.cmd('az eventgrid partner-registration list --resource-group {rg}', checks=[
+        self.cmd('az eventgrid partner registration list --resource-group {rg}', checks=[
             self.check('[0].type', 'Microsoft.EventGrid/partnerRegistrations')
         ])
 
-        self.cmd('az eventgrid partner-registration list --resource-group {rg} --odata-query "name eq \'{partner_registration_name}\'"', checks=[
+        self.cmd('az eventgrid partner registration list --resource-group {rg} --odata-query "name eq \'{partner_registration_name}\'"', checks=[
             self.check('[0].type', 'Microsoft.EventGrid/partnerRegistrations'),
             self.check('[0].name', self.kwargs['partner_registration_name'])
         ])
 
-        # self.cmd('az eventgrid system-topic-event-subscription create --resource-group {rg} --system-topic-name {system_topic_name} --name {event_subscription_name} --endpoint \"{endpoint_url}\" --endpoint-type webhook', checks=[
-        #    self.check('type', 'Microsoft.EventGrid/systemTopics/eventSubscriptions'),
+        # self.cmd('az eventgrid event-subscription partner-topic create --resource-group {rg} --partner-topic-name {partner_topic_name} --name {event_subscription_name} --endpoint \"{endpoint_url}\" --endpoint-type webhook', checks=[
+        #    self.check('type', 'Microsoft.EventGrid/partnerTopics/eventSubscriptions'),
         #    self.check('provisioningState', 'Succeeded'),
         #    self.check('name', self.kwargs['event_subscription_name']),
         #    self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
         # ])
 
-        # self.cmd('az eventgrid system-topic-event-subscription create --resource-group {rg} --system-topic-name {system_topic_name} --name {event_subscription_name} --endpoint \"{endpoint_url}\" --endpoint-type webhook --labels label_1 label_2', checks=[
-        #    self.check('type', 'Microsoft.EventGrid/systemTopics/eventSubscriptions'),
+        # self.cmd('az eventgrid event-subscription partner-topic create --resource-group {rg} --partner-topic-name {partner_topic_name} --name {event_subscription_name} --endpoint \"{endpoint_url}\" --endpoint-type webhook --labels label_1 label_2', checks=[
+        #    self.check('type', 'Microsoft.EventGrid/partnerTopics/eventSubscriptions'),
         #    self.check('provisioningState', 'Succeeded'),
         #    self.check('name', self.kwargs['event_subscription_name'])
         # ])
 
-        # self.cmd('az eventgrid system-topic-event-subscription show --resource-group {rg} --system-topic-name {system_topic_name} --name {event_subscription_name} --include-full-endpoint-url', checks=[
+        # self.cmd('az eventgrid event-subscription partner-topic show --resource-group {rg} --partner-topic-name {partner_topic_name} --name {event_subscription_name} --include-full-endpoint-url', checks=[
         #    self.check('destination.endpointUrl', self.kwargs['endpoint_url']),
         #    self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
         # ])
 
-        # self.cmd('az eventgrid system-topic-event-subscription show --resource-group {rg} --system-topic-name {system_topic_name} --name {event_subscription_name}', checks=[
+        # self.cmd('az eventgrid event-subscription partner-topic show --resource-group {rg} --partner-topic-name {partner_topic_name} --name {event_subscription_name}', checks=[
         #    self.check('destination.endpointUrl', None),
         #    self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
         # ])
 
-        # self.cmd('az eventgrid system-topic-event-subscription update -g {rg} --system-topic-name {system_topic_name} -n {event_subscription_name} --endpoint \"{endpoint_url}\" --endpoint-type webhook --labels label11 label22', checks=[
-        #    self.check('type', 'Microsoft.EventGrid/systemTopics/eventSubscriptions'),
+        # self.cmd('az eventgrid event-subscription partner-topic update -g {rg} --partner-topic-name {partner_topic_name} -n {event_subscription_name} --endpoint \"{endpoint_url}\" --endpoint-type webhook --labels label11 label22', checks=[
+        #    self.check('type', 'Microsoft.EventGrid/partnerTopics/eventSubscriptions'),
         #    self.check('provisioningState', 'Succeeded'),
         #    self.check('name', self.kwargs['event_subscription_name']),
         #    self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
         # ])
 
-        # self.cmd('az eventgrid system-topic-event-subscription list --resource-group {rg} --system-topic-name {system_topic_name}', checks=[
-        #    self.check('[0].type', 'Microsoft.EventGrid/systemTopics/eventSubscriptions'),
+        # self.cmd('az eventgrid event-subscription partner-topic list --resource-group {rg} --partner-topic-name {partner_topic_name}', checks=[
+        #    self.check('[0].type', 'Microsoft.EventGrid/partnerTopics/eventSubscriptions'),
         #    self.check('[0].provisioningState', 'Succeeded'),
         # ])
 
         # Comment this one until we fix the pagable property in swagger
-        # self.cmd('az eventgrid system-topic-event-subscription list --resource-group {rg} --system-topic-name {system_topic_name} --odata-query "name eq \'{event_subscription_name}\'"', checks=[
-        #    self.check('[0].type', 'Microsoft.EventGrid/systemTopics/eventSubscriptions'),
+        # self.cmd('az eventgrid event-subscription partner-topic list --resource-group {rg} --partner-topic-name {partner_topic_name} --odata-query "name eq \'{event_subscription_name}\'"', checks=[
+        #    self.check('[0].type', 'Microsoft.EventGrid/partnerTopics/eventSubscriptions'),
         #    self.check('[0].provisioningState', 'Succeeded'),
         # ])
 
-        # self.cmd('az eventgrid system-topic-event-subscription delete -g {rg} --name {event_subscription_name}  --system-topic-name {system_topic_name} ')
+        # self.cmd('az eventgrid event-subscription partner-topic delete -g {rg} --name {event_subscription_name}  --partner-topic-name {partner_topic_name} ')
 
-        self.cmd('az eventgrid partner-registration delete -n {partner_registration_name} -g {rg}')
+        self.cmd('az eventgrid partner registration delete -n {partner_registration_name} -g {rg}')

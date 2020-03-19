@@ -37,6 +37,8 @@ from azext_eventgrid.vendored_sdks.eventgrid.models import (
     PartnerNamespace,
     EventChannel,
     PartnerTopic,
+    EventChannelSource,
+    EventChannelDestination,
     SystemTopic
 )
 
@@ -313,8 +315,8 @@ def cli_partner_registration_create_or_update(
         client,
         resource_group_name,
         partner_registration_name,
-        partner_name=None,
-        resource_type_name=None,
+        partner_name,
+        resource_type_name,
         display_name=None,
         description=None,
         logo_uri=None,
@@ -368,10 +370,12 @@ def cli_partner_namespace_create_or_update(
         resource_group_name,
         partner_namespace_name,
         location,
+        partner_registration_id,
         tags=None):
 
     partner_namespace_info = PartnerNamespace(
         location=location,
+        partner_registration_fully_qualified_id=partner_registration_id,
         tags=tags)
 
     return client.create_or_update(
@@ -380,16 +384,17 @@ def cli_partner_namespace_create_or_update(
         partner_namespace_info)
 
 
-def cli_partner_namespace_update(
-        client,
-        resource_group_name,
-        partner_namespace_name,
-        tags=None):
-
-    return client.update(
-        resource_group_name=resource_group_name,
-        partner_namespace_name=partner_namespace_name,
-        tags=tags)
+# TODO: to be added once operation is enabled.
+# def cli_partner_namespace_update(
+#        client,
+#        resource_group_name,
+#        partner_namespace_name,
+#        tags=None):
+#
+#    return client.update(
+#        resource_group_name=resource_group_name,
+#        partner_namespace_name=partner_namespace_name,
+#        tags=tags)
 
 
 def cli_event_channel_list(
@@ -398,7 +403,7 @@ def cli_event_channel_list(
         partner_namespace_name,
         odata_query=None):
 
-    return client.list_by_namespace(resource_group_name, partner_namespace_name, odata_query, DEFAULT_TOP)
+    return client.list_by_partner_namespace(resource_group_name, partner_namespace_name, odata_query, DEFAULT_TOP)
 
 
 def cli_event_channel_create_or_update(
@@ -406,10 +411,19 @@ def cli_event_channel_create_or_update(
         resource_group_name,
         partner_namespace_name,
         event_channel_name,
-        tags=None):
+        partner_topic_source,
+        destination_subscription_id,
+        destination_resource_group,
+        desination_topic_name):
 
-    event_channel_info = EventChannel(
-        tags=tags)
+    source_info = EventChannelSource(source=partner_topic_source)
+
+    destination_info = EventChannelDestination(
+        azure_subscription_id=destination_subscription_id,
+        resource_group=destination_resource_group,
+        partner_topic_name=desination_topic_name)
+
+    event_channel_info = EventChannel(source=source_info, destination=destination_info)
 
     return client.create_or_update(
         resource_group_name,
@@ -418,16 +432,16 @@ def cli_event_channel_create_or_update(
         event_channel_info)
 
 
-def cli_event_channel_update(
-        client,
-        resource_group_name,
-        event_channel_name,
-        tags=None):
-
-    return client.update(
-        resource_group_name=resource_group_name,
-        event_channel_name=event_channel_name,
-        tags=tags)
+# def cli_event_channel_update(
+#        client,
+#        resource_group_name,
+#        event_channel_name,
+#        tags=None):
+#
+#    return client.update(
+#        resource_group_name=resource_group_name,
+#        event_channel_name=event_channel_name,
+#        tags=tags)
 
 
 def cli_partner_topic_list(
@@ -457,17 +471,16 @@ def cli_partner_topic_create_or_update(
         partner_topic_name,
         partner_topic_info)
 
-
-def cli_partner_topic_update(
-        client,
-        resource_group_name,
-        partner_topic_name,
-        tags=None):
-
-    return client.update(
-        resource_group_name=resource_group_name,
-        partner_topic_name=partner_topic_name,
-        tags=tags)
+# def cli_partner_topic_update(
+#        client,
+#        resource_group_name,
+#        partner_topic_name,
+#        tags=None):
+#
+#    return client.update(
+#        resource_group_name=resource_group_name,
+#        partner_topic_name=partner_topic_name,
+#        tags=tags)
 
 
 def cli_partner_topic_event_subscription_create_or_update(    # pylint: disable=too-many-locals
