@@ -47,6 +47,48 @@ def _download_file(url):
     return response
 
 
+def _sync_wheel(ext, updated_indexes, client, overwrite, temp_dir):
+    download_url = ext['downloadUrl']
+    response = _download_file(download_url)
+    whl_file = download_url.split('/')[-1]
+    whl_path = os.path.join(temp_dir, whl_file)
+    open(whl_path, 'wb').write(response.content)
+    if not overwrite:
+        exists = client.exists(container_name=STORAGE_CONTAINER, blob_name=whl_file)
+        if exists:
+            print("Skipping '{}' as it already exists...".format(whl_file))
+            return
+    client.create_blob_from_path(container_name=STORAGE_CONTAINER, blob_name=whl_file,
+                                 file_path=os.path.abspath(whl_path))
+    url = client.make_blob_url(container_name=STORAGE_CONTAINER, blob_name=whl_file)
+    updated_index = ext
+    updated_index['downloadUrl'] = url
+    updated_indexes.append(updated_index)
+
+
+def _update_target_extension_index(updated_indexes, target_index_path):
+    import re
+
+    NAME_REGEX = r'.*/([^/]*)-\d+.\d+.\d+'
+    with open(target_index_path, 'r') as infile:
+        curr_index = json.loads(infile.read())
+    for entry in updated_indexes:
+        url = entry['downloadUrl']
+        extension_name = re.findall(NAME_REGEX, url)[0].replace('_', '-')
+        if extension_name not in curr_index['extensions'].keys():
+            print("Adding '{}' to index...".format(extension_name))
+            curr_index['extensions'][extension_name] = [entry]
+        else:
+            print("Updating '{}' in index...".format(extension_name))
+            if curr_index['extensions'][extension_name][-1]['filename'] == entry['filename']:  # in case of overwrite
+                curr_index['extensions'][extension_name][-1] = entry
+            else:
+                curr_index['extensions'][extension_name].append(entry)
+
+    with open(os.path.join(target_index_path), 'w') as outfile:
+        outfile.write(json.dumps(curr_index, indent=4, sort_keys=True))
+
+
 def main():
     import shutil
     import tempfile
@@ -91,55 +133,13 @@ def main():
             ext = current_extensions[extension_name][-1]
             _sync_wheel(ext, updated_indexes, client, True, temp_dir)
 
-    update_target_extension_index(updated_indexes, target_index_path)
+    _update_target_extension_index(updated_indexes, target_index_path)
     client.create_blob_from_path(container_name=STORAGE_CONTAINER, blob_name='index.json',
                                  file_path=os.path.abspath(target_index_path))
     print("\nSync finished, extensions available in:")
     for updated_index in updated_indexes:
         print(updated_index['downloadUrl'])
     shutil.rmtree(temp_dir)
-
-
-def _sync_wheel(ext, updated_indexes, client, overwrite, temp_dir):
-    download_url = ext['downloadUrl']
-    response = _download_file(download_url)
-    whl_file = download_url.split('/')[-1]
-    whl_path = os.path.join(temp_dir, whl_file)
-    open(whl_path, 'wb').write(response.content)
-    if not overwrite:
-        exists = client.exists(container_name=STORAGE_CONTAINER, blob_name=whl_file)
-        if exists:
-            print("Skipping '{}' as it already exists...".format(whl_file))
-            return
-    client.create_blob_from_path(container_name=STORAGE_CONTAINER, blob_name=whl_file,
-                                 file_path=os.path.abspath(whl_path))
-    url = client.make_blob_url(container_name=STORAGE_CONTAINER, blob_name=whl_file)
-    updated_index = ext
-    updated_index['downloadUrl'] = url
-    updated_indexes.append(updated_index)
-
-
-def update_target_extension_index(updated_indexes, target_index_path):
-    import re
-
-    NAME_REGEX = r'.*/([^/]*)-\d+.\d+.\d+'
-    with open(target_index_path, 'r') as infile:
-        curr_index = json.loads(infile.read())
-    for entry in updated_indexes:
-        url = entry['downloadUrl']
-        extension_name = re.findall(NAME_REGEX, url)[0].replace('_', '-')
-        if extension_name not in curr_index['extensions'].keys():
-            print("Adding '{}' to index...".format(extension_name))
-            curr_index['extensions'][extension_name] = [entry]
-        else:
-            print("Updating '{}' in index...".format(extension_name))
-            if curr_index['extensions'][extension_name][-1]['filename'] == entry['filename']:  # in case of overwrite
-                curr_index['extensions'][extension_name][-1] = entry
-            else:
-                curr_index['extensions'][extension_name].append(entry)
-
-    with open(os.path.join(target_index_path), 'w') as outfile:
-        outfile.write(json.dumps(curr_index, indent=4, sort_keys=True))
 
 
 if __name__ == '__main__':
