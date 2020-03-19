@@ -64,3 +64,11 @@ def _set_outbound_type(outbound_type, network_plugin, load_balancer_sku, load_ba
         raise CLIError("userDefinedRouting requires --network-plugin to be azure")
 
     return CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING
+
+
+def _parse_comma_separated_list(text):
+    if text is None:
+        return None
+    if text == "":
+        return []
+    return text.split(",")
