@@ -180,7 +180,11 @@ class IntegrationAccountCertificateOperations(object):
         resource_group_name,  # type: str
         integration_account_name,  # type: str
         certificate_name,  # type: str
-        certificate,  # type: "models.IntegrationAccountCertificate"
+        location=None,  # type: Optional[str]
+        tags=None,  # type: Optional[Dict[str, str]]
+        metadata=None,  # type: Optional["models.IntegrationAccountCertificatePropertiesMetadata"]
+        key=None,  # type: Optional["models.KeyVaultKeyReference"]
+        public_certificate=None,  # type: Optional[str]
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.IntegrationAccountCertificate"
@@ -192,8 +196,16 @@ class IntegrationAccountCertificateOperations(object):
         :type integration_account_name: str
         :param certificate_name: The integration account certificate name.
         :type certificate_name: str
-        :param certificate: The integration account certificate.
-        :type certificate: ~logic_management_client.models.IntegrationAccountCertificate
+        :param location: The resource location.
+        :type location: str
+        :param tags: The resource tags.
+        :type tags: dict[str, str]
+        :param metadata: The metadata.
+        :type metadata: ~logic_management_client.models.IntegrationAccountCertificatePropertiesMetadata
+        :param key: The reference to the key vault key.
+        :type key: ~logic_management_client.models.KeyVaultKeyReference
+        :param public_certificate: The public certificate.
+        :type public_certificate: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationAccountCertificate or IntegrationAccountCertificate or the result of cls(response)
         :rtype: ~logic_management_client.models.IntegrationAccountCertificate or ~logic_management_client.models.IntegrationAccountCertificate
@@ -201,6 +213,8 @@ class IntegrationAccountCertificateOperations(object):
         """
         cls = kwargs.pop('cls', None )  # type: ClsType["models.IntegrationAccountCertificate"]
         error_map = kwargs.pop('error_map', {})
+
+        certificate = models.IntegrationAccountCertificate(location=location, tags=tags, metadata=metadata, key=key, public_certificate=public_certificate)
         api_version = "2019-05-01"
 
         # Construct URL

@@ -241,12 +241,17 @@ class IntegrationServiceEnvironmentOperations(object):
         self,
         resource_group,  # type: str
         integration_service_environment_name,  # type: str
-        integration_service_environment,  # type: "models.IntegrationServiceEnvironment"
+        location=None,  # type: Optional[str]
+        tags=None,  # type: Optional[Dict[str, str]]
+        properties=None,  # type: Optional["models.IntegrationServiceEnvironmentProperties"]
+        sku=None,  # type: Optional["models.IntegrationServiceEnvironmentSku"]
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.IntegrationServiceEnvironment"
         cls = kwargs.pop('cls', None )  # type: ClsType["models.IntegrationServiceEnvironment"]
         error_map = kwargs.pop('error_map', {})
+
+        integration_service_environment = models.IntegrationServiceEnvironment(location=location, tags=tags, properties=properties, sku=sku)
         api_version = "2019-05-01"
 
         # Construct URL
@@ -296,7 +301,10 @@ class IntegrationServiceEnvironmentOperations(object):
         self,
         resource_group,  # type: str
         integration_service_environment_name,  # type: str
-        integration_service_environment,  # type: "models.IntegrationServiceEnvironment"
+        location=None,  # type: Optional[str]
+        tags=None,  # type: Optional[Dict[str, str]]
+        properties=None,  # type: Optional["models.IntegrationServiceEnvironmentProperties"]
+        sku=None,  # type: Optional["models.IntegrationServiceEnvironmentSku"]
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.IntegrationServiceEnvironment"
@@ -306,8 +314,14 @@ class IntegrationServiceEnvironmentOperations(object):
         :type resource_group: str
         :param integration_service_environment_name: The integration service environment name.
         :type integration_service_environment_name: str
-        :param integration_service_environment: The integration service environment.
-        :type integration_service_environment: ~logic_management_client.models.IntegrationServiceEnvironment
+        :param location: The resource location.
+        :type location: str
+        :param tags: The resource tags.
+        :type tags: dict[str, str]
+        :param properties: The integration service environment properties.
+        :type properties: ~logic_management_client.models.IntegrationServiceEnvironmentProperties
+        :param sku: The integration service environment sku.
+        :type sku: ~logic_management_client.models.IntegrationServiceEnvironmentSku
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
@@ -322,7 +336,10 @@ class IntegrationServiceEnvironmentOperations(object):
         raw_result = self._create_or_update_initial(
             resource_group=resource_group,
             integration_service_environment_name=integration_service_environment_name,
-            integration_service_environment=integration_service_environment,
+            location=location,
+            tags=tags,
+            properties=properties,
+            sku=sku,
             cls=lambda x,y,z: x,
             **kwargs
         )
@@ -348,12 +365,17 @@ class IntegrationServiceEnvironmentOperations(object):
         self,
         resource_group,  # type: str
         integration_service_environment_name,  # type: str
-        integration_service_environment,  # type: "models.IntegrationServiceEnvironment"
+        location=None,  # type: Optional[str]
+        tags=None,  # type: Optional[Dict[str, str]]
+        properties=None,  # type: Optional["models.IntegrationServiceEnvironmentProperties"]
+        sku=None,  # type: Optional["models.IntegrationServiceEnvironmentSku"]
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.IntegrationServiceEnvironment"
         cls = kwargs.pop('cls', None )  # type: ClsType["models.IntegrationServiceEnvironment"]
         error_map = kwargs.pop('error_map', {})
+
+        integration_service_environment = models.IntegrationServiceEnvironment(location=location, tags=tags, properties=properties, sku=sku)
         api_version = "2019-05-01"
 
         # Construct URL
@@ -398,7 +420,10 @@ class IntegrationServiceEnvironmentOperations(object):
         self,
         resource_group,  # type: str
         integration_service_environment_name,  # type: str
-        integration_service_environment,  # type: "models.IntegrationServiceEnvironment"
+        location=None,  # type: Optional[str]
+        tags=None,  # type: Optional[Dict[str, str]]
+        properties=None,  # type: Optional["models.IntegrationServiceEnvironmentProperties"]
+        sku=None,  # type: Optional["models.IntegrationServiceEnvironmentSku"]
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.IntegrationServiceEnvironment"
@@ -408,8 +433,14 @@ class IntegrationServiceEnvironmentOperations(object):
         :type resource_group: str
         :param integration_service_environment_name: The integration service environment name.
         :type integration_service_environment_name: str
-        :param integration_service_environment: The integration service environment.
-        :type integration_service_environment: ~logic_management_client.models.IntegrationServiceEnvironment
+        :param location: The resource location.
+        :type location: str
+        :param tags: The resource tags.
+        :type tags: dict[str, str]
+        :param properties: The integration service environment properties.
+        :type properties: ~logic_management_client.models.IntegrationServiceEnvironmentProperties
+        :param sku: The integration service environment sku.
+        :type sku: ~logic_management_client.models.IntegrationServiceEnvironmentSku
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
@@ -424,7 +455,10 @@ class IntegrationServiceEnvironmentOperations(object):
         raw_result = self._update_initial(
             resource_group=resource_group,
             integration_service_environment_name=integration_service_environment_name,
-            integration_service_environment=integration_service_environment,
+            location=location,
+            tags=tags,
+            properties=properties,
+            sku=sku,
             cls=lambda x,y,z: x,
             **kwargs
         )

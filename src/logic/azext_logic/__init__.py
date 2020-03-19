@@ -4,8 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-
-from .generated._help import helps  # pylint: disable=unused-import
+from .generated._help import helps
 
 
 class LogicManagementClientCommandsLoader(AzCommandsLoader):

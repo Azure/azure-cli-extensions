@@ -175,7 +175,9 @@ class IntegrationAccountAssemblyOperations(object):
         resource_group_name,  # type: str
         integration_account_name,  # type: str
         assembly_artifact_name,  # type: str
-        assembly_artifact,  # type: "models.AssemblyDefinition"
+        properties,  # type: "models.AssemblyProperties"
+        location=None,  # type: Optional[str]
+        tags=None,  # type: Optional[Dict[str, str]]
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.AssemblyDefinition"
@@ -187,8 +189,12 @@ class IntegrationAccountAssemblyOperations(object):
         :type integration_account_name: str
         :param assembly_artifact_name: The assembly artifact name.
         :type assembly_artifact_name: str
-        :param assembly_artifact: The assembly artifact.
-        :type assembly_artifact: ~logic_management_client.models.AssemblyDefinition
+        :param properties: The assembly properties definition.
+        :type properties: ~logic_management_client.models.AssemblyProperties
+        :param location: The resource location.
+        :type location: str
+        :param tags: The resource tags.
+        :type tags: dict[str, str]
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: AssemblyDefinition or AssemblyDefinition or the result of cls(response)
         :rtype: ~logic_management_client.models.AssemblyDefinition or ~logic_management_client.models.AssemblyDefinition
@@ -196,6 +202,8 @@ class IntegrationAccountAssemblyOperations(object):
         """
         cls = kwargs.pop('cls', None )  # type: ClsType["models.AssemblyDefinition"]
         error_map = kwargs.pop('error_map', {})
+
+        assembly_artifact = models.AssemblyDefinition(location=location, tags=tags, properties=properties)
         api_version = "2019-05-01"
 
         # Construct URL

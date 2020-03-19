@@ -178,7 +178,11 @@ class IntegrationAccountCertificateOperations:
         resource_group_name: str,
         integration_account_name: str,
         certificate_name: str,
-        certificate: "models.IntegrationAccountCertificate",
+        location: Optional[str] = None,
+        tags: Optional[Dict[str, str]] = None,
+        metadata: Optional["models.IntegrationAccountCertificatePropertiesMetadata"] = None,
+        key: Optional["models.KeyVaultKeyReference"] = None,
+        public_certificate: Optional[str] = None,
         **kwargs
     ) -> "models.IntegrationAccountCertificate":
         """Creates or updates an integration account certificate.
@@ -189,8 +193,16 @@ class IntegrationAccountCertificateOperations:
         :type integration_account_name: str
         :param certificate_name: The integration account certificate name.
         :type certificate_name: str
-        :param certificate: The integration account certificate.
-        :type certificate: ~logic_management_client.models.IntegrationAccountCertificate
+        :param location: The resource location.
+        :type location: str
+        :param tags: The resource tags.
+        :type tags: dict[str, str]
+        :param metadata: The metadata.
+        :type metadata: ~logic_management_client.models.IntegrationAccountCertificatePropertiesMetadata
+        :param key: The reference to the key vault key.
+        :type key: ~logic_management_client.models.KeyVaultKeyReference
+        :param public_certificate: The public certificate.
+        :type public_certificate: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationAccountCertificate or IntegrationAccountCertificate or the result of cls(response)
         :rtype: ~logic_management_client.models.IntegrationAccountCertificate or ~logic_management_client.models.IntegrationAccountCertificate
@@ -198,6 +210,8 @@ class IntegrationAccountCertificateOperations:
         """
         cls: ClsType["models.IntegrationAccountCertificate"] = kwargs.pop('cls', None )
         error_map = kwargs.pop('error_map', {})
+
+        certificate = models.IntegrationAccountCertificate(location=location, tags=tags, metadata=metadata, key=key, public_certificate=public_certificate)
         api_version = "2019-05-01"
 
         # Construct URL

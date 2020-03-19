@@ -184,7 +184,9 @@ class IntegrationAccountSessionOperations:
         resource_group_name: str,
         integration_account_name: str,
         session_name: str,
-        session: "models.IntegrationAccountSession",
+        location: Optional[str] = None,
+        tags: Optional[Dict[str, str]] = None,
+        content: Optional["models.Object"] = None,
         **kwargs
     ) -> "models.IntegrationAccountSession":
         """Creates or updates an integration account session.
@@ -195,8 +197,12 @@ class IntegrationAccountSessionOperations:
         :type integration_account_name: str
         :param session_name: The integration account session name.
         :type session_name: str
-        :param session: The integration account session.
-        :type session: ~logic_management_client.models.IntegrationAccountSession
+        :param location: The resource location.
+        :type location: str
+        :param tags: The resource tags.
+        :type tags: dict[str, str]
+        :param content:
+        :type content: ~logic_management_client.models.Object
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationAccountSession or IntegrationAccountSession or the result of cls(response)
         :rtype: ~logic_management_client.models.IntegrationAccountSession or ~logic_management_client.models.IntegrationAccountSession
@@ -204,6 +210,8 @@ class IntegrationAccountSessionOperations:
         """
         cls: ClsType["models.IntegrationAccountSession"] = kwargs.pop('cls', None )
         error_map = kwargs.pop('error_map', {})
+
+        session = models.IntegrationAccountSession(location=location, tags=tags, content=content)
         api_version = "2019-05-01"
 
         # Construct URL

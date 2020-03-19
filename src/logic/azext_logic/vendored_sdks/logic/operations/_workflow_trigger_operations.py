@@ -358,7 +358,7 @@ class WorkflowTriggerOperations(object):
         resource_group_name,  # type: str
         workflow_name,  # type: str
         trigger_name,  # type: str
-        set_state,  # type: "models.SetTriggerStateActionDefinition"
+        source,  # type: "models.WorkflowTrigger"
         **kwargs  # type: Any
     ):
         # type: (...) -> None
@@ -370,8 +370,8 @@ class WorkflowTriggerOperations(object):
         :type workflow_name: str
         :param trigger_name: The workflow trigger name.
         :type trigger_name: str
-        :param set_state: The workflow trigger state.
-        :type set_state: ~logic_management_client.models.SetTriggerStateActionDefinition
+        :param source: The workflow trigger.
+        :type source: ~logic_management_client.models.WorkflowTrigger
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None or the result of cls(response)
         :rtype: None
@@ -379,6 +379,8 @@ class WorkflowTriggerOperations(object):
         """
         cls = kwargs.pop('cls', None )  # type: ClsType[None]
         error_map = kwargs.pop('error_map', {})
+
+        set_state = models.SetTriggerStateActionDefinition(source=source)
         api_version = "2019-05-01"
 
         # Construct URL

@@ -173,7 +173,9 @@ class IntegrationAccountBatchConfigurationOperations:
         resource_group_name: str,
         integration_account_name: str,
         batch_configuration_name: str,
-        batch_configuration: "models.BatchConfiguration",
+        properties: "models.BatchConfigurationProperties",
+        location: Optional[str] = None,
+        tags: Optional[Dict[str, str]] = None,
         **kwargs
     ) -> "models.BatchConfiguration":
         """Create or update a batch configuration for an integration account.
@@ -184,8 +186,12 @@ class IntegrationAccountBatchConfigurationOperations:
         :type integration_account_name: str
         :param batch_configuration_name: The batch configuration name.
         :type batch_configuration_name: str
-        :param batch_configuration: The batch configuration.
-        :type batch_configuration: ~logic_management_client.models.BatchConfiguration
+        :param properties: The batch configuration properties definition.
+        :type properties: ~logic_management_client.models.BatchConfigurationProperties
+        :param location: The resource location.
+        :type location: str
+        :param tags: The resource tags.
+        :type tags: dict[str, str]
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: BatchConfiguration or BatchConfiguration or the result of cls(response)
         :rtype: ~logic_management_client.models.BatchConfiguration or ~logic_management_client.models.BatchConfiguration
@@ -193,6 +199,8 @@ class IntegrationAccountBatchConfigurationOperations:
         """
         cls: ClsType["models.BatchConfiguration"] = kwargs.pop('cls', None )
         error_map = kwargs.pop('error_map', {})
+
+        batch_configuration = models.BatchConfiguration(location=location, tags=tags, properties=properties)
         api_version = "2019-05-01"
 
         # Construct URL
