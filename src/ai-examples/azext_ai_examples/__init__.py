@@ -12,8 +12,8 @@ from azext_ai_examples._help import helps  # pylint: disable=unused-import
 def inject_functions_into_core():
     # Replace the default examples from help calls
     from azure.cli.core._help import AzCliHelp
-    from azext_ai_examples.custom import provide_examples
-    AzCliHelp.example_provider = provide_examples
+    from azext_ai_examples.custom import new_examples
+    AzCliHelp.update_examples = new_examples
 
 
 class AiExamplesCommandsLoader(AzCommandsLoader):

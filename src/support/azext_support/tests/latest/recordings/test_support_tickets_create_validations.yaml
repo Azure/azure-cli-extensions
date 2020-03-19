@@ -19,13 +19,12 @@ interactions:
         --contact-email --contact-first-name --contact-language --contact-last-name
         --contact-method --contact-timezone --problem-classification
       User-Agent:
-      - python/3.6.9 (Linux-4.4.0-18362-Microsoft-x86_64-with-Ubuntu-18.04-bionic)
-        msrest/0.6.10 msrest_azure/0.6.2 azure-mgmt-support/2.0.0 Azure-SDK-For-Python
-        AZURECLI/2.0.78
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-support/2.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/checkNameAvailability?api-version=2019-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/checkNameAvailability?api-version=2020-04-01
   response:
     body:
       string: '{"message":"Name 12345 is invalid. The name cannot include: ''<'',
@@ -40,7 +39,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Jan 2020 02:10:13 GMT
+      - Tue, 10 Mar 2020 00:21:34 GMT
       expires:
       - '-1'
       pragma:
@@ -56,7 +55,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
     status:
       code: 200
       message: OK
