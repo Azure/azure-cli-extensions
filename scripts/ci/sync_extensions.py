@@ -15,6 +15,7 @@ STORAGE_ACCOUNT_KEY = os.getenv('AZURE_EXTENSION_TARGET_STORAGE_ACCOUNT_KEY')
 STORAGE_ACCOUNT = os.getenv('AZURE_EXTENSION_TARGET_STORAGE_ACCOUNT')
 STORAGE_CONTAINER = os.getenv('AZURE_EXTENSION_TARGET_STORAGE_CONTAINER')
 
+
 def _get_updated_extension_names():
     cmd = 'git --no-pager diff --diff-filter=ACMRT HEAD~1 -- src/index.json'
     updated_content = check_output(cmd.split()).decode('utf-8')
@@ -30,6 +31,7 @@ def _get_updated_extension_names():
             extension_name = re.findall(NAME_REGEX, url)[0].replace('_', '-')
             updated_exts.append(extension_name)
     return updated_exts
+
 
 def _download_file(url):
     import requests
