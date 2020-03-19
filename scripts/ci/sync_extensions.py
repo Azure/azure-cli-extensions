@@ -53,8 +53,8 @@ def main():
     from azure.storage.blob import BlockBlobService
 
     updated_exts = _get_updated_extension_names()
-    migrate_all = (os.getenv('AZURE_SYNC_ALL_EXTENSIONS') and os.getenv('AZURE_SYNC_ALL_EXTENSIONS').lower() == 'true')
-    if not migrate_all and not updated_exts:
+    sync_all = (os.getenv('AZURE_SYNC_ALL_EXTENSIONS') and os.getenv('AZURE_SYNC_ALL_EXTENSIONS').lower() == 'true')
+    if not sync_all and not updated_exts:
         print('index.json not changed. End task.')
         return
     temp_dir = tempfile.mkdtemp()
@@ -68,7 +68,7 @@ def main():
     open(target_index_path, 'wb').write(target_index_file.content)
     client = BlockBlobService(account_name=STORAGE_ACCOUNT, account_key=STORAGE_ACCOUNT_KEY)
     updated_indexes = []
-    if migrate_all:
+    if sync_all:
         print('Syncing all extensions...\n')
         updated_exts = current_extensions.keys()
         # backup the old index.json
@@ -84,12 +84,12 @@ def main():
 
     for extension_name in updated_exts:
         print('Uploading {}'.format(extension_name))
-        if migrate_all:
+        if sync_all:
             for ext in current_extensions[extension_name]:
-                _migrate_wheel(ext, updated_indexes, client, True, temp_dir)
+                _sync_wheel(ext, updated_indexes, client, True, temp_dir)
         else:
             ext = current_extensions[extension_name][-1]
-            _migrate_wheel(ext, updated_indexes, client, True, temp_dir)
+            _sync_wheel(ext, updated_indexes, client, True, temp_dir)
 
     update_target_extension_index(updated_indexes, target_index_path)
     client.create_blob_from_path(container_name=STORAGE_CONTAINER, blob_name='index.json',
@@ -100,7 +100,7 @@ def main():
     shutil.rmtree(temp_dir)
 
 
-def _migrate_wheel(ext, updated_indexes, client, overwrite, temp_dir):
+def _sync_wheel(ext, updated_indexes, client, overwrite, temp_dir):
     download_url = ext['downloadUrl']
     response = _download_file(download_url)
     whl_file = download_url.split('/')[-1]
