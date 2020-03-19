@@ -6,6 +6,8 @@
 0.1.14 (2020-5-9)
 ++++++++++++++++
 * Bump Cython, psycopg2-binary
+* `az postgres/mysql up`: Enable SSL enforcement by default.
+* Fix bug in validator when using a different resource group
 
 0.1.10 (2019-3-22)
 +++++++++++++++++
