@@ -30,6 +30,7 @@ def db_down_namespace_processor(db_type):
     return lambda cmd, namespace: _process_db_down_namespace(namespace, db_type=db_type)
 
 
+# pylint: disable=bare-except
 def _process_db_up_namespace(cmd, namespace, db_type=None):
     # populate from cache if existing when no resource group name provided
     resource_client = resource_client_factory(cmd.cli_ctx)
@@ -37,9 +38,8 @@ def _process_db_up_namespace(cmd, namespace, db_type=None):
         _set_value(db_type, namespace, 'resource_group_name', 'group', cache=False)
         try:
             resource_client.resource_groups.get(namespace.resource_group_name)
-        except Exception:  # Clear resource group name information when it is invalid
+        except:  # Clear resource group name information when it is invalid
             namespace.resource_group_name = None
-            pass
 
     # populate from cache if existing when no location provided
     if namespace.location is None:
