@@ -19,13 +19,13 @@ def logic_workflow_list(cmd, client,
 
 def logic_workflow_show(cmd, client,
                         resource_group_name,
-                        workflow_name):
-    return client.get(resource_group_name=resource_group_name, workflow_name=workflow_name)
+                        name):
+    return client.get(resource_group_name=resource_group_name, workflow_name=name)
 
 
 def logic_workflow_create(cmd, client,
                           resource_group_name,
-                          workflow_name,
+                          name,
                           input_path,
                           location=None,
                           tags=None):
@@ -42,20 +42,20 @@ def logic_workflow_create(cmd, client,
             workflow['tags'] = tags
         workflow['location'] = workflow.get('location', location)
         workflow['tags'] = workflow.get('tags', tags)
-        return client.create_or_update(resource_group_name=resource_group_name, workflow_name=workflow_name, workflow=workflow)
+        return client.create_or_update(resource_group_name=resource_group_name, workflow_name=name, workflow=workflow)
 
 
 def logic_workflow_update(cmd, client,
                           resource_group_name,
-                          workflow_name,
+                          name,
                           tags=None):
     tags = {'tags': tags}
-    return client.update(resource_group_name=resource_group_name, workflow_name=workflow_name, tags=tags)
+    return client.update(resource_group_name=resource_group_name, workflow_name=name, tags=tags)
 
 def logic_workflow_delete(cmd, client,
                           resource_group_name,
-                          workflow_name):
-    return client.delete(resource_group_name=resource_group_name, workflow_name=workflow_name)
+                          name):
+    return client.delete(resource_group_name=resource_group_name, workflow_name=name)
 
 def logic_integration_account_list(cmd, client,
                                    resource_group_name=None,
@@ -67,13 +67,13 @@ def logic_integration_account_list(cmd, client,
 
 def logic_integration_account_show(cmd, client,
                                    resource_group_name,
-                                   integration_account_name):
-    return client.get(resource_group_name=resource_group_name, integration_account_name=integration_account_name)
+                                   name):
+    return client.get(resource_group_name=resource_group_name, integration_account_name=name)
 
 
 def logic_integration_account_create(cmd, client,
                                      resource_group_name,
-                                     integration_account_name,
+                                     name,
                                      input_path,
                                      location=None,
                                      tags=None,
@@ -85,11 +85,11 @@ def logic_integration_account_create(cmd, client,
         integration['location'] = integration.get('location', location)
         integration['tags'] = integration.get('tags', tags)
         integration['sku'] = integration.get('sku', {"name": sku})
-        return client.create_or_update(resource_group_name=resource_group_name, integration_account_name=integration_account_name, integration_account=integration)
+        return client.create_or_update(resource_group_name=resource_group_name, integration_account_name=name, integration_account=integration)
 
 def logic_integration_account_update(cmd, client,
                                      resource_group_name,
-                                     integration_account_name,
+                                     name,
                                      sku=None,
                                      tags=None):
     update_dict = {}
@@ -99,10 +99,10 @@ def logic_integration_account_update(cmd, client,
         update_dict['tags'] = tags
     if not update_dict:
         raise CLIError("Nothing specified to update. Either --sku or --tags must be specfied")
-    return client.update(resource_group_name=resource_group_name, integration_account_name=integration_account_name, update=update_dict)
+    return client.update(resource_group_name=resource_group_name, integration_account_name=name, update=update_dict)
 
 
 def logic_integration_account_delete(cmd, client,
                                      resource_group_name,
-                                     integration_account_name):
-    return client.delete(resource_group_name=resource_group_name, integration_account_name=integration_account_name)
+                                     name):
+    return client.delete(resource_group_name=resource_group_name, integration_account_name=name)

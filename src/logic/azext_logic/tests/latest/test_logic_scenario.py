@@ -38,25 +38,25 @@ class LogicManagementClientScenarioTest(ScenarioTest):
 
         self.cmd('az logic integration-account create '
                  '--resource-group "{rg_2}" '
-                 '--integration-account-name "{IntegrationAccounts_2}" '
+                 '--name "{IntegrationAccounts_2}" '
                  '--input-path "integration.json" ',
                  checks=[])
 
         self.cmd('az logic workflow create '
                  '--resource-group "{rg}" '
-                 '--workflow-name "{test-workflow}" '
+                 '--name "{test-workflow}" '
                  '--location "centralus" '
                  '--input-path "workflow.json" ',
                  checks=[])
 
         self.cmd('az logic integration-account show '
-                 '--integration-account-name "{IntegrationAccounts_2}" '
+                 '--name "{IntegrationAccounts_2}" '
                  '--resource-group "{rg_2}"',
                  checks=[])
 
         self.cmd('az logic workflow show '
                  '--resource-group "{rg}" '
-                 '--workflow-name "{test-workflow}"',
+                 '--name "{test-workflow}"',
                  checks=[])
 
         self.cmd('az logic integration-account list '
@@ -74,23 +74,23 @@ class LogicManagementClientScenarioTest(ScenarioTest):
                  checks=[])
 
         self.cmd('az logic integration-account update '
-                 '--sku  Basic '
-                 '--integration-account-name "{IntegrationAccounts_2}" '
+                 '--sku Basic '
+                 '--name "{IntegrationAccounts_2}" '
                  '--resource-group "{rg_2}"',
                  checks=[])
 
         self.cmd('az logic workflow update '
                  '--resource-group "{rg}" '
                  '--tag atga=123 '
-                 '--workflow-name "{test-workflow}"',
+                 '--name "{test-workflow}"',
                  checks=[])
 
         self.cmd('az logic workflow delete '
                  '--resource-group "{rg}" '
-                 '--workflow-name "{test-workflow}"',
+                 '--name "{test-workflow}"',
                  checks=[])
 
         self.cmd('az logic integration-account delete '
-                 '--integration-account-name "{IntegrationAccounts_2}" '
+                 '--name "{IntegrationAccounts_2}" '
                  '--resource-group "{rg_2}"',
                  checks=[])

@@ -19,7 +19,6 @@ def load_command_table(self, _):
         g.custom_command('create', 'logic_workflow_create')
         g.custom_command('update', 'logic_workflow_update')
         g.custom_command('delete', 'logic_workflow_delete')
-        #g.wait_command('wait')
 
     from azext_logic.generated._client_factory import cf_integration_account
     logic_integration_account = CliCommandType(

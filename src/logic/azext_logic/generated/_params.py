@@ -33,24 +33,24 @@ def load_arguments(self, _):
 
     with self.argument_context('logic workflow show') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
-        c.argument('workflow_name', help='The workflow name.')
+        c.argument('name', help='The workflow name.')
 
     with self.argument_context('logic workflow create') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
-        c.argument('workflow_name', help='The workflow name.')
+        c.argument('name', help='The workflow name.')
         c.argument('input_path', type=file_type, help='Path to a workflow JSON file', completer=FilesCompleter())
         c.argument('location', arg_type=get_location_type(self.cli_ctx), help='The resource location.')
         c.argument('tags', tags_type, help='The resource tags.')
 
     with self.argument_context('logic workflow update') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
-        c.argument('workflow_name', help='The workflow name.')
+        c.argument('name', help='The workflow name.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx), help='The resource location.')
         c.argument('tags', tags_type, help='The resource tags.')
 
     with self.argument_context('logic workflow delete') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
-        c.argument('workflow_name', help='The workflow name.')
+        c.argument('name', help='The workflow name.')
 
     with self.argument_context('logic integration-account list') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
@@ -58,22 +58,22 @@ def load_arguments(self, _):
 
     with self.argument_context('logic integration-account show') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
-        c.argument('integration_account_name', help='The integration account name.')
+        c.argument('name', help='The integration account name.')
 
     with self.argument_context('logic integration-account create') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
-        c.argument('integration_account_name', help='The integration account name.')
-        c.argument('input_path', type=file_type, help='Path to a workflow JSON file', completer=FilesCompleter())
+        c.argument('name', help='The integration account name.')
+        c.argument('input_path', type=file_type, help='Path to a intergration-account JSON file', completer=FilesCompleter())
         c.argument('location', arg_type=get_location_type(self.cli_ctx), help='The resource location.')
         c.argument('tags', tags_type, help='The resource tags.')
         c.argument('sku', type=str, help='The integration account sku.')
 
     with self.argument_context('logic integration-account update') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
-        c.argument('integration_account_name', help='The integration account name.')
+        c.argument('name', help='The integration account name.')
         c.argument('tags', tags_type, help='The resource tags.')
         c.argument('sku', type=str, help='The integration account sku.')
 
     with self.argument_context('logic integration-account delete') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
-        c.argument('integration_account_name', help='The integration account name.')
+        c.argument('_name', help='The integration account name.')
