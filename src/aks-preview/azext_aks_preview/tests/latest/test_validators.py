@@ -115,3 +115,34 @@ class Namespace:
     def __init__(self, api_server_authorized_ip_ranges=None, cluster_autoscaler_profile=None):
         self.api_server_authorized_ip_ranges = api_server_authorized_ip_ranges
         self.cluster_autoscaler_profile = cluster_autoscaler_profile
+
+
+class TestVNetSubnetId(unittest.TestCase):
+    def test_invalid_vnet_subnet_id(self):
+        invalid_vnet_subnet_id = "dummy subnet id"
+        namespace = VnetSubnetIdNamespace(invalid_vnet_subnet_id)
+        err = ("--vnet-subnet-id is not a valid Azure resource ID.")
+
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_vnet_subnet_id(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_valid_vnet_subnet_id(self):
+        invalid_vnet_subnet_id = "/subscriptions/testid/resourceGroups/MockedResourceGroup/providers/Microsoft.Network/virtualNetworks/MockedNetworkId/subnets/MockedSubNetId"
+        namespace = VnetSubnetIdNamespace(invalid_vnet_subnet_id)
+        validators.validate_vnet_subnet_id(namespace)
+
+    def test_none_vnet_subnet_id(self):
+        invalid_vnet_subnet_id = None
+        namespace = VnetSubnetIdNamespace(invalid_vnet_subnet_id)
+        validators.validate_vnet_subnet_id(namespace)
+
+    def test_empty_vnet_subnet_id(self):
+        invalid_vnet_subnet_id = ""
+        namespace = VnetSubnetIdNamespace(invalid_vnet_subnet_id)
+        validators.validate_vnet_subnet_id(namespace)
+
+
+class VnetSubnetIdNamespace:
+    def __init__(self, vnet_subnet_id):
+        self.vnet_subnet_id = vnet_subnet_id

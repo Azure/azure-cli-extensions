@@ -408,11 +408,15 @@ def create_connection(connection_info_json, prompt_prefix, typeOfInfo):
     if "postgres" in typeOfInfo:
         database_name = connection_info_json.get('databaseName', "postgres")
         port = connection_info_json.get('port', 5432)
+        trust_server_certificate = connection_info_json.get('trustServerCertificate', False)
+        encrypt_connection = connection_info_json.get('encryptConnection', True)
         return PostgreSqlConnectionInfo(user_name=user_name,
                                         password=password,
                                         server_name=server_name,
                                         database_name=database_name,
-                                        port=port)
+                                        port=port,
+                                        encrypt_connection=encrypt_connection,
+                                        trust_server_certificate=trust_server_certificate)
 
     if "mongo" in typeOfInfo:
         connection_string = connection_info_json['connectionString']

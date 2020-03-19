@@ -21,7 +21,8 @@ from ._validators import (
     validate_nodepool_name, validate_vm_set_type, validate_load_balancer_sku,
     validate_load_balancer_outbound_ips, validate_load_balancer_outbound_ip_prefixes,
     validate_taints, validate_priority, validate_eviction_policy, validate_spot_max_price, validate_acr, validate_user,
-    validate_load_balancer_outbound_ports, validate_load_balancer_idle_timeout, validate_nodepool_tags)
+    validate_load_balancer_outbound_ports, validate_load_balancer_idle_timeout, validate_nodepool_tags,
+    validate_nodepool_labels, validate_vnet_subnet_id)
 from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, \
     CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING, CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SPOT, \
     CONST_SPOT_EVICTION_POLICY_DELETE, CONST_SPOT_EVICTION_POLICY_DEALLOCATE
@@ -53,6 +54,7 @@ def load_arguments(self, _):
         c.argument('nodepool_name', type=str, default='nodepool1',
                    help='Node pool name, upto 12 alphanumeric characters', validator=validate_nodepool_name)
         c.argument('nodepool_tags', nargs='*', validator=validate_nodepool_tags, help='space-separated tags: key[=value] [key[=value] ...]. Use "" to clear existing tags.')
+        c.argument('nodepool_labels', nargs='*', validator=validate_nodepool_labels, help='space-separated labels: key[=value] [key[=value] ...]. You can not change the node labels through CLI after creation. See https://aka.ms/node-labels for syntax of labels.')
         c.argument('ssh_key_value', required=False, type=file_type, default=os.path.join('~', '.ssh', 'id_rsa.pub'),
                    completer=FilesCompleter(), validator=validate_ssh_key)
         c.argument('aad_client_app_id')
@@ -74,15 +76,16 @@ def load_arguments(self, _):
         c.argument('enable_rbac', action='store_true', options_list=['--enable-rbac', '-r'],
                    deprecate_info=c.deprecate(redirect="--disable-rbac", hide="2.0.45"))
         c.argument('max_pods', type=int, options_list=['--max-pods', '-m'], validator=validate_max_pods)
-        c.argument('network_plugin')
+        c.argument('network_plugin', arg_type=get_enum_type(['azure', 'kubenet']))
         c.argument('network_policy')
         c.argument('no_ssh_key', options_list=['--no-ssh-key', '-x'])
         c.argument('pod_cidr')
         c.argument('service_cidr')
-        c.argument('vnet_subnet_id')
+        c.argument('vnet_subnet_id', type=str, validator=validate_vnet_subnet_id)
         c.argument('workspace_resource_id')
         c.argument('skip_subnet_role_assignment', action='store_true')
         c.argument('enable_cluster_autoscaler', action='store_true')
+        c.argument('uptime_sla', action='store_true')
         c.argument('cluster_autoscaler_profile', nargs='+', validator=validate_cluster_autoscaler_profile)
         c.argument('min_count', type=int, validator=validate_nodes_count)
         c.argument('max_count', type=int, validator=validate_nodes_count)
@@ -138,6 +141,7 @@ def load_arguments(self, _):
             c.argument('priority', arg_type=get_enum_type([CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SPOT]), validator=validate_priority)
             c.argument('eviction_policy', arg_type=get_enum_type([CONST_SPOT_EVICTION_POLICY_DELETE, CONST_SPOT_EVICTION_POLICY_DEALLOCATE]), validator=validate_eviction_policy)
             c.argument('spot_max_price', type=float, validator=validate_spot_max_price)
+            c.argument('labels', nargs='*', validator=validate_nodepool_labels)
 
     for scope in ['aks nodepool show', 'aks nodepool delete', 'aks nodepool scale', 'aks nodepool upgrade', 'aks nodepool update']:
         with self.argument_context(scope) as c:

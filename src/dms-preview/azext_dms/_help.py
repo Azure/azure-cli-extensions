@@ -299,7 +299,7 @@ helps['dms project task create'] = """
                   "dataSource": "server name[,port]",
                   "authentication": "SqlAuthentication|WindowsAuthentication",
                   "encryptConnection": true,      // highly recommended to leave as true
-                  "trustServerCertificate": true  // highly recommended to leave as true
+                  "trustServerCertificate": false  // highly recommended to leave as false
               }
 
             The format of the connection JSON object for MySql connections.
@@ -316,7 +316,9 @@ helps['dms project task create'] = """
                   "password": null,           // if this is missing or null (highly recommended) you will be prompted
                   "serverName": "server name",
                   "databaseName": "database name", // if this is missing, it will default to the 'postgres' database
-                  "port": 5432                // if this is missing, it will default to 5432
+                  "port": 5432,                // if this is missing, it will default to 5432
+                  "encryptConnection": true,      // highly recommended to leave as true (For PostgreSQL to Azure PostgreSQL migration only)
+                  "trustServerCertificate": false  // highly recommended to leave as false (For PostgreSQL to Azure PostgreSQL migration only)
               }
 
             The format of the connection JSON object for MongoDB connections.
