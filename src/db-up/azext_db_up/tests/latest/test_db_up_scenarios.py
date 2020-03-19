@@ -75,6 +75,24 @@ class DbUpTests(ScenarioTest):
             password, user, database, server)).get_output_in_json()
         self.assertEqual(output, output_mirror)
 
+    @live_only()
+    @ResourceGroupPreparer(name_prefix='postgresup')
+    def test_postgres_up(self, resource_group):
+        from ...util import get_config_value, set_config_value
+        # Clear all config values
+        for item in ['location', 'group', 'server', 'login', 'database']:
+            set_config_value('postgres', item, '')
+
+        self.cmd('postgres up')
+        rg1 = get_config_value('postgres', 'group')
+        server1 = get_config_value('postgres', 'server')
+
+        self.cmd('postgres up -g {}'.format(resource_group))
+        rg2 = get_config_value('postgres', 'group')
+        server2 = get_config_value('postgres', 'server')
+        assert(rg1 != rg2)
+        assert(server1 != server2)
+
     @live_only()  # "sql up" can only run live as updating dependencies is done once during command execution
     def test_sql_flow(self):
         group = self.create_random_name(prefix='group', length=24)
