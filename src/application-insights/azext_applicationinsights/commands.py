@@ -12,7 +12,8 @@ from azext_applicationinsights._client_factory import (
     cf_metrics,
     cf_query,
     cf_components,
-    cf_api_key
+    cf_api_key,
+    cf_component_billing
 )
 
 
@@ -42,6 +43,15 @@ def load_command_table(self, _):
         operations_tmpl='azext_applicationinsights.custom#{}',
         client_factory=cf_components
     )
+    components_billing_sdk = CliCommandType(
+        operations_tmpl='azext_applicationinsights.vendored_sdks.mgmt_applicationinsights.operations.component_current_billing_features_operations#ComponentCurrentBillingFeaturesOperations.{}',
+        client_factory=cf_component_billing
+    )
+
+    components_billing_custom_sdk = CliCommandType(
+        operations_tmpl='azext_applicationinsights.custom#{}',
+        client_factory=cf_component_billing
+    )
 
     api_key_sdk = CliCommandType(
         operations_tmpl='azext_applicationinsights.vendored_sdks.mgmt_applicationinsights.operations.api_keys_operations#APIKeysOperations.{}',
@@ -59,6 +69,10 @@ def load_command_table(self, _):
         g.custom_command('show', 'show_components')
         g.custom_command('delete', 'delete_component')
         g.custom_command('update-tags', 'update_component_tags')
+
+    with self.command_group('monitor app-insights component billing', command_type=components_billing_sdk, custom_command_type=components_billing_custom_sdk) as g:
+        g.custom_command('update', 'update_component_billing')
+        g.custom_show_command('show', 'show_component_billing')
 
     with self.command_group('monitor app-insights api-key', command_type=api_key_sdk, custom_command_type=api_key_custom_sdk) as g:
         g.custom_command('create', 'create_api_key')
