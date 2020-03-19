@@ -30,3 +30,11 @@ def cf_deployments(cli_ctx, *_):
 
 def cf_bindings(cli_ctx, *_):
     return cf_spring_cloud(cli_ctx).bindings
+
+
+def cf_certificates(cli_ctx, *_):
+    return cf_spring_cloud(cli_ctx).certificates
+
+
+def cf_custom_domains(cli_ctx, *_):
+    return cf_spring_cloud(cli_ctx).custom_domains

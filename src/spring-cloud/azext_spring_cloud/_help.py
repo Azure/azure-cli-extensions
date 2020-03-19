@@ -316,3 +316,48 @@ helps['spring-cloud app binding redis update'] = """
     type: command
     short-summary: Update an Azure Cache for Redis service binding of the app.
 """
+
+helps['spring-cloud certificate add'] = """
+    type: command
+    short-summary: Add a certificate in Azure Spring Cloud.
+"""
+
+helps['spring-cloud certificate show'] = """
+    type: command
+    short-summary: Show a certificate in Azure Spring Cloud.
+"""
+
+helps['spring-cloud certificate list'] = """
+    type: command
+    short-summary: List all certificates in Azure Spring Cloud.
+"""
+
+helps['spring-cloud certificate remove'] = """
+    type: command
+    short-summary: Remove a certificate in Azure Spring Cloud.
+"""
+
+helps['spring-cloud app custom-domain bind'] = """
+    type: command
+    short-summary: Bind a custom domain with an app.
+"""
+
+helps['spring-cloud app custom-domain show'] = """
+    type: command
+    short-summary: Show details of a custom domain.
+"""
+
+helps['spring-cloud app custom-domain list'] = """
+    type: command
+    short-summary: List all custom domains of an app.
+"""
+
+helps['spring-cloud app custom-domain update'] = """
+    type: command
+    short-summary: Update a custom domain of an app.
+"""
+
+helps['spring-cloud app custom-domain delete'] = """
+    type: command
+    short-summary: Delete a custom-domain of the app.
+"""
