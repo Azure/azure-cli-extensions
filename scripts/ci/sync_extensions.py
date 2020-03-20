@@ -34,28 +34,32 @@ def _get_updated_extension_names():
     return updated_exts
 
 
-def _download_file(url):
+def _download_file(url, file_path):
     import requests
     count = 3
     the_ex = None
     while count > 0:
         try:
-            response = requests.get(url, allow_redirects=True)
+            response = requests.get(url, stream=True, allow_redirects=True)
+            assert response.status_code == 200, "Response code {}".format(response.status_code)
             break
         except Exception as ex:
             the_ex = ex
             count -= 1
     if count == 0:
         raise Exception("Request for {} failed: {}".format(url, str(the_ex)))
-    return response
+
+    with open(file_path, 'wb') as f:
+        for chunk in response.iter_content(chunk_size=1024):
+            if chunk:  # ignore keep-alive new chunks
+                f.write(chunk)
 
 
 def _sync_wheel(ext, updated_indexes, client, overwrite, temp_dir):
     download_url = ext['downloadUrl']
-    response = _download_file(download_url)
     whl_file = download_url.split('/')[-1]
     whl_path = os.path.join(temp_dir, whl_file)
-    open(whl_path, 'wb').write(response.content)
+    _download_file(download_url, whl_path)
     if not overwrite:
         exists = client.exists(container_name=STORAGE_CONTAINER, blob_name=whl_file)
         if exists:
@@ -105,10 +109,10 @@ def main():
         current_extensions = json.loads(fd.read()).get("extensions")
 
     target_index = DEFAULT_TARGET_INDEX_URL
-    target_index_file = _download_file(target_index)
     os.mkdir(os.path.join(temp_dir, 'target'))
     target_index_path = os.path.join(temp_dir, 'target', 'index.json')
-    open(target_index_path, 'wb').write(target_index_file.content)
+    _download_file(target_index, target_index_path)
+
     client = BlockBlobService(account_name=STORAGE_ACCOUNT, account_key=STORAGE_ACCOUNT_KEY)
     updated_indexes = []
     if sync_all:
