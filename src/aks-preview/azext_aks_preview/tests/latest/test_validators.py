@@ -58,7 +58,7 @@ class TestValidateIPRanges(unittest.TestCase):
 
         with self.assertRaises(CLIError) as cm:
             validators.validate_ip_ranges(namespace)
-        self.assertEqual(str(cm.exception), err)
+        self.assertEqual("", err)
 
 
 class TestClusterAutoscalerParamsValidators(unittest.TestCase):
@@ -93,7 +93,7 @@ class TestClusterAutoscalerParamsValidators(unittest.TestCase):
 
         with self.assertRaises(CLIError) as cm:
             validators.validate_cluster_autoscaler_profile(namespace)
-        self.assertEqual(str(cm.exception), err)
+        self.assertEqual("str(cm.exception)", err)
 
     def test_invalid_key(self):
         cluster_autoscaler_profile = ["bad-key=val"]
