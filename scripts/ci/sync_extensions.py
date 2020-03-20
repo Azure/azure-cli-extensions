@@ -14,10 +14,11 @@ DEFAULT_TARGET_INDEX_URL = os.getenv('AZURE_EXTENSION_TARGET_INDEX_URL')
 STORAGE_ACCOUNT_KEY = os.getenv('AZURE_EXTENSION_TARGET_STORAGE_ACCOUNT_KEY')
 STORAGE_ACCOUNT = os.getenv('AZURE_EXTENSION_TARGET_STORAGE_ACCOUNT')
 STORAGE_CONTAINER = os.getenv('AZURE_EXTENSION_TARGET_STORAGE_CONTAINER')
+COMMIT_NUM = os.getenv('AZURE_EXTENSION_NUM') or 1
 
 
 def _get_updated_extension_names():
-    cmd = 'git --no-pager diff --diff-filter=ACMRT HEAD~1 -- src/index.json'
+    cmd = 'git --no-pager diff --diff-filter=ACMRT HEAD~{} -- src/index.json'.format(COMMIT_NUM)
     updated_content = check_output(cmd.split()).decode('utf-8')
     updated_urls = [line.replace('+', '') for line in updated_content.splitlines() if line.startswith('+') and not line.startswith('+++') and 'downloadUrl' in line]
     updated_exts = []
