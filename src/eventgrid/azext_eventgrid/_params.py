@@ -184,6 +184,7 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
         c.argument('desination_topic_name', help="Name of the partner topic associated with the event channel.")
         c.argument('destination_resource_group', help="Azure Resource Group of the customer creating the event channel. The partner topic associated with the event channel will be created under this resource group.")
         c.argument('destination_subscription_id', help="Azure subscription Id of the customer creating the event channel. The partner topic associated with the event channel will be created under this Azure subscription.")
+        c.argument('topic_type', help="Name of the topic type.", completer=get_resource_name_completion_list('Microsoft.EventGrid/topictypes'))
 
     with self.argument_context('eventgrid topic') as c:
         c.argument('topic_name', arg_type=name_type, help='Name of the topic.', id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/topics'))
@@ -243,7 +244,6 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
         c.argument('system_topic_name', arg_type=system_topic_name_type, options_list=['--name', '-n'], id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/systemtopics'))
 
     with self.argument_context('eventgrid system-topic create') as c:
-        c.argument('topic_type_name', arg_type=name_type, help="Name of the topic type.", completer=get_resource_name_completion_list('Microsoft.EventGrid/topictypes'))
         c.argument('source', help="The ARM Id for the topic, e.g., /subscriptions/{SubId}/resourceGroups/{RgName}/providers/Microsoft.Storage/storageAccounts/{AccountName}")
 
     with self.argument_context('eventgrid system-topic list') as c:
@@ -305,7 +305,7 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
         c.argument('include_full_endpoint_url', arg_type=get_three_state_flag(), options_list=['--include-full-endpoint-url'], help="Specify to indicate whether the full endpoint URL should be returned. True if flag present.", )
 
     with self.argument_context('eventgrid system-topic event-subscription') as c:
-        c.argument('system_topic_name', arg_type=system_topic_name_type, id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/systemtopics'))
+        c.argument('system_topic_name', arg_type=system_topic_name_type, id_part=None, completer=get_resource_name_completion_list('Microsoft.EventGrid/systemtopics'))
         c.argument('event_subscription_name', arg_type=name_type, options_list=['--name', '-n'], help='Name of the event subscription.')
         c.argument('endpoint_type', arg_type=get_enum_type(['webhook', 'eventhub', 'storagequeue', 'hybridconnection', 'servicebusqueue', 'servicebustopic', 'azurefunction'], default='webhook'))
         c.argument('event_delivery_schema', arg_type=get_enum_type(['eventgridschema', 'custominputschema', 'cloudeventschemav1_0']), help='The schema in which events should be delivered for this event subscription. By default, events will be delivered in the same schema in which they are published (based on the corresponding topic\'s input schema).')
@@ -328,7 +328,7 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
         c.argument('include_full_endpoint_url', arg_type=get_three_state_flag(), options_list=['--include-full-endpoint-url'], help="Specify to indicate whether the full endpoint URL should be returned. True if flag present.", )
 
     with self.argument_context('eventgrid partner topic event-subscription') as c:
-        c.argument('partner_topic_name', arg_type=partner_topic_name_type, id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/partnertopics'))
+        c.argument('partner_topic_name', arg_type=partner_topic_name_type, id_part=None, completer=get_resource_name_completion_list('Microsoft.EventGrid/partnertopics'))
         c.argument('event_subscription_name', arg_type=name_type, options_list=['--name', '-n'], help='Name of the event subscription.')
         c.argument('endpoint_type', arg_type=get_enum_type(['webhook', 'eventhub', 'storagequeue', 'hybridconnection', 'servicebusqueue', 'servicebustopic', 'azurefunction'], default='webhook'))
         c.argument('event_delivery_schema', arg_type=get_enum_type(['eventgridschema', 'custominputschema', 'cloudeventschemav1_0']), help='The schema in which events should be delivered for this event subscription. By default, events will be delivered in the same schema in which they are published (based on the corresponding topic\'s input schema).')

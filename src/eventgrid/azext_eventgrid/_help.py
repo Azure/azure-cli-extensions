@@ -49,10 +49,51 @@ type: group
 short-summary: Manage private endpoint connection resources of a domain.
 """
 
+helps['eventgrid domain private-endpoint-connection delete'] = """
+type: command
+short-summary: Delete a private endpoint connection for a domain.
+examples:
+  - name: Delete private endpoint connection for a specific domain.
+    text: az eventgrid domain private-endpoint-connection delete -g rg1 --domain-name domain1 -n connectionName1
+"""
+
+helps['eventgrid domain private-endpoint-connection show'] = """
+type: command
+short-summary: Display the properties of a private endpoint connection for a domain.
+examples:
+  - name: Show a private endpoint connection for a domain.
+    text: az eventgrid domain private-endpoint-connection show -g rg1 --domain-name domain1 -n connectionName1
+"""
+
+helps['eventgrid domain private-endpoint-connection list'] = """
+type: command
+short-summary: List the properties of all the private endpoint connections for a domain.
+examples:
+  - name: Show a private endpoint connection for a domain.
+    text: az eventgrid domain private-endpoint-connection list -g rg1 -n domain1
+"""
+
 helps['eventgrid domain private-link-resource'] = """
 type: group
 short-summary: Manage private link resource of a domain.
 """
+
+helps['eventgrid domain private-link-resource show'] = """
+type: command
+short-summary: Display the properties of a private link resource for a domain.
+examples:
+  - name: Show a private endpoint connection for a domain.
+    text: az eventgrid domain private-link-resource show -g rg1 --domain-name domain1 -n linkName1
+"""
+
+helps['eventgrid domain private-link-resource list'] = """
+type: command
+short-summary: List the properties of all the private link resources for a domain.
+examples:
+  - name: Show a private endpoint connection for a domain.
+    text: az eventgrid domain private-link-resource list -g rg1 -n domain1
+"""
+
 
 helps['eventgrid domain key'] = """
 type: group
@@ -158,6 +199,30 @@ short-summary: Manage partner resources.
 helps['eventgrid partner registration'] = """
 type: group
 short-summary: Manage partner registrations.
+"""
+
+helps['eventgrid partner registration create'] = """
+type: command
+short-summary: Create a new partner registration.
+examples:
+  - name: Create a new partner registration with basic information.
+    text: az eventgrid partner registration create -g rg1 --name partnerRegistrationName1 --partner-name Contoso --resource-type-name Accounts --authorized-subscription-ids 533ad9de-25db-46e2-b94a-d00c37cf022b 05aa2228-7d34-4635-922d-2b582c422445
+  - name: Create a new partner registration with partner information.
+    text: az eventgrid partner registration create -g rg1 --name partnerRegistrationName1 --partner-name Contoso --resource-type-name Accounts --authorized-subscription-ids 533ad9de-25db-46e2-b94a-d00c37cf022b 05aa2228-7d34-4635-922d-2b582c422445 --description ExampleDescription --display-name ExampleDisplayName1 --logo-uri https://www.example.com/logo.png --setup-uri https://www.example.com
+"""
+
+helps['eventgrid partner registration list'] = """
+type: command
+short-summary: List all partner registrations in specific resource group or all under the specified azure subscription.
+examples:
+  - name: List all partner registrations in the current Azure subscription.
+    text: az eventgrid partner registration list
+  - name: List all partner registrations in a resource group.
+    text: az eventgrid partner registration list -g rg1
+  - name: List all partner registrations in a resource group whose name contains the pattern "XYZ"
+    text: az eventgrid partner registration list -g rg1 --odata-query "Contains(name, 'XYZ')"
+  - name: List all partner registrations in a resource group except the partner registration with name "name1"
+    text: az eventgrid partner registration list -g rg1 --odata-query "NOT (name eq 'name1')"
 """
 
 helps['eventgrid partner namespace'] = """
@@ -1087,9 +1152,50 @@ type: group
 short-summary: Manage private endpoint connection resources of a topic.
 """
 
+
+helps['eventgrid topic private-endpoint-connection delete'] = """
+type: command
+short-summary: Delete a private endpoint connection for a topic.
+examples:
+  - name: Delete private endpoint connection for a specific topic.
+    text: az eventgrid topic private-endpoint-connection delete -g rg1 --topic-name topic1 -n connectionName1
+"""
+
+helps['eventgrid topic private-endpoint-connection show'] = """
+type: command
+short-summary: Display the properties of a private endpoint connection for a topic.
+examples:
+  - name: Show a private endpoint connection for a topic.
+    text: az eventgrid topic private-endpoint-connection show -g rg1 --topic-name topic1 -n connectionName1
+"""
+
+helps['eventgrid topic private-endpoint-connection list'] = """
+type: command
+short-summary: List the properties of all the private endpoint connections for a topic.
+examples:
+  - name: Show a private endpoint connection for a topic.
+    text: az eventgrid topic private-endpoint-connection list -g rg1 -n topic1
+"""
+
 helps['eventgrid topic private-link-resource'] = """
 type: group
 short-summary: Manage private link resource of a topic.
+"""
+
+helps['eventgrid topic private-link-resource show'] = """
+type: command
+short-summary: Display the properties of a private link resource for a topic.
+examples:
+  - name: Show a private endpoint connection for a topic.
+    text: az eventgrid topic private-link-resource show -g rg1 --topic-name topic1 -n linkName1
+"""
+
+helps['eventgrid topic private-link-resource list'] = """
+type: command
+short-summary: List the properties of all the private link resources for a topic.
+examples:
+  - name: Show a private endpoint connection for a topic.
+    text: az eventgrid topic private-link-resource list -g rg1 -n topic1
 """
 
 helps['eventgrid topic key'] = """
