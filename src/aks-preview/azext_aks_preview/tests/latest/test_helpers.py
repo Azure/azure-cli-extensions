@@ -44,3 +44,10 @@ class TestSetVmSetType(unittest.TestCase):
         version = "1.15.0"
         vm_type = helpers._set_vm_set_type("Availabilityset", version)
         self.assertEqual(vm_type, "AvailabilitySet")
+
+class TestUtil(unittest.TestCase):
+    def test_parse_comma_separated_list(self):
+        self.assertEqual(1, 2)
+
+if __name__ == '__main__':
+    unittest.main()
