@@ -230,7 +230,6 @@ class DashboardOperations(object):
         self,
         resource_group_name,  # type: str
         dashboard_name,  # type: str
-        tags=None,  # type: Optional[Dict[str, str]]
         lenses=None,  # type: Optional[Dict[str, "DashboardLens"]]
         metadata=None,  # type: Optional[Dict[str, object]]
         **kwargs  # type: Any
@@ -242,8 +241,6 @@ class DashboardOperations(object):
         :type resource_group_name: str
         :param dashboard_name: The name of the dashboard.
         :type dashboard_name: str
-        :param tags: Resource tags.
-        :type tags: dict[str, str]
         :param lenses: The dashboard lenses.
         :type lenses: dict[str, ~portal.models.DashboardLens]
         :param metadata: The dashboard metadata.
@@ -256,7 +253,7 @@ class DashboardOperations(object):
         cls = kwargs.pop('cls', None )  # type: ClsType["models.Dashboard"]
         error_map = kwargs.pop('error_map', {})
 
-        dashboard = models.PatchableDashboard(tags=tags, lenses=lenses, metadata=metadata)
+        dashboard = models.PatchableDashboard(lenses=lenses, metadata=metadata)
         api_version = "2019-01-01-preview"
 
         # Construct URL

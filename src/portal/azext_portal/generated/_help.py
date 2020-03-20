@@ -37,11 +37,9 @@ helps['portal dashboard create'] = """
     examples:
       - name: Create or update a Dashboard
         text: |-
-               az portal dashboard create --location "eastus" --properties-lenses "{\\"aLens\\":{\\"order\\":
-               1,\\"parts\\":{\\"aPart\\":{\\"position\\":{\\"colSpan\\":3,\\"rowSpan\\":4,\\"x\\":1,\\"y\\":2}},\\"bPar
-               t\\":{\\"position\\":{\\"colSpan\\":6,\\"rowSpan\\":6,\\"x\\":5,\\"y\\":5}}}},\\"bLens\\":{\\"order\\":2,
-               \\"parts\\":{}}}" --properties-metadata metadata=[object Object] --tags
-               aKey=aValue anotherKey=anotherValue --name "testDashboard" --resource-group "testRG"
+               az portal dashboard create --location "eastus" --name "testDashboard"
+               --resource-group "testRG" --input-path "/src/json/properties.json"
+               --tags aKey=aValue anotherKey=anotherValue
 """
 
 helps['portal dashboard update'] = """
@@ -50,8 +48,8 @@ helps['portal dashboard update'] = """
     examples:
       - name: Update a Dashboard
         text: |-
-               az portal dashboard update --tags aKey=bValue anotherKey=anotherValue2 --name
-               "testDashboard" --resource-group "testRG"
+               az portal dashboard update --name "testDashboard" --resource-group "testRG"
+               --input-path "/src/json/properties.json"
 """
 
 helps['portal dashboard delete'] = """
