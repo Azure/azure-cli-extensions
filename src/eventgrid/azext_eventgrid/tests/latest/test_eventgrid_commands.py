@@ -1163,15 +1163,15 @@ class EventGridTests(ScenarioTest):
             self.check('[0].name', self.kwargs['partner_namespace_name']),
         ])
 
-        output = self.cmd('az eventgrid partner namespace key list --name {partner_namespace_name} --resource-group {rg}').get_output_in_json()
+        output = self.cmd('az eventgrid partner namespace key list --partner-namespace-name {partner_namespace_name} --resource-group {rg}').get_output_in_json()
         self.assertIsNotNone(output['key1'])
         self.assertIsNotNone(output['key2'])
 
-        output = self.cmd('az eventgrid partner namespace key regenerate --name {partner_namespace_name} --resource-group {rg} --key-name key1').get_output_in_json()
+        output = self.cmd('az eventgrid partner namespace key regenerate --partner-namespace-name {partner_namespace_name} --resource-group {rg} --key-name key1').get_output_in_json()
         self.assertIsNotNone(output['key1'])
         self.assertIsNotNone(output['key2'])
 
-        self.cmd('az eventgrid partner namespace key regenerate --name {partner_namespace_name} --resource-group {rg} --key-name key2').get_output_in_json()
+        self.cmd('az eventgrid partner namespace key regenerate --partner-namespace-name {partner_namespace_name} --resource-group {rg} --key-name key2').get_output_in_json()
         self.assertIsNotNone(output['key1'])
         self.assertIsNotNone(output['key2'])
 
