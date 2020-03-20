@@ -54,6 +54,8 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument('deployment', options_list=[
                 '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=validate_deployment_name)
+            c.argument('main_entry', options_list=[
+                '--main-entry', '-m'], help="A string containing the path to the .NET executable relative to zip root.")
 
     with self.argument_context('spring-cloud app logs') as c:
         c.argument('instance', options_list=['--instance', '-i'], help='Name of an existing instance of the deployment.')
@@ -111,9 +113,9 @@ def load_arguments(self, _):
                     '--artifact-path', '--jar-path', '-p'], help='If provided, deploy pre-built artifact (jar or netcore zip), otherwise deploy current folder as tar.')
             c.argument(
                 'main_entry', options_list=[
-                    '--main-entry', '-m'], help="A string containing the path to the .NET executable relative to zip root")
+                    '--main-entry', '-m'], help="A string containing the path to the .NET executable relative to zip root.")
             c.argument(
-                'target_module', help='Child module to be deployed, required for multiple jar packages built from source code')
+                'target_module', help='Child module to be deployed, required for multiple jar packages built from source code.')
             c.argument(
                 'version', help='Deployment version, keep unchanged if not set.')
 
