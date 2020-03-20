@@ -60,3 +60,13 @@ helps['portal dashboard delete'] = """
         text: |-
                az portal dashboard delete --name "testDashboard" --resource-group "testRG"
 """
+
+helps['portal dashboard import'] = """
+    type: command
+    short-summary: Imports the Dashboard.
+    examples:
+      - name: Import a Dashboard
+        text: |-
+               az portal dashboard import --name "testDashboard" --resource-group "testRG"
+               --input-path "/src/json/dashboard.json"
+"""

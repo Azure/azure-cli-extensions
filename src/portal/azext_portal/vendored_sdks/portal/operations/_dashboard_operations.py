@@ -423,3 +423,72 @@ class DashboardOperations(object):
             get_next, extract_data
         )
     list_by_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Portal/dashboards'}
+
+    def dashboard_import(
+        self,
+        resource_group_name,  # type: str
+        dashboard_name,  # type: str
+        dashboard,  # type: "models.Dashboard"
+        **kwargs  # type: Any
+    ):
+        # type: (...) -> "models.Dashboard"
+        """Creates or updates a Dashboard.
+
+        :param resource_group_name: The name of the resource group.
+        :type resource_group_name: str
+        :param dashboard_name: The name of the dashboard.
+        :type dashboard_name: str
+        :param dashboard: The parameters required to create or update a dashboard.
+        :type dashboard: ~portal.models.Dashboard
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: Dashboard or Dashboard or the result of cls(response)
+        :rtype: ~portal.models.Dashboard or ~portal.models.Dashboard
+        :raises: ~portal.models.ErrorResponseException:
+        """
+        cls = kwargs.pop('cls', None )  # type: ClsType["models.Dashboard"]
+        error_map = kwargs.pop('error_map', {})
+        api_version = "2019-01-01-preview"
+
+        # Construct URL
+        url = self.create_or_update.metadata['url']
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'dashboardName': self._serialize.url("dashboard_name", dashboard_name, 'str', max_length=64, min_length=3),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}
+        header_parameters['Accept'] = 'application/json'
+        header_parameters['Content-Type'] = 'application/json'
+
+        # Construct body
+        body_content = self._serialize.body(dashboard, 'Dashboard')
+
+        # Construct and send request
+        request = self._client.put(url, query_parameters, header_parameters, body_content)
+        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 201]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise models.ErrorResponseException.from_response(response, self._deserialize)
+
+        deserialized = None
+        if response.status_code == 200:
+            deserialized = self._deserialize('Dashboard', pipeline_response)
+
+        if response.status_code == 201:
+            deserialized = self._deserialize('Dashboard', pipeline_response)
+
+        if cls:
+          return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+    create_or_update.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Portal/dashboards/{dashboardName}'}

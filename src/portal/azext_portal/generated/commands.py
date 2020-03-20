@@ -18,3 +18,4 @@ def load_command_table(self, _):
         g.custom_command('create', 'portal_dashboard_create')
         g.custom_command('update', 'portal_dashboard_update')
         g.custom_command('delete', 'portal_dashboard_delete')
+        g.custom_command('import', 'portal_dashboard_import')
