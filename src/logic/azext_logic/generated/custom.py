@@ -37,9 +37,9 @@ def logic_workflow_create(cmd, client,
             raise CLIError('JSON decode error for {}: {}'.format(json_file, str(ex)))
         if 'properties' in workflow and 'definition' not in workflow['properties']:
             raise CLIError(str(json_file) + " does not contain a 'properties.definition' key")
-        elif 'properties' not in workflow and 'definition' not in workflow:
+        if 'properties' not in workflow and 'definition' not in workflow:
             raise CLIError(str(json_file) + " does not contain a 'definition' key")
-        elif 'properties' not in workflow:
+        if 'properties' not in workflow:
              workflow = {'properties' : workflow}
         workflow['location'] = workflow.get('location', location)
         workflow['tags'] = workflow.get('tags', tags)
