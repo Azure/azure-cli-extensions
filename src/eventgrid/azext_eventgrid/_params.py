@@ -199,14 +199,14 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
         c.argument('private_endpoint_connection_name', arg_type=private_endpoint_connection_name_type, options_list=['--name', '-n'], id_part='privateendpointconnections')
 
     with self.argument_context('eventgrid topic private-endpoint-connection list') as c:
-        c.argument('topic_name', arg_type=topic_name_type, options_list=['--name', '-n'], id_part='name')
+        c.argument('topic_name', arg_type=topic_name_type, options_list=['--name', '-n'], id_part=None)
 
     with self.argument_context('eventgrid topic private-link-resource') as c:
         c.argument('topic_name', arg_type=topic_name_type, id_part='name')
         c.argument('private_link_resource_name', arg_type=private_link_resource_name_type, options_list=['--name', '-n'], id_part='privatelinkresources')
 
     with self.argument_context('eventgrid topic private-link-resource list') as c:
-        c.argument('topic_name', arg_type=topic_name_type, options_list=['--name', '-n'], id_part='name')
+        c.argument('topic_name', arg_type=topic_name_type, options_list=['--name', '-n'], id_part=None)
 
     with self.argument_context('eventgrid domain') as c:
         c.argument('domain_name', arg_type=domain_name_type, options_list=['--name', '-n'], id_part='name')
@@ -230,14 +230,14 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
         c.argument('private_endpoint_connection_name', arg_type=private_endpoint_connection_name_type, options_list=['--name', '-n'], id_part='privateendpointconnections')
 
     with self.argument_context('eventgrid domain private-endpoint-connection list') as c:
-        c.argument('domain_name', arg_type=domain_name_type, options_list=['--name', '-n'], id_part='name')
+        c.argument('domain_name', arg_type=domain_name_type, options_list=['--name', '-n'], id_part=None)
 
     with self.argument_context('eventgrid domain private-link-resource') as c:
         c.argument('domain_name', arg_type=domain_name_type, id_part='name')
         c.argument('private_link_resource_name', arg_type=private_link_resource_name_type, options_list=['--name', '-n'], id_part='privatelinkresources')
 
     with self.argument_context('eventgrid domain private-link-resource list') as c:
-        c.argument('domain_name', arg_type=domain_name_type, options_list=['--name', '-n'], id_part='name')
+        c.argument('domain_name', arg_type=domain_name_type, options_list=['--name', '-n'], id_part=None)
 
     with self.argument_context('eventgrid system-topic') as c:
         c.argument('system_topic_name', arg_type=system_topic_name_type, options_list=['--name', '-n'], id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/systemtopics'))
@@ -276,7 +276,7 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
         c.argument('partner_namespace_name', arg_type=partner_namespace_name_type, id_part='name')
 
     with self.argument_context('eventgrid partner namespace event-channel list') as c:
-        c.argument('partner_namespace_name', arg_type=partner_namespace_name_type, id_part='name')
+        c.argument('partner_namespace_name', arg_type=partner_namespace_name_type, id_part=None)
         c.argument('odata_query', arg_type=odata_query_type, id_part=None)
 
     with self.argument_context('eventgrid partner topic') as c:

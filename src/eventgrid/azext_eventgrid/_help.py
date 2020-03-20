@@ -373,14 +373,6 @@ examples:
     text: az eventgrid partner topic deactivate -g rg1 -n partnertopic1
 """
 
-# helps['eventgrid partner topic update'] = """
-# type: command
-# short-summary: Update a partner topic.
-# examples:
-#  - name: Update the properties of an existing partner topic.
-#    text: az eventgrid partner topic update -g rg1 --name partner topic1 --tags Dept=IT
-# """
-
 helps['eventgrid system-topic event-subscription'] = """
 type: group
 short-summary: Manage event subscriptions of system topic.
