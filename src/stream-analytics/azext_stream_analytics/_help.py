@@ -8,6 +8,10 @@
 # pylint: disable=line-too-long
 from knack.help_files import helps  # pylint: disable=unused-import
 
+helps['stream-analytics'] = """
+    type: group
+    short-summary: Manage Stream Analytics.
+"""
 
 helps['stream-analytics job'] = """
     type: group

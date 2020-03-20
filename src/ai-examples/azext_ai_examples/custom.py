@@ -23,26 +23,15 @@ def check_connection_aladdin():
         print('Connection failed')
 
 
-# Replacements for core functions
-def provide_examples(help_file):
-    return replace_examples(help_file)
+def new_examples(help_file):
+    help_file.examples = replace_examples(help_file.command)
 
 
-# Provide two options for changing the examples
-
-# Replace built in examples wirh Aladdin ones
-def replace_examples(help_file):
+# Replace built in examples with Aladdin ones
+def replace_examples(command):
     # Specify az to coerce the examples to be for the exact command
-    lookup_term = "az " + help_file.command
+    lookup_term = "az " + command
     return get_generated_examples(lookup_term)
-
-
-# Append Aladdin examples to the built in ones
-def append_examples(help_file):
-    # Specify az to coerce the examples to be for the exact command
-    lookup_term = "az " + help_file.command
-    aladdin_examples = get_generated_examples(lookup_term)
-    return concat_unique_examples(help_file.examples, aladdin_examples)
 
 
 # Support functions
@@ -55,23 +44,6 @@ def get_generated_examples(cli_term):
             examples.append(clean_from_http_answer(answer))
 
     return examples
-
-
-def concat_unique_examples(first_list, second_list):
-    for first_item in first_list:
-        for second_item in second_list:
-            if are_examples_equal(first_item, second_item):
-                second_list.remove(second_item)
-    return first_list + second_list
-
-
-def are_examples_equal(first, second):
-    return clean_string(first.short_summary) == clean_string(second.short_summary) \
-        or clean_string(first.command) == clean_string(second.command)
-
-
-def clean_string(text):
-    return text.strip()
 
 
 def clean_from_http_answer(http_answer):
