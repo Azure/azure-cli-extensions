@@ -164,8 +164,9 @@ def app_update(cmd, client, resource_group, service, name,
                runtime_version=None,
                jvm_options=None,
                env=None,
-               enable_persistent_storage=None):
-    properties = models.AppResourceProperties(public=is_public)
+               enable_persistent_storage=None,
+               https_only=None):
+    properties = models.AppResourceProperties(public=is_public, https_only=https_only)
     if enable_persistent_storage is True:
         properties.persistent_disk = models.PersistentDisk(
             size_in_gb=50, mount_path="/persistent")
