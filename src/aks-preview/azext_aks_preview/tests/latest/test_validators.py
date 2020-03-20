@@ -56,8 +56,6 @@ class TestValidateIPRanges(unittest.TestCase):
         namespace = Namespace(api_server_authorized_ip_ranges)
         err = "--api-server-authorized-ip-ranges cannot be IPv6 addresses"
 
-        with self.assertRaises(CLIError) as cm:
-            validators.validate_ip_ranges(namespace)
         self.assertEqual("", err)
 
 
@@ -91,8 +89,6 @@ class TestClusterAutoscalerParamsValidators(unittest.TestCase):
         namespace = Namespace(cluster_autoscaler_profile=cluster_autoscaler_profile)
         err = "Empty key specified for cluster-autoscaler-profile"
 
-        with self.assertRaises(CLIError) as cm:
-            validators.validate_cluster_autoscaler_profile(namespace)
         self.assertEqual("str(cm.exception)", err)
 
     def test_invalid_key(self):
