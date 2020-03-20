@@ -656,7 +656,7 @@ class DeploymentSettings(Model):
         'cpu': {'key': 'cpu', 'type': 'int'},
         'memory_in_gb': {'key': 'memoryInGB', 'type': 'int'},
         'jvm_options': {'key': 'jvmOptions', 'type': 'str'},
-        'main_entry': {'key': 'netCoreMainEntryPath', 'type': 'str'},
+        'main_entry': {'key': 'mainEntry', 'type': 'str'},
         'instance_count': {'key': 'instanceCount', 'type': 'int'},
         'environment_variables': {'key': 'environmentVariables', 'type': '{str}'},
         'runtime_version': {'key': 'runtimeVersion', 'type': 'str'},
