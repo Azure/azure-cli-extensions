@@ -317,7 +317,6 @@ class WorkflowOperations(object):
         tags,  # type: dict
         **kwargs  # type: Any
     ):
-        print("tags is " + str(tags))
         # type: (...) -> "models.Workflow"
         """Updates a workflow.
 

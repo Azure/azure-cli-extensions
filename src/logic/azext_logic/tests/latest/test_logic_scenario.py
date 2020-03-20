@@ -9,8 +9,7 @@ import unittest
 from azure_devtools.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
-
-
+from azure.cli.testsdk import JMESPathCheck
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
@@ -29,9 +28,9 @@ class LogicManagementClientScenarioTest(ScenarioTest):
         })
 
         self.kwargs.update({
-            'test-integration-account': self.create_random_name(prefix='cli_test_integration_accounts'[:9], length=24),
+            'testIntegrationAccount': self.create_random_name(prefix='cli_test_integration_accounts'[:9], length=24),
             'IntegrationAccounts_2': self.create_random_name(prefix='cli_test_integration_accounts'[:9], length=24),
-            'test-workflow': self.create_random_name(prefix='cli_test_workflows'[:9], length=24),
+            'testWorkflow': self.create_random_name(prefix='cli_test_workflows'[:9], length=24),
             'Workflows_2': self.create_random_name(prefix='cli_test_workflows'[:9], length=24),
             'Workflows_3': self.create_random_name(prefix='cli_test_workflows'[:9], length=24),
         })
@@ -40,14 +39,14 @@ class LogicManagementClientScenarioTest(ScenarioTest):
                  '--resource-group "{rg_2}" '
                  '--name "{IntegrationAccounts_2}" '
                  '--input-path "integration.json" ',
-                 checks=[])
+                 checks=[JMESPathCheck('name', self.kwargs.get('IntegrationAccounts_2', ''))])
 
         self.cmd('az logic workflow create '
                  '--resource-group "{rg}" '
-                 '--name "{test-workflow}" '
+                 '--name "{testWorkflow}" '
                  '--location "centralus" '
                  '--input-path "workflow.json" ',
-                 checks=[])
+                 checks=[JMESPathCheck('name', self.kwargs.get('testWorkflow', ''))])
 
         self.cmd('az logic integration-account show '
                  '--name "{IntegrationAccounts_2}" '
@@ -56,38 +55,38 @@ class LogicManagementClientScenarioTest(ScenarioTest):
 
         self.cmd('az logic workflow show '
                  '--resource-group "{rg}" '
-                 '--name "{test-workflow}"',
-                 checks=[])
+                 '--name "{testWorkflow}"',
+                 checks=[JMESPathCheck('name', self.kwargs.get('testWorkflow', ''))])
 
         self.cmd('az logic integration-account list '
                  '--resource-group "{rg_2}"',
-                 checks=[])
+                 checks=[JMESPathCheck('[0].name', self.kwargs.get('IntegrationAccounts_2', ''))])
 
         self.cmd('az logic workflow list '
                  '--resource-group "{rg}"',
-                 checks=[])
+                 checks=[JMESPathCheck('[0].name', self.kwargs.get('testWorkflow', ''))])
 
         self.cmd('az logic integration-account list',
-                 checks=[])
+                 checks=[JMESPathCheck('[0].name', self.kwargs.get('IntegrationAccounts_2', ''))])
 
         self.cmd('az logic workflow list',
-                 checks=[])
+                 checks=[JMESPathCheck('[0].name', self.kwargs.get('testWorkflow', ''))])
 
         self.cmd('az logic integration-account update '
                  '--sku Basic '
                  '--name "{IntegrationAccounts_2}" '
                  '--resource-group "{rg_2}"',
-                 checks=[])
+                 checks=[JMESPathCheck('sku.name', 'Basic')])
 
         self.cmd('az logic workflow update '
                  '--resource-group "{rg}" '
-                 '--tag atga=123 '
-                 '--name "{test-workflow}"',
-                 checks=[])
+                 '--tag atag=123 '
+                 '--name "{testWorkflow}"',
+                 checks=[JMESPathCheck('tags.atag', 123)])
 
         self.cmd('az logic workflow delete '
                  '--resource-group "{rg}" '
-                 '--name "{test-workflow}"',
+                 '--name "{testWorkflow}"',
                  checks=[])
 
         self.cmd('az logic integration-account delete '
