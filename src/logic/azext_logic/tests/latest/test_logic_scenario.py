@@ -51,7 +51,7 @@ class LogicManagementClientScenarioTest(ScenarioTest):
         self.cmd('az logic integration-account show '
                  '--name "{IntegrationAccounts_2}" '
                  '--resource-group "{rg_2}"',
-                 checks=[])
+                 checks=[JMESPathCheck('name', self.kwargs.get('IntegrationAccounts_2', ''))])
 
         self.cmd('az logic workflow show '
                  '--resource-group "{rg}" '
