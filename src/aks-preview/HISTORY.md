@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.4.37
++++++
+* Added slb outbound ip fix
+
 0.4.36
 +++++
 * Added --uptime-sla for paid service
