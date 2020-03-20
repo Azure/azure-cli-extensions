@@ -38,14 +38,14 @@ class LogicManagementClientScenarioTest(ScenarioTest):
         self.cmd('az logic integration-account create '
                  '--resource-group "{rg_2}" '
                  '--name "{IntegrationAccounts_2}" '
-                 '--input-path "integration.json" ',
+                 '--input-path "src/logic/azext_logic/tests/latest/integration.json" ',
                  checks=[JMESPathCheck('name', self.kwargs.get('IntegrationAccounts_2', ''))])
 
         self.cmd('az logic workflow create '
                  '--resource-group "{rg}" '
                  '--name "{testWorkflow}" '
                  '--location "centralus" '
-                 '--input-path "workflow.json" ',
+                 '--input-path "src/logic/azext_logic/tests/latest/workflow.json" ',
                  checks=[JMESPathCheck('name', self.kwargs.get('testWorkflow', ''))])
 
         self.cmd('az logic integration-account show '
