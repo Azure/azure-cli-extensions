@@ -69,7 +69,7 @@ helps['eventgrid domain private-endpoint-connection list'] = """
 type: command
 short-summary: List the properties of all the private endpoint connections for a domain.
 examples:
-  - name: Show a private endpoint connection for a domain.
+  - name: List a private endpoint connection for a domain.
     text: az eventgrid domain private-endpoint-connection list -g rg1 -n domain1
 """
 
