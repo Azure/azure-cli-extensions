@@ -20,16 +20,10 @@ COMMIT_NUM = os.getenv('AZURE_EXTENSION_COMMIT_NUM') or 1
 def _get_updated_extension_filenames():
     cmd = 'git --no-pager diff --diff-filter=ACMRT HEAD~{} -- src/index.json'.format(COMMIT_NUM)
     updated_content = check_output(cmd.split()).decode('utf-8')
-    updated_urls = [line.replace('+', '') for line in updated_content.splitlines() if line.startswith('+') and not line.startswith('+++') and 'filename' in line]
-    updated_ext_filenames = []
-    if not updated_urls:
-        return updated_ext_filenames
-    for line in updated_urls:
-        search_result = re.search(r'"filename":\s+"(.*?)"', line)
-        if search_result is not None:
-            filename = search_result.group(1)
-            updated_ext_filenames.append(filename)
-    return updated_ext_filenames
+    FILENAME_REGEX = r'"filename":\s+"(.*?)"'
+    added_ext_filenames = [re.findall(FILENAME_REGEX, line)[0] for line in updated_content.splitlines() if line.startswith('+') and not line.startswith('+++') and 'filename' in line]
+    deleted_ext_filenames = [re.findall(FILENAME_REGEX, line)[0] for line in updated_content.splitlines() if line.startswith('-') and not line.startswith('---') and 'filename' in line]
+    return added_ext_filenames, deleted_ext_filenames
 
 
 def _download_file(url, file_path):
@@ -45,7 +39,9 @@ def _download_file(url, file_path):
             the_ex = ex
             count -= 1
     if count == 0:
-        raise Exception("Request for {} failed: {}".format(url, str(the_ex)))
+        msg = "Request for {} failed: {}".format(url, str(the_ex))
+        print(msg)
+        raise Exception(msg)
 
     with open(file_path, 'wb') as f:
         for chunk in response.iter_content(chunk_size=1024):
@@ -75,7 +71,7 @@ def _sync_wheel(ext, updated_indexes, failed_urls, client, overwrite, temp_dir):
     updated_indexes.append(updated_index)
 
 
-def _update_target_extension_index(updated_indexes, target_index_path):
+def _update_target_extension_index(updated_indexes, deleted_ext_filenames, target_index_path):
     NAME_REGEX = r'^(.*?)-\d+.\d+.\d+'
     with open(target_index_path, 'r') as infile:
         curr_index = json.loads(infile.read())
@@ -92,6 +88,12 @@ def _update_target_extension_index(updated_indexes, target_index_path):
                 curr_entry = entry
             else:
                 curr_index['extensions'][extension_name].append(entry)
+    for filename in deleted_ext_filenames:
+        extension_name = re.findall(NAME_REGEX, filename)[0].replace('_', '-')
+        print("Deleting '{}' in index...".format(filename))
+        curr_index['extensions'][extension_name] = [ext for ext in curr_index['extensions'][extension_name] if ext['filename'] != filename]
+        if not curr_index['extensions'][extension_name]:
+            del curr_index['extensions'][extension_name]
 
     with open(os.path.join(target_index_path), 'w') as outfile:
         outfile.write(json.dumps(curr_index, indent=4, sort_keys=True))
@@ -102,11 +104,14 @@ def main():
     import tempfile
     from azure.storage.blob import BlockBlobService
 
-    updated_ext_filenames = _get_updated_extension_filenames()
+    added_ext_filenames = []
+    deleted_ext_filenames = []
     sync_all = (os.getenv('AZURE_SYNC_ALL_EXTENSIONS') and os.getenv('AZURE_SYNC_ALL_EXTENSIONS').lower() == 'true')
-    if not sync_all and not updated_ext_filenames:
-        print('index.json not changed. End task.')
-        return
+    if not sync_all:
+        added_ext_filenames, deleted_ext_filenames = _get_updated_extension_filenames()
+        if not added_ext_filenames and not deleted_ext_filenames:
+            print('index.json not changed. End task.')
+            return
     temp_dir = tempfile.mkdtemp()
     with open('src/index.json', 'r') as fd:
         current_extensions = json.loads(fd.read()).get("extensions")
@@ -132,7 +137,7 @@ def main():
                 _sync_wheel(ext, updated_indexes, failed_urls, client, True, temp_dir)
     else:
         NAME_REGEX = r'^(.*?)-\d+.\d+.\d+'
-        for filename in updated_ext_filenames:
+        for filename in added_ext_filenames:
             extension_name = re.findall(NAME_REGEX, filename)[0].replace('_', '-')
             print('Uploading {}'.format(filename))
             ext = current_extensions[extension_name][-1]
@@ -141,10 +146,12 @@ def main():
             if ext is not None:
                 _sync_wheel(ext, updated_indexes, failed_urls, client, True, temp_dir)
 
-    _update_target_extension_index(updated_indexes, target_index_path)
+    print("")
+    _update_target_extension_index(updated_indexes, deleted_ext_filenames, target_index_path)
     client.create_blob_from_path(container_name=STORAGE_CONTAINER, blob_name='index.json',
                                  file_path=os.path.abspath(target_index_path))
-    print("\nSync finished, extensions available in:")
+    if updated_indexes:
+        print("\nSync finished, extensions available in:")
     for updated_index in updated_indexes:
         print(updated_index['downloadUrl'])
     shutil.rmtree(temp_dir)
@@ -153,6 +160,7 @@ def main():
         print("\nFailed to donwload and sync the following files. They are skipped:")
         for url in failed_urls:
             print(url)
+        print("")
         raise Exception("Failed to sync some packages.")
 
 
