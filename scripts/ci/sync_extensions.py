@@ -53,11 +53,15 @@ def _download_file(url, file_path):
                 f.write(chunk)
 
 
-def _sync_wheel(ext, updated_indexes, client, overwrite, temp_dir):
+def _sync_wheel(ext, updated_indexes, failed_urls, client, overwrite, temp_dir):
     download_url = ext['downloadUrl']
     whl_file = download_url.split('/')[-1]
     whl_path = os.path.join(temp_dir, whl_file)
-    _download_file(download_url, whl_path)
+    try:
+        _download_file(download_url, whl_path)
+    except Exception:
+        failed_urls.append(download_url)
+        return
     if not overwrite:
         exists = client.exists(container_name=STORAGE_CONTAINER, blob_name=whl_file)
         if exists:
@@ -114,6 +118,7 @@ def main():
 
     client = BlockBlobService(account_name=STORAGE_ACCOUNT, account_key=STORAGE_ACCOUNT_KEY)
     updated_indexes = []
+    failed_urls = []
     if sync_all:
         print('Syncing all extensions...\n')
         # backup the old index.json
@@ -124,7 +129,7 @@ def main():
         for extension_name in current_extensions.keys():
             for ext in current_extensions[extension_name]:
                 print('Uploading {}'.format(ext['filename']))
-                _sync_wheel(ext, updated_indexes, client, True, temp_dir)
+                _sync_wheel(ext, updated_indexes, failed_urls, client, True, temp_dir)
     else:
         NAME_REGEX = r'^(.*?)-\d+.\d+.\d+'
         for filename in updated_ext_filenames:
@@ -134,7 +139,7 @@ def main():
             if ext['filename'] != filename:
                 ext = next((ext for ext in current_extensions[extension_name] if ext['filename'] == filename), None)
             if ext is not None:
-                _sync_wheel(ext, updated_indexes, client, True, temp_dir)
+                _sync_wheel(ext, updated_indexes, failed_urls, client, True, temp_dir)
 
     _update_target_extension_index(updated_indexes, target_index_path)
     client.create_blob_from_path(container_name=STORAGE_CONTAINER, blob_name='index.json',
@@ -143,6 +148,12 @@ def main():
     for updated_index in updated_indexes:
         print(updated_index['downloadUrl'])
     shutil.rmtree(temp_dir)
+
+    if failed_urls:
+        print("\nFailed to donwload and sync the following files. They are skipped:")
+        for url in failed_urls:
+            print(url)
+        raise Exception("Failed to sync some packages.")
 
 
 if __name__ == '__main__':
