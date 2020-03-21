@@ -102,8 +102,8 @@ def load_arguments(self, _):
         c.argument('factory_name', help='The factory name.')
         c.argument('integration_runtime_name', help='The integration runtime name.')
         c.argument('if_none_match', help='ETag of the integration runtime entity. Should only be specified for get. If '
-                   'the ETag matches the existing entity tag, or if * was provided,
-                   then no content will be returned.')
+                   'the ETag matches the existing entity tag, or if * was provided,'
+                   'then no content will be returned.')
 
     with self.argument_context('datafactory integration-runtime create') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
