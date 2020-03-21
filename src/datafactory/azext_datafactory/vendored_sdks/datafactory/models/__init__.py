@@ -11,486 +11,77 @@ try:
     from ._models_py3 import Activity
     from ._models_py3 import ActivityDependency
     from ._models_py3 import ActivityPolicy
-    from ._models_py3 import ActivityPolicyRetry
-    from ._models_py3 import ActivityPolicyTimeout
     from ._models_py3 import ActivityRun
-    from ._models_py3 import ActivityRunError
-    from ._models_py3 import ActivityRunInput
-    from ._models_py3 import ActivityRunOutput
     from ._models_py3 import ActivityRunsQueryResponse
     from ._models_py3 import AddDataFlowToDebugSessionResponse
-    from ._models_py3 import AdditionalColumns
-    from ._models_py3 import AdditionalColumnsName
-    from ._models_py3 import AdditionalColumnsValue
     from ._models_py3 import AmazonMwsLinkedService
-    from ._models_py3 import AmazonMwsLinkedServiceTypeProperties
-    from ._models_py3 import AmazonMwsLinkedServiceTypePropertiesAccessKeyId
-    from ._models_py3 import AmazonMwsLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import AmazonMwsLinkedServiceTypePropertiesEndpoint
-    from ._models_py3 import AmazonMwsLinkedServiceTypePropertiesMarketplaceId
-    from ._models_py3 import AmazonMwsLinkedServiceTypePropertiesSellerId
-    from ._models_py3 import AmazonMwsLinkedServiceTypePropertiesUseEncryptedEndpoints
-    from ._models_py3 import AmazonMwsLinkedServiceTypePropertiesUseHostVerification
-    from ._models_py3 import AmazonMwsLinkedServiceTypePropertiesUsePeerVerification
     from ._models_py3 import AmazonMwsObjectDataset
-    from ._models_py3 import AmazonMwsSource
-    from ._models_py3 import AmazonMwsSourceQuery
     from ._models_py3 import AmazonRedshiftLinkedService
-    from ._models_py3 import AmazonRedshiftLinkedServiceTypeProperties
-    from ._models_py3 import AmazonRedshiftLinkedServiceTypePropertiesDatabase
-    from ._models_py3 import AmazonRedshiftLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import AmazonRedshiftLinkedServiceTypePropertiesPort
-    from ._models_py3 import AmazonRedshiftLinkedServiceTypePropertiesServer
-    from ._models_py3 import AmazonRedshiftLinkedServiceTypePropertiesUsername
-    from ._models_py3 import AmazonRedshiftSource
-    from ._models_py3 import AmazonRedshiftSourceQuery
     from ._models_py3 import AmazonRedshiftTableDataset
-    from ._models_py3 import AmazonRedshiftTableDatasetTypeProperties
-    from ._models_py3 import AmazonRedshiftTableDatasetTypePropertiesSchema
-    from ._models_py3 import AmazonRedshiftTableDatasetTypePropertiesTable
-    from ._models_py3 import AmazonRedshiftTableDatasetTypePropertiesTableName
     from ._models_py3 import AmazonS3Dataset
-    from ._models_py3 import AmazonS3DatasetTypeProperties
-    from ._models_py3 import AmazonS3DatasetTypePropertiesBucketName
-    from ._models_py3 import AmazonS3DatasetTypePropertiesKey
-    from ._models_py3 import AmazonS3DatasetTypePropertiesModifiedDatetimeEnd
-    from ._models_py3 import AmazonS3DatasetTypePropertiesModifiedDatetimeStart
-    from ._models_py3 import AmazonS3DatasetTypePropertiesPrefix
-    from ._models_py3 import AmazonS3DatasetTypePropertiesVersion
     from ._models_py3 import AmazonS3LinkedService
-    from ._models_py3 import AmazonS3LinkedServiceTypeProperties
-    from ._models_py3 import AmazonS3LinkedServiceTypePropertiesAccessKeyId
-    from ._models_py3 import AmazonS3LinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import AmazonS3LinkedServiceTypePropertiesServiceUrl
-    from ._models_py3 import AmazonS3Location
-    from ._models_py3 import AmazonS3LocationBucketName
-    from ._models_py3 import AmazonS3LocationVersion
-    from ._models_py3 import AmazonS3ReadSettings
-    from ._models_py3 import AmazonS3ReadSettingsFileListPath
-    from ._models_py3 import AmazonS3ReadSettingsModifiedDatetimeEnd
-    from ._models_py3 import AmazonS3ReadSettingsModifiedDatetimeStart
-    from ._models_py3 import AmazonS3ReadSettingsPrefix
-    from ._models_py3 import AmazonS3ReadSettingsRecursive
-    from ._models_py3 import AmazonS3ReadSettingsWildcardFileName
-    from ._models_py3 import AmazonS3ReadSettingsWildcardFolderPath
     from ._models_py3 import AppendVariableActivity
-    from ._models_py3 import AppendVariableActivityTypeProperties
-    from ._models_py3 import AppendVariableActivityTypePropertiesValue
     from ._models_py3 import AvroDataset
-    from ._models_py3 import AvroDatasetTypeProperties
-    from ._models_py3 import AvroFormat
-    from ._models_py3 import AvroSink
-    from ._models_py3 import AvroSource
-    from ._models_py3 import AvroWriteSettings
     from ._models_py3 import AzureBatchLinkedService
-    from ._models_py3 import AzureBatchLinkedServiceTypeProperties
-    from ._models_py3 import AzureBatchLinkedServiceTypePropertiesAccountName
-    from ._models_py3 import AzureBatchLinkedServiceTypePropertiesBatchUri
-    from ._models_py3 import AzureBatchLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import AzureBatchLinkedServiceTypePropertiesPoolName
     from ._models_py3 import AzureBlobDataset
-    from ._models_py3 import AzureBlobDatasetTypeProperties
-    from ._models_py3 import AzureBlobDatasetTypePropertiesFileName
-    from ._models_py3 import AzureBlobDatasetTypePropertiesFolderPath
-    from ._models_py3 import AzureBlobDatasetTypePropertiesModifiedDatetimeEnd
-    from ._models_py3 import AzureBlobDatasetTypePropertiesModifiedDatetimeStart
-    from ._models_py3 import AzureBlobDatasetTypePropertiesTableRootLocation
     from ._models_py3 import AzureBlobFsDataset
-    from ._models_py3 import AzureBlobFsDatasetTypeProperties
-    from ._models_py3 import AzureBlobFsDatasetTypePropertiesFileName
-    from ._models_py3 import AzureBlobFsDatasetTypePropertiesFolderPath
     from ._models_py3 import AzureBlobFsLinkedService
-    from ._models_py3 import AzureBlobFsLinkedServiceTypeProperties
-    from ._models_py3 import AzureBlobFsLinkedServiceTypePropertiesAccountKey
-    from ._models_py3 import AzureBlobFsLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import AzureBlobFsLinkedServiceTypePropertiesServicePrincipalId
-    from ._models_py3 import AzureBlobFsLinkedServiceTypePropertiesTenant
-    from ._models_py3 import AzureBlobFsLinkedServiceTypePropertiesUrl
-    from ._models_py3 import AzureBlobFsLocation
-    from ._models_py3 import AzureBlobFsLocationFileSystem
-    from ._models_py3 import AzureBlobFsReadSettings
-    from ._models_py3 import AzureBlobFsReadSettingsFileListPath
-    from ._models_py3 import AzureBlobFsReadSettingsModifiedDatetimeEnd
-    from ._models_py3 import AzureBlobFsReadSettingsModifiedDatetimeStart
-    from ._models_py3 import AzureBlobFsReadSettingsRecursive
-    from ._models_py3 import AzureBlobFsReadSettingsWildcardFileName
-    from ._models_py3 import AzureBlobFsReadSettingsWildcardFolderPath
-    from ._models_py3 import AzureBlobFsSink
-    from ._models_py3 import AzureBlobFsSinkCopyBehavior
-    from ._models_py3 import AzureBlobFsSource
-    from ._models_py3 import AzureBlobFsSourceRecursive
-    from ._models_py3 import AzureBlobFsSourceSkipHeaderLineCount
-    from ._models_py3 import AzureBlobFsSourceTreatEmptyAsNull
-    from ._models_py3 import AzureBlobFsWriteSettings
-    from ._models_py3 import AzureBlobFsWriteSettingsBlockSizeInMb
     from ._models_py3 import AzureBlobStorageLinkedService
-    from ._models_py3 import AzureBlobStorageLinkedServiceTypeProperties
-    from ._models_py3 import AzureBlobStorageLinkedServiceTypePropertiesConnectionString
-    from ._models_py3 import AzureBlobStorageLinkedServiceTypePropertiesSasUri
-    from ._models_py3 import AzureBlobStorageLinkedServiceTypePropertiesServicePrincipalId
-    from ._models_py3 import AzureBlobStorageLinkedServiceTypePropertiesTenant
-    from ._models_py3 import AzureBlobStorageLocation
-    from ._models_py3 import AzureBlobStorageLocationContainer
-    from ._models_py3 import AzureBlobStorageReadSettings
-    from ._models_py3 import AzureBlobStorageReadSettingsFileListPath
-    from ._models_py3 import AzureBlobStorageReadSettingsModifiedDatetimeEnd
-    from ._models_py3 import AzureBlobStorageReadSettingsModifiedDatetimeStart
-    from ._models_py3 import AzureBlobStorageReadSettingsPrefix
-    from ._models_py3 import AzureBlobStorageReadSettingsRecursive
-    from ._models_py3 import AzureBlobStorageReadSettingsWildcardFileName
-    from ._models_py3 import AzureBlobStorageReadSettingsWildcardFolderPath
-    from ._models_py3 import AzureBlobStorageWriteSettings
-    from ._models_py3 import AzureBlobStorageWriteSettingsBlockSizeInMb
     from ._models_py3 import AzureDataExplorerCommandActivity
-    from ._models_py3 import AzureDataExplorerCommandActivityTypeProperties
-    from ._models_py3 import AzureDataExplorerCommandActivityTypePropertiesCommand
-    from ._models_py3 import AzureDataExplorerCommandActivityTypePropertiesCommandTimeout
-    from ._models_py3 import AzureDataExplorerDatasetTypeProperties
-    from ._models_py3 import AzureDataExplorerDatasetTypePropertiesTable
     from ._models_py3 import AzureDataExplorerLinkedService
-    from ._models_py3 import AzureDataExplorerLinkedServiceTypeProperties
-    from ._models_py3 import AzureDataExplorerLinkedServiceTypePropertiesDatabase
-    from ._models_py3 import AzureDataExplorerLinkedServiceTypePropertiesEndpoint
-    from ._models_py3 import AzureDataExplorerLinkedServiceTypePropertiesServicePrincipalId
-    from ._models_py3 import AzureDataExplorerLinkedServiceTypePropertiesTenant
-    from ._models_py3 import AzureDataExplorerSink
-    from ._models_py3 import AzureDataExplorerSinkFlushImmediately
-    from ._models_py3 import AzureDataExplorerSinkIngestionMappingAsJson
-    from ._models_py3 import AzureDataExplorerSinkIngestionMappingName
-    from ._models_py3 import AzureDataExplorerSource
-    from ._models_py3 import AzureDataExplorerSourceNoTruncation
-    from ._models_py3 import AzureDataExplorerSourceQuery
-    from ._models_py3 import AzureDataExplorerSourceQueryTimeout
     from ._models_py3 import AzureDataExplorerTableDataset
     from ._models_py3 import AzureDataLakeAnalyticsLinkedService
-    from ._models_py3 import AzureDataLakeAnalyticsLinkedServiceTypeProperties
-    from ._models_py3 import AzureDataLakeAnalyticsLinkedServiceTypePropertiesAccountName
-    from ._models_py3 import AzureDataLakeAnalyticsLinkedServiceTypePropertiesDataLakeAnalyticsUri
-    from ._models_py3 import AzureDataLakeAnalyticsLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import AzureDataLakeAnalyticsLinkedServiceTypePropertiesResourceGroupName
-    from ._models_py3 import AzureDataLakeAnalyticsLinkedServiceTypePropertiesServicePrincipalId
-    from ._models_py3 import AzureDataLakeAnalyticsLinkedServiceTypePropertiesSubscriptionId
-    from ._models_py3 import AzureDataLakeAnalyticsLinkedServiceTypePropertiesTenant
     from ._models_py3 import AzureDataLakeStoreDataset
-    from ._models_py3 import AzureDataLakeStoreDatasetTypeProperties
-    from ._models_py3 import AzureDataLakeStoreDatasetTypePropertiesFileName
-    from ._models_py3 import AzureDataLakeStoreDatasetTypePropertiesFolderPath
     from ._models_py3 import AzureDataLakeStoreLinkedService
-    from ._models_py3 import AzureDataLakeStoreLinkedServiceTypeProperties
-    from ._models_py3 import AzureDataLakeStoreLinkedServiceTypePropertiesAccountName
-    from ._models_py3 import AzureDataLakeStoreLinkedServiceTypePropertiesDataLakeStoreUri
-    from ._models_py3 import AzureDataLakeStoreLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import AzureDataLakeStoreLinkedServiceTypePropertiesResourceGroupName
-    from ._models_py3 import AzureDataLakeStoreLinkedServiceTypePropertiesServicePrincipalId
-    from ._models_py3 import AzureDataLakeStoreLinkedServiceTypePropertiesSubscriptionId
-    from ._models_py3 import AzureDataLakeStoreLinkedServiceTypePropertiesTenant
-    from ._models_py3 import AzureDataLakeStoreLocation
-    from ._models_py3 import AzureDataLakeStoreReadSettings
-    from ._models_py3 import AzureDataLakeStoreReadSettingsFileListPath
-    from ._models_py3 import AzureDataLakeStoreReadSettingsModifiedDatetimeEnd
-    from ._models_py3 import AzureDataLakeStoreReadSettingsModifiedDatetimeStart
-    from ._models_py3 import AzureDataLakeStoreReadSettingsRecursive
-    from ._models_py3 import AzureDataLakeStoreReadSettingsWildcardFileName
-    from ._models_py3 import AzureDataLakeStoreReadSettingsWildcardFolderPath
-    from ._models_py3 import AzureDataLakeStoreSink
-    from ._models_py3 import AzureDataLakeStoreSinkCopyBehavior
-    from ._models_py3 import AzureDataLakeStoreSinkEnableAdlsSingleFileParallel
-    from ._models_py3 import AzureDataLakeStoreSource
-    from ._models_py3 import AzureDataLakeStoreSourceRecursive
-    from ._models_py3 import AzureDataLakeStoreWriteSettings
-    from ._models_py3 import AzureDataLakeStoreWriteSettingsExpiryDateTime
     from ._models_py3 import AzureDatabricksLinkedService
-    from ._models_py3 import AzureDatabricksLinkedServiceTypeProperties
-    from ._models_py3 import AzureDatabricksLinkedServiceTypePropertiesDomain
-    from ._models_py3 import AzureDatabricksLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import AzureDatabricksLinkedServiceTypePropertiesExistingClusterId
-    from ._models_py3 import AzureDatabricksLinkedServiceTypePropertiesInstancePoolId
-    from ._models_py3 import AzureDatabricksLinkedServiceTypePropertiesNewClusterDriverNodeType
-    from ._models_py3 import AzureDatabricksLinkedServiceTypePropertiesNewClusterEnableElasticDisk
-    from ._models_py3 import AzureDatabricksLinkedServiceTypePropertiesNewClusterInitScripts
-    from ._models_py3 import AzureDatabricksLinkedServiceTypePropertiesNewClusterNodeType
-    from ._models_py3 import AzureDatabricksLinkedServiceTypePropertiesNewClusterNumOfWorker
-    from ._models_py3 import AzureDatabricksLinkedServiceTypePropertiesNewClusterVersion
     from ._models_py3 import AzureFileStorageLinkedService
-    from ._models_py3 import AzureFileStorageLinkedServiceTypeProperties
-    from ._models_py3 import AzureFileStorageLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import AzureFileStorageLinkedServiceTypePropertiesHost
-    from ._models_py3 import AzureFileStorageLinkedServiceTypePropertiesUserId
-    from ._models_py3 import AzureFileStorageLocation
-    from ._models_py3 import AzureFileStorageReadSettings
-    from ._models_py3 import AzureFileStorageReadSettingsFileListPath
-    from ._models_py3 import AzureFileStorageReadSettingsModifiedDatetimeEnd
-    from ._models_py3 import AzureFileStorageReadSettingsModifiedDatetimeStart
-    from ._models_py3 import AzureFileStorageReadSettingsRecursive
-    from ._models_py3 import AzureFileStorageReadSettingsWildcardFileName
-    from ._models_py3 import AzureFileStorageReadSettingsWildcardFolderPath
     from ._models_py3 import AzureFunctionActivity
-    from ._models_py3 import AzureFunctionActivityTypeProperties
-    from ._models_py3 import AzureFunctionActivityTypePropertiesBody
-    from ._models_py3 import AzureFunctionActivityTypePropertiesFunctionName
-    from ._models_py3 import AzureFunctionActivityTypePropertiesHeaders
     from ._models_py3 import AzureFunctionLinkedService
-    from ._models_py3 import AzureFunctionLinkedServiceTypeProperties
-    from ._models_py3 import AzureFunctionLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import AzureFunctionLinkedServiceTypePropertiesFunctionAppUrl
     from ._models_py3 import AzureKeyVaultLinkedService
-    from ._models_py3 import AzureKeyVaultLinkedServiceTypeProperties
-    from ._models_py3 import AzureKeyVaultLinkedServiceTypePropertiesBaseUrl
     from ._models_py3 import AzureKeyVaultSecretReference
-    from ._models_py3 import AzureKeyVaultSecretReferenceSecretName
-    from ._models_py3 import AzureKeyVaultSecretReferenceSecretVersion
     from ._models_py3 import AzureMariaDbLinkedService
-    from ._models_py3 import AzureMariaDbLinkedServiceTypeProperties
-    from ._models_py3 import AzureMariaDbLinkedServiceTypePropertiesConnectionString
-    from ._models_py3 import AzureMariaDbLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import AzureMariaDbSource
-    from ._models_py3 import AzureMariaDbSourceQuery
     from ._models_py3 import AzureMariaDbTableDataset
     from ._models_py3 import AzureMlBatchExecutionActivity
-    from ._models_py3 import AzureMlBatchExecutionActivityTypeProperties
     from ._models_py3 import AzureMlExecutePipelineActivity
-    from ._models_py3 import AzureMlExecutePipelineActivityTypeProperties
-    from ._models_py3 import AzureMlExecutePipelineActivityTypePropertiesContinueOnStepFailure
-    from ._models_py3 import AzureMlExecutePipelineActivityTypePropertiesExperimentName
-    from ._models_py3 import AzureMlExecutePipelineActivityTypePropertiesMlParentRunId
-    from ._models_py3 import AzureMlExecutePipelineActivityTypePropertiesMlPipelineId
-    from ._models_py3 import AzureMlExecutePipelineActivityTypePropertiesMlPipelineParameters
     from ._models_py3 import AzureMlLinkedService
-    from ._models_py3 import AzureMlLinkedServiceTypeProperties
-    from ._models_py3 import AzureMlLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import AzureMlLinkedServiceTypePropertiesMlEndpoint
-    from ._models_py3 import AzureMlLinkedServiceTypePropertiesServicePrincipalId
-    from ._models_py3 import AzureMlLinkedServiceTypePropertiesTenant
-    from ._models_py3 import AzureMlLinkedServiceTypePropertiesUpdateResourceEndpoint
     from ._models_py3 import AzureMlServiceLinkedService
-    from ._models_py3 import AzureMlServiceLinkedServiceTypeProperties
-    from ._models_py3 import AzureMlServiceLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import AzureMlServiceLinkedServiceTypePropertiesMlWorkspaceName
-    from ._models_py3 import AzureMlServiceLinkedServiceTypePropertiesResourceGroupName
-    from ._models_py3 import AzureMlServiceLinkedServiceTypePropertiesServicePrincipalId
-    from ._models_py3 import AzureMlServiceLinkedServiceTypePropertiesSubscriptionId
-    from ._models_py3 import AzureMlServiceLinkedServiceTypePropertiesTenant
     from ._models_py3 import AzureMlUpdateResourceActivity
-    from ._models_py3 import AzureMlUpdateResourceActivityTypeProperties
-    from ._models_py3 import AzureMlUpdateResourceActivityTypePropertiesTrainedModelFilePath
-    from ._models_py3 import AzureMlUpdateResourceActivityTypePropertiesTrainedModelName
     from ._models_py3 import AzureMlWebServiceFile
-    from ._models_py3 import AzureMlWebServiceFilePath
     from ._models_py3 import AzureMySqlLinkedService
-    from ._models_py3 import AzureMySqlLinkedServiceTypeProperties
-    from ._models_py3 import AzureMySqlLinkedServiceTypePropertiesConnectionString
-    from ._models_py3 import AzureMySqlLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import AzureMySqlSink
-    from ._models_py3 import AzureMySqlSinkPreCopyScript
-    from ._models_py3 import AzureMySqlSource
-    from ._models_py3 import AzureMySqlSourceQuery
     from ._models_py3 import AzureMySqlTableDataset
-    from ._models_py3 import AzureMySqlTableDatasetTypeProperties
-    from ._models_py3 import AzureMySqlTableDatasetTypePropertiesTable
-    from ._models_py3 import AzureMySqlTableDatasetTypePropertiesTableName
     from ._models_py3 import AzurePostgreSqlLinkedService
-    from ._models_py3 import AzurePostgreSqlLinkedServiceTypeProperties
-    from ._models_py3 import AzurePostgreSqlLinkedServiceTypePropertiesConnectionString
-    from ._models_py3 import AzurePostgreSqlLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import AzurePostgreSqlSink
-    from ._models_py3 import AzurePostgreSqlSinkPreCopyScript
-    from ._models_py3 import AzurePostgreSqlSource
-    from ._models_py3 import AzurePostgreSqlSourceQuery
     from ._models_py3 import AzurePostgreSqlTableDataset
-    from ._models_py3 import AzurePostgreSqlTableDatasetTypeProperties
-    from ._models_py3 import AzurePostgreSqlTableDatasetTypePropertiesSchema
-    from ._models_py3 import AzurePostgreSqlTableDatasetTypePropertiesTable
-    from ._models_py3 import AzurePostgreSqlTableDatasetTypePropertiesTableName
-    from ._models_py3 import AzureQueueSink
     from ._models_py3 import AzureSearchIndexDataset
-    from ._models_py3 import AzureSearchIndexDatasetTypeProperties
-    from ._models_py3 import AzureSearchIndexDatasetTypePropertiesIndexName
-    from ._models_py3 import AzureSearchIndexSink
     from ._models_py3 import AzureSearchLinkedService
-    from ._models_py3 import AzureSearchLinkedServiceTypeProperties
-    from ._models_py3 import AzureSearchLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import AzureSearchLinkedServiceTypePropertiesUrl
     from ._models_py3 import AzureSqlDatabaseLinkedService
-    from ._models_py3 import AzureSqlDatabaseLinkedServiceTypeProperties
-    from ._models_py3 import AzureSqlDatabaseLinkedServiceTypePropertiesConnectionString
-    from ._models_py3 import AzureSqlDatabaseLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import AzureSqlDatabaseLinkedServiceTypePropertiesServicePrincipalId
-    from ._models_py3 import AzureSqlDatabaseLinkedServiceTypePropertiesTenant
     from ._models_py3 import AzureSqlDwLinkedService
-    from ._models_py3 import AzureSqlDwLinkedServiceTypeProperties
-    from ._models_py3 import AzureSqlDwLinkedServiceTypePropertiesConnectionString
-    from ._models_py3 import AzureSqlDwLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import AzureSqlDwLinkedServiceTypePropertiesServicePrincipalId
-    from ._models_py3 import AzureSqlDwLinkedServiceTypePropertiesTenant
     from ._models_py3 import AzureSqlDwTableDataset
-    from ._models_py3 import AzureSqlDwTableDatasetTypeProperties
-    from ._models_py3 import AzureSqlDwTableDatasetTypePropertiesSchema
-    from ._models_py3 import AzureSqlDwTableDatasetTypePropertiesTable
-    from ._models_py3 import AzureSqlDwTableDatasetTypePropertiesTableName
     from ._models_py3 import AzureSqlMiLinkedService
-    from ._models_py3 import AzureSqlMiLinkedServiceTypeProperties
-    from ._models_py3 import AzureSqlMiLinkedServiceTypePropertiesConnectionString
-    from ._models_py3 import AzureSqlMiLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import AzureSqlMiLinkedServiceTypePropertiesServicePrincipalId
-    from ._models_py3 import AzureSqlMiLinkedServiceTypePropertiesTenant
     from ._models_py3 import AzureSqlMiTableDataset
-    from ._models_py3 import AzureSqlMiTableDatasetTypeProperties
-    from ._models_py3 import AzureSqlMiTableDatasetTypePropertiesSchema
-    from ._models_py3 import AzureSqlMiTableDatasetTypePropertiesTable
-    from ._models_py3 import AzureSqlMiTableDatasetTypePropertiesTableName
-    from ._models_py3 import AzureSqlSink
-    from ._models_py3 import AzureSqlSinkPreCopyScript
-    from ._models_py3 import AzureSqlSinkSqlWriterStoredProcedureName
-    from ._models_py3 import AzureSqlSinkSqlWriterTableType
-    from ._models_py3 import AzureSqlSinkStoredProcedureTableTypeParameterName
-    from ._models_py3 import AzureSqlSinkTableOption
-    from ._models_py3 import AzureSqlSource
-    from ._models_py3 import AzureSqlSourceProduceAdditionalTypes
-    from ._models_py3 import AzureSqlSourceSqlReaderQuery
-    from ._models_py3 import AzureSqlSourceSqlReaderStoredProcedureName
     from ._models_py3 import AzureSqlTableDataset
-    from ._models_py3 import AzureSqlTableDatasetTypeProperties
-    from ._models_py3 import AzureSqlTableDatasetTypePropertiesSchema
-    from ._models_py3 import AzureSqlTableDatasetTypePropertiesTable
-    from ._models_py3 import AzureSqlTableDatasetTypePropertiesTableName
     from ._models_py3 import AzureStorageLinkedService
-    from ._models_py3 import AzureStorageLinkedServiceTypeProperties
-    from ._models_py3 import AzureStorageLinkedServiceTypePropertiesConnectionString
-    from ._models_py3 import AzureStorageLinkedServiceTypePropertiesSasUri
     from ._models_py3 import AzureTableDataset
-    from ._models_py3 import AzureTableDatasetTypeProperties
-    from ._models_py3 import AzureTableDatasetTypePropertiesTableName
-    from ._models_py3 import AzureTableSink
-    from ._models_py3 import AzureTableSinkAzureTableDefaultPartitionKeyValue
-    from ._models_py3 import AzureTableSinkAzureTableInsertType
-    from ._models_py3 import AzureTableSinkAzureTablePartitionKeyName
-    from ._models_py3 import AzureTableSinkAzureTableRowKeyName
-    from ._models_py3 import AzureTableSource
-    from ._models_py3 import AzureTableSourceAzureTableSourceIgnoreTableNotFound
-    from ._models_py3 import AzureTableSourceAzureTableSourceQuery
     from ._models_py3 import AzureTableStorageLinkedService
     from ._models_py3 import BinaryDataset
-    from ._models_py3 import BinaryDatasetTypeProperties
-    from ._models_py3 import BinarySink
-    from ._models_py3 import BinarySource
     from ._models_py3 import BlobEventsTrigger
-    from ._models_py3 import BlobEventsTriggerTypeProperties
-    from ._models_py3 import BlobSink
-    from ._models_py3 import BlobSinkBlobWriterAddHeader
-    from ._models_py3 import BlobSinkBlobWriterDateTimeFormat
-    from ._models_py3 import BlobSinkBlobWriterOverwriteFiles
-    from ._models_py3 import BlobSinkCopyBehavior
-    from ._models_py3 import BlobSource
-    from ._models_py3 import BlobSourceRecursive
-    from ._models_py3 import BlobSourceSkipHeaderLineCount
-    from ._models_py3 import BlobSourceTreatEmptyAsNull
     from ._models_py3 import BlobTrigger
-    from ._models_py3 import BlobTriggerTypeProperties
     from ._models_py3 import CassandraLinkedService
-    from ._models_py3 import CassandraLinkedServiceTypeProperties
-    from ._models_py3 import CassandraLinkedServiceTypePropertiesAuthenticationType
-    from ._models_py3 import CassandraLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import CassandraLinkedServiceTypePropertiesHost
-    from ._models_py3 import CassandraLinkedServiceTypePropertiesPort
-    from ._models_py3 import CassandraLinkedServiceTypePropertiesUsername
-    from ._models_py3 import CassandraSource
-    from ._models_py3 import CassandraSourceQuery
     from ._models_py3 import CassandraTableDataset
-    from ._models_py3 import CassandraTableDatasetTypeProperties
-    from ._models_py3 import CassandraTableDatasetTypePropertiesKeyspace
-    from ._models_py3 import CassandraTableDatasetTypePropertiesTableName
     from ._models_py3 import ChainingTrigger
-    from ._models_py3 import ChainingTriggerTypeProperties
-    from ._models_py3 import CloudError, CloudErrorException
-    from ._models_py3 import CloudErrorBody
-    from ._models_py3 import CmdkeySetup
-    from ._models_py3 import CmdkeySetupTypeProperties
-    from ._models_py3 import CmdkeySetupTypePropertiesTargetName
-    from ._models_py3 import CmdkeySetupTypePropertiesUserName
+    from ._models_py3 import CloudError
     from ._models_py3 import CommonDataServiceForAppsEntityDataset
-    from ._models_py3 import CommonDataServiceForAppsEntityDatasetTypeProperties
-    from ._models_py3 import CommonDataServiceForAppsEntityDatasetTypePropertiesEntityName
     from ._models_py3 import CommonDataServiceForAppsLinkedService
-    from ._models_py3 import CommonDataServiceForAppsLinkedServiceTypeProperties
-    from ._models_py3 import CommonDataServiceForAppsLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import CommonDataServiceForAppsLinkedServiceTypePropertiesHostName
-    from ._models_py3 import CommonDataServiceForAppsLinkedServiceTypePropertiesOrganizationName
-    from ._models_py3 import CommonDataServiceForAppsLinkedServiceTypePropertiesPort
-    from ._models_py3 import CommonDataServiceForAppsLinkedServiceTypePropertiesServicePrincipalId
-    from ._models_py3 import CommonDataServiceForAppsLinkedServiceTypePropertiesServiceUri
-    from ._models_py3 import CommonDataServiceForAppsLinkedServiceTypePropertiesUsername
-    from ._models_py3 import CommonDataServiceForAppsSink
-    from ._models_py3 import CommonDataServiceForAppsSinkAlternateKeyName
-    from ._models_py3 import CommonDataServiceForAppsSinkIgnoreNullValues
-    from ._models_py3 import CommonDataServiceForAppsSource
-    from ._models_py3 import CommonDataServiceForAppsSourceQuery
-    from ._models_py3 import ComponentSetup
     from ._models_py3 import ConcurLinkedService
-    from ._models_py3 import ConcurLinkedServiceTypeProperties
-    from ._models_py3 import ConcurLinkedServiceTypePropertiesClientId
-    from ._models_py3 import ConcurLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import ConcurLinkedServiceTypePropertiesUseEncryptedEndpoints
-    from ._models_py3 import ConcurLinkedServiceTypePropertiesUseHostVerification
-    from ._models_py3 import ConcurLinkedServiceTypePropertiesUsePeerVerification
-    from ._models_py3 import ConcurLinkedServiceTypePropertiesUsername
     from ._models_py3 import ConcurObjectDataset
-    from ._models_py3 import ConcurSource
-    from ._models_py3 import ConcurSourceQuery
     from ._models_py3 import ControlActivity
     from ._models_py3 import CopyActivity
-    from ._models_py3 import CopyActivityTypeProperties
-    from ._models_py3 import CopyActivityTypePropertiesDataIntegrationUnits
-    from ._models_py3 import CopyActivityTypePropertiesEnableSkipIncompatibleRow
-    from ._models_py3 import CopyActivityTypePropertiesEnableStaging
-    from ._models_py3 import CopyActivityTypePropertiesParallelCopies
-    from ._models_py3 import CopyActivityTypePropertiesPreserveItem
-    from ._models_py3 import CopyActivityTypePropertiesPreserveRulesItem
-    from ._models_py3 import CopyActivityTypePropertiesTranslator
-    from ._models_py3 import CopyActivityTypePropertiesValidateDataConsistency
     from ._models_py3 import CopySink
-    from ._models_py3 import CopySinkMaxConcurrentConnections
-    from ._models_py3 import CopySinkRetryCount
-    from ._models_py3 import CopySinkRetryWait
-    from ._models_py3 import CopySinkWriteBatchSize
-    from ._models_py3 import CopySinkWriteBatchTimeout
     from ._models_py3 import CopySource
-    from ._models_py3 import CopySourceMaxConcurrentConnections
-    from ._models_py3 import CopySourceRetryCount
-    from ._models_py3 import CopySourceRetryWait
     from ._models_py3 import CosmosDbLinkedService
-    from ._models_py3 import CosmosDbLinkedServiceTypeProperties
-    from ._models_py3 import CosmosDbLinkedServiceTypePropertiesAccountEndpoint
-    from ._models_py3 import CosmosDbLinkedServiceTypePropertiesConnectionString
-    from ._models_py3 import CosmosDbLinkedServiceTypePropertiesDatabase
-    from ._models_py3 import CosmosDbLinkedServiceTypePropertiesEncryptedCredential
     from ._models_py3 import CosmosDbMongoDbApiCollectionDataset
-    from ._models_py3 import CosmosDbMongoDbApiCollectionDatasetTypeProperties
-    from ._models_py3 import CosmosDbMongoDbApiCollectionDatasetTypePropertiesCollection
     from ._models_py3 import CosmosDbMongoDbApiLinkedService
-    from ._models_py3 import CosmosDbMongoDbApiLinkedServiceTypeProperties
-    from ._models_py3 import CosmosDbMongoDbApiLinkedServiceTypePropertiesConnectionString
-    from ._models_py3 import CosmosDbMongoDbApiLinkedServiceTypePropertiesDatabase
-    from ._models_py3 import CosmosDbMongoDbApiSink
-    from ._models_py3 import CosmosDbMongoDbApiSinkWriteBehavior
-    from ._models_py3 import CosmosDbMongoDbApiSource
-    from ._models_py3 import CosmosDbMongoDbApiSourceBatchSize
-    from ._models_py3 import CosmosDbMongoDbApiSourceFilter
-    from ._models_py3 import CosmosDbMongoDbApiSourceQueryTimeout
     from ._models_py3 import CosmosDbSqlApiCollectionDataset
-    from ._models_py3 import CosmosDbSqlApiCollectionDatasetTypeProperties
-    from ._models_py3 import CosmosDbSqlApiCollectionDatasetTypePropertiesCollectionName
-    from ._models_py3 import CosmosDbSqlApiSink
-    from ._models_py3 import CosmosDbSqlApiSinkWriteBehavior
-    from ._models_py3 import CosmosDbSqlApiSource
-    from ._models_py3 import CosmosDbSqlApiSourcePageSize
-    from ._models_py3 import CosmosDbSqlApiSourcePreferredRegions
-    from ._models_py3 import CosmosDbSqlApiSourceQuery
     from ._models_py3 import CouchbaseLinkedService
-    from ._models_py3 import CouchbaseLinkedServiceTypeProperties
-    from ._models_py3 import CouchbaseLinkedServiceTypePropertiesConnectionString
-    from ._models_py3 import CouchbaseLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import CouchbaseSource
-    from ._models_py3 import CouchbaseSourceQuery
     from ._models_py3 import CouchbaseTableDataset
     from ._models_py3 import CreateDataFlowDebugSessionRequest
     from ._models_py3 import CreateDataFlowDebugSessionResponse
@@ -498,54 +89,29 @@ try:
     from ._models_py3 import CreateRunResponse
     from ._models_py3 import CustomActivity
     from ._models_py3 import CustomActivityReferenceObject
-    from ._models_py3 import CustomActivityTypeProperties
-    from ._models_py3 import CustomActivityTypePropertiesCommand
-    from ._models_py3 import CustomActivityTypePropertiesFolderPath
-    from ._models_py3 import CustomActivityTypePropertiesRetentionTimeInDays
     from ._models_py3 import CustomDataSourceLinkedService
-    from ._models_py3 import CustomDataSourceLinkedServiceTypeProperties
-    from ._models_py3 import CustomDataset
-    from ._models_py3 import CustomDatasetTypeProperties
     from ._models_py3 import CustomSetupBase
     from ._models_py3 import DataFlow
-    from ._models_py3 import DataFlowAnnotationsItem
     from ._models_py3 import DataFlowDebugCommandPayload
     from ._models_py3 import DataFlowDebugCommandRequest
     from ._models_py3 import DataFlowDebugCommandResponse
     from ._models_py3 import DataFlowDebugPackage
     from ._models_py3 import DataFlowDebugPackageDebugSettings
-    from ._models_py3 import DataFlowDebugPackageDebugSettingsDatasetParameters
     from ._models_py3 import DataFlowDebugResource
     from ._models_py3 import DataFlowDebugSessionInfo
     from ._models_py3 import DataFlowFolder
     from ._models_py3 import DataFlowListResponse
     from ._models_py3 import DataFlowReference
-    from ._models_py3 import DataFlowReferenceDatasetParameters
     from ._models_py3 import DataFlowResource
     from ._models_py3 import DataFlowSink
     from ._models_py3 import DataFlowSource
     from ._models_py3 import DataFlowSourceSetting
     from ._models_py3 import DataFlowStagingInfo
     from ._models_py3 import DataLakeAnalyticsUsqlActivity
-    from ._models_py3 import DataLakeAnalyticsUsqlActivityTypeProperties
-    from ._models_py3 import DataLakeAnalyticsUsqlActivityTypePropertiesCompilationMode
-    from ._models_py3 import DataLakeAnalyticsUsqlActivityTypePropertiesDegreeOfParallelism
-    from ._models_py3 import DataLakeAnalyticsUsqlActivityTypePropertiesPriority
-    from ._models_py3 import DataLakeAnalyticsUsqlActivityTypePropertiesRuntimeVersion
-    from ._models_py3 import DataLakeAnalyticsUsqlActivityTypePropertiesScriptPath
     from ._models_py3 import DatabricksNotebookActivity
-    from ._models_py3 import DatabricksNotebookActivityTypeProperties
-    from ._models_py3 import DatabricksNotebookActivityTypePropertiesNotebookPath
     from ._models_py3 import DatabricksSparkJarActivity
-    from ._models_py3 import DatabricksSparkJarActivityTypeProperties
-    from ._models_py3 import DatabricksSparkJarActivityTypePropertiesMainClassName
-    from ._models_py3 import DatabricksSparkJarActivityTypePropertiesParametersItem
     from ._models_py3 import DatabricksSparkPythonActivity
-    from ._models_py3 import DatabricksSparkPythonActivityTypeProperties
-    from ._models_py3 import DatabricksSparkPythonActivityTypePropertiesParametersItem
-    from ._models_py3 import DatabricksSparkPythonActivityTypePropertiesPythonFile
     from ._models_py3 import Dataset
-    from ._models_py3 import DatasetAnnotationsItem
     from ._models_py3 import DatasetBZip2Compression
     from ._models_py3 import DatasetCompression
     from ._models_py3 import DatasetDebugResource
@@ -554,152 +120,32 @@ try:
     from ._models_py3 import DatasetGZipCompression
     from ._models_py3 import DatasetListResponse
     from ._models_py3 import DatasetLocation
-    from ._models_py3 import DatasetLocationFileName
-    from ._models_py3 import DatasetLocationFolderPath
     from ._models_py3 import DatasetReference
     from ._models_py3 import DatasetResource
-    from ._models_py3 import DatasetSchema
     from ._models_py3 import DatasetStorageFormat
-    from ._models_py3 import DatasetStorageFormatDeserializer
-    from ._models_py3 import DatasetStorageFormatSerializer
-    from ._models_py3 import DatasetStructure
     from ._models_py3 import DatasetZipDeflateCompression
     from ._models_py3 import Db2LinkedService
-    from ._models_py3 import Db2LinkedServiceTypeProperties
-    from ._models_py3 import Db2LinkedServiceTypePropertiesCertificateCommonName
-    from ._models_py3 import Db2LinkedServiceTypePropertiesConnectionString
-    from ._models_py3 import Db2LinkedServiceTypePropertiesDatabase
-    from ._models_py3 import Db2LinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import Db2LinkedServiceTypePropertiesPackageCollection
-    from ._models_py3 import Db2LinkedServiceTypePropertiesServer
-    from ._models_py3 import Db2LinkedServiceTypePropertiesUsername
-    from ._models_py3 import Db2Source
-    from ._models_py3 import Db2SourceQuery
     from ._models_py3 import Db2TableDataset
-    from ._models_py3 import Db2TableDatasetTypeProperties
-    from ._models_py3 import Db2TableDatasetTypePropertiesSchema
-    from ._models_py3 import Db2TableDatasetTypePropertiesTable
-    from ._models_py3 import Db2TableDatasetTypePropertiesTableName
     from ._models_py3 import DeleteActivity
-    from ._models_py3 import DeleteActivityTypeProperties
-    from ._models_py3 import DeleteActivityTypePropertiesEnableLogging
-    from ._models_py3 import DeleteActivityTypePropertiesRecursive
     from ._models_py3 import DeleteDataFlowDebugSessionRequest
     from ._models_py3 import DelimitedTextDataset
-    from ._models_py3 import DelimitedTextDatasetTypeProperties
-    from ._models_py3 import DelimitedTextDatasetTypePropertiesColumnDelimiter
-    from ._models_py3 import DelimitedTextDatasetTypePropertiesEncodingName
-    from ._models_py3 import DelimitedTextDatasetTypePropertiesEscapeChar
-    from ._models_py3 import DelimitedTextDatasetTypePropertiesFirstRowAsHeader
-    from ._models_py3 import DelimitedTextDatasetTypePropertiesNullValue
-    from ._models_py3 import DelimitedTextDatasetTypePropertiesQuoteChar
-    from ._models_py3 import DelimitedTextDatasetTypePropertiesRowDelimiter
-    from ._models_py3 import DelimitedTextReadSettings
-    from ._models_py3 import DelimitedTextReadSettingsSkipLineCount
-    from ._models_py3 import DelimitedTextSink
-    from ._models_py3 import DelimitedTextSource
-    from ._models_py3 import DelimitedTextWriteSettings
-    from ._models_py3 import DelimitedTextWriteSettingsFileExtension
-    from ._models_py3 import DelimitedTextWriteSettingsQuoteAllText
     from ._models_py3 import DependencyReference
-    from ._models_py3 import DistcpSettings
-    from ._models_py3 import DistcpSettingsDistcpOptions
-    from ._models_py3 import DistcpSettingsResourceManagerEndpoint
-    from ._models_py3 import DistcpSettingsTempScriptPath
     from ._models_py3 import DocumentDbCollectionDataset
-    from ._models_py3 import DocumentDbCollectionDatasetTypeProperties
-    from ._models_py3 import DocumentDbCollectionDatasetTypePropertiesCollectionName
-    from ._models_py3 import DocumentDbCollectionSink
-    from ._models_py3 import DocumentDbCollectionSinkNestingSeparator
-    from ._models_py3 import DocumentDbCollectionSinkWriteBehavior
-    from ._models_py3 import DocumentDbCollectionSource
-    from ._models_py3 import DocumentDbCollectionSourceNestingSeparator
-    from ._models_py3 import DocumentDbCollectionSourceQuery
-    from ._models_py3 import DocumentDbCollectionSourceQueryTimeout
-    from ._models_py3 import DrillDatasetTypeProperties
-    from ._models_py3 import DrillDatasetTypePropertiesSchema
-    from ._models_py3 import DrillDatasetTypePropertiesTable
-    from ._models_py3 import DrillDatasetTypePropertiesTableName
     from ._models_py3 import DrillLinkedService
-    from ._models_py3 import DrillLinkedServiceTypeProperties
-    from ._models_py3 import DrillLinkedServiceTypePropertiesConnectionString
-    from ._models_py3 import DrillLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import DrillSource
-    from ._models_py3 import DrillSourceQuery
     from ._models_py3 import DrillTableDataset
-    from ._models_py3 import DwCopyCommandDefaultValue
-    from ._models_py3 import DwCopyCommandDefaultValueColumnName
-    from ._models_py3 import DwCopyCommandSettings
     from ._models_py3 import DynamicsAxLinkedService
-    from ._models_py3 import DynamicsAxLinkedServiceTypeProperties
-    from ._models_py3 import DynamicsAxLinkedServiceTypePropertiesAadResourceId
-    from ._models_py3 import DynamicsAxLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import DynamicsAxLinkedServiceTypePropertiesServicePrincipalId
-    from ._models_py3 import DynamicsAxLinkedServiceTypePropertiesTenant
-    from ._models_py3 import DynamicsAxLinkedServiceTypePropertiesUrl
     from ._models_py3 import DynamicsAxResourceDataset
-    from ._models_py3 import DynamicsAxResourceDatasetTypeProperties
-    from ._models_py3 import DynamicsAxResourceDatasetTypePropertiesPath
-    from ._models_py3 import DynamicsAxSource
-    from ._models_py3 import DynamicsAxSourceQuery
     from ._models_py3 import DynamicsCrmEntityDataset
-    from ._models_py3 import DynamicsCrmEntityDatasetTypeProperties
-    from ._models_py3 import DynamicsCrmEntityDatasetTypePropertiesEntityName
     from ._models_py3 import DynamicsCrmLinkedService
-    from ._models_py3 import DynamicsCrmLinkedServiceTypeProperties
-    from ._models_py3 import DynamicsCrmLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import DynamicsCrmLinkedServiceTypePropertiesHostName
-    from ._models_py3 import DynamicsCrmLinkedServiceTypePropertiesOrganizationName
-    from ._models_py3 import DynamicsCrmLinkedServiceTypePropertiesPort
-    from ._models_py3 import DynamicsCrmLinkedServiceTypePropertiesServicePrincipalId
-    from ._models_py3 import DynamicsCrmLinkedServiceTypePropertiesServiceUri
-    from ._models_py3 import DynamicsCrmLinkedServiceTypePropertiesUsername
-    from ._models_py3 import DynamicsCrmSink
-    from ._models_py3 import DynamicsCrmSinkAlternateKeyName
-    from ._models_py3 import DynamicsCrmSinkIgnoreNullValues
-    from ._models_py3 import DynamicsCrmSource
-    from ._models_py3 import DynamicsCrmSourceQuery
     from ._models_py3 import DynamicsEntityDataset
-    from ._models_py3 import DynamicsEntityDatasetTypeProperties
-    from ._models_py3 import DynamicsEntityDatasetTypePropertiesEntityName
     from ._models_py3 import DynamicsLinkedService
-    from ._models_py3 import DynamicsLinkedServiceTypeProperties
-    from ._models_py3 import DynamicsLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import DynamicsLinkedServiceTypePropertiesHostName
-    from ._models_py3 import DynamicsLinkedServiceTypePropertiesOrganizationName
-    from ._models_py3 import DynamicsLinkedServiceTypePropertiesPort
-    from ._models_py3 import DynamicsLinkedServiceTypePropertiesServicePrincipalId
-    from ._models_py3 import DynamicsLinkedServiceTypePropertiesServiceUri
-    from ._models_py3 import DynamicsLinkedServiceTypePropertiesUsername
-    from ._models_py3 import DynamicsSink
-    from ._models_py3 import DynamicsSinkAlternateKeyName
-    from ._models_py3 import DynamicsSinkIgnoreNullValues
-    from ._models_py3 import DynamicsSource
-    from ._models_py3 import DynamicsSourceQuery
     from ._models_py3 import EloquaLinkedService
-    from ._models_py3 import EloquaLinkedServiceTypeProperties
-    from ._models_py3 import EloquaLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import EloquaLinkedServiceTypePropertiesEndpoint
-    from ._models_py3 import EloquaLinkedServiceTypePropertiesUseEncryptedEndpoints
-    from ._models_py3 import EloquaLinkedServiceTypePropertiesUseHostVerification
-    from ._models_py3 import EloquaLinkedServiceTypePropertiesUsePeerVerification
-    from ._models_py3 import EloquaLinkedServiceTypePropertiesUsername
     from ._models_py3 import EloquaObjectDataset
-    from ._models_py3 import EloquaSource
-    from ._models_py3 import EloquaSourceQuery
     from ._models_py3 import EntityReference
-    from ._models_py3 import EnvironmentVariableSetup
-    from ._models_py3 import EnvironmentVariableSetupTypeProperties
     from ._models_py3 import ExecuteDataFlowActivity
-    from ._models_py3 import ExecuteDataFlowActivityTypeProperties
     from ._models_py3 import ExecuteDataFlowActivityTypePropertiesCompute
     from ._models_py3 import ExecutePipelineActivity
-    from ._models_py3 import ExecutePipelineActivityTypeProperties
     from ._models_py3 import ExecuteSsisPackageActivity
-    from ._models_py3 import ExecuteSsisPackageActivityTypeProperties
-    from ._models_py3 import ExecuteSsisPackageActivityTypePropertiesEnvironmentPath
-    from ._models_py3 import ExecuteSsisPackageActivityTypePropertiesLoggingLevel
-    from ._models_py3 import ExecuteSsisPackageActivityTypePropertiesRuntime
     from ._models_py3 import ExecutionActivity
     from ._models_py3 import ExposureControlRequest
     from ._models_py3 import ExposureControlResponse
@@ -708,306 +154,48 @@ try:
     from ._models_py3 import FactoryGitHubConfiguration
     from ._models_py3 import FactoryIdentity
     from ._models_py3 import FactoryListResponse
-    from ._models_py3 import FactoryProperties
     from ._models_py3 import FactoryRepoConfiguration
     from ._models_py3 import FactoryRepoUpdate
     from ._models_py3 import FactoryUpdateParameters
     from ._models_py3 import FactoryVstsConfiguration
     from ._models_py3 import FileServerLinkedService
-    from ._models_py3 import FileServerLinkedServiceTypeProperties
-    from ._models_py3 import FileServerLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import FileServerLinkedServiceTypePropertiesHost
-    from ._models_py3 import FileServerLinkedServiceTypePropertiesUserId
-    from ._models_py3 import FileServerLocation
-    from ._models_py3 import FileServerReadSettings
-    from ._models_py3 import FileServerReadSettingsFileListPath
-    from ._models_py3 import FileServerReadSettingsModifiedDatetimeEnd
-    from ._models_py3 import FileServerReadSettingsModifiedDatetimeStart
-    from ._models_py3 import FileServerReadSettingsRecursive
-    from ._models_py3 import FileServerReadSettingsWildcardFileName
-    from ._models_py3 import FileServerReadSettingsWildcardFolderPath
-    from ._models_py3 import FileServerWriteSettings
     from ._models_py3 import FileShareDataset
-    from ._models_py3 import FileShareDatasetTypeProperties
-    from ._models_py3 import FileShareDatasetTypePropertiesFileFilter
-    from ._models_py3 import FileShareDatasetTypePropertiesFileName
-    from ._models_py3 import FileShareDatasetTypePropertiesFolderPath
-    from ._models_py3 import FileShareDatasetTypePropertiesModifiedDatetimeEnd
-    from ._models_py3 import FileShareDatasetTypePropertiesModifiedDatetimeStart
-    from ._models_py3 import FileSystemSink
-    from ._models_py3 import FileSystemSinkCopyBehavior
-    from ._models_py3 import FileSystemSource
-    from ._models_py3 import FileSystemSourceRecursive
     from ._models_py3 import FilterActivity
-    from ._models_py3 import FilterActivityTypeProperties
     from ._models_py3 import ForEachActivity
-    from ._models_py3 import ForEachActivityTypeProperties
-    from ._models_py3 import FormatReadSettings
-    from ._models_py3 import FormatWriteSettings
-    from ._models_py3 import FtpReadSettings
-    from ._models_py3 import FtpReadSettingsFileListPath
-    from ._models_py3 import FtpReadSettingsRecursive
-    from ._models_py3 import FtpReadSettingsWildcardFileName
-    from ._models_py3 import FtpReadSettingsWildcardFolderPath
     from ._models_py3 import FtpServerLinkedService
-    from ._models_py3 import FtpServerLinkedServiceTypeProperties
-    from ._models_py3 import FtpServerLinkedServiceTypePropertiesEnableServerCertificateValidation
-    from ._models_py3 import FtpServerLinkedServiceTypePropertiesEnableSsl
-    from ._models_py3 import FtpServerLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import FtpServerLinkedServiceTypePropertiesHost
-    from ._models_py3 import FtpServerLinkedServiceTypePropertiesPort
-    from ._models_py3 import FtpServerLinkedServiceTypePropertiesUserName
-    from ._models_py3 import FtpServerLocation
-    from ._models_py3 import GenericDatasetTypeProperties
-    from ._models_py3 import GenericDatasetTypePropertiesTableName
     from ._models_py3 import GetDataFactoryOperationStatusResponse
     from ._models_py3 import GetMetadataActivity
-    from ._models_py3 import GetMetadataActivityTypeProperties
-    from ._models_py3 import GetMetadataActivityTypePropertiesFieldListItem
     from ._models_py3 import GetSsisObjectMetadataRequest
     from ._models_py3 import GitHubAccessTokenRequest
     from ._models_py3 import GitHubAccessTokenResponse
     from ._models_py3 import GoogleAdWordsLinkedService
-    from ._models_py3 import GoogleAdWordsLinkedServiceTypeProperties
-    from ._models_py3 import GoogleAdWordsLinkedServiceTypePropertiesClientCustomerId
-    from ._models_py3 import GoogleAdWordsLinkedServiceTypePropertiesClientId
-    from ._models_py3 import GoogleAdWordsLinkedServiceTypePropertiesEmail
-    from ._models_py3 import GoogleAdWordsLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import GoogleAdWordsLinkedServiceTypePropertiesKeyFilePath
-    from ._models_py3 import GoogleAdWordsLinkedServiceTypePropertiesTrustedCertPath
-    from ._models_py3 import GoogleAdWordsLinkedServiceTypePropertiesUseSystemTrustStore
     from ._models_py3 import GoogleAdWordsObjectDataset
-    from ._models_py3 import GoogleAdWordsSource
-    from ._models_py3 import GoogleAdWordsSourceQuery
-    from ._models_py3 import GoogleBigQueryDatasetTypeProperties
-    from ._models_py3 import GoogleBigQueryDatasetTypePropertiesDataset
-    from ._models_py3 import GoogleBigQueryDatasetTypePropertiesTable
-    from ._models_py3 import GoogleBigQueryDatasetTypePropertiesTableName
     from ._models_py3 import GoogleBigQueryLinkedService
-    from ._models_py3 import GoogleBigQueryLinkedServiceTypeProperties
-    from ._models_py3 import GoogleBigQueryLinkedServiceTypePropertiesAdditionalProjects
-    from ._models_py3 import GoogleBigQueryLinkedServiceTypePropertiesClientId
-    from ._models_py3 import GoogleBigQueryLinkedServiceTypePropertiesEmail
-    from ._models_py3 import GoogleBigQueryLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import GoogleBigQueryLinkedServiceTypePropertiesKeyFilePath
-    from ._models_py3 import GoogleBigQueryLinkedServiceTypePropertiesProject
-    from ._models_py3 import GoogleBigQueryLinkedServiceTypePropertiesRequestGoogleDriveScope
-    from ._models_py3 import GoogleBigQueryLinkedServiceTypePropertiesTrustedCertPath
-    from ._models_py3 import GoogleBigQueryLinkedServiceTypePropertiesUseSystemTrustStore
     from ._models_py3 import GoogleBigQueryObjectDataset
-    from ._models_py3 import GoogleBigQuerySource
-    from ._models_py3 import GoogleBigQuerySourceQuery
     from ._models_py3 import GoogleCloudStorageLinkedService
-    from ._models_py3 import GoogleCloudStorageLinkedServiceTypeProperties
-    from ._models_py3 import GoogleCloudStorageLinkedServiceTypePropertiesAccessKeyId
-    from ._models_py3 import GoogleCloudStorageLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import GoogleCloudStorageLinkedServiceTypePropertiesServiceUrl
-    from ._models_py3 import GoogleCloudStorageLocation
-    from ._models_py3 import GoogleCloudStorageLocationBucketName
-    from ._models_py3 import GoogleCloudStorageLocationVersion
-    from ._models_py3 import GoogleCloudStorageReadSettings
-    from ._models_py3 import GoogleCloudStorageReadSettingsFileListPath
-    from ._models_py3 import GoogleCloudStorageReadSettingsModifiedDatetimeEnd
-    from ._models_py3 import GoogleCloudStorageReadSettingsModifiedDatetimeStart
-    from ._models_py3 import GoogleCloudStorageReadSettingsPrefix
-    from ._models_py3 import GoogleCloudStorageReadSettingsRecursive
-    from ._models_py3 import GoogleCloudStorageReadSettingsWildcardFileName
-    from ._models_py3 import GoogleCloudStorageReadSettingsWildcardFolderPath
-    from ._models_py3 import GreenplumDatasetTypeProperties
-    from ._models_py3 import GreenplumDatasetTypePropertiesSchema
-    from ._models_py3 import GreenplumDatasetTypePropertiesTable
-    from ._models_py3 import GreenplumDatasetTypePropertiesTableName
     from ._models_py3 import GreenplumLinkedService
-    from ._models_py3 import GreenplumLinkedServiceTypeProperties
-    from ._models_py3 import GreenplumLinkedServiceTypePropertiesConnectionString
-    from ._models_py3 import GreenplumLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import GreenplumSource
-    from ._models_py3 import GreenplumSourceQuery
     from ._models_py3 import GreenplumTableDataset
     from ._models_py3 import HBaseLinkedService
-    from ._models_py3 import HBaseLinkedServiceTypeProperties
-    from ._models_py3 import HBaseLinkedServiceTypePropertiesAllowHostNameCnMismatch
-    from ._models_py3 import HBaseLinkedServiceTypePropertiesAllowSelfSignedServerCert
-    from ._models_py3 import HBaseLinkedServiceTypePropertiesEnableSsl
-    from ._models_py3 import HBaseLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import HBaseLinkedServiceTypePropertiesHost
-    from ._models_py3 import HBaseLinkedServiceTypePropertiesHttpPath
-    from ._models_py3 import HBaseLinkedServiceTypePropertiesPort
-    from ._models_py3 import HBaseLinkedServiceTypePropertiesTrustedCertPath
-    from ._models_py3 import HBaseLinkedServiceTypePropertiesUsername
     from ._models_py3 import HBaseObjectDataset
-    from ._models_py3 import HBaseSource
-    from ._models_py3 import HBaseSourceQuery
     from ._models_py3 import HdInsightHiveActivity
-    from ._models_py3 import HdInsightHiveActivityTypeProperties
-    from ._models_py3 import HdInsightHiveActivityTypePropertiesArgumentsItem
-    from ._models_py3 import HdInsightHiveActivityTypePropertiesScriptPath
-    from ._models_py3 import HdInsightHiveActivityTypePropertiesVariablesItem
     from ._models_py3 import HdInsightLinkedService
-    from ._models_py3 import HdInsightLinkedServiceTypeProperties
-    from ._models_py3 import HdInsightLinkedServiceTypePropertiesClusterUri
-    from ._models_py3 import HdInsightLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import HdInsightLinkedServiceTypePropertiesFileSystem
-    from ._models_py3 import HdInsightLinkedServiceTypePropertiesIsEspEnabled
-    from ._models_py3 import HdInsightLinkedServiceTypePropertiesUserName
     from ._models_py3 import HdInsightMapReduceActivity
-    from ._models_py3 import HdInsightMapReduceActivityTypeProperties
-    from ._models_py3 import HdInsightMapReduceActivityTypePropertiesArgumentsItem
-    from ._models_py3 import HdInsightMapReduceActivityTypePropertiesClassName
-    from ._models_py3 import HdInsightMapReduceActivityTypePropertiesJarFilePath
-    from ._models_py3 import HdInsightMapReduceActivityTypePropertiesJarLibsItem
     from ._models_py3 import HdInsightOnDemandLinkedService
-    from ._models_py3 import HdInsightOnDemandLinkedServiceTypeProperties
-    from ._models_py3 import HdInsightOnDemandLinkedServiceTypePropertiesClusterNamePrefix
-    from ._models_py3 import HdInsightOnDemandLinkedServiceTypePropertiesClusterResourceGroup
-    from ._models_py3 import HdInsightOnDemandLinkedServiceTypePropertiesClusterSize
-    from ._models_py3 import HdInsightOnDemandLinkedServiceTypePropertiesClusterSshUserName
-    from ._models_py3 import HdInsightOnDemandLinkedServiceTypePropertiesClusterType
-    from ._models_py3 import HdInsightOnDemandLinkedServiceTypePropertiesClusterUserName
-    from ._models_py3 import HdInsightOnDemandLinkedServiceTypePropertiesCoreConfiguration
-    from ._models_py3 import HdInsightOnDemandLinkedServiceTypePropertiesDataNodeSize
-    from ._models_py3 import HdInsightOnDemandLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import HdInsightOnDemandLinkedServiceTypePropertiesHBaseConfiguration
-    from ._models_py3 import HdInsightOnDemandLinkedServiceTypePropertiesHdfsConfiguration
-    from ._models_py3 import HdInsightOnDemandLinkedServiceTypePropertiesHeadNodeSize
-    from ._models_py3 import HdInsightOnDemandLinkedServiceTypePropertiesHiveConfiguration
-    from ._models_py3 import HdInsightOnDemandLinkedServiceTypePropertiesHostSubscriptionId
-    from ._models_py3 import HdInsightOnDemandLinkedServiceTypePropertiesMapReduceConfiguration
-    from ._models_py3 import HdInsightOnDemandLinkedServiceTypePropertiesOozieConfiguration
-    from ._models_py3 import HdInsightOnDemandLinkedServiceTypePropertiesServicePrincipalId
-    from ._models_py3 import HdInsightOnDemandLinkedServiceTypePropertiesSparkVersion
-    from ._models_py3 import HdInsightOnDemandLinkedServiceTypePropertiesStormConfiguration
-    from ._models_py3 import HdInsightOnDemandLinkedServiceTypePropertiesSubnetName
-    from ._models_py3 import HdInsightOnDemandLinkedServiceTypePropertiesTenant
-    from ._models_py3 import HdInsightOnDemandLinkedServiceTypePropertiesTimeToLive
-    from ._models_py3 import HdInsightOnDemandLinkedServiceTypePropertiesVersion
-    from ._models_py3 import HdInsightOnDemandLinkedServiceTypePropertiesVirtualNetworkId
-    from ._models_py3 import HdInsightOnDemandLinkedServiceTypePropertiesYarnConfiguration
-    from ._models_py3 import HdInsightOnDemandLinkedServiceTypePropertiesZookeeperNodeSize
     from ._models_py3 import HdInsightPigActivity
-    from ._models_py3 import HdInsightPigActivityTypeProperties
-    from ._models_py3 import HdInsightPigActivityTypePropertiesArguments
-    from ._models_py3 import HdInsightPigActivityTypePropertiesScriptPath
     from ._models_py3 import HdInsightSparkActivity
-    from ._models_py3 import HdInsightSparkActivityTypeProperties
-    from ._models_py3 import HdInsightSparkActivityTypePropertiesArgumentsItem
-    from ._models_py3 import HdInsightSparkActivityTypePropertiesEntryFilePath
-    from ._models_py3 import HdInsightSparkActivityTypePropertiesProxyUser
-    from ._models_py3 import HdInsightSparkActivityTypePropertiesRootPath
     from ._models_py3 import HdInsightStreamingActivity
-    from ._models_py3 import HdInsightStreamingActivityTypeProperties
-    from ._models_py3 import HdInsightStreamingActivityTypePropertiesArgumentsItem
-    from ._models_py3 import HdInsightStreamingActivityTypePropertiesCombiner
-    from ._models_py3 import HdInsightStreamingActivityTypePropertiesCommandEnvironmentItem
-    from ._models_py3 import HdInsightStreamingActivityTypePropertiesFilePathsItem
-    from ._models_py3 import HdInsightStreamingActivityTypePropertiesInput
-    from ._models_py3 import HdInsightStreamingActivityTypePropertiesMapper
-    from ._models_py3 import HdInsightStreamingActivityTypePropertiesOutput
-    from ._models_py3 import HdInsightStreamingActivityTypePropertiesReducer
     from ._models_py3 import HdfsLinkedService
-    from ._models_py3 import HdfsLinkedServiceTypeProperties
-    from ._models_py3 import HdfsLinkedServiceTypePropertiesAuthenticationType
-    from ._models_py3 import HdfsLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import HdfsLinkedServiceTypePropertiesUrl
-    from ._models_py3 import HdfsLinkedServiceTypePropertiesUserName
-    from ._models_py3 import HdfsLocation
-    from ._models_py3 import HdfsReadSettings
-    from ._models_py3 import HdfsReadSettingsFileListPath
-    from ._models_py3 import HdfsReadSettingsModifiedDatetimeEnd
-    from ._models_py3 import HdfsReadSettingsModifiedDatetimeStart
-    from ._models_py3 import HdfsReadSettingsRecursive
-    from ._models_py3 import HdfsReadSettingsWildcardFileName
-    from ._models_py3 import HdfsReadSettingsWildcardFolderPath
-    from ._models_py3 import HdfsSource
-    from ._models_py3 import HdfsSourceRecursive
-    from ._models_py3 import HiveDatasetTypeProperties
-    from ._models_py3 import HiveDatasetTypePropertiesSchema
-    from ._models_py3 import HiveDatasetTypePropertiesTable
-    from ._models_py3 import HiveDatasetTypePropertiesTableName
     from ._models_py3 import HiveLinkedService
-    from ._models_py3 import HiveLinkedServiceTypeProperties
-    from ._models_py3 import HiveLinkedServiceTypePropertiesAllowHostNameCnMismatch
-    from ._models_py3 import HiveLinkedServiceTypePropertiesAllowSelfSignedServerCert
-    from ._models_py3 import HiveLinkedServiceTypePropertiesEnableSsl
-    from ._models_py3 import HiveLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import HiveLinkedServiceTypePropertiesHost
-    from ._models_py3 import HiveLinkedServiceTypePropertiesHttpPath
-    from ._models_py3 import HiveLinkedServiceTypePropertiesPort
-    from ._models_py3 import HiveLinkedServiceTypePropertiesServiceDiscoveryMode
-    from ._models_py3 import HiveLinkedServiceTypePropertiesTrustedCertPath
-    from ._models_py3 import HiveLinkedServiceTypePropertiesUseNativeQuery
-    from ._models_py3 import HiveLinkedServiceTypePropertiesUseSystemTrustStore
-    from ._models_py3 import HiveLinkedServiceTypePropertiesUsername
-    from ._models_py3 import HiveLinkedServiceTypePropertiesZooKeeperNameSpace
     from ._models_py3 import HiveObjectDataset
-    from ._models_py3 import HiveSource
-    from ._models_py3 import HiveSourceQuery
     from ._models_py3 import HttpDataset
-    from ._models_py3 import HttpDatasetTypeProperties
-    from ._models_py3 import HttpDatasetTypePropertiesAdditionalHeaders
-    from ._models_py3 import HttpDatasetTypePropertiesRelativeUrl
-    from ._models_py3 import HttpDatasetTypePropertiesRequestBody
-    from ._models_py3 import HttpDatasetTypePropertiesRequestMethod
     from ._models_py3 import HttpLinkedService
-    from ._models_py3 import HttpLinkedServiceTypeProperties
-    from ._models_py3 import HttpLinkedServiceTypePropertiesCertThumbprint
-    from ._models_py3 import HttpLinkedServiceTypePropertiesEmbeddedCertData
-    from ._models_py3 import HttpLinkedServiceTypePropertiesEnableServerCertificateValidation
-    from ._models_py3 import HttpLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import HttpLinkedServiceTypePropertiesUrl
-    from ._models_py3 import HttpLinkedServiceTypePropertiesUserName
-    from ._models_py3 import HttpReadSettings
-    from ._models_py3 import HttpReadSettingsAdditionalHeaders
-    from ._models_py3 import HttpReadSettingsRequestBody
-    from ._models_py3 import HttpReadSettingsRequestMethod
-    from ._models_py3 import HttpReadSettingsRequestTimeout
-    from ._models_py3 import HttpServerLocation
-    from ._models_py3 import HttpServerLocationRelativeUrl
-    from ._models_py3 import HttpSource
-    from ._models_py3 import HttpSourceHttpRequestTimeout
     from ._models_py3 import HubspotLinkedService
-    from ._models_py3 import HubspotLinkedServiceTypeProperties
-    from ._models_py3 import HubspotLinkedServiceTypePropertiesClientId
-    from ._models_py3 import HubspotLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import HubspotLinkedServiceTypePropertiesUseEncryptedEndpoints
-    from ._models_py3 import HubspotLinkedServiceTypePropertiesUseHostVerification
-    from ._models_py3 import HubspotLinkedServiceTypePropertiesUsePeerVerification
     from ._models_py3 import HubspotObjectDataset
-    from ._models_py3 import HubspotSource
-    from ._models_py3 import HubspotSourceQuery
     from ._models_py3 import IfConditionActivity
-    from ._models_py3 import IfConditionActivityTypeProperties
-    from ._models_py3 import ImpalaDatasetTypeProperties
-    from ._models_py3 import ImpalaDatasetTypePropertiesSchema
-    from ._models_py3 import ImpalaDatasetTypePropertiesTable
-    from ._models_py3 import ImpalaDatasetTypePropertiesTableName
     from ._models_py3 import ImpalaLinkedService
-    from ._models_py3 import ImpalaLinkedServiceTypeProperties
-    from ._models_py3 import ImpalaLinkedServiceTypePropertiesAllowHostNameCnMismatch
-    from ._models_py3 import ImpalaLinkedServiceTypePropertiesAllowSelfSignedServerCert
-    from ._models_py3 import ImpalaLinkedServiceTypePropertiesEnableSsl
-    from ._models_py3 import ImpalaLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import ImpalaLinkedServiceTypePropertiesHost
-    from ._models_py3 import ImpalaLinkedServiceTypePropertiesPort
-    from ._models_py3 import ImpalaLinkedServiceTypePropertiesTrustedCertPath
-    from ._models_py3 import ImpalaLinkedServiceTypePropertiesUseSystemTrustStore
-    from ._models_py3 import ImpalaLinkedServiceTypePropertiesUsername
     from ._models_py3 import ImpalaObjectDataset
-    from ._models_py3 import ImpalaSource
-    from ._models_py3 import ImpalaSourceQuery
     from ._models_py3 import InformixLinkedService
-    from ._models_py3 import InformixLinkedServiceTypeProperties
-    from ._models_py3 import InformixLinkedServiceTypePropertiesAuthenticationType
-    from ._models_py3 import InformixLinkedServiceTypePropertiesConnectionString
-    from ._models_py3 import InformixLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import InformixLinkedServiceTypePropertiesUserName
-    from ._models_py3 import InformixSink
-    from ._models_py3 import InformixSinkPreCopyScript
-    from ._models_py3 import InformixSource
-    from ._models_py3 import InformixSourceQuery
     from ._models_py3 import InformixTableDataset
-    from ._models_py3 import InformixTableDatasetTypeProperties
-    from ._models_py3 import InformixTableDatasetTypePropertiesTableName
     from ._models_py3 import IntegrationRuntime
     from ._models_py3 import IntegrationRuntimeAuthKeys
     from ._models_py3 import IntegrationRuntimeComputeProperties
@@ -1030,194 +218,49 @@ try:
     from ._models_py3 import IntegrationRuntimeStatusResponse
     from ._models_py3 import IntegrationRuntimeVNetProperties
     from ._models_py3 import JiraLinkedService
-    from ._models_py3 import JiraLinkedServiceTypeProperties
-    from ._models_py3 import JiraLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import JiraLinkedServiceTypePropertiesHost
-    from ._models_py3 import JiraLinkedServiceTypePropertiesPort
-    from ._models_py3 import JiraLinkedServiceTypePropertiesUseEncryptedEndpoints
-    from ._models_py3 import JiraLinkedServiceTypePropertiesUseHostVerification
-    from ._models_py3 import JiraLinkedServiceTypePropertiesUsePeerVerification
-    from ._models_py3 import JiraLinkedServiceTypePropertiesUsername
     from ._models_py3 import JiraObjectDataset
-    from ._models_py3 import JiraSource
-    from ._models_py3 import JiraSourceQuery
     from ._models_py3 import JsonDataset
-    from ._models_py3 import JsonDatasetTypeProperties
-    from ._models_py3 import JsonDatasetTypePropertiesEncodingName
-    from ._models_py3 import JsonFormat
-    from ._models_py3 import JsonFormatEncodingName
-    from ._models_py3 import JsonFormatJsonNodeReference
-    from ._models_py3 import JsonFormatJsonPathDefinition
-    from ._models_py3 import JsonFormatNestingSeparator
-    from ._models_py3 import JsonSink
-    from ._models_py3 import JsonSource
-    from ._models_py3 import JsonWriteSettings
-    from ._models_py3 import LicensedComponentSetupTypeProperties
     from ._models_py3 import LinkedIntegrationRuntime
     from ._models_py3 import LinkedIntegrationRuntimeKeyAuthorization
     from ._models_py3 import LinkedIntegrationRuntimeRbacAuthorization
     from ._models_py3 import LinkedIntegrationRuntimeRequest
     from ._models_py3 import LinkedIntegrationRuntimeType
     from ._models_py3 import LinkedService
-    from ._models_py3 import LinkedServiceAnnotationsItem
     from ._models_py3 import LinkedServiceDebugResource
     from ._models_py3 import LinkedServiceListResponse
     from ._models_py3 import LinkedServiceReference
     from ._models_py3 import LinkedServiceResource
     from ._models_py3 import LogStorageSettings
-    from ._models_py3 import LogStorageSettingsPath
     from ._models_py3 import LookupActivity
-    from ._models_py3 import LookupActivityTypeProperties
-    from ._models_py3 import LookupActivityTypePropertiesFirstRowOnly
     from ._models_py3 import MagentoLinkedService
-    from ._models_py3 import MagentoLinkedServiceTypeProperties
-    from ._models_py3 import MagentoLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import MagentoLinkedServiceTypePropertiesHost
-    from ._models_py3 import MagentoLinkedServiceTypePropertiesUseEncryptedEndpoints
-    from ._models_py3 import MagentoLinkedServiceTypePropertiesUseHostVerification
-    from ._models_py3 import MagentoLinkedServiceTypePropertiesUsePeerVerification
     from ._models_py3 import MagentoObjectDataset
-    from ._models_py3 import MagentoSource
-    from ._models_py3 import MagentoSourceQuery
     from ._models_py3 import ManagedIntegrationRuntime
     from ._models_py3 import ManagedIntegrationRuntimeError
     from ._models_py3 import ManagedIntegrationRuntimeNode
     from ._models_py3 import ManagedIntegrationRuntimeOperationResult
     from ._models_py3 import ManagedIntegrationRuntimeStatus
-    from ._models_py3 import ManagedIntegrationRuntimeStatusTypeProperties
-    from ._models_py3 import ManagedIntegrationRuntimeTypeProperties
     from ._models_py3 import MappingDataFlow
-    from ._models_py3 import MappingDataFlowTypeProperties
     from ._models_py3 import MariaDbLinkedService
-    from ._models_py3 import MariaDbLinkedServiceTypeProperties
-    from ._models_py3 import MariaDbLinkedServiceTypePropertiesConnectionString
-    from ._models_py3 import MariaDbLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import MariaDbSource
-    from ._models_py3 import MariaDbSourceQuery
     from ._models_py3 import MariaDbTableDataset
     from ._models_py3 import MarketoLinkedService
-    from ._models_py3 import MarketoLinkedServiceTypeProperties
-    from ._models_py3 import MarketoLinkedServiceTypePropertiesClientId
-    from ._models_py3 import MarketoLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import MarketoLinkedServiceTypePropertiesEndpoint
-    from ._models_py3 import MarketoLinkedServiceTypePropertiesUseEncryptedEndpoints
-    from ._models_py3 import MarketoLinkedServiceTypePropertiesUseHostVerification
-    from ._models_py3 import MarketoLinkedServiceTypePropertiesUsePeerVerification
     from ._models_py3 import MarketoObjectDataset
-    from ._models_py3 import MarketoSource
-    from ._models_py3 import MarketoSourceQuery
     from ._models_py3 import MicrosoftAccessLinkedService
-    from ._models_py3 import MicrosoftAccessLinkedServiceTypeProperties
-    from ._models_py3 import MicrosoftAccessLinkedServiceTypePropertiesAuthenticationType
-    from ._models_py3 import MicrosoftAccessLinkedServiceTypePropertiesConnectionString
-    from ._models_py3 import MicrosoftAccessLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import MicrosoftAccessLinkedServiceTypePropertiesUserName
-    from ._models_py3 import MicrosoftAccessSink
-    from ._models_py3 import MicrosoftAccessSinkPreCopyScript
-    from ._models_py3 import MicrosoftAccessSource
-    from ._models_py3 import MicrosoftAccessSourceQuery
     from ._models_py3 import MicrosoftAccessTableDataset
-    from ._models_py3 import MicrosoftAccessTableDatasetTypeProperties
-    from ._models_py3 import MicrosoftAccessTableDatasetTypePropertiesTableName
     from ._models_py3 import MongoDbCollectionDataset
-    from ._models_py3 import MongoDbCollectionDatasetTypeProperties
-    from ._models_py3 import MongoDbCollectionDatasetTypePropertiesCollectionName
-    from ._models_py3 import MongoDbCursorMethodsProperties
-    from ._models_py3 import MongoDbCursorMethodsPropertiesLimit
-    from ._models_py3 import MongoDbCursorMethodsPropertiesProject
-    from ._models_py3 import MongoDbCursorMethodsPropertiesSkip
-    from ._models_py3 import MongoDbCursorMethodsPropertiesSort
     from ._models_py3 import MongoDbLinkedService
-    from ._models_py3 import MongoDbLinkedServiceTypeProperties
-    from ._models_py3 import MongoDbLinkedServiceTypePropertiesAllowSelfSignedServerCert
-    from ._models_py3 import MongoDbLinkedServiceTypePropertiesAuthSource
-    from ._models_py3 import MongoDbLinkedServiceTypePropertiesDatabaseName
-    from ._models_py3 import MongoDbLinkedServiceTypePropertiesEnableSsl
-    from ._models_py3 import MongoDbLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import MongoDbLinkedServiceTypePropertiesPort
-    from ._models_py3 import MongoDbLinkedServiceTypePropertiesServer
-    from ._models_py3 import MongoDbLinkedServiceTypePropertiesUsername
-    from ._models_py3 import MongoDbSource
-    from ._models_py3 import MongoDbSourceQuery
     from ._models_py3 import MongoDbV2CollectionDataset
-    from ._models_py3 import MongoDbV2CollectionDatasetTypeProperties
-    from ._models_py3 import MongoDbV2CollectionDatasetTypePropertiesCollection
     from ._models_py3 import MongoDbV2LinkedService
-    from ._models_py3 import MongoDbV2LinkedServiceTypeProperties
-    from ._models_py3 import MongoDbV2LinkedServiceTypePropertiesConnectionString
-    from ._models_py3 import MongoDbV2LinkedServiceTypePropertiesDatabase
-    from ._models_py3 import MongoDbV2Source
-    from ._models_py3 import MongoDbV2SourceBatchSize
-    from ._models_py3 import MongoDbV2SourceFilter
-    from ._models_py3 import MongoDbV2SourceQueryTimeout
     from ._models_py3 import MultiplePipelineTrigger
     from ._models_py3 import MySqlLinkedService
-    from ._models_py3 import MySqlLinkedServiceTypeProperties
-    from ._models_py3 import MySqlLinkedServiceTypePropertiesConnectionString
-    from ._models_py3 import MySqlLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import MySqlSource
-    from ._models_py3 import MySqlSourceQuery
     from ._models_py3 import MySqlTableDataset
-    from ._models_py3 import MySqlTableDatasetTypeProperties
-    from ._models_py3 import MySqlTableDatasetTypePropertiesTableName
     from ._models_py3 import NetezzaLinkedService
-    from ._models_py3 import NetezzaLinkedServiceTypeProperties
-    from ._models_py3 import NetezzaLinkedServiceTypePropertiesConnectionString
-    from ._models_py3 import NetezzaLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import NetezzaPartitionSettings
-    from ._models_py3 import NetezzaPartitionSettingsPartitionColumnName
-    from ._models_py3 import NetezzaPartitionSettingsPartitionLowerBound
-    from ._models_py3 import NetezzaPartitionSettingsPartitionUpperBound
-    from ._models_py3 import NetezzaSource
-    from ._models_py3 import NetezzaSourceQuery
     from ._models_py3 import NetezzaTableDataset
-    from ._models_py3 import NetezzaTableDatasetTypeProperties
-    from ._models_py3 import NetezzaTableDatasetTypePropertiesSchema
-    from ._models_py3 import NetezzaTableDatasetTypePropertiesTable
-    from ._models_py3 import NetezzaTableDatasetTypePropertiesTableName
     from ._models_py3 import ODataLinkedService
-    from ._models_py3 import ODataLinkedServiceTypeProperties
-    from ._models_py3 import ODataLinkedServiceTypePropertiesAadResourceId
-    from ._models_py3 import ODataLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import ODataLinkedServiceTypePropertiesServicePrincipalId
-    from ._models_py3 import ODataLinkedServiceTypePropertiesTenant
-    from ._models_py3 import ODataLinkedServiceTypePropertiesUrl
-    from ._models_py3 import ODataLinkedServiceTypePropertiesUserName
     from ._models_py3 import ODataResourceDataset
-    from ._models_py3 import ODataResourceDatasetTypeProperties
-    from ._models_py3 import ODataResourceDatasetTypePropertiesPath
-    from ._models_py3 import ODataSource
-    from ._models_py3 import ODataSourceQuery
     from ._models_py3 import OdbcLinkedService
-    from ._models_py3 import OdbcLinkedServiceTypeProperties
-    from ._models_py3 import OdbcLinkedServiceTypePropertiesAuthenticationType
-    from ._models_py3 import OdbcLinkedServiceTypePropertiesConnectionString
-    from ._models_py3 import OdbcLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import OdbcLinkedServiceTypePropertiesUserName
-    from ._models_py3 import OdbcSink
-    from ._models_py3 import OdbcSinkPreCopyScript
-    from ._models_py3 import OdbcSource
-    from ._models_py3 import OdbcSourceQuery
     from ._models_py3 import OdbcTableDataset
-    from ._models_py3 import OdbcTableDatasetTypeProperties
-    from ._models_py3 import OdbcTableDatasetTypePropertiesTableName
     from ._models_py3 import Office365Dataset
-    from ._models_py3 import Office365DatasetTypeProperties
-    from ._models_py3 import Office365DatasetTypePropertiesPredicate
-    from ._models_py3 import Office365DatasetTypePropertiesTableName
     from ._models_py3 import Office365LinkedService
-    from ._models_py3 import Office365LinkedServiceTypeProperties
-    from ._models_py3 import Office365LinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import Office365LinkedServiceTypePropertiesOffice365TenantId
-    from ._models_py3 import Office365LinkedServiceTypePropertiesServicePrincipalId
-    from ._models_py3 import Office365LinkedServiceTypePropertiesServicePrincipalTenantId
-    from ._models_py3 import Office365Source
-    from ._models_py3 import Office365SourceAllowedGroups
-    from ._models_py3 import Office365SourceDateFilterColumn
-    from ._models_py3 import Office365SourceEndTime
-    from ._models_py3 import Office365SourceOutputColumns
-    from ._models_py3 import Office365SourceStartTime
-    from ._models_py3 import Office365SourceUserScopeFilterUri
     from ._models_py3 import Operation
     from ._models_py3 import OperationDisplay
     from ._models_py3 import OperationListResponse
@@ -1225,82 +268,18 @@ try:
     from ._models_py3 import OperationMetricAvailability
     from ._models_py3 import OperationMetricDimension
     from ._models_py3 import OperationMetricSpecification
-    from ._models_py3 import OperationProperties
     from ._models_py3 import OperationServiceSpecification
     from ._models_py3 import OracleLinkedService
-    from ._models_py3 import OracleLinkedServiceTypeProperties
-    from ._models_py3 import OracleLinkedServiceTypePropertiesConnectionString
-    from ._models_py3 import OracleLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import OraclePartitionSettings
-    from ._models_py3 import OraclePartitionSettingsPartitionColumnName
-    from ._models_py3 import OraclePartitionSettingsPartitionLowerBound
-    from ._models_py3 import OraclePartitionSettingsPartitionNames
-    from ._models_py3 import OraclePartitionSettingsPartitionUpperBound
     from ._models_py3 import OracleServiceCloudLinkedService
-    from ._models_py3 import OracleServiceCloudLinkedServiceTypeProperties
-    from ._models_py3 import OracleServiceCloudLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import OracleServiceCloudLinkedServiceTypePropertiesHost
-    from ._models_py3 import OracleServiceCloudLinkedServiceTypePropertiesUseEncryptedEndpoints
-    from ._models_py3 import OracleServiceCloudLinkedServiceTypePropertiesUseHostVerification
-    from ._models_py3 import OracleServiceCloudLinkedServiceTypePropertiesUsePeerVerification
-    from ._models_py3 import OracleServiceCloudLinkedServiceTypePropertiesUsername
     from ._models_py3 import OracleServiceCloudObjectDataset
-    from ._models_py3 import OracleServiceCloudSource
-    from ._models_py3 import OracleServiceCloudSourceQuery
-    from ._models_py3 import OracleSink
-    from ._models_py3 import OracleSinkPreCopyScript
-    from ._models_py3 import OracleSource
-    from ._models_py3 import OracleSourceOracleReaderQuery
-    from ._models_py3 import OracleSourceQueryTimeout
     from ._models_py3 import OracleTableDataset
-    from ._models_py3 import OracleTableDatasetTypeProperties
-    from ._models_py3 import OracleTableDatasetTypePropertiesSchema
-    from ._models_py3 import OracleTableDatasetTypePropertiesTable
-    from ._models_py3 import OracleTableDatasetTypePropertiesTableName
     from ._models_py3 import OrcDataset
-    from ._models_py3 import OrcDatasetTypeProperties
-    from ._models_py3 import OrcFormat
-    from ._models_py3 import OrcSink
-    from ._models_py3 import OrcSource
     from ._models_py3 import ParameterSpecification
-    from ._models_py3 import ParameterSpecificationDefaultValue
     from ._models_py3 import ParquetDataset
-    from ._models_py3 import ParquetDatasetTypeProperties
-    from ._models_py3 import ParquetFormat
-    from ._models_py3 import ParquetSink
-    from ._models_py3 import ParquetSource
     from ._models_py3 import PaypalLinkedService
-    from ._models_py3 import PaypalLinkedServiceTypeProperties
-    from ._models_py3 import PaypalLinkedServiceTypePropertiesClientId
-    from ._models_py3 import PaypalLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import PaypalLinkedServiceTypePropertiesHost
-    from ._models_py3 import PaypalLinkedServiceTypePropertiesUseEncryptedEndpoints
-    from ._models_py3 import PaypalLinkedServiceTypePropertiesUseHostVerification
-    from ._models_py3 import PaypalLinkedServiceTypePropertiesUsePeerVerification
     from ._models_py3 import PaypalObjectDataset
-    from ._models_py3 import PaypalSource
-    from ._models_py3 import PaypalSourceQuery
-    from ._models_py3 import PhoenixDatasetTypeProperties
-    from ._models_py3 import PhoenixDatasetTypePropertiesSchema
-    from ._models_py3 import PhoenixDatasetTypePropertiesTable
-    from ._models_py3 import PhoenixDatasetTypePropertiesTableName
     from ._models_py3 import PhoenixLinkedService
-    from ._models_py3 import PhoenixLinkedServiceTypeProperties
-    from ._models_py3 import PhoenixLinkedServiceTypePropertiesAllowHostNameCnMismatch
-    from ._models_py3 import PhoenixLinkedServiceTypePropertiesAllowSelfSignedServerCert
-    from ._models_py3 import PhoenixLinkedServiceTypePropertiesEnableSsl
-    from ._models_py3 import PhoenixLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import PhoenixLinkedServiceTypePropertiesHost
-    from ._models_py3 import PhoenixLinkedServiceTypePropertiesHttpPath
-    from ._models_py3 import PhoenixLinkedServiceTypePropertiesPort
-    from ._models_py3 import PhoenixLinkedServiceTypePropertiesTrustedCertPath
-    from ._models_py3 import PhoenixLinkedServiceTypePropertiesUseSystemTrustStore
-    from ._models_py3 import PhoenixLinkedServiceTypePropertiesUsername
     from ._models_py3 import PhoenixObjectDataset
-    from ._models_py3 import PhoenixSource
-    from ._models_py3 import PhoenixSourceQuery
-    from ._models_py3 import Pipeline
-    from ._models_py3 import PipelineAnnotationsItem
     from ._models_py3 import PipelineFolder
     from ._models_py3 import PipelineListResponse
     from ._models_py3 import PipelineReference
@@ -1308,1043 +287,206 @@ try:
     from ._models_py3 import PipelineRun
     from ._models_py3 import PipelineRunInvokedBy
     from ._models_py3 import PipelineRunsQueryResponse
-    from ._models_py3 import PolybaseSettings
-    from ._models_py3 import PolybaseSettingsRejectSampleValue
-    from ._models_py3 import PolybaseSettingsRejectValue
-    from ._models_py3 import PolybaseSettingsUseTypeDefault
     from ._models_py3 import PostgreSqlLinkedService
-    from ._models_py3 import PostgreSqlLinkedServiceTypeProperties
-    from ._models_py3 import PostgreSqlLinkedServiceTypePropertiesConnectionString
-    from ._models_py3 import PostgreSqlLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import PostgreSqlSource
-    from ._models_py3 import PostgreSqlSourceQuery
     from ._models_py3 import PostgreSqlTableDataset
-    from ._models_py3 import PostgreSqlTableDatasetTypeProperties
-    from ._models_py3 import PostgreSqlTableDatasetTypePropertiesSchema
-    from ._models_py3 import PostgreSqlTableDatasetTypePropertiesTable
-    from ._models_py3 import PostgreSqlTableDatasetTypePropertiesTableName
-    from ._models_py3 import PrestoDatasetTypeProperties
-    from ._models_py3 import PrestoDatasetTypePropertiesSchema
-    from ._models_py3 import PrestoDatasetTypePropertiesTable
-    from ._models_py3 import PrestoDatasetTypePropertiesTableName
     from ._models_py3 import PrestoLinkedService
-    from ._models_py3 import PrestoLinkedServiceTypeProperties
-    from ._models_py3 import PrestoLinkedServiceTypePropertiesAllowHostNameCnMismatch
-    from ._models_py3 import PrestoLinkedServiceTypePropertiesAllowSelfSignedServerCert
-    from ._models_py3 import PrestoLinkedServiceTypePropertiesCatalog
-    from ._models_py3 import PrestoLinkedServiceTypePropertiesEnableSsl
-    from ._models_py3 import PrestoLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import PrestoLinkedServiceTypePropertiesHost
-    from ._models_py3 import PrestoLinkedServiceTypePropertiesPort
-    from ._models_py3 import PrestoLinkedServiceTypePropertiesServerVersion
-    from ._models_py3 import PrestoLinkedServiceTypePropertiesTimeZoneId
-    from ._models_py3 import PrestoLinkedServiceTypePropertiesTrustedCertPath
-    from ._models_py3 import PrestoLinkedServiceTypePropertiesUseSystemTrustStore
-    from ._models_py3 import PrestoLinkedServiceTypePropertiesUsername
     from ._models_py3 import PrestoObjectDataset
-    from ._models_py3 import PrestoSource
-    from ._models_py3 import PrestoSourceQuery
     from ._models_py3 import QueryDataFlowDebugSessionsResponse
     from ._models_py3 import QuickBooksLinkedService
-    from ._models_py3 import QuickBooksLinkedServiceTypeProperties
-    from ._models_py3 import QuickBooksLinkedServiceTypePropertiesCompanyId
-    from ._models_py3 import QuickBooksLinkedServiceTypePropertiesConsumerKey
-    from ._models_py3 import QuickBooksLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import QuickBooksLinkedServiceTypePropertiesEndpoint
-    from ._models_py3 import QuickBooksLinkedServiceTypePropertiesUseEncryptedEndpoints
     from ._models_py3 import QuickBooksObjectDataset
-    from ._models_py3 import QuickBooksSource
-    from ._models_py3 import QuickBooksSourceQuery
     from ._models_py3 import RecurrenceSchedule
     from ._models_py3 import RecurrenceScheduleOccurrence
     from ._models_py3 import RedirectIncompatibleRowSettings
-    from ._models_py3 import RedirectIncompatibleRowSettingsLinkedServiceName
-    from ._models_py3 import RedirectIncompatibleRowSettingsPath
-    from ._models_py3 import RedshiftUnloadSettings
-    from ._models_py3 import RedshiftUnloadSettingsBucketName
-    from ._models_py3 import RelationalSource
-    from ._models_py3 import RelationalSourceQuery
     from ._models_py3 import RelationalTableDataset
-    from ._models_py3 import RelationalTableDatasetTypeProperties
-    from ._models_py3 import RelationalTableDatasetTypePropertiesTableName
     from ._models_py3 import RerunTumblingWindowTrigger
-    from ._models_py3 import RerunTumblingWindowTriggerTypeProperties
-    from ._models_py3 import RerunTumblingWindowTriggerTypePropertiesParentTrigger
     from ._models_py3 import Resource
     from ._models_py3 import ResponsysLinkedService
-    from ._models_py3 import ResponsysLinkedServiceTypeProperties
-    from ._models_py3 import ResponsysLinkedServiceTypePropertiesClientId
-    from ._models_py3 import ResponsysLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import ResponsysLinkedServiceTypePropertiesEndpoint
-    from ._models_py3 import ResponsysLinkedServiceTypePropertiesUseEncryptedEndpoints
-    from ._models_py3 import ResponsysLinkedServiceTypePropertiesUseHostVerification
-    from ._models_py3 import ResponsysLinkedServiceTypePropertiesUsePeerVerification
     from ._models_py3 import ResponsysObjectDataset
-    from ._models_py3 import ResponsysSource
-    from ._models_py3 import ResponsysSourceQuery
     from ._models_py3 import RestResourceDataset
-    from ._models_py3 import RestResourceDatasetTypeProperties
-    from ._models_py3 import RestResourceDatasetTypePropertiesAdditionalHeaders
-    from ._models_py3 import RestResourceDatasetTypePropertiesPaginationRules
-    from ._models_py3 import RestResourceDatasetTypePropertiesRelativeUrl
-    from ._models_py3 import RestResourceDatasetTypePropertiesRequestBody
-    from ._models_py3 import RestResourceDatasetTypePropertiesRequestMethod
     from ._models_py3 import RestServiceLinkedService
-    from ._models_py3 import RestServiceLinkedServiceTypeProperties
-    from ._models_py3 import RestServiceLinkedServiceTypePropertiesAadResourceId
-    from ._models_py3 import RestServiceLinkedServiceTypePropertiesEnableServerCertificateValidation
-    from ._models_py3 import RestServiceLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import RestServiceLinkedServiceTypePropertiesServicePrincipalId
-    from ._models_py3 import RestServiceLinkedServiceTypePropertiesTenant
-    from ._models_py3 import RestServiceLinkedServiceTypePropertiesUrl
-    from ._models_py3 import RestServiceLinkedServiceTypePropertiesUserName
-    from ._models_py3 import RestSource
-    from ._models_py3 import RestSourceAdditionalHeaders
-    from ._models_py3 import RestSourceHttpRequestTimeout
-    from ._models_py3 import RestSourcePaginationRules
-    from ._models_py3 import RestSourceRequestBody
-    from ._models_py3 import RestSourceRequestInterval
-    from ._models_py3 import RestSourceRequestMethod
     from ._models_py3 import RetryPolicy
-    from ._models_py3 import RetryPolicyCount
     from ._models_py3 import RunFilterParameters
     from ._models_py3 import RunQueryFilter
     from ._models_py3 import RunQueryOrderBy
     from ._models_py3 import SalesforceLinkedService
-    from ._models_py3 import SalesforceLinkedServiceTypeProperties
-    from ._models_py3 import SalesforceLinkedServiceTypePropertiesApiVersion
-    from ._models_py3 import SalesforceLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import SalesforceLinkedServiceTypePropertiesEnvironmentUrl
-    from ._models_py3 import SalesforceLinkedServiceTypePropertiesUsername
     from ._models_py3 import SalesforceMarketingCloudLinkedService
-    from ._models_py3 import SalesforceMarketingCloudLinkedServiceTypeProperties
-    from ._models_py3 import SalesforceMarketingCloudLinkedServiceTypePropertiesClientId
-    from ._models_py3 import SalesforceMarketingCloudLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import SalesforceMarketingCloudLinkedServiceTypePropertiesUseEncryptedEndpoints
-    from ._models_py3 import SalesforceMarketingCloudLinkedServiceTypePropertiesUseHostVerification
-    from ._models_py3 import SalesforceMarketingCloudLinkedServiceTypePropertiesUsePeerVerification
     from ._models_py3 import SalesforceMarketingCloudObjectDataset
-    from ._models_py3 import SalesforceMarketingCloudSource
-    from ._models_py3 import SalesforceMarketingCloudSourceQuery
     from ._models_py3 import SalesforceObjectDataset
-    from ._models_py3 import SalesforceObjectDatasetTypeProperties
-    from ._models_py3 import SalesforceObjectDatasetTypePropertiesObjectApiName
     from ._models_py3 import SalesforceServiceCloudLinkedService
-    from ._models_py3 import SalesforceServiceCloudLinkedServiceTypeProperties
-    from ._models_py3 import SalesforceServiceCloudLinkedServiceTypePropertiesApiVersion
-    from ._models_py3 import SalesforceServiceCloudLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import SalesforceServiceCloudLinkedServiceTypePropertiesEnvironmentUrl
-    from ._models_py3 import SalesforceServiceCloudLinkedServiceTypePropertiesExtendedProperties
-    from ._models_py3 import SalesforceServiceCloudLinkedServiceTypePropertiesUsername
     from ._models_py3 import SalesforceServiceCloudObjectDataset
-    from ._models_py3 import SalesforceServiceCloudObjectDatasetTypeProperties
-    from ._models_py3 import SalesforceServiceCloudObjectDatasetTypePropertiesObjectApiName
-    from ._models_py3 import SalesforceServiceCloudSink
-    from ._models_py3 import SalesforceServiceCloudSinkExternalIdFieldName
-    from ._models_py3 import SalesforceServiceCloudSinkIgnoreNullValues
-    from ._models_py3 import SalesforceServiceCloudSource
-    from ._models_py3 import SalesforceServiceCloudSourceQuery
-    from ._models_py3 import SalesforceSink
-    from ._models_py3 import SalesforceSinkExternalIdFieldName
-    from ._models_py3 import SalesforceSinkIgnoreNullValues
-    from ._models_py3 import SalesforceSource
-    from ._models_py3 import SalesforceSourceQuery
     from ._models_py3 import SapBwCubeDataset
     from ._models_py3 import SapBwLinkedService
-    from ._models_py3 import SapBwLinkedServiceTypeProperties
-    from ._models_py3 import SapBwLinkedServiceTypePropertiesClientId
-    from ._models_py3 import SapBwLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import SapBwLinkedServiceTypePropertiesServer
-    from ._models_py3 import SapBwLinkedServiceTypePropertiesSystemNumber
-    from ._models_py3 import SapBwLinkedServiceTypePropertiesUserName
-    from ._models_py3 import SapBwSource
-    from ._models_py3 import SapBwSourceQuery
     from ._models_py3 import SapCloudForCustomerLinkedService
-    from ._models_py3 import SapCloudForCustomerLinkedServiceTypeProperties
-    from ._models_py3 import SapCloudForCustomerLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import SapCloudForCustomerLinkedServiceTypePropertiesUrl
-    from ._models_py3 import SapCloudForCustomerLinkedServiceTypePropertiesUsername
     from ._models_py3 import SapCloudForCustomerResourceDataset
-    from ._models_py3 import SapCloudForCustomerResourceDatasetTypeProperties
-    from ._models_py3 import SapCloudForCustomerResourceDatasetTypePropertiesPath
-    from ._models_py3 import SapCloudForCustomerSink
-    from ._models_py3 import SapCloudForCustomerSource
-    from ._models_py3 import SapCloudForCustomerSourceQuery
     from ._models_py3 import SapEccLinkedService
-    from ._models_py3 import SapEccLinkedServiceTypeProperties
     from ._models_py3 import SapEccResourceDataset
-    from ._models_py3 import SapEccResourceDatasetTypeProperties
-    from ._models_py3 import SapEccResourceDatasetTypePropertiesPath
-    from ._models_py3 import SapEccSource
-    from ._models_py3 import SapEccSourceQuery
     from ._models_py3 import SapHanaLinkedService
-    from ._models_py3 import SapHanaLinkedServiceProperties
-    from ._models_py3 import SapHanaLinkedServicePropertiesConnectionString
-    from ._models_py3 import SapHanaLinkedServicePropertiesEncryptedCredential
-    from ._models_py3 import SapHanaLinkedServicePropertiesServer
-    from ._models_py3 import SapHanaLinkedServicePropertiesUserName
-    from ._models_py3 import SapHanaPartitionSettings
-    from ._models_py3 import SapHanaPartitionSettingsPartitionColumnName
-    from ._models_py3 import SapHanaSource
-    from ._models_py3 import SapHanaSourcePacketSize
-    from ._models_py3 import SapHanaSourceQuery
     from ._models_py3 import SapHanaTableDataset
-    from ._models_py3 import SapHanaTableDatasetTypeProperties
-    from ._models_py3 import SapHanaTableDatasetTypePropertiesSchema
-    from ._models_py3 import SapHanaTableDatasetTypePropertiesTable
     from ._models_py3 import SapOpenHubLinkedService
-    from ._models_py3 import SapOpenHubLinkedServiceTypeProperties
-    from ._models_py3 import SapOpenHubLinkedServiceTypePropertiesClientId
-    from ._models_py3 import SapOpenHubLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import SapOpenHubLinkedServiceTypePropertiesLanguage
-    from ._models_py3 import SapOpenHubLinkedServiceTypePropertiesServer
-    from ._models_py3 import SapOpenHubLinkedServiceTypePropertiesSystemNumber
-    from ._models_py3 import SapOpenHubLinkedServiceTypePropertiesUserName
-    from ._models_py3 import SapOpenHubSource
-    from ._models_py3 import SapOpenHubSourceBaseRequestId
-    from ._models_py3 import SapOpenHubSourceExcludeLastRequest
     from ._models_py3 import SapOpenHubTableDataset
-    from ._models_py3 import SapOpenHubTableDatasetTypeProperties
-    from ._models_py3 import SapOpenHubTableDatasetTypePropertiesBaseRequestId
-    from ._models_py3 import SapOpenHubTableDatasetTypePropertiesExcludeLastRequest
-    from ._models_py3 import SapOpenHubTableDatasetTypePropertiesOpenHubDestinationName
     from ._models_py3 import SapTableLinkedService
-    from ._models_py3 import SapTableLinkedServiceTypeProperties
-    from ._models_py3 import SapTableLinkedServiceTypePropertiesClientId
-    from ._models_py3 import SapTableLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import SapTableLinkedServiceTypePropertiesLanguage
-    from ._models_py3 import SapTableLinkedServiceTypePropertiesLogonGroup
-    from ._models_py3 import SapTableLinkedServiceTypePropertiesMessageServer
-    from ._models_py3 import SapTableLinkedServiceTypePropertiesMessageServerService
-    from ._models_py3 import SapTableLinkedServiceTypePropertiesServer
-    from ._models_py3 import SapTableLinkedServiceTypePropertiesSncLibraryPath
-    from ._models_py3 import SapTableLinkedServiceTypePropertiesSncMode
-    from ._models_py3 import SapTableLinkedServiceTypePropertiesSncMyName
-    from ._models_py3 import SapTableLinkedServiceTypePropertiesSncPartnerName
-    from ._models_py3 import SapTableLinkedServiceTypePropertiesSncQop
-    from ._models_py3 import SapTableLinkedServiceTypePropertiesSystemId
-    from ._models_py3 import SapTableLinkedServiceTypePropertiesSystemNumber
-    from ._models_py3 import SapTableLinkedServiceTypePropertiesUserName
-    from ._models_py3 import SapTablePartitionSettings
-    from ._models_py3 import SapTablePartitionSettingsMaxPartitionsNumber
-    from ._models_py3 import SapTablePartitionSettingsPartitionColumnName
-    from ._models_py3 import SapTablePartitionSettingsPartitionLowerBound
-    from ._models_py3 import SapTablePartitionSettingsPartitionUpperBound
     from ._models_py3 import SapTableResourceDataset
-    from ._models_py3 import SapTableResourceDatasetTypeProperties
-    from ._models_py3 import SapTableResourceDatasetTypePropertiesTableName
-    from ._models_py3 import SapTableSource
-    from ._models_py3 import SapTableSourceBatchSize
-    from ._models_py3 import SapTableSourceCustomRfcReadTableFunctionModule
-    from ._models_py3 import SapTableSourceRfcTableFields
-    from ._models_py3 import SapTableSourceRfcTableOptions
-    from ._models_py3 import SapTableSourceRowCount
-    from ._models_py3 import SapTableSourceRowSkips
     from ._models_py3 import ScheduleTrigger
     from ._models_py3 import ScheduleTriggerRecurrence
-    from ._models_py3 import ScheduleTriggerTypeProperties
     from ._models_py3 import ScriptAction
     from ._models_py3 import SecretBase
     from ._models_py3 import SecureString
-    from ._models_py3 import SelfDependencyTumblingWindowTriggerReference
     from ._models_py3 import SelfHostedIntegrationRuntime
     from ._models_py3 import SelfHostedIntegrationRuntimeNode
     from ._models_py3 import SelfHostedIntegrationRuntimeStatus
-    from ._models_py3 import SelfHostedIntegrationRuntimeStatusTypeProperties
-    from ._models_py3 import SelfHostedIntegrationRuntimeTypeProperties
     from ._models_py3 import ServiceNowLinkedService
-    from ._models_py3 import ServiceNowLinkedServiceTypeProperties
-    from ._models_py3 import ServiceNowLinkedServiceTypePropertiesClientId
-    from ._models_py3 import ServiceNowLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import ServiceNowLinkedServiceTypePropertiesEndpoint
-    from ._models_py3 import ServiceNowLinkedServiceTypePropertiesUseEncryptedEndpoints
-    from ._models_py3 import ServiceNowLinkedServiceTypePropertiesUseHostVerification
-    from ._models_py3 import ServiceNowLinkedServiceTypePropertiesUsePeerVerification
-    from ._models_py3 import ServiceNowLinkedServiceTypePropertiesUsername
     from ._models_py3 import ServiceNowObjectDataset
-    from ._models_py3 import ServiceNowSource
-    from ._models_py3 import ServiceNowSourceQuery
     from ._models_py3 import SetVariableActivity
-    from ._models_py3 import SetVariableActivityTypeProperties
-    from ._models_py3 import SetVariableActivityTypePropertiesValue
-    from ._models_py3 import SftpLocation
-    from ._models_py3 import SftpReadSettings
-    from ._models_py3 import SftpReadSettingsFileListPath
-    from ._models_py3 import SftpReadSettingsModifiedDatetimeEnd
-    from ._models_py3 import SftpReadSettingsModifiedDatetimeStart
-    from ._models_py3 import SftpReadSettingsRecursive
-    from ._models_py3 import SftpReadSettingsWildcardFileName
-    from ._models_py3 import SftpReadSettingsWildcardFolderPath
     from ._models_py3 import SftpServerLinkedService
-    from ._models_py3 import SftpServerLinkedServiceTypeProperties
-    from ._models_py3 import SftpServerLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import SftpServerLinkedServiceTypePropertiesHost
-    from ._models_py3 import SftpServerLinkedServiceTypePropertiesHostKeyFingerprint
-    from ._models_py3 import SftpServerLinkedServiceTypePropertiesPort
-    from ._models_py3 import SftpServerLinkedServiceTypePropertiesPrivateKeyPath
-    from ._models_py3 import SftpServerLinkedServiceTypePropertiesSkipHostKeyValidation
-    from ._models_py3 import SftpServerLinkedServiceTypePropertiesUserName
-    from ._models_py3 import SftpWriteSettings
-    from ._models_py3 import SftpWriteSettingsOperationTimeout
-    from ._models_py3 import SftpWriteSettingsUseTempFileRename
     from ._models_py3 import ShopifyLinkedService
-    from ._models_py3 import ShopifyLinkedServiceTypeProperties
-    from ._models_py3 import ShopifyLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import ShopifyLinkedServiceTypePropertiesHost
-    from ._models_py3 import ShopifyLinkedServiceTypePropertiesUseEncryptedEndpoints
-    from ._models_py3 import ShopifyLinkedServiceTypePropertiesUseHostVerification
-    from ._models_py3 import ShopifyLinkedServiceTypePropertiesUsePeerVerification
     from ._models_py3 import ShopifyObjectDataset
-    from ._models_py3 import ShopifySource
-    from ._models_py3 import ShopifySourceQuery
     from ._models_py3 import SkipErrorFile
-    from ._models_py3 import SkipErrorFileDataInconsistency
-    from ._models_py3 import SkipErrorFileMissing
-    from ._models_py3 import SparkDatasetTypeProperties
-    from ._models_py3 import SparkDatasetTypePropertiesSchema
-    from ._models_py3 import SparkDatasetTypePropertiesTable
-    from ._models_py3 import SparkDatasetTypePropertiesTableName
+    from ._models_py3 import SnowflakeDataset
+    from ._models_py3 import SnowflakeLinkedService
     from ._models_py3 import SparkLinkedService
-    from ._models_py3 import SparkLinkedServiceTypeProperties
-    from ._models_py3 import SparkLinkedServiceTypePropertiesAllowHostNameCnMismatch
-    from ._models_py3 import SparkLinkedServiceTypePropertiesAllowSelfSignedServerCert
-    from ._models_py3 import SparkLinkedServiceTypePropertiesEnableSsl
-    from ._models_py3 import SparkLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import SparkLinkedServiceTypePropertiesHost
-    from ._models_py3 import SparkLinkedServiceTypePropertiesHttpPath
-    from ._models_py3 import SparkLinkedServiceTypePropertiesPort
-    from ._models_py3 import SparkLinkedServiceTypePropertiesTrustedCertPath
-    from ._models_py3 import SparkLinkedServiceTypePropertiesUseSystemTrustStore
-    from ._models_py3 import SparkLinkedServiceTypePropertiesUsername
     from ._models_py3 import SparkObjectDataset
-    from ._models_py3 import SparkSource
-    from ._models_py3 import SparkSourceQuery
-    from ._models_py3 import SqlDwSink
-    from ._models_py3 import SqlDwSinkAllowCopyCommand
-    from ._models_py3 import SqlDwSinkAllowPolyBase
-    from ._models_py3 import SqlDwSinkPreCopyScript
-    from ._models_py3 import SqlDwSinkTableOption
-    from ._models_py3 import SqlDwSource
-    from ._models_py3 import SqlDwSourceSqlReaderQuery
-    from ._models_py3 import SqlDwSourceSqlReaderStoredProcedureName
-    from ._models_py3 import SqlDwSourceStoredProcedureParameters
-    from ._models_py3 import SqlMiSink
-    from ._models_py3 import SqlMiSinkPreCopyScript
-    from ._models_py3 import SqlMiSinkSqlWriterStoredProcedureName
-    from ._models_py3 import SqlMiSinkSqlWriterTableType
-    from ._models_py3 import SqlMiSinkStoredProcedureTableTypeParameterName
-    from ._models_py3 import SqlMiSinkTableOption
-    from ._models_py3 import SqlMiSource
-    from ._models_py3 import SqlMiSourceProduceAdditionalTypes
-    from ._models_py3 import SqlMiSourceSqlReaderQuery
-    from ._models_py3 import SqlMiSourceSqlReaderStoredProcedureName
     from ._models_py3 import SqlServerLinkedService
-    from ._models_py3 import SqlServerLinkedServiceTypeProperties
-    from ._models_py3 import SqlServerLinkedServiceTypePropertiesConnectionString
-    from ._models_py3 import SqlServerLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import SqlServerLinkedServiceTypePropertiesUserName
-    from ._models_py3 import SqlServerSink
-    from ._models_py3 import SqlServerSinkPreCopyScript
-    from ._models_py3 import SqlServerSinkSqlWriterStoredProcedureName
-    from ._models_py3 import SqlServerSinkSqlWriterTableType
-    from ._models_py3 import SqlServerSinkStoredProcedureTableTypeParameterName
-    from ._models_py3 import SqlServerSinkTableOption
-    from ._models_py3 import SqlServerSource
-    from ._models_py3 import SqlServerSourceProduceAdditionalTypes
-    from ._models_py3 import SqlServerSourceSqlReaderQuery
-    from ._models_py3 import SqlServerSourceSqlReaderStoredProcedureName
     from ._models_py3 import SqlServerStoredProcedureActivity
-    from ._models_py3 import SqlServerStoredProcedureActivityTypeProperties
-    from ._models_py3 import SqlServerStoredProcedureActivityTypePropertiesStoredProcedureName
     from ._models_py3 import SqlServerTableDataset
-    from ._models_py3 import SqlServerTableDatasetTypeProperties
-    from ._models_py3 import SqlServerTableDatasetTypePropertiesSchema
-    from ._models_py3 import SqlServerTableDatasetTypePropertiesTable
-    from ._models_py3 import SqlServerTableDatasetTypePropertiesTableName
-    from ._models_py3 import SqlSink
-    from ._models_py3 import SqlSinkPreCopyScript
-    from ._models_py3 import SqlSinkSqlWriterStoredProcedureName
-    from ._models_py3 import SqlSinkSqlWriterTableType
-    from ._models_py3 import SqlSinkStoredProcedureTableTypeParameterName
-    from ._models_py3 import SqlSinkTableOption
-    from ._models_py3 import SqlSource
-    from ._models_py3 import SqlSourceIsolationLevel
-    from ._models_py3 import SqlSourceSqlReaderQuery
-    from ._models_py3 import SqlSourceSqlReaderStoredProcedureName
     from ._models_py3 import SquareLinkedService
-    from ._models_py3 import SquareLinkedServiceTypeProperties
-    from ._models_py3 import SquareLinkedServiceTypePropertiesClientId
-    from ._models_py3 import SquareLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import SquareLinkedServiceTypePropertiesHost
-    from ._models_py3 import SquareLinkedServiceTypePropertiesRedirectUri
-    from ._models_py3 import SquareLinkedServiceTypePropertiesUseEncryptedEndpoints
-    from ._models_py3 import SquareLinkedServiceTypePropertiesUseHostVerification
-    from ._models_py3 import SquareLinkedServiceTypePropertiesUsePeerVerification
     from ._models_py3 import SquareObjectDataset
-    from ._models_py3 import SquareSource
-    from ._models_py3 import SquareSourceQuery
     from ._models_py3 import SsisAccessCredential
-    from ._models_py3 import SsisAccessCredentialDomain
-    from ._models_py3 import SsisAccessCredentialUserName
     from ._models_py3 import SsisChildPackage
-    from ._models_py3 import SsisChildPackageContent
-    from ._models_py3 import SsisChildPackagePath
     from ._models_py3 import SsisEnvironment
     from ._models_py3 import SsisEnvironmentReference
     from ._models_py3 import SsisExecutionCredential
-    from ._models_py3 import SsisExecutionCredentialDomain
-    from ._models_py3 import SsisExecutionCredentialUserName
     from ._models_py3 import SsisExecutionParameter
-    from ._models_py3 import SsisExecutionParameterValue
     from ._models_py3 import SsisFolder
     from ._models_py3 import SsisLogLocation
-    from ._models_py3 import SsisLogLocationLogPath
-    from ._models_py3 import SsisLogLocationTypeProperties
-    from ._models_py3 import SsisLogLocationTypePropertiesLogRefreshInterval
     from ._models_py3 import SsisObjectMetadata
     from ._models_py3 import SsisObjectMetadataListResponse
     from ._models_py3 import SsisObjectMetadataStatusResponse
     from ._models_py3 import SsisPackage
     from ._models_py3 import SsisPackageLocation
-    from ._models_py3 import SsisPackageLocationPackagePath
-    from ._models_py3 import SsisPackageLocationTypeProperties
-    from ._models_py3 import SsisPackageLocationTypePropertiesConfigurationPath
-    from ._models_py3 import SsisPackageLocationTypePropertiesPackageContent
     from ._models_py3 import SsisParameter
     from ._models_py3 import SsisProject
     from ._models_py3 import SsisPropertyOverride
-    from ._models_py3 import SsisPropertyOverrideValue
     from ._models_py3 import SsisVariable
     from ._models_py3 import StagingSettings
-    from ._models_py3 import StagingSettingsEnableCompression
-    from ._models_py3 import StagingSettingsPath
-    from ._models_py3 import StoreReadSettings
-    from ._models_py3 import StoreReadSettingsMaxConcurrentConnections
-    from ._models_py3 import StoreWriteSettings
-    from ._models_py3 import StoreWriteSettingsCopyBehavior
-    from ._models_py3 import StoreWriteSettingsMaxConcurrentConnections
     from ._models_py3 import StoredProcedureParameter
-    from ._models_py3 import StoredProcedureParameterValue
     from ._models_py3 import SubResource
     from ._models_py3 import SubResourceDebugResource
     from ._models_py3 import SwitchActivity
-    from ._models_py3 import SwitchActivityTypeProperties
     from ._models_py3 import SwitchCase
     from ._models_py3 import SybaseLinkedService
-    from ._models_py3 import SybaseLinkedServiceTypeProperties
-    from ._models_py3 import SybaseLinkedServiceTypePropertiesDatabase
-    from ._models_py3 import SybaseLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import SybaseLinkedServiceTypePropertiesSchema
-    from ._models_py3 import SybaseLinkedServiceTypePropertiesServer
-    from ._models_py3 import SybaseLinkedServiceTypePropertiesUsername
-    from ._models_py3 import SybaseSource
-    from ._models_py3 import SybaseSourceQuery
     from ._models_py3 import SybaseTableDataset
-    from ._models_py3 import SybaseTableDatasetTypeProperties
-    from ._models_py3 import SybaseTableDatasetTypePropertiesTableName
-    from ._models_py3 import TabularSource
-    from ._models_py3 import TabularSourceQueryTimeout
     from ._models_py3 import TeradataLinkedService
-    from ._models_py3 import TeradataLinkedServiceTypeProperties
-    from ._models_py3 import TeradataLinkedServiceTypePropertiesConnectionString
-    from ._models_py3 import TeradataLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import TeradataLinkedServiceTypePropertiesServer
-    from ._models_py3 import TeradataLinkedServiceTypePropertiesUsername
-    from ._models_py3 import TeradataPartitionSettings
-    from ._models_py3 import TeradataPartitionSettingsPartitionColumnName
-    from ._models_py3 import TeradataPartitionSettingsPartitionLowerBound
-    from ._models_py3 import TeradataPartitionSettingsPartitionUpperBound
-    from ._models_py3 import TeradataSource
-    from ._models_py3 import TeradataSourceQuery
     from ._models_py3 import TeradataTableDataset
-    from ._models_py3 import TeradataTableDatasetTypeProperties
-    from ._models_py3 import TeradataTableDatasetTypePropertiesDatabase
-    from ._models_py3 import TeradataTableDatasetTypePropertiesTable
-    from ._models_py3 import TextFormat
-    from ._models_py3 import TextFormatColumnDelimiter
-    from ._models_py3 import TextFormatEncodingName
-    from ._models_py3 import TextFormatEscapeChar
-    from ._models_py3 import TextFormatFirstRowAsHeader
-    from ._models_py3 import TextFormatNullValue
-    from ._models_py3 import TextFormatQuoteChar
-    from ._models_py3 import TextFormatRowDelimiter
-    from ._models_py3 import TextFormatSkipLineCount
-    from ._models_py3 import TextFormatTreatEmptyAsNull
     from ._models_py3 import Transformation
     from ._models_py3 import Trigger
-    from ._models_py3 import TriggerAnnotationsItem
-    from ._models_py3 import TriggerDependencyReference
     from ._models_py3 import TriggerFilterParameters
     from ._models_py3 import TriggerListResponse
     from ._models_py3 import TriggerPipelineReference
     from ._models_py3 import TriggerQueryResponse
-    from ._models_py3 import TriggerReference
     from ._models_py3 import TriggerResource
     from ._models_py3 import TriggerRun
     from ._models_py3 import TriggerRunsQueryResponse
     from ._models_py3 import TriggerSubscriptionOperationStatus
     from ._models_py3 import TumblingWindowTrigger
-    from ._models_py3 import TumblingWindowTriggerDependencyReference
-    from ._models_py3 import TumblingWindowTriggerTypeProperties
-    from ._models_py3 import TumblingWindowTriggerTypePropertiesDelay
     from ._models_py3 import UntilActivity
-    from ._models_py3 import UntilActivityTypeProperties
-    from ._models_py3 import UntilActivityTypePropertiesTimeout
     from ._models_py3 import UpdateIntegrationRuntimeNodeRequest
     from ._models_py3 import UpdateIntegrationRuntimeRequest
     from ._models_py3 import UserAccessPolicy
     from ._models_py3 import UserProperty
-    from ._models_py3 import UserPropertyValue
     from ._models_py3 import ValidationActivity
-    from ._models_py3 import ValidationActivityTypeProperties
-    from ._models_py3 import ValidationActivityTypePropertiesChildItems
-    from ._models_py3 import ValidationActivityTypePropertiesMinimumSize
-    from ._models_py3 import ValidationActivityTypePropertiesSleep
-    from ._models_py3 import ValidationActivityTypePropertiesTimeout
     from ._models_py3 import VariableSpecification
-    from ._models_py3 import VariableSpecificationDefaultValue
-    from ._models_py3 import VerticaDatasetTypeProperties
-    from ._models_py3 import VerticaDatasetTypePropertiesSchema
-    from ._models_py3 import VerticaDatasetTypePropertiesTable
-    from ._models_py3 import VerticaDatasetTypePropertiesTableName
     from ._models_py3 import VerticaLinkedService
-    from ._models_py3 import VerticaLinkedServiceTypeProperties
-    from ._models_py3 import VerticaLinkedServiceTypePropertiesConnectionString
-    from ._models_py3 import VerticaLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import VerticaSource
-    from ._models_py3 import VerticaSourceQuery
     from ._models_py3 import VerticaTableDataset
     from ._models_py3 import WaitActivity
-    from ._models_py3 import WaitActivityTypeProperties
     from ._models_py3 import WebActivity
     from ._models_py3 import WebActivityAuthentication
-    from ._models_py3 import WebActivityTypeProperties
-    from ._models_py3 import WebActivityTypePropertiesBody
-    from ._models_py3 import WebActivityTypePropertiesHeaders
-    from ._models_py3 import WebActivityTypePropertiesUrl
     from ._models_py3 import WebAnonymousAuthentication
     from ._models_py3 import WebBasicAuthentication
-    from ._models_py3 import WebBasicAuthenticationUsername
     from ._models_py3 import WebClientCertificateAuthentication
     from ._models_py3 import WebHookActivity
-    from ._models_py3 import WebHookActivityTypeProperties
-    from ._models_py3 import WebHookActivityTypePropertiesBody
-    from ._models_py3 import WebHookActivityTypePropertiesHeaders
-    from ._models_py3 import WebHookActivityTypePropertiesReportStatusOnCallBack
-    from ._models_py3 import WebHookActivityTypePropertiesUrl
     from ._models_py3 import WebLinkedService
     from ._models_py3 import WebLinkedServiceTypeProperties
-    from ._models_py3 import WebLinkedServiceTypePropertiesUrl
-    from ._models_py3 import WebSource
     from ._models_py3 import WebTableDataset
-    from ._models_py3 import WebTableDatasetTypeProperties
-    from ._models_py3 import WebTableDatasetTypePropertiesIndex
-    from ._models_py3 import WebTableDatasetTypePropertiesPath
     from ._models_py3 import XeroLinkedService
-    from ._models_py3 import XeroLinkedServiceTypeProperties
-    from ._models_py3 import XeroLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import XeroLinkedServiceTypePropertiesHost
-    from ._models_py3 import XeroLinkedServiceTypePropertiesUseEncryptedEndpoints
-    from ._models_py3 import XeroLinkedServiceTypePropertiesUseHostVerification
-    from ._models_py3 import XeroLinkedServiceTypePropertiesUsePeerVerification
     from ._models_py3 import XeroObjectDataset
-    from ._models_py3 import XeroSource
-    from ._models_py3 import XeroSourceQuery
     from ._models_py3 import ZohoLinkedService
-    from ._models_py3 import ZohoLinkedServiceTypeProperties
-    from ._models_py3 import ZohoLinkedServiceTypePropertiesEncryptedCredential
-    from ._models_py3 import ZohoLinkedServiceTypePropertiesEndpoint
-    from ._models_py3 import ZohoLinkedServiceTypePropertiesUseEncryptedEndpoints
-    from ._models_py3 import ZohoLinkedServiceTypePropertiesUseHostVerification
-    from ._models_py3 import ZohoLinkedServiceTypePropertiesUsePeerVerification
     from ._models_py3 import ZohoObjectDataset
-    from ._models_py3 import ZohoSource
-    from ._models_py3 import ZohoSourceQuery
 except (SyntaxError, ImportError):
     from ._models import AccessPolicyResponse  # type: ignore
     from ._models import Activity  # type: ignore
     from ._models import ActivityDependency  # type: ignore
     from ._models import ActivityPolicy  # type: ignore
-    from ._models import ActivityPolicyRetry  # type: ignore
-    from ._models import ActivityPolicyTimeout  # type: ignore
     from ._models import ActivityRun  # type: ignore
-    from ._models import ActivityRunError  # type: ignore
-    from ._models import ActivityRunInput  # type: ignore
-    from ._models import ActivityRunOutput  # type: ignore
     from ._models import ActivityRunsQueryResponse  # type: ignore
     from ._models import AddDataFlowToDebugSessionResponse  # type: ignore
-    from ._models import AdditionalColumns  # type: ignore
-    from ._models import AdditionalColumnsName  # type: ignore
-    from ._models import AdditionalColumnsValue  # type: ignore
     from ._models import AmazonMwsLinkedService  # type: ignore
-    from ._models import AmazonMwsLinkedServiceTypeProperties  # type: ignore
-    from ._models import AmazonMwsLinkedServiceTypePropertiesAccessKeyId  # type: ignore
-    from ._models import AmazonMwsLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import AmazonMwsLinkedServiceTypePropertiesEndpoint  # type: ignore
-    from ._models import AmazonMwsLinkedServiceTypePropertiesMarketplaceId  # type: ignore
-    from ._models import AmazonMwsLinkedServiceTypePropertiesSellerId  # type: ignore
-    from ._models import AmazonMwsLinkedServiceTypePropertiesUseEncryptedEndpoints  # type: ignore
-    from ._models import AmazonMwsLinkedServiceTypePropertiesUseHostVerification  # type: ignore
-    from ._models import AmazonMwsLinkedServiceTypePropertiesUsePeerVerification  # type: ignore
     from ._models import AmazonMwsObjectDataset  # type: ignore
-    from ._models import AmazonMwsSource  # type: ignore
-    from ._models import AmazonMwsSourceQuery  # type: ignore
     from ._models import AmazonRedshiftLinkedService  # type: ignore
-    from ._models import AmazonRedshiftLinkedServiceTypeProperties  # type: ignore
-    from ._models import AmazonRedshiftLinkedServiceTypePropertiesDatabase  # type: ignore
-    from ._models import AmazonRedshiftLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import AmazonRedshiftLinkedServiceTypePropertiesPort  # type: ignore
-    from ._models import AmazonRedshiftLinkedServiceTypePropertiesServer  # type: ignore
-    from ._models import AmazonRedshiftLinkedServiceTypePropertiesUsername  # type: ignore
-    from ._models import AmazonRedshiftSource  # type: ignore
-    from ._models import AmazonRedshiftSourceQuery  # type: ignore
     from ._models import AmazonRedshiftTableDataset  # type: ignore
-    from ._models import AmazonRedshiftTableDatasetTypeProperties  # type: ignore
-    from ._models import AmazonRedshiftTableDatasetTypePropertiesSchema  # type: ignore
-    from ._models import AmazonRedshiftTableDatasetTypePropertiesTable  # type: ignore
-    from ._models import AmazonRedshiftTableDatasetTypePropertiesTableName  # type: ignore
     from ._models import AmazonS3Dataset  # type: ignore
-    from ._models import AmazonS3DatasetTypeProperties  # type: ignore
-    from ._models import AmazonS3DatasetTypePropertiesBucketName  # type: ignore
-    from ._models import AmazonS3DatasetTypePropertiesKey  # type: ignore
-    from ._models import AmazonS3DatasetTypePropertiesModifiedDatetimeEnd  # type: ignore
-    from ._models import AmazonS3DatasetTypePropertiesModifiedDatetimeStart  # type: ignore
-    from ._models import AmazonS3DatasetTypePropertiesPrefix  # type: ignore
-    from ._models import AmazonS3DatasetTypePropertiesVersion  # type: ignore
     from ._models import AmazonS3LinkedService  # type: ignore
-    from ._models import AmazonS3LinkedServiceTypeProperties  # type: ignore
-    from ._models import AmazonS3LinkedServiceTypePropertiesAccessKeyId  # type: ignore
-    from ._models import AmazonS3LinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import AmazonS3LinkedServiceTypePropertiesServiceUrl  # type: ignore
-    from ._models import AmazonS3Location  # type: ignore
-    from ._models import AmazonS3LocationBucketName  # type: ignore
-    from ._models import AmazonS3LocationVersion  # type: ignore
-    from ._models import AmazonS3ReadSettings  # type: ignore
-    from ._models import AmazonS3ReadSettingsFileListPath  # type: ignore
-    from ._models import AmazonS3ReadSettingsModifiedDatetimeEnd  # type: ignore
-    from ._models import AmazonS3ReadSettingsModifiedDatetimeStart  # type: ignore
-    from ._models import AmazonS3ReadSettingsPrefix  # type: ignore
-    from ._models import AmazonS3ReadSettingsRecursive  # type: ignore
-    from ._models import AmazonS3ReadSettingsWildcardFileName  # type: ignore
-    from ._models import AmazonS3ReadSettingsWildcardFolderPath  # type: ignore
     from ._models import AppendVariableActivity  # type: ignore
-    from ._models import AppendVariableActivityTypeProperties  # type: ignore
-    from ._models import AppendVariableActivityTypePropertiesValue  # type: ignore
     from ._models import AvroDataset  # type: ignore
-    from ._models import AvroDatasetTypeProperties  # type: ignore
-    from ._models import AvroFormat  # type: ignore
-    from ._models import AvroSink  # type: ignore
-    from ._models import AvroSource  # type: ignore
-    from ._models import AvroWriteSettings  # type: ignore
     from ._models import AzureBatchLinkedService  # type: ignore
-    from ._models import AzureBatchLinkedServiceTypeProperties  # type: ignore
-    from ._models import AzureBatchLinkedServiceTypePropertiesAccountName  # type: ignore
-    from ._models import AzureBatchLinkedServiceTypePropertiesBatchUri  # type: ignore
-    from ._models import AzureBatchLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import AzureBatchLinkedServiceTypePropertiesPoolName  # type: ignore
     from ._models import AzureBlobDataset  # type: ignore
-    from ._models import AzureBlobDatasetTypeProperties  # type: ignore
-    from ._models import AzureBlobDatasetTypePropertiesFileName  # type: ignore
-    from ._models import AzureBlobDatasetTypePropertiesFolderPath  # type: ignore
-    from ._models import AzureBlobDatasetTypePropertiesModifiedDatetimeEnd  # type: ignore
-    from ._models import AzureBlobDatasetTypePropertiesModifiedDatetimeStart  # type: ignore
-    from ._models import AzureBlobDatasetTypePropertiesTableRootLocation  # type: ignore
     from ._models import AzureBlobFsDataset  # type: ignore
-    from ._models import AzureBlobFsDatasetTypeProperties  # type: ignore
-    from ._models import AzureBlobFsDatasetTypePropertiesFileName  # type: ignore
-    from ._models import AzureBlobFsDatasetTypePropertiesFolderPath  # type: ignore
     from ._models import AzureBlobFsLinkedService  # type: ignore
-    from ._models import AzureBlobFsLinkedServiceTypeProperties  # type: ignore
-    from ._models import AzureBlobFsLinkedServiceTypePropertiesAccountKey  # type: ignore
-    from ._models import AzureBlobFsLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import AzureBlobFsLinkedServiceTypePropertiesServicePrincipalId  # type: ignore
-    from ._models import AzureBlobFsLinkedServiceTypePropertiesTenant  # type: ignore
-    from ._models import AzureBlobFsLinkedServiceTypePropertiesUrl  # type: ignore
-    from ._models import AzureBlobFsLocation  # type: ignore
-    from ._models import AzureBlobFsLocationFileSystem  # type: ignore
-    from ._models import AzureBlobFsReadSettings  # type: ignore
-    from ._models import AzureBlobFsReadSettingsFileListPath  # type: ignore
-    from ._models import AzureBlobFsReadSettingsModifiedDatetimeEnd  # type: ignore
-    from ._models import AzureBlobFsReadSettingsModifiedDatetimeStart  # type: ignore
-    from ._models import AzureBlobFsReadSettingsRecursive  # type: ignore
-    from ._models import AzureBlobFsReadSettingsWildcardFileName  # type: ignore
-    from ._models import AzureBlobFsReadSettingsWildcardFolderPath  # type: ignore
-    from ._models import AzureBlobFsSink  # type: ignore
-    from ._models import AzureBlobFsSinkCopyBehavior  # type: ignore
-    from ._models import AzureBlobFsSource  # type: ignore
-    from ._models import AzureBlobFsSourceRecursive  # type: ignore
-    from ._models import AzureBlobFsSourceSkipHeaderLineCount  # type: ignore
-    from ._models import AzureBlobFsSourceTreatEmptyAsNull  # type: ignore
-    from ._models import AzureBlobFsWriteSettings  # type: ignore
-    from ._models import AzureBlobFsWriteSettingsBlockSizeInMb  # type: ignore
     from ._models import AzureBlobStorageLinkedService  # type: ignore
-    from ._models import AzureBlobStorageLinkedServiceTypeProperties  # type: ignore
-    from ._models import AzureBlobStorageLinkedServiceTypePropertiesConnectionString  # type: ignore
-    from ._models import AzureBlobStorageLinkedServiceTypePropertiesSasUri  # type: ignore
-    from ._models import AzureBlobStorageLinkedServiceTypePropertiesServicePrincipalId  # type: ignore
-    from ._models import AzureBlobStorageLinkedServiceTypePropertiesTenant  # type: ignore
-    from ._models import AzureBlobStorageLocation  # type: ignore
-    from ._models import AzureBlobStorageLocationContainer  # type: ignore
-    from ._models import AzureBlobStorageReadSettings  # type: ignore
-    from ._models import AzureBlobStorageReadSettingsFileListPath  # type: ignore
-    from ._models import AzureBlobStorageReadSettingsModifiedDatetimeEnd  # type: ignore
-    from ._models import AzureBlobStorageReadSettingsModifiedDatetimeStart  # type: ignore
-    from ._models import AzureBlobStorageReadSettingsPrefix  # type: ignore
-    from ._models import AzureBlobStorageReadSettingsRecursive  # type: ignore
-    from ._models import AzureBlobStorageReadSettingsWildcardFileName  # type: ignore
-    from ._models import AzureBlobStorageReadSettingsWildcardFolderPath  # type: ignore
-    from ._models import AzureBlobStorageWriteSettings  # type: ignore
-    from ._models import AzureBlobStorageWriteSettingsBlockSizeInMb  # type: ignore
     from ._models import AzureDataExplorerCommandActivity  # type: ignore
-    from ._models import AzureDataExplorerCommandActivityTypeProperties  # type: ignore
-    from ._models import AzureDataExplorerCommandActivityTypePropertiesCommand  # type: ignore
-    from ._models import AzureDataExplorerCommandActivityTypePropertiesCommandTimeout  # type: ignore
-    from ._models import AzureDataExplorerDatasetTypeProperties  # type: ignore
-    from ._models import AzureDataExplorerDatasetTypePropertiesTable  # type: ignore
     from ._models import AzureDataExplorerLinkedService  # type: ignore
-    from ._models import AzureDataExplorerLinkedServiceTypeProperties  # type: ignore
-    from ._models import AzureDataExplorerLinkedServiceTypePropertiesDatabase  # type: ignore
-    from ._models import AzureDataExplorerLinkedServiceTypePropertiesEndpoint  # type: ignore
-    from ._models import AzureDataExplorerLinkedServiceTypePropertiesServicePrincipalId  # type: ignore
-    from ._models import AzureDataExplorerLinkedServiceTypePropertiesTenant  # type: ignore
-    from ._models import AzureDataExplorerSink  # type: ignore
-    from ._models import AzureDataExplorerSinkFlushImmediately  # type: ignore
-    from ._models import AzureDataExplorerSinkIngestionMappingAsJson  # type: ignore
-    from ._models import AzureDataExplorerSinkIngestionMappingName  # type: ignore
-    from ._models import AzureDataExplorerSource  # type: ignore
-    from ._models import AzureDataExplorerSourceNoTruncation  # type: ignore
-    from ._models import AzureDataExplorerSourceQuery  # type: ignore
-    from ._models import AzureDataExplorerSourceQueryTimeout  # type: ignore
     from ._models import AzureDataExplorerTableDataset  # type: ignore
     from ._models import AzureDataLakeAnalyticsLinkedService  # type: ignore
-    from ._models import AzureDataLakeAnalyticsLinkedServiceTypeProperties  # type: ignore
-    from ._models import AzureDataLakeAnalyticsLinkedServiceTypePropertiesAccountName  # type: ignore
-    from ._models import AzureDataLakeAnalyticsLinkedServiceTypePropertiesDataLakeAnalyticsUri  # type: ignore
-    from ._models import AzureDataLakeAnalyticsLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import AzureDataLakeAnalyticsLinkedServiceTypePropertiesResourceGroupName  # type: ignore
-    from ._models import AzureDataLakeAnalyticsLinkedServiceTypePropertiesServicePrincipalId  # type: ignore
-    from ._models import AzureDataLakeAnalyticsLinkedServiceTypePropertiesSubscriptionId  # type: ignore
-    from ._models import AzureDataLakeAnalyticsLinkedServiceTypePropertiesTenant  # type: ignore
     from ._models import AzureDataLakeStoreDataset  # type: ignore
-    from ._models import AzureDataLakeStoreDatasetTypeProperties  # type: ignore
-    from ._models import AzureDataLakeStoreDatasetTypePropertiesFileName  # type: ignore
-    from ._models import AzureDataLakeStoreDatasetTypePropertiesFolderPath  # type: ignore
     from ._models import AzureDataLakeStoreLinkedService  # type: ignore
-    from ._models import AzureDataLakeStoreLinkedServiceTypeProperties  # type: ignore
-    from ._models import AzureDataLakeStoreLinkedServiceTypePropertiesAccountName  # type: ignore
-    from ._models import AzureDataLakeStoreLinkedServiceTypePropertiesDataLakeStoreUri  # type: ignore
-    from ._models import AzureDataLakeStoreLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import AzureDataLakeStoreLinkedServiceTypePropertiesResourceGroupName  # type: ignore
-    from ._models import AzureDataLakeStoreLinkedServiceTypePropertiesServicePrincipalId  # type: ignore
-    from ._models import AzureDataLakeStoreLinkedServiceTypePropertiesSubscriptionId  # type: ignore
-    from ._models import AzureDataLakeStoreLinkedServiceTypePropertiesTenant  # type: ignore
-    from ._models import AzureDataLakeStoreLocation  # type: ignore
-    from ._models import AzureDataLakeStoreReadSettings  # type: ignore
-    from ._models import AzureDataLakeStoreReadSettingsFileListPath  # type: ignore
-    from ._models import AzureDataLakeStoreReadSettingsModifiedDatetimeEnd  # type: ignore
-    from ._models import AzureDataLakeStoreReadSettingsModifiedDatetimeStart  # type: ignore
-    from ._models import AzureDataLakeStoreReadSettingsRecursive  # type: ignore
-    from ._models import AzureDataLakeStoreReadSettingsWildcardFileName  # type: ignore
-    from ._models import AzureDataLakeStoreReadSettingsWildcardFolderPath  # type: ignore
-    from ._models import AzureDataLakeStoreSink  # type: ignore
-    from ._models import AzureDataLakeStoreSinkCopyBehavior  # type: ignore
-    from ._models import AzureDataLakeStoreSinkEnableAdlsSingleFileParallel  # type: ignore
-    from ._models import AzureDataLakeStoreSource  # type: ignore
-    from ._models import AzureDataLakeStoreSourceRecursive  # type: ignore
-    from ._models import AzureDataLakeStoreWriteSettings  # type: ignore
-    from ._models import AzureDataLakeStoreWriteSettingsExpiryDateTime  # type: ignore
     from ._models import AzureDatabricksLinkedService  # type: ignore
-    from ._models import AzureDatabricksLinkedServiceTypeProperties  # type: ignore
-    from ._models import AzureDatabricksLinkedServiceTypePropertiesDomain  # type: ignore
-    from ._models import AzureDatabricksLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import AzureDatabricksLinkedServiceTypePropertiesExistingClusterId  # type: ignore
-    from ._models import AzureDatabricksLinkedServiceTypePropertiesInstancePoolId  # type: ignore
-    from ._models import AzureDatabricksLinkedServiceTypePropertiesNewClusterDriverNodeType  # type: ignore
-    from ._models import AzureDatabricksLinkedServiceTypePropertiesNewClusterEnableElasticDisk  # type: ignore
-    from ._models import AzureDatabricksLinkedServiceTypePropertiesNewClusterInitScripts  # type: ignore
-    from ._models import AzureDatabricksLinkedServiceTypePropertiesNewClusterNodeType  # type: ignore
-    from ._models import AzureDatabricksLinkedServiceTypePropertiesNewClusterNumOfWorker  # type: ignore
-    from ._models import AzureDatabricksLinkedServiceTypePropertiesNewClusterVersion  # type: ignore
     from ._models import AzureFileStorageLinkedService  # type: ignore
-    from ._models import AzureFileStorageLinkedServiceTypeProperties  # type: ignore
-    from ._models import AzureFileStorageLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import AzureFileStorageLinkedServiceTypePropertiesHost  # type: ignore
-    from ._models import AzureFileStorageLinkedServiceTypePropertiesUserId  # type: ignore
-    from ._models import AzureFileStorageLocation  # type: ignore
-    from ._models import AzureFileStorageReadSettings  # type: ignore
-    from ._models import AzureFileStorageReadSettingsFileListPath  # type: ignore
-    from ._models import AzureFileStorageReadSettingsModifiedDatetimeEnd  # type: ignore
-    from ._models import AzureFileStorageReadSettingsModifiedDatetimeStart  # type: ignore
-    from ._models import AzureFileStorageReadSettingsRecursive  # type: ignore
-    from ._models import AzureFileStorageReadSettingsWildcardFileName  # type: ignore
-    from ._models import AzureFileStorageReadSettingsWildcardFolderPath  # type: ignore
     from ._models import AzureFunctionActivity  # type: ignore
-    from ._models import AzureFunctionActivityTypeProperties  # type: ignore
-    from ._models import AzureFunctionActivityTypePropertiesBody  # type: ignore
-    from ._models import AzureFunctionActivityTypePropertiesFunctionName  # type: ignore
-    from ._models import AzureFunctionActivityTypePropertiesHeaders  # type: ignore
     from ._models import AzureFunctionLinkedService  # type: ignore
-    from ._models import AzureFunctionLinkedServiceTypeProperties  # type: ignore
-    from ._models import AzureFunctionLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import AzureFunctionLinkedServiceTypePropertiesFunctionAppUrl  # type: ignore
     from ._models import AzureKeyVaultLinkedService  # type: ignore
-    from ._models import AzureKeyVaultLinkedServiceTypeProperties  # type: ignore
-    from ._models import AzureKeyVaultLinkedServiceTypePropertiesBaseUrl  # type: ignore
     from ._models import AzureKeyVaultSecretReference  # type: ignore
-    from ._models import AzureKeyVaultSecretReferenceSecretName  # type: ignore
-    from ._models import AzureKeyVaultSecretReferenceSecretVersion  # type: ignore
     from ._models import AzureMariaDbLinkedService  # type: ignore
-    from ._models import AzureMariaDbLinkedServiceTypeProperties  # type: ignore
-    from ._models import AzureMariaDbLinkedServiceTypePropertiesConnectionString  # type: ignore
-    from ._models import AzureMariaDbLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import AzureMariaDbSource  # type: ignore
-    from ._models import AzureMariaDbSourceQuery  # type: ignore
     from ._models import AzureMariaDbTableDataset  # type: ignore
     from ._models import AzureMlBatchExecutionActivity  # type: ignore
-    from ._models import AzureMlBatchExecutionActivityTypeProperties  # type: ignore
     from ._models import AzureMlExecutePipelineActivity  # type: ignore
-    from ._models import AzureMlExecutePipelineActivityTypeProperties  # type: ignore
-    from ._models import AzureMlExecutePipelineActivityTypePropertiesContinueOnStepFailure  # type: ignore
-    from ._models import AzureMlExecutePipelineActivityTypePropertiesExperimentName  # type: ignore
-    from ._models import AzureMlExecutePipelineActivityTypePropertiesMlParentRunId  # type: ignore
-    from ._models import AzureMlExecutePipelineActivityTypePropertiesMlPipelineId  # type: ignore
-    from ._models import AzureMlExecutePipelineActivityTypePropertiesMlPipelineParameters  # type: ignore
     from ._models import AzureMlLinkedService  # type: ignore
-    from ._models import AzureMlLinkedServiceTypeProperties  # type: ignore
-    from ._models import AzureMlLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import AzureMlLinkedServiceTypePropertiesMlEndpoint  # type: ignore
-    from ._models import AzureMlLinkedServiceTypePropertiesServicePrincipalId  # type: ignore
-    from ._models import AzureMlLinkedServiceTypePropertiesTenant  # type: ignore
-    from ._models import AzureMlLinkedServiceTypePropertiesUpdateResourceEndpoint  # type: ignore
     from ._models import AzureMlServiceLinkedService  # type: ignore
-    from ._models import AzureMlServiceLinkedServiceTypeProperties  # type: ignore
-    from ._models import AzureMlServiceLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import AzureMlServiceLinkedServiceTypePropertiesMlWorkspaceName  # type: ignore
-    from ._models import AzureMlServiceLinkedServiceTypePropertiesResourceGroupName  # type: ignore
-    from ._models import AzureMlServiceLinkedServiceTypePropertiesServicePrincipalId  # type: ignore
-    from ._models import AzureMlServiceLinkedServiceTypePropertiesSubscriptionId  # type: ignore
-    from ._models import AzureMlServiceLinkedServiceTypePropertiesTenant  # type: ignore
     from ._models import AzureMlUpdateResourceActivity  # type: ignore
-    from ._models import AzureMlUpdateResourceActivityTypeProperties  # type: ignore
-    from ._models import AzureMlUpdateResourceActivityTypePropertiesTrainedModelFilePath  # type: ignore
-    from ._models import AzureMlUpdateResourceActivityTypePropertiesTrainedModelName  # type: ignore
     from ._models import AzureMlWebServiceFile  # type: ignore
-    from ._models import AzureMlWebServiceFilePath  # type: ignore
     from ._models import AzureMySqlLinkedService  # type: ignore
-    from ._models import AzureMySqlLinkedServiceTypeProperties  # type: ignore
-    from ._models import AzureMySqlLinkedServiceTypePropertiesConnectionString  # type: ignore
-    from ._models import AzureMySqlLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import AzureMySqlSink  # type: ignore
-    from ._models import AzureMySqlSinkPreCopyScript  # type: ignore
-    from ._models import AzureMySqlSource  # type: ignore
-    from ._models import AzureMySqlSourceQuery  # type: ignore
     from ._models import AzureMySqlTableDataset  # type: ignore
-    from ._models import AzureMySqlTableDatasetTypeProperties  # type: ignore
-    from ._models import AzureMySqlTableDatasetTypePropertiesTable  # type: ignore
-    from ._models import AzureMySqlTableDatasetTypePropertiesTableName  # type: ignore
     from ._models import AzurePostgreSqlLinkedService  # type: ignore
-    from ._models import AzurePostgreSqlLinkedServiceTypeProperties  # type: ignore
-    from ._models import AzurePostgreSqlLinkedServiceTypePropertiesConnectionString  # type: ignore
-    from ._models import AzurePostgreSqlLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import AzurePostgreSqlSink  # type: ignore
-    from ._models import AzurePostgreSqlSinkPreCopyScript  # type: ignore
-    from ._models import AzurePostgreSqlSource  # type: ignore
-    from ._models import AzurePostgreSqlSourceQuery  # type: ignore
     from ._models import AzurePostgreSqlTableDataset  # type: ignore
-    from ._models import AzurePostgreSqlTableDatasetTypeProperties  # type: ignore
-    from ._models import AzurePostgreSqlTableDatasetTypePropertiesSchema  # type: ignore
-    from ._models import AzurePostgreSqlTableDatasetTypePropertiesTable  # type: ignore
-    from ._models import AzurePostgreSqlTableDatasetTypePropertiesTableName  # type: ignore
-    from ._models import AzureQueueSink  # type: ignore
     from ._models import AzureSearchIndexDataset  # type: ignore
-    from ._models import AzureSearchIndexDatasetTypeProperties  # type: ignore
-    from ._models import AzureSearchIndexDatasetTypePropertiesIndexName  # type: ignore
-    from ._models import AzureSearchIndexSink  # type: ignore
     from ._models import AzureSearchLinkedService  # type: ignore
-    from ._models import AzureSearchLinkedServiceTypeProperties  # type: ignore
-    from ._models import AzureSearchLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import AzureSearchLinkedServiceTypePropertiesUrl  # type: ignore
     from ._models import AzureSqlDatabaseLinkedService  # type: ignore
-    from ._models import AzureSqlDatabaseLinkedServiceTypeProperties  # type: ignore
-    from ._models import AzureSqlDatabaseLinkedServiceTypePropertiesConnectionString  # type: ignore
-    from ._models import AzureSqlDatabaseLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import AzureSqlDatabaseLinkedServiceTypePropertiesServicePrincipalId  # type: ignore
-    from ._models import AzureSqlDatabaseLinkedServiceTypePropertiesTenant  # type: ignore
     from ._models import AzureSqlDwLinkedService  # type: ignore
-    from ._models import AzureSqlDwLinkedServiceTypeProperties  # type: ignore
-    from ._models import AzureSqlDwLinkedServiceTypePropertiesConnectionString  # type: ignore
-    from ._models import AzureSqlDwLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import AzureSqlDwLinkedServiceTypePropertiesServicePrincipalId  # type: ignore
-    from ._models import AzureSqlDwLinkedServiceTypePropertiesTenant  # type: ignore
     from ._models import AzureSqlDwTableDataset  # type: ignore
-    from ._models import AzureSqlDwTableDatasetTypeProperties  # type: ignore
-    from ._models import AzureSqlDwTableDatasetTypePropertiesSchema  # type: ignore
-    from ._models import AzureSqlDwTableDatasetTypePropertiesTable  # type: ignore
-    from ._models import AzureSqlDwTableDatasetTypePropertiesTableName  # type: ignore
     from ._models import AzureSqlMiLinkedService  # type: ignore
-    from ._models import AzureSqlMiLinkedServiceTypeProperties  # type: ignore
-    from ._models import AzureSqlMiLinkedServiceTypePropertiesConnectionString  # type: ignore
-    from ._models import AzureSqlMiLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import AzureSqlMiLinkedServiceTypePropertiesServicePrincipalId  # type: ignore
-    from ._models import AzureSqlMiLinkedServiceTypePropertiesTenant  # type: ignore
     from ._models import AzureSqlMiTableDataset  # type: ignore
-    from ._models import AzureSqlMiTableDatasetTypeProperties  # type: ignore
-    from ._models import AzureSqlMiTableDatasetTypePropertiesSchema  # type: ignore
-    from ._models import AzureSqlMiTableDatasetTypePropertiesTable  # type: ignore
-    from ._models import AzureSqlMiTableDatasetTypePropertiesTableName  # type: ignore
-    from ._models import AzureSqlSink  # type: ignore
-    from ._models import AzureSqlSinkPreCopyScript  # type: ignore
-    from ._models import AzureSqlSinkSqlWriterStoredProcedureName  # type: ignore
-    from ._models import AzureSqlSinkSqlWriterTableType  # type: ignore
-    from ._models import AzureSqlSinkStoredProcedureTableTypeParameterName  # type: ignore
-    from ._models import AzureSqlSinkTableOption  # type: ignore
-    from ._models import AzureSqlSource  # type: ignore
-    from ._models import AzureSqlSourceProduceAdditionalTypes  # type: ignore
-    from ._models import AzureSqlSourceSqlReaderQuery  # type: ignore
-    from ._models import AzureSqlSourceSqlReaderStoredProcedureName  # type: ignore
     from ._models import AzureSqlTableDataset  # type: ignore
-    from ._models import AzureSqlTableDatasetTypeProperties  # type: ignore
-    from ._models import AzureSqlTableDatasetTypePropertiesSchema  # type: ignore
-    from ._models import AzureSqlTableDatasetTypePropertiesTable  # type: ignore
-    from ._models import AzureSqlTableDatasetTypePropertiesTableName  # type: ignore
     from ._models import AzureStorageLinkedService  # type: ignore
-    from ._models import AzureStorageLinkedServiceTypeProperties  # type: ignore
-    from ._models import AzureStorageLinkedServiceTypePropertiesConnectionString  # type: ignore
-    from ._models import AzureStorageLinkedServiceTypePropertiesSasUri  # type: ignore
     from ._models import AzureTableDataset  # type: ignore
-    from ._models import AzureTableDatasetTypeProperties  # type: ignore
-    from ._models import AzureTableDatasetTypePropertiesTableName  # type: ignore
-    from ._models import AzureTableSink  # type: ignore
-    from ._models import AzureTableSinkAzureTableDefaultPartitionKeyValue  # type: ignore
-    from ._models import AzureTableSinkAzureTableInsertType  # type: ignore
-    from ._models import AzureTableSinkAzureTablePartitionKeyName  # type: ignore
-    from ._models import AzureTableSinkAzureTableRowKeyName  # type: ignore
-    from ._models import AzureTableSource  # type: ignore
-    from ._models import AzureTableSourceAzureTableSourceIgnoreTableNotFound  # type: ignore
-    from ._models import AzureTableSourceAzureTableSourceQuery  # type: ignore
     from ._models import AzureTableStorageLinkedService  # type: ignore
     from ._models import BinaryDataset  # type: ignore
-    from ._models import BinaryDatasetTypeProperties  # type: ignore
-    from ._models import BinarySink  # type: ignore
-    from ._models import BinarySource  # type: ignore
     from ._models import BlobEventsTrigger  # type: ignore
-    from ._models import BlobEventsTriggerTypeProperties  # type: ignore
-    from ._models import BlobSink  # type: ignore
-    from ._models import BlobSinkBlobWriterAddHeader  # type: ignore
-    from ._models import BlobSinkBlobWriterDateTimeFormat  # type: ignore
-    from ._models import BlobSinkBlobWriterOverwriteFiles  # type: ignore
-    from ._models import BlobSinkCopyBehavior  # type: ignore
-    from ._models import BlobSource  # type: ignore
-    from ._models import BlobSourceRecursive  # type: ignore
-    from ._models import BlobSourceSkipHeaderLineCount  # type: ignore
-    from ._models import BlobSourceTreatEmptyAsNull  # type: ignore
     from ._models import BlobTrigger  # type: ignore
-    from ._models import BlobTriggerTypeProperties  # type: ignore
     from ._models import CassandraLinkedService  # type: ignore
-    from ._models import CassandraLinkedServiceTypeProperties  # type: ignore
-    from ._models import CassandraLinkedServiceTypePropertiesAuthenticationType  # type: ignore
-    from ._models import CassandraLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import CassandraLinkedServiceTypePropertiesHost  # type: ignore
-    from ._models import CassandraLinkedServiceTypePropertiesPort  # type: ignore
-    from ._models import CassandraLinkedServiceTypePropertiesUsername  # type: ignore
-    from ._models import CassandraSource  # type: ignore
-    from ._models import CassandraSourceQuery  # type: ignore
     from ._models import CassandraTableDataset  # type: ignore
-    from ._models import CassandraTableDatasetTypeProperties  # type: ignore
-    from ._models import CassandraTableDatasetTypePropertiesKeyspace  # type: ignore
-    from ._models import CassandraTableDatasetTypePropertiesTableName  # type: ignore
     from ._models import ChainingTrigger  # type: ignore
-    from ._models import ChainingTriggerTypeProperties  # type: ignore
-    from ._models import CloudError, CloudErrorException  # type: ignore
-    from ._models import CloudErrorBody  # type: ignore
-    from ._models import CmdkeySetup  # type: ignore
-    from ._models import CmdkeySetupTypeProperties  # type: ignore
-    from ._models import CmdkeySetupTypePropertiesTargetName  # type: ignore
-    from ._models import CmdkeySetupTypePropertiesUserName  # type: ignore
+    from ._models import CloudError  # type: ignore
     from ._models import CommonDataServiceForAppsEntityDataset  # type: ignore
-    from ._models import CommonDataServiceForAppsEntityDatasetTypeProperties  # type: ignore
-    from ._models import CommonDataServiceForAppsEntityDatasetTypePropertiesEntityName  # type: ignore
     from ._models import CommonDataServiceForAppsLinkedService  # type: ignore
-    from ._models import CommonDataServiceForAppsLinkedServiceTypeProperties  # type: ignore
-    from ._models import CommonDataServiceForAppsLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import CommonDataServiceForAppsLinkedServiceTypePropertiesHostName  # type: ignore
-    from ._models import CommonDataServiceForAppsLinkedServiceTypePropertiesOrganizationName  # type: ignore
-    from ._models import CommonDataServiceForAppsLinkedServiceTypePropertiesPort  # type: ignore
-    from ._models import CommonDataServiceForAppsLinkedServiceTypePropertiesServicePrincipalId  # type: ignore
-    from ._models import CommonDataServiceForAppsLinkedServiceTypePropertiesServiceUri  # type: ignore
-    from ._models import CommonDataServiceForAppsLinkedServiceTypePropertiesUsername  # type: ignore
-    from ._models import CommonDataServiceForAppsSink  # type: ignore
-    from ._models import CommonDataServiceForAppsSinkAlternateKeyName  # type: ignore
-    from ._models import CommonDataServiceForAppsSinkIgnoreNullValues  # type: ignore
-    from ._models import CommonDataServiceForAppsSource  # type: ignore
-    from ._models import CommonDataServiceForAppsSourceQuery  # type: ignore
-    from ._models import ComponentSetup  # type: ignore
     from ._models import ConcurLinkedService  # type: ignore
-    from ._models import ConcurLinkedServiceTypeProperties  # type: ignore
-    from ._models import ConcurLinkedServiceTypePropertiesClientId  # type: ignore
-    from ._models import ConcurLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import ConcurLinkedServiceTypePropertiesUseEncryptedEndpoints  # type: ignore
-    from ._models import ConcurLinkedServiceTypePropertiesUseHostVerification  # type: ignore
-    from ._models import ConcurLinkedServiceTypePropertiesUsePeerVerification  # type: ignore
-    from ._models import ConcurLinkedServiceTypePropertiesUsername  # type: ignore
     from ._models import ConcurObjectDataset  # type: ignore
-    from ._models import ConcurSource  # type: ignore
-    from ._models import ConcurSourceQuery  # type: ignore
     from ._models import ControlActivity  # type: ignore
     from ._models import CopyActivity  # type: ignore
-    from ._models import CopyActivityTypeProperties  # type: ignore
-    from ._models import CopyActivityTypePropertiesDataIntegrationUnits  # type: ignore
-    from ._models import CopyActivityTypePropertiesEnableSkipIncompatibleRow  # type: ignore
-    from ._models import CopyActivityTypePropertiesEnableStaging  # type: ignore
-    from ._models import CopyActivityTypePropertiesParallelCopies  # type: ignore
-    from ._models import CopyActivityTypePropertiesPreserveItem  # type: ignore
-    from ._models import CopyActivityTypePropertiesPreserveRulesItem  # type: ignore
-    from ._models import CopyActivityTypePropertiesTranslator  # type: ignore
-    from ._models import CopyActivityTypePropertiesValidateDataConsistency  # type: ignore
     from ._models import CopySink  # type: ignore
-    from ._models import CopySinkMaxConcurrentConnections  # type: ignore
-    from ._models import CopySinkRetryCount  # type: ignore
-    from ._models import CopySinkRetryWait  # type: ignore
-    from ._models import CopySinkWriteBatchSize  # type: ignore
-    from ._models import CopySinkWriteBatchTimeout  # type: ignore
     from ._models import CopySource  # type: ignore
-    from ._models import CopySourceMaxConcurrentConnections  # type: ignore
-    from ._models import CopySourceRetryCount  # type: ignore
-    from ._models import CopySourceRetryWait  # type: ignore
     from ._models import CosmosDbLinkedService  # type: ignore
-    from ._models import CosmosDbLinkedServiceTypeProperties  # type: ignore
-    from ._models import CosmosDbLinkedServiceTypePropertiesAccountEndpoint  # type: ignore
-    from ._models import CosmosDbLinkedServiceTypePropertiesConnectionString  # type: ignore
-    from ._models import CosmosDbLinkedServiceTypePropertiesDatabase  # type: ignore
-    from ._models import CosmosDbLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
     from ._models import CosmosDbMongoDbApiCollectionDataset  # type: ignore
-    from ._models import CosmosDbMongoDbApiCollectionDatasetTypeProperties  # type: ignore
-    from ._models import CosmosDbMongoDbApiCollectionDatasetTypePropertiesCollection  # type: ignore
     from ._models import CosmosDbMongoDbApiLinkedService  # type: ignore
-    from ._models import CosmosDbMongoDbApiLinkedServiceTypeProperties  # type: ignore
-    from ._models import CosmosDbMongoDbApiLinkedServiceTypePropertiesConnectionString  # type: ignore
-    from ._models import CosmosDbMongoDbApiLinkedServiceTypePropertiesDatabase  # type: ignore
-    from ._models import CosmosDbMongoDbApiSink  # type: ignore
-    from ._models import CosmosDbMongoDbApiSinkWriteBehavior  # type: ignore
-    from ._models import CosmosDbMongoDbApiSource  # type: ignore
-    from ._models import CosmosDbMongoDbApiSourceBatchSize  # type: ignore
-    from ._models import CosmosDbMongoDbApiSourceFilter  # type: ignore
-    from ._models import CosmosDbMongoDbApiSourceQueryTimeout  # type: ignore
     from ._models import CosmosDbSqlApiCollectionDataset  # type: ignore
-    from ._models import CosmosDbSqlApiCollectionDatasetTypeProperties  # type: ignore
-    from ._models import CosmosDbSqlApiCollectionDatasetTypePropertiesCollectionName  # type: ignore
-    from ._models import CosmosDbSqlApiSink  # type: ignore
-    from ._models import CosmosDbSqlApiSinkWriteBehavior  # type: ignore
-    from ._models import CosmosDbSqlApiSource  # type: ignore
-    from ._models import CosmosDbSqlApiSourcePageSize  # type: ignore
-    from ._models import CosmosDbSqlApiSourcePreferredRegions  # type: ignore
-    from ._models import CosmosDbSqlApiSourceQuery  # type: ignore
     from ._models import CouchbaseLinkedService  # type: ignore
-    from ._models import CouchbaseLinkedServiceTypeProperties  # type: ignore
-    from ._models import CouchbaseLinkedServiceTypePropertiesConnectionString  # type: ignore
-    from ._models import CouchbaseLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import CouchbaseSource  # type: ignore
-    from ._models import CouchbaseSourceQuery  # type: ignore
     from ._models import CouchbaseTableDataset  # type: ignore
     from ._models import CreateDataFlowDebugSessionRequest  # type: ignore
     from ._models import CreateDataFlowDebugSessionResponse  # type: ignore
@@ -2352,54 +494,29 @@ except (SyntaxError, ImportError):
     from ._models import CreateRunResponse  # type: ignore
     from ._models import CustomActivity  # type: ignore
     from ._models import CustomActivityReferenceObject  # type: ignore
-    from ._models import CustomActivityTypeProperties  # type: ignore
-    from ._models import CustomActivityTypePropertiesCommand  # type: ignore
-    from ._models import CustomActivityTypePropertiesFolderPath  # type: ignore
-    from ._models import CustomActivityTypePropertiesRetentionTimeInDays  # type: ignore
     from ._models import CustomDataSourceLinkedService  # type: ignore
-    from ._models import CustomDataSourceLinkedServiceTypeProperties  # type: ignore
-    from ._models import CustomDataset  # type: ignore
-    from ._models import CustomDatasetTypeProperties  # type: ignore
     from ._models import CustomSetupBase  # type: ignore
     from ._models import DataFlow  # type: ignore
-    from ._models import DataFlowAnnotationsItem  # type: ignore
     from ._models import DataFlowDebugCommandPayload  # type: ignore
     from ._models import DataFlowDebugCommandRequest  # type: ignore
     from ._models import DataFlowDebugCommandResponse  # type: ignore
     from ._models import DataFlowDebugPackage  # type: ignore
     from ._models import DataFlowDebugPackageDebugSettings  # type: ignore
-    from ._models import DataFlowDebugPackageDebugSettingsDatasetParameters  # type: ignore
     from ._models import DataFlowDebugResource  # type: ignore
     from ._models import DataFlowDebugSessionInfo  # type: ignore
     from ._models import DataFlowFolder  # type: ignore
     from ._models import DataFlowListResponse  # type: ignore
     from ._models import DataFlowReference  # type: ignore
-    from ._models import DataFlowReferenceDatasetParameters  # type: ignore
     from ._models import DataFlowResource  # type: ignore
     from ._models import DataFlowSink  # type: ignore
     from ._models import DataFlowSource  # type: ignore
     from ._models import DataFlowSourceSetting  # type: ignore
     from ._models import DataFlowStagingInfo  # type: ignore
     from ._models import DataLakeAnalyticsUsqlActivity  # type: ignore
-    from ._models import DataLakeAnalyticsUsqlActivityTypeProperties  # type: ignore
-    from ._models import DataLakeAnalyticsUsqlActivityTypePropertiesCompilationMode  # type: ignore
-    from ._models import DataLakeAnalyticsUsqlActivityTypePropertiesDegreeOfParallelism  # type: ignore
-    from ._models import DataLakeAnalyticsUsqlActivityTypePropertiesPriority  # type: ignore
-    from ._models import DataLakeAnalyticsUsqlActivityTypePropertiesRuntimeVersion  # type: ignore
-    from ._models import DataLakeAnalyticsUsqlActivityTypePropertiesScriptPath  # type: ignore
     from ._models import DatabricksNotebookActivity  # type: ignore
-    from ._models import DatabricksNotebookActivityTypeProperties  # type: ignore
-    from ._models import DatabricksNotebookActivityTypePropertiesNotebookPath  # type: ignore
     from ._models import DatabricksSparkJarActivity  # type: ignore
-    from ._models import DatabricksSparkJarActivityTypeProperties  # type: ignore
-    from ._models import DatabricksSparkJarActivityTypePropertiesMainClassName  # type: ignore
-    from ._models import DatabricksSparkJarActivityTypePropertiesParametersItem  # type: ignore
     from ._models import DatabricksSparkPythonActivity  # type: ignore
-    from ._models import DatabricksSparkPythonActivityTypeProperties  # type: ignore
-    from ._models import DatabricksSparkPythonActivityTypePropertiesParametersItem  # type: ignore
-    from ._models import DatabricksSparkPythonActivityTypePropertiesPythonFile  # type: ignore
     from ._models import Dataset  # type: ignore
-    from ._models import DatasetAnnotationsItem  # type: ignore
     from ._models import DatasetBZip2Compression  # type: ignore
     from ._models import DatasetCompression  # type: ignore
     from ._models import DatasetDebugResource  # type: ignore
@@ -2408,152 +525,32 @@ except (SyntaxError, ImportError):
     from ._models import DatasetGZipCompression  # type: ignore
     from ._models import DatasetListResponse  # type: ignore
     from ._models import DatasetLocation  # type: ignore
-    from ._models import DatasetLocationFileName  # type: ignore
-    from ._models import DatasetLocationFolderPath  # type: ignore
     from ._models import DatasetReference  # type: ignore
     from ._models import DatasetResource  # type: ignore
-    from ._models import DatasetSchema  # type: ignore
     from ._models import DatasetStorageFormat  # type: ignore
-    from ._models import DatasetStorageFormatDeserializer  # type: ignore
-    from ._models import DatasetStorageFormatSerializer  # type: ignore
-    from ._models import DatasetStructure  # type: ignore
     from ._models import DatasetZipDeflateCompression  # type: ignore
     from ._models import Db2LinkedService  # type: ignore
-    from ._models import Db2LinkedServiceTypeProperties  # type: ignore
-    from ._models import Db2LinkedServiceTypePropertiesCertificateCommonName  # type: ignore
-    from ._models import Db2LinkedServiceTypePropertiesConnectionString  # type: ignore
-    from ._models import Db2LinkedServiceTypePropertiesDatabase  # type: ignore
-    from ._models import Db2LinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import Db2LinkedServiceTypePropertiesPackageCollection  # type: ignore
-    from ._models import Db2LinkedServiceTypePropertiesServer  # type: ignore
-    from ._models import Db2LinkedServiceTypePropertiesUsername  # type: ignore
-    from ._models import Db2Source  # type: ignore
-    from ._models import Db2SourceQuery  # type: ignore
     from ._models import Db2TableDataset  # type: ignore
-    from ._models import Db2TableDatasetTypeProperties  # type: ignore
-    from ._models import Db2TableDatasetTypePropertiesSchema  # type: ignore
-    from ._models import Db2TableDatasetTypePropertiesTable  # type: ignore
-    from ._models import Db2TableDatasetTypePropertiesTableName  # type: ignore
     from ._models import DeleteActivity  # type: ignore
-    from ._models import DeleteActivityTypeProperties  # type: ignore
-    from ._models import DeleteActivityTypePropertiesEnableLogging  # type: ignore
-    from ._models import DeleteActivityTypePropertiesRecursive  # type: ignore
     from ._models import DeleteDataFlowDebugSessionRequest  # type: ignore
     from ._models import DelimitedTextDataset  # type: ignore
-    from ._models import DelimitedTextDatasetTypeProperties  # type: ignore
-    from ._models import DelimitedTextDatasetTypePropertiesColumnDelimiter  # type: ignore
-    from ._models import DelimitedTextDatasetTypePropertiesEncodingName  # type: ignore
-    from ._models import DelimitedTextDatasetTypePropertiesEscapeChar  # type: ignore
-    from ._models import DelimitedTextDatasetTypePropertiesFirstRowAsHeader  # type: ignore
-    from ._models import DelimitedTextDatasetTypePropertiesNullValue  # type: ignore
-    from ._models import DelimitedTextDatasetTypePropertiesQuoteChar  # type: ignore
-    from ._models import DelimitedTextDatasetTypePropertiesRowDelimiter  # type: ignore
-    from ._models import DelimitedTextReadSettings  # type: ignore
-    from ._models import DelimitedTextReadSettingsSkipLineCount  # type: ignore
-    from ._models import DelimitedTextSink  # type: ignore
-    from ._models import DelimitedTextSource  # type: ignore
-    from ._models import DelimitedTextWriteSettings  # type: ignore
-    from ._models import DelimitedTextWriteSettingsFileExtension  # type: ignore
-    from ._models import DelimitedTextWriteSettingsQuoteAllText  # type: ignore
     from ._models import DependencyReference  # type: ignore
-    from ._models import DistcpSettings  # type: ignore
-    from ._models import DistcpSettingsDistcpOptions  # type: ignore
-    from ._models import DistcpSettingsResourceManagerEndpoint  # type: ignore
-    from ._models import DistcpSettingsTempScriptPath  # type: ignore
     from ._models import DocumentDbCollectionDataset  # type: ignore
-    from ._models import DocumentDbCollectionDatasetTypeProperties  # type: ignore
-    from ._models import DocumentDbCollectionDatasetTypePropertiesCollectionName  # type: ignore
-    from ._models import DocumentDbCollectionSink  # type: ignore
-    from ._models import DocumentDbCollectionSinkNestingSeparator  # type: ignore
-    from ._models import DocumentDbCollectionSinkWriteBehavior  # type: ignore
-    from ._models import DocumentDbCollectionSource  # type: ignore
-    from ._models import DocumentDbCollectionSourceNestingSeparator  # type: ignore
-    from ._models import DocumentDbCollectionSourceQuery  # type: ignore
-    from ._models import DocumentDbCollectionSourceQueryTimeout  # type: ignore
-    from ._models import DrillDatasetTypeProperties  # type: ignore
-    from ._models import DrillDatasetTypePropertiesSchema  # type: ignore
-    from ._models import DrillDatasetTypePropertiesTable  # type: ignore
-    from ._models import DrillDatasetTypePropertiesTableName  # type: ignore
     from ._models import DrillLinkedService  # type: ignore
-    from ._models import DrillLinkedServiceTypeProperties  # type: ignore
-    from ._models import DrillLinkedServiceTypePropertiesConnectionString  # type: ignore
-    from ._models import DrillLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import DrillSource  # type: ignore
-    from ._models import DrillSourceQuery  # type: ignore
     from ._models import DrillTableDataset  # type: ignore
-    from ._models import DwCopyCommandDefaultValue  # type: ignore
-    from ._models import DwCopyCommandDefaultValueColumnName  # type: ignore
-    from ._models import DwCopyCommandSettings  # type: ignore
     from ._models import DynamicsAxLinkedService  # type: ignore
-    from ._models import DynamicsAxLinkedServiceTypeProperties  # type: ignore
-    from ._models import DynamicsAxLinkedServiceTypePropertiesAadResourceId  # type: ignore
-    from ._models import DynamicsAxLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import DynamicsAxLinkedServiceTypePropertiesServicePrincipalId  # type: ignore
-    from ._models import DynamicsAxLinkedServiceTypePropertiesTenant  # type: ignore
-    from ._models import DynamicsAxLinkedServiceTypePropertiesUrl  # type: ignore
     from ._models import DynamicsAxResourceDataset  # type: ignore
-    from ._models import DynamicsAxResourceDatasetTypeProperties  # type: ignore
-    from ._models import DynamicsAxResourceDatasetTypePropertiesPath  # type: ignore
-    from ._models import DynamicsAxSource  # type: ignore
-    from ._models import DynamicsAxSourceQuery  # type: ignore
     from ._models import DynamicsCrmEntityDataset  # type: ignore
-    from ._models import DynamicsCrmEntityDatasetTypeProperties  # type: ignore
-    from ._models import DynamicsCrmEntityDatasetTypePropertiesEntityName  # type: ignore
     from ._models import DynamicsCrmLinkedService  # type: ignore
-    from ._models import DynamicsCrmLinkedServiceTypeProperties  # type: ignore
-    from ._models import DynamicsCrmLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import DynamicsCrmLinkedServiceTypePropertiesHostName  # type: ignore
-    from ._models import DynamicsCrmLinkedServiceTypePropertiesOrganizationName  # type: ignore
-    from ._models import DynamicsCrmLinkedServiceTypePropertiesPort  # type: ignore
-    from ._models import DynamicsCrmLinkedServiceTypePropertiesServicePrincipalId  # type: ignore
-    from ._models import DynamicsCrmLinkedServiceTypePropertiesServiceUri  # type: ignore
-    from ._models import DynamicsCrmLinkedServiceTypePropertiesUsername  # type: ignore
-    from ._models import DynamicsCrmSink  # type: ignore
-    from ._models import DynamicsCrmSinkAlternateKeyName  # type: ignore
-    from ._models import DynamicsCrmSinkIgnoreNullValues  # type: ignore
-    from ._models import DynamicsCrmSource  # type: ignore
-    from ._models import DynamicsCrmSourceQuery  # type: ignore
     from ._models import DynamicsEntityDataset  # type: ignore
-    from ._models import DynamicsEntityDatasetTypeProperties  # type: ignore
-    from ._models import DynamicsEntityDatasetTypePropertiesEntityName  # type: ignore
     from ._models import DynamicsLinkedService  # type: ignore
-    from ._models import DynamicsLinkedServiceTypeProperties  # type: ignore
-    from ._models import DynamicsLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import DynamicsLinkedServiceTypePropertiesHostName  # type: ignore
-    from ._models import DynamicsLinkedServiceTypePropertiesOrganizationName  # type: ignore
-    from ._models import DynamicsLinkedServiceTypePropertiesPort  # type: ignore
-    from ._models import DynamicsLinkedServiceTypePropertiesServicePrincipalId  # type: ignore
-    from ._models import DynamicsLinkedServiceTypePropertiesServiceUri  # type: ignore
-    from ._models import DynamicsLinkedServiceTypePropertiesUsername  # type: ignore
-    from ._models import DynamicsSink  # type: ignore
-    from ._models import DynamicsSinkAlternateKeyName  # type: ignore
-    from ._models import DynamicsSinkIgnoreNullValues  # type: ignore
-    from ._models import DynamicsSource  # type: ignore
-    from ._models import DynamicsSourceQuery  # type: ignore
     from ._models import EloquaLinkedService  # type: ignore
-    from ._models import EloquaLinkedServiceTypeProperties  # type: ignore
-    from ._models import EloquaLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import EloquaLinkedServiceTypePropertiesEndpoint  # type: ignore
-    from ._models import EloquaLinkedServiceTypePropertiesUseEncryptedEndpoints  # type: ignore
-    from ._models import EloquaLinkedServiceTypePropertiesUseHostVerification  # type: ignore
-    from ._models import EloquaLinkedServiceTypePropertiesUsePeerVerification  # type: ignore
-    from ._models import EloquaLinkedServiceTypePropertiesUsername  # type: ignore
     from ._models import EloquaObjectDataset  # type: ignore
-    from ._models import EloquaSource  # type: ignore
-    from ._models import EloquaSourceQuery  # type: ignore
     from ._models import EntityReference  # type: ignore
-    from ._models import EnvironmentVariableSetup  # type: ignore
-    from ._models import EnvironmentVariableSetupTypeProperties  # type: ignore
     from ._models import ExecuteDataFlowActivity  # type: ignore
-    from ._models import ExecuteDataFlowActivityTypeProperties  # type: ignore
     from ._models import ExecuteDataFlowActivityTypePropertiesCompute  # type: ignore
     from ._models import ExecutePipelineActivity  # type: ignore
-    from ._models import ExecutePipelineActivityTypeProperties  # type: ignore
     from ._models import ExecuteSsisPackageActivity  # type: ignore
-    from ._models import ExecuteSsisPackageActivityTypeProperties  # type: ignore
-    from ._models import ExecuteSsisPackageActivityTypePropertiesEnvironmentPath  # type: ignore
-    from ._models import ExecuteSsisPackageActivityTypePropertiesLoggingLevel  # type: ignore
-    from ._models import ExecuteSsisPackageActivityTypePropertiesRuntime  # type: ignore
     from ._models import ExecutionActivity  # type: ignore
     from ._models import ExposureControlRequest  # type: ignore
     from ._models import ExposureControlResponse  # type: ignore
@@ -2562,306 +559,48 @@ except (SyntaxError, ImportError):
     from ._models import FactoryGitHubConfiguration  # type: ignore
     from ._models import FactoryIdentity  # type: ignore
     from ._models import FactoryListResponse  # type: ignore
-    from ._models import FactoryProperties  # type: ignore
     from ._models import FactoryRepoConfiguration  # type: ignore
     from ._models import FactoryRepoUpdate  # type: ignore
     from ._models import FactoryUpdateParameters  # type: ignore
     from ._models import FactoryVstsConfiguration  # type: ignore
     from ._models import FileServerLinkedService  # type: ignore
-    from ._models import FileServerLinkedServiceTypeProperties  # type: ignore
-    from ._models import FileServerLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import FileServerLinkedServiceTypePropertiesHost  # type: ignore
-    from ._models import FileServerLinkedServiceTypePropertiesUserId  # type: ignore
-    from ._models import FileServerLocation  # type: ignore
-    from ._models import FileServerReadSettings  # type: ignore
-    from ._models import FileServerReadSettingsFileListPath  # type: ignore
-    from ._models import FileServerReadSettingsModifiedDatetimeEnd  # type: ignore
-    from ._models import FileServerReadSettingsModifiedDatetimeStart  # type: ignore
-    from ._models import FileServerReadSettingsRecursive  # type: ignore
-    from ._models import FileServerReadSettingsWildcardFileName  # type: ignore
-    from ._models import FileServerReadSettingsWildcardFolderPath  # type: ignore
-    from ._models import FileServerWriteSettings  # type: ignore
     from ._models import FileShareDataset  # type: ignore
-    from ._models import FileShareDatasetTypeProperties  # type: ignore
-    from ._models import FileShareDatasetTypePropertiesFileFilter  # type: ignore
-    from ._models import FileShareDatasetTypePropertiesFileName  # type: ignore
-    from ._models import FileShareDatasetTypePropertiesFolderPath  # type: ignore
-    from ._models import FileShareDatasetTypePropertiesModifiedDatetimeEnd  # type: ignore
-    from ._models import FileShareDatasetTypePropertiesModifiedDatetimeStart  # type: ignore
-    from ._models import FileSystemSink  # type: ignore
-    from ._models import FileSystemSinkCopyBehavior  # type: ignore
-    from ._models import FileSystemSource  # type: ignore
-    from ._models import FileSystemSourceRecursive  # type: ignore
     from ._models import FilterActivity  # type: ignore
-    from ._models import FilterActivityTypeProperties  # type: ignore
     from ._models import ForEachActivity  # type: ignore
-    from ._models import ForEachActivityTypeProperties  # type: ignore
-    from ._models import FormatReadSettings  # type: ignore
-    from ._models import FormatWriteSettings  # type: ignore
-    from ._models import FtpReadSettings  # type: ignore
-    from ._models import FtpReadSettingsFileListPath  # type: ignore
-    from ._models import FtpReadSettingsRecursive  # type: ignore
-    from ._models import FtpReadSettingsWildcardFileName  # type: ignore
-    from ._models import FtpReadSettingsWildcardFolderPath  # type: ignore
     from ._models import FtpServerLinkedService  # type: ignore
-    from ._models import FtpServerLinkedServiceTypeProperties  # type: ignore
-    from ._models import FtpServerLinkedServiceTypePropertiesEnableServerCertificateValidation  # type: ignore
-    from ._models import FtpServerLinkedServiceTypePropertiesEnableSsl  # type: ignore
-    from ._models import FtpServerLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import FtpServerLinkedServiceTypePropertiesHost  # type: ignore
-    from ._models import FtpServerLinkedServiceTypePropertiesPort  # type: ignore
-    from ._models import FtpServerLinkedServiceTypePropertiesUserName  # type: ignore
-    from ._models import FtpServerLocation  # type: ignore
-    from ._models import GenericDatasetTypeProperties  # type: ignore
-    from ._models import GenericDatasetTypePropertiesTableName  # type: ignore
     from ._models import GetDataFactoryOperationStatusResponse  # type: ignore
     from ._models import GetMetadataActivity  # type: ignore
-    from ._models import GetMetadataActivityTypeProperties  # type: ignore
-    from ._models import GetMetadataActivityTypePropertiesFieldListItem  # type: ignore
     from ._models import GetSsisObjectMetadataRequest  # type: ignore
     from ._models import GitHubAccessTokenRequest  # type: ignore
     from ._models import GitHubAccessTokenResponse  # type: ignore
     from ._models import GoogleAdWordsLinkedService  # type: ignore
-    from ._models import GoogleAdWordsLinkedServiceTypeProperties  # type: ignore
-    from ._models import GoogleAdWordsLinkedServiceTypePropertiesClientCustomerId  # type: ignore
-    from ._models import GoogleAdWordsLinkedServiceTypePropertiesClientId  # type: ignore
-    from ._models import GoogleAdWordsLinkedServiceTypePropertiesEmail  # type: ignore
-    from ._models import GoogleAdWordsLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import GoogleAdWordsLinkedServiceTypePropertiesKeyFilePath  # type: ignore
-    from ._models import GoogleAdWordsLinkedServiceTypePropertiesTrustedCertPath  # type: ignore
-    from ._models import GoogleAdWordsLinkedServiceTypePropertiesUseSystemTrustStore  # type: ignore
     from ._models import GoogleAdWordsObjectDataset  # type: ignore
-    from ._models import GoogleAdWordsSource  # type: ignore
-    from ._models import GoogleAdWordsSourceQuery  # type: ignore
-    from ._models import GoogleBigQueryDatasetTypeProperties  # type: ignore
-    from ._models import GoogleBigQueryDatasetTypePropertiesDataset  # type: ignore
-    from ._models import GoogleBigQueryDatasetTypePropertiesTable  # type: ignore
-    from ._models import GoogleBigQueryDatasetTypePropertiesTableName  # type: ignore
     from ._models import GoogleBigQueryLinkedService  # type: ignore
-    from ._models import GoogleBigQueryLinkedServiceTypeProperties  # type: ignore
-    from ._models import GoogleBigQueryLinkedServiceTypePropertiesAdditionalProjects  # type: ignore
-    from ._models import GoogleBigQueryLinkedServiceTypePropertiesClientId  # type: ignore
-    from ._models import GoogleBigQueryLinkedServiceTypePropertiesEmail  # type: ignore
-    from ._models import GoogleBigQueryLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import GoogleBigQueryLinkedServiceTypePropertiesKeyFilePath  # type: ignore
-    from ._models import GoogleBigQueryLinkedServiceTypePropertiesProject  # type: ignore
-    from ._models import GoogleBigQueryLinkedServiceTypePropertiesRequestGoogleDriveScope  # type: ignore
-    from ._models import GoogleBigQueryLinkedServiceTypePropertiesTrustedCertPath  # type: ignore
-    from ._models import GoogleBigQueryLinkedServiceTypePropertiesUseSystemTrustStore  # type: ignore
     from ._models import GoogleBigQueryObjectDataset  # type: ignore
-    from ._models import GoogleBigQuerySource  # type: ignore
-    from ._models import GoogleBigQuerySourceQuery  # type: ignore
     from ._models import GoogleCloudStorageLinkedService  # type: ignore
-    from ._models import GoogleCloudStorageLinkedServiceTypeProperties  # type: ignore
-    from ._models import GoogleCloudStorageLinkedServiceTypePropertiesAccessKeyId  # type: ignore
-    from ._models import GoogleCloudStorageLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import GoogleCloudStorageLinkedServiceTypePropertiesServiceUrl  # type: ignore
-    from ._models import GoogleCloudStorageLocation  # type: ignore
-    from ._models import GoogleCloudStorageLocationBucketName  # type: ignore
-    from ._models import GoogleCloudStorageLocationVersion  # type: ignore
-    from ._models import GoogleCloudStorageReadSettings  # type: ignore
-    from ._models import GoogleCloudStorageReadSettingsFileListPath  # type: ignore
-    from ._models import GoogleCloudStorageReadSettingsModifiedDatetimeEnd  # type: ignore
-    from ._models import GoogleCloudStorageReadSettingsModifiedDatetimeStart  # type: ignore
-    from ._models import GoogleCloudStorageReadSettingsPrefix  # type: ignore
-    from ._models import GoogleCloudStorageReadSettingsRecursive  # type: ignore
-    from ._models import GoogleCloudStorageReadSettingsWildcardFileName  # type: ignore
-    from ._models import GoogleCloudStorageReadSettingsWildcardFolderPath  # type: ignore
-    from ._models import GreenplumDatasetTypeProperties  # type: ignore
-    from ._models import GreenplumDatasetTypePropertiesSchema  # type: ignore
-    from ._models import GreenplumDatasetTypePropertiesTable  # type: ignore
-    from ._models import GreenplumDatasetTypePropertiesTableName  # type: ignore
     from ._models import GreenplumLinkedService  # type: ignore
-    from ._models import GreenplumLinkedServiceTypeProperties  # type: ignore
-    from ._models import GreenplumLinkedServiceTypePropertiesConnectionString  # type: ignore
-    from ._models import GreenplumLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import GreenplumSource  # type: ignore
-    from ._models import GreenplumSourceQuery  # type: ignore
     from ._models import GreenplumTableDataset  # type: ignore
     from ._models import HBaseLinkedService  # type: ignore
-    from ._models import HBaseLinkedServiceTypeProperties  # type: ignore
-    from ._models import HBaseLinkedServiceTypePropertiesAllowHostNameCnMismatch  # type: ignore
-    from ._models import HBaseLinkedServiceTypePropertiesAllowSelfSignedServerCert  # type: ignore
-    from ._models import HBaseLinkedServiceTypePropertiesEnableSsl  # type: ignore
-    from ._models import HBaseLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import HBaseLinkedServiceTypePropertiesHost  # type: ignore
-    from ._models import HBaseLinkedServiceTypePropertiesHttpPath  # type: ignore
-    from ._models import HBaseLinkedServiceTypePropertiesPort  # type: ignore
-    from ._models import HBaseLinkedServiceTypePropertiesTrustedCertPath  # type: ignore
-    from ._models import HBaseLinkedServiceTypePropertiesUsername  # type: ignore
     from ._models import HBaseObjectDataset  # type: ignore
-    from ._models import HBaseSource  # type: ignore
-    from ._models import HBaseSourceQuery  # type: ignore
     from ._models import HdInsightHiveActivity  # type: ignore
-    from ._models import HdInsightHiveActivityTypeProperties  # type: ignore
-    from ._models import HdInsightHiveActivityTypePropertiesArgumentsItem  # type: ignore
-    from ._models import HdInsightHiveActivityTypePropertiesScriptPath  # type: ignore
-    from ._models import HdInsightHiveActivityTypePropertiesVariablesItem  # type: ignore
     from ._models import HdInsightLinkedService  # type: ignore
-    from ._models import HdInsightLinkedServiceTypeProperties  # type: ignore
-    from ._models import HdInsightLinkedServiceTypePropertiesClusterUri  # type: ignore
-    from ._models import HdInsightLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import HdInsightLinkedServiceTypePropertiesFileSystem  # type: ignore
-    from ._models import HdInsightLinkedServiceTypePropertiesIsEspEnabled  # type: ignore
-    from ._models import HdInsightLinkedServiceTypePropertiesUserName  # type: ignore
     from ._models import HdInsightMapReduceActivity  # type: ignore
-    from ._models import HdInsightMapReduceActivityTypeProperties  # type: ignore
-    from ._models import HdInsightMapReduceActivityTypePropertiesArgumentsItem  # type: ignore
-    from ._models import HdInsightMapReduceActivityTypePropertiesClassName  # type: ignore
-    from ._models import HdInsightMapReduceActivityTypePropertiesJarFilePath  # type: ignore
-    from ._models import HdInsightMapReduceActivityTypePropertiesJarLibsItem  # type: ignore
     from ._models import HdInsightOnDemandLinkedService  # type: ignore
-    from ._models import HdInsightOnDemandLinkedServiceTypeProperties  # type: ignore
-    from ._models import HdInsightOnDemandLinkedServiceTypePropertiesClusterNamePrefix  # type: ignore
-    from ._models import HdInsightOnDemandLinkedServiceTypePropertiesClusterResourceGroup  # type: ignore
-    from ._models import HdInsightOnDemandLinkedServiceTypePropertiesClusterSize  # type: ignore
-    from ._models import HdInsightOnDemandLinkedServiceTypePropertiesClusterSshUserName  # type: ignore
-    from ._models import HdInsightOnDemandLinkedServiceTypePropertiesClusterType  # type: ignore
-    from ._models import HdInsightOnDemandLinkedServiceTypePropertiesClusterUserName  # type: ignore
-    from ._models import HdInsightOnDemandLinkedServiceTypePropertiesCoreConfiguration  # type: ignore
-    from ._models import HdInsightOnDemandLinkedServiceTypePropertiesDataNodeSize  # type: ignore
-    from ._models import HdInsightOnDemandLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import HdInsightOnDemandLinkedServiceTypePropertiesHBaseConfiguration  # type: ignore
-    from ._models import HdInsightOnDemandLinkedServiceTypePropertiesHdfsConfiguration  # type: ignore
-    from ._models import HdInsightOnDemandLinkedServiceTypePropertiesHeadNodeSize  # type: ignore
-    from ._models import HdInsightOnDemandLinkedServiceTypePropertiesHiveConfiguration  # type: ignore
-    from ._models import HdInsightOnDemandLinkedServiceTypePropertiesHostSubscriptionId  # type: ignore
-    from ._models import HdInsightOnDemandLinkedServiceTypePropertiesMapReduceConfiguration  # type: ignore
-    from ._models import HdInsightOnDemandLinkedServiceTypePropertiesOozieConfiguration  # type: ignore
-    from ._models import HdInsightOnDemandLinkedServiceTypePropertiesServicePrincipalId  # type: ignore
-    from ._models import HdInsightOnDemandLinkedServiceTypePropertiesSparkVersion  # type: ignore
-    from ._models import HdInsightOnDemandLinkedServiceTypePropertiesStormConfiguration  # type: ignore
-    from ._models import HdInsightOnDemandLinkedServiceTypePropertiesSubnetName  # type: ignore
-    from ._models import HdInsightOnDemandLinkedServiceTypePropertiesTenant  # type: ignore
-    from ._models import HdInsightOnDemandLinkedServiceTypePropertiesTimeToLive  # type: ignore
-    from ._models import HdInsightOnDemandLinkedServiceTypePropertiesVersion  # type: ignore
-    from ._models import HdInsightOnDemandLinkedServiceTypePropertiesVirtualNetworkId  # type: ignore
-    from ._models import HdInsightOnDemandLinkedServiceTypePropertiesYarnConfiguration  # type: ignore
-    from ._models import HdInsightOnDemandLinkedServiceTypePropertiesZookeeperNodeSize  # type: ignore
     from ._models import HdInsightPigActivity  # type: ignore
-    from ._models import HdInsightPigActivityTypeProperties  # type: ignore
-    from ._models import HdInsightPigActivityTypePropertiesArguments  # type: ignore
-    from ._models import HdInsightPigActivityTypePropertiesScriptPath  # type: ignore
     from ._models import HdInsightSparkActivity  # type: ignore
-    from ._models import HdInsightSparkActivityTypeProperties  # type: ignore
-    from ._models import HdInsightSparkActivityTypePropertiesArgumentsItem  # type: ignore
-    from ._models import HdInsightSparkActivityTypePropertiesEntryFilePath  # type: ignore
-    from ._models import HdInsightSparkActivityTypePropertiesProxyUser  # type: ignore
-    from ._models import HdInsightSparkActivityTypePropertiesRootPath  # type: ignore
     from ._models import HdInsightStreamingActivity  # type: ignore
-    from ._models import HdInsightStreamingActivityTypeProperties  # type: ignore
-    from ._models import HdInsightStreamingActivityTypePropertiesArgumentsItem  # type: ignore
-    from ._models import HdInsightStreamingActivityTypePropertiesCombiner  # type: ignore
-    from ._models import HdInsightStreamingActivityTypePropertiesCommandEnvironmentItem  # type: ignore
-    from ._models import HdInsightStreamingActivityTypePropertiesFilePathsItem  # type: ignore
-    from ._models import HdInsightStreamingActivityTypePropertiesInput  # type: ignore
-    from ._models import HdInsightStreamingActivityTypePropertiesMapper  # type: ignore
-    from ._models import HdInsightStreamingActivityTypePropertiesOutput  # type: ignore
-    from ._models import HdInsightStreamingActivityTypePropertiesReducer  # type: ignore
     from ._models import HdfsLinkedService  # type: ignore
-    from ._models import HdfsLinkedServiceTypeProperties  # type: ignore
-    from ._models import HdfsLinkedServiceTypePropertiesAuthenticationType  # type: ignore
-    from ._models import HdfsLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import HdfsLinkedServiceTypePropertiesUrl  # type: ignore
-    from ._models import HdfsLinkedServiceTypePropertiesUserName  # type: ignore
-    from ._models import HdfsLocation  # type: ignore
-    from ._models import HdfsReadSettings  # type: ignore
-    from ._models import HdfsReadSettingsFileListPath  # type: ignore
-    from ._models import HdfsReadSettingsModifiedDatetimeEnd  # type: ignore
-    from ._models import HdfsReadSettingsModifiedDatetimeStart  # type: ignore
-    from ._models import HdfsReadSettingsRecursive  # type: ignore
-    from ._models import HdfsReadSettingsWildcardFileName  # type: ignore
-    from ._models import HdfsReadSettingsWildcardFolderPath  # type: ignore
-    from ._models import HdfsSource  # type: ignore
-    from ._models import HdfsSourceRecursive  # type: ignore
-    from ._models import HiveDatasetTypeProperties  # type: ignore
-    from ._models import HiveDatasetTypePropertiesSchema  # type: ignore
-    from ._models import HiveDatasetTypePropertiesTable  # type: ignore
-    from ._models import HiveDatasetTypePropertiesTableName  # type: ignore
     from ._models import HiveLinkedService  # type: ignore
-    from ._models import HiveLinkedServiceTypeProperties  # type: ignore
-    from ._models import HiveLinkedServiceTypePropertiesAllowHostNameCnMismatch  # type: ignore
-    from ._models import HiveLinkedServiceTypePropertiesAllowSelfSignedServerCert  # type: ignore
-    from ._models import HiveLinkedServiceTypePropertiesEnableSsl  # type: ignore
-    from ._models import HiveLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import HiveLinkedServiceTypePropertiesHost  # type: ignore
-    from ._models import HiveLinkedServiceTypePropertiesHttpPath  # type: ignore
-    from ._models import HiveLinkedServiceTypePropertiesPort  # type: ignore
-    from ._models import HiveLinkedServiceTypePropertiesServiceDiscoveryMode  # type: ignore
-    from ._models import HiveLinkedServiceTypePropertiesTrustedCertPath  # type: ignore
-    from ._models import HiveLinkedServiceTypePropertiesUseNativeQuery  # type: ignore
-    from ._models import HiveLinkedServiceTypePropertiesUseSystemTrustStore  # type: ignore
-    from ._models import HiveLinkedServiceTypePropertiesUsername  # type: ignore
-    from ._models import HiveLinkedServiceTypePropertiesZooKeeperNameSpace  # type: ignore
     from ._models import HiveObjectDataset  # type: ignore
-    from ._models import HiveSource  # type: ignore
-    from ._models import HiveSourceQuery  # type: ignore
     from ._models import HttpDataset  # type: ignore
-    from ._models import HttpDatasetTypeProperties  # type: ignore
-    from ._models import HttpDatasetTypePropertiesAdditionalHeaders  # type: ignore
-    from ._models import HttpDatasetTypePropertiesRelativeUrl  # type: ignore
-    from ._models import HttpDatasetTypePropertiesRequestBody  # type: ignore
-    from ._models import HttpDatasetTypePropertiesRequestMethod  # type: ignore
     from ._models import HttpLinkedService  # type: ignore
-    from ._models import HttpLinkedServiceTypeProperties  # type: ignore
-    from ._models import HttpLinkedServiceTypePropertiesCertThumbprint  # type: ignore
-    from ._models import HttpLinkedServiceTypePropertiesEmbeddedCertData  # type: ignore
-    from ._models import HttpLinkedServiceTypePropertiesEnableServerCertificateValidation  # type: ignore
-    from ._models import HttpLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import HttpLinkedServiceTypePropertiesUrl  # type: ignore
-    from ._models import HttpLinkedServiceTypePropertiesUserName  # type: ignore
-    from ._models import HttpReadSettings  # type: ignore
-    from ._models import HttpReadSettingsAdditionalHeaders  # type: ignore
-    from ._models import HttpReadSettingsRequestBody  # type: ignore
-    from ._models import HttpReadSettingsRequestMethod  # type: ignore
-    from ._models import HttpReadSettingsRequestTimeout  # type: ignore
-    from ._models import HttpServerLocation  # type: ignore
-    from ._models import HttpServerLocationRelativeUrl  # type: ignore
-    from ._models import HttpSource  # type: ignore
-    from ._models import HttpSourceHttpRequestTimeout  # type: ignore
     from ._models import HubspotLinkedService  # type: ignore
-    from ._models import HubspotLinkedServiceTypeProperties  # type: ignore
-    from ._models import HubspotLinkedServiceTypePropertiesClientId  # type: ignore
-    from ._models import HubspotLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import HubspotLinkedServiceTypePropertiesUseEncryptedEndpoints  # type: ignore
-    from ._models import HubspotLinkedServiceTypePropertiesUseHostVerification  # type: ignore
-    from ._models import HubspotLinkedServiceTypePropertiesUsePeerVerification  # type: ignore
     from ._models import HubspotObjectDataset  # type: ignore
-    from ._models import HubspotSource  # type: ignore
-    from ._models import HubspotSourceQuery  # type: ignore
     from ._models import IfConditionActivity  # type: ignore
-    from ._models import IfConditionActivityTypeProperties  # type: ignore
-    from ._models import ImpalaDatasetTypeProperties  # type: ignore
-    from ._models import ImpalaDatasetTypePropertiesSchema  # type: ignore
-    from ._models import ImpalaDatasetTypePropertiesTable  # type: ignore
-    from ._models import ImpalaDatasetTypePropertiesTableName  # type: ignore
     from ._models import ImpalaLinkedService  # type: ignore
-    from ._models import ImpalaLinkedServiceTypeProperties  # type: ignore
-    from ._models import ImpalaLinkedServiceTypePropertiesAllowHostNameCnMismatch  # type: ignore
-    from ._models import ImpalaLinkedServiceTypePropertiesAllowSelfSignedServerCert  # type: ignore
-    from ._models import ImpalaLinkedServiceTypePropertiesEnableSsl  # type: ignore
-    from ._models import ImpalaLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import ImpalaLinkedServiceTypePropertiesHost  # type: ignore
-    from ._models import ImpalaLinkedServiceTypePropertiesPort  # type: ignore
-    from ._models import ImpalaLinkedServiceTypePropertiesTrustedCertPath  # type: ignore
-    from ._models import ImpalaLinkedServiceTypePropertiesUseSystemTrustStore  # type: ignore
-    from ._models import ImpalaLinkedServiceTypePropertiesUsername  # type: ignore
     from ._models import ImpalaObjectDataset  # type: ignore
-    from ._models import ImpalaSource  # type: ignore
-    from ._models import ImpalaSourceQuery  # type: ignore
     from ._models import InformixLinkedService  # type: ignore
-    from ._models import InformixLinkedServiceTypeProperties  # type: ignore
-    from ._models import InformixLinkedServiceTypePropertiesAuthenticationType  # type: ignore
-    from ._models import InformixLinkedServiceTypePropertiesConnectionString  # type: ignore
-    from ._models import InformixLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import InformixLinkedServiceTypePropertiesUserName  # type: ignore
-    from ._models import InformixSink  # type: ignore
-    from ._models import InformixSinkPreCopyScript  # type: ignore
-    from ._models import InformixSource  # type: ignore
-    from ._models import InformixSourceQuery  # type: ignore
     from ._models import InformixTableDataset  # type: ignore
-    from ._models import InformixTableDatasetTypeProperties  # type: ignore
-    from ._models import InformixTableDatasetTypePropertiesTableName  # type: ignore
     from ._models import IntegrationRuntime  # type: ignore
     from ._models import IntegrationRuntimeAuthKeys  # type: ignore
     from ._models import IntegrationRuntimeComputeProperties  # type: ignore
@@ -2884,194 +623,49 @@ except (SyntaxError, ImportError):
     from ._models import IntegrationRuntimeStatusResponse  # type: ignore
     from ._models import IntegrationRuntimeVNetProperties  # type: ignore
     from ._models import JiraLinkedService  # type: ignore
-    from ._models import JiraLinkedServiceTypeProperties  # type: ignore
-    from ._models import JiraLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import JiraLinkedServiceTypePropertiesHost  # type: ignore
-    from ._models import JiraLinkedServiceTypePropertiesPort  # type: ignore
-    from ._models import JiraLinkedServiceTypePropertiesUseEncryptedEndpoints  # type: ignore
-    from ._models import JiraLinkedServiceTypePropertiesUseHostVerification  # type: ignore
-    from ._models import JiraLinkedServiceTypePropertiesUsePeerVerification  # type: ignore
-    from ._models import JiraLinkedServiceTypePropertiesUsername  # type: ignore
     from ._models import JiraObjectDataset  # type: ignore
-    from ._models import JiraSource  # type: ignore
-    from ._models import JiraSourceQuery  # type: ignore
     from ._models import JsonDataset  # type: ignore
-    from ._models import JsonDatasetTypeProperties  # type: ignore
-    from ._models import JsonDatasetTypePropertiesEncodingName  # type: ignore
-    from ._models import JsonFormat  # type: ignore
-    from ._models import JsonFormatEncodingName  # type: ignore
-    from ._models import JsonFormatJsonNodeReference  # type: ignore
-    from ._models import JsonFormatJsonPathDefinition  # type: ignore
-    from ._models import JsonFormatNestingSeparator  # type: ignore
-    from ._models import JsonSink  # type: ignore
-    from ._models import JsonSource  # type: ignore
-    from ._models import JsonWriteSettings  # type: ignore
-    from ._models import LicensedComponentSetupTypeProperties  # type: ignore
     from ._models import LinkedIntegrationRuntime  # type: ignore
     from ._models import LinkedIntegrationRuntimeKeyAuthorization  # type: ignore
     from ._models import LinkedIntegrationRuntimeRbacAuthorization  # type: ignore
     from ._models import LinkedIntegrationRuntimeRequest  # type: ignore
     from ._models import LinkedIntegrationRuntimeType  # type: ignore
     from ._models import LinkedService  # type: ignore
-    from ._models import LinkedServiceAnnotationsItem  # type: ignore
     from ._models import LinkedServiceDebugResource  # type: ignore
     from ._models import LinkedServiceListResponse  # type: ignore
     from ._models import LinkedServiceReference  # type: ignore
     from ._models import LinkedServiceResource  # type: ignore
     from ._models import LogStorageSettings  # type: ignore
-    from ._models import LogStorageSettingsPath  # type: ignore
     from ._models import LookupActivity  # type: ignore
-    from ._models import LookupActivityTypeProperties  # type: ignore
-    from ._models import LookupActivityTypePropertiesFirstRowOnly  # type: ignore
     from ._models import MagentoLinkedService  # type: ignore
-    from ._models import MagentoLinkedServiceTypeProperties  # type: ignore
-    from ._models import MagentoLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import MagentoLinkedServiceTypePropertiesHost  # type: ignore
-    from ._models import MagentoLinkedServiceTypePropertiesUseEncryptedEndpoints  # type: ignore
-    from ._models import MagentoLinkedServiceTypePropertiesUseHostVerification  # type: ignore
-    from ._models import MagentoLinkedServiceTypePropertiesUsePeerVerification  # type: ignore
     from ._models import MagentoObjectDataset  # type: ignore
-    from ._models import MagentoSource  # type: ignore
-    from ._models import MagentoSourceQuery  # type: ignore
     from ._models import ManagedIntegrationRuntime  # type: ignore
     from ._models import ManagedIntegrationRuntimeError  # type: ignore
     from ._models import ManagedIntegrationRuntimeNode  # type: ignore
     from ._models import ManagedIntegrationRuntimeOperationResult  # type: ignore
     from ._models import ManagedIntegrationRuntimeStatus  # type: ignore
-    from ._models import ManagedIntegrationRuntimeStatusTypeProperties  # type: ignore
-    from ._models import ManagedIntegrationRuntimeTypeProperties  # type: ignore
     from ._models import MappingDataFlow  # type: ignore
-    from ._models import MappingDataFlowTypeProperties  # type: ignore
     from ._models import MariaDbLinkedService  # type: ignore
-    from ._models import MariaDbLinkedServiceTypeProperties  # type: ignore
-    from ._models import MariaDbLinkedServiceTypePropertiesConnectionString  # type: ignore
-    from ._models import MariaDbLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import MariaDbSource  # type: ignore
-    from ._models import MariaDbSourceQuery  # type: ignore
     from ._models import MariaDbTableDataset  # type: ignore
     from ._models import MarketoLinkedService  # type: ignore
-    from ._models import MarketoLinkedServiceTypeProperties  # type: ignore
-    from ._models import MarketoLinkedServiceTypePropertiesClientId  # type: ignore
-    from ._models import MarketoLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import MarketoLinkedServiceTypePropertiesEndpoint  # type: ignore
-    from ._models import MarketoLinkedServiceTypePropertiesUseEncryptedEndpoints  # type: ignore
-    from ._models import MarketoLinkedServiceTypePropertiesUseHostVerification  # type: ignore
-    from ._models import MarketoLinkedServiceTypePropertiesUsePeerVerification  # type: ignore
     from ._models import MarketoObjectDataset  # type: ignore
-    from ._models import MarketoSource  # type: ignore
-    from ._models import MarketoSourceQuery  # type: ignore
     from ._models import MicrosoftAccessLinkedService  # type: ignore
-    from ._models import MicrosoftAccessLinkedServiceTypeProperties  # type: ignore
-    from ._models import MicrosoftAccessLinkedServiceTypePropertiesAuthenticationType  # type: ignore
-    from ._models import MicrosoftAccessLinkedServiceTypePropertiesConnectionString  # type: ignore
-    from ._models import MicrosoftAccessLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import MicrosoftAccessLinkedServiceTypePropertiesUserName  # type: ignore
-    from ._models import MicrosoftAccessSink  # type: ignore
-    from ._models import MicrosoftAccessSinkPreCopyScript  # type: ignore
-    from ._models import MicrosoftAccessSource  # type: ignore
-    from ._models import MicrosoftAccessSourceQuery  # type: ignore
     from ._models import MicrosoftAccessTableDataset  # type: ignore
-    from ._models import MicrosoftAccessTableDatasetTypeProperties  # type: ignore
-    from ._models import MicrosoftAccessTableDatasetTypePropertiesTableName  # type: ignore
     from ._models import MongoDbCollectionDataset  # type: ignore
-    from ._models import MongoDbCollectionDatasetTypeProperties  # type: ignore
-    from ._models import MongoDbCollectionDatasetTypePropertiesCollectionName  # type: ignore
-    from ._models import MongoDbCursorMethodsProperties  # type: ignore
-    from ._models import MongoDbCursorMethodsPropertiesLimit  # type: ignore
-    from ._models import MongoDbCursorMethodsPropertiesProject  # type: ignore
-    from ._models import MongoDbCursorMethodsPropertiesSkip  # type: ignore
-    from ._models import MongoDbCursorMethodsPropertiesSort  # type: ignore
     from ._models import MongoDbLinkedService  # type: ignore
-    from ._models import MongoDbLinkedServiceTypeProperties  # type: ignore
-    from ._models import MongoDbLinkedServiceTypePropertiesAllowSelfSignedServerCert  # type: ignore
-    from ._models import MongoDbLinkedServiceTypePropertiesAuthSource  # type: ignore
-    from ._models import MongoDbLinkedServiceTypePropertiesDatabaseName  # type: ignore
-    from ._models import MongoDbLinkedServiceTypePropertiesEnableSsl  # type: ignore
-    from ._models import MongoDbLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import MongoDbLinkedServiceTypePropertiesPort  # type: ignore
-    from ._models import MongoDbLinkedServiceTypePropertiesServer  # type: ignore
-    from ._models import MongoDbLinkedServiceTypePropertiesUsername  # type: ignore
-    from ._models import MongoDbSource  # type: ignore
-    from ._models import MongoDbSourceQuery  # type: ignore
     from ._models import MongoDbV2CollectionDataset  # type: ignore
-    from ._models import MongoDbV2CollectionDatasetTypeProperties  # type: ignore
-    from ._models import MongoDbV2CollectionDatasetTypePropertiesCollection  # type: ignore
     from ._models import MongoDbV2LinkedService  # type: ignore
-    from ._models import MongoDbV2LinkedServiceTypeProperties  # type: ignore
-    from ._models import MongoDbV2LinkedServiceTypePropertiesConnectionString  # type: ignore
-    from ._models import MongoDbV2LinkedServiceTypePropertiesDatabase  # type: ignore
-    from ._models import MongoDbV2Source  # type: ignore
-    from ._models import MongoDbV2SourceBatchSize  # type: ignore
-    from ._models import MongoDbV2SourceFilter  # type: ignore
-    from ._models import MongoDbV2SourceQueryTimeout  # type: ignore
     from ._models import MultiplePipelineTrigger  # type: ignore
     from ._models import MySqlLinkedService  # type: ignore
-    from ._models import MySqlLinkedServiceTypeProperties  # type: ignore
-    from ._models import MySqlLinkedServiceTypePropertiesConnectionString  # type: ignore
-    from ._models import MySqlLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import MySqlSource  # type: ignore
-    from ._models import MySqlSourceQuery  # type: ignore
     from ._models import MySqlTableDataset  # type: ignore
-    from ._models import MySqlTableDatasetTypeProperties  # type: ignore
-    from ._models import MySqlTableDatasetTypePropertiesTableName  # type: ignore
     from ._models import NetezzaLinkedService  # type: ignore
-    from ._models import NetezzaLinkedServiceTypeProperties  # type: ignore
-    from ._models import NetezzaLinkedServiceTypePropertiesConnectionString  # type: ignore
-    from ._models import NetezzaLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import NetezzaPartitionSettings  # type: ignore
-    from ._models import NetezzaPartitionSettingsPartitionColumnName  # type: ignore
-    from ._models import NetezzaPartitionSettingsPartitionLowerBound  # type: ignore
-    from ._models import NetezzaPartitionSettingsPartitionUpperBound  # type: ignore
-    from ._models import NetezzaSource  # type: ignore
-    from ._models import NetezzaSourceQuery  # type: ignore
     from ._models import NetezzaTableDataset  # type: ignore
-    from ._models import NetezzaTableDatasetTypeProperties  # type: ignore
-    from ._models import NetezzaTableDatasetTypePropertiesSchema  # type: ignore
-    from ._models import NetezzaTableDatasetTypePropertiesTable  # type: ignore
-    from ._models import NetezzaTableDatasetTypePropertiesTableName  # type: ignore
     from ._models import ODataLinkedService  # type: ignore
-    from ._models import ODataLinkedServiceTypeProperties  # type: ignore
-    from ._models import ODataLinkedServiceTypePropertiesAadResourceId  # type: ignore
-    from ._models import ODataLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import ODataLinkedServiceTypePropertiesServicePrincipalId  # type: ignore
-    from ._models import ODataLinkedServiceTypePropertiesTenant  # type: ignore
-    from ._models import ODataLinkedServiceTypePropertiesUrl  # type: ignore
-    from ._models import ODataLinkedServiceTypePropertiesUserName  # type: ignore
     from ._models import ODataResourceDataset  # type: ignore
-    from ._models import ODataResourceDatasetTypeProperties  # type: ignore
-    from ._models import ODataResourceDatasetTypePropertiesPath  # type: ignore
-    from ._models import ODataSource  # type: ignore
-    from ._models import ODataSourceQuery  # type: ignore
     from ._models import OdbcLinkedService  # type: ignore
-    from ._models import OdbcLinkedServiceTypeProperties  # type: ignore
-    from ._models import OdbcLinkedServiceTypePropertiesAuthenticationType  # type: ignore
-    from ._models import OdbcLinkedServiceTypePropertiesConnectionString  # type: ignore
-    from ._models import OdbcLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import OdbcLinkedServiceTypePropertiesUserName  # type: ignore
-    from ._models import OdbcSink  # type: ignore
-    from ._models import OdbcSinkPreCopyScript  # type: ignore
-    from ._models import OdbcSource  # type: ignore
-    from ._models import OdbcSourceQuery  # type: ignore
     from ._models import OdbcTableDataset  # type: ignore
-    from ._models import OdbcTableDatasetTypeProperties  # type: ignore
-    from ._models import OdbcTableDatasetTypePropertiesTableName  # type: ignore
     from ._models import Office365Dataset  # type: ignore
-    from ._models import Office365DatasetTypeProperties  # type: ignore
-    from ._models import Office365DatasetTypePropertiesPredicate  # type: ignore
-    from ._models import Office365DatasetTypePropertiesTableName  # type: ignore
     from ._models import Office365LinkedService  # type: ignore
-    from ._models import Office365LinkedServiceTypeProperties  # type: ignore
-    from ._models import Office365LinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import Office365LinkedServiceTypePropertiesOffice365TenantId  # type: ignore
-    from ._models import Office365LinkedServiceTypePropertiesServicePrincipalId  # type: ignore
-    from ._models import Office365LinkedServiceTypePropertiesServicePrincipalTenantId  # type: ignore
-    from ._models import Office365Source  # type: ignore
-    from ._models import Office365SourceAllowedGroups  # type: ignore
-    from ._models import Office365SourceDateFilterColumn  # type: ignore
-    from ._models import Office365SourceEndTime  # type: ignore
-    from ._models import Office365SourceOutputColumns  # type: ignore
-    from ._models import Office365SourceStartTime  # type: ignore
-    from ._models import Office365SourceUserScopeFilterUri  # type: ignore
     from ._models import Operation  # type: ignore
     from ._models import OperationDisplay  # type: ignore
     from ._models import OperationListResponse  # type: ignore
@@ -3079,82 +673,18 @@ except (SyntaxError, ImportError):
     from ._models import OperationMetricAvailability  # type: ignore
     from ._models import OperationMetricDimension  # type: ignore
     from ._models import OperationMetricSpecification  # type: ignore
-    from ._models import OperationProperties  # type: ignore
     from ._models import OperationServiceSpecification  # type: ignore
     from ._models import OracleLinkedService  # type: ignore
-    from ._models import OracleLinkedServiceTypeProperties  # type: ignore
-    from ._models import OracleLinkedServiceTypePropertiesConnectionString  # type: ignore
-    from ._models import OracleLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import OraclePartitionSettings  # type: ignore
-    from ._models import OraclePartitionSettingsPartitionColumnName  # type: ignore
-    from ._models import OraclePartitionSettingsPartitionLowerBound  # type: ignore
-    from ._models import OraclePartitionSettingsPartitionNames  # type: ignore
-    from ._models import OraclePartitionSettingsPartitionUpperBound  # type: ignore
     from ._models import OracleServiceCloudLinkedService  # type: ignore
-    from ._models import OracleServiceCloudLinkedServiceTypeProperties  # type: ignore
-    from ._models import OracleServiceCloudLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import OracleServiceCloudLinkedServiceTypePropertiesHost  # type: ignore
-    from ._models import OracleServiceCloudLinkedServiceTypePropertiesUseEncryptedEndpoints  # type: ignore
-    from ._models import OracleServiceCloudLinkedServiceTypePropertiesUseHostVerification  # type: ignore
-    from ._models import OracleServiceCloudLinkedServiceTypePropertiesUsePeerVerification  # type: ignore
-    from ._models import OracleServiceCloudLinkedServiceTypePropertiesUsername  # type: ignore
     from ._models import OracleServiceCloudObjectDataset  # type: ignore
-    from ._models import OracleServiceCloudSource  # type: ignore
-    from ._models import OracleServiceCloudSourceQuery  # type: ignore
-    from ._models import OracleSink  # type: ignore
-    from ._models import OracleSinkPreCopyScript  # type: ignore
-    from ._models import OracleSource  # type: ignore
-    from ._models import OracleSourceOracleReaderQuery  # type: ignore
-    from ._models import OracleSourceQueryTimeout  # type: ignore
     from ._models import OracleTableDataset  # type: ignore
-    from ._models import OracleTableDatasetTypeProperties  # type: ignore
-    from ._models import OracleTableDatasetTypePropertiesSchema  # type: ignore
-    from ._models import OracleTableDatasetTypePropertiesTable  # type: ignore
-    from ._models import OracleTableDatasetTypePropertiesTableName  # type: ignore
     from ._models import OrcDataset  # type: ignore
-    from ._models import OrcDatasetTypeProperties  # type: ignore
-    from ._models import OrcFormat  # type: ignore
-    from ._models import OrcSink  # type: ignore
-    from ._models import OrcSource  # type: ignore
     from ._models import ParameterSpecification  # type: ignore
-    from ._models import ParameterSpecificationDefaultValue  # type: ignore
     from ._models import ParquetDataset  # type: ignore
-    from ._models import ParquetDatasetTypeProperties  # type: ignore
-    from ._models import ParquetFormat  # type: ignore
-    from ._models import ParquetSink  # type: ignore
-    from ._models import ParquetSource  # type: ignore
     from ._models import PaypalLinkedService  # type: ignore
-    from ._models import PaypalLinkedServiceTypeProperties  # type: ignore
-    from ._models import PaypalLinkedServiceTypePropertiesClientId  # type: ignore
-    from ._models import PaypalLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import PaypalLinkedServiceTypePropertiesHost  # type: ignore
-    from ._models import PaypalLinkedServiceTypePropertiesUseEncryptedEndpoints  # type: ignore
-    from ._models import PaypalLinkedServiceTypePropertiesUseHostVerification  # type: ignore
-    from ._models import PaypalLinkedServiceTypePropertiesUsePeerVerification  # type: ignore
     from ._models import PaypalObjectDataset  # type: ignore
-    from ._models import PaypalSource  # type: ignore
-    from ._models import PaypalSourceQuery  # type: ignore
-    from ._models import PhoenixDatasetTypeProperties  # type: ignore
-    from ._models import PhoenixDatasetTypePropertiesSchema  # type: ignore
-    from ._models import PhoenixDatasetTypePropertiesTable  # type: ignore
-    from ._models import PhoenixDatasetTypePropertiesTableName  # type: ignore
     from ._models import PhoenixLinkedService  # type: ignore
-    from ._models import PhoenixLinkedServiceTypeProperties  # type: ignore
-    from ._models import PhoenixLinkedServiceTypePropertiesAllowHostNameCnMismatch  # type: ignore
-    from ._models import PhoenixLinkedServiceTypePropertiesAllowSelfSignedServerCert  # type: ignore
-    from ._models import PhoenixLinkedServiceTypePropertiesEnableSsl  # type: ignore
-    from ._models import PhoenixLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import PhoenixLinkedServiceTypePropertiesHost  # type: ignore
-    from ._models import PhoenixLinkedServiceTypePropertiesHttpPath  # type: ignore
-    from ._models import PhoenixLinkedServiceTypePropertiesPort  # type: ignore
-    from ._models import PhoenixLinkedServiceTypePropertiesTrustedCertPath  # type: ignore
-    from ._models import PhoenixLinkedServiceTypePropertiesUseSystemTrustStore  # type: ignore
-    from ._models import PhoenixLinkedServiceTypePropertiesUsername  # type: ignore
     from ._models import PhoenixObjectDataset  # type: ignore
-    from ._models import PhoenixSource  # type: ignore
-    from ._models import PhoenixSourceQuery  # type: ignore
-    from ._models import Pipeline  # type: ignore
-    from ._models import PipelineAnnotationsItem  # type: ignore
     from ._models import PipelineFolder  # type: ignore
     from ._models import PipelineListResponse  # type: ignore
     from ._models import PipelineReference  # type: ignore
@@ -3162,564 +692,135 @@ except (SyntaxError, ImportError):
     from ._models import PipelineRun  # type: ignore
     from ._models import PipelineRunInvokedBy  # type: ignore
     from ._models import PipelineRunsQueryResponse  # type: ignore
-    from ._models import PolybaseSettings  # type: ignore
-    from ._models import PolybaseSettingsRejectSampleValue  # type: ignore
-    from ._models import PolybaseSettingsRejectValue  # type: ignore
-    from ._models import PolybaseSettingsUseTypeDefault  # type: ignore
     from ._models import PostgreSqlLinkedService  # type: ignore
-    from ._models import PostgreSqlLinkedServiceTypeProperties  # type: ignore
-    from ._models import PostgreSqlLinkedServiceTypePropertiesConnectionString  # type: ignore
-    from ._models import PostgreSqlLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import PostgreSqlSource  # type: ignore
-    from ._models import PostgreSqlSourceQuery  # type: ignore
     from ._models import PostgreSqlTableDataset  # type: ignore
-    from ._models import PostgreSqlTableDatasetTypeProperties  # type: ignore
-    from ._models import PostgreSqlTableDatasetTypePropertiesSchema  # type: ignore
-    from ._models import PostgreSqlTableDatasetTypePropertiesTable  # type: ignore
-    from ._models import PostgreSqlTableDatasetTypePropertiesTableName  # type: ignore
-    from ._models import PrestoDatasetTypeProperties  # type: ignore
-    from ._models import PrestoDatasetTypePropertiesSchema  # type: ignore
-    from ._models import PrestoDatasetTypePropertiesTable  # type: ignore
-    from ._models import PrestoDatasetTypePropertiesTableName  # type: ignore
     from ._models import PrestoLinkedService  # type: ignore
-    from ._models import PrestoLinkedServiceTypeProperties  # type: ignore
-    from ._models import PrestoLinkedServiceTypePropertiesAllowHostNameCnMismatch  # type: ignore
-    from ._models import PrestoLinkedServiceTypePropertiesAllowSelfSignedServerCert  # type: ignore
-    from ._models import PrestoLinkedServiceTypePropertiesCatalog  # type: ignore
-    from ._models import PrestoLinkedServiceTypePropertiesEnableSsl  # type: ignore
-    from ._models import PrestoLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import PrestoLinkedServiceTypePropertiesHost  # type: ignore
-    from ._models import PrestoLinkedServiceTypePropertiesPort  # type: ignore
-    from ._models import PrestoLinkedServiceTypePropertiesServerVersion  # type: ignore
-    from ._models import PrestoLinkedServiceTypePropertiesTimeZoneId  # type: ignore
-    from ._models import PrestoLinkedServiceTypePropertiesTrustedCertPath  # type: ignore
-    from ._models import PrestoLinkedServiceTypePropertiesUseSystemTrustStore  # type: ignore
-    from ._models import PrestoLinkedServiceTypePropertiesUsername  # type: ignore
     from ._models import PrestoObjectDataset  # type: ignore
-    from ._models import PrestoSource  # type: ignore
-    from ._models import PrestoSourceQuery  # type: ignore
     from ._models import QueryDataFlowDebugSessionsResponse  # type: ignore
     from ._models import QuickBooksLinkedService  # type: ignore
-    from ._models import QuickBooksLinkedServiceTypeProperties  # type: ignore
-    from ._models import QuickBooksLinkedServiceTypePropertiesCompanyId  # type: ignore
-    from ._models import QuickBooksLinkedServiceTypePropertiesConsumerKey  # type: ignore
-    from ._models import QuickBooksLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import QuickBooksLinkedServiceTypePropertiesEndpoint  # type: ignore
-    from ._models import QuickBooksLinkedServiceTypePropertiesUseEncryptedEndpoints  # type: ignore
     from ._models import QuickBooksObjectDataset  # type: ignore
-    from ._models import QuickBooksSource  # type: ignore
-    from ._models import QuickBooksSourceQuery  # type: ignore
     from ._models import RecurrenceSchedule  # type: ignore
     from ._models import RecurrenceScheduleOccurrence  # type: ignore
     from ._models import RedirectIncompatibleRowSettings  # type: ignore
-    from ._models import RedirectIncompatibleRowSettingsLinkedServiceName  # type: ignore
-    from ._models import RedirectIncompatibleRowSettingsPath  # type: ignore
-    from ._models import RedshiftUnloadSettings  # type: ignore
-    from ._models import RedshiftUnloadSettingsBucketName  # type: ignore
-    from ._models import RelationalSource  # type: ignore
-    from ._models import RelationalSourceQuery  # type: ignore
     from ._models import RelationalTableDataset  # type: ignore
-    from ._models import RelationalTableDatasetTypeProperties  # type: ignore
-    from ._models import RelationalTableDatasetTypePropertiesTableName  # type: ignore
     from ._models import RerunTumblingWindowTrigger  # type: ignore
-    from ._models import RerunTumblingWindowTriggerTypeProperties  # type: ignore
-    from ._models import RerunTumblingWindowTriggerTypePropertiesParentTrigger  # type: ignore
     from ._models import Resource  # type: ignore
     from ._models import ResponsysLinkedService  # type: ignore
-    from ._models import ResponsysLinkedServiceTypeProperties  # type: ignore
-    from ._models import ResponsysLinkedServiceTypePropertiesClientId  # type: ignore
-    from ._models import ResponsysLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import ResponsysLinkedServiceTypePropertiesEndpoint  # type: ignore
-    from ._models import ResponsysLinkedServiceTypePropertiesUseEncryptedEndpoints  # type: ignore
-    from ._models import ResponsysLinkedServiceTypePropertiesUseHostVerification  # type: ignore
-    from ._models import ResponsysLinkedServiceTypePropertiesUsePeerVerification  # type: ignore
     from ._models import ResponsysObjectDataset  # type: ignore
-    from ._models import ResponsysSource  # type: ignore
-    from ._models import ResponsysSourceQuery  # type: ignore
     from ._models import RestResourceDataset  # type: ignore
-    from ._models import RestResourceDatasetTypeProperties  # type: ignore
-    from ._models import RestResourceDatasetTypePropertiesAdditionalHeaders  # type: ignore
-    from ._models import RestResourceDatasetTypePropertiesPaginationRules  # type: ignore
-    from ._models import RestResourceDatasetTypePropertiesRelativeUrl  # type: ignore
-    from ._models import RestResourceDatasetTypePropertiesRequestBody  # type: ignore
-    from ._models import RestResourceDatasetTypePropertiesRequestMethod  # type: ignore
     from ._models import RestServiceLinkedService  # type: ignore
-    from ._models import RestServiceLinkedServiceTypeProperties  # type: ignore
-    from ._models import RestServiceLinkedServiceTypePropertiesAadResourceId  # type: ignore
-    from ._models import RestServiceLinkedServiceTypePropertiesEnableServerCertificateValidation  # type: ignore
-    from ._models import RestServiceLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import RestServiceLinkedServiceTypePropertiesServicePrincipalId  # type: ignore
-    from ._models import RestServiceLinkedServiceTypePropertiesTenant  # type: ignore
-    from ._models import RestServiceLinkedServiceTypePropertiesUrl  # type: ignore
-    from ._models import RestServiceLinkedServiceTypePropertiesUserName  # type: ignore
-    from ._models import RestSource  # type: ignore
-    from ._models import RestSourceAdditionalHeaders  # type: ignore
-    from ._models import RestSourceHttpRequestTimeout  # type: ignore
-    from ._models import RestSourcePaginationRules  # type: ignore
-    from ._models import RestSourceRequestBody  # type: ignore
-    from ._models import RestSourceRequestInterval  # type: ignore
-    from ._models import RestSourceRequestMethod  # type: ignore
     from ._models import RetryPolicy  # type: ignore
-    from ._models import RetryPolicyCount  # type: ignore
     from ._models import RunFilterParameters  # type: ignore
     from ._models import RunQueryFilter  # type: ignore
     from ._models import RunQueryOrderBy  # type: ignore
     from ._models import SalesforceLinkedService  # type: ignore
-    from ._models import SalesforceLinkedServiceTypeProperties  # type: ignore
-    from ._models import SalesforceLinkedServiceTypePropertiesApiVersion  # type: ignore
-    from ._models import SalesforceLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import SalesforceLinkedServiceTypePropertiesEnvironmentUrl  # type: ignore
-    from ._models import SalesforceLinkedServiceTypePropertiesUsername  # type: ignore
     from ._models import SalesforceMarketingCloudLinkedService  # type: ignore
-    from ._models import SalesforceMarketingCloudLinkedServiceTypeProperties  # type: ignore
-    from ._models import SalesforceMarketingCloudLinkedServiceTypePropertiesClientId  # type: ignore
-    from ._models import SalesforceMarketingCloudLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import SalesforceMarketingCloudLinkedServiceTypePropertiesUseEncryptedEndpoints  # type: ignore
-    from ._models import SalesforceMarketingCloudLinkedServiceTypePropertiesUseHostVerification  # type: ignore
-    from ._models import SalesforceMarketingCloudLinkedServiceTypePropertiesUsePeerVerification  # type: ignore
     from ._models import SalesforceMarketingCloudObjectDataset  # type: ignore
-    from ._models import SalesforceMarketingCloudSource  # type: ignore
-    from ._models import SalesforceMarketingCloudSourceQuery  # type: ignore
     from ._models import SalesforceObjectDataset  # type: ignore
-    from ._models import SalesforceObjectDatasetTypeProperties  # type: ignore
-    from ._models import SalesforceObjectDatasetTypePropertiesObjectApiName  # type: ignore
     from ._models import SalesforceServiceCloudLinkedService  # type: ignore
-    from ._models import SalesforceServiceCloudLinkedServiceTypeProperties  # type: ignore
-    from ._models import SalesforceServiceCloudLinkedServiceTypePropertiesApiVersion  # type: ignore
-    from ._models import SalesforceServiceCloudLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import SalesforceServiceCloudLinkedServiceTypePropertiesEnvironmentUrl  # type: ignore
-    from ._models import SalesforceServiceCloudLinkedServiceTypePropertiesExtendedProperties  # type: ignore
-    from ._models import SalesforceServiceCloudLinkedServiceTypePropertiesUsername  # type: ignore
     from ._models import SalesforceServiceCloudObjectDataset  # type: ignore
-    from ._models import SalesforceServiceCloudObjectDatasetTypeProperties  # type: ignore
-    from ._models import SalesforceServiceCloudObjectDatasetTypePropertiesObjectApiName  # type: ignore
-    from ._models import SalesforceServiceCloudSink  # type: ignore
-    from ._models import SalesforceServiceCloudSinkExternalIdFieldName  # type: ignore
-    from ._models import SalesforceServiceCloudSinkIgnoreNullValues  # type: ignore
-    from ._models import SalesforceServiceCloudSource  # type: ignore
-    from ._models import SalesforceServiceCloudSourceQuery  # type: ignore
-    from ._models import SalesforceSink  # type: ignore
-    from ._models import SalesforceSinkExternalIdFieldName  # type: ignore
-    from ._models import SalesforceSinkIgnoreNullValues  # type: ignore
-    from ._models import SalesforceSource  # type: ignore
-    from ._models import SalesforceSourceQuery  # type: ignore
     from ._models import SapBwCubeDataset  # type: ignore
     from ._models import SapBwLinkedService  # type: ignore
-    from ._models import SapBwLinkedServiceTypeProperties  # type: ignore
-    from ._models import SapBwLinkedServiceTypePropertiesClientId  # type: ignore
-    from ._models import SapBwLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import SapBwLinkedServiceTypePropertiesServer  # type: ignore
-    from ._models import SapBwLinkedServiceTypePropertiesSystemNumber  # type: ignore
-    from ._models import SapBwLinkedServiceTypePropertiesUserName  # type: ignore
-    from ._models import SapBwSource  # type: ignore
-    from ._models import SapBwSourceQuery  # type: ignore
     from ._models import SapCloudForCustomerLinkedService  # type: ignore
-    from ._models import SapCloudForCustomerLinkedServiceTypeProperties  # type: ignore
-    from ._models import SapCloudForCustomerLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import SapCloudForCustomerLinkedServiceTypePropertiesUrl  # type: ignore
-    from ._models import SapCloudForCustomerLinkedServiceTypePropertiesUsername  # type: ignore
     from ._models import SapCloudForCustomerResourceDataset  # type: ignore
-    from ._models import SapCloudForCustomerResourceDatasetTypeProperties  # type: ignore
-    from ._models import SapCloudForCustomerResourceDatasetTypePropertiesPath  # type: ignore
-    from ._models import SapCloudForCustomerSink  # type: ignore
-    from ._models import SapCloudForCustomerSource  # type: ignore
-    from ._models import SapCloudForCustomerSourceQuery  # type: ignore
     from ._models import SapEccLinkedService  # type: ignore
-    from ._models import SapEccLinkedServiceTypeProperties  # type: ignore
     from ._models import SapEccResourceDataset  # type: ignore
-    from ._models import SapEccResourceDatasetTypeProperties  # type: ignore
-    from ._models import SapEccResourceDatasetTypePropertiesPath  # type: ignore
-    from ._models import SapEccSource  # type: ignore
-    from ._models import SapEccSourceQuery  # type: ignore
     from ._models import SapHanaLinkedService  # type: ignore
-    from ._models import SapHanaLinkedServiceProperties  # type: ignore
-    from ._models import SapHanaLinkedServicePropertiesConnectionString  # type: ignore
-    from ._models import SapHanaLinkedServicePropertiesEncryptedCredential  # type: ignore
-    from ._models import SapHanaLinkedServicePropertiesServer  # type: ignore
-    from ._models import SapHanaLinkedServicePropertiesUserName  # type: ignore
-    from ._models import SapHanaPartitionSettings  # type: ignore
-    from ._models import SapHanaPartitionSettingsPartitionColumnName  # type: ignore
-    from ._models import SapHanaSource  # type: ignore
-    from ._models import SapHanaSourcePacketSize  # type: ignore
-    from ._models import SapHanaSourceQuery  # type: ignore
     from ._models import SapHanaTableDataset  # type: ignore
-    from ._models import SapHanaTableDatasetTypeProperties  # type: ignore
-    from ._models import SapHanaTableDatasetTypePropertiesSchema  # type: ignore
-    from ._models import SapHanaTableDatasetTypePropertiesTable  # type: ignore
     from ._models import SapOpenHubLinkedService  # type: ignore
-    from ._models import SapOpenHubLinkedServiceTypeProperties  # type: ignore
-    from ._models import SapOpenHubLinkedServiceTypePropertiesClientId  # type: ignore
-    from ._models import SapOpenHubLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import SapOpenHubLinkedServiceTypePropertiesLanguage  # type: ignore
-    from ._models import SapOpenHubLinkedServiceTypePropertiesServer  # type: ignore
-    from ._models import SapOpenHubLinkedServiceTypePropertiesSystemNumber  # type: ignore
-    from ._models import SapOpenHubLinkedServiceTypePropertiesUserName  # type: ignore
-    from ._models import SapOpenHubSource  # type: ignore
-    from ._models import SapOpenHubSourceBaseRequestId  # type: ignore
-    from ._models import SapOpenHubSourceExcludeLastRequest  # type: ignore
     from ._models import SapOpenHubTableDataset  # type: ignore
-    from ._models import SapOpenHubTableDatasetTypeProperties  # type: ignore
-    from ._models import SapOpenHubTableDatasetTypePropertiesBaseRequestId  # type: ignore
-    from ._models import SapOpenHubTableDatasetTypePropertiesExcludeLastRequest  # type: ignore
-    from ._models import SapOpenHubTableDatasetTypePropertiesOpenHubDestinationName  # type: ignore
     from ._models import SapTableLinkedService  # type: ignore
-    from ._models import SapTableLinkedServiceTypeProperties  # type: ignore
-    from ._models import SapTableLinkedServiceTypePropertiesClientId  # type: ignore
-    from ._models import SapTableLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import SapTableLinkedServiceTypePropertiesLanguage  # type: ignore
-    from ._models import SapTableLinkedServiceTypePropertiesLogonGroup  # type: ignore
-    from ._models import SapTableLinkedServiceTypePropertiesMessageServer  # type: ignore
-    from ._models import SapTableLinkedServiceTypePropertiesMessageServerService  # type: ignore
-    from ._models import SapTableLinkedServiceTypePropertiesServer  # type: ignore
-    from ._models import SapTableLinkedServiceTypePropertiesSncLibraryPath  # type: ignore
-    from ._models import SapTableLinkedServiceTypePropertiesSncMode  # type: ignore
-    from ._models import SapTableLinkedServiceTypePropertiesSncMyName  # type: ignore
-    from ._models import SapTableLinkedServiceTypePropertiesSncPartnerName  # type: ignore
-    from ._models import SapTableLinkedServiceTypePropertiesSncQop  # type: ignore
-    from ._models import SapTableLinkedServiceTypePropertiesSystemId  # type: ignore
-    from ._models import SapTableLinkedServiceTypePropertiesSystemNumber  # type: ignore
-    from ._models import SapTableLinkedServiceTypePropertiesUserName  # type: ignore
-    from ._models import SapTablePartitionSettings  # type: ignore
-    from ._models import SapTablePartitionSettingsMaxPartitionsNumber  # type: ignore
-    from ._models import SapTablePartitionSettingsPartitionColumnName  # type: ignore
-    from ._models import SapTablePartitionSettingsPartitionLowerBound  # type: ignore
-    from ._models import SapTablePartitionSettingsPartitionUpperBound  # type: ignore
     from ._models import SapTableResourceDataset  # type: ignore
-    from ._models import SapTableResourceDatasetTypeProperties  # type: ignore
-    from ._models import SapTableResourceDatasetTypePropertiesTableName  # type: ignore
-    from ._models import SapTableSource  # type: ignore
-    from ._models import SapTableSourceBatchSize  # type: ignore
-    from ._models import SapTableSourceCustomRfcReadTableFunctionModule  # type: ignore
-    from ._models import SapTableSourceRfcTableFields  # type: ignore
-    from ._models import SapTableSourceRfcTableOptions  # type: ignore
-    from ._models import SapTableSourceRowCount  # type: ignore
-    from ._models import SapTableSourceRowSkips  # type: ignore
     from ._models import ScheduleTrigger  # type: ignore
     from ._models import ScheduleTriggerRecurrence  # type: ignore
-    from ._models import ScheduleTriggerTypeProperties  # type: ignore
     from ._models import ScriptAction  # type: ignore
     from ._models import SecretBase  # type: ignore
     from ._models import SecureString  # type: ignore
-    from ._models import SelfDependencyTumblingWindowTriggerReference  # type: ignore
     from ._models import SelfHostedIntegrationRuntime  # type: ignore
     from ._models import SelfHostedIntegrationRuntimeNode  # type: ignore
     from ._models import SelfHostedIntegrationRuntimeStatus  # type: ignore
-    from ._models import SelfHostedIntegrationRuntimeStatusTypeProperties  # type: ignore
-    from ._models import SelfHostedIntegrationRuntimeTypeProperties  # type: ignore
     from ._models import ServiceNowLinkedService  # type: ignore
-    from ._models import ServiceNowLinkedServiceTypeProperties  # type: ignore
-    from ._models import ServiceNowLinkedServiceTypePropertiesClientId  # type: ignore
-    from ._models import ServiceNowLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import ServiceNowLinkedServiceTypePropertiesEndpoint  # type: ignore
-    from ._models import ServiceNowLinkedServiceTypePropertiesUseEncryptedEndpoints  # type: ignore
-    from ._models import ServiceNowLinkedServiceTypePropertiesUseHostVerification  # type: ignore
-    from ._models import ServiceNowLinkedServiceTypePropertiesUsePeerVerification  # type: ignore
-    from ._models import ServiceNowLinkedServiceTypePropertiesUsername  # type: ignore
     from ._models import ServiceNowObjectDataset  # type: ignore
-    from ._models import ServiceNowSource  # type: ignore
-    from ._models import ServiceNowSourceQuery  # type: ignore
     from ._models import SetVariableActivity  # type: ignore
-    from ._models import SetVariableActivityTypeProperties  # type: ignore
-    from ._models import SetVariableActivityTypePropertiesValue  # type: ignore
-    from ._models import SftpLocation  # type: ignore
-    from ._models import SftpReadSettings  # type: ignore
-    from ._models import SftpReadSettingsFileListPath  # type: ignore
-    from ._models import SftpReadSettingsModifiedDatetimeEnd  # type: ignore
-    from ._models import SftpReadSettingsModifiedDatetimeStart  # type: ignore
-    from ._models import SftpReadSettingsRecursive  # type: ignore
-    from ._models import SftpReadSettingsWildcardFileName  # type: ignore
-    from ._models import SftpReadSettingsWildcardFolderPath  # type: ignore
     from ._models import SftpServerLinkedService  # type: ignore
-    from ._models import SftpServerLinkedServiceTypeProperties  # type: ignore
-    from ._models import SftpServerLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import SftpServerLinkedServiceTypePropertiesHost  # type: ignore
-    from ._models import SftpServerLinkedServiceTypePropertiesHostKeyFingerprint  # type: ignore
-    from ._models import SftpServerLinkedServiceTypePropertiesPort  # type: ignore
-    from ._models import SftpServerLinkedServiceTypePropertiesPrivateKeyPath  # type: ignore
-    from ._models import SftpServerLinkedServiceTypePropertiesSkipHostKeyValidation  # type: ignore
-    from ._models import SftpServerLinkedServiceTypePropertiesUserName  # type: ignore
-    from ._models import SftpWriteSettings  # type: ignore
-    from ._models import SftpWriteSettingsOperationTimeout  # type: ignore
-    from ._models import SftpWriteSettingsUseTempFileRename  # type: ignore
     from ._models import ShopifyLinkedService  # type: ignore
-    from ._models import ShopifyLinkedServiceTypeProperties  # type: ignore
-    from ._models import ShopifyLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import ShopifyLinkedServiceTypePropertiesHost  # type: ignore
-    from ._models import ShopifyLinkedServiceTypePropertiesUseEncryptedEndpoints  # type: ignore
-    from ._models import ShopifyLinkedServiceTypePropertiesUseHostVerification  # type: ignore
-    from ._models import ShopifyLinkedServiceTypePropertiesUsePeerVerification  # type: ignore
     from ._models import ShopifyObjectDataset  # type: ignore
-    from ._models import ShopifySource  # type: ignore
-    from ._models import ShopifySourceQuery  # type: ignore
     from ._models import SkipErrorFile  # type: ignore
-    from ._models import SkipErrorFileDataInconsistency  # type: ignore
-    from ._models import SkipErrorFileMissing  # type: ignore
-    from ._models import SparkDatasetTypeProperties  # type: ignore
-    from ._models import SparkDatasetTypePropertiesSchema  # type: ignore
-    from ._models import SparkDatasetTypePropertiesTable  # type: ignore
-    from ._models import SparkDatasetTypePropertiesTableName  # type: ignore
+    from ._models import SnowflakeDataset  # type: ignore
+    from ._models import SnowflakeLinkedService  # type: ignore
     from ._models import SparkLinkedService  # type: ignore
-    from ._models import SparkLinkedServiceTypeProperties  # type: ignore
-    from ._models import SparkLinkedServiceTypePropertiesAllowHostNameCnMismatch  # type: ignore
-    from ._models import SparkLinkedServiceTypePropertiesAllowSelfSignedServerCert  # type: ignore
-    from ._models import SparkLinkedServiceTypePropertiesEnableSsl  # type: ignore
-    from ._models import SparkLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import SparkLinkedServiceTypePropertiesHost  # type: ignore
-    from ._models import SparkLinkedServiceTypePropertiesHttpPath  # type: ignore
-    from ._models import SparkLinkedServiceTypePropertiesPort  # type: ignore
-    from ._models import SparkLinkedServiceTypePropertiesTrustedCertPath  # type: ignore
-    from ._models import SparkLinkedServiceTypePropertiesUseSystemTrustStore  # type: ignore
-    from ._models import SparkLinkedServiceTypePropertiesUsername  # type: ignore
     from ._models import SparkObjectDataset  # type: ignore
-    from ._models import SparkSource  # type: ignore
-    from ._models import SparkSourceQuery  # type: ignore
-    from ._models import SqlDwSink  # type: ignore
-    from ._models import SqlDwSinkAllowCopyCommand  # type: ignore
-    from ._models import SqlDwSinkAllowPolyBase  # type: ignore
-    from ._models import SqlDwSinkPreCopyScript  # type: ignore
-    from ._models import SqlDwSinkTableOption  # type: ignore
-    from ._models import SqlDwSource  # type: ignore
-    from ._models import SqlDwSourceSqlReaderQuery  # type: ignore
-    from ._models import SqlDwSourceSqlReaderStoredProcedureName  # type: ignore
-    from ._models import SqlDwSourceStoredProcedureParameters  # type: ignore
-    from ._models import SqlMiSink  # type: ignore
-    from ._models import SqlMiSinkPreCopyScript  # type: ignore
-    from ._models import SqlMiSinkSqlWriterStoredProcedureName  # type: ignore
-    from ._models import SqlMiSinkSqlWriterTableType  # type: ignore
-    from ._models import SqlMiSinkStoredProcedureTableTypeParameterName  # type: ignore
-    from ._models import SqlMiSinkTableOption  # type: ignore
-    from ._models import SqlMiSource  # type: ignore
-    from ._models import SqlMiSourceProduceAdditionalTypes  # type: ignore
-    from ._models import SqlMiSourceSqlReaderQuery  # type: ignore
-    from ._models import SqlMiSourceSqlReaderStoredProcedureName  # type: ignore
     from ._models import SqlServerLinkedService  # type: ignore
-    from ._models import SqlServerLinkedServiceTypeProperties  # type: ignore
-    from ._models import SqlServerLinkedServiceTypePropertiesConnectionString  # type: ignore
-    from ._models import SqlServerLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import SqlServerLinkedServiceTypePropertiesUserName  # type: ignore
-    from ._models import SqlServerSink  # type: ignore
-    from ._models import SqlServerSinkPreCopyScript  # type: ignore
-    from ._models import SqlServerSinkSqlWriterStoredProcedureName  # type: ignore
-    from ._models import SqlServerSinkSqlWriterTableType  # type: ignore
-    from ._models import SqlServerSinkStoredProcedureTableTypeParameterName  # type: ignore
-    from ._models import SqlServerSinkTableOption  # type: ignore
-    from ._models import SqlServerSource  # type: ignore
-    from ._models import SqlServerSourceProduceAdditionalTypes  # type: ignore
-    from ._models import SqlServerSourceSqlReaderQuery  # type: ignore
-    from ._models import SqlServerSourceSqlReaderStoredProcedureName  # type: ignore
     from ._models import SqlServerStoredProcedureActivity  # type: ignore
-    from ._models import SqlServerStoredProcedureActivityTypeProperties  # type: ignore
-    from ._models import SqlServerStoredProcedureActivityTypePropertiesStoredProcedureName  # type: ignore
     from ._models import SqlServerTableDataset  # type: ignore
-    from ._models import SqlServerTableDatasetTypeProperties  # type: ignore
-    from ._models import SqlServerTableDatasetTypePropertiesSchema  # type: ignore
-    from ._models import SqlServerTableDatasetTypePropertiesTable  # type: ignore
-    from ._models import SqlServerTableDatasetTypePropertiesTableName  # type: ignore
-    from ._models import SqlSink  # type: ignore
-    from ._models import SqlSinkPreCopyScript  # type: ignore
-    from ._models import SqlSinkSqlWriterStoredProcedureName  # type: ignore
-    from ._models import SqlSinkSqlWriterTableType  # type: ignore
-    from ._models import SqlSinkStoredProcedureTableTypeParameterName  # type: ignore
-    from ._models import SqlSinkTableOption  # type: ignore
-    from ._models import SqlSource  # type: ignore
-    from ._models import SqlSourceIsolationLevel  # type: ignore
-    from ._models import SqlSourceSqlReaderQuery  # type: ignore
-    from ._models import SqlSourceSqlReaderStoredProcedureName  # type: ignore
     from ._models import SquareLinkedService  # type: ignore
-    from ._models import SquareLinkedServiceTypeProperties  # type: ignore
-    from ._models import SquareLinkedServiceTypePropertiesClientId  # type: ignore
-    from ._models import SquareLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import SquareLinkedServiceTypePropertiesHost  # type: ignore
-    from ._models import SquareLinkedServiceTypePropertiesRedirectUri  # type: ignore
-    from ._models import SquareLinkedServiceTypePropertiesUseEncryptedEndpoints  # type: ignore
-    from ._models import SquareLinkedServiceTypePropertiesUseHostVerification  # type: ignore
-    from ._models import SquareLinkedServiceTypePropertiesUsePeerVerification  # type: ignore
     from ._models import SquareObjectDataset  # type: ignore
-    from ._models import SquareSource  # type: ignore
-    from ._models import SquareSourceQuery  # type: ignore
     from ._models import SsisAccessCredential  # type: ignore
-    from ._models import SsisAccessCredentialDomain  # type: ignore
-    from ._models import SsisAccessCredentialUserName  # type: ignore
     from ._models import SsisChildPackage  # type: ignore
-    from ._models import SsisChildPackageContent  # type: ignore
-    from ._models import SsisChildPackagePath  # type: ignore
     from ._models import SsisEnvironment  # type: ignore
     from ._models import SsisEnvironmentReference  # type: ignore
     from ._models import SsisExecutionCredential  # type: ignore
-    from ._models import SsisExecutionCredentialDomain  # type: ignore
-    from ._models import SsisExecutionCredentialUserName  # type: ignore
     from ._models import SsisExecutionParameter  # type: ignore
-    from ._models import SsisExecutionParameterValue  # type: ignore
     from ._models import SsisFolder  # type: ignore
     from ._models import SsisLogLocation  # type: ignore
-    from ._models import SsisLogLocationLogPath  # type: ignore
-    from ._models import SsisLogLocationTypeProperties  # type: ignore
-    from ._models import SsisLogLocationTypePropertiesLogRefreshInterval  # type: ignore
     from ._models import SsisObjectMetadata  # type: ignore
     from ._models import SsisObjectMetadataListResponse  # type: ignore
     from ._models import SsisObjectMetadataStatusResponse  # type: ignore
     from ._models import SsisPackage  # type: ignore
     from ._models import SsisPackageLocation  # type: ignore
-    from ._models import SsisPackageLocationPackagePath  # type: ignore
-    from ._models import SsisPackageLocationTypeProperties  # type: ignore
-    from ._models import SsisPackageLocationTypePropertiesConfigurationPath  # type: ignore
-    from ._models import SsisPackageLocationTypePropertiesPackageContent  # type: ignore
     from ._models import SsisParameter  # type: ignore
     from ._models import SsisProject  # type: ignore
     from ._models import SsisPropertyOverride  # type: ignore
-    from ._models import SsisPropertyOverrideValue  # type: ignore
     from ._models import SsisVariable  # type: ignore
     from ._models import StagingSettings  # type: ignore
-    from ._models import StagingSettingsEnableCompression  # type: ignore
-    from ._models import StagingSettingsPath  # type: ignore
-    from ._models import StoreReadSettings  # type: ignore
-    from ._models import StoreReadSettingsMaxConcurrentConnections  # type: ignore
-    from ._models import StoreWriteSettings  # type: ignore
-    from ._models import StoreWriteSettingsCopyBehavior  # type: ignore
-    from ._models import StoreWriteSettingsMaxConcurrentConnections  # type: ignore
     from ._models import StoredProcedureParameter  # type: ignore
-    from ._models import StoredProcedureParameterValue  # type: ignore
     from ._models import SubResource  # type: ignore
     from ._models import SubResourceDebugResource  # type: ignore
     from ._models import SwitchActivity  # type: ignore
-    from ._models import SwitchActivityTypeProperties  # type: ignore
     from ._models import SwitchCase  # type: ignore
     from ._models import SybaseLinkedService  # type: ignore
-    from ._models import SybaseLinkedServiceTypeProperties  # type: ignore
-    from ._models import SybaseLinkedServiceTypePropertiesDatabase  # type: ignore
-    from ._models import SybaseLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import SybaseLinkedServiceTypePropertiesSchema  # type: ignore
-    from ._models import SybaseLinkedServiceTypePropertiesServer  # type: ignore
-    from ._models import SybaseLinkedServiceTypePropertiesUsername  # type: ignore
-    from ._models import SybaseSource  # type: ignore
-    from ._models import SybaseSourceQuery  # type: ignore
     from ._models import SybaseTableDataset  # type: ignore
-    from ._models import SybaseTableDatasetTypeProperties  # type: ignore
-    from ._models import SybaseTableDatasetTypePropertiesTableName  # type: ignore
-    from ._models import TabularSource  # type: ignore
-    from ._models import TabularSourceQueryTimeout  # type: ignore
     from ._models import TeradataLinkedService  # type: ignore
-    from ._models import TeradataLinkedServiceTypeProperties  # type: ignore
-    from ._models import TeradataLinkedServiceTypePropertiesConnectionString  # type: ignore
-    from ._models import TeradataLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import TeradataLinkedServiceTypePropertiesServer  # type: ignore
-    from ._models import TeradataLinkedServiceTypePropertiesUsername  # type: ignore
-    from ._models import TeradataPartitionSettings  # type: ignore
-    from ._models import TeradataPartitionSettingsPartitionColumnName  # type: ignore
-    from ._models import TeradataPartitionSettingsPartitionLowerBound  # type: ignore
-    from ._models import TeradataPartitionSettingsPartitionUpperBound  # type: ignore
-    from ._models import TeradataSource  # type: ignore
-    from ._models import TeradataSourceQuery  # type: ignore
     from ._models import TeradataTableDataset  # type: ignore
-    from ._models import TeradataTableDatasetTypeProperties  # type: ignore
-    from ._models import TeradataTableDatasetTypePropertiesDatabase  # type: ignore
-    from ._models import TeradataTableDatasetTypePropertiesTable  # type: ignore
-    from ._models import TextFormat  # type: ignore
-    from ._models import TextFormatColumnDelimiter  # type: ignore
-    from ._models import TextFormatEncodingName  # type: ignore
-    from ._models import TextFormatEscapeChar  # type: ignore
-    from ._models import TextFormatFirstRowAsHeader  # type: ignore
-    from ._models import TextFormatNullValue  # type: ignore
-    from ._models import TextFormatQuoteChar  # type: ignore
-    from ._models import TextFormatRowDelimiter  # type: ignore
-    from ._models import TextFormatSkipLineCount  # type: ignore
-    from ._models import TextFormatTreatEmptyAsNull  # type: ignore
     from ._models import Transformation  # type: ignore
     from ._models import Trigger  # type: ignore
-    from ._models import TriggerAnnotationsItem  # type: ignore
-    from ._models import TriggerDependencyReference  # type: ignore
     from ._models import TriggerFilterParameters  # type: ignore
     from ._models import TriggerListResponse  # type: ignore
     from ._models import TriggerPipelineReference  # type: ignore
     from ._models import TriggerQueryResponse  # type: ignore
-    from ._models import TriggerReference  # type: ignore
     from ._models import TriggerResource  # type: ignore
     from ._models import TriggerRun  # type: ignore
     from ._models import TriggerRunsQueryResponse  # type: ignore
     from ._models import TriggerSubscriptionOperationStatus  # type: ignore
     from ._models import TumblingWindowTrigger  # type: ignore
-    from ._models import TumblingWindowTriggerDependencyReference  # type: ignore
-    from ._models import TumblingWindowTriggerTypeProperties  # type: ignore
-    from ._models import TumblingWindowTriggerTypePropertiesDelay  # type: ignore
     from ._models import UntilActivity  # type: ignore
-    from ._models import UntilActivityTypeProperties  # type: ignore
-    from ._models import UntilActivityTypePropertiesTimeout  # type: ignore
     from ._models import UpdateIntegrationRuntimeNodeRequest  # type: ignore
     from ._models import UpdateIntegrationRuntimeRequest  # type: ignore
     from ._models import UserAccessPolicy  # type: ignore
     from ._models import UserProperty  # type: ignore
-    from ._models import UserPropertyValue  # type: ignore
     from ._models import ValidationActivity  # type: ignore
-    from ._models import ValidationActivityTypeProperties  # type: ignore
-    from ._models import ValidationActivityTypePropertiesChildItems  # type: ignore
-    from ._models import ValidationActivityTypePropertiesMinimumSize  # type: ignore
-    from ._models import ValidationActivityTypePropertiesSleep  # type: ignore
-    from ._models import ValidationActivityTypePropertiesTimeout  # type: ignore
     from ._models import VariableSpecification  # type: ignore
-    from ._models import VariableSpecificationDefaultValue  # type: ignore
-    from ._models import VerticaDatasetTypeProperties  # type: ignore
-    from ._models import VerticaDatasetTypePropertiesSchema  # type: ignore
-    from ._models import VerticaDatasetTypePropertiesTable  # type: ignore
-    from ._models import VerticaDatasetTypePropertiesTableName  # type: ignore
     from ._models import VerticaLinkedService  # type: ignore
-    from ._models import VerticaLinkedServiceTypeProperties  # type: ignore
-    from ._models import VerticaLinkedServiceTypePropertiesConnectionString  # type: ignore
-    from ._models import VerticaLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import VerticaSource  # type: ignore
-    from ._models import VerticaSourceQuery  # type: ignore
     from ._models import VerticaTableDataset  # type: ignore
     from ._models import WaitActivity  # type: ignore
-    from ._models import WaitActivityTypeProperties  # type: ignore
     from ._models import WebActivity  # type: ignore
     from ._models import WebActivityAuthentication  # type: ignore
-    from ._models import WebActivityTypeProperties  # type: ignore
-    from ._models import WebActivityTypePropertiesBody  # type: ignore
-    from ._models import WebActivityTypePropertiesHeaders  # type: ignore
-    from ._models import WebActivityTypePropertiesUrl  # type: ignore
     from ._models import WebAnonymousAuthentication  # type: ignore
     from ._models import WebBasicAuthentication  # type: ignore
-    from ._models import WebBasicAuthenticationUsername  # type: ignore
     from ._models import WebClientCertificateAuthentication  # type: ignore
     from ._models import WebHookActivity  # type: ignore
-    from ._models import WebHookActivityTypeProperties  # type: ignore
-    from ._models import WebHookActivityTypePropertiesBody  # type: ignore
-    from ._models import WebHookActivityTypePropertiesHeaders  # type: ignore
-    from ._models import WebHookActivityTypePropertiesReportStatusOnCallBack  # type: ignore
-    from ._models import WebHookActivityTypePropertiesUrl  # type: ignore
     from ._models import WebLinkedService  # type: ignore
     from ._models import WebLinkedServiceTypeProperties  # type: ignore
-    from ._models import WebLinkedServiceTypePropertiesUrl  # type: ignore
-    from ._models import WebSource  # type: ignore
     from ._models import WebTableDataset  # type: ignore
-    from ._models import WebTableDatasetTypeProperties  # type: ignore
-    from ._models import WebTableDatasetTypePropertiesIndex  # type: ignore
-    from ._models import WebTableDatasetTypePropertiesPath  # type: ignore
     from ._models import XeroLinkedService  # type: ignore
-    from ._models import XeroLinkedServiceTypeProperties  # type: ignore
-    from ._models import XeroLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import XeroLinkedServiceTypePropertiesHost  # type: ignore
-    from ._models import XeroLinkedServiceTypePropertiesUseEncryptedEndpoints  # type: ignore
-    from ._models import XeroLinkedServiceTypePropertiesUseHostVerification  # type: ignore
-    from ._models import XeroLinkedServiceTypePropertiesUsePeerVerification  # type: ignore
     from ._models import XeroObjectDataset  # type: ignore
-    from ._models import XeroSource  # type: ignore
-    from ._models import XeroSourceQuery  # type: ignore
     from ._models import ZohoLinkedService  # type: ignore
-    from ._models import ZohoLinkedServiceTypeProperties  # type: ignore
-    from ._models import ZohoLinkedServiceTypePropertiesEncryptedCredential  # type: ignore
-    from ._models import ZohoLinkedServiceTypePropertiesEndpoint  # type: ignore
-    from ._models import ZohoLinkedServiceTypePropertiesUseEncryptedEndpoints  # type: ignore
-    from ._models import ZohoLinkedServiceTypePropertiesUseHostVerification  # type: ignore
-    from ._models import ZohoLinkedServiceTypePropertiesUsePeerVerification  # type: ignore
     from ._models import ZohoObjectDataset  # type: ignore
-    from ._models import ZohoSource  # type: ignore
-    from ._models import ZohoSourceQuery  # type: ignore
+
 from ._data_factory_management_client_enums import (
     AvroCompressionCodec,
     AzureFunctionActivityMethod,
-    AzureSearchIndexWriteBehaviorType,
     BlobEventTypes,
-    CassandraSourceReadConsistencyLevels,
     CompressionCodec,
     DataFlowComputeType,
     DataFlowDebugCommandType,
@@ -3752,18 +853,13 @@ from ._data_factory_management_client_enums import (
     IntegrationRuntimeState,
     IntegrationRuntimeType,
     IntegrationRuntimeUpdateResult,
-    JsonFormatFilePattern,
-    JsonWriteFilePattern,
     ManagedIntegrationRuntimeNodeStatus,
     MongoDbAuthenticationType,
-    NetezzaPartitionOption,
     ODataAadServicePrincipalCredentialType,
     ODataAuthenticationType,
-    OraclePartitionOption,
     OrcCompressionCodec,
     ParameterType,
     PhoenixAuthenticationType,
-    PolybaseSettingsRejectType,
     PrestoAuthenticationType,
     RecurrenceFrequency,
     RestServiceAuthenticationType,
@@ -3771,12 +867,7 @@ from ._data_factory_management_client_enums import (
     RunQueryFilterOperator,
     RunQueryOrder,
     RunQueryOrderByField,
-    SalesforceSinkWriteBehavior,
-    SalesforceSourceReadBehavior,
-    SapCloudForCustomerSinkWriteBehavior,
     SapHanaAuthenticationType,
-    SapHanaPartitionOption,
-    SapTablePartitionOption,
     SelfHostedIntegrationRuntimeNodeStatus,
     ServiceNowAuthenticationType,
     SftpAuthenticationType,
@@ -3788,7 +879,6 @@ from ._data_factory_management_client_enums import (
     StoredProcedureParameterType,
     SybaseAuthenticationType,
     TeradataAuthenticationType,
-    TeradataPartitionOption,
     TriggerRunStatus,
     TriggerRuntimeState,
     TumblingWindowFrequency,
@@ -3802,486 +892,77 @@ __all__ = [
     'Activity',
     'ActivityDependency',
     'ActivityPolicy',
-    'ActivityPolicyRetry',
-    'ActivityPolicyTimeout',
     'ActivityRun',
-    'ActivityRunError',
-    'ActivityRunInput',
-    'ActivityRunOutput',
     'ActivityRunsQueryResponse',
     'AddDataFlowToDebugSessionResponse',
-    'AdditionalColumns',
-    'AdditionalColumnsName',
-    'AdditionalColumnsValue',
     'AmazonMwsLinkedService',
-    'AmazonMwsLinkedServiceTypeProperties',
-    'AmazonMwsLinkedServiceTypePropertiesAccessKeyId',
-    'AmazonMwsLinkedServiceTypePropertiesEncryptedCredential',
-    'AmazonMwsLinkedServiceTypePropertiesEndpoint',
-    'AmazonMwsLinkedServiceTypePropertiesMarketplaceId',
-    'AmazonMwsLinkedServiceTypePropertiesSellerId',
-    'AmazonMwsLinkedServiceTypePropertiesUseEncryptedEndpoints',
-    'AmazonMwsLinkedServiceTypePropertiesUseHostVerification',
-    'AmazonMwsLinkedServiceTypePropertiesUsePeerVerification',
     'AmazonMwsObjectDataset',
-    'AmazonMwsSource',
-    'AmazonMwsSourceQuery',
     'AmazonRedshiftLinkedService',
-    'AmazonRedshiftLinkedServiceTypeProperties',
-    'AmazonRedshiftLinkedServiceTypePropertiesDatabase',
-    'AmazonRedshiftLinkedServiceTypePropertiesEncryptedCredential',
-    'AmazonRedshiftLinkedServiceTypePropertiesPort',
-    'AmazonRedshiftLinkedServiceTypePropertiesServer',
-    'AmazonRedshiftLinkedServiceTypePropertiesUsername',
-    'AmazonRedshiftSource',
-    'AmazonRedshiftSourceQuery',
     'AmazonRedshiftTableDataset',
-    'AmazonRedshiftTableDatasetTypeProperties',
-    'AmazonRedshiftTableDatasetTypePropertiesSchema',
-    'AmazonRedshiftTableDatasetTypePropertiesTable',
-    'AmazonRedshiftTableDatasetTypePropertiesTableName',
     'AmazonS3Dataset',
-    'AmazonS3DatasetTypeProperties',
-    'AmazonS3DatasetTypePropertiesBucketName',
-    'AmazonS3DatasetTypePropertiesKey',
-    'AmazonS3DatasetTypePropertiesModifiedDatetimeEnd',
-    'AmazonS3DatasetTypePropertiesModifiedDatetimeStart',
-    'AmazonS3DatasetTypePropertiesPrefix',
-    'AmazonS3DatasetTypePropertiesVersion',
     'AmazonS3LinkedService',
-    'AmazonS3LinkedServiceTypeProperties',
-    'AmazonS3LinkedServiceTypePropertiesAccessKeyId',
-    'AmazonS3LinkedServiceTypePropertiesEncryptedCredential',
-    'AmazonS3LinkedServiceTypePropertiesServiceUrl',
-    'AmazonS3Location',
-    'AmazonS3LocationBucketName',
-    'AmazonS3LocationVersion',
-    'AmazonS3ReadSettings',
-    'AmazonS3ReadSettingsFileListPath',
-    'AmazonS3ReadSettingsModifiedDatetimeEnd',
-    'AmazonS3ReadSettingsModifiedDatetimeStart',
-    'AmazonS3ReadSettingsPrefix',
-    'AmazonS3ReadSettingsRecursive',
-    'AmazonS3ReadSettingsWildcardFileName',
-    'AmazonS3ReadSettingsWildcardFolderPath',
     'AppendVariableActivity',
-    'AppendVariableActivityTypeProperties',
-    'AppendVariableActivityTypePropertiesValue',
     'AvroDataset',
-    'AvroDatasetTypeProperties',
-    'AvroFormat',
-    'AvroSink',
-    'AvroSource',
-    'AvroWriteSettings',
     'AzureBatchLinkedService',
-    'AzureBatchLinkedServiceTypeProperties',
-    'AzureBatchLinkedServiceTypePropertiesAccountName',
-    'AzureBatchLinkedServiceTypePropertiesBatchUri',
-    'AzureBatchLinkedServiceTypePropertiesEncryptedCredential',
-    'AzureBatchLinkedServiceTypePropertiesPoolName',
     'AzureBlobDataset',
-    'AzureBlobDatasetTypeProperties',
-    'AzureBlobDatasetTypePropertiesFileName',
-    'AzureBlobDatasetTypePropertiesFolderPath',
-    'AzureBlobDatasetTypePropertiesModifiedDatetimeEnd',
-    'AzureBlobDatasetTypePropertiesModifiedDatetimeStart',
-    'AzureBlobDatasetTypePropertiesTableRootLocation',
     'AzureBlobFsDataset',
-    'AzureBlobFsDatasetTypeProperties',
-    'AzureBlobFsDatasetTypePropertiesFileName',
-    'AzureBlobFsDatasetTypePropertiesFolderPath',
     'AzureBlobFsLinkedService',
-    'AzureBlobFsLinkedServiceTypeProperties',
-    'AzureBlobFsLinkedServiceTypePropertiesAccountKey',
-    'AzureBlobFsLinkedServiceTypePropertiesEncryptedCredential',
-    'AzureBlobFsLinkedServiceTypePropertiesServicePrincipalId',
-    'AzureBlobFsLinkedServiceTypePropertiesTenant',
-    'AzureBlobFsLinkedServiceTypePropertiesUrl',
-    'AzureBlobFsLocation',
-    'AzureBlobFsLocationFileSystem',
-    'AzureBlobFsReadSettings',
-    'AzureBlobFsReadSettingsFileListPath',
-    'AzureBlobFsReadSettingsModifiedDatetimeEnd',
-    'AzureBlobFsReadSettingsModifiedDatetimeStart',
-    'AzureBlobFsReadSettingsRecursive',
-    'AzureBlobFsReadSettingsWildcardFileName',
-    'AzureBlobFsReadSettingsWildcardFolderPath',
-    'AzureBlobFsSink',
-    'AzureBlobFsSinkCopyBehavior',
-    'AzureBlobFsSource',
-    'AzureBlobFsSourceRecursive',
-    'AzureBlobFsSourceSkipHeaderLineCount',
-    'AzureBlobFsSourceTreatEmptyAsNull',
-    'AzureBlobFsWriteSettings',
-    'AzureBlobFsWriteSettingsBlockSizeInMb',
     'AzureBlobStorageLinkedService',
-    'AzureBlobStorageLinkedServiceTypeProperties',
-    'AzureBlobStorageLinkedServiceTypePropertiesConnectionString',
-    'AzureBlobStorageLinkedServiceTypePropertiesSasUri',
-    'AzureBlobStorageLinkedServiceTypePropertiesServicePrincipalId',
-    'AzureBlobStorageLinkedServiceTypePropertiesTenant',
-    'AzureBlobStorageLocation',
-    'AzureBlobStorageLocationContainer',
-    'AzureBlobStorageReadSettings',
-    'AzureBlobStorageReadSettingsFileListPath',
-    'AzureBlobStorageReadSettingsModifiedDatetimeEnd',
-    'AzureBlobStorageReadSettingsModifiedDatetimeStart',
-    'AzureBlobStorageReadSettingsPrefix',
-    'AzureBlobStorageReadSettingsRecursive',
-    'AzureBlobStorageReadSettingsWildcardFileName',
-    'AzureBlobStorageReadSettingsWildcardFolderPath',
-    'AzureBlobStorageWriteSettings',
-    'AzureBlobStorageWriteSettingsBlockSizeInMb',
     'AzureDataExplorerCommandActivity',
-    'AzureDataExplorerCommandActivityTypeProperties',
-    'AzureDataExplorerCommandActivityTypePropertiesCommand',
-    'AzureDataExplorerCommandActivityTypePropertiesCommandTimeout',
-    'AzureDataExplorerDatasetTypeProperties',
-    'AzureDataExplorerDatasetTypePropertiesTable',
     'AzureDataExplorerLinkedService',
-    'AzureDataExplorerLinkedServiceTypeProperties',
-    'AzureDataExplorerLinkedServiceTypePropertiesDatabase',
-    'AzureDataExplorerLinkedServiceTypePropertiesEndpoint',
-    'AzureDataExplorerLinkedServiceTypePropertiesServicePrincipalId',
-    'AzureDataExplorerLinkedServiceTypePropertiesTenant',
-    'AzureDataExplorerSink',
-    'AzureDataExplorerSinkFlushImmediately',
-    'AzureDataExplorerSinkIngestionMappingAsJson',
-    'AzureDataExplorerSinkIngestionMappingName',
-    'AzureDataExplorerSource',
-    'AzureDataExplorerSourceNoTruncation',
-    'AzureDataExplorerSourceQuery',
-    'AzureDataExplorerSourceQueryTimeout',
     'AzureDataExplorerTableDataset',
     'AzureDataLakeAnalyticsLinkedService',
-    'AzureDataLakeAnalyticsLinkedServiceTypeProperties',
-    'AzureDataLakeAnalyticsLinkedServiceTypePropertiesAccountName',
-    'AzureDataLakeAnalyticsLinkedServiceTypePropertiesDataLakeAnalyticsUri',
-    'AzureDataLakeAnalyticsLinkedServiceTypePropertiesEncryptedCredential',
-    'AzureDataLakeAnalyticsLinkedServiceTypePropertiesResourceGroupName',
-    'AzureDataLakeAnalyticsLinkedServiceTypePropertiesServicePrincipalId',
-    'AzureDataLakeAnalyticsLinkedServiceTypePropertiesSubscriptionId',
-    'AzureDataLakeAnalyticsLinkedServiceTypePropertiesTenant',
     'AzureDataLakeStoreDataset',
-    'AzureDataLakeStoreDatasetTypeProperties',
-    'AzureDataLakeStoreDatasetTypePropertiesFileName',
-    'AzureDataLakeStoreDatasetTypePropertiesFolderPath',
     'AzureDataLakeStoreLinkedService',
-    'AzureDataLakeStoreLinkedServiceTypeProperties',
-    'AzureDataLakeStoreLinkedServiceTypePropertiesAccountName',
-    'AzureDataLakeStoreLinkedServiceTypePropertiesDataLakeStoreUri',
-    'AzureDataLakeStoreLinkedServiceTypePropertiesEncryptedCredential',
-    'AzureDataLakeStoreLinkedServiceTypePropertiesResourceGroupName',
-    'AzureDataLakeStoreLinkedServiceTypePropertiesServicePrincipalId',
-    'AzureDataLakeStoreLinkedServiceTypePropertiesSubscriptionId',
-    'AzureDataLakeStoreLinkedServiceTypePropertiesTenant',
-    'AzureDataLakeStoreLocation',
-    'AzureDataLakeStoreReadSettings',
-    'AzureDataLakeStoreReadSettingsFileListPath',
-    'AzureDataLakeStoreReadSettingsModifiedDatetimeEnd',
-    'AzureDataLakeStoreReadSettingsModifiedDatetimeStart',
-    'AzureDataLakeStoreReadSettingsRecursive',
-    'AzureDataLakeStoreReadSettingsWildcardFileName',
-    'AzureDataLakeStoreReadSettingsWildcardFolderPath',
-    'AzureDataLakeStoreSink',
-    'AzureDataLakeStoreSinkCopyBehavior',
-    'AzureDataLakeStoreSinkEnableAdlsSingleFileParallel',
-    'AzureDataLakeStoreSource',
-    'AzureDataLakeStoreSourceRecursive',
-    'AzureDataLakeStoreWriteSettings',
-    'AzureDataLakeStoreWriteSettingsExpiryDateTime',
     'AzureDatabricksLinkedService',
-    'AzureDatabricksLinkedServiceTypeProperties',
-    'AzureDatabricksLinkedServiceTypePropertiesDomain',
-    'AzureDatabricksLinkedServiceTypePropertiesEncryptedCredential',
-    'AzureDatabricksLinkedServiceTypePropertiesExistingClusterId',
-    'AzureDatabricksLinkedServiceTypePropertiesInstancePoolId',
-    'AzureDatabricksLinkedServiceTypePropertiesNewClusterDriverNodeType',
-    'AzureDatabricksLinkedServiceTypePropertiesNewClusterEnableElasticDisk',
-    'AzureDatabricksLinkedServiceTypePropertiesNewClusterInitScripts',
-    'AzureDatabricksLinkedServiceTypePropertiesNewClusterNodeType',
-    'AzureDatabricksLinkedServiceTypePropertiesNewClusterNumOfWorker',
-    'AzureDatabricksLinkedServiceTypePropertiesNewClusterVersion',
     'AzureFileStorageLinkedService',
-    'AzureFileStorageLinkedServiceTypeProperties',
-    'AzureFileStorageLinkedServiceTypePropertiesEncryptedCredential',
-    'AzureFileStorageLinkedServiceTypePropertiesHost',
-    'AzureFileStorageLinkedServiceTypePropertiesUserId',
-    'AzureFileStorageLocation',
-    'AzureFileStorageReadSettings',
-    'AzureFileStorageReadSettingsFileListPath',
-    'AzureFileStorageReadSettingsModifiedDatetimeEnd',
-    'AzureFileStorageReadSettingsModifiedDatetimeStart',
-    'AzureFileStorageReadSettingsRecursive',
-    'AzureFileStorageReadSettingsWildcardFileName',
-    'AzureFileStorageReadSettingsWildcardFolderPath',
     'AzureFunctionActivity',
-    'AzureFunctionActivityTypeProperties',
-    'AzureFunctionActivityTypePropertiesBody',
-    'AzureFunctionActivityTypePropertiesFunctionName',
-    'AzureFunctionActivityTypePropertiesHeaders',
     'AzureFunctionLinkedService',
-    'AzureFunctionLinkedServiceTypeProperties',
-    'AzureFunctionLinkedServiceTypePropertiesEncryptedCredential',
-    'AzureFunctionLinkedServiceTypePropertiesFunctionAppUrl',
     'AzureKeyVaultLinkedService',
-    'AzureKeyVaultLinkedServiceTypeProperties',
-    'AzureKeyVaultLinkedServiceTypePropertiesBaseUrl',
     'AzureKeyVaultSecretReference',
-    'AzureKeyVaultSecretReferenceSecretName',
-    'AzureKeyVaultSecretReferenceSecretVersion',
     'AzureMariaDbLinkedService',
-    'AzureMariaDbLinkedServiceTypeProperties',
-    'AzureMariaDbLinkedServiceTypePropertiesConnectionString',
-    'AzureMariaDbLinkedServiceTypePropertiesEncryptedCredential',
-    'AzureMariaDbSource',
-    'AzureMariaDbSourceQuery',
     'AzureMariaDbTableDataset',
     'AzureMlBatchExecutionActivity',
-    'AzureMlBatchExecutionActivityTypeProperties',
     'AzureMlExecutePipelineActivity',
-    'AzureMlExecutePipelineActivityTypeProperties',
-    'AzureMlExecutePipelineActivityTypePropertiesContinueOnStepFailure',
-    'AzureMlExecutePipelineActivityTypePropertiesExperimentName',
-    'AzureMlExecutePipelineActivityTypePropertiesMlParentRunId',
-    'AzureMlExecutePipelineActivityTypePropertiesMlPipelineId',
-    'AzureMlExecutePipelineActivityTypePropertiesMlPipelineParameters',
     'AzureMlLinkedService',
-    'AzureMlLinkedServiceTypeProperties',
-    'AzureMlLinkedServiceTypePropertiesEncryptedCredential',
-    'AzureMlLinkedServiceTypePropertiesMlEndpoint',
-    'AzureMlLinkedServiceTypePropertiesServicePrincipalId',
-    'AzureMlLinkedServiceTypePropertiesTenant',
-    'AzureMlLinkedServiceTypePropertiesUpdateResourceEndpoint',
     'AzureMlServiceLinkedService',
-    'AzureMlServiceLinkedServiceTypeProperties',
-    'AzureMlServiceLinkedServiceTypePropertiesEncryptedCredential',
-    'AzureMlServiceLinkedServiceTypePropertiesMlWorkspaceName',
-    'AzureMlServiceLinkedServiceTypePropertiesResourceGroupName',
-    'AzureMlServiceLinkedServiceTypePropertiesServicePrincipalId',
-    'AzureMlServiceLinkedServiceTypePropertiesSubscriptionId',
-    'AzureMlServiceLinkedServiceTypePropertiesTenant',
     'AzureMlUpdateResourceActivity',
-    'AzureMlUpdateResourceActivityTypeProperties',
-    'AzureMlUpdateResourceActivityTypePropertiesTrainedModelFilePath',
-    'AzureMlUpdateResourceActivityTypePropertiesTrainedModelName',
     'AzureMlWebServiceFile',
-    'AzureMlWebServiceFilePath',
     'AzureMySqlLinkedService',
-    'AzureMySqlLinkedServiceTypeProperties',
-    'AzureMySqlLinkedServiceTypePropertiesConnectionString',
-    'AzureMySqlLinkedServiceTypePropertiesEncryptedCredential',
-    'AzureMySqlSink',
-    'AzureMySqlSinkPreCopyScript',
-    'AzureMySqlSource',
-    'AzureMySqlSourceQuery',
     'AzureMySqlTableDataset',
-    'AzureMySqlTableDatasetTypeProperties',
-    'AzureMySqlTableDatasetTypePropertiesTable',
-    'AzureMySqlTableDatasetTypePropertiesTableName',
     'AzurePostgreSqlLinkedService',
-    'AzurePostgreSqlLinkedServiceTypeProperties',
-    'AzurePostgreSqlLinkedServiceTypePropertiesConnectionString',
-    'AzurePostgreSqlLinkedServiceTypePropertiesEncryptedCredential',
-    'AzurePostgreSqlSink',
-    'AzurePostgreSqlSinkPreCopyScript',
-    'AzurePostgreSqlSource',
-    'AzurePostgreSqlSourceQuery',
     'AzurePostgreSqlTableDataset',
-    'AzurePostgreSqlTableDatasetTypeProperties',
-    'AzurePostgreSqlTableDatasetTypePropertiesSchema',
-    'AzurePostgreSqlTableDatasetTypePropertiesTable',
-    'AzurePostgreSqlTableDatasetTypePropertiesTableName',
-    'AzureQueueSink',
     'AzureSearchIndexDataset',
-    'AzureSearchIndexDatasetTypeProperties',
-    'AzureSearchIndexDatasetTypePropertiesIndexName',
-    'AzureSearchIndexSink',
     'AzureSearchLinkedService',
-    'AzureSearchLinkedServiceTypeProperties',
-    'AzureSearchLinkedServiceTypePropertiesEncryptedCredential',
-    'AzureSearchLinkedServiceTypePropertiesUrl',
     'AzureSqlDatabaseLinkedService',
-    'AzureSqlDatabaseLinkedServiceTypeProperties',
-    'AzureSqlDatabaseLinkedServiceTypePropertiesConnectionString',
-    'AzureSqlDatabaseLinkedServiceTypePropertiesEncryptedCredential',
-    'AzureSqlDatabaseLinkedServiceTypePropertiesServicePrincipalId',
-    'AzureSqlDatabaseLinkedServiceTypePropertiesTenant',
     'AzureSqlDwLinkedService',
-    'AzureSqlDwLinkedServiceTypeProperties',
-    'AzureSqlDwLinkedServiceTypePropertiesConnectionString',
-    'AzureSqlDwLinkedServiceTypePropertiesEncryptedCredential',
-    'AzureSqlDwLinkedServiceTypePropertiesServicePrincipalId',
-    'AzureSqlDwLinkedServiceTypePropertiesTenant',
     'AzureSqlDwTableDataset',
-    'AzureSqlDwTableDatasetTypeProperties',
-    'AzureSqlDwTableDatasetTypePropertiesSchema',
-    'AzureSqlDwTableDatasetTypePropertiesTable',
-    'AzureSqlDwTableDatasetTypePropertiesTableName',
     'AzureSqlMiLinkedService',
-    'AzureSqlMiLinkedServiceTypeProperties',
-    'AzureSqlMiLinkedServiceTypePropertiesConnectionString',
-    'AzureSqlMiLinkedServiceTypePropertiesEncryptedCredential',
-    'AzureSqlMiLinkedServiceTypePropertiesServicePrincipalId',
-    'AzureSqlMiLinkedServiceTypePropertiesTenant',
     'AzureSqlMiTableDataset',
-    'AzureSqlMiTableDatasetTypeProperties',
-    'AzureSqlMiTableDatasetTypePropertiesSchema',
-    'AzureSqlMiTableDatasetTypePropertiesTable',
-    'AzureSqlMiTableDatasetTypePropertiesTableName',
-    'AzureSqlSink',
-    'AzureSqlSinkPreCopyScript',
-    'AzureSqlSinkSqlWriterStoredProcedureName',
-    'AzureSqlSinkSqlWriterTableType',
-    'AzureSqlSinkStoredProcedureTableTypeParameterName',
-    'AzureSqlSinkTableOption',
-    'AzureSqlSource',
-    'AzureSqlSourceProduceAdditionalTypes',
-    'AzureSqlSourceSqlReaderQuery',
-    'AzureSqlSourceSqlReaderStoredProcedureName',
     'AzureSqlTableDataset',
-    'AzureSqlTableDatasetTypeProperties',
-    'AzureSqlTableDatasetTypePropertiesSchema',
-    'AzureSqlTableDatasetTypePropertiesTable',
-    'AzureSqlTableDatasetTypePropertiesTableName',
     'AzureStorageLinkedService',
-    'AzureStorageLinkedServiceTypeProperties',
-    'AzureStorageLinkedServiceTypePropertiesConnectionString',
-    'AzureStorageLinkedServiceTypePropertiesSasUri',
     'AzureTableDataset',
-    'AzureTableDatasetTypeProperties',
-    'AzureTableDatasetTypePropertiesTableName',
-    'AzureTableSink',
-    'AzureTableSinkAzureTableDefaultPartitionKeyValue',
-    'AzureTableSinkAzureTableInsertType',
-    'AzureTableSinkAzureTablePartitionKeyName',
-    'AzureTableSinkAzureTableRowKeyName',
-    'AzureTableSource',
-    'AzureTableSourceAzureTableSourceIgnoreTableNotFound',
-    'AzureTableSourceAzureTableSourceQuery',
     'AzureTableStorageLinkedService',
     'BinaryDataset',
-    'BinaryDatasetTypeProperties',
-    'BinarySink',
-    'BinarySource',
     'BlobEventsTrigger',
-    'BlobEventsTriggerTypeProperties',
-    'BlobSink',
-    'BlobSinkBlobWriterAddHeader',
-    'BlobSinkBlobWriterDateTimeFormat',
-    'BlobSinkBlobWriterOverwriteFiles',
-    'BlobSinkCopyBehavior',
-    'BlobSource',
-    'BlobSourceRecursive',
-    'BlobSourceSkipHeaderLineCount',
-    'BlobSourceTreatEmptyAsNull',
     'BlobTrigger',
-    'BlobTriggerTypeProperties',
     'CassandraLinkedService',
-    'CassandraLinkedServiceTypeProperties',
-    'CassandraLinkedServiceTypePropertiesAuthenticationType',
-    'CassandraLinkedServiceTypePropertiesEncryptedCredential',
-    'CassandraLinkedServiceTypePropertiesHost',
-    'CassandraLinkedServiceTypePropertiesPort',
-    'CassandraLinkedServiceTypePropertiesUsername',
-    'CassandraSource',
-    'CassandraSourceQuery',
     'CassandraTableDataset',
-    'CassandraTableDatasetTypeProperties',
-    'CassandraTableDatasetTypePropertiesKeyspace',
-    'CassandraTableDatasetTypePropertiesTableName',
     'ChainingTrigger',
-    'ChainingTriggerTypeProperties',
-    'CloudError', 'CloudErrorException',
-    'CloudErrorBody',
-    'CmdkeySetup',
-    'CmdkeySetupTypeProperties',
-    'CmdkeySetupTypePropertiesTargetName',
-    'CmdkeySetupTypePropertiesUserName',
+    'CloudError',
     'CommonDataServiceForAppsEntityDataset',
-    'CommonDataServiceForAppsEntityDatasetTypeProperties',
-    'CommonDataServiceForAppsEntityDatasetTypePropertiesEntityName',
     'CommonDataServiceForAppsLinkedService',
-    'CommonDataServiceForAppsLinkedServiceTypeProperties',
-    'CommonDataServiceForAppsLinkedServiceTypePropertiesEncryptedCredential',
-    'CommonDataServiceForAppsLinkedServiceTypePropertiesHostName',
-    'CommonDataServiceForAppsLinkedServiceTypePropertiesOrganizationName',
-    'CommonDataServiceForAppsLinkedServiceTypePropertiesPort',
-    'CommonDataServiceForAppsLinkedServiceTypePropertiesServicePrincipalId',
-    'CommonDataServiceForAppsLinkedServiceTypePropertiesServiceUri',
-    'CommonDataServiceForAppsLinkedServiceTypePropertiesUsername',
-    'CommonDataServiceForAppsSink',
-    'CommonDataServiceForAppsSinkAlternateKeyName',
-    'CommonDataServiceForAppsSinkIgnoreNullValues',
-    'CommonDataServiceForAppsSource',
-    'CommonDataServiceForAppsSourceQuery',
-    'ComponentSetup',
     'ConcurLinkedService',
-    'ConcurLinkedServiceTypeProperties',
-    'ConcurLinkedServiceTypePropertiesClientId',
-    'ConcurLinkedServiceTypePropertiesEncryptedCredential',
-    'ConcurLinkedServiceTypePropertiesUseEncryptedEndpoints',
-    'ConcurLinkedServiceTypePropertiesUseHostVerification',
-    'ConcurLinkedServiceTypePropertiesUsePeerVerification',
-    'ConcurLinkedServiceTypePropertiesUsername',
     'ConcurObjectDataset',
-    'ConcurSource',
-    'ConcurSourceQuery',
     'ControlActivity',
     'CopyActivity',
-    'CopyActivityTypeProperties',
-    'CopyActivityTypePropertiesDataIntegrationUnits',
-    'CopyActivityTypePropertiesEnableSkipIncompatibleRow',
-    'CopyActivityTypePropertiesEnableStaging',
-    'CopyActivityTypePropertiesParallelCopies',
-    'CopyActivityTypePropertiesPreserveItem',
-    'CopyActivityTypePropertiesPreserveRulesItem',
-    'CopyActivityTypePropertiesTranslator',
-    'CopyActivityTypePropertiesValidateDataConsistency',
     'CopySink',
-    'CopySinkMaxConcurrentConnections',
-    'CopySinkRetryCount',
-    'CopySinkRetryWait',
-    'CopySinkWriteBatchSize',
-    'CopySinkWriteBatchTimeout',
     'CopySource',
-    'CopySourceMaxConcurrentConnections',
-    'CopySourceRetryCount',
-    'CopySourceRetryWait',
     'CosmosDbLinkedService',
-    'CosmosDbLinkedServiceTypeProperties',
-    'CosmosDbLinkedServiceTypePropertiesAccountEndpoint',
-    'CosmosDbLinkedServiceTypePropertiesConnectionString',
-    'CosmosDbLinkedServiceTypePropertiesDatabase',
-    'CosmosDbLinkedServiceTypePropertiesEncryptedCredential',
     'CosmosDbMongoDbApiCollectionDataset',
-    'CosmosDbMongoDbApiCollectionDatasetTypeProperties',
-    'CosmosDbMongoDbApiCollectionDatasetTypePropertiesCollection',
     'CosmosDbMongoDbApiLinkedService',
-    'CosmosDbMongoDbApiLinkedServiceTypeProperties',
-    'CosmosDbMongoDbApiLinkedServiceTypePropertiesConnectionString',
-    'CosmosDbMongoDbApiLinkedServiceTypePropertiesDatabase',
-    'CosmosDbMongoDbApiSink',
-    'CosmosDbMongoDbApiSinkWriteBehavior',
-    'CosmosDbMongoDbApiSource',
-    'CosmosDbMongoDbApiSourceBatchSize',
-    'CosmosDbMongoDbApiSourceFilter',
-    'CosmosDbMongoDbApiSourceQueryTimeout',
     'CosmosDbSqlApiCollectionDataset',
-    'CosmosDbSqlApiCollectionDatasetTypeProperties',
-    'CosmosDbSqlApiCollectionDatasetTypePropertiesCollectionName',
-    'CosmosDbSqlApiSink',
-    'CosmosDbSqlApiSinkWriteBehavior',
-    'CosmosDbSqlApiSource',
-    'CosmosDbSqlApiSourcePageSize',
-    'CosmosDbSqlApiSourcePreferredRegions',
-    'CosmosDbSqlApiSourceQuery',
     'CouchbaseLinkedService',
-    'CouchbaseLinkedServiceTypeProperties',
-    'CouchbaseLinkedServiceTypePropertiesConnectionString',
-    'CouchbaseLinkedServiceTypePropertiesEncryptedCredential',
-    'CouchbaseSource',
-    'CouchbaseSourceQuery',
     'CouchbaseTableDataset',
     'CreateDataFlowDebugSessionRequest',
     'CreateDataFlowDebugSessionResponse',
@@ -4289,54 +970,29 @@ __all__ = [
     'CreateRunResponse',
     'CustomActivity',
     'CustomActivityReferenceObject',
-    'CustomActivityTypeProperties',
-    'CustomActivityTypePropertiesCommand',
-    'CustomActivityTypePropertiesFolderPath',
-    'CustomActivityTypePropertiesRetentionTimeInDays',
     'CustomDataSourceLinkedService',
-    'CustomDataSourceLinkedServiceTypeProperties',
-    'CustomDataset',
-    'CustomDatasetTypeProperties',
     'CustomSetupBase',
     'DataFlow',
-    'DataFlowAnnotationsItem',
     'DataFlowDebugCommandPayload',
     'DataFlowDebugCommandRequest',
     'DataFlowDebugCommandResponse',
     'DataFlowDebugPackage',
     'DataFlowDebugPackageDebugSettings',
-    'DataFlowDebugPackageDebugSettingsDatasetParameters',
     'DataFlowDebugResource',
     'DataFlowDebugSessionInfo',
     'DataFlowFolder',
     'DataFlowListResponse',
     'DataFlowReference',
-    'DataFlowReferenceDatasetParameters',
     'DataFlowResource',
     'DataFlowSink',
     'DataFlowSource',
     'DataFlowSourceSetting',
     'DataFlowStagingInfo',
     'DataLakeAnalyticsUsqlActivity',
-    'DataLakeAnalyticsUsqlActivityTypeProperties',
-    'DataLakeAnalyticsUsqlActivityTypePropertiesCompilationMode',
-    'DataLakeAnalyticsUsqlActivityTypePropertiesDegreeOfParallelism',
-    'DataLakeAnalyticsUsqlActivityTypePropertiesPriority',
-    'DataLakeAnalyticsUsqlActivityTypePropertiesRuntimeVersion',
-    'DataLakeAnalyticsUsqlActivityTypePropertiesScriptPath',
     'DatabricksNotebookActivity',
-    'DatabricksNotebookActivityTypeProperties',
-    'DatabricksNotebookActivityTypePropertiesNotebookPath',
     'DatabricksSparkJarActivity',
-    'DatabricksSparkJarActivityTypeProperties',
-    'DatabricksSparkJarActivityTypePropertiesMainClassName',
-    'DatabricksSparkJarActivityTypePropertiesParametersItem',
     'DatabricksSparkPythonActivity',
-    'DatabricksSparkPythonActivityTypeProperties',
-    'DatabricksSparkPythonActivityTypePropertiesParametersItem',
-    'DatabricksSparkPythonActivityTypePropertiesPythonFile',
     'Dataset',
-    'DatasetAnnotationsItem',
     'DatasetBZip2Compression',
     'DatasetCompression',
     'DatasetDebugResource',
@@ -4345,152 +1001,32 @@ __all__ = [
     'DatasetGZipCompression',
     'DatasetListResponse',
     'DatasetLocation',
-    'DatasetLocationFileName',
-    'DatasetLocationFolderPath',
     'DatasetReference',
     'DatasetResource',
-    'DatasetSchema',
     'DatasetStorageFormat',
-    'DatasetStorageFormatDeserializer',
-    'DatasetStorageFormatSerializer',
-    'DatasetStructure',
     'DatasetZipDeflateCompression',
     'Db2LinkedService',
-    'Db2LinkedServiceTypeProperties',
-    'Db2LinkedServiceTypePropertiesCertificateCommonName',
-    'Db2LinkedServiceTypePropertiesConnectionString',
-    'Db2LinkedServiceTypePropertiesDatabase',
-    'Db2LinkedServiceTypePropertiesEncryptedCredential',
-    'Db2LinkedServiceTypePropertiesPackageCollection',
-    'Db2LinkedServiceTypePropertiesServer',
-    'Db2LinkedServiceTypePropertiesUsername',
-    'Db2Source',
-    'Db2SourceQuery',
     'Db2TableDataset',
-    'Db2TableDatasetTypeProperties',
-    'Db2TableDatasetTypePropertiesSchema',
-    'Db2TableDatasetTypePropertiesTable',
-    'Db2TableDatasetTypePropertiesTableName',
     'DeleteActivity',
-    'DeleteActivityTypeProperties',
-    'DeleteActivityTypePropertiesEnableLogging',
-    'DeleteActivityTypePropertiesRecursive',
     'DeleteDataFlowDebugSessionRequest',
     'DelimitedTextDataset',
-    'DelimitedTextDatasetTypeProperties',
-    'DelimitedTextDatasetTypePropertiesColumnDelimiter',
-    'DelimitedTextDatasetTypePropertiesEncodingName',
-    'DelimitedTextDatasetTypePropertiesEscapeChar',
-    'DelimitedTextDatasetTypePropertiesFirstRowAsHeader',
-    'DelimitedTextDatasetTypePropertiesNullValue',
-    'DelimitedTextDatasetTypePropertiesQuoteChar',
-    'DelimitedTextDatasetTypePropertiesRowDelimiter',
-    'DelimitedTextReadSettings',
-    'DelimitedTextReadSettingsSkipLineCount',
-    'DelimitedTextSink',
-    'DelimitedTextSource',
-    'DelimitedTextWriteSettings',
-    'DelimitedTextWriteSettingsFileExtension',
-    'DelimitedTextWriteSettingsQuoteAllText',
     'DependencyReference',
-    'DistcpSettings',
-    'DistcpSettingsDistcpOptions',
-    'DistcpSettingsResourceManagerEndpoint',
-    'DistcpSettingsTempScriptPath',
     'DocumentDbCollectionDataset',
-    'DocumentDbCollectionDatasetTypeProperties',
-    'DocumentDbCollectionDatasetTypePropertiesCollectionName',
-    'DocumentDbCollectionSink',
-    'DocumentDbCollectionSinkNestingSeparator',
-    'DocumentDbCollectionSinkWriteBehavior',
-    'DocumentDbCollectionSource',
-    'DocumentDbCollectionSourceNestingSeparator',
-    'DocumentDbCollectionSourceQuery',
-    'DocumentDbCollectionSourceQueryTimeout',
-    'DrillDatasetTypeProperties',
-    'DrillDatasetTypePropertiesSchema',
-    'DrillDatasetTypePropertiesTable',
-    'DrillDatasetTypePropertiesTableName',
     'DrillLinkedService',
-    'DrillLinkedServiceTypeProperties',
-    'DrillLinkedServiceTypePropertiesConnectionString',
-    'DrillLinkedServiceTypePropertiesEncryptedCredential',
-    'DrillSource',
-    'DrillSourceQuery',
     'DrillTableDataset',
-    'DwCopyCommandDefaultValue',
-    'DwCopyCommandDefaultValueColumnName',
-    'DwCopyCommandSettings',
     'DynamicsAxLinkedService',
-    'DynamicsAxLinkedServiceTypeProperties',
-    'DynamicsAxLinkedServiceTypePropertiesAadResourceId',
-    'DynamicsAxLinkedServiceTypePropertiesEncryptedCredential',
-    'DynamicsAxLinkedServiceTypePropertiesServicePrincipalId',
-    'DynamicsAxLinkedServiceTypePropertiesTenant',
-    'DynamicsAxLinkedServiceTypePropertiesUrl',
     'DynamicsAxResourceDataset',
-    'DynamicsAxResourceDatasetTypeProperties',
-    'DynamicsAxResourceDatasetTypePropertiesPath',
-    'DynamicsAxSource',
-    'DynamicsAxSourceQuery',
     'DynamicsCrmEntityDataset',
-    'DynamicsCrmEntityDatasetTypeProperties',
-    'DynamicsCrmEntityDatasetTypePropertiesEntityName',
     'DynamicsCrmLinkedService',
-    'DynamicsCrmLinkedServiceTypeProperties',
-    'DynamicsCrmLinkedServiceTypePropertiesEncryptedCredential',
-    'DynamicsCrmLinkedServiceTypePropertiesHostName',
-    'DynamicsCrmLinkedServiceTypePropertiesOrganizationName',
-    'DynamicsCrmLinkedServiceTypePropertiesPort',
-    'DynamicsCrmLinkedServiceTypePropertiesServicePrincipalId',
-    'DynamicsCrmLinkedServiceTypePropertiesServiceUri',
-    'DynamicsCrmLinkedServiceTypePropertiesUsername',
-    'DynamicsCrmSink',
-    'DynamicsCrmSinkAlternateKeyName',
-    'DynamicsCrmSinkIgnoreNullValues',
-    'DynamicsCrmSource',
-    'DynamicsCrmSourceQuery',
     'DynamicsEntityDataset',
-    'DynamicsEntityDatasetTypeProperties',
-    'DynamicsEntityDatasetTypePropertiesEntityName',
     'DynamicsLinkedService',
-    'DynamicsLinkedServiceTypeProperties',
-    'DynamicsLinkedServiceTypePropertiesEncryptedCredential',
-    'DynamicsLinkedServiceTypePropertiesHostName',
-    'DynamicsLinkedServiceTypePropertiesOrganizationName',
-    'DynamicsLinkedServiceTypePropertiesPort',
-    'DynamicsLinkedServiceTypePropertiesServicePrincipalId',
-    'DynamicsLinkedServiceTypePropertiesServiceUri',
-    'DynamicsLinkedServiceTypePropertiesUsername',
-    'DynamicsSink',
-    'DynamicsSinkAlternateKeyName',
-    'DynamicsSinkIgnoreNullValues',
-    'DynamicsSource',
-    'DynamicsSourceQuery',
     'EloquaLinkedService',
-    'EloquaLinkedServiceTypeProperties',
-    'EloquaLinkedServiceTypePropertiesEncryptedCredential',
-    'EloquaLinkedServiceTypePropertiesEndpoint',
-    'EloquaLinkedServiceTypePropertiesUseEncryptedEndpoints',
-    'EloquaLinkedServiceTypePropertiesUseHostVerification',
-    'EloquaLinkedServiceTypePropertiesUsePeerVerification',
-    'EloquaLinkedServiceTypePropertiesUsername',
     'EloquaObjectDataset',
-    'EloquaSource',
-    'EloquaSourceQuery',
     'EntityReference',
-    'EnvironmentVariableSetup',
-    'EnvironmentVariableSetupTypeProperties',
     'ExecuteDataFlowActivity',
-    'ExecuteDataFlowActivityTypeProperties',
     'ExecuteDataFlowActivityTypePropertiesCompute',
     'ExecutePipelineActivity',
-    'ExecutePipelineActivityTypeProperties',
     'ExecuteSsisPackageActivity',
-    'ExecuteSsisPackageActivityTypeProperties',
-    'ExecuteSsisPackageActivityTypePropertiesEnvironmentPath',
-    'ExecuteSsisPackageActivityTypePropertiesLoggingLevel',
-    'ExecuteSsisPackageActivityTypePropertiesRuntime',
     'ExecutionActivity',
     'ExposureControlRequest',
     'ExposureControlResponse',
@@ -4499,306 +1035,48 @@ __all__ = [
     'FactoryGitHubConfiguration',
     'FactoryIdentity',
     'FactoryListResponse',
-    'FactoryProperties',
     'FactoryRepoConfiguration',
     'FactoryRepoUpdate',
     'FactoryUpdateParameters',
     'FactoryVstsConfiguration',
     'FileServerLinkedService',
-    'FileServerLinkedServiceTypeProperties',
-    'FileServerLinkedServiceTypePropertiesEncryptedCredential',
-    'FileServerLinkedServiceTypePropertiesHost',
-    'FileServerLinkedServiceTypePropertiesUserId',
-    'FileServerLocation',
-    'FileServerReadSettings',
-    'FileServerReadSettingsFileListPath',
-    'FileServerReadSettingsModifiedDatetimeEnd',
-    'FileServerReadSettingsModifiedDatetimeStart',
-    'FileServerReadSettingsRecursive',
-    'FileServerReadSettingsWildcardFileName',
-    'FileServerReadSettingsWildcardFolderPath',
-    'FileServerWriteSettings',
     'FileShareDataset',
-    'FileShareDatasetTypeProperties',
-    'FileShareDatasetTypePropertiesFileFilter',
-    'FileShareDatasetTypePropertiesFileName',
-    'FileShareDatasetTypePropertiesFolderPath',
-    'FileShareDatasetTypePropertiesModifiedDatetimeEnd',
-    'FileShareDatasetTypePropertiesModifiedDatetimeStart',
-    'FileSystemSink',
-    'FileSystemSinkCopyBehavior',
-    'FileSystemSource',
-    'FileSystemSourceRecursive',
     'FilterActivity',
-    'FilterActivityTypeProperties',
     'ForEachActivity',
-    'ForEachActivityTypeProperties',
-    'FormatReadSettings',
-    'FormatWriteSettings',
-    'FtpReadSettings',
-    'FtpReadSettingsFileListPath',
-    'FtpReadSettingsRecursive',
-    'FtpReadSettingsWildcardFileName',
-    'FtpReadSettingsWildcardFolderPath',
     'FtpServerLinkedService',
-    'FtpServerLinkedServiceTypeProperties',
-    'FtpServerLinkedServiceTypePropertiesEnableServerCertificateValidation',
-    'FtpServerLinkedServiceTypePropertiesEnableSsl',
-    'FtpServerLinkedServiceTypePropertiesEncryptedCredential',
-    'FtpServerLinkedServiceTypePropertiesHost',
-    'FtpServerLinkedServiceTypePropertiesPort',
-    'FtpServerLinkedServiceTypePropertiesUserName',
-    'FtpServerLocation',
-    'GenericDatasetTypeProperties',
-    'GenericDatasetTypePropertiesTableName',
     'GetDataFactoryOperationStatusResponse',
     'GetMetadataActivity',
-    'GetMetadataActivityTypeProperties',
-    'GetMetadataActivityTypePropertiesFieldListItem',
     'GetSsisObjectMetadataRequest',
     'GitHubAccessTokenRequest',
     'GitHubAccessTokenResponse',
     'GoogleAdWordsLinkedService',
-    'GoogleAdWordsLinkedServiceTypeProperties',
-    'GoogleAdWordsLinkedServiceTypePropertiesClientCustomerId',
-    'GoogleAdWordsLinkedServiceTypePropertiesClientId',
-    'GoogleAdWordsLinkedServiceTypePropertiesEmail',
-    'GoogleAdWordsLinkedServiceTypePropertiesEncryptedCredential',
-    'GoogleAdWordsLinkedServiceTypePropertiesKeyFilePath',
-    'GoogleAdWordsLinkedServiceTypePropertiesTrustedCertPath',
-    'GoogleAdWordsLinkedServiceTypePropertiesUseSystemTrustStore',
     'GoogleAdWordsObjectDataset',
-    'GoogleAdWordsSource',
-    'GoogleAdWordsSourceQuery',
-    'GoogleBigQueryDatasetTypeProperties',
-    'GoogleBigQueryDatasetTypePropertiesDataset',
-    'GoogleBigQueryDatasetTypePropertiesTable',
-    'GoogleBigQueryDatasetTypePropertiesTableName',
     'GoogleBigQueryLinkedService',
-    'GoogleBigQueryLinkedServiceTypeProperties',
-    'GoogleBigQueryLinkedServiceTypePropertiesAdditionalProjects',
-    'GoogleBigQueryLinkedServiceTypePropertiesClientId',
-    'GoogleBigQueryLinkedServiceTypePropertiesEmail',
-    'GoogleBigQueryLinkedServiceTypePropertiesEncryptedCredential',
-    'GoogleBigQueryLinkedServiceTypePropertiesKeyFilePath',
-    'GoogleBigQueryLinkedServiceTypePropertiesProject',
-    'GoogleBigQueryLinkedServiceTypePropertiesRequestGoogleDriveScope',
-    'GoogleBigQueryLinkedServiceTypePropertiesTrustedCertPath',
-    'GoogleBigQueryLinkedServiceTypePropertiesUseSystemTrustStore',
     'GoogleBigQueryObjectDataset',
-    'GoogleBigQuerySource',
-    'GoogleBigQuerySourceQuery',
     'GoogleCloudStorageLinkedService',
-    'GoogleCloudStorageLinkedServiceTypeProperties',
-    'GoogleCloudStorageLinkedServiceTypePropertiesAccessKeyId',
-    'GoogleCloudStorageLinkedServiceTypePropertiesEncryptedCredential',
-    'GoogleCloudStorageLinkedServiceTypePropertiesServiceUrl',
-    'GoogleCloudStorageLocation',
-    'GoogleCloudStorageLocationBucketName',
-    'GoogleCloudStorageLocationVersion',
-    'GoogleCloudStorageReadSettings',
-    'GoogleCloudStorageReadSettingsFileListPath',
-    'GoogleCloudStorageReadSettingsModifiedDatetimeEnd',
-    'GoogleCloudStorageReadSettingsModifiedDatetimeStart',
-    'GoogleCloudStorageReadSettingsPrefix',
-    'GoogleCloudStorageReadSettingsRecursive',
-    'GoogleCloudStorageReadSettingsWildcardFileName',
-    'GoogleCloudStorageReadSettingsWildcardFolderPath',
-    'GreenplumDatasetTypeProperties',
-    'GreenplumDatasetTypePropertiesSchema',
-    'GreenplumDatasetTypePropertiesTable',
-    'GreenplumDatasetTypePropertiesTableName',
     'GreenplumLinkedService',
-    'GreenplumLinkedServiceTypeProperties',
-    'GreenplumLinkedServiceTypePropertiesConnectionString',
-    'GreenplumLinkedServiceTypePropertiesEncryptedCredential',
-    'GreenplumSource',
-    'GreenplumSourceQuery',
     'GreenplumTableDataset',
     'HBaseLinkedService',
-    'HBaseLinkedServiceTypeProperties',
-    'HBaseLinkedServiceTypePropertiesAllowHostNameCnMismatch',
-    'HBaseLinkedServiceTypePropertiesAllowSelfSignedServerCert',
-    'HBaseLinkedServiceTypePropertiesEnableSsl',
-    'HBaseLinkedServiceTypePropertiesEncryptedCredential',
-    'HBaseLinkedServiceTypePropertiesHost',
-    'HBaseLinkedServiceTypePropertiesHttpPath',
-    'HBaseLinkedServiceTypePropertiesPort',
-    'HBaseLinkedServiceTypePropertiesTrustedCertPath',
-    'HBaseLinkedServiceTypePropertiesUsername',
     'HBaseObjectDataset',
-    'HBaseSource',
-    'HBaseSourceQuery',
     'HdInsightHiveActivity',
-    'HdInsightHiveActivityTypeProperties',
-    'HdInsightHiveActivityTypePropertiesArgumentsItem',
-    'HdInsightHiveActivityTypePropertiesScriptPath',
-    'HdInsightHiveActivityTypePropertiesVariablesItem',
     'HdInsightLinkedService',
-    'HdInsightLinkedServiceTypeProperties',
-    'HdInsightLinkedServiceTypePropertiesClusterUri',
-    'HdInsightLinkedServiceTypePropertiesEncryptedCredential',
-    'HdInsightLinkedServiceTypePropertiesFileSystem',
-    'HdInsightLinkedServiceTypePropertiesIsEspEnabled',
-    'HdInsightLinkedServiceTypePropertiesUserName',
     'HdInsightMapReduceActivity',
-    'HdInsightMapReduceActivityTypeProperties',
-    'HdInsightMapReduceActivityTypePropertiesArgumentsItem',
-    'HdInsightMapReduceActivityTypePropertiesClassName',
-    'HdInsightMapReduceActivityTypePropertiesJarFilePath',
-    'HdInsightMapReduceActivityTypePropertiesJarLibsItem',
     'HdInsightOnDemandLinkedService',
-    'HdInsightOnDemandLinkedServiceTypeProperties',
-    'HdInsightOnDemandLinkedServiceTypePropertiesClusterNamePrefix',
-    'HdInsightOnDemandLinkedServiceTypePropertiesClusterResourceGroup',
-    'HdInsightOnDemandLinkedServiceTypePropertiesClusterSize',
-    'HdInsightOnDemandLinkedServiceTypePropertiesClusterSshUserName',
-    'HdInsightOnDemandLinkedServiceTypePropertiesClusterType',
-    'HdInsightOnDemandLinkedServiceTypePropertiesClusterUserName',
-    'HdInsightOnDemandLinkedServiceTypePropertiesCoreConfiguration',
-    'HdInsightOnDemandLinkedServiceTypePropertiesDataNodeSize',
-    'HdInsightOnDemandLinkedServiceTypePropertiesEncryptedCredential',
-    'HdInsightOnDemandLinkedServiceTypePropertiesHBaseConfiguration',
-    'HdInsightOnDemandLinkedServiceTypePropertiesHdfsConfiguration',
-    'HdInsightOnDemandLinkedServiceTypePropertiesHeadNodeSize',
-    'HdInsightOnDemandLinkedServiceTypePropertiesHiveConfiguration',
-    'HdInsightOnDemandLinkedServiceTypePropertiesHostSubscriptionId',
-    'HdInsightOnDemandLinkedServiceTypePropertiesMapReduceConfiguration',
-    'HdInsightOnDemandLinkedServiceTypePropertiesOozieConfiguration',
-    'HdInsightOnDemandLinkedServiceTypePropertiesServicePrincipalId',
-    'HdInsightOnDemandLinkedServiceTypePropertiesSparkVersion',
-    'HdInsightOnDemandLinkedServiceTypePropertiesStormConfiguration',
-    'HdInsightOnDemandLinkedServiceTypePropertiesSubnetName',
-    'HdInsightOnDemandLinkedServiceTypePropertiesTenant',
-    'HdInsightOnDemandLinkedServiceTypePropertiesTimeToLive',
-    'HdInsightOnDemandLinkedServiceTypePropertiesVersion',
-    'HdInsightOnDemandLinkedServiceTypePropertiesVirtualNetworkId',
-    'HdInsightOnDemandLinkedServiceTypePropertiesYarnConfiguration',
-    'HdInsightOnDemandLinkedServiceTypePropertiesZookeeperNodeSize',
     'HdInsightPigActivity',
-    'HdInsightPigActivityTypeProperties',
-    'HdInsightPigActivityTypePropertiesArguments',
-    'HdInsightPigActivityTypePropertiesScriptPath',
     'HdInsightSparkActivity',
-    'HdInsightSparkActivityTypeProperties',
-    'HdInsightSparkActivityTypePropertiesArgumentsItem',
-    'HdInsightSparkActivityTypePropertiesEntryFilePath',
-    'HdInsightSparkActivityTypePropertiesProxyUser',
-    'HdInsightSparkActivityTypePropertiesRootPath',
     'HdInsightStreamingActivity',
-    'HdInsightStreamingActivityTypeProperties',
-    'HdInsightStreamingActivityTypePropertiesArgumentsItem',
-    'HdInsightStreamingActivityTypePropertiesCombiner',
-    'HdInsightStreamingActivityTypePropertiesCommandEnvironmentItem',
-    'HdInsightStreamingActivityTypePropertiesFilePathsItem',
-    'HdInsightStreamingActivityTypePropertiesInput',
-    'HdInsightStreamingActivityTypePropertiesMapper',
-    'HdInsightStreamingActivityTypePropertiesOutput',
-    'HdInsightStreamingActivityTypePropertiesReducer',
     'HdfsLinkedService',
-    'HdfsLinkedServiceTypeProperties',
-    'HdfsLinkedServiceTypePropertiesAuthenticationType',
-    'HdfsLinkedServiceTypePropertiesEncryptedCredential',
-    'HdfsLinkedServiceTypePropertiesUrl',
-    'HdfsLinkedServiceTypePropertiesUserName',
-    'HdfsLocation',
-    'HdfsReadSettings',
-    'HdfsReadSettingsFileListPath',
-    'HdfsReadSettingsModifiedDatetimeEnd',
-    'HdfsReadSettingsModifiedDatetimeStart',
-    'HdfsReadSettingsRecursive',
-    'HdfsReadSettingsWildcardFileName',
-    'HdfsReadSettingsWildcardFolderPath',
-    'HdfsSource',
-    'HdfsSourceRecursive',
-    'HiveDatasetTypeProperties',
-    'HiveDatasetTypePropertiesSchema',
-    'HiveDatasetTypePropertiesTable',
-    'HiveDatasetTypePropertiesTableName',
     'HiveLinkedService',
-    'HiveLinkedServiceTypeProperties',
-    'HiveLinkedServiceTypePropertiesAllowHostNameCnMismatch',
-    'HiveLinkedServiceTypePropertiesAllowSelfSignedServerCert',
-    'HiveLinkedServiceTypePropertiesEnableSsl',
-    'HiveLinkedServiceTypePropertiesEncryptedCredential',
-    'HiveLinkedServiceTypePropertiesHost',
-    'HiveLinkedServiceTypePropertiesHttpPath',
-    'HiveLinkedServiceTypePropertiesPort',
-    'HiveLinkedServiceTypePropertiesServiceDiscoveryMode',
-    'HiveLinkedServiceTypePropertiesTrustedCertPath',
-    'HiveLinkedServiceTypePropertiesUseNativeQuery',
-    'HiveLinkedServiceTypePropertiesUseSystemTrustStore',
-    'HiveLinkedServiceTypePropertiesUsername',
-    'HiveLinkedServiceTypePropertiesZooKeeperNameSpace',
     'HiveObjectDataset',
-    'HiveSource',
-    'HiveSourceQuery',
     'HttpDataset',
-    'HttpDatasetTypeProperties',
-    'HttpDatasetTypePropertiesAdditionalHeaders',
-    'HttpDatasetTypePropertiesRelativeUrl',
-    'HttpDatasetTypePropertiesRequestBody',
-    'HttpDatasetTypePropertiesRequestMethod',
     'HttpLinkedService',
-    'HttpLinkedServiceTypeProperties',
-    'HttpLinkedServiceTypePropertiesCertThumbprint',
-    'HttpLinkedServiceTypePropertiesEmbeddedCertData',
-    'HttpLinkedServiceTypePropertiesEnableServerCertificateValidation',
-    'HttpLinkedServiceTypePropertiesEncryptedCredential',
-    'HttpLinkedServiceTypePropertiesUrl',
-    'HttpLinkedServiceTypePropertiesUserName',
-    'HttpReadSettings',
-    'HttpReadSettingsAdditionalHeaders',
-    'HttpReadSettingsRequestBody',
-    'HttpReadSettingsRequestMethod',
-    'HttpReadSettingsRequestTimeout',
-    'HttpServerLocation',
-    'HttpServerLocationRelativeUrl',
-    'HttpSource',
-    'HttpSourceHttpRequestTimeout',
     'HubspotLinkedService',
-    'HubspotLinkedServiceTypeProperties',
-    'HubspotLinkedServiceTypePropertiesClientId',
-    'HubspotLinkedServiceTypePropertiesEncryptedCredential',
-    'HubspotLinkedServiceTypePropertiesUseEncryptedEndpoints',
-    'HubspotLinkedServiceTypePropertiesUseHostVerification',
-    'HubspotLinkedServiceTypePropertiesUsePeerVerification',
     'HubspotObjectDataset',
-    'HubspotSource',
-    'HubspotSourceQuery',
     'IfConditionActivity',
-    'IfConditionActivityTypeProperties',
-    'ImpalaDatasetTypeProperties',
-    'ImpalaDatasetTypePropertiesSchema',
-    'ImpalaDatasetTypePropertiesTable',
-    'ImpalaDatasetTypePropertiesTableName',
     'ImpalaLinkedService',
-    'ImpalaLinkedServiceTypeProperties',
-    'ImpalaLinkedServiceTypePropertiesAllowHostNameCnMismatch',
-    'ImpalaLinkedServiceTypePropertiesAllowSelfSignedServerCert',
-    'ImpalaLinkedServiceTypePropertiesEnableSsl',
-    'ImpalaLinkedServiceTypePropertiesEncryptedCredential',
-    'ImpalaLinkedServiceTypePropertiesHost',
-    'ImpalaLinkedServiceTypePropertiesPort',
-    'ImpalaLinkedServiceTypePropertiesTrustedCertPath',
-    'ImpalaLinkedServiceTypePropertiesUseSystemTrustStore',
-    'ImpalaLinkedServiceTypePropertiesUsername',
     'ImpalaObjectDataset',
-    'ImpalaSource',
-    'ImpalaSourceQuery',
     'InformixLinkedService',
-    'InformixLinkedServiceTypeProperties',
-    'InformixLinkedServiceTypePropertiesAuthenticationType',
-    'InformixLinkedServiceTypePropertiesConnectionString',
-    'InformixLinkedServiceTypePropertiesEncryptedCredential',
-    'InformixLinkedServiceTypePropertiesUserName',
-    'InformixSink',
-    'InformixSinkPreCopyScript',
-    'InformixSource',
-    'InformixSourceQuery',
     'InformixTableDataset',
-    'InformixTableDatasetTypeProperties',
-    'InformixTableDatasetTypePropertiesTableName',
     'IntegrationRuntime',
     'IntegrationRuntimeAuthKeys',
     'IntegrationRuntimeComputeProperties',
@@ -4821,194 +1099,49 @@ __all__ = [
     'IntegrationRuntimeStatusResponse',
     'IntegrationRuntimeVNetProperties',
     'JiraLinkedService',
-    'JiraLinkedServiceTypeProperties',
-    'JiraLinkedServiceTypePropertiesEncryptedCredential',
-    'JiraLinkedServiceTypePropertiesHost',
-    'JiraLinkedServiceTypePropertiesPort',
-    'JiraLinkedServiceTypePropertiesUseEncryptedEndpoints',
-    'JiraLinkedServiceTypePropertiesUseHostVerification',
-    'JiraLinkedServiceTypePropertiesUsePeerVerification',
-    'JiraLinkedServiceTypePropertiesUsername',
     'JiraObjectDataset',
-    'JiraSource',
-    'JiraSourceQuery',
     'JsonDataset',
-    'JsonDatasetTypeProperties',
-    'JsonDatasetTypePropertiesEncodingName',
-    'JsonFormat',
-    'JsonFormatEncodingName',
-    'JsonFormatJsonNodeReference',
-    'JsonFormatJsonPathDefinition',
-    'JsonFormatNestingSeparator',
-    'JsonSink',
-    'JsonSource',
-    'JsonWriteSettings',
-    'LicensedComponentSetupTypeProperties',
     'LinkedIntegrationRuntime',
     'LinkedIntegrationRuntimeKeyAuthorization',
     'LinkedIntegrationRuntimeRbacAuthorization',
     'LinkedIntegrationRuntimeRequest',
     'LinkedIntegrationRuntimeType',
     'LinkedService',
-    'LinkedServiceAnnotationsItem',
     'LinkedServiceDebugResource',
     'LinkedServiceListResponse',
     'LinkedServiceReference',
     'LinkedServiceResource',
     'LogStorageSettings',
-    'LogStorageSettingsPath',
     'LookupActivity',
-    'LookupActivityTypeProperties',
-    'LookupActivityTypePropertiesFirstRowOnly',
     'MagentoLinkedService',
-    'MagentoLinkedServiceTypeProperties',
-    'MagentoLinkedServiceTypePropertiesEncryptedCredential',
-    'MagentoLinkedServiceTypePropertiesHost',
-    'MagentoLinkedServiceTypePropertiesUseEncryptedEndpoints',
-    'MagentoLinkedServiceTypePropertiesUseHostVerification',
-    'MagentoLinkedServiceTypePropertiesUsePeerVerification',
     'MagentoObjectDataset',
-    'MagentoSource',
-    'MagentoSourceQuery',
     'ManagedIntegrationRuntime',
     'ManagedIntegrationRuntimeError',
     'ManagedIntegrationRuntimeNode',
     'ManagedIntegrationRuntimeOperationResult',
     'ManagedIntegrationRuntimeStatus',
-    'ManagedIntegrationRuntimeStatusTypeProperties',
-    'ManagedIntegrationRuntimeTypeProperties',
     'MappingDataFlow',
-    'MappingDataFlowTypeProperties',
     'MariaDbLinkedService',
-    'MariaDbLinkedServiceTypeProperties',
-    'MariaDbLinkedServiceTypePropertiesConnectionString',
-    'MariaDbLinkedServiceTypePropertiesEncryptedCredential',
-    'MariaDbSource',
-    'MariaDbSourceQuery',
     'MariaDbTableDataset',
     'MarketoLinkedService',
-    'MarketoLinkedServiceTypeProperties',
-    'MarketoLinkedServiceTypePropertiesClientId',
-    'MarketoLinkedServiceTypePropertiesEncryptedCredential',
-    'MarketoLinkedServiceTypePropertiesEndpoint',
-    'MarketoLinkedServiceTypePropertiesUseEncryptedEndpoints',
-    'MarketoLinkedServiceTypePropertiesUseHostVerification',
-    'MarketoLinkedServiceTypePropertiesUsePeerVerification',
     'MarketoObjectDataset',
-    'MarketoSource',
-    'MarketoSourceQuery',
     'MicrosoftAccessLinkedService',
-    'MicrosoftAccessLinkedServiceTypeProperties',
-    'MicrosoftAccessLinkedServiceTypePropertiesAuthenticationType',
-    'MicrosoftAccessLinkedServiceTypePropertiesConnectionString',
-    'MicrosoftAccessLinkedServiceTypePropertiesEncryptedCredential',
-    'MicrosoftAccessLinkedServiceTypePropertiesUserName',
-    'MicrosoftAccessSink',
-    'MicrosoftAccessSinkPreCopyScript',
-    'MicrosoftAccessSource',
-    'MicrosoftAccessSourceQuery',
     'MicrosoftAccessTableDataset',
-    'MicrosoftAccessTableDatasetTypeProperties',
-    'MicrosoftAccessTableDatasetTypePropertiesTableName',
     'MongoDbCollectionDataset',
-    'MongoDbCollectionDatasetTypeProperties',
-    'MongoDbCollectionDatasetTypePropertiesCollectionName',
-    'MongoDbCursorMethodsProperties',
-    'MongoDbCursorMethodsPropertiesLimit',
-    'MongoDbCursorMethodsPropertiesProject',
-    'MongoDbCursorMethodsPropertiesSkip',
-    'MongoDbCursorMethodsPropertiesSort',
     'MongoDbLinkedService',
-    'MongoDbLinkedServiceTypeProperties',
-    'MongoDbLinkedServiceTypePropertiesAllowSelfSignedServerCert',
-    'MongoDbLinkedServiceTypePropertiesAuthSource',
-    'MongoDbLinkedServiceTypePropertiesDatabaseName',
-    'MongoDbLinkedServiceTypePropertiesEnableSsl',
-    'MongoDbLinkedServiceTypePropertiesEncryptedCredential',
-    'MongoDbLinkedServiceTypePropertiesPort',
-    'MongoDbLinkedServiceTypePropertiesServer',
-    'MongoDbLinkedServiceTypePropertiesUsername',
-    'MongoDbSource',
-    'MongoDbSourceQuery',
     'MongoDbV2CollectionDataset',
-    'MongoDbV2CollectionDatasetTypeProperties',
-    'MongoDbV2CollectionDatasetTypePropertiesCollection',
     'MongoDbV2LinkedService',
-    'MongoDbV2LinkedServiceTypeProperties',
-    'MongoDbV2LinkedServiceTypePropertiesConnectionString',
-    'MongoDbV2LinkedServiceTypePropertiesDatabase',
-    'MongoDbV2Source',
-    'MongoDbV2SourceBatchSize',
-    'MongoDbV2SourceFilter',
-    'MongoDbV2SourceQueryTimeout',
     'MultiplePipelineTrigger',
     'MySqlLinkedService',
-    'MySqlLinkedServiceTypeProperties',
-    'MySqlLinkedServiceTypePropertiesConnectionString',
-    'MySqlLinkedServiceTypePropertiesEncryptedCredential',
-    'MySqlSource',
-    'MySqlSourceQuery',
     'MySqlTableDataset',
-    'MySqlTableDatasetTypeProperties',
-    'MySqlTableDatasetTypePropertiesTableName',
     'NetezzaLinkedService',
-    'NetezzaLinkedServiceTypeProperties',
-    'NetezzaLinkedServiceTypePropertiesConnectionString',
-    'NetezzaLinkedServiceTypePropertiesEncryptedCredential',
-    'NetezzaPartitionSettings',
-    'NetezzaPartitionSettingsPartitionColumnName',
-    'NetezzaPartitionSettingsPartitionLowerBound',
-    'NetezzaPartitionSettingsPartitionUpperBound',
-    'NetezzaSource',
-    'NetezzaSourceQuery',
     'NetezzaTableDataset',
-    'NetezzaTableDatasetTypeProperties',
-    'NetezzaTableDatasetTypePropertiesSchema',
-    'NetezzaTableDatasetTypePropertiesTable',
-    'NetezzaTableDatasetTypePropertiesTableName',
     'ODataLinkedService',
-    'ODataLinkedServiceTypeProperties',
-    'ODataLinkedServiceTypePropertiesAadResourceId',
-    'ODataLinkedServiceTypePropertiesEncryptedCredential',
-    'ODataLinkedServiceTypePropertiesServicePrincipalId',
-    'ODataLinkedServiceTypePropertiesTenant',
-    'ODataLinkedServiceTypePropertiesUrl',
-    'ODataLinkedServiceTypePropertiesUserName',
     'ODataResourceDataset',
-    'ODataResourceDatasetTypeProperties',
-    'ODataResourceDatasetTypePropertiesPath',
-    'ODataSource',
-    'ODataSourceQuery',
     'OdbcLinkedService',
-    'OdbcLinkedServiceTypeProperties',
-    'OdbcLinkedServiceTypePropertiesAuthenticationType',
-    'OdbcLinkedServiceTypePropertiesConnectionString',
-    'OdbcLinkedServiceTypePropertiesEncryptedCredential',
-    'OdbcLinkedServiceTypePropertiesUserName',
-    'OdbcSink',
-    'OdbcSinkPreCopyScript',
-    'OdbcSource',
-    'OdbcSourceQuery',
     'OdbcTableDataset',
-    'OdbcTableDatasetTypeProperties',
-    'OdbcTableDatasetTypePropertiesTableName',
     'Office365Dataset',
-    'Office365DatasetTypeProperties',
-    'Office365DatasetTypePropertiesPredicate',
-    'Office365DatasetTypePropertiesTableName',
     'Office365LinkedService',
-    'Office365LinkedServiceTypeProperties',
-    'Office365LinkedServiceTypePropertiesEncryptedCredential',
-    'Office365LinkedServiceTypePropertiesOffice365TenantId',
-    'Office365LinkedServiceTypePropertiesServicePrincipalId',
-    'Office365LinkedServiceTypePropertiesServicePrincipalTenantId',
-    'Office365Source',
-    'Office365SourceAllowedGroups',
-    'Office365SourceDateFilterColumn',
-    'Office365SourceEndTime',
-    'Office365SourceOutputColumns',
-    'Office365SourceStartTime',
-    'Office365SourceUserScopeFilterUri',
     'Operation',
     'OperationDisplay',
     'OperationListResponse',
@@ -5016,82 +1149,18 @@ __all__ = [
     'OperationMetricAvailability',
     'OperationMetricDimension',
     'OperationMetricSpecification',
-    'OperationProperties',
     'OperationServiceSpecification',
     'OracleLinkedService',
-    'OracleLinkedServiceTypeProperties',
-    'OracleLinkedServiceTypePropertiesConnectionString',
-    'OracleLinkedServiceTypePropertiesEncryptedCredential',
-    'OraclePartitionSettings',
-    'OraclePartitionSettingsPartitionColumnName',
-    'OraclePartitionSettingsPartitionLowerBound',
-    'OraclePartitionSettingsPartitionNames',
-    'OraclePartitionSettingsPartitionUpperBound',
     'OracleServiceCloudLinkedService',
-    'OracleServiceCloudLinkedServiceTypeProperties',
-    'OracleServiceCloudLinkedServiceTypePropertiesEncryptedCredential',
-    'OracleServiceCloudLinkedServiceTypePropertiesHost',
-    'OracleServiceCloudLinkedServiceTypePropertiesUseEncryptedEndpoints',
-    'OracleServiceCloudLinkedServiceTypePropertiesUseHostVerification',
-    'OracleServiceCloudLinkedServiceTypePropertiesUsePeerVerification',
-    'OracleServiceCloudLinkedServiceTypePropertiesUsername',
     'OracleServiceCloudObjectDataset',
-    'OracleServiceCloudSource',
-    'OracleServiceCloudSourceQuery',
-    'OracleSink',
-    'OracleSinkPreCopyScript',
-    'OracleSource',
-    'OracleSourceOracleReaderQuery',
-    'OracleSourceQueryTimeout',
     'OracleTableDataset',
-    'OracleTableDatasetTypeProperties',
-    'OracleTableDatasetTypePropertiesSchema',
-    'OracleTableDatasetTypePropertiesTable',
-    'OracleTableDatasetTypePropertiesTableName',
     'OrcDataset',
-    'OrcDatasetTypeProperties',
-    'OrcFormat',
-    'OrcSink',
-    'OrcSource',
     'ParameterSpecification',
-    'ParameterSpecificationDefaultValue',
     'ParquetDataset',
-    'ParquetDatasetTypeProperties',
-    'ParquetFormat',
-    'ParquetSink',
-    'ParquetSource',
     'PaypalLinkedService',
-    'PaypalLinkedServiceTypeProperties',
-    'PaypalLinkedServiceTypePropertiesClientId',
-    'PaypalLinkedServiceTypePropertiesEncryptedCredential',
-    'PaypalLinkedServiceTypePropertiesHost',
-    'PaypalLinkedServiceTypePropertiesUseEncryptedEndpoints',
-    'PaypalLinkedServiceTypePropertiesUseHostVerification',
-    'PaypalLinkedServiceTypePropertiesUsePeerVerification',
     'PaypalObjectDataset',
-    'PaypalSource',
-    'PaypalSourceQuery',
-    'PhoenixDatasetTypeProperties',
-    'PhoenixDatasetTypePropertiesSchema',
-    'PhoenixDatasetTypePropertiesTable',
-    'PhoenixDatasetTypePropertiesTableName',
     'PhoenixLinkedService',
-    'PhoenixLinkedServiceTypeProperties',
-    'PhoenixLinkedServiceTypePropertiesAllowHostNameCnMismatch',
-    'PhoenixLinkedServiceTypePropertiesAllowSelfSignedServerCert',
-    'PhoenixLinkedServiceTypePropertiesEnableSsl',
-    'PhoenixLinkedServiceTypePropertiesEncryptedCredential',
-    'PhoenixLinkedServiceTypePropertiesHost',
-    'PhoenixLinkedServiceTypePropertiesHttpPath',
-    'PhoenixLinkedServiceTypePropertiesPort',
-    'PhoenixLinkedServiceTypePropertiesTrustedCertPath',
-    'PhoenixLinkedServiceTypePropertiesUseSystemTrustStore',
-    'PhoenixLinkedServiceTypePropertiesUsername',
     'PhoenixObjectDataset',
-    'PhoenixSource',
-    'PhoenixSourceQuery',
-    'Pipeline',
-    'PipelineAnnotationsItem',
     'PipelineFolder',
     'PipelineListResponse',
     'PipelineReference',
@@ -5099,563 +1168,133 @@ __all__ = [
     'PipelineRun',
     'PipelineRunInvokedBy',
     'PipelineRunsQueryResponse',
-    'PolybaseSettings',
-    'PolybaseSettingsRejectSampleValue',
-    'PolybaseSettingsRejectValue',
-    'PolybaseSettingsUseTypeDefault',
     'PostgreSqlLinkedService',
-    'PostgreSqlLinkedServiceTypeProperties',
-    'PostgreSqlLinkedServiceTypePropertiesConnectionString',
-    'PostgreSqlLinkedServiceTypePropertiesEncryptedCredential',
-    'PostgreSqlSource',
-    'PostgreSqlSourceQuery',
     'PostgreSqlTableDataset',
-    'PostgreSqlTableDatasetTypeProperties',
-    'PostgreSqlTableDatasetTypePropertiesSchema',
-    'PostgreSqlTableDatasetTypePropertiesTable',
-    'PostgreSqlTableDatasetTypePropertiesTableName',
-    'PrestoDatasetTypeProperties',
-    'PrestoDatasetTypePropertiesSchema',
-    'PrestoDatasetTypePropertiesTable',
-    'PrestoDatasetTypePropertiesTableName',
     'PrestoLinkedService',
-    'PrestoLinkedServiceTypeProperties',
-    'PrestoLinkedServiceTypePropertiesAllowHostNameCnMismatch',
-    'PrestoLinkedServiceTypePropertiesAllowSelfSignedServerCert',
-    'PrestoLinkedServiceTypePropertiesCatalog',
-    'PrestoLinkedServiceTypePropertiesEnableSsl',
-    'PrestoLinkedServiceTypePropertiesEncryptedCredential',
-    'PrestoLinkedServiceTypePropertiesHost',
-    'PrestoLinkedServiceTypePropertiesPort',
-    'PrestoLinkedServiceTypePropertiesServerVersion',
-    'PrestoLinkedServiceTypePropertiesTimeZoneId',
-    'PrestoLinkedServiceTypePropertiesTrustedCertPath',
-    'PrestoLinkedServiceTypePropertiesUseSystemTrustStore',
-    'PrestoLinkedServiceTypePropertiesUsername',
     'PrestoObjectDataset',
-    'PrestoSource',
-    'PrestoSourceQuery',
     'QueryDataFlowDebugSessionsResponse',
     'QuickBooksLinkedService',
-    'QuickBooksLinkedServiceTypeProperties',
-    'QuickBooksLinkedServiceTypePropertiesCompanyId',
-    'QuickBooksLinkedServiceTypePropertiesConsumerKey',
-    'QuickBooksLinkedServiceTypePropertiesEncryptedCredential',
-    'QuickBooksLinkedServiceTypePropertiesEndpoint',
-    'QuickBooksLinkedServiceTypePropertiesUseEncryptedEndpoints',
     'QuickBooksObjectDataset',
-    'QuickBooksSource',
-    'QuickBooksSourceQuery',
     'RecurrenceSchedule',
     'RecurrenceScheduleOccurrence',
     'RedirectIncompatibleRowSettings',
-    'RedirectIncompatibleRowSettingsLinkedServiceName',
-    'RedirectIncompatibleRowSettingsPath',
-    'RedshiftUnloadSettings',
-    'RedshiftUnloadSettingsBucketName',
-    'RelationalSource',
-    'RelationalSourceQuery',
     'RelationalTableDataset',
-    'RelationalTableDatasetTypeProperties',
-    'RelationalTableDatasetTypePropertiesTableName',
     'RerunTumblingWindowTrigger',
-    'RerunTumblingWindowTriggerTypeProperties',
-    'RerunTumblingWindowTriggerTypePropertiesParentTrigger',
     'Resource',
     'ResponsysLinkedService',
-    'ResponsysLinkedServiceTypeProperties',
-    'ResponsysLinkedServiceTypePropertiesClientId',
-    'ResponsysLinkedServiceTypePropertiesEncryptedCredential',
-    'ResponsysLinkedServiceTypePropertiesEndpoint',
-    'ResponsysLinkedServiceTypePropertiesUseEncryptedEndpoints',
-    'ResponsysLinkedServiceTypePropertiesUseHostVerification',
-    'ResponsysLinkedServiceTypePropertiesUsePeerVerification',
     'ResponsysObjectDataset',
-    'ResponsysSource',
-    'ResponsysSourceQuery',
     'RestResourceDataset',
-    'RestResourceDatasetTypeProperties',
-    'RestResourceDatasetTypePropertiesAdditionalHeaders',
-    'RestResourceDatasetTypePropertiesPaginationRules',
-    'RestResourceDatasetTypePropertiesRelativeUrl',
-    'RestResourceDatasetTypePropertiesRequestBody',
-    'RestResourceDatasetTypePropertiesRequestMethod',
     'RestServiceLinkedService',
-    'RestServiceLinkedServiceTypeProperties',
-    'RestServiceLinkedServiceTypePropertiesAadResourceId',
-    'RestServiceLinkedServiceTypePropertiesEnableServerCertificateValidation',
-    'RestServiceLinkedServiceTypePropertiesEncryptedCredential',
-    'RestServiceLinkedServiceTypePropertiesServicePrincipalId',
-    'RestServiceLinkedServiceTypePropertiesTenant',
-    'RestServiceLinkedServiceTypePropertiesUrl',
-    'RestServiceLinkedServiceTypePropertiesUserName',
-    'RestSource',
-    'RestSourceAdditionalHeaders',
-    'RestSourceHttpRequestTimeout',
-    'RestSourcePaginationRules',
-    'RestSourceRequestBody',
-    'RestSourceRequestInterval',
-    'RestSourceRequestMethod',
     'RetryPolicy',
-    'RetryPolicyCount',
     'RunFilterParameters',
     'RunQueryFilter',
     'RunQueryOrderBy',
     'SalesforceLinkedService',
-    'SalesforceLinkedServiceTypeProperties',
-    'SalesforceLinkedServiceTypePropertiesApiVersion',
-    'SalesforceLinkedServiceTypePropertiesEncryptedCredential',
-    'SalesforceLinkedServiceTypePropertiesEnvironmentUrl',
-    'SalesforceLinkedServiceTypePropertiesUsername',
     'SalesforceMarketingCloudLinkedService',
-    'SalesforceMarketingCloudLinkedServiceTypeProperties',
-    'SalesforceMarketingCloudLinkedServiceTypePropertiesClientId',
-    'SalesforceMarketingCloudLinkedServiceTypePropertiesEncryptedCredential',
-    'SalesforceMarketingCloudLinkedServiceTypePropertiesUseEncryptedEndpoints',
-    'SalesforceMarketingCloudLinkedServiceTypePropertiesUseHostVerification',
-    'SalesforceMarketingCloudLinkedServiceTypePropertiesUsePeerVerification',
     'SalesforceMarketingCloudObjectDataset',
-    'SalesforceMarketingCloudSource',
-    'SalesforceMarketingCloudSourceQuery',
     'SalesforceObjectDataset',
-    'SalesforceObjectDatasetTypeProperties',
-    'SalesforceObjectDatasetTypePropertiesObjectApiName',
     'SalesforceServiceCloudLinkedService',
-    'SalesforceServiceCloudLinkedServiceTypeProperties',
-    'SalesforceServiceCloudLinkedServiceTypePropertiesApiVersion',
-    'SalesforceServiceCloudLinkedServiceTypePropertiesEncryptedCredential',
-    'SalesforceServiceCloudLinkedServiceTypePropertiesEnvironmentUrl',
-    'SalesforceServiceCloudLinkedServiceTypePropertiesExtendedProperties',
-    'SalesforceServiceCloudLinkedServiceTypePropertiesUsername',
     'SalesforceServiceCloudObjectDataset',
-    'SalesforceServiceCloudObjectDatasetTypeProperties',
-    'SalesforceServiceCloudObjectDatasetTypePropertiesObjectApiName',
-    'SalesforceServiceCloudSink',
-    'SalesforceServiceCloudSinkExternalIdFieldName',
-    'SalesforceServiceCloudSinkIgnoreNullValues',
-    'SalesforceServiceCloudSource',
-    'SalesforceServiceCloudSourceQuery',
-    'SalesforceSink',
-    'SalesforceSinkExternalIdFieldName',
-    'SalesforceSinkIgnoreNullValues',
-    'SalesforceSource',
-    'SalesforceSourceQuery',
     'SapBwCubeDataset',
     'SapBwLinkedService',
-    'SapBwLinkedServiceTypeProperties',
-    'SapBwLinkedServiceTypePropertiesClientId',
-    'SapBwLinkedServiceTypePropertiesEncryptedCredential',
-    'SapBwLinkedServiceTypePropertiesServer',
-    'SapBwLinkedServiceTypePropertiesSystemNumber',
-    'SapBwLinkedServiceTypePropertiesUserName',
-    'SapBwSource',
-    'SapBwSourceQuery',
     'SapCloudForCustomerLinkedService',
-    'SapCloudForCustomerLinkedServiceTypeProperties',
-    'SapCloudForCustomerLinkedServiceTypePropertiesEncryptedCredential',
-    'SapCloudForCustomerLinkedServiceTypePropertiesUrl',
-    'SapCloudForCustomerLinkedServiceTypePropertiesUsername',
     'SapCloudForCustomerResourceDataset',
-    'SapCloudForCustomerResourceDatasetTypeProperties',
-    'SapCloudForCustomerResourceDatasetTypePropertiesPath',
-    'SapCloudForCustomerSink',
-    'SapCloudForCustomerSource',
-    'SapCloudForCustomerSourceQuery',
     'SapEccLinkedService',
-    'SapEccLinkedServiceTypeProperties',
     'SapEccResourceDataset',
-    'SapEccResourceDatasetTypeProperties',
-    'SapEccResourceDatasetTypePropertiesPath',
-    'SapEccSource',
-    'SapEccSourceQuery',
     'SapHanaLinkedService',
-    'SapHanaLinkedServiceProperties',
-    'SapHanaLinkedServicePropertiesConnectionString',
-    'SapHanaLinkedServicePropertiesEncryptedCredential',
-    'SapHanaLinkedServicePropertiesServer',
-    'SapHanaLinkedServicePropertiesUserName',
-    'SapHanaPartitionSettings',
-    'SapHanaPartitionSettingsPartitionColumnName',
-    'SapHanaSource',
-    'SapHanaSourcePacketSize',
-    'SapHanaSourceQuery',
     'SapHanaTableDataset',
-    'SapHanaTableDatasetTypeProperties',
-    'SapHanaTableDatasetTypePropertiesSchema',
-    'SapHanaTableDatasetTypePropertiesTable',
     'SapOpenHubLinkedService',
-    'SapOpenHubLinkedServiceTypeProperties',
-    'SapOpenHubLinkedServiceTypePropertiesClientId',
-    'SapOpenHubLinkedServiceTypePropertiesEncryptedCredential',
-    'SapOpenHubLinkedServiceTypePropertiesLanguage',
-    'SapOpenHubLinkedServiceTypePropertiesServer',
-    'SapOpenHubLinkedServiceTypePropertiesSystemNumber',
-    'SapOpenHubLinkedServiceTypePropertiesUserName',
-    'SapOpenHubSource',
-    'SapOpenHubSourceBaseRequestId',
-    'SapOpenHubSourceExcludeLastRequest',
     'SapOpenHubTableDataset',
-    'SapOpenHubTableDatasetTypeProperties',
-    'SapOpenHubTableDatasetTypePropertiesBaseRequestId',
-    'SapOpenHubTableDatasetTypePropertiesExcludeLastRequest',
-    'SapOpenHubTableDatasetTypePropertiesOpenHubDestinationName',
     'SapTableLinkedService',
-    'SapTableLinkedServiceTypeProperties',
-    'SapTableLinkedServiceTypePropertiesClientId',
-    'SapTableLinkedServiceTypePropertiesEncryptedCredential',
-    'SapTableLinkedServiceTypePropertiesLanguage',
-    'SapTableLinkedServiceTypePropertiesLogonGroup',
-    'SapTableLinkedServiceTypePropertiesMessageServer',
-    'SapTableLinkedServiceTypePropertiesMessageServerService',
-    'SapTableLinkedServiceTypePropertiesServer',
-    'SapTableLinkedServiceTypePropertiesSncLibraryPath',
-    'SapTableLinkedServiceTypePropertiesSncMode',
-    'SapTableLinkedServiceTypePropertiesSncMyName',
-    'SapTableLinkedServiceTypePropertiesSncPartnerName',
-    'SapTableLinkedServiceTypePropertiesSncQop',
-    'SapTableLinkedServiceTypePropertiesSystemId',
-    'SapTableLinkedServiceTypePropertiesSystemNumber',
-    'SapTableLinkedServiceTypePropertiesUserName',
-    'SapTablePartitionSettings',
-    'SapTablePartitionSettingsMaxPartitionsNumber',
-    'SapTablePartitionSettingsPartitionColumnName',
-    'SapTablePartitionSettingsPartitionLowerBound',
-    'SapTablePartitionSettingsPartitionUpperBound',
     'SapTableResourceDataset',
-    'SapTableResourceDatasetTypeProperties',
-    'SapTableResourceDatasetTypePropertiesTableName',
-    'SapTableSource',
-    'SapTableSourceBatchSize',
-    'SapTableSourceCustomRfcReadTableFunctionModule',
-    'SapTableSourceRfcTableFields',
-    'SapTableSourceRfcTableOptions',
-    'SapTableSourceRowCount',
-    'SapTableSourceRowSkips',
     'ScheduleTrigger',
     'ScheduleTriggerRecurrence',
-    'ScheduleTriggerTypeProperties',
     'ScriptAction',
     'SecretBase',
     'SecureString',
-    'SelfDependencyTumblingWindowTriggerReference',
     'SelfHostedIntegrationRuntime',
     'SelfHostedIntegrationRuntimeNode',
     'SelfHostedIntegrationRuntimeStatus',
-    'SelfHostedIntegrationRuntimeStatusTypeProperties',
-    'SelfHostedIntegrationRuntimeTypeProperties',
     'ServiceNowLinkedService',
-    'ServiceNowLinkedServiceTypeProperties',
-    'ServiceNowLinkedServiceTypePropertiesClientId',
-    'ServiceNowLinkedServiceTypePropertiesEncryptedCredential',
-    'ServiceNowLinkedServiceTypePropertiesEndpoint',
-    'ServiceNowLinkedServiceTypePropertiesUseEncryptedEndpoints',
-    'ServiceNowLinkedServiceTypePropertiesUseHostVerification',
-    'ServiceNowLinkedServiceTypePropertiesUsePeerVerification',
-    'ServiceNowLinkedServiceTypePropertiesUsername',
     'ServiceNowObjectDataset',
-    'ServiceNowSource',
-    'ServiceNowSourceQuery',
     'SetVariableActivity',
-    'SetVariableActivityTypeProperties',
-    'SetVariableActivityTypePropertiesValue',
-    'SftpLocation',
-    'SftpReadSettings',
-    'SftpReadSettingsFileListPath',
-    'SftpReadSettingsModifiedDatetimeEnd',
-    'SftpReadSettingsModifiedDatetimeStart',
-    'SftpReadSettingsRecursive',
-    'SftpReadSettingsWildcardFileName',
-    'SftpReadSettingsWildcardFolderPath',
     'SftpServerLinkedService',
-    'SftpServerLinkedServiceTypeProperties',
-    'SftpServerLinkedServiceTypePropertiesEncryptedCredential',
-    'SftpServerLinkedServiceTypePropertiesHost',
-    'SftpServerLinkedServiceTypePropertiesHostKeyFingerprint',
-    'SftpServerLinkedServiceTypePropertiesPort',
-    'SftpServerLinkedServiceTypePropertiesPrivateKeyPath',
-    'SftpServerLinkedServiceTypePropertiesSkipHostKeyValidation',
-    'SftpServerLinkedServiceTypePropertiesUserName',
-    'SftpWriteSettings',
-    'SftpWriteSettingsOperationTimeout',
-    'SftpWriteSettingsUseTempFileRename',
     'ShopifyLinkedService',
-    'ShopifyLinkedServiceTypeProperties',
-    'ShopifyLinkedServiceTypePropertiesEncryptedCredential',
-    'ShopifyLinkedServiceTypePropertiesHost',
-    'ShopifyLinkedServiceTypePropertiesUseEncryptedEndpoints',
-    'ShopifyLinkedServiceTypePropertiesUseHostVerification',
-    'ShopifyLinkedServiceTypePropertiesUsePeerVerification',
     'ShopifyObjectDataset',
-    'ShopifySource',
-    'ShopifySourceQuery',
     'SkipErrorFile',
-    'SkipErrorFileDataInconsistency',
-    'SkipErrorFileMissing',
-    'SparkDatasetTypeProperties',
-    'SparkDatasetTypePropertiesSchema',
-    'SparkDatasetTypePropertiesTable',
-    'SparkDatasetTypePropertiesTableName',
+    'SnowflakeDataset',
+    'SnowflakeLinkedService',
     'SparkLinkedService',
-    'SparkLinkedServiceTypeProperties',
-    'SparkLinkedServiceTypePropertiesAllowHostNameCnMismatch',
-    'SparkLinkedServiceTypePropertiesAllowSelfSignedServerCert',
-    'SparkLinkedServiceTypePropertiesEnableSsl',
-    'SparkLinkedServiceTypePropertiesEncryptedCredential',
-    'SparkLinkedServiceTypePropertiesHost',
-    'SparkLinkedServiceTypePropertiesHttpPath',
-    'SparkLinkedServiceTypePropertiesPort',
-    'SparkLinkedServiceTypePropertiesTrustedCertPath',
-    'SparkLinkedServiceTypePropertiesUseSystemTrustStore',
-    'SparkLinkedServiceTypePropertiesUsername',
     'SparkObjectDataset',
-    'SparkSource',
-    'SparkSourceQuery',
-    'SqlDwSink',
-    'SqlDwSinkAllowCopyCommand',
-    'SqlDwSinkAllowPolyBase',
-    'SqlDwSinkPreCopyScript',
-    'SqlDwSinkTableOption',
-    'SqlDwSource',
-    'SqlDwSourceSqlReaderQuery',
-    'SqlDwSourceSqlReaderStoredProcedureName',
-    'SqlDwSourceStoredProcedureParameters',
-    'SqlMiSink',
-    'SqlMiSinkPreCopyScript',
-    'SqlMiSinkSqlWriterStoredProcedureName',
-    'SqlMiSinkSqlWriterTableType',
-    'SqlMiSinkStoredProcedureTableTypeParameterName',
-    'SqlMiSinkTableOption',
-    'SqlMiSource',
-    'SqlMiSourceProduceAdditionalTypes',
-    'SqlMiSourceSqlReaderQuery',
-    'SqlMiSourceSqlReaderStoredProcedureName',
     'SqlServerLinkedService',
-    'SqlServerLinkedServiceTypeProperties',
-    'SqlServerLinkedServiceTypePropertiesConnectionString',
-    'SqlServerLinkedServiceTypePropertiesEncryptedCredential',
-    'SqlServerLinkedServiceTypePropertiesUserName',
-    'SqlServerSink',
-    'SqlServerSinkPreCopyScript',
-    'SqlServerSinkSqlWriterStoredProcedureName',
-    'SqlServerSinkSqlWriterTableType',
-    'SqlServerSinkStoredProcedureTableTypeParameterName',
-    'SqlServerSinkTableOption',
-    'SqlServerSource',
-    'SqlServerSourceProduceAdditionalTypes',
-    'SqlServerSourceSqlReaderQuery',
-    'SqlServerSourceSqlReaderStoredProcedureName',
     'SqlServerStoredProcedureActivity',
-    'SqlServerStoredProcedureActivityTypeProperties',
-    'SqlServerStoredProcedureActivityTypePropertiesStoredProcedureName',
     'SqlServerTableDataset',
-    'SqlServerTableDatasetTypeProperties',
-    'SqlServerTableDatasetTypePropertiesSchema',
-    'SqlServerTableDatasetTypePropertiesTable',
-    'SqlServerTableDatasetTypePropertiesTableName',
-    'SqlSink',
-    'SqlSinkPreCopyScript',
-    'SqlSinkSqlWriterStoredProcedureName',
-    'SqlSinkSqlWriterTableType',
-    'SqlSinkStoredProcedureTableTypeParameterName',
-    'SqlSinkTableOption',
-    'SqlSource',
-    'SqlSourceIsolationLevel',
-    'SqlSourceSqlReaderQuery',
-    'SqlSourceSqlReaderStoredProcedureName',
     'SquareLinkedService',
-    'SquareLinkedServiceTypeProperties',
-    'SquareLinkedServiceTypePropertiesClientId',
-    'SquareLinkedServiceTypePropertiesEncryptedCredential',
-    'SquareLinkedServiceTypePropertiesHost',
-    'SquareLinkedServiceTypePropertiesRedirectUri',
-    'SquareLinkedServiceTypePropertiesUseEncryptedEndpoints',
-    'SquareLinkedServiceTypePropertiesUseHostVerification',
-    'SquareLinkedServiceTypePropertiesUsePeerVerification',
     'SquareObjectDataset',
-    'SquareSource',
-    'SquareSourceQuery',
     'SsisAccessCredential',
-    'SsisAccessCredentialDomain',
-    'SsisAccessCredentialUserName',
     'SsisChildPackage',
-    'SsisChildPackageContent',
-    'SsisChildPackagePath',
     'SsisEnvironment',
     'SsisEnvironmentReference',
     'SsisExecutionCredential',
-    'SsisExecutionCredentialDomain',
-    'SsisExecutionCredentialUserName',
     'SsisExecutionParameter',
-    'SsisExecutionParameterValue',
     'SsisFolder',
     'SsisLogLocation',
-    'SsisLogLocationLogPath',
-    'SsisLogLocationTypeProperties',
-    'SsisLogLocationTypePropertiesLogRefreshInterval',
     'SsisObjectMetadata',
     'SsisObjectMetadataListResponse',
     'SsisObjectMetadataStatusResponse',
     'SsisPackage',
     'SsisPackageLocation',
-    'SsisPackageLocationPackagePath',
-    'SsisPackageLocationTypeProperties',
-    'SsisPackageLocationTypePropertiesConfigurationPath',
-    'SsisPackageLocationTypePropertiesPackageContent',
     'SsisParameter',
     'SsisProject',
     'SsisPropertyOverride',
-    'SsisPropertyOverrideValue',
     'SsisVariable',
     'StagingSettings',
-    'StagingSettingsEnableCompression',
-    'StagingSettingsPath',
-    'StoreReadSettings',
-    'StoreReadSettingsMaxConcurrentConnections',
-    'StoreWriteSettings',
-    'StoreWriteSettingsCopyBehavior',
-    'StoreWriteSettingsMaxConcurrentConnections',
     'StoredProcedureParameter',
-    'StoredProcedureParameterValue',
     'SubResource',
     'SubResourceDebugResource',
     'SwitchActivity',
-    'SwitchActivityTypeProperties',
     'SwitchCase',
     'SybaseLinkedService',
-    'SybaseLinkedServiceTypeProperties',
-    'SybaseLinkedServiceTypePropertiesDatabase',
-    'SybaseLinkedServiceTypePropertiesEncryptedCredential',
-    'SybaseLinkedServiceTypePropertiesSchema',
-    'SybaseLinkedServiceTypePropertiesServer',
-    'SybaseLinkedServiceTypePropertiesUsername',
-    'SybaseSource',
-    'SybaseSourceQuery',
     'SybaseTableDataset',
-    'SybaseTableDatasetTypeProperties',
-    'SybaseTableDatasetTypePropertiesTableName',
-    'TabularSource',
-    'TabularSourceQueryTimeout',
     'TeradataLinkedService',
-    'TeradataLinkedServiceTypeProperties',
-    'TeradataLinkedServiceTypePropertiesConnectionString',
-    'TeradataLinkedServiceTypePropertiesEncryptedCredential',
-    'TeradataLinkedServiceTypePropertiesServer',
-    'TeradataLinkedServiceTypePropertiesUsername',
-    'TeradataPartitionSettings',
-    'TeradataPartitionSettingsPartitionColumnName',
-    'TeradataPartitionSettingsPartitionLowerBound',
-    'TeradataPartitionSettingsPartitionUpperBound',
-    'TeradataSource',
-    'TeradataSourceQuery',
     'TeradataTableDataset',
-    'TeradataTableDatasetTypeProperties',
-    'TeradataTableDatasetTypePropertiesDatabase',
-    'TeradataTableDatasetTypePropertiesTable',
-    'TextFormat',
-    'TextFormatColumnDelimiter',
-    'TextFormatEncodingName',
-    'TextFormatEscapeChar',
-    'TextFormatFirstRowAsHeader',
-    'TextFormatNullValue',
-    'TextFormatQuoteChar',
-    'TextFormatRowDelimiter',
-    'TextFormatSkipLineCount',
-    'TextFormatTreatEmptyAsNull',
     'Transformation',
     'Trigger',
-    'TriggerAnnotationsItem',
-    'TriggerDependencyReference',
     'TriggerFilterParameters',
     'TriggerListResponse',
     'TriggerPipelineReference',
     'TriggerQueryResponse',
-    'TriggerReference',
     'TriggerResource',
     'TriggerRun',
     'TriggerRunsQueryResponse',
     'TriggerSubscriptionOperationStatus',
     'TumblingWindowTrigger',
-    'TumblingWindowTriggerDependencyReference',
-    'TumblingWindowTriggerTypeProperties',
-    'TumblingWindowTriggerTypePropertiesDelay',
     'UntilActivity',
-    'UntilActivityTypeProperties',
-    'UntilActivityTypePropertiesTimeout',
     'UpdateIntegrationRuntimeNodeRequest',
     'UpdateIntegrationRuntimeRequest',
     'UserAccessPolicy',
     'UserProperty',
-    'UserPropertyValue',
     'ValidationActivity',
-    'ValidationActivityTypeProperties',
-    'ValidationActivityTypePropertiesChildItems',
-    'ValidationActivityTypePropertiesMinimumSize',
-    'ValidationActivityTypePropertiesSleep',
-    'ValidationActivityTypePropertiesTimeout',
     'VariableSpecification',
-    'VariableSpecificationDefaultValue',
-    'VerticaDatasetTypeProperties',
-    'VerticaDatasetTypePropertiesSchema',
-    'VerticaDatasetTypePropertiesTable',
-    'VerticaDatasetTypePropertiesTableName',
     'VerticaLinkedService',
-    'VerticaLinkedServiceTypeProperties',
-    'VerticaLinkedServiceTypePropertiesConnectionString',
-    'VerticaLinkedServiceTypePropertiesEncryptedCredential',
-    'VerticaSource',
-    'VerticaSourceQuery',
     'VerticaTableDataset',
     'WaitActivity',
-    'WaitActivityTypeProperties',
     'WebActivity',
     'WebActivityAuthentication',
-    'WebActivityTypeProperties',
-    'WebActivityTypePropertiesBody',
-    'WebActivityTypePropertiesHeaders',
-    'WebActivityTypePropertiesUrl',
     'WebAnonymousAuthentication',
     'WebBasicAuthentication',
-    'WebBasicAuthenticationUsername',
     'WebClientCertificateAuthentication',
     'WebHookActivity',
-    'WebHookActivityTypeProperties',
-    'WebHookActivityTypePropertiesBody',
-    'WebHookActivityTypePropertiesHeaders',
-    'WebHookActivityTypePropertiesReportStatusOnCallBack',
-    'WebHookActivityTypePropertiesUrl',
     'WebLinkedService',
     'WebLinkedServiceTypeProperties',
-    'WebLinkedServiceTypePropertiesUrl',
-    'WebSource',
     'WebTableDataset',
-    'WebTableDatasetTypeProperties',
-    'WebTableDatasetTypePropertiesIndex',
-    'WebTableDatasetTypePropertiesPath',
     'XeroLinkedService',
-    'XeroLinkedServiceTypeProperties',
-    'XeroLinkedServiceTypePropertiesEncryptedCredential',
-    'XeroLinkedServiceTypePropertiesHost',
-    'XeroLinkedServiceTypePropertiesUseEncryptedEndpoints',
-    'XeroLinkedServiceTypePropertiesUseHostVerification',
-    'XeroLinkedServiceTypePropertiesUsePeerVerification',
     'XeroObjectDataset',
-    'XeroSource',
-    'XeroSourceQuery',
     'ZohoLinkedService',
-    'ZohoLinkedServiceTypeProperties',
-    'ZohoLinkedServiceTypePropertiesEncryptedCredential',
-    'ZohoLinkedServiceTypePropertiesEndpoint',
-    'ZohoLinkedServiceTypePropertiesUseEncryptedEndpoints',
-    'ZohoLinkedServiceTypePropertiesUseHostVerification',
-    'ZohoLinkedServiceTypePropertiesUsePeerVerification',
     'ZohoObjectDataset',
-    'ZohoSource',
-    'ZohoSourceQuery',
     'AvroCompressionCodec',
     'AzureFunctionActivityMethod',
-    'AzureSearchIndexWriteBehaviorType',
     'BlobEventTypes',
-    'CassandraSourceReadConsistencyLevels',
     'CompressionCodec',
     'DataFlowComputeType',
     'DataFlowDebugCommandType',
@@ -5688,18 +1327,13 @@ __all__ = [
     'IntegrationRuntimeState',
     'IntegrationRuntimeType',
     'IntegrationRuntimeUpdateResult',
-    'JsonFormatFilePattern',
-    'JsonWriteFilePattern',
     'ManagedIntegrationRuntimeNodeStatus',
     'MongoDbAuthenticationType',
-    'NetezzaPartitionOption',
     'ODataAadServicePrincipalCredentialType',
     'ODataAuthenticationType',
-    'OraclePartitionOption',
     'OrcCompressionCodec',
     'ParameterType',
     'PhoenixAuthenticationType',
-    'PolybaseSettingsRejectType',
     'PrestoAuthenticationType',
     'RecurrenceFrequency',
     'RestServiceAuthenticationType',
@@ -5707,12 +1341,7 @@ __all__ = [
     'RunQueryFilterOperator',
     'RunQueryOrder',
     'RunQueryOrderByField',
-    'SalesforceSinkWriteBehavior',
-    'SalesforceSourceReadBehavior',
-    'SapCloudForCustomerSinkWriteBehavior',
     'SapHanaAuthenticationType',
-    'SapHanaPartitionOption',
-    'SapTablePartitionOption',
     'SelfHostedIntegrationRuntimeNodeStatus',
     'ServiceNowAuthenticationType',
     'SftpAuthenticationType',
@@ -5724,7 +1353,6 @@ __all__ = [
     'StoredProcedureParameterType',
     'SybaseAuthenticationType',
     'TeradataAuthenticationType',
-    'TeradataPartitionOption',
     'TriggerRunStatus',
     'TriggerRuntimeState',
     'TumblingWindowFrequency',

@@ -9,10 +9,11 @@ from typing import Any, Callable, Dict, Generic, List, Optional, TypeVar, Union
 import warnings
 
 from azure.core.async_paging import AsyncItemPaged, AsyncList
-from azure.core.exceptions import map_error
+from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
 from azure.core.polling import AsyncNoPolling, AsyncPollingMethod, async_poller
+from azure.mgmt.core.exceptions import ARMErrorFormat
 from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
 
 from ... import models
@@ -23,10 +24,11 @@ ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T
 class DataFlowDebugSessionOperations:
     """DataFlowDebugSessionOperations async operations.
 
-    You should not instantiate directly this class, but create a Client instance that will create it for you and attach it as attribute.
+    You should not instantiate this class directly. Instead, you should create a Client instance that
+    instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~data_factory_management_client.models
+    :type models: ~azure.mgmt.datafactory.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -51,41 +53,42 @@ class DataFlowDebugSessionOperations:
         integration_runtime: Optional["models.IntegrationRuntimeDebugResource"] = None,
         **kwargs
     ) -> "models.CreateDataFlowDebugSessionResponse":
-        cls: ClsType["models.CreateDataFlowDebugSessionResponse"] = kwargs.pop('cls', None )
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.CreateDataFlowDebugSessionResponse"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        request = models.CreateDataFlowDebugSessionRequest(compute_type=compute_type, core_count=core_count, time_to_live=time_to_live, integration_runtime=integration_runtime)
+        _request = models.CreateDataFlowDebugSessionRequest(compute_type=compute_type, core_count=core_count, time_to_live=time_to_live, integration_runtime=integration_runtime)
         api_version = "2018-06-01"
 
         # Construct URL
         url = self._create_initial.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern='^[-\w\._\(\)]+$'),
-            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters: Dict[str, Any] = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters: Dict[str, Any] = {}
+        header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'application/json'
-
-        # Construct body
-        body_content = self._serialize.body(request, 'CreateDataFlowDebugSessionRequest')
+        header_parameters['Content-Type'] = kwargs.pop('content_type', 'application/json')
 
         # Construct and send request
-        request = self._client.post(url, query_parameters, header_parameters, body_content)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(_request, 'CreateDataFlowDebugSessionRequest')
+        body_content_kwargs['content'] = body_content
+        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         response_headers = {}
         deserialized = None
@@ -118,26 +121,26 @@ class DataFlowDebugSessionOperations:
         :param factory_name: The factory name.
         :type factory_name: str
         :param compute_type: Compute type of the cluster. The value will be overwritten by the same
-         setting in integration runtime if provided.
+     setting in integration runtime if provided.
         :type compute_type: str
         :param core_count: Core count of the cluster. The value will be overwritten by the same setting
-         in integration runtime if provided.
+     in integration runtime if provided.
         :type core_count: int
         :param time_to_live: Time to live setting of the cluster in minutes.
         :type time_to_live: int
-        :param integration_runtime: Integration runtime debug resource.
-        :type integration_runtime: ~data_factory_management_client.models.IntegrationRuntimeDebugResource
+        :param integration_runtime: Set to use integration runtime setting for data flow debug session.
+        :type integration_runtime: ~azure.mgmt.datafactory.models.IntegrationRuntimeDebugResource
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :return: An instance of LROPoller that returns CreateDataFlowDebugSessionResponse
-        :rtype: ~azure.core.polling.LROPoller[~data_factory_management_client.models.CreateDataFlowDebugSessionResponse]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.datafactory.models.CreateDataFlowDebugSessionResponse]
 
-        :raises ~data_factory_management_client.models.CloudErrorException:
+        :raises ~azure.core.exceptions.HttpResponseError:
         """
-        polling: Union[bool, AsyncPollingMethod] = kwargs.pop('polling', True)
-        cls: ClsType["models.CreateDataFlowDebugSessionResponse"] = kwargs.pop('cls', None )
+        polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.CreateDataFlowDebugSessionResponse"]
         raw_result = await self._create_initial(
             resource_group_name=resource_group_name,
             factory_name=factory_name,
@@ -180,11 +183,11 @@ class DataFlowDebugSessionOperations:
         :type factory_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: QueryDataFlowDebugSessionsResponse or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.QueryDataFlowDebugSessionsResponse
-        :raises: ~data_factory_management_client.models.CloudErrorException:
+        :rtype: ~azure.mgmt.datafactory.models.QueryDataFlowDebugSessionsResponse
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls: ClsType["models.QueryDataFlowDebugSessionsResponse"] = kwargs.pop('cls', None )
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.QueryDataFlowDebugSessionsResponse"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2018-06-01"
 
         def prepare_request(next_link=None):
@@ -193,19 +196,19 @@ class DataFlowDebugSessionOperations:
                 url = self.query_by_factory.metadata['url']
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern='^[-\w\._\(\)]+$'),
-                    'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+                    'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
             else:
                 url = next_link
 
             # Construct parameters
-            query_parameters: Dict[str, Any] = {}
+            query_parameters = {}  # type: Dict[str, Any]
             query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
             # Construct headers
-            header_parameters: Dict[str, Any] = {}
+            header_parameters = {}  # type: Dict[str, Any]
             header_parameters['Accept'] = 'application/json'
 
             # Construct and send request
@@ -217,7 +220,7 @@ class DataFlowDebugSessionOperations:
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
-            return deserialized.next_link, AsyncList(list_of_elem)
+            return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
             request = prepare_request(next_link)
@@ -227,7 +230,7 @@ class DataFlowDebugSessionOperations:
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise models.CloudErrorException.from_response(response, self._deserialize)
+                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -256,56 +259,57 @@ class DataFlowDebugSessionOperations:
         :type factory_name: str
         :param session_id: The ID of data flow debug session.
         :type session_id: str
-        :param data_flow: Data flow debug resource.
-        :type data_flow: ~data_factory_management_client.models.DataFlowDebugResource
+        :param data_flow: Data flow instance.
+        :type data_flow: ~azure.mgmt.datafactory.models.DataFlowDebugResource
         :param datasets: List of datasets.
-        :type datasets: list[~data_factory_management_client.models.DatasetDebugResource]
+        :type datasets: list[~azure.mgmt.datafactory.models.DatasetDebugResource]
         :param linked_services: List of linked services.
-        :type linked_services: list[~data_factory_management_client.models.LinkedServiceDebugResource]
-        :param staging: Staging info for execute data flow activity.
-        :type staging: ~data_factory_management_client.models.DataFlowStagingInfo
+        :type linked_services: list[~azure.mgmt.datafactory.models.LinkedServiceDebugResource]
+        :param staging: Staging info for debug session.
+        :type staging: ~azure.mgmt.datafactory.models.DataFlowStagingInfo
         :param debug_settings: Data flow debug settings.
-        :type debug_settings: ~data_factory_management_client.models.DataFlowDebugPackageDebugSettings
+        :type debug_settings: ~azure.mgmt.datafactory.models.DataFlowDebugPackageDebugSettings
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: AddDataFlowToDebugSessionResponse or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.AddDataFlowToDebugSessionResponse
-        :raises: ~data_factory_management_client.models.CloudErrorException:
+        :rtype: ~azure.mgmt.datafactory.models.AddDataFlowToDebugSessionResponse
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls: ClsType["models.AddDataFlowToDebugSessionResponse"] = kwargs.pop('cls', None )
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.AddDataFlowToDebugSessionResponse"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        request = models.DataFlowDebugPackage(session_id=session_id, data_flow=data_flow, datasets=datasets, linked_services=linked_services, staging=staging, debug_settings=debug_settings)
+        _request = models.DataFlowDebugPackage(session_id=session_id, data_flow=data_flow, datasets=datasets, linked_services=linked_services, staging=staging, debug_settings=debug_settings)
         api_version = "2018-06-01"
 
         # Construct URL
         url = self.add_data_flow.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern='^[-\w\._\(\)]+$'),
-            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters: Dict[str, Any] = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters: Dict[str, Any] = {}
+        header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'application/json'
-
-        # Construct body
-        body_content = self._serialize.body(request, 'DataFlowDebugPackage')
+        header_parameters['Content-Type'] = kwargs.pop('content_type', 'application/json')
 
         # Construct and send request
-        request = self._client.post(url, query_parameters, header_parameters, body_content)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(_request, 'DataFlowDebugPackage')
+        body_content_kwargs['content'] = body_content
+        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('AddDataFlowToDebugSessionResponse', pipeline_response)
 
@@ -333,42 +337,43 @@ class DataFlowDebugSessionOperations:
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None or the result of cls(response)
         :rtype: None
-        :raises: ~data_factory_management_client.models.CloudErrorException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls: ClsType[None] = kwargs.pop('cls', None )
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        request = models.DeleteDataFlowDebugSessionRequest(session_id=session_id)
+        _request = models.DeleteDataFlowDebugSessionRequest(session_id=session_id)
         api_version = "2018-06-01"
 
         # Construct URL
         url = self.delete.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern='^[-\w\._\(\)]+$'),
-            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters: Dict[str, Any] = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters: Dict[str, Any] = {}
-        header_parameters['Content-Type'] = 'application/json'
-
-        # Construct body
-        body_content = self._serialize.body(request, 'DeleteDataFlowDebugSessionRequest')
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Content-Type'] = kwargs.pop('content_type', 'application/json')
 
         # Construct and send request
-        request = self._client.post(url, query_parameters, header_parameters, body_content)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(_request, 'DeleteDataFlowDebugSessionRequest')
+        body_content_kwargs['content'] = body_content
+        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if cls:
           return cls(pipeline_response, None, {})
@@ -384,41 +389,42 @@ class DataFlowDebugSessionOperations:
         command_payload: Optional["models.DataFlowDebugCommandPayload"] = None,
         **kwargs
     ) -> "models.DataFlowDebugCommandResponse":
-        cls: ClsType["models.DataFlowDebugCommandResponse"] = kwargs.pop('cls', None )
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DataFlowDebugCommandResponse"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        request = models.DataFlowDebugCommandRequest(session_id=session_id, command=command, command_payload=command_payload)
+        _request = models.DataFlowDebugCommandRequest(session_id=session_id, command=command, command_payload=command_payload)
         api_version = "2018-06-01"
 
         # Construct URL
         url = self._execute_command_initial.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern='^[-\w\._\(\)]+$'),
-            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern='^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters: Dict[str, Any] = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters: Dict[str, Any] = {}
+        header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'application/json'
-
-        # Construct body
-        body_content = self._serialize.body(request, 'DataFlowDebugCommandRequest')
+        header_parameters['Content-Type'] = kwargs.pop('content_type', 'application/json')
 
         # Construct and send request
-        request = self._client.post(url, query_parameters, header_parameters, body_content)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(_request, 'DataFlowDebugCommandRequest')
+        body_content_kwargs['content'] = body_content
+        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.CloudErrorException.from_response(response, self._deserialize)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         response_headers = {}
         deserialized = None
@@ -452,20 +458,20 @@ class DataFlowDebugSessionOperations:
         :param session_id: The ID of data flow debug session.
         :type session_id: str
         :param command: The command type.
-        :type command: str or ~data_factory_management_client.models.DataFlowDebugCommandType
-        :param command_payload: Structure of command payload.
-        :type command_payload: ~data_factory_management_client.models.DataFlowDebugCommandPayload
+        :type command: str or ~azure.mgmt.datafactory.models.DataFlowDebugCommandType
+        :param command_payload: The command payload object.
+        :type command_payload: ~azure.mgmt.datafactory.models.DataFlowDebugCommandPayload
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :return: An instance of LROPoller that returns DataFlowDebugCommandResponse
-        :rtype: ~azure.core.polling.LROPoller[~data_factory_management_client.models.DataFlowDebugCommandResponse]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.datafactory.models.DataFlowDebugCommandResponse]
 
-        :raises ~data_factory_management_client.models.CloudErrorException:
+        :raises ~azure.core.exceptions.HttpResponseError:
         """
-        polling: Union[bool, AsyncPollingMethod] = kwargs.pop('polling', True)
-        cls: ClsType["models.DataFlowDebugCommandResponse"] = kwargs.pop('cls', None )
+        polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DataFlowDebugCommandResponse"]
         raw_result = await self._execute_command_initial(
             resource_group_name=resource_group_name,
             factory_name=factory_name,

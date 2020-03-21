@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-
 from azext_datafactory.generated._help import helps  # pylint: disable=unused-import
 
 
@@ -22,11 +21,21 @@ class DataFactoryManagementClientCommandsLoader(AzCommandsLoader):
     def load_command_table(self, args):
         from azext_datafactory.generated.commands import load_command_table
         load_command_table(self, args)
+        try:
+            from azext_datafactory.manual.commands import load_command_table as load_command_table_manual
+            load_command_table_manual(self, args)
+        except ImportError:
+            pass
         return self.command_table
 
     def load_arguments(self, command):
         from azext_datafactory.generated._params import load_arguments
         load_arguments(self, command)
+        try:
+            from azext_datafactory.manual._params import load_arguments as load_arguments_manual
+            load_arguments_manual(self, command)
+        except ImportError:
+            pass
 
 
 COMMAND_LOADER_CLS = DataFactoryManagementClientCommandsLoader

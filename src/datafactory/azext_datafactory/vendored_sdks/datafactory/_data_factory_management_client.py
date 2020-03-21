@@ -8,7 +8,7 @@
 
 from typing import Any, Optional
 
-from azure.core import PipelineClient
+from azure.mgmt.core import ARMPipelineClient
 from msrest import Deserializer, Serializer
 
 from ._configuration import DataFactoryManagementClientConfiguration
@@ -34,35 +34,35 @@ class DataFactoryManagementClient(object):
     """The Azure Data Factory V2 management API provides a RESTful set of web services that interact with Azure Data Factory V2 services.
 
     :ivar operation: OperationOperations operations
-    :vartype operation: data_factory_management_client.operations.OperationOperations
+    :vartype operation: azure.mgmt.datafactory.operations.OperationOperations
     :ivar factory: FactoryOperations operations
-    :vartype factory: data_factory_management_client.operations.FactoryOperations
+    :vartype factory: azure.mgmt.datafactory.operations.FactoryOperations
     :ivar exposure_control: ExposureControlOperations operations
-    :vartype exposure_control: data_factory_management_client.operations.ExposureControlOperations
+    :vartype exposure_control: azure.mgmt.datafactory.operations.ExposureControlOperations
     :ivar integration_runtime: IntegrationRuntimeOperations operations
-    :vartype integration_runtime: data_factory_management_client.operations.IntegrationRuntimeOperations
+    :vartype integration_runtime: azure.mgmt.datafactory.operations.IntegrationRuntimeOperations
     :ivar integration_runtime_object_metadata: IntegrationRuntimeObjectMetadataOperations operations
-    :vartype integration_runtime_object_metadata: data_factory_management_client.operations.IntegrationRuntimeObjectMetadataOperations
+    :vartype integration_runtime_object_metadata: azure.mgmt.datafactory.operations.IntegrationRuntimeObjectMetadataOperations
     :ivar integration_runtime_node: IntegrationRuntimeNodeOperations operations
-    :vartype integration_runtime_node: data_factory_management_client.operations.IntegrationRuntimeNodeOperations
+    :vartype integration_runtime_node: azure.mgmt.datafactory.operations.IntegrationRuntimeNodeOperations
     :ivar linked_service: LinkedServiceOperations operations
-    :vartype linked_service: data_factory_management_client.operations.LinkedServiceOperations
+    :vartype linked_service: azure.mgmt.datafactory.operations.LinkedServiceOperations
     :ivar dataset: DatasetOperations operations
-    :vartype dataset: data_factory_management_client.operations.DatasetOperations
+    :vartype dataset: azure.mgmt.datafactory.operations.DatasetOperations
     :ivar pipeline: PipelineOperations operations
-    :vartype pipeline: data_factory_management_client.operations.PipelineOperations
+    :vartype pipeline: azure.mgmt.datafactory.operations.PipelineOperations
     :ivar pipeline_run: PipelineRunOperations operations
-    :vartype pipeline_run: data_factory_management_client.operations.PipelineRunOperations
+    :vartype pipeline_run: azure.mgmt.datafactory.operations.PipelineRunOperations
     :ivar activity_run: ActivityRunOperations operations
-    :vartype activity_run: data_factory_management_client.operations.ActivityRunOperations
+    :vartype activity_run: azure.mgmt.datafactory.operations.ActivityRunOperations
     :ivar trigger: TriggerOperations operations
-    :vartype trigger: data_factory_management_client.operations.TriggerOperations
+    :vartype trigger: azure.mgmt.datafactory.operations.TriggerOperations
     :ivar trigger_run: TriggerRunOperations operations
-    :vartype trigger_run: data_factory_management_client.operations.TriggerRunOperations
+    :vartype trigger_run: azure.mgmt.datafactory.operations.TriggerRunOperations
     :ivar data_flow: DataFlowOperations operations
-    :vartype data_flow: data_factory_management_client.operations.DataFlowOperations
+    :vartype data_flow: azure.mgmt.datafactory.operations.DataFlowOperations
     :ivar data_flow_debug_session: DataFlowDebugSessionOperations operations
-    :vartype data_flow_debug_session: data_factory_management_client.operations.DataFlowDebugSessionOperations
+    :vartype data_flow_debug_session: azure.mgmt.datafactory.operations.DataFlowDebugSessionOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: azure.core.credentials.TokenCredential
     :param subscription_id: The subscription identifier.
@@ -81,7 +81,7 @@ class DataFactoryManagementClient(object):
         if not base_url:
             base_url = 'https://management.azure.com'
         self._config = DataFactoryManagementClientConfiguration(credential, subscription_id, **kwargs)
-        self._client = PipelineClient(base_url=base_url, config=self._config, **kwargs)
+        self._client = ARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)

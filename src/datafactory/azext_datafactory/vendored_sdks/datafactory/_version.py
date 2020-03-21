@@ -6,8 +6,4 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._data_factory_management_client import DataFactoryManagementClient
-from ._version import VERSION
-
-__version__ = VERSION
-__all__ = ['DataFactoryManagementClient']
+VERSION = "1.0.0"
