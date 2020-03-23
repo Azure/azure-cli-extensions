@@ -66,6 +66,8 @@ def _validate_problem_classification_name(problem_classification_id):
 
 
 def _validate_resource_name(cmd, resource_id):
+    if resource_id is None:
+        return
     client = cf_resource(cmd.cli_ctx)
     base_error_msg = "Technical resource argument {0} is invalid.".format(resource_id)
     if not is_valid_resource_id(resource_id):
