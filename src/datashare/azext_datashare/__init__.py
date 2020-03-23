@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-from .generated._help import helps
+from ._help import helps
 
 
 class DataShareManagementClientCommandsLoader(AzCommandsLoader):
@@ -19,12 +19,12 @@ class DataShareManagementClientCommandsLoader(AzCommandsLoader):
                                                                       custom_command_type=datashare_custom)
 
     def load_command_table(self, args):
-        from .generated.commands import load_command_table
+        from .commands import load_command_table
         load_command_table(self, args)
         return self.command_table
 
     def load_arguments(self, command):
-        from .generated._params import load_arguments
+        from ._params import load_arguments
         load_arguments(self, command)
 
 
