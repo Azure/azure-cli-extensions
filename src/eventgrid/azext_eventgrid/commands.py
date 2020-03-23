@@ -144,7 +144,7 @@ def load_command_table(self, _):
         g.custom_command('delete', 'cli_topic_private_endpoint_connection_delete')
 
     with self.command_group('eventgrid domain private-endpoint-connection', private_endpoint_connections_mgmt_util, client_factory=private_endpoint_connections_factory) as g:
-        g.custom_command('show', 'cli_domain_private_endpoint_connection_get')
+        g.custom_show_command('show', 'cli_domain_private_endpoint_connection_get')
         g.custom_command('list', 'cli_domain_private_endpoint_connection_list')
         g.custom_command('delete', 'cli_domain_private_endpoint_connection_delete')
 
