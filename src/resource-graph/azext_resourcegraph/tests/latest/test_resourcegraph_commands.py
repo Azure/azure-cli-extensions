@@ -114,3 +114,6 @@ class ResourceGraphTests(ScenarioTest):
         ])
 
         self.cmd('graph shared-query delete -g {rg} -n {name}')
+
+        with self.assertRaises(SystemExit):
+            self.cmd('graph shared-query show -g {rg} -n {name}')

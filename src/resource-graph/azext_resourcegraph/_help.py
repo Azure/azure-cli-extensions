@@ -71,7 +71,7 @@ helps['graph shared-query delete'] = """
 
 helps['graph shared-query show'] = """
     type: command
-    short-summary: Show a shared query.
+    short-summary: Show the properties of a shared query.
 """
 
 

@@ -22,4 +22,4 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_shared_query')
         g.command('list', 'list')
         g.command('delete', 'delete')
-        g.command('show', 'get')
+        g.show_command('show', 'get')
