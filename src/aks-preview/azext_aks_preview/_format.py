@@ -24,7 +24,8 @@ def _aks_agentpool_table_format(result):
         osDiskSizeGB: osDiskSizeGB,
         count: count,
         maxPods: maxPods,
-        provisioningState: provisioningState
+        provisioningState: provisioningState,
+        mode: mode
     }""")
     # use ordered dicts so headers are predictable
     return parsed.search(result, Options(dict_cls=OrderedDict))
