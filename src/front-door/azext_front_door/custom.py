@@ -231,10 +231,9 @@ def create_front_door(cmd, resource_group_name, front_door_name, backend_address
 
 
 def update_front_door(instance, tags=None, enforce_certificate_name_check=None,
-                      send_recv_timeout=None, location=None):
+                      send_recv_timeout=None):
     with UpdateContext(instance) as c:
         c.update_param('tags', tags, True)
-        c.update_param('location', location, False)
     with UpdateContext(instance.backend_pools_settings) as c:
         c.update_param('enforce_certificate_name_check', enforce_certificate_name_check, False)
         c.update_param('send_recv_timeout_seconds', send_recv_timeout, False)
