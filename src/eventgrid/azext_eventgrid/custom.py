@@ -3,14 +3,14 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=too-many-lines
+
 import re
-from six.moves.urllib.parse import quote  # pylint: disable=import-error,relative-import
 from knack.log import get_logger
 from knack.util import CLIError
 from msrestazure.tools import parse_resource_id
 from dateutil.parser import parse   # pylint: disable=import-error,relative-import
 
-from azure.cli.core.commands.client_factory import get_subscription_id
 from azext_eventgrid.vendored_sdks.eventgrid.models import (
     EventSubscription,
     EventSubscriptionUpdateParameters,
@@ -30,7 +30,17 @@ from azext_eventgrid.vendored_sdks.eventgrid.models import (
     StorageBlobDeadLetterDestination,
     EventSubscriptionFilter,
     TopicUpdateParameters,
-    DomainUpdateParameters)
+    DomainUpdateParameters,
+    ResourceSku,
+    IdentityInfo,
+    PartnerRegistration,
+    PartnerNamespace,
+    EventChannel,
+    PartnerTopic,
+    EventChannelSource,
+    EventChannelDestination,
+    SystemTopic
+)
 
 logger = get_logger(__name__)
 
@@ -41,6 +51,19 @@ RESOURCE_GROUPS = "resourcegroups"
 EVENTGRID_DOMAINS = "domains"
 EVENTGRID_TOPICS = "topics"
 EVENTGRID_DOMAIN_TOPICS = "domaintopics"
+EVENTGRID_SYSTEM_TOPICS = "systemtopics"
+EVENTGRID_PARTNER_REGISTRATIONS = "partnerregistration"
+EVENTGRID_PARTNER_NAMESPACES = "partnernamespace"
+EVENTGRID_EVENT_CHANNELS = "eventchannel"
+EVENTGRID_PARTNER_TOPIC = "partnertopic"
+EVENTGRID_PRIVATE_ENDPOINT_CONNECTION = "privateendpointconnections"
+EVENTGRID_RESOURCE_SKU = "resourceSku"
+SKU_BASIC = "Basic"
+SKU_PREMIUM = "Premium"
+IDENTITY_NO_IDENTITY = "NoIdentity"
+IDENTITY_NONE = "None"
+IDENTITY_SYSTEM_ASSIGNED = "SystemAssigned"
+
 WEBHOOK_DESTINATION = "webhook"
 EVENTHUB_DESTINATION = "eventhub"
 STORAGEQUEUE_DESTINATION = "storagequeue"
@@ -88,19 +111,32 @@ def cli_topic_create_or_update(
         input_schema=EVENTGRID_SCHEMA,
         input_mapping_fields=None,
         input_mapping_default_values=None,
-        allow_traffic_from_all_ips=None,
-        inbound_ip_rules=None):
+        public_network_access=None,
+        inbound_ip_rules=None,
+        sku=SKU_BASIC,
+        identity=None):
+
     final_input_schema, input_schema_mapping = _get_input_schema_and_mapping(
         input_schema,
         input_mapping_fields,
         input_mapping_default_values)
+    sku_name = _get_sku(sku)
+    sku_info = ResourceSku(name=sku_name)
+    identity_info = None
+
+    if (identity is not None and identity.lower() != IDENTITY_NONE.lower()):
+        identity_type_name = _get_identity_type(identity)
+        identity_info = IdentityInfo(type=identity_type_name)
+
     topic_info = Topic(
         location=location,
         tags=tags,
         input_schema=final_input_schema,
         input_schema_mapping=input_schema_mapping,
-        allow_traffic_from_all_ips=allow_traffic_from_all_ips,
-        inbound_ip_rules=inbound_ip_rules)
+        public_network_access=public_network_access,
+        inbound_ip_rules=inbound_ip_rules,
+        sku=sku_info,
+        identity=identity_info)
 
     return client.create_or_update(
         resource_group_name,
@@ -113,12 +149,25 @@ def cli_topic_update(
         resource_group_name,
         topic_name,
         tags=None,
-        allow_traffic_from_all_ips=None,
-        inbound_ip_rules=None):
+        public_network_access=None,
+        inbound_ip_rules=None,
+        sku=None,
+        identity=None):
+    sku_name = _get_sku(sku)
+    sku_info = ResourceSku(name=sku_name)
+
+    identity_info = None
+
+    if (identity is not None and identity.lower() != IDENTITY_NONE.lower()):
+        identity_type_name = _get_identity_type(identity)
+        identity_info = IdentityInfo(type=identity_type_name)
+
     topic_update_parameters = TopicUpdateParameters(
         tags=tags,
-        allow_traffic_from_all_ips=allow_traffic_from_all_ips,
-        inbound_ip_rules=inbound_ip_rules)
+        public_network_access=public_network_access,
+        inbound_ip_rules=inbound_ip_rules,
+        sku=sku_info,
+        identity=identity_info)
 
     return client.update(
         resource_group_name=resource_group_name,
@@ -131,12 +180,25 @@ def cli_domain_update(
         resource_group_name,
         domain_name,
         tags=None,
-        allow_traffic_from_all_ips=None,
-        inbound_ip_rules=None):
+        public_network_access=None,
+        inbound_ip_rules=None,
+        sku=None,
+        identity=None):
+    sku_name = _get_sku(sku)
+    sku_info = ResourceSku(
+        name=sku_name)
+
+    identity_info = None
+    if (identity is not None and identity.lower() != IDENTITY_NONE.lower()):
+        identity_type_name = _get_identity_type(identity)
+        identity_info = IdentityInfo(type=identity_type_name)
+
     domain_update_parameters = DomainUpdateParameters(
         tags=tags,
-        allow_traffic_from_all_ips=allow_traffic_from_all_ips,
-        inbound_ip_rules=inbound_ip_rules)
+        public_network_access=public_network_access,
+        inbound_ip_rules=inbound_ip_rules,
+        sku=sku_info,
+        identity=identity_info)
 
     return client.update(
         resource_group_name,
@@ -164,19 +226,32 @@ def cli_domain_create_or_update(
         input_schema=EVENTGRID_SCHEMA,
         input_mapping_fields=None,
         input_mapping_default_values=None,
-        allow_traffic_from_all_ips=None,
-        inbound_ip_rules=None):
+        public_network_access=None,
+        inbound_ip_rules=None,
+        sku=SKU_BASIC,
+        identity=None):
     final_input_schema, input_schema_mapping = _get_input_schema_and_mapping(
         input_schema,
         input_mapping_fields,
         input_mapping_default_values)
+    sku_name = _get_sku(sku)
+    sku_info = ResourceSku(name=sku_name)
+
+    identity_info = None
+
+    if (identity is not None and identity.lower() != IDENTITY_NONE.lower()):
+        identity_type_name = _get_identity_type(identity)
+        identity_info = IdentityInfo(type=identity_type_name)
+
     domain_info = Domain(
         location=location,
         tags=tags,
         input_schema=final_input_schema,
         input_schema_mapping=input_schema_mapping,
-        allow_traffic_from_all_ips=allow_traffic_from_all_ips,
-        inbound_ip_rules=inbound_ip_rules)
+        public_network_access=public_network_access,
+        inbound_ip_rules=inbound_ip_rules,
+        sku=sku_info,
+        identity=identity_info)
 
     return client.create_or_update(
         resource_group_name,
@@ -214,6 +289,403 @@ def cli_domain_topic_list(
     return client.list_by_domain(resource_group_name, domain_name, odata_query, DEFAULT_TOP)
 
 
+def cli_system_topic_list(
+        client,
+        resource_group_name=None,
+        odata_query=None):
+
+    if resource_group_name:
+        return client.list_by_resource_group(resource_group_name, odata_query, DEFAULT_TOP)
+
+    return client.list_by_subscription(odata_query, DEFAULT_TOP)
+
+
+def cli_partner_registration_list(
+        client,
+        resource_group_name=None,
+        odata_query=None):
+
+    if resource_group_name:
+        return client.list_by_resource_group(resource_group_name, odata_query, DEFAULT_TOP)
+
+    return client.list_by_subscription(odata_query, DEFAULT_TOP)
+
+
+def cli_partner_registration_create_or_update(
+        client,
+        resource_group_name,
+        partner_registration_name,
+        partner_name,
+        resource_type_name,
+        display_name=None,
+        description=None,
+        logo_uri=None,
+        setup_uri=None,
+        authorized_subscription_ids=None,
+        tags=None):
+
+    partner_registration_info = PartnerRegistration(
+        location=GLOBAL,
+        partner_name=partner_name,
+        partner_resource_type_name=resource_type_name,
+        logo_uri=logo_uri,
+        setup_uri=setup_uri,
+        partner_resource_type_display_name=display_name,
+        partner_resource_type_description=description,
+        authorized_azure_subscription_ids=authorized_subscription_ids,
+        tags=tags)
+
+    return client.create_or_update(
+        resource_group_name,
+        partner_registration_name,
+        partner_registration_info)
+
+# TODO: to be added once operation is enabled.
+#
+# def cli_partner_registration_update(
+#        client,
+#        resource_group_name,
+#        partner_registration_name,
+#        tags=None):
+
+#    return client.update(
+#        resource_group_name=resource_group_name,
+#        partner_registration_name=partner_registration_name,
+#        tags=tags)
+
+
+def cli_partner_namespace_list(
+        client,
+        resource_group_name=None,
+        odata_query=None):
+
+    if resource_group_name:
+        return client.list_by_resource_group(resource_group_name, odata_query, DEFAULT_TOP)
+
+    return client.list_by_subscription(odata_query, DEFAULT_TOP)
+
+
+def cli_partner_namespace_create_or_update(
+        client,
+        resource_group_name,
+        partner_namespace_name,
+        location,
+        partner_registration_id,
+        tags=None):
+
+    partner_namespace_info = PartnerNamespace(
+        location=location,
+        partner_registration_fully_qualified_id=partner_registration_id,
+        tags=tags)
+
+    return client.create_or_update(
+        resource_group_name,
+        partner_namespace_name,
+        partner_namespace_info)
+
+
+# TODO: to be added once operation is enabled.
+# def cli_partner_namespace_update(
+#        client,
+#        resource_group_name,
+#        partner_namespace_name,
+#        tags=None):
+#
+#    return client.update(
+#        resource_group_name=resource_group_name,
+#        partner_namespace_name=partner_namespace_name,
+#        tags=tags)
+
+
+def cli_event_channel_list(
+        client,
+        resource_group_name,
+        partner_namespace_name,
+        odata_query=None):
+
+    return client.list_by_partner_namespace(resource_group_name, partner_namespace_name, odata_query, DEFAULT_TOP)
+
+
+def cli_event_channel_create_or_update(
+        client,
+        resource_group_name,
+        partner_namespace_name,
+        event_channel_name,
+        partner_topic_source,
+        destination_subscription_id,
+        destination_resource_group,
+        desination_topic_name):
+
+    source_info = EventChannelSource(source=partner_topic_source)
+
+    destination_info = EventChannelDestination(
+        azure_subscription_id=destination_subscription_id,
+        resource_group=destination_resource_group,
+        partner_topic_name=desination_topic_name)
+
+    event_channel_info = EventChannel(source=source_info, destination=destination_info)
+
+    return client.create_or_update(
+        resource_group_name,
+        partner_namespace_name,
+        event_channel_name,
+        event_channel_info)
+
+
+# def cli_event_channel_update(
+#        client,
+#        resource_group_name,
+#        event_channel_name,
+#        tags=None):
+#
+#    return client.update(
+#        resource_group_name=resource_group_name,
+#        event_channel_name=event_channel_name,
+#        tags=tags)
+
+
+def cli_partner_topic_list(
+        client,
+        resource_group_name=None,
+        odata_query=None):
+
+    if resource_group_name:
+        return client.list_by_resource_group(resource_group_name, odata_query, DEFAULT_TOP)
+
+    return client.list_by_subscription(odata_query, DEFAULT_TOP)
+
+
+def cli_partner_topic_create_or_update(
+        client,
+        resource_group_name,
+        partner_topic_name,
+        location,
+        tags=None):
+
+    partner_topic_info = PartnerTopic(
+        location=location,
+        tags=tags)
+
+    return client.create_or_update(
+        resource_group_name,
+        partner_topic_name,
+        partner_topic_info)
+
+# def cli_partner_topic_update(
+#        client,
+#        resource_group_name,
+#        partner_topic_name,
+#        tags=None):
+#
+#    return client.update(
+#        resource_group_name=resource_group_name,
+#        partner_topic_name=partner_topic_name,
+#        tags=tags)
+
+
+def cli_partner_topic_event_subscription_create_or_update(    # pylint: disable=too-many-locals
+        client,
+        resource_group_name,
+        partner_topic_name,
+        event_subscription_name,
+        endpoint=None,
+        endpoint_type=None,
+        included_event_types=None,
+        subject_begins_with=None,
+        subject_ends_with=None,
+        is_subject_case_sensitive=False,
+        max_delivery_attempts=30,
+        event_ttl=1440,
+        max_events_per_batch=None,
+        preferred_batch_size_in_kilobytes=None,
+        event_delivery_schema=None,
+        deadletter_endpoint=None,
+        labels=None,
+        expiration_date=None,
+        advanced_filter=None,
+        azure_active_directory_tenant_id=None,
+        azure_active_directory_application_id_or_uri=None):
+
+    event_subscription_info = _get_event_subscription_info(
+        endpoint=endpoint,
+        endpoint_type=endpoint_type,
+        included_event_types=included_event_types,
+        subject_begins_with=subject_begins_with,
+        subject_ends_with=subject_ends_with,
+        is_subject_case_sensitive=is_subject_case_sensitive,
+        max_delivery_attempts=max_delivery_attempts,
+        event_ttl=event_ttl,
+        max_events_per_batch=max_events_per_batch,
+        preferred_batch_size_in_kilobytes=preferred_batch_size_in_kilobytes,
+        event_delivery_schema=event_delivery_schema,
+        deadletter_endpoint=deadletter_endpoint,
+        labels=labels,
+        expiration_date=expiration_date,
+        advanced_filter=advanced_filter,
+        azure_active_directory_tenant_id=azure_active_directory_tenant_id,
+        azure_active_directory_application_id_or_uri=azure_active_directory_application_id_or_uri)
+
+    return client.create_or_update(
+        resource_group_name,
+        partner_topic_name,
+        event_subscription_name,
+        event_subscription_info)
+
+
+def cli_eventgrid_partner_topic_event_subscription_delete(
+        client,
+        resource_group_name,
+        partner_topic_name,
+        event_subscription_name):
+    return client.delete(
+        resource_group_name,
+        partner_topic_name,
+        event_subscription_name)
+
+
+def cli_partner_topic_event_subscription_get(
+        client,
+        resource_group_name,
+        partner_topic_name,
+        event_subscription_name,
+        include_full_endpoint_url=False):
+
+    retrieved_event_subscription = client.get(resource_group_name, partner_topic_name, event_subscription_name)
+    destination = retrieved_event_subscription.destination
+    if include_full_endpoint_url and isinstance(destination, WebHookEventSubscriptionDestination):
+        full_endpoint_url = client.get_full_url(resource_group_name, partner_topic_name, event_subscription_name)
+        destination.endpoint_url = full_endpoint_url.endpoint_url
+
+    return retrieved_event_subscription
+
+
+def cli_partner_topic_event_subscription_list(   # pylint: disable=too-many-return-statements
+        client,
+        resource_group_name,
+        partner_topic_name,
+        odata_query=None):
+
+    return client.list_by_partner_topic(resource_group_name, partner_topic_name, odata_query, DEFAULT_TOP)
+
+
+def cli_system_topic_create_or_update(
+        client,
+        resource_group_name,
+        system_topic_name,
+        location,
+        topic_type,
+        source,
+        tags=None):
+
+    system_topic_info = SystemTopic(
+        location=location,
+        tags=tags,
+        topic_type=topic_type,
+        source=source)
+
+    return client.create_or_update(
+        resource_group_name,
+        system_topic_name,
+        system_topic_info)
+
+
+def cli_system_topic_update(
+        client,
+        resource_group_name,
+        system_topic_name,
+        tags=None):
+
+    return client.update(
+        resource_group_name=resource_group_name,
+        system_topic_name=system_topic_name,
+        tags=tags)
+
+
+def cli_system_topic_event_subscription_create_or_update(    # pylint: disable=too-many-locals
+        client,
+        resource_group_name,
+        system_topic_name,
+        event_subscription_name,
+        endpoint=None,
+        endpoint_type=None,
+        included_event_types=None,
+        subject_begins_with=None,
+        subject_ends_with=None,
+        is_subject_case_sensitive=False,
+        max_delivery_attempts=30,
+        event_ttl=1440,
+        max_events_per_batch=None,
+        preferred_batch_size_in_kilobytes=None,
+        event_delivery_schema=None,
+        deadletter_endpoint=None,
+        labels=None,
+        expiration_date=None,
+        advanced_filter=None,
+        azure_active_directory_tenant_id=None,
+        azure_active_directory_application_id_or_uri=None):
+
+    event_subscription_info = _get_event_subscription_info(
+        endpoint=endpoint,
+        endpoint_type=endpoint_type,
+        included_event_types=included_event_types,
+        subject_begins_with=subject_begins_with,
+        subject_ends_with=subject_ends_with,
+        is_subject_case_sensitive=is_subject_case_sensitive,
+        max_delivery_attempts=max_delivery_attempts,
+        event_ttl=event_ttl,
+        max_events_per_batch=max_events_per_batch,
+        preferred_batch_size_in_kilobytes=preferred_batch_size_in_kilobytes,
+        event_delivery_schema=event_delivery_schema,
+        deadletter_endpoint=deadletter_endpoint,
+        labels=labels,
+        expiration_date=expiration_date,
+        advanced_filter=advanced_filter,
+        azure_active_directory_tenant_id=azure_active_directory_tenant_id,
+        azure_active_directory_application_id_or_uri=azure_active_directory_application_id_or_uri)
+
+    return client.create_or_update(
+        resource_group_name,
+        system_topic_name,
+        event_subscription_name,
+        event_subscription_info)
+
+
+def cli_eventgrid_system_topic_event_subscription_delete(
+        client,
+        resource_group_name,
+        system_topic_name,
+        event_subscription_name):
+    return client.delete(
+        resource_group_name,
+        system_topic_name,
+        event_subscription_name)
+
+
+def cli_system_topic_event_subscription_get(
+        client,
+        resource_group_name,
+        system_topic_name,
+        event_subscription_name,
+        include_full_endpoint_url=False):
+
+    retrieved_event_subscription = client.get(resource_group_name, system_topic_name, event_subscription_name)
+    destination = retrieved_event_subscription.destination
+    if include_full_endpoint_url and isinstance(destination, WebHookEventSubscriptionDestination):
+        full_endpoint_url = client.get_full_url(resource_group_name, system_topic_name, event_subscription_name)
+        destination.endpoint_url = full_endpoint_url.endpoint_url
+
+    return retrieved_event_subscription
+
+
+def cli_system_topic_event_subscription_list(   # pylint: disable=too-many-return-statements
+        client,
+        resource_group_name,
+        system_topic_name,
+        odata_query=None):
+
+    return client.list_by_system_topic(resource_group_name, system_topic_name, odata_query, DEFAULT_TOP)
+
+
 def cli_eventgrid_event_subscription_create(   # pylint: disable=too-many-locals
         client,
         event_subscription_name,
@@ -236,92 +708,24 @@ def cli_eventgrid_event_subscription_create(   # pylint: disable=too-many-locals
         azure_active_directory_tenant_id=None,
         azure_active_directory_application_id_or_uri=None):
 
-    if included_event_types is not None and len(included_event_types) == 1 and included_event_types[0].lower() == 'all':
-        logger.warning('The usage of \"All\" for --included-event-types is not allowed starting from Azure Event Grid'
-                       ' API Version 2019-02-01-preview. However, the call here is still permitted by replacing'
-                       ' \"All\" with None in order to return all the event types (for the custom topics and'
-                       ' domains case) or default event types (for other topic types case). In any future calls,'
-                       ' please consider leaving --included-event-types unspecified or use None instead.')
-        included_event_types = None
-
-    # Construct RetryPolicy based on max_delivery_attempts and event_ttl
-    max_delivery_attempts = int(max_delivery_attempts)
-    event_ttl = int(event_ttl)
-    _validate_retry_policy(max_delivery_attempts, event_ttl)
-    retry_policy = RetryPolicy(max_delivery_attempts=max_delivery_attempts, event_time_to_live_in_minutes=event_ttl)
-
-    if max_events_per_batch is not None:
-        if endpoint_type not in (WEBHOOK_DESTINATION, AZUREFUNCTION_DESTINATION):
-            raise CLIError('usage error: max-events-per-batch is applicable only for '
-                           'endpoint types WebHook and AzureFunction.')
-        max_events_per_batch = int(max_events_per_batch)
-        if max_events_per_batch > 5000:
-            raise CLIError('usage error: max-events-per-batch must be a number between 1 and 5000.')
-
-    if preferred_batch_size_in_kilobytes is not None:
-        if endpoint_type not in (WEBHOOK_DESTINATION, AZUREFUNCTION_DESTINATION):
-            raise CLIError('usage error: preferred-batch-size-in-kilobytes is applicable only for '
-                           'endpoint types WebHook and AzureFunction.')
-        preferred_batch_size_in_kilobytes = int(preferred_batch_size_in_kilobytes)
-        if preferred_batch_size_in_kilobytes > 1024:
-            raise CLIError('usage error: preferred-batch-size-in-kilobytes must be a number '
-                           'between 1 and 1024.')
-
-    if azure_active_directory_tenant_id is not None:
-        if endpoint_type is not WEBHOOK_DESTINATION:
-            raise CLIError('usage error: azure-active-directory-tenant-id is applicable only for '
-                           'endpoint types WebHook.')
-        if azure_active_directory_application_id_or_uri is None:
-            raise CLIError('usage error: azure-active-directory-application-id-or-uri is missing. '
-                           'It should include an Azure Active Directory Application Id or Uri.')
-
-    if azure_active_directory_application_id_or_uri is not None:
-        if endpoint_type is not WEBHOOK_DESTINATION:
-            raise CLIError('usage error: azure-active-directory-application-id-or-uri is applicable only for '
-                           'endpoint types WebHook.')
-        if azure_active_directory_tenant_id is None:
-            raise CLIError('usage error: azure-active-directory-tenant-id is missing. '
-                           'It should include an Azure Active Directory Tenant Id.')
-
-    tennant_id = None
-    application_id = None
-
-    if endpoint_type.lower() == WEBHOOK_DESTINATION.lower():
-        tennant_id = azure_active_directory_tenant_id
-        application_id = azure_active_directory_application_id_or_uri
-
-    destination = _get_endpoint_destination(
-        endpoint_type,
-        endpoint,
-        max_events_per_batch,
-        preferred_batch_size_in_kilobytes,
-        tennant_id,
-        application_id)
-
-    event_subscription_filter = EventSubscriptionFilter(
+    event_subscription_info = _get_event_subscription_info(
+        endpoint=endpoint,
+        endpoint_type=endpoint_type,
+        included_event_types=included_event_types,
         subject_begins_with=subject_begins_with,
         subject_ends_with=subject_ends_with,
-        included_event_types=included_event_types,
         is_subject_case_sensitive=is_subject_case_sensitive,
-        advanced_filters=advanced_filter)
-
-    deadletter_destination = None
-    if deadletter_endpoint is not None:
-        deadletter_destination = _get_deadletter_destination(deadletter_endpoint)
-
-    if expiration_date is not None:
-        expiration_date = parse(expiration_date)
-
-    event_subscription_info = EventSubscription(
-        destination=destination,
-        filter=event_subscription_filter,
+        max_delivery_attempts=max_delivery_attempts,
+        event_ttl=event_ttl,
+        max_events_per_batch=max_events_per_batch,
+        preferred_batch_size_in_kilobytes=preferred_batch_size_in_kilobytes,
+        event_delivery_schema=event_delivery_schema,
+        deadletter_endpoint=deadletter_endpoint,
         labels=labels,
-        event_delivery_schema=_get_event_delivery_schema(event_delivery_schema),
-        retry_policy=retry_policy,
-        expiration_time_utc=expiration_date,
-        dead_letter_destination=deadletter_destination)
-
-    _warn_if_manual_handshake_needed(endpoint_type, endpoint)
+        expiration_date=expiration_date,
+        advanced_filter=advanced_filter,
+        azure_active_directory_tenant_id=azure_active_directory_tenant_id,
+        azure_active_directory_application_id_or_uri=azure_active_directory_application_id_or_uri)
 
     return client.create_or_update(
         source_resource_id,
@@ -429,34 +833,199 @@ def cli_event_subscription_list(   # pylint: disable=too-many-return-statements
         DEFAULT_TOP)
 
 
-def _get_scope(
-        cli_ctx,
+def cli_topic_private_endpoint_connection_get(
+        client,
         resource_group_name,
-        provider_namespace,
-        resource_type,
-        resource_name):
-    subscription_id = get_subscription_id(cli_ctx)
+        topic_name,
+        private_endpoint_connection_name):
 
-    if provider_namespace == RESOURCES_NAMESPACE:
-        if resource_group_name:
-            scope = (
-                '/subscriptions/{}/resourceGroups/{}'
-                .format(quote(subscription_id),
-                        quote(resource_group_name)))
-        else:
-            scope = (
-                '/subscriptions/{}'
-                .format(quote(subscription_id)))
-    else:
-        scope = (
-            '/subscriptions/{}/resourceGroups/{}/providers/{}/{}/{}'
-            .format(quote(subscription_id),
-                    quote(resource_group_name),
-                    quote(provider_namespace),
-                    quote(resource_type),
-                    quote(resource_name)))
+    return client.get(resource_group_name, EVENTGRID_TOPICS, topic_name, private_endpoint_connection_name)
 
-    return scope
+
+def cli_topic_private_endpoint_connection_delete(
+        client,
+        resource_group_name,
+        topic_name,
+        private_endpoint_connection_name):
+
+    return client.delete(resource_group_name, EVENTGRID_TOPICS, topic_name, private_endpoint_connection_name)
+
+
+def cli_topic_private_endpoint_connection_list(
+        client,
+        resource_group_name,
+        topic_name):
+
+    return client.list_by_resource(resource_group_name, EVENTGRID_TOPICS, topic_name)
+
+
+def cli_domain_private_endpoint_connection_get(
+        client,
+        resource_group_name,
+        domain_name,
+        private_endpoint_connection_name):
+
+    return client.get(resource_group_name, EVENTGRID_DOMAINS, domain_name, private_endpoint_connection_name)
+
+
+def cli_domain_private_endpoint_connection_list(
+        client,
+        resource_group_name,
+        domain_name):
+
+    return client.list_by_resource(resource_group_name, EVENTGRID_DOMAINS, domain_name)
+
+
+def cli_domain_private_endpoint_connection_delete(
+        client,
+        resource_group_name,
+        domain_name,
+        private_endpoint_connection_name):
+
+    return client.delete(resource_group_name, EVENTGRID_DOMAINS, domain_name, private_endpoint_connection_name)
+
+
+def cli_topic_private_link_resource_get(
+        client,
+        resource_group_name,
+        topic_name,
+        private_link_resource_name):
+
+    return client.get(resource_group_name, EVENTGRID_TOPICS, topic_name, private_link_resource_name)
+
+
+def cli_topic_private_link_resource_list(
+        client,
+        resource_group_name,
+        topic_name):
+
+    return client.list_by_resource(resource_group_name, EVENTGRID_TOPICS, topic_name)
+
+
+def cli_domain_private_link_resource_get(
+        client,
+        resource_group_name,
+        domain_name,
+        private_link_resource_name):
+
+    return client.get(resource_group_name, EVENTGRID_DOMAINS, domain_name, private_link_resource_name)
+
+
+def cli_domain_private_link_resource_list(
+        client,
+        resource_group_name,
+        domain_name):
+
+    return client.list_by_resource(resource_group_name, EVENTGRID_DOMAINS, domain_name)
+
+
+def _get_event_subscription_info(    # pylint: disable=too-many-locals
+        endpoint,
+        endpoint_type=WEBHOOK_DESTINATION,
+        included_event_types=None,
+        subject_begins_with=None,
+        subject_ends_with=None,
+        is_subject_case_sensitive=False,
+        max_delivery_attempts=30,
+        event_ttl=1440,
+        max_events_per_batch=None,
+        preferred_batch_size_in_kilobytes=None,
+        event_delivery_schema=None,
+        deadletter_endpoint=None,
+        labels=None,
+        expiration_date=None,
+        advanced_filter=None,
+        azure_active_directory_tenant_id=None,
+        azure_active_directory_application_id_or_uri=None):
+
+    if included_event_types is not None and len(included_event_types) == 1 and included_event_types[0].lower() == 'all':
+        logger.warning('The usage of \"All\" for --included-event-types is not allowed starting from Azure Event Grid'
+                       ' API Version 2019-02-01-preview. However, the call here is still permitted by replacing'
+                       ' \"All\" with None in order to return all the event types (for the custom topics and'
+                       ' domains case) or default event types (for other topic types case). In any future calls,'
+                       ' please consider leaving --included-event-types unspecified or use None instead.')
+        included_event_types = None
+
+    # Construct RetryPolicy based on max_delivery_attempts and event_ttl
+    max_delivery_attempts = int(max_delivery_attempts)
+    event_ttl = int(event_ttl)
+    _validate_retry_policy(max_delivery_attempts, event_ttl)
+    retry_policy = RetryPolicy(max_delivery_attempts=max_delivery_attempts, event_time_to_live_in_minutes=event_ttl)
+
+    if max_events_per_batch is not None:
+        if endpoint_type not in (WEBHOOK_DESTINATION, AZUREFUNCTION_DESTINATION):
+            raise CLIError('usage error: max-events-per-batch is applicable only for '
+                           'endpoint types WebHook and AzureFunction.')
+        max_events_per_batch = int(max_events_per_batch)
+        if max_events_per_batch > 5000:
+            raise CLIError('usage error: max-events-per-batch must be a number between 1 and 5000.')
+
+    if preferred_batch_size_in_kilobytes is not None:
+        if endpoint_type not in (WEBHOOK_DESTINATION, AZUREFUNCTION_DESTINATION):
+            raise CLIError('usage error: preferred-batch-size-in-kilobytes is applicable only for '
+                           'endpoint types WebHook and AzureFunction.')
+        preferred_batch_size_in_kilobytes = int(preferred_batch_size_in_kilobytes)
+        if preferred_batch_size_in_kilobytes > 1024:
+            raise CLIError('usage error: preferred-batch-size-in-kilobytes must be a number '
+                           'between 1 and 1024.')
+
+    if azure_active_directory_tenant_id is not None:
+        if endpoint_type is not WEBHOOK_DESTINATION:
+            raise CLIError('usage error: azure-active-directory-tenant-id is applicable only for '
+                           'endpoint types WebHook.')
+        if azure_active_directory_application_id_or_uri is None:
+            raise CLIError('usage error: azure-active-directory-application-id-or-uri is missing. '
+                           'It should include an Azure Active Directory Application Id or Uri.')
+
+    if azure_active_directory_application_id_or_uri is not None:
+        if endpoint_type is not WEBHOOK_DESTINATION:
+            raise CLIError('usage error: azure-active-directory-application-id-or-uri is applicable only for '
+                           'endpoint types WebHook.')
+        if azure_active_directory_tenant_id is None:
+            raise CLIError('usage error: azure-active-directory-tenant-id is missing. '
+                           'It should include an Azure Active Directory Tenant Id.')
+
+    tennant_id = None
+    application_id = None
+
+    if endpoint_type.lower() == WEBHOOK_DESTINATION.lower():
+        tennant_id = azure_active_directory_tenant_id
+        application_id = azure_active_directory_application_id_or_uri
+
+    destination = _get_endpoint_destination(
+        endpoint_type,
+        endpoint,
+        max_events_per_batch,
+        preferred_batch_size_in_kilobytes,
+        tennant_id,
+        application_id)
+
+    event_subscription_filter = EventSubscriptionFilter(
+        subject_begins_with=subject_begins_with,
+        subject_ends_with=subject_ends_with,
+        included_event_types=included_event_types,
+        is_subject_case_sensitive=is_subject_case_sensitive,
+        advanced_filters=advanced_filter)
+
+    deadletter_destination = None
+    if deadletter_endpoint is not None:
+        deadletter_destination = _get_deadletter_destination(deadletter_endpoint)
+
+    if expiration_date is not None:
+        expiration_date = parse(expiration_date)
+
+    event_subscription_info = EventSubscription(
+        destination=destination,
+        filter=event_subscription_filter,
+        labels=labels,
+        event_delivery_schema=_get_event_delivery_schema(event_delivery_schema),
+        retry_policy=retry_policy,
+        expiration_time_utc=expiration_date,
+        dead_letter_destination=deadletter_destination)
+
+    _warn_if_manual_handshake_needed(endpoint_type, endpoint)
+
+    return event_subscription_info
 
 
 def event_subscription_getter(
@@ -516,7 +1085,97 @@ def get_input_schema_mapping(
     return input_schema_mapping
 
 
+def cli_system_topic_event_subscription_update(
+        client,
+        resource_group_name,
+        system_topic_name,
+        event_subscription_name,
+        endpoint=None,
+        endpoint_type=WEBHOOK_DESTINATION,
+        subject_begins_with=None,
+        subject_ends_with=None,
+        included_event_types=None,
+        advanced_filter=None,
+        labels=None,
+        deadletter_endpoint=None):
+
+    instance = client.get(resource_group_name, system_topic_name, event_subscription_name)
+
+    params = _update_event_subscription_internal(
+        instance=instance,
+        endpoint=endpoint,
+        endpoint_type=endpoint_type,
+        subject_begins_with=subject_begins_with,
+        subject_ends_with=subject_ends_with,
+        included_event_types=included_event_types,
+        advanced_filter=advanced_filter,
+        labels=labels,
+        deadletter_endpoint=deadletter_endpoint)
+
+    return client.update(
+        resource_group_name,
+        system_topic_name,
+        event_subscription_name,
+        params)
+
+
+def cli_partner_topic_event_subscription_update(
+        client,
+        resource_group_name,
+        partner_topic_name,
+        event_subscription_name,
+        endpoint=None,
+        endpoint_type=WEBHOOK_DESTINATION,
+        subject_begins_with=None,
+        subject_ends_with=None,
+        included_event_types=None,
+        advanced_filter=None,
+        labels=None,
+        deadletter_endpoint=None):
+
+    instance = client.get(resource_group_name, partner_topic_name, event_subscription_name)
+
+    params = _update_event_subscription_internal(
+        instance=instance,
+        endpoint=endpoint,
+        endpoint_type=endpoint_type,
+        subject_begins_with=subject_begins_with,
+        subject_ends_with=subject_ends_with,
+        included_event_types=included_event_types,
+        advanced_filter=advanced_filter,
+        labels=labels,
+        deadletter_endpoint=deadletter_endpoint)
+
+    return client.update(
+        resource_group_name,
+        partner_topic_name,
+        event_subscription_name,
+        params)
+
+
 def update_event_subscription(
+        instance,
+        endpoint=None,
+        endpoint_type=WEBHOOK_DESTINATION,
+        subject_begins_with=None,
+        subject_ends_with=None,
+        included_event_types=None,
+        advanced_filter=None,
+        labels=None,
+        deadletter_endpoint=None):
+    return _update_event_subscription_internal(
+        instance=instance,
+        endpoint=endpoint,
+        endpoint_type=endpoint_type,
+        subject_begins_with=subject_begins_with,
+        subject_ends_with=subject_ends_with,
+        included_event_types=included_event_types,
+        advanced_filter=advanced_filter,
+        labels=labels,
+        deadletter_endpoint=deadletter_endpoint)
+
+
+def _update_event_subscription_internal(
         instance,
         endpoint=None,
         endpoint_type=WEBHOOK_DESTINATION,
@@ -683,7 +1342,7 @@ def _warn_if_manual_handshake_needed(endpoint_type, endpoint):
     # handshake, there's no need to show this message, hence we check for those services
     # before showing this message. This list includes Azure Automation, EventGrid Trigger based
     # Azure functions, and Azure Logic Apps.
-    if endpoint_type.lower() == WEBHOOK_DESTINATION.lower() and \
+    if endpoint is not None and endpoint_type.lower() == WEBHOOK_DESTINATION.lower() and \
        "azure-automation" not in endpoint.lower() and \
        "eventgridextension" not in endpoint.lower() and \
        "logic.azure" not in endpoint.lower():
@@ -692,6 +1351,24 @@ def _warn_if_manual_handshake_needed(endpoint_type, endpoint):
                        'subscription validation event, in order to complete the event '
                        'subscription creation or update. For more details, '
                        'please visit http://aka.ms/esvalidation')
+
+
+def _get_sku(sku_name):
+    if sku_name.lower() == 'basic':
+        result = SKU_BASIC
+    elif sku_name.lower() == 'premium':
+        result = SKU_PREMIUM
+
+    return result
+
+
+def _get_identity_type(identity_type_name=IDENTITY_NONE):
+    if identity_type_name.lower() == IDENTITY_NO_IDENTITY.lower():
+        result = IDENTITY_NONE
+    elif identity_type_name.lower() == IDENTITY_SYSTEM_ASSIGNED.lower():
+        result = IDENTITY_SYSTEM_ASSIGNED
+
+    return result
 
 
 def _get_input_schema_and_mapping(

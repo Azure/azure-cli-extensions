@@ -67,6 +67,12 @@ helps['aks create'] = """
         - name: --windows-admin-password
           type: string
           short-summary: User account password to use on windows node VMs.
+        - name: --enable-aad
+          type: bool
+          short-summary: Enable managed AAD feature for cluster.
+        - name: --aad-admin-group-object-ids
+          type: string
+          short-summary: Comma seperated list of aad group object IDs that will be set as cluster admin.
         - name: --aad-client-app-id
           type: string
           short-summary: The ID of an Azure Active Directory client application of type "Native". This
@@ -340,6 +346,12 @@ helps['aks update'] = """
         - name: --api-server-authorized-ip-ranges
           type: string
           short-summary: Comma seperated list of authorized apiserver IP ranges. Set to "" to allow all traffic on a previously restricted cluster. Set to 0.0.0.0/32 to restrict apiserver traffic to node pools.
+        - name: --aad-admin-group-object-ids
+          type: string
+          short-summary: Comma seperated list of aad group object IDs that will be set as cluster admin.
+        - name: --aad-tenant-id
+          type: string
+          short-summary: The ID of an Azure Active Directory tenant.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
