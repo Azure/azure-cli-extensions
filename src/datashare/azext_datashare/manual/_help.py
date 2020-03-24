@@ -19,7 +19,7 @@ helps['datashare account list'] = """
     examples:
       - name: Accounts_ListByResourceGroup
         text: |-
-               az datashare account list --resource-group "SampleResourceGroup"
+               az datashare account list --resource-group MyResourceGroup
 """
 
 helps['datashare account show'] = """
@@ -28,8 +28,8 @@ helps['datashare account show'] = """
     examples:
       - name: Accounts_Get
         text: |-
-               az datashare account show --account-name "Account1" --resource-group
-               "SampleResourceGroup"
+               az datashare account show --account-name MyAccount --resource-group
+               MyResourceGroup
 """
 
 helps['datashare account create'] = """
@@ -39,7 +39,7 @@ helps['datashare account create'] = """
       - name: Accounts_Create
         text: |-
                az datashare account create --identity type=SystemAssigned --location "West US 2" --tags
-               tag1=Red tag2=White --account-name "Account1" --resource-group "SampleResourceGroup"
+               tag1=Red tag2=White --account-name MyAccount --resource-group MyResourceGroup
 """
 
 helps['datashare account update'] = """
@@ -48,18 +48,18 @@ helps['datashare account update'] = """
     examples:
       - name: Accounts_Update
         text: |-
-               az datashare account update --account-name "Account1" --tags tag1=Red tag2=White
-               --resource-group "SampleResourceGroup"
+               az datashare account update --account-name MyAccount --tags tag1=Red tag2=White
+               --resource-group MyResourceGroup
 """
 
 helps['datashare account delete'] = """
     type: command
-    short-summary: DeleteAccount
+    short-summary: Delete an account
     examples:
-      - name: Accounts_Delete
+      - name: Delete the account
         text: |-
-               az datashare account delete --account-name "Account1" --resource-group
-               "SampleResourceGroup"
+               az datashare account delete --account-name MyAccount --resource-group
+               MyResourceGroup
 """
 
 helps['datashare consumer-invitation'] = """
@@ -107,8 +107,8 @@ helps['datashare data-set list'] = """
     examples:
       - name: DataSets_ListByShare
         text: |-
-               az datashare data-set list --account-name "Account1" --resource-group
-               "SampleResourceGroup" --share-name "Share1"
+               az datashare data-set list --account-name MyAccount --resource-group
+               MyResourceGroup --share-name "Share1"
 """
 
 helps['datashare data-set show'] = """
@@ -117,8 +117,8 @@ helps['datashare data-set show'] = """
     examples:
       - name: DataSets_Get
         text: |-
-               az datashare data-set show --account-name "Account1" --data-set-name "Dataset1"
-               --resource-group "SampleResourceGroup" --share-name "Share1"
+               az datashare data-set show --account-name MyAccount --data-set-name "Dataset1"
+               --resource-group MyResourceGroup --share-name "Share1"
 """
 
 helps['datashare data-set create'] = """
@@ -127,24 +127,24 @@ helps['datashare data-set create'] = """
     examples:
       - name: DataSets_Create
         text: |-
-               az datashare data-set create --account-name "Account1" --kind "Blob" --data-set-name
-               "Dataset1" --resource-group "SampleResourceGroup" --share-name "Share1"
+               az datashare data-set create --account-name MyAccount --kind "Blob" --data-set-name
+               "Dataset1" --resource-group MyResourceGroup --share-name "Share1"
       - name: DataSets_KustoCluster_Create
         text: |-
-               az datashare data-set create --account-name "Account1" --kind "KustoCluster"
-               --data-set-name "Dataset1" --resource-group "SampleResourceGroup" --share-name "Share1"
+               az datashare data-set create --account-name MyAccount --kind "KustoCluster"
+               --data-set-name "Dataset1" --resource-group MyResourceGroup --share-name "Share1"
       - name: DataSets_KustoDatabase_Create
         text: |-
-               az datashare data-set create --account-name "Account1" --kind "KustoDatabase"
-               --data-set-name "Dataset1" --resource-group "SampleResourceGroup" --share-name "Share1"
+               az datashare data-set create --account-name MyAccount --kind "KustoDatabase"
+               --data-set-name "Dataset1" --resource-group MyResourceGroup --share-name "Share1"
       - name: DataSets_SqlDBTable_Create
         text: |-
-               az datashare data-set create --account-name "Account1" --kind "SqlDBTable"
-               --data-set-name "Dataset1" --resource-group "SampleResourceGroup" --share-name "Share1"
+               az datashare data-set create --account-name MyAccount --kind "SqlDBTable"
+               --data-set-name "Dataset1" --resource-group MyResourceGroup --share-name "Share1"
       - name: DataSets_SqlDWTable_Create
         text: |-
-               az datashare data-set create --account-name "Account1" --kind "SqlDWTable"
-               --data-set-name "Dataset1" --resource-group "SampleResourceGroup" --share-name "Share1"
+               az datashare data-set create --account-name MyAccount --kind "SqlDWTable"
+               --data-set-name "Dataset1" --resource-group MyResourceGroup --share-name "Share1"
 """
 
 helps['datashare data-set delete'] = """
@@ -153,8 +153,8 @@ helps['datashare data-set delete'] = """
     examples:
       - name: DataSets_Delete
         text: |-
-               az datashare data-set delete --account-name "Account1" --data-set-name "Dataset1"
-               --resource-group "SampleResourceGroup" --share-name "Share1"
+               az datashare data-set delete --account-name MyAccount --data-set-name "Dataset1"
+               --resource-group MyResourceGroup --share-name "Share1"
 """
 
 helps['datashare data-set-mapping'] = """
@@ -168,8 +168,8 @@ helps['datashare data-set-mapping list'] = """
     examples:
       - name: DataSetMappings_ListByShareSubscription
         text: |-
-               az datashare data-set-mapping list --account-name "Account1" --resource-group
-               "SampleResourceGroup" --share-subscription-name "ShareSubscription1"
+               az datashare data-set-mapping list --account-name MyAccount --resource-group
+               MyResourceGroup --share-subscription-name "ShareSubscription1"
 """
 
 helps['datashare data-set-mapping show'] = """
@@ -178,8 +178,8 @@ helps['datashare data-set-mapping show'] = """
     examples:
       - name: DataSetMappings_Get
         text: |-
-               az datashare data-set-mapping show --account-name "Account1" --data-set-mapping-name
-               "DatasetMapping1" --resource-group "SampleResourceGroup" --share-subscription-name
+               az datashare data-set-mapping show --account-name MyAccount --data-set-mapping-name
+               "DatasetMapping1" --resource-group MyResourceGroup --share-subscription-name
                "ShareSubscription1"
 """
 
@@ -189,23 +189,23 @@ helps['datashare data-set-mapping create'] = """
     examples:
       - name: DataSetMappings_Create
         text: |-
-               az datashare data-set-mapping create --account-name "Account1" --kind "Blob"
-               --data-set-mapping-name "DatasetMapping1" --resource-group "SampleResourceGroup"
+               az datashare data-set-mapping create --account-name MyAccount --kind "Blob"
+               --data-set-mapping-name "DatasetMapping1" --resource-group MyResourceGroup
                --share-subscription-name "ShareSubscription1"
       - name: DataSetMappings_SqlDB_Create
         text: |-
-               az datashare data-set-mapping create --account-name "Account1" --kind "SqlDBTable"
-               --data-set-mapping-name "DatasetMapping1" --resource-group "SampleResourceGroup"
+               az datashare data-set-mapping create --account-name MyAccount --kind "SqlDBTable"
+               --data-set-mapping-name "DatasetMapping1" --resource-group MyResourceGroup
                --share-subscription-name "ShareSubscription1"
       - name: DataSetMappings_SqlDWDataSetToAdlsGen2File_Create
         text: |-
-               az datashare data-set-mapping create --account-name "Account1" --kind "AdlsGen2File"
-               --data-set-mapping-name "DatasetMapping1" --resource-group "SampleResourceGroup"
+               az datashare data-set-mapping create --account-name MyAccount --kind "AdlsGen2File"
+               --data-set-mapping-name "DatasetMapping1" --resource-group MyResourceGroup
                --share-subscription-name "ShareSubscription1"
       - name: DataSetMappings_SqlDW_Create
         text: |-
-               az datashare data-set-mapping create --account-name "Account1" --kind "SqlDWTable"
-               --data-set-mapping-name "DatasetMapping1" --resource-group "SampleResourceGroup"
+               az datashare data-set-mapping create --account-name MyAccount --kind "SqlDWTable"
+               --data-set-mapping-name "DatasetMapping1" --resource-group MyResourceGroup
                --share-subscription-name "ShareSubscription1"
 """
 
@@ -215,8 +215,8 @@ helps['datashare data-set-mapping delete'] = """
     examples:
       - name: DataSetMappings_Delete
         text: |-
-               az datashare data-set-mapping delete --account-name "Account1" --data-set-mapping-name
-               "DatasetMapping1" --resource-group "SampleResourceGroup" --share-subscription-name
+               az datashare data-set-mapping delete --account-name MyAccount --data-set-mapping-name
+               "DatasetMapping1" --resource-group MyResourceGroup --share-subscription-name
                "ShareSubscription1"
 """
 
@@ -231,8 +231,8 @@ helps['datashare invitation list'] = """
     examples:
       - name: Invitations_ListByShare
         text: |-
-               az datashare invitation list --account-name "Account1" --resource-group
-               "SampleResourceGroup" --share-name "Share1"
+               az datashare invitation list --account-name MyAccount --resource-group
+               MyResourceGroup --share-name "Share1"
 """
 
 helps['datashare invitation show'] = """
@@ -241,8 +241,8 @@ helps['datashare invitation show'] = """
     examples:
       - name: Invitations_Get
         text: |-
-               az datashare invitation show --account-name "Account1" --invitation-name "Invitation1"
-               --resource-group "SampleResourceGroup" --share-name "Share1"
+               az datashare invitation show --account-name MyAccount --invitation-name "Invitation1"
+               --resource-group MyResourceGroup --share-name "Share1"
 """
 
 helps['datashare invitation create'] = """
@@ -251,9 +251,9 @@ helps['datashare invitation create'] = """
     examples:
       - name: Invitations_Create
         text: |-
-               az datashare invitation create --account-name "Account1" --properties-target-email
+               az datashare invitation create --account-name MyAccount --properties-target-email
                "receiver@microsoft.com" --invitation-name "Invitation1" --resource-group
-               "SampleResourceGroup" --share-name "Share1"
+               MyResourceGroup --share-name "Share1"
 """
 
 helps['datashare invitation delete'] = """
@@ -262,8 +262,8 @@ helps['datashare invitation delete'] = """
     examples:
       - name: Invitations_Delete
         text: |-
-               az datashare invitation delete --account-name "Account1" --invitation-name "Invitation1"
-               --resource-group "SampleResourceGroup" --share-name "Share1"
+               az datashare invitation delete --account-name MyAccount --invitation-name "Invitation1"
+               --resource-group MyResourceGroup --share-name "Share1"
 """
 
 helps['datashare share'] = """
@@ -277,7 +277,7 @@ helps['datashare share list'] = """
     examples:
       - name: Shares_ListByAccount
         text: |-
-               az datashare share list --account-name "Account1" --resource-group "SampleResourceGroup"
+               az datashare share list --account-name MyAccount --resource-group MyResourceGroup
 """
 
 helps['datashare share show'] = """
@@ -286,7 +286,7 @@ helps['datashare share show'] = """
     examples:
       - name: Shares_Get
         text: |-
-               az datashare share show --account-name "Account1" --resource-group "SampleResourceGroup"
+               az datashare share show --account-name MyAccount --resource-group MyResourceGroup
                --share-name "Share1"
 """
 
@@ -296,8 +296,8 @@ helps['datashare share create'] = """
     examples:
       - name: Shares_Create
         text: |-
-               az datashare share create --account-name "Account1" --resource-group
-               "SampleResourceGroup" --properties-description "share description"
+               az datashare share create --account-name MyAccount --resource-group
+               MyResourceGroup --properties-description "share description"
                --properties-share-kind "CopyBased" --properties-terms "Confidential" --share-name
                "Share1"
 """
@@ -308,8 +308,8 @@ helps['datashare share delete'] = """
     examples:
       - name: Shares_Delete
         text: |-
-               az datashare share delete --account-name "Account1" --resource-group
-               "SampleResourceGroup" --share-name "Share1"
+               az datashare share delete --account-name MyAccount --resource-group
+               MyResourceGroup --share-name "Share1"
 """
 
 helps['datashare share list-synchronization-detail'] = """
@@ -318,8 +318,8 @@ helps['datashare share list-synchronization-detail'] = """
     examples:
       - name: Shares_ListSynchronizationDetails
         text: |-
-               az datashare share list-synchronization-detail --account-name "Account1" --resource-group
-               "SampleResourceGroup" --share-name "Share1" --synchronization-id
+               az datashare share list-synchronization-detail --account-name MyAccount --resource-group
+               MyResourceGroup --share-name "Share1" --synchronization-id
                "7d0536a6-3fa5-43de-b152-3d07c4f6b2bb"
 """
 
@@ -329,8 +329,8 @@ helps['datashare share list-synchronization'] = """
     examples:
       - name: Shares_ListSynchronizations
         text: |-
-               az datashare share list-synchronization --account-name "Account1" --resource-group
-               "SampleResourceGroup" --share-name "Share1"
+               az datashare share list-synchronization --account-name MyAccount --resource-group
+               MyResourceGroup --share-name "Share1"
 """
 
 helps['datashare provider-share-subscription'] = """
@@ -344,8 +344,8 @@ helps['datashare provider-share-subscription list'] = """
     examples:
       - name: ProviderShareSubscriptions_ListByShare
         text: |-
-               az datashare provider-share-subscription list --account-name "Account1" --resource-group
-               "SampleResourceGroup" --share-name "Share1"
+               az datashare provider-share-subscription list --account-name MyAccount --resource-group
+               MyResourceGroup --share-name "Share1"
 """
 
 helps['datashare provider-share-subscription show'] = """
@@ -354,9 +354,9 @@ helps['datashare provider-share-subscription show'] = """
     examples:
       - name: ProviderShareSubscriptions_GetByShare
         text: |-
-               az datashare provider-share-subscription show --account-name "Account1"
+               az datashare provider-share-subscription show --account-name MyAccount
                --provider-share-subscription-id "d5496da4-9c52-402f-b067-83cc9ddea888" --resource-group
-               "SampleResourceGroup" --share-name "Share1"
+               MyResourceGroup --share-name "Share1"
 """
 
 helps['datashare provider-share-subscription revoke'] = """
@@ -365,9 +365,9 @@ helps['datashare provider-share-subscription revoke'] = """
     examples:
       - name: ProviderShareSubscriptions_Revoke
         text: |-
-               az datashare provider-share-subscription revoke --account-name "Account1"
+               az datashare provider-share-subscription revoke --account-name MyAccount
                --provider-share-subscription-id "d5496da4-9c52-402f-b067-83cc9ddea888" --resource-group
-               "SampleResourceGroup" --share-name "Share1"
+               MyResourceGroup --share-name "Share1"
 """
 
 helps['datashare provider-share-subscription reinstate'] = """
@@ -376,9 +376,9 @@ helps['datashare provider-share-subscription reinstate'] = """
     examples:
       - name: ProviderShareSubscriptions_Reinstate
         text: |-
-               az datashare provider-share-subscription reinstate --account-name "Account1"
+               az datashare provider-share-subscription reinstate --account-name MyAccount
                --provider-share-subscription-id "d5496da4-9c52-402f-b067-83cc9ddea888" --resource-group
-               "SampleResourceGroup" --share-name "Share1"
+               MyResourceGroup --share-name "Share1"
 """
 
 helps['datashare share-subscription'] = """
@@ -392,8 +392,8 @@ helps['datashare share-subscription list'] = """
     examples:
       - name: ShareSubscriptions_ListByAccount
         text: |-
-               az datashare share-subscription list --account-name "Account1" --resource-group
-               "SampleResourceGroup"
+               az datashare share-subscription list --account-name MyAccount --resource-group
+               MyResourceGroup
 """
 
 helps['datashare share-subscription show'] = """
@@ -402,8 +402,8 @@ helps['datashare share-subscription show'] = """
     examples:
       - name: ShareSubscriptions_Get
         text: |-
-               az datashare share-subscription show --account-name "Account1" --resource-group
-               "SampleResourceGroup" --share-subscription-name "ShareSubscription1"
+               az datashare share-subscription show --account-name MyAccount --resource-group
+               MyResourceGroup --share-subscription-name "ShareSubscription1"
 """
 
 helps['datashare share-subscription create'] = """
@@ -412,8 +412,8 @@ helps['datashare share-subscription create'] = """
     examples:
       - name: ShareSubscriptions_Create
         text: |-
-               az datashare share-subscription create --account-name "Account1" --resource-group
-               "SampleResourceGroup" --properties-invitation-id "12345678-1234-1234-12345678abd"
+               az datashare share-subscription create --account-name MyAccount --resource-group
+               MyResourceGroup --properties-invitation-id "12345678-1234-1234-12345678abd"
                --properties-source-share-location "eastus2" --share-subscription-name
                "ShareSubscription1"
 """
@@ -424,8 +424,8 @@ helps['datashare share-subscription delete'] = """
     examples:
       - name: ShareSubscriptions_Delete
         text: |-
-               az datashare share-subscription delete --account-name "Account1" --resource-group
-               "SampleResourceGroup" --share-subscription-name "ShareSubscription1"
+               az datashare share-subscription delete --account-name MyAccount --resource-group
+               MyResourceGroup --share-subscription-name "ShareSubscription1"
 """
 
 helps['datashare share-subscription list-synchronization-detail'] = """
@@ -434,8 +434,8 @@ helps['datashare share-subscription list-synchronization-detail'] = """
     examples:
       - name: ShareSubscriptions_ListSynchronizationDetails
         text: |-
-               az datashare share-subscription list-synchronization-detail --account-name "Account1"
-               --resource-group "SampleResourceGroup" --share-subscription-name "ShareSub1"
+               az datashare share-subscription list-synchronization-detail --account-name MyAccount
+               --resource-group MyResourceGroup --share-subscription-name "ShareSub1"
                --synchronization-id "7d0536a6-3fa5-43de-b152-3d07c4f6b2bb"
 """
 
@@ -445,8 +445,8 @@ helps['datashare share-subscription synchronize'] = """
     examples:
       - name: ShareSubscriptions_Synchronize
         text: |-
-               az datashare share-subscription synchronize --account-name "Account1" --resource-group
-               "SampleResourceGroup" --share-subscription-name "ShareSubscription1"
+               az datashare share-subscription synchronize --account-name MyAccount --resource-group
+               MyResourceGroup --share-subscription-name "ShareSubscription1"
                --synchronization-mode "Incremental"
 """
 
@@ -456,8 +456,8 @@ helps['datashare share-subscription cancel-synchronization'] = """
     examples:
       - name: ShareSubscriptions_CancelSynchronization
         text: |-
-               az datashare share-subscription cancel-synchronization --account-name "Account1"
-               --resource-group "SampleResourceGroup" --share-subscription-name "ShareSubscription1"
+               az datashare share-subscription cancel-synchronization --account-name MyAccount
+               --resource-group MyResourceGroup --share-subscription-name "ShareSubscription1"
                --synchronization-id "7d0536a6-3fa5-43de-b152-3d07c4f6b2bb"
 """
 
@@ -468,7 +468,7 @@ helps['datashare share-subscription list-source-share-synchronization-setting'] 
       - name: ShareSubscriptions_ListSourceShareSynchronizationSettings
         text: |-
                az datashare share-subscription list-source-share-synchronization-setting --account-name
-               "Account1" --resource-group "SampleResourceGroup" --share-subscription-name "ShareSub1"
+               MyAccount --resource-group MyResourceGroup --share-subscription-name "ShareSub1"
 """
 
 helps['datashare share-subscription list-synchronization'] = """
@@ -477,8 +477,8 @@ helps['datashare share-subscription list-synchronization'] = """
     examples:
       - name: ShareSubscriptions_ListSynchronizations
         text: |-
-               az datashare share-subscription list-synchronization --account-name "Account1"
-               --resource-group "SampleResourceGroup" --share-subscription-name "ShareSub1"
+               az datashare share-subscription list-synchronization --account-name MyAccount
+               --resource-group MyResourceGroup --share-subscription-name "ShareSub1"
 """
 
 helps['datashare consumer-source-data-set'] = """
@@ -492,8 +492,8 @@ helps['datashare consumer-source-data-set list'] = """
     examples:
       - name: ConsumerSourceDataSets_ListByShareSubscription
         text: |-
-               az datashare consumer-source-data-set list --account-name "Account1" --resource-group
-               "SampleResourceGroup" --share-subscription-name "Share1"
+               az datashare consumer-source-data-set list --account-name MyAccount --resource-group
+               MyResourceGroup --share-subscription-name "Share1"
 """
 
 helps['datashare synchronization-setting'] = """
@@ -507,8 +507,8 @@ helps['datashare synchronization-setting list'] = """
     examples:
       - name: SynchronizationSettings_ListByShare
         text: |-
-               az datashare synchronization-setting list --account-name "Account1" --resource-group
-               "SampleResourceGroup" --share-name "Share1"
+               az datashare synchronization-setting list --account-name MyAccount --resource-group
+               MyResourceGroup --share-name "Share1"
 """
 
 helps['datashare synchronization-setting show'] = """
@@ -517,8 +517,8 @@ helps['datashare synchronization-setting show'] = """
     examples:
       - name: SynchronizationSettings_Get
         text: |-
-               az datashare synchronization-setting show --account-name "Account1" --resource-group
-               "SampleResourceGroup" --share-name "Share1" --synchronization-setting-name
+               az datashare synchronization-setting show --account-name MyAccount --resource-group
+               MyResourceGroup --share-name "Share1" --synchronization-setting-name
                "SyncrhonizationSetting1"
 """
 
@@ -528,8 +528,8 @@ helps['datashare synchronization-setting create'] = """
     examples:
       - name: SynchronizationSettings_Create
         text: |-
-               az datashare synchronization-setting create --account-name "Account1" --resource-group
-               "SampleResourceGroup" --share-name "Share1" --kind "ScheduleBased"
+               az datashare synchronization-setting create --account-name MyAccount --resource-group
+               MyResourceGroup --share-name "Share1" --kind "ScheduleBased"
                --synchronization-setting-name "Dataset1"
 """
 
@@ -539,8 +539,8 @@ helps['datashare synchronization-setting delete'] = """
     examples:
       - name: SynchronizationSettings_Delete
         text: |-
-               az datashare synchronization-setting delete --account-name "Account1" --resource-group
-               "SampleResourceGroup" --share-name "Share1" --synchronization-setting-name
+               az datashare synchronization-setting delete --account-name MyAccount --resource-group
+               MyResourceGroup --share-name "Share1" --synchronization-setting-name
                "SyncrhonizationSetting1"
 """
 
@@ -555,8 +555,8 @@ helps['datashare trigger list'] = """
     examples:
       - name: Triggers_ListByShareSubscription
         text: |-
-               az datashare trigger list --account-name "Account1" --resource-group
-               "SampleResourceGroup" --share-subscription-name "ShareSubscription1"
+               az datashare trigger list --account-name MyAccount --resource-group
+               MyResourceGroup --share-subscription-name "ShareSubscription1"
 """
 
 helps['datashare trigger show'] = """
@@ -565,8 +565,8 @@ helps['datashare trigger show'] = """
     examples:
       - name: Triggers_Get
         text: |-
-               az datashare trigger show --account-name "Account1" --resource-group
-               "SampleResourceGroup" --share-subscription-name "ShareSubscription1" --trigger-name
+               az datashare trigger show --account-name MyAccount --resource-group
+               MyResourceGroup --share-subscription-name "ShareSubscription1" --trigger-name
                "Trigger1"
 """
 
@@ -576,8 +576,8 @@ helps['datashare trigger create'] = """
     examples:
       - name: Triggers_Create
         text: |-
-               az datashare trigger create --account-name "Account1" --resource-group
-               "SampleResourceGroup" --share-subscription-name "ShareSubscription1" --kind
+               az datashare trigger create --account-name MyAccount --resource-group
+               MyResourceGroup --share-subscription-name "ShareSubscription1" --kind
                "ScheduleBased" --trigger-name "Trigger1"
 """
 
@@ -587,7 +587,7 @@ helps['datashare trigger delete'] = """
     examples:
       - name: Triggers_Delete
         text: |-
-               az datashare trigger delete --account-name "Account1" --resource-group
-               "SampleResourceGroup" --share-subscription-name "ShareSubscription1" --trigger-name
+               az datashare trigger delete --account-name MyAccount --resource-group
+               MyResourceGroup --share-subscription-name "ShareSubscription1" --trigger-name
                "Trigger1"
 """
