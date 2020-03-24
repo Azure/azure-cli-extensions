@@ -36,9 +36,16 @@ logger = get_logger(__name__)
 
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name,
                         onboarding_spn_id=None, onboarding_spn_secret=None,
-                        location=None, kube_config=None, kube_context=None, no_wait=False,):
+                        location=None, kube_config=None, kube_context=None, no_wait=False,
+                        location_data_name=None, location_data_country_or_region=None,
+                        location_data_district=None, location_data_city=None):
     print("Ensure that you have the latest helm version installed before proceeding to avoid unexpected errors.")
     print("This operation might take a while...\n")
+
+    # Checking location data info
+    if location_data_name is None:
+        if ((location_data_country_or_region is not None) or (location_data_district is not None) or (location_data_city is not None)):
+            raise CLIError("--location-data-name is required when providing location data info.")
 
     # Setting subscription id
     subscription_id = get_subscription_id(cmd.cli_ctx)
@@ -184,20 +191,18 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name,
     except ApiException as e:
         print("Exception when calling NetworkingV1Api->get_api_resources: %s\n" % e)
         raise CLIError("If you are using AAD Enabled cluster, check if you have logged in to the cluster properly and try again")
-
     
     # Checking helm installation
-    if kube_context is None:
-        cmd = ["helm", "--kubeconfig", kube_config, "--debug"]
-    else:
-        cmd = ["helm", "--kubeconfig", kube_config, "--kube-context", kube_context, "--debug"]
+    cmd_helm_installed = ["helm", "--kubeconfig", kube_config, "--debug"]
+    if kube_context:
+        cmd_helm_installed.extend(["--kube-context", kube_context])
     try:
-        response = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
-        output, error = response.communicate()
-        if response.returncode != 0:
-            if "unknown flag" in error.decode("ascii"):
+        response_helm_installed = subprocess.Popen(cmd_helm_installed, stdout=PIPE, stderr=PIPE)
+        output_helm_installed, error_helm_installed = response_helm_installed.communicate()
+        if response_helm_installed.returncode != 0:
+            if "unknown flag" in error_helm_installed.decode("ascii"):
                 raise CLIError("Please install the latest version of helm")
-            raise CLIError(error.decode("ascii"))
+            raise CLIError(error_helm_installed.decode("ascii"))
     except FileNotFoundError:
         raise CLIError("Helm is not installed or requires elevated permissions. Please ensure that you have the latest version of helm installed on your machine.")
     except subprocess.CalledProcessError as e2:
@@ -205,32 +210,30 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name,
         print(e2.output)
 
     # Check helm version
-    if kube_context is None:
-        cmd = ["helm", "version", "--short", "--kubeconfig", kube_config]
+    cmd_helm_version = ["helm", "version", "--short", "--kubeconfig", kube_config]
+    if kube_context:
+        cmd_helm_version.extend(["--kube-context", kube_context])
+    response_helm_version = subprocess.Popen(cmd_helm_version, stdout=PIPE, stderr=PIPE)
+    output_helm_version, error_helm_version = response_helm_version.communicate()
+    if response_helm_version.returncode != 0:
+        raise CLIError("Unable to determine helm version: " + error_helm_version.decode("ascii"))
     else:
-        cmd = ["helm", "version", "--short", "--kubeconfig", kube_config, "--kube-context", kube_context]
-    response = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
-    output, error = response.communicate()
-    if response.returncode != 0:
-        raise CLIError("Unable to determine helm version: " + error.decode("ascii"))
-    else:
-        if "v2" in output.decode("ascii"):
+        if "v2" in output_helm_version.decode("ascii"):
             raise CLIError("Please install the latest version of helm and then try again")
 
-    # Check Release Existance
-    if kube_context is None:    
-        cmd_list = ["helm", "list", "-a", "--all-namespaces", "--output", "json", "--kubeconfig", kube_config]
+    # Check Release Existance   
+    cmd_helm_release = ["helm", "list", "-a", "--all-namespaces", "--output", "json", "--kubeconfig", kube_config]
+    if kube_context:
+        cmd_helm_release.extend(["--kube-context", kube_context])
+    response_helm_release = subprocess.Popen(cmd_helm_release, stdout=PIPE, stderr=PIPE)
+    output_helm_release, error_helm_release = response_helm_release.communicate()
+    if response_helm_release.returncode != 0:
+        raise CLIError(error_helm_release.decode("ascii"))
     else:
-        cmd_list = ["helm", "list", "-a", "--all-namespaces", "--output", "json", "--kubeconfig", kube_config, "--kube-context", kube_context]
-    response_list = subprocess.Popen(cmd_list, stdout=PIPE, stderr=PIPE)
-    output_list, error_list = response_list.communicate()
-    if response_list.returncode != 0:
-        raise CLIError(error_list.decode("ascii"))
-    else:
-        output_list = output_list.decode("ascii")
-        output_list = json.loads(output_list)
+        output_helm_release = output_helm_release.decode("ascii")
+        output_helm_release = json.loads(output_helm_release)
         release_name_list = []
-        for release in output_list:
+        for release in output_helm_release:
             release_name_list.append(release['name'])
         if "azure-arc" in release_name_list:
             # Loading config map
@@ -252,24 +255,30 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name,
                 raise CLIError("Helm release named 'azure-arc' is already present but the azure-arc agent pods are either missing or deployed unsuccessfully.")
     
     # Adding helm repo
-    if kube_context is None:
-        cmd1 = ["helm", "repo", "add", "azurearcfork8s", "https://azurearcfork8s.azurecr.io/helm/v1/repo", "--kubeconfig", kube_config]
-    else:
-        cmd1 = ["helm", "repo", "add", "azurearcfork8s", "https://azurearcfork8s.azurecr.io/helm/v1/repo", "--kubeconfig", kube_config, "--kube-context", kube_context]
-    response1 = subprocess.Popen(cmd1, stdout=PIPE, stderr=PIPE)
-    output1, error1 = response1.communicate()
-    if response1.returncode != 0:
-        raise CLIError("Helm unable to add repository: " + error1.decode("ascii"))
+    cmd_helm_repo = ["helm", "repo", "add", "azurearcfork8s", "https://azurearcfork8s.azurecr.io/helm/v1/repo", "--kubeconfig", kube_config]
+    if kube_context:
+        cmd_helm_repo.extend(["--kube-context", kube_context])
+    response_helm_repo = subprocess.Popen(cmd_helm_repo, stdout=PIPE, stderr=PIPE)
+    output_helm_repo, error_helm_repo = response_helm_repo.communicate()
+    if response_helm_repo.returncode != 0:
+        raise CLIError("Helm unable to add repository: " + error_helm_repo.decode("ascii"))
 
     # Install agents
-    if kube_context is None:
-        cmd4 = ["helm", "install", "azure-arc", "azurearcfork8s/azure-arc-k8sagents", "--set", "global.subscriptionId={}".format(subscription_id), "--set", "global.resourceGroupName={}".format(resource_group_name), "--set", "global.resourceName={}".format(cluster_name), "--set", "global.location={}".format(location), "--set", "global.tenantId={}".format(onboarding_tenant_id), "--set", "global.clientId={}".format(onboarding_spn_id), "--set", "global.clientSecret={}".format(onboarding_spn_secret), "--kubeconfig", kube_config, "--output", "json"]
-    else:
-        cmd4 = ["helm", "install", "azure-arc", "azurearcfork8s/azure-arc-k8sagents", "--set", "global.subscriptionId={}".format(subscription_id), "--set", "global.resourceGroupName={}".format(resource_group_name), "--set", "global.resourceName={}".format(cluster_name), "--set", "global.location={}".format(location), "--set", "global.tenantId={}".format(onboarding_tenant_id), "--set", "global.clientId={}".format(onboarding_spn_id), "--set", "global.clientSecret={}".format(onboarding_spn_secret), "--kubeconfig", kube_config, "--kube-context", kube_context, "--output", "json"]
-    response4 = subprocess.Popen(cmd4, stdout=PIPE, stderr=PIPE)
-    output4, error4 = response4.communicate()
-    if response4.returncode != 0:
-        raise CLIError("Unable to install helm release: " + error4.decode("ascii")) 
+    cmd_helm_install = ["helm", "install", "azure-arc", "azurearcfork8s/azure-arc-k8sagents", "--set", "global.subscriptionId={}".format(subscription_id), "--set", "global.resourceGroupName={}".format(resource_group_name), "--set", "global.resourceName={}".format(cluster_name), "--set", "global.location={}".format(location), "--set", "global.tenantId={}".format(onboarding_tenant_id), "--set", "global.clientId={}".format(onboarding_spn_id), "--set", "global.clientSecret={}".format(onboarding_spn_secret), "--kubeconfig", kube_config, "--output", "json"]
+    if kube_context:
+        cmd_helm_install.extend(["--kube-context", kube_context])
+    if location_data_name:
+        cmd_helm_install.extend(["--set", "locationData.name={}".format(location_data_name)])
+    if location_data_country_or_region:
+        cmd_helm_install.extend(["--set", "locationData.countryOrRegion={}".format(location_data_country_or_region)])
+    if location_data_district:
+        cmd_helm_install.extend(["--set", "locationData.district={}".format(location_data_district)])
+    if location_data_city:
+        cmd_helm_install.extend(["--set", "locationData.city={}".format(location_data_city)])
+    response_helm_install = subprocess.Popen(cmd_helm_install, stdout=PIPE, stderr=PIPE)
+    output_helm_install, error_helm_install = response_helm_install.communicate()
+    if response_helm_install.returncode != 0:
+        raise CLIError("Unable to install helm release: " + error_helm_install.decode("ascii")) 
     
     if no_wait is True:
         print("Resource creation request accepted. Please run 'kubectl get pods -n azure-arc' to see whether the pods are in a running state and run 'az connectedk8s show -g {} -n {}' to check if the resource was created successfully".format(resource_group_name, cluster_name))
@@ -446,50 +455,47 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name, kube_con
         raise CLIError("If you are using AAD Enabled cluster, check if you have logged in to the cluster properly and try again")
 
     # Checking helm installation
-    if kube_context is None:
-        cmd = ["helm", "--kubeconfig", kube_config, "--debug"]
-    else:
-        cmd = ["helm", "--kubeconfig", kube_config, "--kube-context", kube_context, "--debug"]
+    cmd_helm_installed = ["helm", "--kubeconfig", kube_config, "--debug"]
+    if kube_context:
+        cmd_helm_installed.extend(["--kube-context", kube_context])
     try:
-        response = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
-        output, error = response.communicate()
-        if response.returncode != 0:
-            if "unknown flag" in error.decode("ascii"):
+        response_helm_installed = subprocess.Popen(cmd_helm_installed, stdout=PIPE, stderr=PIPE)
+        output_helm_installed, error_helm_installed = response_helm_installed.communicate()
+        if response_helm_installed.returncode != 0:
+            if "unknown flag" in error_helm_installed.decode("ascii"):
                 raise CLIError("Please install the latest version of helm")
-            raise CLIError(error.decode("ascii"))
+            raise CLIError(error_helm_installed.decode("ascii"))
     except FileNotFoundError:
-        raise CLIError("Helm is not installed or requires elevated permissions.")
+        raise CLIError("Helm is not installed or requires elevated permissions. Please ensure that you have the latest version of helm installed on your machine.")
     except subprocess.CalledProcessError as e2:
         e2.output = e2.output.decode("ascii")
         print(e2.output)
 
     # Check helm version
-    if kube_context is None:
-        cmd = ["helm", "version", "--short", "--kubeconfig", kube_config]
+    cmd_helm_version = ["helm", "version", "--short", "--kubeconfig", kube_config]
+    if kube_context:
+        cmd_helm_version.extend(["--kube-context", kube_context])
+    response_helm_version = subprocess.Popen(cmd_helm_version, stdout=PIPE, stderr=PIPE)
+    output_helm_version, error_helm_version = response_helm_version.communicate()
+    if response_helm_version.returncode != 0:
+        raise CLIError("Unable to determine helm version: " + error_helm_version.decode("ascii"))
     else:
-        cmd = ["helm", "version", "--short", "--kubeconfig", kube_config, "--kube-context", kube_context]
-    response = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
-    output, error = response.communicate()
-    if response.returncode != 0:
-        raise CLIError("Unable to determine helm version: " + error.decode("ascii"))
-    else:
-        if "v2" in output.decode("ascii"):
+        if "v2" in output_helm_version.decode("ascii"):
             raise CLIError("Please install the latest version of helm and then try again")
 
     # Check Release Existance
-    release_namespace = None
-    if kube_context is None:    
-        cmd_list = ["helm", "list", "-a", "--all-namespaces", "--output", "json", "--kubeconfig", kube_config]
+    release_namespace = None    
+    cmd_helm_release = ["helm", "list", "-a", "--all-namespaces", "--output", "json", "--kubeconfig", kube_config]
+    if kube_context:
+        cmd_helm_release.extend(["--kube-context", kube_context])
+    response_helm_release = subprocess.Popen(cmd_helm_release, stdout=PIPE, stderr=PIPE)
+    output_helm_release, error_helm_release = response_helm_release.communicate()
+    if response_helm_release.returncode != 0:
+        raise CLIError(error_helm_release.decode("ascii"))
     else:
-        cmd_list = ["helm", "list", "-a", "--all-namespaces", "--output", "json", "--kubeconfig", kube_config, "--kube-context", kube_context]
-    response_list = subprocess.Popen(cmd_list, stdout=PIPE, stderr=PIPE)
-    output_list, error_list = response_list.communicate()
-    if response_list.returncode != 0:
-        raise CLIError(error_list.decode("ascii"))
-    else:
-        output_list = output_list.decode("ascii")
-        output_list = json.loads(output_list)
-        for release in output_list:
+        output_helm_release = output_helm_release.decode("ascii")
+        output_helm_release = json.loads(output_helm_release)
+        for release in output_helm_release:
             if release['name'] == 'azure-arc':
                 release_namespace = release['namespace']
                 break
@@ -511,14 +517,13 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name, kube_con
                 raise CLIError("The kube config does not correspond to the connected cluster resource provided. Agents installed on this cluster correspond to the resource group name '{}' and resource name '{}'.".format(configmap.data["AZURE_RESOURCE_GROUP"], configmap.data["AZURE_RESOURCE_NAME"]))
 
     # Deleting the azure-arc agents
-    if kube_context is None:
-        cmd1 = ["helm", "delete", "azure-arc", "--namespace", release_namespace, "--kubeconfig", kube_config]
-    else:
-        cmd1 = ["helm", "delete", "azure-arc", "--namespace", release_namespace, "--kubeconfig", kube_config, "--kube-context", kube_context]
-    response1 = subprocess.Popen(cmd1, stdout=PIPE, stderr=PIPE)
-    output1, error1 = response1.communicate()
-    if response1.returncode != 0:
-        raise CLIError("Helm release deletion failed: " + error1.decode("ascii"))
+    cmd_helm_delete = ["helm", "delete", "azure-arc", "--namespace", release_namespace, "--kubeconfig", kube_config]
+    if kube_context:
+        cmd_helm_delete.extend(["--kube-context", kube_context])
+    response_helm_delete = subprocess.Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
+    output_helm_delete, error_helm_delete = response_helm_delete.communicate()
+    if response_helm_delete.returncode != 0:
+        raise CLIError("Helm release deletion failed: " + error_helm_delete.decode("ascii"))
     return
 
 

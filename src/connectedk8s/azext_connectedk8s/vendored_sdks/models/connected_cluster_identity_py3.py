@@ -13,10 +13,12 @@ from msrest.serialization import Model
 
 
 class ConnectedClusterIdentity(Model):
-    """Identity for the virtual machine.
+    """Identity for the connected cluster.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
+
+    All required parameters must be populated in order to send to Azure.
 
     :ivar principal_id: The principal id of connected cluster identity. This
      property will only be provided for a system assigned identity.
@@ -24,27 +26,27 @@ class ConnectedClusterIdentity(Model):
     :ivar tenant_id: The tenant id associated with the connected cluster. This
      property will only be provided for a system assigned identity.
     :vartype tenant_id: str
-    :param type: The type of identity used for the connected cluster. The type
-     'SystemAssigned includes a system created identity. The type 'None' will
-     remove any identities from the virtual machine. Possible values include:
-     'SystemAssigned', 'None'
-    :type type: str or
-     ~azure.mgmt.hybridkubernetes.models.ResourceIdentityType
+    :ivar type: Required. The type of identity used for the connected cluster.
+     The type 'SystemAssigned, includes a system created identity. Default
+     value: "SystemAssigned" .
+    :vartype type: str
     """
 
     _validation = {
         'principal_id': {'readonly': True},
         'tenant_id': {'readonly': True},
+        'type': {'required': True, 'constant': True},
     }
 
     _attribute_map = {
         'principal_id': {'key': 'principalId', 'type': 'str'},
         'tenant_id': {'key': 'tenantId', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'ResourceIdentityType'},
+        'type': {'key': 'type', 'type': 'str'},
     }
 
-    def __init__(self, *, type=None, **kwargs) -> None:
+    type = "SystemAssigned"
+
+    def __init__(self, **kwargs) -> None:
         super(ConnectedClusterIdentity, self).__init__(**kwargs)
         self.principal_id = None
         self.tenant_id = None
-        self.type = type

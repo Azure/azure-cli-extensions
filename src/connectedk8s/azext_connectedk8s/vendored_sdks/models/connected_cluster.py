@@ -24,14 +24,13 @@ class ConnectedCluster(Model):
     :vartype id: str
     :ivar name: Resource name
     :vartype name: str
-    :ivar type: Type of the resource requested. Possible values include:
-     'Microsoft.Kubernetes/connectedClusters'
-    :vartype type: str or ~azure.mgmt.hybridkubernetes.models.enum
+    :ivar type: Type of the resource requested
+    :vartype type: str
     :param location: Required. Location of the cluster
     :type location: str
-    :param tags: Required. Connected Cluster Resource Tags.
+    :param tags: Connected Cluster Resource Tags.
     :type tags: dict[str, str]
-    :param identity: The identity of the connected cluster, if configured.
+    :param identity: Required. The identity of the connected cluster.
     :type identity:
      ~azure.mgmt.hybridkubernetes.models.ConnectedClusterIdentity
     :param agent_public_key_certificate: Required. Base64 encoded public
@@ -50,6 +49,13 @@ class ConnectedCluster(Model):
     :param agent_version: Version of the agent running on the connected
      cluster resource
     :type agent_version: str
+    :param location_data: Metadata pertaining to the geographic location of
+     the resource.
+    :type location_data: ~azure.mgmt.hybridkubernetes.models.LocationData
+    :param provisioning_state: Possible values include: 'Succeeded', 'Failed',
+     'Canceled', 'Provisioning', 'Updating', 'Deleting', 'Accepted'
+    :type provisioning_state: str or
+     ~azure.mgmt.hybridkubernetes.models.ProvisioningState
     """
 
     _validation = {
@@ -57,7 +63,7 @@ class ConnectedCluster(Model):
         'name': {'readonly': True},
         'type': {'readonly': True},
         'location': {'required': True},
-        'tags': {'required': True},
+        'identity': {'required': True},
         'agent_public_key_certificate': {'required': True},
         'aad_profile': {'required': True},
     }
@@ -74,6 +80,8 @@ class ConnectedCluster(Model):
         'kubernetes_version': {'key': 'properties.kubernetesVersion', 'type': 'str'},
         'total_node_count': {'key': 'properties.totalNodeCount', 'type': 'int'},
         'agent_version': {'key': 'properties.agentVersion', 'type': 'str'},
+        'location_data': {'key': 'properties.locationData', 'type': 'LocationData'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
     }
 
     def __init__(self, **kwargs):
@@ -89,3 +97,5 @@ class ConnectedCluster(Model):
         self.kubernetes_version = kwargs.get('kubernetes_version', None)
         self.total_node_count = kwargs.get('total_node_count', None)
         self.agent_version = kwargs.get('agent_version', None)
+        self.location_data = kwargs.get('location_data', None)
+        self.provisioning_state = kwargs.get('provisioning_state', None)

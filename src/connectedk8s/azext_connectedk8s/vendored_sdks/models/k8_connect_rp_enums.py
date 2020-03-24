@@ -12,15 +12,17 @@
 from enum import Enum
 
 
-class AzureEnvironment(str, Enum):
+class ProvisioningState(str, Enum):
 
-    azure_public_cloud = "AzurePublicCloud"
-    azure_us_government_cloud = "AzureUSGovernmentCloud"
-    azure_china_cloud = "AzureChinaCloud"
-    azure_german_cloud = "AzureGermanCloud"
+    succeeded = "Succeeded"
+    failed = "Failed"
+    canceled = "Canceled"
+    provisioning = "Provisioning"
+    updating = "Updating"
+    deleting = "Deleting"
+    accepted = "Accepted"
 
 
 class ResourceIdentityType(str, Enum):
 
     system_assigned = "SystemAssigned"
-    none = "None"

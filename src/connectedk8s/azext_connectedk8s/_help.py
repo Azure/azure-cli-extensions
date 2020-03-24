@@ -28,6 +28,19 @@ helps['connectedk8s connect'] = """
     - name: --onboarding-spn-secret
       type: string
       short-summary: Secret for Azure Active Directory application id with access to connected cluster resource creation
+    - name: --location-data-name
+      type: string
+      short-summary: A canonical name for the geographic or physical location of the on-prem kubernetes cluster
+    - name: --location-data-country-or-region
+      type: string
+      short-summary: The country or region where the on-prem kubernetes cluster is located
+    - name: --location-data-district
+      type: string
+      short-summary: The district, state, or province where the on-prem kubernetes cluster is located
+    - name: --location-data-city
+      type: string
+      short-summary: The city or locality where the on-prem kubernetes cluster is located
+
     examples:
     - name: Onboard a connected kubernetes cluster with default kube config and kube context.
       text: az connectedk8s connect -g resourceGroupName -n connectedClusterName
@@ -35,6 +48,8 @@ helps['connectedk8s connect'] = """
       text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --kube-config /path/to/kubeconfig --kube-context kubeContextName
     - name: Onboard a connected kubernetes cluster by specifying the onboarding spn details.
       text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --onboarding-spn-id spnClientId --onboarding-spn-secret spnClientSecret
+    - name: Onboard a connected kubernetes cluster specifying location data info.
+      text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --location-data-name locationDataName
 """
 
 helps['connectedk8s list'] = """
