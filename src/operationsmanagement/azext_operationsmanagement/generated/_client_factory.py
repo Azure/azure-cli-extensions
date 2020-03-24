@@ -7,10 +7,7 @@
 def cf_operationsmanagement(cli_ctx, provider_name, resource_type, resource_name, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from ..vendored_sdks.operationsmanagement import OperationsManagementClient
-    cli_ctx.provider_name = provider_name
-    cli_ctx.resource_type =  resource_type
-    cli_ctx.resource_name = resource_name
-    return get_mgmt_service_client(cli_ctx, OperationsManagementClient)
+    return get_mgmt_service_client(cli_ctx, OperationsManagementClient, provider_name = provider_name, resource_type = resource_type, resource_name = resource_name)
 
 
 def cf_solution(cli_ctx,  provider_name, resource_type, resource_name, *_):

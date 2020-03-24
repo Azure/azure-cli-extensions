@@ -11,10 +11,8 @@ def load_command_table(self, _):
     from azext_operationsmanagement.generated._client_factory import cf_solution
     operationsmanagement_solution = CliCommandType(
         operations_tmpl='azext_operationsmanagement.vendored_sdks.operationsmanagement.operations._solution_operations#'
-        'SolutionOperations.{}',
-        client_factory=cf_solution)
-    with self.command_group('operationsmanagement solution', operationsmanagement_solution,
-                            client_factory=cf_solution) as g:
+        'SolutionOperations.{}')
+    with self.command_group('operationsmanagement solution', operationsmanagement_solution) as g:
         g.custom_command('list', 'operationsmanagement_solution_list')
         g.custom_show_command('show', 'operationsmanagement_solution_show')
         g.custom_command('create', 'operationsmanagement_solution_create', supports_no_wait=True)
@@ -25,10 +23,8 @@ def load_command_table(self, _):
     from azext_operationsmanagement.generated._client_factory import cf_management_association
     operationsmanagement_management_association = CliCommandType(
         operations_tmpl='azext_operationsmanagement.vendored_sdks.operationsmanagement.operations._management_associati'
-        'on_operations#ManagementAssociationOperations.{}',
-        client_factory=cf_management_association)
-    with self.command_group('operationsmanagement management-association', operationsmanagement_management_association,
-                             client_factory=cf_management_association) as g:
+        'on_operations#ManagementAssociationOperations.{}')
+    with self.command_group('operationsmanagement management-association', operationsmanagement_management_association) as g:
         g.custom_command('list', 'operationsmanagement_management_association_list')
         g.custom_show_command('show', 'operationsmanagement_management_association_show')
         g.custom_command('create', 'operationsmanagement_management_association_create')
@@ -38,11 +34,9 @@ def load_command_table(self, _):
     from azext_operationsmanagement.generated._client_factory import cf_management_configuration
     operationsmanagement_management_configuration = CliCommandType(
         operations_tmpl='azext_operationsmanagement.vendored_sdks.operationsmanagement.operations._management_configura'
-        'tion_operations#ManagementConfigurationOperations.{}',
-        client_factory=cf_management_configuration)
+        'tion_operations#ManagementConfigurationOperations.{}')
     with self.command_group('operationsmanagement management-configuration',
-                            operationsmanagement_management_configuration,
-                            client_factory=cf_management_configuration) as g:
+                            operationsmanagement_management_configuration) as g:
         g.custom_command('list', 'operationsmanagement_management_configuration_list')
         g.custom_show_command('show', 'operationsmanagement_management_configuration_show')
         g.custom_command('create', 'operationsmanagement_management_configuration_create')
