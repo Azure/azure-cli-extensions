@@ -62,7 +62,7 @@ class TestIndex(unittest.TestCase):
                 parsed_filename = WHEEL_INFO_RE(item['filename'])
                 p = parsed_filename.groupdict()
                 self.assertTrue(p.get('name'), "Can't get name for {}".format(item['filename']))
-                built_wheel = 'py3' in p.get('pyver') and p.get('abi') == 'none' and p.get('plat') == 'any'
+                built_wheel = p.get('abi') == 'none' and p.get('plat') == 'any'
                 self.assertTrue(built_wheel,
                                 "{} of {} not platform independent wheel. "
                                 "It should end in -none-any.whl".format(item['filename'], ext_name))
