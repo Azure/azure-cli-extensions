@@ -907,16 +907,18 @@
         ],
         "azure-cli-ml": [
             {
-                "downloadUrl": "https://azurecliext.blob.core.windows.net/release/azure_cli_ml-1.1.5-py2.py3-none-any.whl",
-                "filename": "azure_cli_ml-1.1.5-py2.py3-none-any.whl",
+                "downloadUrl": "https://azurecliext.blob.core.windows.net/release/azure_cli_ml-1.2.0-py2.py3-none-any.whl",
+                "filename": "azure_cli_ml-1.2.0-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.minCliCoreVersion": "2.0.28",
                     "classifiers": [
                         "Development Status :: 3 - Alpha",
                         "Intended Audience :: Developers",
                         "Intended Audience :: System Administrators",
-                        "Programming Language :: Python :: 2.7",
-                        "Programming Language :: Python :: 3.5"
+                        "Programming Language :: Python :: 3.5",
+                        "Programming Language :: Python :: 3.6",
+                        "Programming Language :: Python :: 3.7",
+                        "Programming Language :: Python :: 3.8"
                     ],
                     "description_content_type": "text/x-rst",
                     "extensions": {
@@ -942,11 +944,12 @@
                     "license": "Proprietary https://aka.ms/azureml-preview-sdk-license ",
                     "metadata_version": "2.0",
                     "name": "azure-cli-ml",
+                    "requires_python": ">=3.5,<4",
                     "run_requires": [
                         {
                             "requires": [
                                 "adal (>=1.2.1)",
-                                "azureml-cli-common (==1.1.5.*)",
+                                "azureml-cli-common (~=1.2.0)",
                                 "docker (>=3.7.2)",
                                 "msrest (>=0.6.6)",
                                 "pyyaml (>=5.1.0)",
@@ -965,9 +968,9 @@
                             ]
                         }
                     ],
-                    "version": "1.1.5"
+                    "version": "1.2.0"
                 },
-                "sha256Digest": "6586eb997786bc190520247ebb1c2b529cb79a33f78761f3e7ef1319470a3d2e"
+                "sha256Digest": "e7ce7546a370074d9ab64022130a0d5bfa8765943c5e3eba9536dbb2e1bf9e54"
             }
         ],
         "azure-devops": [
