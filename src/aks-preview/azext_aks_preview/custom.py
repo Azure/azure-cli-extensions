@@ -1483,7 +1483,7 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
     normalized_fqdn = mc.fqdn.replace('.', '-')
     token_in_storage_account_url = readonly_sas_token if readonly_sas_token is not None else sas_token
     log_storage_account_url = f"https://{storage_account_name}.blob.core.windows.net/" \
-                              f"{normalized_fqdn}?{token_in_storage_account_url}"
+                              f"{_trim_fqdn_name_containing_hcp(normalized_fqdn)}?{token_in_storage_account_url}"
 
     print(f'{colorama.Fore.GREEN}Your logs are being uploaded to storage account {format_bright(storage_account_name)}')
 
@@ -1500,7 +1500,21 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
     else:
         display_diagnostics_report(temp_kubeconfig_path)
 
-    return
+
+def _trim_fqdn_name_containing_hcp(normalized_fqdn: str) -> str:
+    """
+    Trims the storage blob name and takes everything prior to "-hcp-".
+    Currently it is displayed wrong: i.e. at time of creation cli has
+    following limitation:
+    https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/
+    error-storage-account-name
+
+    :param normalized_fqdn: storage blob name
+    :return: storage_name_without_hcp: Storage name without the hcp value
+    attached
+    """
+    storage_name_without_hcp, _, _ = normalized_fqdn.partition('-hcp-')
+    return storage_name_without_hcp
 
 
 def aks_kanalyze(cmd, client, resource_group_name, name):
