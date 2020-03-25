@@ -17,7 +17,7 @@ from azure.cli.core._session import SESSION
 from knack.log import get_logger
 from knack.util import todict, CLIError, ensure_dir
 
-from azext_resourcegraph.resource_graph_enums import IncludeOptionsEnum
+from azext_resourcegraph.resource_graph_enums import IncludeOptionsEnum, ResourceGraphTablesEnum
 from azext_resourcegraph.vendored_sdks.resourcegraph.models import ResultTruncated
 from .vendored_sdks.resourcegraph import ResourceGraphClient
 from .vendored_sdks.resourcegraph.models import \
@@ -49,7 +49,15 @@ def execute_query(client, graph_query, first, skip, subscriptions, include):
 
     if include == IncludeOptionsEnum.display_names:
         try:
-            full_query = _get_extension() + "| " + graph_query
+            extension = _get_extension()
+            first_part, _, following_parts = graph_query.partition("|")
+
+            if first_part.lower().strip() in ResourceGraphTablesEnum.__members__.values():
+                first_part = first_part + "| " + extension
+            else:
+                first_part = extension + "| " + first_part
+
+            full_query = first_part + "|" + following_parts
 
         except Exception as e:
             __logger.warning("Failed to include displayNames to result. Error: %s", e)
