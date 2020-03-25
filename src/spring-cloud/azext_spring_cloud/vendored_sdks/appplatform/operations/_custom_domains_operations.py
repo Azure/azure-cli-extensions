@@ -247,7 +247,7 @@ class CustomDomainsOperations(object):
             return client_raw_response
     delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/domains/{domainName}'}
 
-    def update(
+    def patch(
             self, resource_group_name, service_name, app_name, domain_name, properties=None, custom_headers=None, raw=False, **operation_config):
         """Update custom domain of one lifecycle application.
 
@@ -277,7 +277,7 @@ class CustomDomainsOperations(object):
         domain_resource = models.CustomDomainResource(properties=properties)
 
         # Construct URL
-        url = self.update.metadata['url']
+        url = self.patch.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -323,7 +323,7 @@ class CustomDomainsOperations(object):
             return client_raw_response
 
         return deserialized
-    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/domains/{domainName}'}
+    patch.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/domains/{domainName}'}
 
     def list(
             self, resource_group_name, service_name, app_name, custom_headers=None, raw=False, **operation_config):
@@ -342,58 +342,68 @@ class CustomDomainsOperations(object):
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: CustomDomainResourceCollection or ClientRawResponse if
-         raw=true
-        :rtype: ~azure.mgmt.appplatform.models.CustomDomainResourceCollection
-         or ~msrest.pipeline.ClientRawResponse
+        :return: An iterator like instance of CustomDomainResource
+        :rtype:
+         ~azure.mgmt.appplatform.models.CustomDomainResourcePaged[~azure.mgmt.appplatform.models.CustomDomainResource]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
-        # Construct URL
-        url = self.list.metadata['url']
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'serviceName': self._serialize.url("service_name", service_name, 'str'),
-            'appName': self._serialize.url("app_name", app_name, 'str')
-        }
-        url = self._client.format_url(url, **path_format_arguments)
+        def prepare_request(next_link=None):
+            if not next_link:
+                # Construct URL
+                url = self.list.metadata['url']
+                path_format_arguments = {
+                    'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+                    'serviceName': self._serialize.url("service_name", service_name, 'str'),
+                    'appName': self._serialize.url("app_name", app_name, 'str')
+                }
+                url = self._client.format_url(url, **path_format_arguments)
 
-        # Construct parameters
-        query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+                # Construct parameters
+                query_parameters = {}
+                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
-        # Construct headers
-        header_parameters = {}
-        header_parameters['Accept'] = 'application/json'
-        if self.config.generate_client_request_id:
-            header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
-        if custom_headers:
-            header_parameters.update(custom_headers)
-        if self.config.accept_language is not None:
-            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
+            else:
+                url = next_link
+                query_parameters = {}
 
-        # Construct and send request
-        request = self._client.get(url, query_parameters, header_parameters)
-        response = self._client.send(request, stream=False, **operation_config)
+            # Construct headers
+            header_parameters = {}
+            header_parameters['Accept'] = 'application/json'
+            if self.config.generate_client_request_id:
+                header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
+            if custom_headers:
+                header_parameters.update(custom_headers)
+            if self.config.accept_language is not None:
+                header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
-        if response.status_code not in [200]:
-            exp = CloudError(response)
-            exp.request_id = response.headers.get('x-ms-request-id')
-            raise exp
+            # Construct and send request
+            request = self._client.get(url, query_parameters, header_parameters)
+            return request
 
-        deserialized = None
-        if response.status_code == 200:
-            deserialized = self._deserialize('CustomDomainResourceCollection', response)
+        def internal_paging(next_link=None):
+            request = prepare_request(next_link)
 
+            response = self._client.send(request, stream=False, **operation_config)
+
+            if response.status_code not in [200]:
+                exp = CloudError(response)
+                exp.request_id = response.headers.get('x-ms-request-id')
+                raise exp
+
+            return response
+
+        # Deserialize response
+        header_dict = None
         if raw:
-            client_raw_response = ClientRawResponse(deserialized, response)
-            return client_raw_response
+            header_dict = {}
+        deserialized = models.CustomDomainResourcePaged(internal_paging, self._deserialize.dependencies, header_dict)
 
         return deserialized
     list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/domains'}
 
-    def check_name_availability(
-            self, resource_group_name, service_name, app_name, type, name, custom_headers=None, raw=False, **operation_config):
+    def validate(
+            self, resource_group_name, service_name, app_name, name, custom_headers=None, raw=False, **operation_config):
         """Check the resource name is valid as well as not in use.
 
         :param resource_group_name: The name of the resource group that
@@ -404,24 +414,22 @@ class CustomDomainsOperations(object):
         :type service_name: str
         :param app_name: The name of the App resource.
         :type app_name: str
-        :param type: Type of the resource to check name availability
-        :type type: str
-        :param name: Name to be checked
+        :param name: Name to be validated
         :type name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: NameAvailability or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.appplatform.models.NameAvailability or
+        :return: CustomDomainValidateResult or ClientRawResponse if raw=true
+        :rtype: ~azure.mgmt.appplatform.models.CustomDomainValidateResult or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
-        availability_parameters = models.NameAvailabilityParameters(type=type, name=name)
+        validate_payload = models.CustomDomainValidatePayload(name=name)
 
         # Construct URL
-        url = self.check_name_availability.metadata['url']
+        url = self.validate.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -446,7 +454,7 @@ class CustomDomainsOperations(object):
             header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct body
-        body_content = self._serialize.body(availability_parameters, 'NameAvailabilityParameters')
+        body_content = self._serialize.body(validate_payload, 'CustomDomainValidatePayload')
 
         # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters, body_content)
@@ -459,11 +467,11 @@ class CustomDomainsOperations(object):
 
         deserialized = None
         if response.status_code == 200:
-            deserialized = self._deserialize('NameAvailability', response)
+            deserialized = self._deserialize('CustomDomainValidateResult', response)
 
         if raw:
             client_raw_response = ClientRawResponse(deserialized, response)
             return client_raw_response
 
         return deserialized
-    check_name_availability.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/domains/checknameavailability'}
+    validate.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/domains/validate'}

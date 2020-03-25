@@ -77,9 +77,9 @@ class AppsOperations(object):
 
         # Construct parameters
         query_parameters = {}
+        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
         if sync_status is not None:
             query_parameters['syncStatus'] = self._serialize.query("sync_status", sync_status, 'str')
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}

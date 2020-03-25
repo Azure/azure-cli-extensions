@@ -439,9 +439,9 @@ class DeploymentsOperations(object):
 
                 # Construct parameters
                 query_parameters = {}
+                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
                 if version is not None:
                     query_parameters['version'] = self._serialize.query("version", version, '[str]', div=',')
-                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
             else:
                 url = next_link
@@ -517,9 +517,9 @@ class DeploymentsOperations(object):
 
                 # Construct parameters
                 query_parameters = {}
+                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
                 if version is not None:
                     query_parameters['version'] = self._serialize.query("version", version, '[str]', div=',')
-                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
             else:
                 url = next_link

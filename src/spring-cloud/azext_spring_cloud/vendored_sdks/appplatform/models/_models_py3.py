@@ -352,27 +352,6 @@ class CertificateResource(ProxyResource):
         self.properties = properties
 
 
-class CertificateResourceCollection(Model):
-    """Collection compose of certificate resources list and a possible link for
-    next page.
-
-    :param value: The certificate resources list.
-    :type value: list[~azure.mgmt.appplatform.models.CertificateResource]
-    :param next_link: The link to next page of certificate list.
-    :type next_link: str
-    """
-
-    _attribute_map = {
-        'value': {'key': 'value', 'type': '[CertificateResource]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
-    }
-
-    def __init__(self, *, value=None, next_link: str=None, **kwargs) -> None:
-        super(CertificateResourceCollection, self).__init__(**kwargs)
-        self.value = value
-        self.next_link = next_link
-
-
 class CloudError(Model):
     """An error response from the service.
 
@@ -644,25 +623,46 @@ class CustomDomainResource(ProxyResource):
         self.properties = properties
 
 
-class CustomDomainResourceCollection(Model):
-    """Collection compose of a custom domain resources list and a possible link
-    for next page.
+class CustomDomainValidatePayload(Model):
+    """Custom domain validate payload.
 
-    :param value: The custom domain resources list.
-    :type value: list[~azure.mgmt.appplatform.models.CustomDomainResource]
-    :param next_link: The link to next page of custom domain list.
-    :type next_link: str
+    All required parameters must be populated in order to send to Azure.
+
+    :param name: Required. Name to be validated
+    :type name: str
+    """
+
+    _validation = {
+        'name': {'required': True},
+    }
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
+    }
+
+    def __init__(self, *, name: str, **kwargs) -> None:
+        super(CustomDomainValidatePayload, self).__init__(**kwargs)
+        self.name = name
+
+
+class CustomDomainValidateResult(Model):
+    """Validation result for custom domain.
+
+    :param is_valid: Indicates if domain name is valid.
+    :type is_valid: bool
+    :param message: Message of why domain name is invalid.
+    :type message: str
     """
 
     _attribute_map = {
-        'value': {'key': 'value', 'type': '[CustomDomainResource]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
+        'is_valid': {'key': 'isValid', 'type': 'bool'},
+        'message': {'key': 'message', 'type': 'str'},
     }
 
-    def __init__(self, *, value=None, next_link: str=None, **kwargs) -> None:
-        super(CustomDomainResourceCollection, self).__init__(**kwargs)
-        self.value = value
-        self.next_link = next_link
+    def __init__(self, *, is_valid: bool=None, message: str=None, **kwargs) -> None:
+        super(CustomDomainValidateResult, self).__init__(**kwargs)
+        self.is_valid = is_valid
+        self.message = message
 
 
 class DeploymentInstance(Model):
