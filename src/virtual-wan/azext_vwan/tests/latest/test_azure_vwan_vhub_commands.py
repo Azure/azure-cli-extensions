@@ -40,4 +40,3 @@ class AzureVWanVHubScenario(ScenarioTest):
             self.check('provisioningState', 'Succeeded'),
             self.check('name', self.kwargs.get('connection'))
         ])
-
