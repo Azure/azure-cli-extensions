@@ -633,9 +633,9 @@ class DeploymentSettings(Model):
     :type memory_in_gb: int
     :param jvm_options: JVM parameter
     :type jvm_options: str
-    :param main_entry: The path to the .NET executable relative
+    :param net_core_main_entry_path: The path to the .NET executable relative
      to zip root
-    :type main_entry: str
+    :type net_core_main_entry_path: str
     :param instance_count: Instance count. Default value: 1 .
     :type instance_count: int
     :param environment_variables: Collection of environment variables
@@ -656,7 +656,7 @@ class DeploymentSettings(Model):
         'cpu': {'key': 'cpu', 'type': 'int'},
         'memory_in_gb': {'key': 'memoryInGB', 'type': 'int'},
         'jvm_options': {'key': 'jvmOptions', 'type': 'str'},
-        'main_entry': {'key': 'mainEntry', 'type': 'str'},
+        'net_core_main_entry_path': {'key': 'netCoreMainEntryPath', 'type': 'str'},
         'instance_count': {'key': 'instanceCount', 'type': 'int'},
         'environment_variables': {'key': 'environmentVariables', 'type': '{str}'},
         'runtime_version': {'key': 'runtimeVersion', 'type': 'str'},
@@ -667,7 +667,7 @@ class DeploymentSettings(Model):
         self.cpu = kwargs.get('cpu', 1)
         self.memory_in_gb = kwargs.get('memory_in_gb', 1)
         self.jvm_options = kwargs.get('jvm_options', None)
-        self.main_entry = kwargs.get('main_entry', None)
+        self.net_core_main_entry_path = kwargs.get('net_core_main_entry_path', None)
         self.instance_count = kwargs.get('instance_count', 1)
         self.environment_variables = kwargs.get('environment_variables', None)
         self.runtime_version = kwargs.get('runtime_version', None)

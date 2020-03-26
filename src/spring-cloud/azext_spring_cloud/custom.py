@@ -128,7 +128,7 @@ def app_create(cmd, client, resource_group, service, name,
         instance_count=instance_count,
         environment_variables=env,
         jvm_options=jvm_options,
-        main_entry=None,
+        netcoreMainEntryPath=None,
         runtime_version=runtime_version)
 
     file_type = "NetCoreZip" if runtime_version == AppPlatformEnums.RuntimeVersion.net_core_31 else "Jar"
@@ -202,7 +202,7 @@ def app_update(cmd, client, resource_group, service, name,
         instance_count=None,
         environment_variables=env,
         jvm_options=jvm_options,
-        main_entry=main_entry,
+        net_core_main_entry_path=main_entry,
         runtime_version=runtime_version,)
     properties = models.DeploymentResourceProperties(
         deployment_settings=deployment_settings)
@@ -989,7 +989,7 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
         memory_in_gb=memory,
         environment_variables=env,
         jvm_options=jvm_options,
-        main_entry=main_entry,
+        net_core_main_entry_path=main_entry,
         runtime_version=runtime_version,
         instance_count=instance_count,)
     user_source_info = models.UserSourceInfo(
