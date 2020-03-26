@@ -10,21 +10,21 @@ from knack.help_files import helps
 
 helps['portal dashboard'] = """
     type: group
-    short-summary: portal dashboard
+    short-summary: Manage portal dashboards
 """
 
 helps['portal dashboard list'] = """
     type: command
-    short-summary: Gets all the dashboards within a subscription.
+    short-summary: Lists the dashboards within a subscription or resource group.
     examples:
-      - name: List all custom resource providers on the resourceGroup
+      - name: List all dashboards in the resourceGroup
         text: |-
                az portal dashboard list --resource-group "testRG"
 """
 
 helps['portal dashboard show'] = """
     type: command
-    short-summary: Gets the Dashboard.
+    short-summary: Gets details for a single dashboard.
     examples:
       - name: Get a Dashboard
         text: |-
@@ -33,7 +33,7 @@ helps['portal dashboard show'] = """
 
 helps['portal dashboard create'] = """
     type: command
-    short-summary: Creates or updates a Dashboard.
+    short-summary: Creates or updates a dashboard.
     examples:
       - name: Create or update a Dashboard
         text: |-
@@ -44,7 +44,7 @@ helps['portal dashboard create'] = """
 
 helps['portal dashboard update'] = """
     type: command
-    short-summary: Updates an existing Dashboard.
+    short-summary: Updates an existing dashboard.
     examples:
       - name: Update a Dashboard
         text: |-
@@ -54,7 +54,7 @@ helps['portal dashboard update'] = """
 
 helps['portal dashboard delete'] = """
     type: command
-    short-summary: Deletes the Dashboard.
+    short-summary: Deletes a dashboard.
     examples:
       - name: Delete a Dashboard
         text: |-
@@ -63,7 +63,7 @@ helps['portal dashboard delete'] = """
 
 helps['portal dashboard import'] = """
     type: command
-    short-summary: Imports the Dashboard.
+    short-summary: Imports a dashboard from a JSON file.
     examples:
       - name: Import a Dashboard
         text: |-
