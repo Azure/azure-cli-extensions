@@ -73,7 +73,8 @@ from ._client_factory import cf_container_registry_service
 from ._client_factory import cf_storage
 
 
-from ._helpers import _populate_api_server_access_profile, _set_vm_set_type, _set_outbound_type
+from ._helpers import (_populate_api_server_access_profile, _set_vm_set_type,
+                       _set_outbound_type, _parse_comma_separated_list)
 from ._loadbalancer import (set_load_balancer_sku, is_load_balancer_profile_provided,
                             update_load_balancer_profile, create_load_balancer_profile)
 from ._consts import CONST_INGRESS_APPGW_ADDON_NAME
@@ -748,6 +749,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                appgw_subnet_id=None,
                appgw_shared=None,
                appgw_watch_namespace=None,
+               enable_aad=False,
+               aad_admin_group_object_ids=None,
                no_wait=False):
     if not no_ssh_key:
         try:
@@ -932,13 +935,27 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                                'Are you an Owner on this subscription?')
 
     aad_profile = None
-    if any([aad_client_app_id, aad_server_app_id, aad_server_app_secret, aad_tenant_id]):
+    if enable_aad:
+        if any([aad_client_app_id, aad_server_app_id, aad_server_app_secret]):
+            raise CLIError('"--enable-aad" cannot be used together with '
+                           '"--aad-client-app-id/--aad-server-app-id/--aad-server-app-secret"')
+
         aad_profile = ManagedClusterAADProfile(
-            client_app_id=aad_client_app_id,
-            server_app_id=aad_server_app_id,
-            server_app_secret=aad_server_app_secret,
+            managed=True,
+            admin_group_object_ids=_parse_comma_separated_list(aad_admin_group_object_ids),
             tenant_id=aad_tenant_id
         )
+    else:
+        if aad_admin_group_object_ids is not None:
+            raise CLIError('"--admin-aad-object-id" can only be used together with "--enable-aad"')
+
+        if any([aad_client_app_id, aad_server_app_id, aad_server_app_secret]):
+            aad_profile = ManagedClusterAADProfile(
+                client_app_id=aad_client_app_id,
+                server_app_id=aad_server_app_id,
+                server_app_secret=aad_server_app_secret,
+                tenant_id=aad_tenant_id
+            )
 
     # Check that both --disable-rbac and --enable-rbac weren't provided
     if all([disable_rbac, enable_rbac]):
@@ -1077,7 +1094,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                enable_pod_security_policy=False,
                disable_pod_security_policy=False,
                attach_acr=None,
-               detach_acr=None):
+               detach_acr=None,
+               aad_tenant_id=None,
+               aad_admin_group_object_ids=None):
     update_autoscaler = enable_cluster_autoscaler or disable_cluster_autoscaler or update_cluster_autoscaler
     update_acr = attach_acr is not None or detach_acr is not None
     update_pod_security = enable_pod_security_policy or disable_pod_security_policy
@@ -1086,6 +1105,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                                                           load_balancer_outbound_ip_prefixes,
                                                           load_balancer_outbound_ports,
                                                           load_balancer_idle_timeout)
+    update_aad_profile = not (aad_tenant_id is None and aad_admin_group_object_ids is None)
     # pylint: disable=too-many-boolean-expressions
     if not update_autoscaler and \
        cluster_autoscaler_profile is None and \
@@ -1093,7 +1113,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
        not update_lb_profile \
        and api_server_authorized_ip_ranges is None and \
        not update_pod_security and \
-       not update_lb_profile:
+       not update_lb_profile and \
+       not update_aad_profile:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
@@ -1105,7 +1126,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--detach-acr" or '
                        '"--load-balancer-managed-outbound-ip-count" or '
                        '"--load-balancer-outbound-ips" or '
-                       '"--load-balancer-outbound-ip-prefixes"')
+                       '"--load-balancer-outbound-ip-prefixes" or '
+                       '"--aad-tenant-id" or '
+                       '"--aad-admin-group-object-ids"')
 
     instance = client.get(resource_group_name, name)
 
@@ -1213,6 +1236,15 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
     if api_server_authorized_ip_ranges is not None:
         instance.api_server_access_profile = \
             _populate_api_server_access_profile(api_server_authorized_ip_ranges, instance)
+
+    if update_aad_profile:
+        if instance.aad_profile is None or not instance.aad_profile.managed:
+            raise CLIError('Cannot specify "--aad-tenant-id/--aad-admin-group-object-ids"'
+                           ' if managed aad not is enabled')
+        if aad_tenant_id is not None:
+            instance.aad_profile.tenant_id = aad_tenant_id
+        if aad_admin_group_object_ids is not None:
+            instance.aad_profile.admin_group_object_ids = _parse_comma_separated_list(aad_admin_group_object_ids)
 
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
 
