@@ -124,7 +124,7 @@ helps['aks create'] = """
         - name: --outbound-type
           type: string
           short-summary: How outbound traffic will be configured for a cluster.
-          long-summary: Select between loadBalancer and userDefinedRouting. If not set, defaults to type loadBalancer. Requires --network-plugin to be azure and a standard load balancer SKU.
+          long-summary: Select between loadBalancer and userDefinedRouting. If not set, defaults to type loadBalancer. Requires --vnet-subnet-id to be provided with a preconfigured route table and --load-balancer-sku to be Standard.
         - name: --enable-addons -a
           type: string
           short-summary: Enable the Kubernetes addons in a comma-separated list.
@@ -260,8 +260,8 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --api-server-authorized-ip-ranges 193.168.1.0/24,194.168.1.0/24,195.168.1.0
         - name: Create a kubernetes cluster with server side encryption using your owned key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --node-osdisk-diskencryptionset-id <disk-encryption-set-resource-id>
-        - name: Create a kubernetes cluster with userDefinedRouting, standard load balancer SKU and the azure network plugin
-          text: az aks create -g MyResourceGroup -n MyManagedCluster --outbound-type userDefinedRouting --network-plugin azure --load-balancer-sku standard
+        - name: Create a kubernetes cluster with userDefinedRouting, standard load balancer SKU and a custom subnet preconfigured with a route table
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --outbound-type userDefinedRouting --load-balancer-sku standard --vnet-subnet-id customUserSubnetVnetID
 
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 
