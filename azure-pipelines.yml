@@ -46,8 +46,7 @@ jobs:
       set -ev
 
       # prepare and activate virtualenv
-      pip install virtualenv
-      python -m venv venv/
+      python -m venv env/
       source ./venv/bin/activate
 
       # clone azure-cli
