@@ -2074,6 +2074,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       spot_max_price=float('nan'),
                       public_ip_per_vm=False,
                       labels=None,
+                      mode="User",
                       no_wait=False):
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
@@ -2112,7 +2113,8 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         availability_zones=node_zones,
         node_taints=taints_array,
         scale_set_priority=priority,
-        enable_node_public_ip=public_ip_per_vm
+        enable_node_public_ip=public_ip_per_vm,
+        mode=mode
     )
 
     if priority == CONST_SCALE_SET_PRIORITY_SPOT:
@@ -2169,14 +2171,16 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
                          disable_cluster_autoscaler=False,
                          update_cluster_autoscaler=False,
                          min_count=None, max_count=None,
+                         mode=None,
                          no_wait=False):
 
-    update_flags = enable_cluster_autoscaler + disable_cluster_autoscaler + update_cluster_autoscaler
-    if update_flags != 1:
-        if update_flags != 0 or tags is None:
-            raise CLIError('Please specify "--enable-cluster-autoscaler" or '
-                           '"--disable-cluster-autoscaler" or '
-                           '"--update-cluster-autoscaler"')
+    update_autoscaler = enable_cluster_autoscaler + disable_cluster_autoscaler + update_cluster_autoscaler
+
+    if (update_autoscaler != 1 and not tags and not mode):
+        raise CLIError('Please specify one or more of "--enable-cluster-autoscaler" or '
+                       '"--disable-cluster-autoscaler" or '
+                       '"--update-cluster-autoscaler" or '
+                       '"--tags" or "--mode"')
 
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
     node_count = instance.count
@@ -2218,6 +2222,8 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
         instance.max_count = None
 
     instance.tags = tags
+    if mode is not None:
+        instance.mode = mode
 
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
 
