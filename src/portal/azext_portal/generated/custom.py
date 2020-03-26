@@ -78,7 +78,7 @@ def parse_dashboard_json(input_path):
             try:
                 dashboard = json.load(json_file)
             except json.decoder.JSONDecodeError as ex:
-                raise CLIError('JSON decode error for {}: {}'.format(json_file, str(ex)))
+                raise CLIError('There was an error decoding the JSON file {}: {}'.format(json_file, str(ex)))
             if 'location' not in dashboard:
                 raise CLIError(str(json_file) + " does not contain the property 'location'")
             if 'properties' not in dashboard:
