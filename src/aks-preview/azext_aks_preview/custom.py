@@ -74,7 +74,8 @@ from ._client_factory import cf_storage
 
 
 from ._helpers import (_populate_api_server_access_profile, _set_vm_set_type,
-                       _set_outbound_type, _parse_comma_separated_list)
+                       _set_outbound_type, _parse_comma_separated_list,
+                       _trim_fqdn_name_containing_hcp)
 from ._loadbalancer import (set_load_balancer_sku, is_load_balancer_profile_provided,
                             update_load_balancer_profile, create_load_balancer_profile)
 from ._consts import CONST_INGRESS_APPGW_ADDON_NAME
@@ -1499,22 +1500,6 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
               f"anytime to check the analysis results.")
     else:
         display_diagnostics_report(temp_kubeconfig_path)
-
-
-def _trim_fqdn_name_containing_hcp(normalized_fqdn: str) -> str:
-    """
-    Trims the storage blob name and takes everything prior to "-hcp-".
-    Currently it is displayed wrong: i.e. at time of creation cli has
-    following limitation:
-    https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/
-    error-storage-account-name
-
-    :param normalized_fqdn: storage blob name
-    :return: storage_name_without_hcp: Storage name without the hcp value
-    attached
-    """
-    storage_name_without_hcp, _, _ = normalized_fqdn.partition('-hcp-')
-    return storage_name_without_hcp
 
 
 def aks_kanalyze(cmd, client, resource_group_name, name):
