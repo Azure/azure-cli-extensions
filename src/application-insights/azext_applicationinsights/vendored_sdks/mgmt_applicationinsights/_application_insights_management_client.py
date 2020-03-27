@@ -46,11 +46,34 @@ class ApplicationInsightsManagementClient(MultiApiClientMixin, SDKClient):
     :type profile: azure.profiles.KnownProfiles
     """
 
-    DEFAULT_API_VERSION = '2017-10-01'
+    DEFAULT_API_VERSION = '2020-03-01-preview'
     _PROFILE_TAG = "azure.mgmt.applicationinsights.ApplicationInsightsManagementClient"
     LATEST_PROFILE = ProfileDefinition({
         _PROFILE_TAG: {
             None: DEFAULT_API_VERSION,
+            'analytics_items': '2015-05-01',
+            'annotations': '2015-05-01',
+            'api_keys': '2015-05-01',
+            'component_available_features': '2015-05-01',
+            'component_current_billing_features': '2015-05-01',
+            'component_current_pricing_plan': '2017-10-01',
+            'component_feature_capabilities': '2015-05-01',
+            'component_quota_status': '2015-05-01',
+            'components': '2020-02-02-preview',
+            'ea_subscription_list_migration_date': '2017-10-01',
+            'ea_subscription_migrate_to_new_pricing_model': '2017-10-01',
+            'ea_subscription_rollback_to_legacy_pricing_model': '2017-10-01',
+            'export_configurations': '2015-05-01',
+            'favorites': '2015-05-01',
+            'operations': '2015-05-01',
+            'proactive_detection_configurations': '2018-05-01-preview',
+            'queries': '2019-09-01-preview',
+            'query_packs': '2019-09-01-preview',
+            'web_test_locations': '2015-05-01',
+            'web_tests': '2015-05-01',
+            'work_item_configurations': '2015-05-01',
+            'workbook_templates': '2019-10-17-preview',
+            'workbooks': '2018-06-17-preview',
         }},
         _PROFILE_TAG + " latest"
     )
@@ -72,6 +95,7 @@ class ApplicationInsightsManagementClient(MultiApiClientMixin, SDKClient):
     def models(cls, api_version=DEFAULT_API_VERSION):
         """Module depends on the API version:
 
+           * 2015-05-01: :mod:`v2015_05_01.models<azure.mgmt.applicationinsights.v2015_05_01.models>`
            * 2017-10-01: :mod:`v2017_10_01.models<azure.mgmt.applicationinsights.v2017_10_01.models>`
            * 2018-05-01-preview: :mod:`v2018_05_01_preview.models<azure.mgmt.applicationinsights.v2018_05_01_preview.models>`
            * 2018-06-17-preview: :mod:`v2018_06_17_preview.models<azure.mgmt.applicationinsights.v2018_06_17_preview.models>`
@@ -80,7 +104,10 @@ class ApplicationInsightsManagementClient(MultiApiClientMixin, SDKClient):
            * 2020-02-02-preview: :mod:`v2020_02_02_preview.models<azure.mgmt.applicationinsights.v2020_02_02_preview.models>`
            * 2020-03-01-preview: :mod:`v2020_03_01_preview.models<azure.mgmt.applicationinsights.v2020_03_01_preview.models>`
         """
-        if api_version == '2017-10-01':
+        if api_version == '2015-05-01':
+            from .v2015_05_01 import models
+            return models
+        elif api_version == '2017-10-01':
             from .v2017_10_01 import models
             return models
         elif api_version == '2018-05-01-preview':
@@ -104,6 +131,71 @@ class ApplicationInsightsManagementClient(MultiApiClientMixin, SDKClient):
         raise NotImplementedError("APIVersion {} is not available".format(api_version))
 
     @property
+    def analytics_items(self):
+        """Instance depends on the API version:
+
+           * 2015-05-01: :class:`AnalyticsItemsOperations<azure.mgmt.applicationinsights.v2015_05_01.operations.AnalyticsItemsOperations>`
+        """
+        api_version = self._get_api_version('analytics_items')
+        if api_version == '2015-05-01':
+            from .v2015_05_01.operations import AnalyticsItemsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def annotations(self):
+        """Instance depends on the API version:
+
+           * 2015-05-01: :class:`AnnotationsOperations<azure.mgmt.applicationinsights.v2015_05_01.operations.AnnotationsOperations>`
+        """
+        api_version = self._get_api_version('annotations')
+        if api_version == '2015-05-01':
+            from .v2015_05_01.operations import AnnotationsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def api_keys(self):
+        """Instance depends on the API version:
+
+           * 2015-05-01: :class:`APIKeysOperations<azure.mgmt.applicationinsights.v2015_05_01.operations.APIKeysOperations>`
+        """
+        api_version = self._get_api_version('api_keys')
+        if api_version == '2015-05-01':
+            from .v2015_05_01.operations import APIKeysOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def component_available_features(self):
+        """Instance depends on the API version:
+
+           * 2015-05-01: :class:`ComponentAvailableFeaturesOperations<azure.mgmt.applicationinsights.v2015_05_01.operations.ComponentAvailableFeaturesOperations>`
+        """
+        api_version = self._get_api_version('component_available_features')
+        if api_version == '2015-05-01':
+            from .v2015_05_01.operations import ComponentAvailableFeaturesOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def component_current_billing_features(self):
+        """Instance depends on the API version:
+
+           * 2015-05-01: :class:`ComponentCurrentBillingFeaturesOperations<azure.mgmt.applicationinsights.v2015_05_01.operations.ComponentCurrentBillingFeaturesOperations>`
+        """
+        api_version = self._get_api_version('component_current_billing_features')
+        if api_version == '2015-05-01':
+            from .v2015_05_01.operations import ComponentCurrentBillingFeaturesOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
     def component_current_pricing_plan(self):
         """Instance depends on the API version:
 
@@ -112,6 +204,19 @@ class ApplicationInsightsManagementClient(MultiApiClientMixin, SDKClient):
         api_version = self._get_api_version('component_current_pricing_plan')
         if api_version == '2017-10-01':
             from .v2017_10_01.operations import ComponentCurrentPricingPlanOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def component_feature_capabilities(self):
+        """Instance depends on the API version:
+
+           * 2015-05-01: :class:`ComponentFeatureCapabilitiesOperations<azure.mgmt.applicationinsights.v2015_05_01.operations.ComponentFeatureCapabilitiesOperations>`
+        """
+        api_version = self._get_api_version('component_feature_capabilities')
+        if api_version == '2015-05-01':
+            from .v2015_05_01.operations import ComponentFeatureCapabilitiesOperations as OperationClass
         else:
             raise NotImplementedError("APIVersion {} is not available".format(api_version))
         return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
@@ -130,13 +235,29 @@ class ApplicationInsightsManagementClient(MultiApiClientMixin, SDKClient):
         return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
+    def component_quota_status(self):
+        """Instance depends on the API version:
+
+           * 2015-05-01: :class:`ComponentQuotaStatusOperations<azure.mgmt.applicationinsights.v2015_05_01.operations.ComponentQuotaStatusOperations>`
+        """
+        api_version = self._get_api_version('component_quota_status')
+        if api_version == '2015-05-01':
+            from .v2015_05_01.operations import ComponentQuotaStatusOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
     def components(self):
         """Instance depends on the API version:
 
+           * 2015-05-01: :class:`ComponentsOperations<azure.mgmt.applicationinsights.v2015_05_01.operations.ComponentsOperations>`
            * 2020-02-02-preview: :class:`ComponentsOperations<azure.mgmt.applicationinsights.v2020_02_02_preview.operations.ComponentsOperations>`
         """
         api_version = self._get_api_version('components')
-        if api_version == '2020-02-02-preview':
+        if api_version == '2015-05-01':
+            from .v2015_05_01.operations import ComponentsOperations as OperationClass
+        elif api_version == '2020-02-02-preview':
             from .v2020_02_02_preview.operations import ComponentsOperations as OperationClass
         else:
             raise NotImplementedError("APIVersion {} is not available".format(api_version))
@@ -182,13 +303,55 @@ class ApplicationInsightsManagementClient(MultiApiClientMixin, SDKClient):
         return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
+    def export_configurations(self):
+        """Instance depends on the API version:
+
+           * 2015-05-01: :class:`ExportConfigurationsOperations<azure.mgmt.applicationinsights.v2015_05_01.operations.ExportConfigurationsOperations>`
+        """
+        api_version = self._get_api_version('export_configurations')
+        if api_version == '2015-05-01':
+            from .v2015_05_01.operations import ExportConfigurationsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def favorites(self):
+        """Instance depends on the API version:
+
+           * 2015-05-01: :class:`FavoritesOperations<azure.mgmt.applicationinsights.v2015_05_01.operations.FavoritesOperations>`
+        """
+        api_version = self._get_api_version('favorites')
+        if api_version == '2015-05-01':
+            from .v2015_05_01.operations import FavoritesOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def operations(self):
+        """Instance depends on the API version:
+
+           * 2015-05-01: :class:`Operations<azure.mgmt.applicationinsights.v2015_05_01.operations.Operations>`
+        """
+        api_version = self._get_api_version('operations')
+        if api_version == '2015-05-01':
+            from .v2015_05_01.operations import Operations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
     def proactive_detection_configurations(self):
         """Instance depends on the API version:
 
+           * 2015-05-01: :class:`ProactiveDetectionConfigurationsOperations<azure.mgmt.applicationinsights.v2015_05_01.operations.ProactiveDetectionConfigurationsOperations>`
            * 2018-05-01-preview: :class:`ProactiveDetectionConfigurationsOperations<azure.mgmt.applicationinsights.v2018_05_01_preview.operations.ProactiveDetectionConfigurationsOperations>`
         """
         api_version = self._get_api_version('proactive_detection_configurations')
-        if api_version == '2018-05-01-preview':
+        if api_version == '2015-05-01':
+            from .v2015_05_01.operations import ProactiveDetectionConfigurationsOperations as OperationClass
+        elif api_version == '2018-05-01-preview':
             from .v2018_05_01_preview.operations import ProactiveDetectionConfigurationsOperations as OperationClass
         else:
             raise NotImplementedError("APIVersion {} is not available".format(api_version))
@@ -221,6 +384,45 @@ class ApplicationInsightsManagementClient(MultiApiClientMixin, SDKClient):
         return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
+    def web_test_locations(self):
+        """Instance depends on the API version:
+
+           * 2015-05-01: :class:`WebTestLocationsOperations<azure.mgmt.applicationinsights.v2015_05_01.operations.WebTestLocationsOperations>`
+        """
+        api_version = self._get_api_version('web_test_locations')
+        if api_version == '2015-05-01':
+            from .v2015_05_01.operations import WebTestLocationsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def web_tests(self):
+        """Instance depends on the API version:
+
+           * 2015-05-01: :class:`WebTestsOperations<azure.mgmt.applicationinsights.v2015_05_01.operations.WebTestsOperations>`
+        """
+        api_version = self._get_api_version('web_tests')
+        if api_version == '2015-05-01':
+            from .v2015_05_01.operations import WebTestsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def work_item_configurations(self):
+        """Instance depends on the API version:
+
+           * 2015-05-01: :class:`WorkItemConfigurationsOperations<azure.mgmt.applicationinsights.v2015_05_01.operations.WorkItemConfigurationsOperations>`
+        """
+        api_version = self._get_api_version('work_item_configurations')
+        if api_version == '2015-05-01':
+            from .v2015_05_01.operations import WorkItemConfigurationsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
     def workbook_templates(self):
         """Instance depends on the API version:
 
@@ -237,10 +439,13 @@ class ApplicationInsightsManagementClient(MultiApiClientMixin, SDKClient):
     def workbooks(self):
         """Instance depends on the API version:
 
+           * 2015-05-01: :class:`WorkbooksOperations<azure.mgmt.applicationinsights.v2015_05_01.operations.WorkbooksOperations>`
            * 2018-06-17-preview: :class:`WorkbooksOperations<azure.mgmt.applicationinsights.v2018_06_17_preview.operations.WorkbooksOperations>`
         """
         api_version = self._get_api_version('workbooks')
-        if api_version == '2018-06-17-preview':
+        if api_version == '2015-05-01':
+            from .v2015_05_01.operations import WorkbooksOperations as OperationClass
+        elif api_version == '2018-06-17-preview':
             from .v2018_06_17_preview.operations import WorkbooksOperations as OperationClass
         else:
             raise NotImplementedError("APIVersion {} is not available".format(api_version))

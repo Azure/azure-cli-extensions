@@ -42,7 +42,7 @@ def get_metrics_metadata(cmd, client, application, resource_group_name=None):
 
 def create_or_update_component(client, application, resource_group_name, location, tags=None, kind="web", application_type='web'):
     from .vendored_sdks.mgmt_applicationinsights.models import ApplicationInsightsComponent
-    component = ApplicationInsightsComponent(location, kind, application_type=application_type, tags=tags)
+    component = ApplicationInsightsComponent(location=location, kind=kind, application_type=application_type, tags=tags)
     return client.create_or_update(resource_group_name, application, component)
 
 
@@ -118,3 +118,7 @@ def update_component_billing(client, application, resource_group_name, cap=None,
                          resource_name=application,
                          data_volume_cap=billing_features.data_volume_cap,
                          current_billing_features=billing_features.current_billing_features)
+
+
+def get_component_linked_storage_account(client, resource_group_name, application, storage=None):
+    return client.delete(resource_group_name, application)
