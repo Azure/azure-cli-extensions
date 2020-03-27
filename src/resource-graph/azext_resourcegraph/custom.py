@@ -50,14 +50,14 @@ def execute_query(client, graph_query, first, skip, subscriptions, include):
     if include == IncludeOptionsEnum.display_names:
         try:
             extension = _get_extension()
-            first_part, _, following_parts = graph_query.partition("|")
+            first_part, pipe, following_parts = graph_query.partition("|")
 
             if first_part.lower().strip() in ResourceGraphTablesEnum.__members__.values():
                 first_part = first_part + "| " + extension
             else:
                 first_part = extension + "| " + first_part
 
-            full_query = first_part + "|" + following_parts
+            full_query = first_part + pipe + following_parts
 
         except Exception as e:
             __logger.warning("Failed to include displayNames to result. Error: %s", e)
