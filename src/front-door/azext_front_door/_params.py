@@ -36,7 +36,7 @@ def load_arguments(self, _):
 
     frontdoor_name_type = CLIArgumentType(options_list=['--front-door-name', '-f'], help='Name of the Front Door.', completer=get_resource_name_completion_list('Microsoft.Network/frontdoors'), id_part='name')
     waf_policy_name_type = CLIArgumentType(options_list='--policy-name', help='Name of the WAF policy.', completer=get_resource_name_completion_list('Microsoft.Network/frontDoorWebApplicationFirewallPolicies'), id_part='name')
-    rules_engine_name_type = CLIArgumentType(options_list=['--rules-engine-name'], help='Name of the Rules Engine.', completer=get_fd_subresource_completion_list('rules_engines'), id_part='child_name_1')
+    rules_engine_name_type = CLIArgumentType(options_list=['--rules-engine-name', '-r'], help='Name of the Rules Engine.', completer=get_fd_subresource_completion_list('rules_engines'), id_part='child_name_1')
 
     # region FrontDoors
     fd_subresources = [
@@ -268,10 +268,14 @@ def load_arguments(self, _):
     # endregion
 
     # region RulesEngine
+    with self.argument_context('network front-door rules-engine') as c:
+        c.argument('front_door_name', frontdoor_name_type, id_part=None)
+        c.argument('rules_engine_name', rules_engine_name_type, options_list=['--name', '-n'], id_part=None)
+
     with self.argument_context('network front-door rules-engine rule') as c:
-        c.argument('front_door_name', frontdoor_name_type, options_list=['--front-door-name', '-n'])
+        c.argument('front_door_name', frontdoor_name_type, id_part=None)
         c.argument('rules_engine_name', rules_engine_name_type, id_part=None)
-        c.argument('rule_name', help='Name of the rule')
+        c.argument('rule_name', options_list=['--name', '-n'], help='Name of the rule')
         c.argument('action_type', arg_group="Action", arg_type=get_enum_type(['RequestHeader', 'ResponseHeader', 'ForwardRouteOverride', 'RedirectRouteOverride']), help='Action type to apply for a rule.')
         c.argument('header_action', arg_group="Action", arg_type=get_enum_type(HeaderActionType), help='Header action type for the requests.')
         c.argument('header_name', arg_group="Action", help='Name of the header to modify.')
@@ -293,7 +297,7 @@ def load_arguments(self, _):
         c.argument('cache_duration', help='The duration for which the content needs to be cached. Allowed format is ISO 8601 duration')
         c.argument('dynamic_compression', arg_type=get_three_state_flag(positive_label='Enabled', negative_label='Disabled', return_label=True), help='Use dynamic compression for cached content.')
         c.argument('query_parameter_strip_directive', arg_type=get_enum_type(FrontDoorQuery), help='Treatment of URL query terms when forming the cache key.')
-        c.argument('query_parameters', help='Query parameters to include or exclude (comma separated).')
+        c.argument('query_parameters', help='Query parameters to include or exclude (comma separated) when using query-parameter-strip-directive type StripAllExcept or StripOnly respectively.')
 
     with self.argument_context('network front-door rules-engine rule action', arg_group='Redirect Route Override') as c:
         c.argument('redirect_type', arg_type=get_enum_type(FrontDoorRedirectType), help='The redirect type the rule will use when redirecting traffic.')
@@ -309,16 +313,8 @@ def load_arguments(self, _):
     with self.argument_context('network front-door rules-engine rule action remove') as c:
         c.argument('index', type=int, help='0-based index of the request or response header action to remove. Index parameter is not required for "ForwardRouteOverride" or "RedirectRouteOverride" action remove')
 
-    with self.argument_context('network front-door rules-engine list') as c:
-        c.argument('front_door_name', frontdoor_name_type, options_list=['--front-door-name', '-n'], id_part=None)
-
     with self.argument_context('network front-door rules-engine rule list') as c:
-        c.argument('front_door_name', frontdoor_name_type, options_list=['--front-door-name', '-n'], id_part=None)
-
-    with self.argument_context('network front-door rules-engine rule action list') as c:
-        c.argument('front_door_name', frontdoor_name_type, options_list=['--front-door-name', '-n'], id_part=None)
-
-    with self.argument_context('network front-door rules-engine rule condition list') as c:
-        c.argument('front_door_name', frontdoor_name_type, options_list=['--front-door-name', '-n'], id_part=None)
+        c.argument('front_door_name', frontdoor_name_type, id_part=None)
+        c.argument('rules_engine_name', rules_engine_name_type, options_list=['--name', '-n'], id_part=None)
 
     # endregion

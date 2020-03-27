@@ -186,7 +186,7 @@ def load_command_table(self, _):
     with self.command_group('network front-door rules-engine rule', rules_engine_sdk, is_preview=True) as g:
         g.custom_command('create', 'create_rules_engine_rule')
         g.custom_command('delete', 'delete_rules_engine_rule')
-        g.custom_command('show', 'show_rules_engine_rule')
+        g.custom_show_command('show', 'show_rules_engine_rule')
         g.custom_command('list', 'list_rules_engine_rule')
         g.custom_command('update', 'update_rules_engine_rule')
 

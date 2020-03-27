@@ -526,7 +526,7 @@ def routing_rule_usage_helper(route_type, backend_pool=None, custom_forwarding_p
 
 def create_fd_routing_rules(cmd, resource_group_name, front_door_name, item_name, frontend_endpoints, route_type,
                             backend_pool=None, accepted_protocols=None, patterns_to_match=None,
-                            custom_forwarding_path=None, forwarding_protocol=None, disabled=None,
+                            rules_engine=None, custom_forwarding_path=None, forwarding_protocol=None, disabled=None,
                             caching=None, dynamic_compression=None, query_parameter_strip_directive=None,
                             redirect_type='Moved', redirect_protocol='MatchRequest', custom_host=None, custom_path=None,
                             custom_fragment=None, custom_query_string=None):
@@ -546,6 +546,7 @@ def create_fd_routing_rules(cmd, resource_group_name, front_door_name, item_name
             frontend_endpoints=[SubResource(id=x) for x in frontend_endpoints] if frontend_endpoints else None,
             accepted_protocols=accepted_protocols or ['Http'],
             patterns_to_match=patterns_to_match or ['/*'],
+            rules_engine=SubResource(id=rules_engine) if rules_engine else None,
             route_configuration=ForwardingConfiguration(
                 custom_forwarding_path=custom_forwarding_path,
                 forwarding_protocol=forwarding_protocol,
@@ -563,6 +564,7 @@ def create_fd_routing_rules(cmd, resource_group_name, front_door_name, item_name
             frontend_endpoints=[SubResource(id=x) for x in frontend_endpoints] if frontend_endpoints else None,
             accepted_protocols=accepted_protocols or ['Http'],
             patterns_to_match=patterns_to_match or ['/*'],
+            rules_engine=SubResource(id=rules_engine) if rules_engine else None,
             route_configuration=RedirectConfiguration(
                 redirect_type=redirect_type,
                 redirect_protocol=redirect_protocol,
@@ -1206,16 +1208,16 @@ def update_rules_engine_rule(cmd, resource_group_name, front_door_name,
     client = cf_fd_rules_engines(cmd.cli_ctx, None)
     rules_engine = client.get(resource_group_name, front_door_name, rules_engine_name)
 
-    foundRule = False
+    found_rule = False
     for rule in rules_engine.rules:
         if rule.name.lower() == rule_name.lower():
-            foundRule = True
+            found_rule = True
             with UpdateContext(rule) as c:
                 c.update_param('priority', priority, None)
                 c.update_param('match_processing_behavior', match_processing_behavior, None)
             break
 
-    if not foundRule:
+    if not found_rule:
         from knack.util import CLIError
         raise CLIError("rule '{}' not found".format(rule_name))
 
@@ -1229,10 +1231,10 @@ def add_rules_engine_condition(cmd, resource_group_name, front_door_name, rules_
     client = cf_fd_rules_engines(cmd.cli_ctx, None)
     rules_engine = client.get(resource_group_name, front_door_name, rules_engine_name)
 
-    foundRule = False
+    found_rule = False
     for rule in rules_engine.rules:
         if rule.name.upper() == rule_name.upper():
-            foundRule = True
+            found_rule = True
             condition = RulesEngineMatchCondition(rules_engine_match_variable=match_variable,
                                                   rules_engine_operator=operator,
                                                   rules_engine_match_value=match_values,
@@ -1241,7 +1243,7 @@ def add_rules_engine_condition(cmd, resource_group_name, front_door_name, rules_
             if condition is not None:
                 rule.match_conditions.append(condition)
 
-    if not foundRule:
+    if not found_rule:
         from knack.util import CLIError
         raise CLIError("rule '{}' not found".format(rule_name))
 
@@ -1254,10 +1256,10 @@ def remove_rules_engine_condition(cmd, resource_group_name,
     client = cf_fd_rules_engines(cmd.cli_ctx, None)
     rules_engine = client.get(resource_group_name, front_door_name, rules_engine_name)
 
-    foundRule = False
+    found_rule = False
     for rule in rules_engine.rules:
         if rule.name.upper() == rule_name.upper():
-            foundRule = True
+            found_rule = True
 
             if index >= len(rule.match_conditions):
                 from knack.util import CLIError
@@ -1265,7 +1267,7 @@ def remove_rules_engine_condition(cmd, resource_group_name,
 
             rule.match_conditions = [v for (i, v) in enumerate(rule.match_conditions) if i != index]
 
-    if not foundRule:
+    if not found_rule:
         from knack.util import CLIError
         raise CLIError("rule '{}' not found".format(rule_name))
 
@@ -1340,13 +1342,13 @@ def add_rules_engine_action(cmd, resource_group_name, front_door_name, rules_eng
     client = cf_fd_rules_engines(cmd.cli_ctx, None)
     rules_engine = client.get(resource_group_name, front_door_name, rules_engine_name)
 
-    foundRule = False
+    found_rule = False
     for rule in rules_engine.rules:
         if rule.name.upper() == rule_name.upper():
-            foundRule = True
+            found_rule = True
             add_action_helper(rule)
 
-    if not foundRule:
+    if not found_rule:
         from knack.util import CLIError
         raise CLIError("rule '{}' not found".format(rule_name))
 
@@ -1377,10 +1379,10 @@ def remove_rules_engine_action(cmd, resource_group_name, front_door_name, rules_
     client = cf_fd_rules_engines(cmd.cli_ctx, None)
     rules_engine = client.get(resource_group_name, front_door_name, rules_engine_name)
 
-    foundRule = False
+    found_rule = False
     for rule in rules_engine.rules:
         if rule.name.upper() == rule_name.upper():
-            foundRule = True
+            found_rule = True
             remove_action_helper(rule)
             # pylint: disable=len-as-condition
             if len(rule.action.request_header_actions) <= 0 and \
@@ -1389,7 +1391,7 @@ def remove_rules_engine_action(cmd, resource_group_name, front_door_name, rules_
                 from knack.util import CLIError
                 raise CLIError("Cannot remove all actions from rule '{}'".format(rule_name))
 
-    if not foundRule:
+    if not found_rule:
         from knack.util import CLIError
         raise CLIError("rule '{}' not found".format(rule_name))
 
