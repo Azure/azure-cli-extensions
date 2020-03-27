@@ -9,11 +9,26 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from ._configuration import ApplicationInsightsManagementClientConfiguration
-from ._application_insights_management_client import ApplicationInsightsManagementClient
-__all__ = ['ApplicationInsightsManagementClient', 'ApplicationInsightsManagementClientConfiguration']
+from enum import Enum
 
-from .version import VERSION
 
-__version__ = VERSION
+class ApplicationType(str, Enum):
 
+    web = "web"
+    other = "other"
+
+
+class FlowType(str, Enum):
+
+    bluefield = "Bluefield"
+
+
+class RequestSource(str, Enum):
+
+    rest = "rest"
+
+
+class PurgeState(str, Enum):
+
+    pending = "pending"
+    completed = "completed"

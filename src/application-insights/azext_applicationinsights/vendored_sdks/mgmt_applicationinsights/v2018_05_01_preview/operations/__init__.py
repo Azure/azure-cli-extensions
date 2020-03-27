@@ -9,11 +9,8 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from ._configuration import ApplicationInsightsManagementClientConfiguration
-from ._application_insights_management_client import ApplicationInsightsManagementClient
-__all__ = ['ApplicationInsightsManagementClient', 'ApplicationInsightsManagementClientConfiguration']
+from ._proactive_detection_configurations_operations import ProactiveDetectionConfigurationsOperations
 
-from .version import VERSION
-
-__version__ = VERSION
-
+__all__ = [
+    'ProactiveDetectionConfigurationsOperations',
+]
