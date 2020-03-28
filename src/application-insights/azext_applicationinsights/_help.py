@@ -81,9 +81,9 @@ helps['monitor app-insights component show'] = """
 
 helps['monitor app-insights component delete'] = """
     type: command
-    short-summary: Create a new Application Insights resource.
+    short-summary: Delete a new Application Insights resource.
     examples:
-      - name: Create a component with kind web and location.
+      - name: Delete a component with kind web and location.
         text: |
           az monitor app-insights component delete --app demoApp -g demoRg
 """
