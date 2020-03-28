@@ -2,6 +2,33 @@
 
 Release History
 ===============
+0.4.38
++++++
+* Add support for AAD V2.
+
+0.4.37
++++++
+* Added slb outbound ip fix
+
+0.4.36
++++++
+* Added --uptime-sla for paid service
+
+0.4.35
++++++
+* Added support for creation time node labels
+
+0.4.34
++++++
+* Remove preview flag for private cluster feature.
+
+0.4.33
++++++
+* Adding az aks get-credentials --context argument
+
+0.4.32
++++++
+* Adding support for user assigned msi for monitoring addon.
 
 0.4.31
 +++++

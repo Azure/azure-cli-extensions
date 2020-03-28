@@ -1,7 +1,7 @@
 # --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
-# # --------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------
 from uuid import uuid4
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
@@ -21,7 +21,7 @@ logger = get_logger(__name__)
 
 def create_hack(cmd, name, runtime, location, database=None, ai=None):
     # TODO: Update this to use a default location, or prompt??
-    name = name + str(uuid4())[:5]
+    name = f'{name}-{str(uuid4())[:5]}'
     # # Create RG
     logger.warning("Creating resource group...")
     _create_resource_group(cmd, name, location)
