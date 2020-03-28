@@ -11,7 +11,6 @@ from knack.help_files import helps
 ACS_SERVICE_PRINCIPAL_CACHE = os.path.join('$HOME', '.azure', 'acsServicePrincipal.json')
 AKS_SERVICE_PRINCIPAL_CACHE = os.path.join('$HOME', '.azure', 'aksServicePrincipal.json')
 
-
 # AKS command help
 helps['aks create'] = """
     type: command
@@ -68,6 +67,12 @@ helps['aks create'] = """
         - name: --windows-admin-password
           type: string
           short-summary: User account password to use on windows node VMs.
+        - name: --enable-aad
+          type: bool
+          short-summary: Enable managed AAD feature for cluster.
+        - name: --aad-admin-group-object-ids
+          type: string
+          short-summary: Comma seperated list of aad group object IDs that will be set as cluster admin.
         - name: --aad-client-app-id
           type: string
           short-summary: The ID of an Azure Active Directory client application of type "Native". This
@@ -108,15 +113,29 @@ helps['aks create'] = """
           type: string
           short-summary: Load balancer outbound IP prefix resource IDs.
           long-summary: Comma-separated public IP prefix resource IDs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only.
+        - name: --load-balancer-outbound-ports
+          type: int
+          short-summary: Load balancer outbound allocated ports.
+          long-summary: Desired static number of outbound ports per VM in the load balancer backend pool. By default, set to 0 which uses the default allocation based on the number of VMs. Please specify a value in the range of [0, 64000] that is a multiple of 8.
+        - name: --load-balancer-idle-timeout
+          type: int
+          short-summary: Load balancer idle timeout in minutes.
+          long-summary: Desired idle timeout for load balancer outbound flows, default is 30 minutes. Please specify a value in the range of [4, 120].
+        - name: --outbound-type
+          type: string
+          short-summary: How outbound traffic will be configured for a cluster.
+          long-summary: Select between loadBalancer and userDefinedRouting. If not set, defaults to type loadBalancer. Requires --vnet-subnet-id to be provided with a preconfigured route table and --load-balancer-sku to be Standard.
         - name: --enable-addons -a
           type: string
           short-summary: Enable the Kubernetes addons in a comma-separated list.
           long-summary: |-
             These addons are available:
-                http_application_routing - configure ingress with automatic public DNS name creation.
-                monitoring - turn on Log Analytics monitoring. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace.
-                virtual-node - enable AKS Virtual Node (PREVIEW). Requires --subnet-name to provide the name of an existing subnet for the Virtual Node to use.
-                azure-policy - enable Azure policy (PREVIEW).
+                http_application_routing  - configure ingress with automatic public DNS name creation.
+                monitoring                - turn on Log Analytics monitoring. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace.
+                                            If monitoring addon is enabled --no-wait argument will have no effect
+                virtual-node              - enable AKS Virtual Node (PREVIEW). Requires --subnet-name to provide the name of an existing subnet for the Virtual Node to use.
+                azure-policy              - enable Azure policy (PREVIEW).
+                ingress-appgw             - enable Applicaiton Gateway Ingress Controller addon (PREVIEW).
         - name: --disable-rbac
           type: bool
           short-summary: Disable Kubernetes Role-Based Access Control.
@@ -166,6 +185,9 @@ helps['aks create'] = """
         - name: --max-count
           type: int
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100].
+        - name: --cluster-autoscaler-profile
+          type: list
+          short-summary: Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.
         - name: --vm-set-type
           type: string
           short-summary: Agent pool vm set type. VirtualMachineScaleSets or AvailabilitySet.
@@ -175,12 +197,15 @@ helps['aks create'] = """
         - name: --node-resource-group
           type: string
           short-summary: The node resource group is the resource group where all customer's resources will be created in, such as virtual machines.
+        - name: --uptime-sla
+          type: bool
+          short-summary: Enable paid managed cluster service with high availability.
         - name: --attach-acr
           type: string
           short-summary: Grant the 'acrpull' role assignment to the ACR specified by name or resource ID.
         - name: --enable-private-cluster
           type: string
-          short-summary: (PREVIEW) Enable private cluster.
+          short-summary: Enable private cluster.
         - name: --enable-managed-identity
           type: bool
           short-summary: (PREVIEW) Using a system assigned managed identity to manage cluster resource group.
@@ -190,6 +215,24 @@ helps['aks create'] = """
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+        - name: --appgw-name
+          type: string
+          short-summary: Name of the application gateway to create/use in the node resource group
+        - name: --appgw-subnet-prefix
+          type: string
+          short-summary: Subnet Prefix to use for a new subnet created to deploy the Application Gateway
+        - name: --appgw-id
+          type: string
+          short-summary: Resource Id of an existing Application Gateway to use with AGIC
+        - name: --appgw-subnet-id
+          type: string
+          short-summary: Resource Id of an existing Subnet used to deploy the Application Gateway
+        - name: --appgw-shared
+          type: bool
+          short-summary: Use shared flag if application gateway will be shared
+        - name: --appgw-watch-namespace
+          type: string
+          short-summary: Specify the namespace, which AGIC should watch. This could be a single string value, or a comma-separated list of namespaces.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -209,12 +252,16 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-outbound-ips <ip-resource-id-1,ip-resource-id-2>
         - name: Create a kubernetes cluster with standard SKU load balancer and use the provided public IP prefixes for the load balancer outbound connection usage.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-outbound-ip-prefixes <ip-prefix-resource-id-1,ip-prefix-resource-id-2>
+        - name: Create a kubernetes cluster with a standard SKU load balancer, with two outbound AKS managed IPs an idle flow timeout of 5 minutes and 8000 allocated ports per machine
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-managed-outbound-ip-count 2 --load-balancer-idle-timeout 5 --load-balancer-outbound-ports 8000
         - name: Create a kubernetes cluster with basic SKU load balancer and AvailabilitySet vm set type.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-sku basic --vm-set-type AvailabilitySet
         - name: Create a kubernetes cluster with authorized apiserver IP ranges.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --api-server-authorized-ip-ranges 193.168.1.0/24,194.168.1.0/24,195.168.1.0
         - name: Create a kubernetes cluster with server side encryption using your owned key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --node-osdisk-diskencryptionset-id <disk-encryption-set-resource-id>
+        - name: Create a kubernetes cluster with userDefinedRouting, standard load balancer SKU and a custom subnet preconfigured with a route table
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --outbound-type userDefinedRouting --load-balancer-sku standard --vnet-subnet-id customUserSubnetVnetID
 
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 
@@ -244,7 +291,7 @@ helps['aks upgrade'] = """
 
 helps['aks update'] = """
     type: command
-    short-summary: Update a managed Kubernetes cluster to enable/disable cluster-autoscaler or change min-count or max-count
+    short-summary: Update a managed Kubernetes cluster properties, such as enable/disable cluster-autoscaler
     parameters:
         - name: --enable-cluster-autoscaler -e
           type: bool
@@ -261,18 +308,29 @@ helps['aks update'] = """
         - name: --max-count
           type: int
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100]
+        - name: --cluster-autoscaler-profile
+          type: list
+          short-summary: Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.
         - name: --load-balancer-managed-outbound-ip-count
           type: int
           short-summary: Load balancer managed outbound IP count.
-          long-summary: Desired number of managed outbound IPs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only.
+          long-summary: Desired number of managed outbound IPs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only. If updated, it will wipe off the existing setting on Load balancer managed outbound IP count; Load balancer outbound IP resource IDs and Load balancer outbound IP prefix resource IDs.
         - name: --load-balancer-outbound-ips
           type: string
           short-summary: Load balancer outbound IP resource IDs.
-          long-summary: Comma-separated public IP resource IDs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only.
+          long-summary: Comma-separated public IP resource IDs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only. If updated, it will wipe off the existing setting on Load balancer managed outbound IP count; Load balancer outbound IP resource IDs and Load balancer outbound IP prefix resource IDs.
         - name: --load-balancer-outbound-ip-prefixes
           type: string
           short-summary: Load balancer outbound IP prefix resource IDs.
-          long-summary: Comma-separated public IP prefix resource IDs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only.
+          long-summary: Comma-separated public IP prefix resource IDs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only. If updated, it will wipe off the existing setting on Load balancer managed outbound IP count; Load balancer outbound IP resource IDs and Load balancer outbound IP prefix resource IDs.
+        - name: --load-balancer-outbound-ports
+          type: int
+          short-summary: Load balancer outbound allocated ports.
+          long-summary: Desired static number of outbound ports per VM in the load balancer backend pool. By default, set to 0 which uses the default allocation based on the number of VMs. Please specify a value in the range of [0, 64000] that is a multiple of 8.
+        - name: --load-balancer-idle-timeout
+          type: int
+          short-summary: Load balancer idle timeout in minutes.
+          long-summary: Desired idle timeout for load balancer outbound flows, default is 30 minutes. Please specify a value in the range of [4, 120].
         - name: --enable-pod-security-policy
           type: bool
           short-summary: (PREVIEW) Enable pod security policy.
@@ -288,6 +346,12 @@ helps['aks update'] = """
         - name: --api-server-authorized-ip-ranges
           type: string
           short-summary: Comma seperated list of authorized apiserver IP ranges. Set to "" to allow all traffic on a previously restricted cluster. Set to 0.0.0.0/32 to restrict apiserver traffic to node pools.
+        - name: --aad-admin-group-object-ids
+          type: string
+          short-summary: Comma seperated list of aad group object IDs that will be set as cluster admin.
+        - name: --aad-tenant-id
+          type: string
+          short-summary: The ID of an Azure Active Directory tenant.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
@@ -305,6 +369,8 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --load-balancer-outbound-ips <ip-resource-id-1,ip-resource-id-2>
       - name: Update a kubernetes cluster with standard SKU load balancer to use the provided public IP prefixes for the load balancer outbound connection usage.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --load-balancer-outbound-ip-prefixes <ip-prefix-resource-id-1,ip-prefix-resource-id-2>
+      - name: Update a kubernetes cluster with two outbound AKS managed IPs an idle flow timeout of 5 minutes and 8000 allocated ports per machine
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --load-balancer-managed-outbound-ip-count 2 --load-balancer-idle-timeout 5 --load-balancer-outbound-ports 8000
       - name: Update a kubernetes cluster with authorized apiserver ip ranges.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --api-server-authorized-ip-ranges 193.168.1.0/24,194.168.1.0/24
       - name: Disable authorized apiserver ip ranges feature for a kubernetes cluster.
@@ -426,13 +492,22 @@ helps['aks nodepool add'] = """
           short-summary: The node taints for the node pool. You can't change the node taints through CLI after the node pool is created.
         - name: --priority
           type: string
-          short-summary: The priority of the node pool. Regular or Low.
+          short-summary: The priority of the node pool.
         - name: --eviction-policy
           type: string
-          short-summary: The eviction policy of the low-pri node pool. Delete or Deallocate.
+          short-summary: The eviction policy of the Spot node pool. It can only be set when --priority is Spot.
+        - name: --spot-max-price
+          type: float
+          short-summary: It can only be set when --priority is Spot. Specify the maximum price you are willing to pay in US Dollars. Possible values are any decimal value greater than zero or -1 which indicates default price to be up-to on-demand. It can only include up to 5 decimal places.
         - name: --public-ip-per-vm
           type: bool
           short-summary: Each node will have a public ip.
+        - name: --labels
+          type: string
+          short-summary: The node labels for the node pool. You can't change the node labels through CLI after the node pool is created. See https://aka.ms/node-labels for syntax of labels.
+        - name: --mode
+          type: string
+          short-summary: The mode for a node pool which defines a node pool's primary function. If set as "System", AKS prefers system pods scheduling to node pools with mode `System`. Learn more at https://aka.ms/aks/nodepool/mode.
 """
 
 helps['aks nodepool scale'] = """
@@ -472,6 +547,9 @@ helps['aks nodepool update'] = """
         - name: --max-count
           type: int
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100]
+        - name: --mode
+          type: string
+          short-summary: The mode for a node pool which defines a node pool's primary function. If set as "System", AKS prefers system pods scheduling to node pools with mode `System`. Learn more at https://aka.ms/aks/nodepool/mode.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks nodepool update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
@@ -479,6 +557,8 @@ helps['aks nodepool update'] = """
         text: az aks nodepool update --disable-cluster-autoscaler -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
       - name: Update min-count or max-count for cluster autoscaler.
         text: az aks nodepool update --update-cluster-autoscaler --min-count 1 --max-count 10 -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
+      - name: Change a node pool to system mode
+        text: az aks nodepool update --mode System -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
 """
 
 helps['aks nodepool delete'] = """
@@ -491,10 +571,12 @@ type: command
 short-summary: Enable Kubernetes addons.
 long-summary: |-
     These addons are available:
-        http_application_routing - configure ingress with automatic public DNS name creation.
-        monitoring - turn on Log Analytics monitoring. Requires "--workspace-resource-id".
-        virtual-node - enable AKS Virtual Node (PREVIEW). Requires "--subnet-name".
-        azure-policy - enable Azure policy (PREVIEW).
+        http_application_routing  - configure ingress with automatic public DNS name creation.
+        monitoring                - turn on Log Analytics monitoring. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace.
+                                    If monitoring addon is enabled --no-wait argument will have no effect
+        virtual-node              - enable AKS Virtual Node (PREVIEW). Requires --subnet-name to provide the name of an existing subnet for the Virtual Node to use.
+        azure-policy              - enable Azure policy (PREVIEW).
+        ingress-appgw             - enable Application Gateway Ingress Controller addon (PREVIEW).
 parameters:
   - name: --addons -a
     type: string
@@ -505,6 +587,24 @@ parameters:
   - name: --subnet-name -s
     type: string
     short-summary: The subnet name for the virtual node to use.
+  - name: --appgw-name
+    type: string
+    short-summary: Name of the application gateway to create/use in the node resource group
+  - name: --appgw-subnet-prefix
+    type: string
+    short-summary: Subnet Prefix to use for a new subnet created to deploy the Application Gateway
+  - name: --appgw-id
+    type: string
+    short-summary: Resource Id of an existing Application Gateway to use with AGIC
+  - name: --appgw-subnet-id
+    type: string
+    short-summary: Resource Id of an existing Subnet used to deploy the Application Gateway
+  - name: --appgw-shared
+    type: bool
+    short-summary: Use shared flag if application gateway will be shared
+  - name: --appgw-watch-namespace
+    type: string
+    short-summary: Specify the namespace, which AGIC should watch. This could be a single string value, or a comma-separated list of namespaces.
 examples:
   - name: Enable Kubernetes addons. (autogenerated)
     text: az aks enable-addons --addons virtual-node --name MyManagedCluster --resource-group MyResourceGroup --subnet-name VirtualNodeSubnet
