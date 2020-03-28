@@ -8,6 +8,8 @@ import unittest
 
 from azure_devtools.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import JMESPathCheck
+from azure.cli.testsdk import JMESPathCheckExists
+from azure.cli.testsdk import NoneCheck
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
 
@@ -35,28 +37,67 @@ class PortalScenarioTest(ScenarioTest):
         self.cmd('az portal dashboard show '
                  '--name "{testDashboard}" '
                  '--resource-group "{rg}"',
-                 checks=[JMESPathCheck('name', self.kwargs.get('testDashboard', ''))])
+                 checks=[
+                     JMESPathCheck('name', self.kwargs.get('testDashboard', '')),
+                     JMESPathCheck('resourceGroup', self.kwargs.get('rg', '')),
+                     JMESPathCheck('tags', '{\'aKey\': \'aValue\', \'anotherKey\': \'anotherValue\'}'),
+                     JMESPathCheck('lenses', '{\'0\': {\'metadata\': None, \'order\': 0, \'parts\': '
+                     '{\'0\': {\'metadata\': {\'inputs\': [], \'settings\': {}, \'type\': '
+                     '\'Extension/HubsExtension/PartType/ClockPart\'}, \'position\': {\'colSpan\': 2, '
+                     '\'metadata\': None, \'rowSpan\': 2, \'x\': 6, \'y\': 2}}}}}'),
+                     JMESPathCheck('metadata', '{\'model\': {\'timeRange\': {\'type\': '
+                     '\'MsPortalFx.Composition.Configuration.ValueTypes.TimeRange\', \'value\': '
+                     '{\'relative\': {\'duration\': 24, \'timeUnit\': 1}}}}}')])
         
         self.cmd('az portal dashboard list '
                  '--resource-group "{rg}"',
-                 checks=[JMESPathCheck('[0].name', self.kwargs.get('testDashboard', ''))])
+                 checks=[JMESPathCheckExists('[?name==\'{}\']'.format(self.kwargs.get('testDashboard', '')))])
 
         self.cmd('az portal dashboard list',
-                 checks=[JMESPathCheck('[0].name', self.kwargs.get('testDashboard', ''))])
+                 checks=[JMESPathCheckExists('[?name==\'{}\']'.format(self.kwargs.get('testDashboard', '')))])
 
         self.cmd('az portal dashboard update '
                  '--input-path "src/portal/azext_portal/tests/latest/properties-update.json" '
                  '--name "{testDashboard}" '
                  '--resource-group "{rg}"',
-                 checks=[JMESPathCheck('metadata.model.timeRange.value.relative.duration', 12)])
+                 checks=[
+                     JMESPathCheck('name', self.kwargs.get('testDashboard', '')),
+                     JMESPathCheck('resourceGroup', self.kwargs.get('rg', '')),
+                     JMESPathCheck('tags', '{\'aKey\': \'aValue\', \'anotherKey\': \'anotherValue\'}'),
+                     JMESPathCheck('lenses', '{\'0\': {\'metadata\': None, \'order\': 0, \'parts\': '
+                     '{\'0\': {\'metadata\': {\'inputs\': [], \'settings\': {}, \'type\': '
+                     '\'Extension/HubsExtension/PartType/ClockPart\'}, \'position\': {\'colSpan\': 2, '
+                     '\'metadata\': None, \'rowSpan\': 2, \'x\': 6, \'y\': 2}}}}}'),
+                     JMESPathCheck('metadata', '{\'model\': {\'timeRange\': {\'type\': '
+                     '\'MsPortalFx.Composition.Configuration.ValueTypes.TimeRange\', \'value\': '
+                     '{\'relative\': {\'duration\': 12, \'timeUnit\': 1}}}}}')])
 
         self.cmd('az portal dashboard delete '
                  '--name "{testDashboard}" '
                  '--resource-group "{rg}"',
                  checks=[])
 
+        self.cmd('az portal dashboard list '
+                 '--resource-group "{rg}"',
+                 checks=[NoneCheck()])
+
         self.cmd('az portal dashboard import '
                  '--input-path "src/portal/azext_portal/tests/latest/dashboard.json" '
                  '--name "{testDashboard}" '
                  '--resource-group "{rg}"',
-                 checks=[JMESPathCheck('name', 'testdashboard')])
+                 checks=[
+                     JMESPathCheck('name', '7c0464ec-b1cd-4a98-a4a5-1ebe2d980260'),
+                     JMESPathCheck('resourceGroup', self.kwargs.get('rg', '')),
+                     JMESPathCheck('location', 'eastus'),
+                     JMESPathCheck('type', 'Microsoft.Portal/dashboards'),
+                     JMESPathCheck('tags', '{\'hidden-title\': \'test dashboard\'}'),
+                     JMESPathCheck('lenses', '{\'0\': {\'metadata\': None, \'order\': 0, \'parts\': '
+                     '{\'0\': {\'metadata\': {\'inputs\': [{\'isOptional\': True, \'name\': '
+                     '\'resourceType\', \'value\': \'Microsoft.Resources/subscriptions/resourcegroups\'},'
+                     ' {\'isOptional\': True, \'name\': \'filter\'}, {\'isOptional\': True, \'name\':'
+                     ' \'scope\'}, {\'isOptional\': True, \'name\': \'kind\'}], \'type\': '
+                     '\'Extension/HubsExtension/PartType/BrowseResourceGroupPinnedPart\'}, \'position\': '
+                     '{\'colSpan\': 6, \'metadata\': None, \'rowSpan\': 4, \'x\': 0, \'y\': 0}}}}}'),
+                     JMESPathCheck('metadata', '{\'model\': {\'timeRange\': {\'type\': '
+                     '\'MsPortalFx.Composition.Configuration.ValueTypes.TimeRange\', \'value\': '
+                     '{\'relative\': {\'duration\': 24, \'timeUnit\': 1}}}}}')])
