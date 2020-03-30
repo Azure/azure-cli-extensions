@@ -13,6 +13,7 @@ from azure.cli.core.commands.parameters import (
     resource_group_name_type,
     get_location_type
 )
+from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from azext_datashare.action import AddIdentity
 
 
@@ -24,23 +25,26 @@ def load_arguments(self, _):
 
     with self.argument_context('datashare account show') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
-        c.argument('account_name', help='The name of the share account.')
+        c.argument('account_name', options_list=['--name', '-n'], help='The name of the share account.')  # modified
 
     with self.argument_context('datashare account create') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
-        c.argument('account_name', help='The name of the share account.')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), help='Location of the azure resource.')
-        c.argument('tags', tags_type, help='Tags on the azure resource.')
-        c.argument('identity', action=AddIdentity, nargs='+', help='Identity of resource')
+        c.argument('account_name', options_list=['--name', '-n'], help='The name of the share account.')  # modified
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)  # modified
+        c.argument('tags', tags_type)  # modified
+        c.argument('identity', action=AddIdentity, nargs='+')  # modified
 
     with self.argument_context('datashare account update') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
-        c.argument('account_name', help='The name of the share account.')
+        c.argument('account_name', options_list=['--name', '-n'], help='The name of the share account.')  # modified
         c.argument('tags', tags_type, help='Tags on the azure resource.')
 
     with self.argument_context('datashare account delete') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
         c.argument('account_name', help='The name of the share account.')
+
+    with self.argument_context('datashare account wait') as c:
+        c.argument('account_name', options_list=['--name', '-n'], help='The name of the share account.')  # modified
 
     with self.argument_context('datashare consumer-invitation list') as c:
         c.argument('skip_token', help='Continuation token')

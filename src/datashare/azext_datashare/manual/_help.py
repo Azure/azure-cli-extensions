@@ -35,12 +35,17 @@ helps['datashare account show'] = """
 helps['datashare account create'] = """
     type: command
     short-summary: Create an account
+    parameters:
+      - name: --identity
+        short-summary: Identity of resource.
+        long-summary: |
+            Usage:   --identity [type=SystemAssigned] [tenantId=VAL principalId=VAL]
     examples:
       - name: Accounts_Create
         text: |-
                az datashare account create --identity type=SystemAssigned --location "West US 2" --tags
-               tag1=Red tag2=White --account-name MyAccount --resource-group MyResourceGroup
-"""
+               tag1=Red tag2=White --name MyAccount --resource-group MyResourceGroup
+"""  # modified
 
 helps['datashare account update'] = """
     type: command
