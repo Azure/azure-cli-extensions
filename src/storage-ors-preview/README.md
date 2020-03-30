@@ -11,7 +11,6 @@ az extension add -s https://azurecliprod.blob.core.windows.net/cli-extensions/st
 1. Prepare general purpose v2 storage account 
 ```
 az storage account create -n storageaccount -g groupName --kind StorageV2
-
 ```
 
 2. Enable Versioning for both source and destination storage accounts
@@ -23,7 +22,6 @@ Note:
 - Another option to enable Versioning in azure cli is as follows:
 ```
 az storage account blob-service-properties update --account-name srcAccountName --set is_versioning_enabled=True
-
 ```
  
 3. Enable ChangeFeed for source storage account
