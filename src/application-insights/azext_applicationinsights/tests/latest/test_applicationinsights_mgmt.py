@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
-from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
+from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest, StorageAccountPreparer
 
 
 class ApplicationInsightsManagementClientTests(ScenarioTest):
@@ -90,3 +90,38 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
             self.check('name', '{apiKeyB}')
         ])
         return
+
+    @ResourceGroupPreparer(parameter_name_for_location='location')
+    @StorageAccountPreparer(name_prefix='component', kind='StorageV2')
+    @StorageAccountPreparer(name_prefix='component', kind='StorageV2', parameter_name='storage_account_2')
+    def test_component_with_linked_storage(self, resource_group, location, storage_account, storage_account_2):
+        self.kwargs.update({
+            'loc': location,
+            'resource_group': resource_group,
+            'name_a': 'demoApp',
+            'kind': 'web',
+            'application_type': 'web',
+            'storage_account': storage_account,
+            'storage_account_2': storage_account_2
+        })
+
+        self.cmd(
+            'monitor app-insights component create --app {name_a} --location {loc} --kind {kind} -g {resource_group} --application-type {application_type}',
+            checks=[
+                self.check('name', '{name_a}'),
+                self.check('location', '{loc}'),
+                self.check('kind', '{kind}'),
+                self.check('applicationType', '{application_type}'),
+                self.check('applicationId', '{name_a}'),
+                self.check('provisioningState', 'Succeeded'),
+            ])
+
+        self.cmd('monitor app-insights component linked-storage link --app {name_a} -g {resource_group} -s {storage_account}')
+
+        self.cmd('monitor app-insights component linked-storage show --app {name_a} -g {resource_group}')
+
+        self.cmd('monitor app-insights component linked-storage update --app {name_a} -g {resource_group} -s {storage_account_2}')
+
+        self.cmd('monitor app-insights component linked-storage show --app {name_a} -g {resource_group}')
+
+        self.cmd('monitor app-insights component linked-storage unlink --app {name_a} -g {resource_group}')

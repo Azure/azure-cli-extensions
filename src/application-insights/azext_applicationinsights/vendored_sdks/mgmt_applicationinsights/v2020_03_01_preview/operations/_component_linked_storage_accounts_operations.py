@@ -36,7 +36,7 @@ class ComponentLinkedStorageAccountsOperations(object):
         self._serialize = serializer
         self._deserialize = deserializer
         self.api_version = "2020-03-01-preview"
-        self.storage_type = "ServiceProfiler"
+        self.storage_type = "serviceprofiler"
 
         self.config = config
 

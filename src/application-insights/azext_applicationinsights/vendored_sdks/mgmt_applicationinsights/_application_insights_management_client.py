@@ -58,6 +58,7 @@ class ApplicationInsightsManagementClient(MultiApiClientMixin, SDKClient):
             'component_current_billing_features': '2015-05-01',
             'component_current_pricing_plan': '2017-10-01',
             'component_feature_capabilities': '2015-05-01',
+            'component_linked_storage_accounts': '2020-03-01-preview',
             'component_quota_status': '2015-05-01',
             'components': '2020-02-02-preview',
             'ea_subscription_list_migration_date': '2017-10-01',
