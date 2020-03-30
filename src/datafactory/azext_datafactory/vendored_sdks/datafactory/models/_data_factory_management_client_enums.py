@@ -164,6 +164,14 @@ class IntegrationRuntimeUpdateResult(str, Enum):
     succeed = "Succeed"
     fail = "Fail"
 
+class HdiNodeTypes(str, Enum):
+    """The node types on which the script action should be executed.
+    """
+
+    headnode = "Headnode"
+    workernode = "Workernode"
+    zookeeper = "Zookeeper"
+
 class DaysOfWeek(str, Enum):
 
     sunday = "Sunday"
@@ -190,14 +198,6 @@ class BlobEventTypes(str, Enum):
 
     microsoft_storage_blob_created = "Microsoft.Storage.BlobCreated"
     microsoft_storage_blob_deleted = "Microsoft.Storage.BlobDeleted"
-
-class HdiNodeTypes(str, Enum):
-    """The node types on which the script action should be executed.
-    """
-
-    headnode = "Headnode"
-    workernode = "Workernode"
-    zookeeper = "Zookeeper"
 
 class IntegrationRuntimeAutoUpdate(str, Enum):
     """The state of integration runtime auto update.
@@ -230,6 +230,45 @@ class DataFlowDebugCommandType(str, Enum):
     execute_preview_query = "executePreviewQuery"
     execute_statistics_query = "executeStatisticsQuery"
     execute_expression_query = "executeExpressionQuery"
+
+class JsonFormatFilePattern(str, Enum):
+    """JSON format file pattern. A property of JsonFormat.
+    """
+
+    set_of_objects = "setOfObjects"
+    array_of_objects = "arrayOfObjects"
+
+class DatasetCompressionLevel(str, Enum):
+    """All available compression levels.
+    """
+
+    optimal = "Optimal"
+    fastest = "Fastest"
+
+class AvroCompressionCodec(str, Enum):
+
+    none = "none"
+    deflate = "deflate"
+    snappy = "snappy"
+    xz = "xz"
+    bzip2 = "bzip2"
+
+class CompressionCodec(str, Enum):
+
+    none = "none"
+    gzip = "gzip"
+    snappy = "snappy"
+    lzo = "lzo"
+    bzip2 = "bzip2"
+    deflate = "deflate"
+    zip_deflate = "zipDeflate"
+    lz4 = "lz4"
+
+class OrcCompressionCodec(str, Enum):
+
+    none = "none"
+    zlib = "zlib"
+    snappy = "snappy"
 
 class DataFlowComputeType(str, Enum):
     """Compute type of the cluster which will execute data flow job.
@@ -278,106 +317,6 @@ class IntegrationRuntimeInternalChannelEncryptionMode(str, Enum):
     not_set = "NotSet"
     ssl_encrypted = "SslEncrypted"
     not_encrypted = "NotEncrypted"
-
-class StoredProcedureParameterType(str, Enum):
-    """Stored procedure parameter type.
-    """
-
-    string = "String"
-    int = "Int"
-    int64 = "Int64"
-    decimal = "Decimal"
-    guid = "Guid"
-    boolean = "Boolean"
-    date = "Date"
-
-class HdInsightActivityDebugInfoOption(str, Enum):
-    """The HDInsightActivityDebugInfoOption settings to use.
-    """
-
-    none = "None"
-    always = "Always"
-    failure = "Failure"
-
-class SsisPackageLocationType(str, Enum):
-    """The type of SSIS package location.
-    """
-
-    ssisdb = "SSISDB"
-    file = "File"
-    inline_package = "InlinePackage"
-
-class WebActivityMethod(str, Enum):
-    """The list of HTTP methods supported by a WebActivity.
-    """
-
-    get = "GET"
-    post = "POST"
-    put = "PUT"
-    delete = "DELETE"
-
-class AzureFunctionActivityMethod(str, Enum):
-    """The list of HTTP methods supported by a AzureFunctionActivity.
-    """
-
-    get = "GET"
-    post = "POST"
-    put = "PUT"
-    delete = "DELETE"
-    options = "OPTIONS"
-    head = "HEAD"
-    trace = "TRACE"
-
-class RecurrenceFrequency(str, Enum):
-    """Enumerates possible frequency option for the schedule trigger.
-    """
-
-    not_specified = "NotSpecified"
-    minute = "Minute"
-    hour = "Hour"
-    day = "Day"
-    week = "Week"
-    month = "Month"
-    year = "Year"
-
-class TumblingWindowFrequency(str, Enum):
-    """Enumerates possible frequency option for the tumbling window trigger.
-    """
-
-    minute = "Minute"
-    hour = "Hour"
-
-class DatasetCompressionLevel(str, Enum):
-    """All available compression levels.
-    """
-
-    optimal = "Optimal"
-    fastest = "Fastest"
-
-class AvroCompressionCodec(str, Enum):
-
-    none = "none"
-    deflate = "deflate"
-    snappy = "snappy"
-    xz = "xz"
-    bzip2 = "bzip2"
-
-class CompressionCodec(str, Enum):
-
-    none = "none"
-    gzip = "gzip"
-    snappy = "snappy"
-    lzo = "lzo"
-    bzip2 = "bzip2"
-    deflate = "deflate"
-    zip_deflate = "zipDeflate"
-    lz4 = "lz4"
-
-class OrcCompressionCodec(str, Enum):
-
-    none = "none"
-    zlib = "zlib"
-    snappy = "snappy"
 
 class DynamicsDeploymentType(str, Enum):
     """The deployment type of the Dynamics instance. 'Online' for Dynamics Online and
@@ -446,7 +385,7 @@ class WebAuthenticationType(str, Enum):
     anonymous = "Anonymous"
     client_certificate = "ClientCertificate"
 
-class MongoDbAuthenticationType(str, Enum):
+class MongoDBAuthenticationType(str, Enum):
     """The authentication type to be used to connect to the MongoDB database.
     """
 
@@ -595,3 +534,183 @@ class GoogleAdWordsAuthenticationType(str, Enum):
 
     service_authentication = "ServiceAuthentication"
     user_authentication = "UserAuthentication"
+
+class JsonWriteFilePattern(str, Enum):
+    """File pattern of JSON. This setting controls the way a collection of JSON objects will be
+    treated. The default value is 'setOfObjects'. It is case-sensitive.
+    """
+
+    set_of_objects = "setOfObjects"
+    array_of_objects = "arrayOfObjects"
+
+class SalesforceSourceReadBehavior(str, Enum):
+    """The read behavior for the operation. Default is Query.
+    """
+
+    query = "Query"
+    query_all = "QueryAll"
+
+class SapHanaPartitionOption(str, Enum):
+    """The partition mechanism that will be used for SAP HANA read in parallel.
+    """
+
+    none = "None"
+    physical_partitions_of_table = "PhysicalPartitionsOfTable"
+    sap_hana_dynamic_range = "SapHanaDynamicRange"
+
+class SapTablePartitionOption(str, Enum):
+    """The partition mechanism that will be used for SAP table read in parallel.
+    """
+
+    none = "None"
+    partition_on_int = "PartitionOnInt"
+    partition_on_calendar_year = "PartitionOnCalendarYear"
+    partition_on_calendar_month = "PartitionOnCalendarMonth"
+    partition_on_calendar_date = "PartitionOnCalendarDate"
+    partition_on_time = "PartitionOnTime"
+
+class StoredProcedureParameterType(str, Enum):
+    """Stored procedure parameter type.
+    """
+
+    string = "String"
+    int = "Int"
+    int64 = "Int64"
+    decimal = "Decimal"
+    guid = "Guid"
+    boolean = "Boolean"
+    date = "Date"
+
+class OraclePartitionOption(str, Enum):
+    """The partition mechanism that will be used for Oracle read in parallel.
+    """
+
+    none = "None"
+    physical_partitions_of_table = "PhysicalPartitionsOfTable"
+    dynamic_range = "DynamicRange"
+
+class TeradataPartitionOption(str, Enum):
+    """The partition mechanism that will be used for teradata read in parallel.
+    """
+
+    none = "None"
+    hash = "Hash"
+    dynamic_range = "DynamicRange"
+
+class CassandraSourceReadConsistencyLevels(str, Enum):
+    """The consistency level specifies how many Cassandra servers must respond to a read request
+    before returning data to the client application. Cassandra checks the specified number of
+    Cassandra servers for data to satisfy the read request. Must be one of
+    cassandraSourceReadConsistencyLevels. The default value is 'ONE'. It is case-insensitive.
+    """
+
+    all = "ALL"
+    each_quorum = "EACH_QUORUM"
+    quorum = "QUORUM"
+    local_quorum = "LOCAL_QUORUM"
+    one = "ONE"
+    two = "TWO"
+    three = "THREE"
+    local_one = "LOCAL_ONE"
+    serial = "SERIAL"
+    local_serial = "LOCAL_SERIAL"
+
+class NetezzaPartitionOption(str, Enum):
+    """The partition mechanism that will be used for Netezza read in parallel.
+    """
+
+    none = "None"
+    data_slice = "DataSlice"
+    dynamic_range = "DynamicRange"
+
+class SapCloudForCustomerSinkWriteBehavior(str, Enum):
+    """The write behavior for the operation. Default is 'Insert'.
+    """
+
+    insert = "Insert"
+    update = "Update"
+
+class PolybaseSettingsRejectType(str, Enum):
+    """Indicates whether the RejectValue property is specified as a literal value or a percentage.
+    """
+
+    value = "value"
+    percentage = "percentage"
+
+class AzureSearchIndexWriteBehaviorType(str, Enum):
+    """Specify the write behavior when upserting documents into Azure Search Index.
+    """
+
+    merge = "Merge"
+    upload = "Upload"
+
+class SalesforceSinkWriteBehavior(str, Enum):
+    """The write behavior for the operation. Default is Insert.
+    """
+
+    insert = "Insert"
+    upsert = "Upsert"
+
+class HdInsightActivityDebugInfoOption(str, Enum):
+    """The HDInsightActivityDebugInfoOption settings to use.
+    """
+
+    none = "None"
+    always = "Always"
+    failure = "Failure"
+
+class SsisPackageLocationType(str, Enum):
+    """The type of SSIS package location.
+    """
+
+    ssisdb = "SSISDB"
+    file = "File"
+    inline_package = "InlinePackage"
+
+class WebActivityMethod(str, Enum):
+    """The list of HTTP methods supported by a WebActivity.
+    """
+
+    get = "GET"
+    post = "POST"
+    put = "PUT"
+    delete = "DELETE"
+
+class AzureFunctionActivityMethod(str, Enum):
+    """The list of HTTP methods supported by a AzureFunctionActivity.
+    """
+
+    get = "GET"
+    post = "POST"
+    put = "PUT"
+    delete = "DELETE"
+    options = "OPTIONS"
+    head = "HEAD"
+    trace = "TRACE"
+
+class RecurrenceFrequency(str, Enum):
+    """Enumerates possible frequency option for the schedule trigger.
+    """
+
+    not_specified = "NotSpecified"
+    minute = "Minute"
+    hour = "Hour"
+    day = "Day"
+    week = "Week"
+    month = "Month"
+    year = "Year"
+
+class TumblingWindowFrequency(str, Enum):
+    """Enumerates possible frequency option for the tumbling window trigger.
+    """
+
+    minute = "Minute"
+    hour = "Hour"
+
+class CopyBehaviorType(str, Enum):
+    """All available types of copy behavior.
+    """
+
+    preserve_hierarchy = "PreserveHierarchy"
+    flatten_hierarchy = "FlattenHierarchy"
+    merge_files = "MergeFiles"

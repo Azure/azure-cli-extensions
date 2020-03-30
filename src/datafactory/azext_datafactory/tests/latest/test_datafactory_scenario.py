@@ -16,23 +16,19 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class DataFactoryManagementClientScenarioTest(ScenarioTest):
 
-    def current_subscription(self):
-        subs = self.cmd('az account show').get_output_in_json()
-        return subs['id']
-
     @ResourceGroupPreparer(name_prefix='cli_test_datafactory_exampleResourceGroup'[:9], key='rg')
     def test_datafactory(self, resource_group):
 
         self.kwargs.update({
-            'subscription_id': self.current_subscription()
+            'subscription_id': self.get_subscription_id()
         })
 
         self.kwargs.update({
             'exampleFactoryName': self.create_random_name(prefix='cli_test_factories'[:9], length=24),
             'exampleIntegrationRuntime': self.create_random_name(prefix='cli_test_integration_runtimes'[:9],
                                                                  length=24),
-            'IntegrationRuntimes_2': self.create_random_name(prefix='cli_test_integration_runtimes'[:9], length=24),
-            'IntegrationRuntimes_3': self.create_random_name(prefix='cli_test_integration_runtimes'[:9], length=24),
+            'IntegrationRuntimes_2': 'IntegrationRuntimes_2',
+            'IntegrationRuntimes_3': 'IntegrationRuntimes_3',
             'exampleLinkedService': self.create_random_name(prefix='cli_test_linked_services'[:9], length=24),
             'exampleDataset': self.create_random_name(prefix='cli_test_datasets'[:9], length=24),
             'examplePipeline': self.create_random_name(prefix='cli_test_pipelines'[:9], length=24),
@@ -65,10 +61,10 @@ class DataFactoryManagementClientScenarioTest(ScenarioTest):
                  '--factory-name "{exampleFactoryName}" '
                  '--resource-group "{rg}" '
                  '--properties "{{\\"type\\":\\"ScheduleTrigger\\",\\"pipelines\\":[{{\\"parameters\\":{{\\"OutputBlobN'
-                 'ameList\\":[\\"exampleoutput.csv\\"]}},\\"pipelineReference\\":{{\\"type\\":\\"PipelineReference\\",\'
-                 '\"referenceName\\":\\"examplePipeline\\"}}}}],\\"typeProperties\\":{{\\"recurrence\\":{{\\"endTime\\"'
-                 ':\\"2018-06-16T00:55:13.8441801Z\\",\\"frequency\\":\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\"'
-                 '2018-06-16T00:39:13.8441801Z\\",\\"timeZone\\":\\"UTC\\"}}}}}}" '
+                 'ameList\\":[\\"exampleoutput.csv\\"]}},\\"pipelineReference\\":{{\\"type\\":\\"PipelineReference\\",'
+                 '\\"referenceName\\":\\"examplePipeline\\"}}}}],\\"typeProperties\\":{{\\"recurrence\\":{{\\"endTime\\'
+                 '":\\"2018-06-16T00:55:13.8441801Z\\",\\"frequency\\":\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\'
+                 '"2018-06-16T00:39:13.8441801Z\\",\\"timeZone\\":\\"UTC\\"}}}}}}" '
                  '--trigger-name "{exampleTrigger}"',
                  checks=[])
 
@@ -111,10 +107,10 @@ class DataFactoryManagementClientScenarioTest(ScenarioTest):
                  'false) ~> ConditionalSplit1@(USD, CAD)\\\\nConditionalSplit1@USD sink(saveMode:\'overwrite\' ) ~> USD'
                  'Sink\\\\nConditionalSplit1@CAD sink(saveMode:\'overwrite\' ) ~> CADSink\\",\\"sinks\\":[{{\\"name\\":'
                  '\\"USDSink\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"USDOutput\\"}}'
-                 '}},{{\\"name\\":\\"CADSink\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\'
-                 '\"CADOutput\\"}}}}],\\"sources\\":[{{\\"name\\":\\"USDCurrency\\",\\"dataset\\":{{\\"type\\":\\"Datas'
-                 'etReference\\",\\"referenceName\\":\\"CurrencyDatasetUSD\\"}}}},{{\\"name\\":\\"CADSource\\",\\"datas'
-                 'et\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetCAD\\"}}}}]}}}}" '
+                 '}},{{\\"name\\":\\"CADSink\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":'
+                 '\\"CADOutput\\"}}}}],\\"sources\\":[{{\\"name\\":\\"USDCurrency\\",\\"dataset\\":{{\\"type\\":\\"Data'
+                 'setReference\\",\\"referenceName\\":\\"CurrencyDatasetUSD\\"}}}},{{\\"name\\":\\"CADSource\\",\\"data'
+                 'set\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetCAD\\"}}}}]}}}}" '
                  '--data-flow-name "{exampleDataFlow}" '
                  '--factory-name "{exampleFactoryName}" '
                  '--resource-group "{rg}"',
@@ -133,29 +129,29 @@ class DataFactoryManagementClientScenarioTest(ScenarioTest):
                  'false) ~> ConditionalSplit1@(USD, CAD)\\\\nConditionalSplit1@USD sink(saveMode:\'overwrite\' ) ~> USD'
                  'Sink\\\\nConditionalSplit1@CAD sink(saveMode:\'overwrite\' ) ~> CADSink\\",\\"sinks\\":[{{\\"name\\":'
                  '\\"USDSink\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"USDOutput\\"}}'
-                 '}},{{\\"name\\":\\"CADSink\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\'
-                 '\"CADOutput\\"}}}}],\\"sources\\":[{{\\"name\\":\\"USDCurrency\\",\\"dataset\\":{{\\"type\\":\\"Datas'
-                 'etReference\\",\\"referenceName\\":\\"CurrencyDatasetUSD\\"}}}},{{\\"name\\":\\"CADSource\\",\\"datas'
-                 'et\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetCAD\\"}}}}]}}}}" '
+                 '}},{{\\"name\\":\\"CADSink\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":'
+                 '\\"CADOutput\\"}}}}],\\"sources\\":[{{\\"name\\":\\"USDCurrency\\",\\"dataset\\":{{\\"type\\":\\"Data'
+                 'setReference\\",\\"referenceName\\":\\"CurrencyDatasetUSD\\"}}}},{{\\"name\\":\\"CADSource\\",\\"data'
+                 'set\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetCAD\\"}}}}]}}}}" '
                  '--data-flow-name "{exampleDataFlow}" '
                  '--factory-name "{exampleFactoryName}" '
                  '--resource-group "{rg}"',
                  checks=[])
 
-        # EXAMPLE: Pipelines/folder/Pipelines_Update
+        # EXAMPLE: Pipelines/pipeline/Pipelines_Update
         self.cmd('az datafactory pipeline create '
                  '--factory-name "{exampleFactoryName}" '
-                 '--properties-description "Example description" '
-                 '--properties-activities "[{{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typeP'
-                 'roperties\\":{{\\"activities\\":[{{\\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inpu'
-                 'ts\\":[{{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{\\"MyFileName\\":\\"examplecontainer.cs'
-                 'v\\",\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName\\":\\"exampleDataset\\"}}],\\"outpu'
-                 'ts\\":[{{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{\\"MyFileName\\":{{\\"type\\":\\"Expres'
-                 'sion\\",\\"value\\":\\"@item()\\"}},\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName\\":\'
-                 '\"exampleDataset\\"}}],\\"typeProperties\\":{{\\"dataIntegrationUnits\\":32,\\"sink\\":{{\\"type\\":\'
-                 '\"BlobSink\\"}},\\"source\\":{{\\"type\\":\\"BlobSource\\"}}}}}}],\\"isSequential\\":true,\\"items\\"'
-                 ':{{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().parameters.OutputBlobNameList\\"}}}}}}]" '
-                 '--properties-parameters "{{\\"OutputBlobNameList\\":{{\\"type\\":\\"Array\\"}}}}" '
+                 '--pipeline "{{\\"properties\\":{{\\"description\\":\\"Example description\\",\\"activities\\":[{{\\"n'
+                 'ame\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperties\\":{{\\"activities\\":'
+                 '[{{\\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{{\\"type\\":\\"DatasetRe'
+                 'ference\\",\\"parameters\\":{{\\"MyFileName\\":\\"examplecontainer.csv\\",\\"MyFolderPath\\":\\"examp'
+                 'lecontainer\\"}},\\"referenceName\\":\\"exampleDataset\\"}}],\\"outputs\\":[{{\\"type\\":\\"DatasetRe'
+                 'ference\\",\\"parameters\\":{{\\"MyFileName\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@item()\\'
+                 '"}},\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName\\":\\"exampleDataset\\"}}],\\"typePr'
+                 'operties\\":{{\\"dataIntegrationUnits\\":32,\\"sink\\":{{\\"type\\":\\"BlobSink\\"}},\\"source\\":{{'
+                 '\\"type\\":\\"BlobSource\\"}}}}}}],\\"isSequential\\":true,\\"items\\":{{\\"type\\":\\"Expression\\",'
+                 '\\"value\\":\\"@pipeline().parameters.OutputBlobNameList\\"}}}}}}],\\"parameters\\":{{\\"OutputBlobNa'
+                 'meList\\":{{\\"type\\":\\"Array\\"}}}}}}}}" '
                  '--pipeline-name "{examplePipeline}" '
                  '--resource-group "{rg}"',
                  checks=[])
@@ -163,19 +159,19 @@ class DataFactoryManagementClientScenarioTest(ScenarioTest):
         # EXAMPLE: Pipelines/resource-group-name/Pipelines_Create
         self.cmd('az datafactory pipeline create '
                  '--factory-name "{exampleFactoryName}" '
-                 '--properties-activities "[{{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typeP'
-                 'roperties\\":{{\\"activities\\":[{{\\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inpu'
-                 'ts\\":[{{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{\\"MyFileName\\":\\"examplecontainer.cs'
-                 'v\\",\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName\\":\\"exampleDataset\\"}}],\\"outpu'
-                 'ts\\":[{{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{\\"MyFileName\\":{{\\"type\\":\\"Expres'
-                 'sion\\",\\"value\\":\\"@item()\\"}},\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName\\":\'
-                 '\"exampleDataset\\"}}],\\"typeProperties\\":{{\\"dataIntegrationUnits\\":32,\\"sink\\":{{\\"type\\":\'
-                 '\"BlobSink\\"}},\\"source\\":{{\\"type\\":\\"BlobSource\\"}}}}}}],\\"isSequential\\":true,\\"items\\"'
-                 ':{{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().parameters.OutputBlobNameList\\"}}}}}}]" '
-                 '--properties-parameters "{{\\"JobId\\":{{\\"type\\":\\"String\\"}},\\"OutputBlobNameList\\":{{\\"type'
-                 '\\":\\"Array\\"}}}}" '
-                 '--properties-run-dimensions JobId={"type":"Expression","value":"@pipeline().parameters.JobId"} '
-                 '--properties-variables "{{\\"TestVariableArray\\":{{\\"type\\":\\"Array\\"}}}}" '
+                 '--pipeline "{{\\"properties\\":{{\\"activities\\":[{{\\"name\\":\\"ExampleForeachActivity\\",\\"type'
+                 '\\":\\"ForEach\\",\\"typeProperties\\":{{\\"activities\\":[{{\\"name\\":\\"ExampleCopyActivity\\",\\"'
+                 'type\\":\\"Copy\\",\\"inputs\\":[{{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{\\"MyFileName'
+                 '\\":\\"examplecontainer.csv\\",\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName\\":\\"exa'
+                 'mpleDataset\\"}}],\\"outputs\\":[{{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{\\"MyFileName'
+                 '\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@item()\\"}},\\"MyFolderPath\\":\\"examplecontainer'
+                 '\\"}},\\"referenceName\\":\\"exampleDataset\\"}}],\\"typeProperties\\":{{\\"dataIntegrationUnits\\":3'
+                 '2,\\"sink\\":{{\\"type\\":\\"BlobSink\\"}},\\"source\\":{{\\"type\\":\\"BlobSource\\"}}}}}}],\\"isSeq'
+                 'uential\\":true,\\"items\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().parameters.Outpu'
+                 'tBlobNameList\\"}}}}}}],\\"parameters\\":{{\\"JobId\\":{{\\"type\\":\\"String\\"}},\\"OutputBlobNameL'
+                 'ist\\":{{\\"type\\":\\"Array\\"}}}},\\"runDimensions\\":{{\\"JobId\\":{{\\"type\\":\\"Expression\\",'
+                 '\\"value\\":\\"@pipeline().parameters.JobId\\"}}}},\\"variables\\":{{\\"TestVariableArray\\":{{\\"typ'
+                 'e\\":\\"Array\\"}}}}}}}}" '
                  '--pipeline-name "{examplePipeline}" '
                  '--resource-group "{rg}"',
                  checks=[])
@@ -557,15 +553,15 @@ class DataFactoryManagementClientScenarioTest(ScenarioTest):
                  'rces\\":[{{\\"name\\":\\"source1\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceNam'
                  'e\\":\\"DelimitedText2\\"}}}}],\\"transformations\\":[]}}}}}}" '
                  '--datasets "[{{\\"name\\":\\"dataset1\\",\\"properties\\":{{\\"type\\":\\"DelimitedText\\",\\"schema'
-                 '\\":[{{\\"type\\":\\"String\\"}}],\\"annotations\\":[],\\"linkedServiceName\\":{{\\"type\\":\\"Linke'
-                 'dServiceReference\\",\\"referenceName\\":\\"linkedService5\\"}},\\"typeProperties\\":{{\\"columnDeli'
-                 'miter\\":\\",\\",\\"escapeChar\\":\\"\\\\\\\\\\",\\"firstRowAsHeader\\":true,\\"location\\":{{\\"typ'
-                 'e\\":\\"AzureBlobStorageLocation\\",\\"container\\":\\"dataflow-sample-data\\",\\"fileName\\":\\"Ans'
-                 'iencoding.csv\\"}},\\"quoteChar\\":\\"\\\\\\"\\"}}}}}}]" '
-                 '--debug-settings "{{\\"datasetParameters\\":{{\\"Movies\\":{{\\"path\\":\\"abc\\"}},\\"Output\\":{{'
-                 '\\"time\\":\\"def\\"}}}},\\"parameters\\":{{\\"sourcePath\\":\\"Toy\\"}},\\"sourceSettings\\":[{{\\'
-                 '"rowLimit\\":1000,\\"sourceName\\":\\"source1\\"}},{{\\"rowLimit\\":222,\\"sourceName\\":\\"source2'
-                 '\\"}}]}}" '
+                 '\\":[{{\\"type\\":\\"String\\"}}],\\"annotations\\":[],\\"linkedServiceName\\":{{\\"type\\":\\"Linked'
+                 'ServiceReference\\",\\"referenceName\\":\\"linkedService5\\"}},\\"typeProperties\\":{{\\"columnDelimi'
+                 'ter\\":\\",\\",\\"escapeChar\\":\\"\\\\\\\\\\",\\"firstRowAsHeader\\":true,\\"location\\":{{\\"type\\'
+                 '":\\"AzureBlobStorageLocation\\",\\"container\\":\\"dataflow-sample-data\\",\\"fileName\\":\\"Ansienc'
+                 'oding.csv\\"}},\\"quoteChar\\":\\"\\\\\\"\\"}}}}}}]" '
+                 '--debug-settings "{{\\"datasetParameters\\":{{\\"Movies\\":{{\\"path\\":\\"abc\\"}},\\"Output\\":{{\\'
+                 '"time\\":\\"def\\"}}}},\\"parameters\\":{{\\"sourcePath\\":\\"Toy\\"}},\\"sourceSettings\\":[{{\\"row'
+                 'Limit\\":1000,\\"sourceName\\":\\"source1\\"}},{{\\"rowLimit\\":222,\\"sourceName\\":\\"source2\\"}}]'
+                 '}}" '
                  '--linked-services "[{{\\"name\\":\\"linkedService1\\",\\"properties\\":{{\\"type\\":\\"AzureBlobStora'
                  'ge\\",\\"annotations\\":[],\\"typeProperties\\":{{\\"connectionString\\":\\"DefaultEndpointsProtocol='
                  'https;AccountName=<storageName>;EndpointSuffix=core.windows.net;\\",\\"encryptedCredential\\":\\"<cre'

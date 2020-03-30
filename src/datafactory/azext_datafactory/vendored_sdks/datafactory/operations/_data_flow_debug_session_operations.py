@@ -59,6 +59,7 @@ class DataFlowDebugSessionOperations(object):
 
         _request = models.CreateDataFlowDebugSessionRequest(compute_type=compute_type, core_count=core_count, time_to_live=time_to_live, integration_runtime=integration_runtime)
         api_version = "2018-06-01"
+        content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
         url = self._create_initial.metadata['url']
@@ -75,8 +76,8 @@ class DataFlowDebugSessionOperations(object):
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = kwargs.pop('content_type', 'application/json')
 
         # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
@@ -283,6 +284,7 @@ class DataFlowDebugSessionOperations(object):
 
         _request = models.DataFlowDebugPackage(session_id=session_id, data_flow=data_flow, datasets=datasets, linked_services=linked_services, staging=staging, debug_settings=debug_settings)
         api_version = "2018-06-01"
+        content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
         url = self.add_data_flow.metadata['url']
@@ -299,8 +301,8 @@ class DataFlowDebugSessionOperations(object):
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = kwargs.pop('content_type', 'application/json')
 
         # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
@@ -349,6 +351,7 @@ class DataFlowDebugSessionOperations(object):
 
         _request = models.DeleteDataFlowDebugSessionRequest(session_id=session_id)
         api_version = "2018-06-01"
+        content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
         url = self.delete.metadata['url']
@@ -365,7 +368,7 @@ class DataFlowDebugSessionOperations(object):
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Content-Type'] = kwargs.pop('content_type', 'application/json')
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
 
         # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
@@ -400,6 +403,7 @@ class DataFlowDebugSessionOperations(object):
 
         _request = models.DataFlowDebugCommandRequest(session_id=session_id, command=command, command_payload=command_payload)
         api_version = "2018-06-01"
+        content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
         url = self._execute_command_initial.metadata['url']
@@ -416,8 +420,8 @@ class DataFlowDebugSessionOperations(object):
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = kwargs.pop('content_type', 'application/json')
 
         # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
