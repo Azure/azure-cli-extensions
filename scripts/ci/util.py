@@ -50,7 +50,7 @@ def _get_azext_metadata(ext_dir):
     return azext_metadata
 
 
-def get_ext_metadata(ext_dir, ext_file, ext_name):
+def get_ext_metadata(ext_dir, ext_file):
     from pkginfo import Wheel
 
     zip_ref = zipfile.ZipFile(ext_file, 'r')
