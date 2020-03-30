@@ -130,6 +130,8 @@ class TestIndex(unittest.TestCase):
                 wheel_metadata = get_ext_metadata(ext_dir, ext_file)
                 index_metadata = item['metadata']
 
+                print('-' * 40, ext_name, '-' * 40)
+
                 # compatible way compare metadata between wheel file and index.json
                 self.assertEqual(index_metadata['name'], wheel_metadata['name'])
                 self.assertEqual(index_metadata['version'], wheel_metadata['version'])
@@ -140,9 +142,11 @@ class TestIndex(unittest.TestCase):
                     self.assertEqual(index_metadata['classifiers'], wheel_metadata['classifiers'])
 
                 if index_metadata.get('run_requires') and wheel_metadata.get('requires_dist'):
-                    self.assertEqual(index_metadata['run_requires'][0]['requires'], wheel_metadata['requires_dist'])
+                    self.assertEqual(sorted(index_metadata['run_requires'][0]['requires']),
+                                     sorted(wheel_metadata['requires_dist']))
                 if index_metadata.get('requires_dist') and wheel_metadata.get('requires_dist'):
-                    self.assertEqual(index_metadata['requires_dist'], wheel_metadata['requires_dist'])
+                    self.assertEqual(sorted(index_metadata['requires_dist']),
+                                     sorted(wheel_metadata['requires_dist']))
 
                 if index_metadata.get('extensions') is not None:
                     python_details = index_metadata['extensions']['python.details']
@@ -150,10 +154,10 @@ class TestIndex(unittest.TestCase):
                     self.assertEqual(python_details['contacts'][0]['name'], wheel_metadata['author'])
                     self.assertEqual(python_details['contacts'][0]['email'], wheel_metadata['author_email'])
                 else:
-                    self.assertEqual(index_metadata['author'], wheel_metadata['author'])
-                    self.assertEqual(index_metadata['home_page'], wheel_metadata['home_page'])
-                    self.assertEqual(index_metadata['platforms'], wheel_metadata['platforms'])
-                    self.assertEqual(index_metadata['author_email'], wheel_metadata['author_email'])
+                    self.assertEqual(index_metadata.get('author'), wheel_metadata.get('author'))
+                    self.assertEqual(index_metadata.get('home_page'), wheel_metadata.get('home_page'))
+                    self.assertEqual(index_metadata.get('platforms'), wheel_metadata.get('platforms'))
+                    self.assertEqual(index_metadata.get('author_email'), wheel_metadata.get('author_email'))
 
         shutil.rmtree(extensions_dir)
 
