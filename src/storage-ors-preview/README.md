@@ -7,6 +7,30 @@ Install this extension using the below CLI command
 az extension add -s https://azurecliprod.blob.core.windows.net/cli-extensions/storage_ors_preview-0.1.0-py2.py3-none-any.whl
 ```
 
+### Prepare
+1. Prepare general purpose v2 storage account 
+```
+az storage account create -n storageaccount -g groupName --kind StorageV2
+
+```
+
+2. Enable Versioning for both source and destination storage accounts
+```
+az storage account blob-service-properties update --enable-versioning --account-name srcAccountName
+```
+Note:
+- `--enable-versioning` is supported in azure cli 2.3.0, which will be officially release at 2020/03/31.
+- Another option to enable Versioning in azure cli is as follows:
+```
+az storage account blob-service-properties update --account-name srcAccountName --set is_versioning_enabled=True
+
+```
+ 
+3. Enable ChangeFeed for source storage account
+```
+az storage account blob-service-properties update --enable-change-feed --account-name srcAccountName
+```
+
 ### Included Features
 #### ORS Policy:
 Manage data policy rules associated with a storage account: [more info](https://docs.microsoft.com/azure/storage/common/storage-lifecycle-managment-concepts)\
@@ -17,14 +41,14 @@ Manage data policy rules associated with a storage account: [more info](https://
 1. Using JSON file or JSON string
 ```
 az storage account ors-policy create \
-    --account-name accountName \
+    --account-name destAccountName \
     --resource-group groupName \
     --properties @{path}
 ```
 2. Using command parameters
 ```
 az storage account ors-policy create \
-    --account-name accountName \
+    --account-name destAccountName \
     --resource-group groupName \
     --source-account srcAccountName \
     --destination-account destAccountName \
@@ -33,7 +57,7 @@ az storage account ors-policy create \
 ```
 ```
 az storage account ors-policy create \
-    --account-name accountName \
+    --account-name destAccountName \
     --resource-group groupName \
     --source-account srcAccountName \
     --destination-account destAccountName \
@@ -44,7 +68,7 @@ az storage account ors-policy create \
 
 3. Create Object Replication Service Policy to source storage account through policy associated with destination storage account.
 ```
-az storage account ors-policy show -g ResourceGroupName -n destAccountName --policy-id "3496e652-4cea-4581-b2f7-c86b3971ba92" | az storage account ors-policy create -g ResourceGroupName -n srcAccountName -p "@-"
+az storage account ors-policy show -g groupName -n destAccountName --policy-id "3496e652-4cea-4581-b2f7-c86b3971ba92" | az storage account ors-policy create -g ResourceGroupName -n srcAccountName -p "@-"
 ```
 
 To save the policyId/ruleId in Powershell Scripts, you can use:
