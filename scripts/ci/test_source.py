@@ -106,12 +106,13 @@ class TestSourceWheels(unittest.TestCase):
             ext_file = os.path.join(built_whl_dir, filename)
             ext_dir = tempfile.mkdtemp(dir=built_whl_dir)
             metadata = get_ext_metadata(ext_dir, ext_file)
-            run_requires = metadata.get('run_requires')
-            if run_requires:
-                deps = run_requires[0]['requires']
-                self.assertTrue(all(verify_dependency(dep) for dep in deps),
+
+            requires_dist = metadata.get('require_dist')
+            if requires_dist:
+                self.assertTrue(all(verify_dependency(dep) for dep in requires_dist),
                                 "Dependencies of {} use disallowed extension dependencies. "
-                                "Remove these dependencies: {}".format(filename, deps))
+                                "Remove these dependencies: {}".format(filename, requires_dist))
+
         shutil.rmtree(built_whl_dir)
 
 
