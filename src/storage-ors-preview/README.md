@@ -29,8 +29,19 @@ az storage account ors-policy create \
     --source-account srcAccountName \
     --destination-account destAccountName \
     --source-container srcContainer \
-    --destination-container destContainer
+    --destination-container destContainer \
 ```
+```
+az storage account ors-policy create \
+    --account-name accountName \
+    --resource-group groupName \
+    --source-account srcAccountName \
+    --destination-account destAccountName \
+    --source-container srcContainer \
+    --min-creation-time '2020-02-19T16:05:00Z' \
+    --prefix-match blobA blobB
+```
+
 3. Create Object Replication Service Policy to source storage account through policy associated with destination storage account.
 ```
 az storage account ors-policy show -g ResourceGroupName -n destAccountName --policy-id "3496e652-4cea-4581-b2f7-c86b3971ba92" | az storage account ors-policy create -g ResourceGroupName -n srcAccountName -p "@-"
@@ -42,48 +53,93 @@ To save the policyId/ruleId in Powershell Scripts, you can use:
 
 ##### List ORS Policies on storage account
 ```
-az storage account ors-policy list --account-name accountName --resource-group groupName
+az storage account ors-policy list \
+    --account-name accountName \
+    --resource-group groupName
 ```
 
 ##### Show ORS Policy on storage account
 ```
-az storage account ors-policy show --policy-id policyId --account-name accountName --resource-group groupName
+az storage account ors-policy show \
+    --policy-id $policyId \
+    --account-name accountName \
+    --resource-group groupName
 ```
 
 ##### Update ORS Policy on storage account
+Change source storage account name of existing ORS policy
 ```
-az storage account ors-policy update --policy-id policyId --account-name accountName --resource-group groupName -s newSourceAccount
+az storage account ors-policy update \
+    --policy-id $policyId \
+    --account-name accountName \
+    --resource-group groupName \
+    -s newSourceAccount
 ```
 
-##### Add rule to ORS Policy
+##### Add rule to existing ORS Policy
 ```
-az storage account ors-policy rule add --destination-account destAccountName \
-    --source-container srcContainer --policy-id $policyId --account-name accountName --resource-group groupName
+az storage account ors-policy rule add \
+    --policy-id $policyId \
+    --account-name accountName \
+    --resource-group groupName \
+    --destination-container destContainer \
+    --source-container srcContainer  \
+    --prefix-match blobA blobB  \
+    --min-creation-time '2020-02-19T16:05:00Z' 
 ```
 
 ##### List rules for ORS Policy
 ```
-az storage account ors-policy rule list --policy-id $policyId --account-name accountName --resource-group groupName
+az storage account ors-policy rule list \
+    --policy-id $policyId \
+    --account-name accountName \
+    --resource-group groupName
 ```
 
-##### Show rule for ORS Policy
+##### Show properties of specific rule in ORS Policy
 ```
-az storage account ors-policy rule show --rule-id $ruleId --policy-id $policyId --account-name accountName --resource-group groupName
-```
-
-##### Update properties for ORS Policy Rule
-```
-az storage account ors-policy rule remove --rule-id $ruleId --policy-id $policyId --account-name accountName --resource-group groupName --prefix-match blobA
-```
-
-##### Remove rule for ORS Policy
-```
-az storage account ors-policy rule remove --rule-id $ruleId --policy-id $policyId --account-name accountName --resource-group groupName
+az storage account ors-policy rule show \
+    --rule-id $ruleId \
+    --policy-id $policyId \
+    --account-name accountName \
+    --resource-group groupName
 ```
 
-##### Remove ORS Policy on storage account
+##### Update properties for secific ORS Policy Rule
+Change prefix match filter properties
 ```
-az storage account ors-policy remove --policy-id policyId --account-name accountName --resource-group groupName
+az storage account ors-policy rule update \
+    --rule-id $ruleId \
+    --policy-id $policyId \
+    --account-name accountName \
+    --resource-group groupName \
+    --prefix-match blobA
+```
+
+Change min creation time in filter properties
+```
+az storage account ors-policy rule update \
+    --rule-id $ruleId \
+    --policy-id $policyId \
+    --account-name accountName \
+    --resource-group groupName \
+    --min-creation-time '2020-02-19T16:05:00Z'
+```
+##### Remove the specified rule in existing ORS Policy
+```
+az storage account ors-policy rule remove \
+    --rule-id $ruleId \
+    --policy-id $policyId \
+    --account-name accountName \
+    --resource-group groupName
+```
+
+##### Remove the specified ORS Policy for storage account
+```
+az storage account ors-policy remove \
+    --policy-id $policyId \
+    --account-name accountName 
+    --resource-group groupName
 ```
 
 
