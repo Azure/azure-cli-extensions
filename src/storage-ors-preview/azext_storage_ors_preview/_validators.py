@@ -50,3 +50,27 @@ def validate_ors_policy(namespace):
 
         if "policyId" in ors_policy.keys() and ors_policy["policyId"]:
             namespace.policy_id = ors_policy['policyId']
+
+
+def get_datetime_type(to_string):
+    """ Validates UTC datetime. Examples of accepted forms:
+    2017-12-31T01:11:59Z,2017-12-31T01:11Z or 2017-12-31T01Z or 2017-12-31 """
+    from datetime import datetime
+
+    def datetime_type(string):
+        """ Validates UTC datetime. Examples of accepted forms:
+        2017-12-31T01:11:59Z,2017-12-31T01:11Z or 2017-12-31T01Z or 2017-12-31 """
+        accepted_date_formats = ['%Y-%m-%dT%H:%M:%SZ', '%Y-%m-%dT%H:%MZ',
+                                 '%Y-%m-%dT%HZ', '%Y-%m-%d']
+        target_format = '%Y-%m-%dT%H:%M:%SZ'
+        for form in accepted_date_formats:
+            try:
+                if to_string:
+                    return datetime.strptime(string, form).strftime(target_format)
+
+                return datetime.strptime(string, form)
+            except ValueError:
+                continue
+        raise ValueError("Input '{}' not valid. Valid example: 2000-12-31T12:59:59Z".format(string))
+
+    return datetime_type
