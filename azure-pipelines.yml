@@ -33,6 +33,36 @@ jobs:
         TSLint: false
         ToolLogsNotFoundAction: 'Standard'
 
+- job: CheckLicenseHeader
+  displayName: "Check License"
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+  - task: UsePythonVersion@0
+    displayName: 'Use Python 3.6'
+    inputs:
+      versionSpec: 3.6
+  - bash: |
+      set -ev
+
+      # prepare and activate virtualenv
+      python -m venv env/
+
+      chmod +x ./env/bin/activate
+      source ./env/bin/activate
+
+      # clone azure-cli
+      git clone -q --single-branch -b dev https://github.com/Azure/azure-cli.git ../azure-cli
+
+      pip install -q azdev
+
+      azdev setup -c ../azure-cli -r ./
+
+      azdev --version
+      az --version
+
+      azdev verify license
+
 - job: StaticAnalysis
   displayName: "Static Analysis"
   pool:

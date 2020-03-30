@@ -53,7 +53,8 @@ class PortalScenarioTest(ScenarioTest):
                  '--resource-group "{rg}"',
                  checks=[JMESPathCheckExists('[?name==\'{}\']'.format(self.kwargs.get('testDashboard', '')))])
 
-        self.cmd('az portal dashboard list',
+        self.cmd('az portal dashboard list '
+                 '--resource-group=',
                  checks=[JMESPathCheckExists('[?name==\'{}\']'.format(self.kwargs.get('testDashboard', '')))])
 
         self.cmd('az portal dashboard update '

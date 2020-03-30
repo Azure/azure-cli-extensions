@@ -11,7 +11,7 @@ from knack.util import CLIError
 
 def portal_dashboard_list(cmd, client,
                           resource_group_name=None):
-    if resource_group_name is not None:
+    if resource_group_name:
         return client.list_by_resource_group(resource_group_name=resource_group_name)
     return client.list_by_subscription()
 
