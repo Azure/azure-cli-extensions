@@ -6,7 +6,6 @@
 import os
 import json
 import zipfile
-from wheel.install import WHEEL_INFO_RE
 
 # Dependencies that will not be checked.
 # This is for packages starting with 'azure-' but do not use the 'azure' namespace.
