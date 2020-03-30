@@ -128,23 +128,27 @@ class TestIndex(unittest.TestCase):
                 ext_file = get_whl_from_url(item['downloadUrl'], item['filename'], self.whl_cache_dir, self.whl_cache)
 
                 wheel_metadata = get_ext_metadata(ext_dir, ext_file)
-
                 index_metadata = item['metadata']
 
+                # compatible way compare metadata between wheel file and index.json
                 self.assertEqual(index_metadata['name'], wheel_metadata['name'])
                 self.assertEqual(index_metadata['version'], wheel_metadata['version'])
                 self.assertEqual(index_metadata['license'], wheel_metadata['license'])
                 self.assertEqual(index_metadata['summary'], wheel_metadata['summary'])
+
                 if index_metadata.get('classifiers') and wheel_metadata.get('classifiers'):
                     self.assertEqual(index_metadata['classifiers'], wheel_metadata['classifiers'])
 
+                if index_metadata.get('run_requires') and wheel_metadata.get('requires_dist'):
+                    self.assertEqual(index_metadata['run_requires'][0]['requires'], wheel_metadata['requires_dist'])
+                if index_metadata.get('requires_dist') and wheel_metadata.get('requires_dist'):
+                    self.assertEqual(index_metadata['requires_dist'], wheel_metadata['requires_dist'])
+
                 if index_metadata.get('extensions') is not None:
-                    self.assertEqual(index_metadata['extensions']['python.details']['project_urls']['Home'],
-                                     wheel_metadata['home_page'])
-                    self.assertEqual(index_metadata['extensions']['python.details']['contacts'][0]['name'],
-                                     wheel_metadata['author'])
-                    self.assertEqual(index_metadata['extensions']['python.details']['contacts'][0]['email'],
-                                     wheel_metadata['author_email'])
+                    python_details = index_metadata['extensions']['python.details']
+                    self.assertEqual(python_details['project_urls']['Home'], wheel_metadata['home_page'])
+                    self.assertEqual(python_details['contacts'][0]['name'], wheel_metadata['author'])
+                    self.assertEqual(python_details['contacts'][0]['email'], wheel_metadata['author_email'])
                 else:
                     self.assertEqual(index_metadata['author'], wheel_metadata['author'])
                     self.assertEqual(index_metadata['home_page'], wheel_metadata['home_page'])
