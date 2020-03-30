@@ -72,7 +72,7 @@ jobs:
       displayName: 'Use Python 3.6'
       inputs:
         versionSpec: 3.6
-    - bash: pip install wheel==0.30.0 pylint==1.9.5 flake8==3.5.0 requests
+    - bash: pip install wheel pylint==1.9.5 flake8==3.5.0 requests
       displayName: 'Install wheel, pylint, flake8, requests'
     - bash: python scripts/ci/source_code_static_analysis.py
       displayName: "Static Analysis"
@@ -89,7 +89,7 @@ jobs:
   - bash: |
       #!/usr/bin/env bash
       set -ev
-      pip install wheel==0.30.0 requests
+      pip install wheel requests
       export CI="ADO"
       python ./scripts/ci/test_index.py -v
     displayName: "Verify Extensions Index"
@@ -109,8 +109,8 @@ jobs:
       displayName: 'Use Python $(python.version)'
       inputs:
         versionSpec: '$(python.version)'
-    - bash: pip install wheel==0.30.0
-      displayName: 'Install wheel==0.30.0'
+    - bash: pip install wheel
+      displayName: 'Install wheel'
     - bash: ./scripts/ci/test_source.sh
       displayName: 'Run integration test and build test'
       env:
