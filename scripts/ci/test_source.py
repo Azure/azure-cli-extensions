@@ -106,7 +106,6 @@ class TestSourceWheels(unittest.TestCase):
         for filename in os.listdir(built_whl_dir):
             ext_file = os.path.join(built_whl_dir, filename)
             ext_dir = tempfile.mkdtemp(dir=built_whl_dir)
-            ext_name = WHEEL_INFO_RE(filename).groupdict().get('name')
             metadata = get_ext_metadata(ext_dir, ext_file)
             run_requires = metadata.get('run_requires')
             if run_requires:
