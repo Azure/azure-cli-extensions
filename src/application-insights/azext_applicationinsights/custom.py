@@ -140,5 +140,17 @@ def update_component_billing(client, application, resource_group_name, cap=None,
                          current_billing_features=billing_features.current_billing_features)
 
 
-def get_component_linked_storage_account(client, resource_group_name, application, storage=None):
-    return client.delete(resource_group_name, application)
+def get_component_linked_storage_account(client, resource_group_name, application):
+    return client.get(resource_group_name=resource_group_name, resource_name=application)
+
+
+def create_component_linked_storage_account(client, resource_group_name, application, storage_account_id):
+    return client.create_and_update(resource_group_name=resource_group_name, resource_name=application, linked_storage_account=storage_account_id)
+
+
+def update_component_linked_storage_account(client, resource_group_name, application, storage_account_id):
+    return client.update(resource_group_name=resource_group_name, resource_name=application, linked_storage_account=storage_account_id)
+
+
+def delete_component_linked_storage_account(client, resource_group_name, application):
+    return client.delete(resource_group_name=resource_group_name, resource_name=application)

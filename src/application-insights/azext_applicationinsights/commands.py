@@ -97,7 +97,7 @@ def load_command_table(self, _):
 
     with self.command_group('monitor app-insights component linked-storage', custom_command_type=component_linked_storage_accounts_custom_sdk) as g:
         g.custom_show_command('show', 'get_component_linked_storage_account')
-        #g.custom_command('link', 'create_component_linked_storage_account')
-        #g.custom_command('update', 'update_component_linked_storage_account')
-        #g.custom_command('unlink', 'delete_component_linked_storage_account')
+        g.custom_command('link', 'create_component_linked_storage_account')
+        g.custom_command('update', 'update_component_linked_storage_account')
+        g.custom_command('unlink', 'delete_component_linked_storage_account')
 

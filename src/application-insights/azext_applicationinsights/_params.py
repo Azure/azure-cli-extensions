@@ -6,7 +6,7 @@
 # pylint: disable=line-too-long
 from azure.cli.core.commands.parameters import get_datetime_type, get_location_type, tags_type, get_three_state_flag
 from azure.cli.command_modules.monitor.actions import get_period_type
-from ._validators import validate_applications
+from ._validators import validate_applications, validate_storage_account_name_or_id
 
 
 def load_arguments(self, _):
@@ -65,3 +65,7 @@ def load_arguments(self, _):
         c.argument('start_time', arg_type=get_datetime_type(help='Start-time of time range for which to retrieve data.'))
         c.argument('end_time', arg_type=get_datetime_type(help='End of time range for current operation. Defaults to the current time.'))
         c.argument('offset', help='Filter results based on UTC hour offset.', type=get_period_type(as_timedelta=True))
+
+    with self.argument_context('monitor app-insights component linked-storage') as c:
+        c.argument('storage_account_id', options_list=['--storage-account', '-s'], validator=validate_storage_account_name_or_id,
+                   help='Name or ID of the linked storage account.')
