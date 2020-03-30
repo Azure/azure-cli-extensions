@@ -17,7 +17,7 @@ from azure.cli.core.commands.validators import get_default_location_from_resourc
 from ._completers import get_fd_subresource_completion_list
 from ._validators import (
     validate_waf_policy, validate_load_balancing_settings, validate_probe_settings,
-    validate_frontend_endpoints, validate_backend_pool)
+    validate_frontend_endpoints, validate_backend_pool, validate_rules_engine)
 
 
 class RouteType(str, Enum):
@@ -30,11 +30,13 @@ def load_arguments(self, _):
 
     from azext_front_door.vendored_sdks.models import (
         PolicyMode, FrontDoorProtocol, FrontDoorHealthProbeMethod, FrontDoorCertificateSource, FrontDoorQuery, ActionType, RuleType, TransformType,
-        FrontDoorRedirectType, FrontDoorRedirectProtocol, MinimumTLSVersion
+        FrontDoorRedirectType, FrontDoorRedirectProtocol, MinimumTLSVersion, Transform, HeaderActionType, RulesEngineOperator, RulesEngineMatchVariable,
+        FrontDoorForwardingProtocol, MatchProcessingBehavior
     )
 
     frontdoor_name_type = CLIArgumentType(options_list=['--front-door-name', '-f'], help='Name of the Front Door.', completer=get_resource_name_completion_list('Microsoft.Network/frontdoors'), id_part='name')
     waf_policy_name_type = CLIArgumentType(options_list='--policy-name', help='Name of the WAF policy.', completer=get_resource_name_completion_list('Microsoft.Network/frontDoorWebApplicationFirewallPolicies'), id_part='name')
+    rules_engine_name_type = CLIArgumentType(options_list=['--rules-engine-name', '-r'], help='Name of the Rules Engine.', completer=get_fd_subresource_completion_list('rules_engines'), id_part='child_name_1')
 
     # region FrontDoors
     fd_subresources = [
@@ -127,10 +129,11 @@ def load_arguments(self, _):
     with self.argument_context('network front-door routing-rule', arg_group=None) as c:
         c.argument('accepted_protocols', nargs='+', help='Space-separated list of protocols to accept. Default: Http')
         c.argument('patterns_to_match', options_list='--patterns', nargs='+', help='Space-separated list of patterns to match. Default: \'/*\'.')
-        c.argument('forwarding_protocol', help='Protocol to use for forwarding traffic.')
-        c.argument('backend_pool', help='Name or ID of a backend pool.', validator=validate_backend_pool)
+        c.argument('rules_engine', help='Name or ID of a Rules Engine configuration.', validator=validate_rules_engine)
         c.argument('frontend_endpoints', help='Space-separated list of frontend endpoint names or IDs.', nargs='+', validator=validate_frontend_endpoints)
     with self.argument_context('network front-door routing-rule', arg_group='Forward Routing Rule') as c:
+        c.argument('backend_pool', help='Name or ID of a backend pool.', validator=validate_backend_pool)
+        c.argument('forwarding_protocol', help='Protocol to use for forwarding traffic.')
         c.argument('custom_forwarding_path', help='Custom path used to rewrite resource paths matched by this rule. Leave empty to use incoming path.')
         c.argument('caching', arg_type=get_three_state_flag(positive_label='Enabled', negative_label='Disabled', return_label=False), help='Whether to enable caching for this route.')
         c.argument('dynamic_compression', arg_type=get_three_state_flag(positive_label='Enabled', negative_label='Disabled', return_label=True), help='Use dynamic compression for cached content.')
@@ -262,4 +265,56 @@ def load_arguments(self, _):
     with self.argument_context('network front-door waf-policy rule match-condition list') as c:
         c.argument('rule_name', options_list=['--name', '-n'], help='Name of the custom rule.')
         c.argument('policy_name', waf_policy_name_type, id_part=None)
+    # endregion
+
+    # region RulesEngine
+    with self.argument_context('network front-door rules-engine') as c:
+        c.argument('front_door_name', frontdoor_name_type, id_part=None)
+        c.argument('rules_engine_name', rules_engine_name_type, options_list=['--name', '-n'], id_part=None)
+
+    with self.argument_context('network front-door rules-engine rule') as c:
+        c.argument('front_door_name', frontdoor_name_type, id_part=None)
+        c.argument('rules_engine_name', rules_engine_name_type, id_part=None)
+        c.argument('rule_name', options_list=['--name', '-n'], help='Name of the rule')
+        c.argument('action_type', arg_group="Action", arg_type=get_enum_type(['RequestHeader', 'ResponseHeader', 'ForwardRouteOverride', 'RedirectRouteOverride']), help='Action type to apply for a rule.')
+        c.argument('header_action', arg_group="Action", arg_type=get_enum_type(HeaderActionType), help='Header action type for the requests.')
+        c.argument('header_name', arg_group="Action", help='Name of the header to modify.')
+        c.argument('header_value', arg_group="Action", help='Value of the header.')
+        c.argument('match_variable', arg_group="Match Condition", arg_type=get_enum_type(RulesEngineMatchVariable), help='Name of the match condition.')
+        c.argument('operator', arg_group="Match Condition", arg_type=get_enum_type(RulesEngineOperator), help='Operator of the match condition.')
+        c.argument('match_values', arg_group="Match Condition", nargs='+', help='Space-separated list of values to match against.')
+        c.argument('selector', arg_group="Match Condition", help='Optional selector for the match condition variable.')
+        c.argument('negate_condition', arg_group="Match Condition", arg_type=get_three_state_flag(), help='Applies "Not" to the operator.')
+        c.argument('transforms', arg_group="Match Condition", nargs='+', arg_type=get_enum_type(Transform), help='Space-separated list of transforms to apply.')
+        c.argument('priority', help='The priority number must start from 0 and consecutive. Rule with greater priority value will be applied later.')
+        c.argument('match_processing_behavior', arg_type=get_enum_type(MatchProcessingBehavior), help='Whether to stop processing rules after conditions in a rule is satisfied.')
+
+    with self.argument_context('network front-door rules-engine rule action', arg_group='Forward Route Override') as c:
+        c.argument('backend_pool', help='Name or ID of a backend pool.', validator=validate_backend_pool)
+        c.argument('forwarding_protocol', arg_type=get_enum_type(FrontDoorForwardingProtocol), help='Protocol to use for forwarding traffic.')
+        c.argument('custom_forwarding_path', help='Custom path used to rewrite resource paths matched by this rule. Leave empty to use incoming path.')
+        c.argument('caching', arg_type=get_three_state_flag(positive_label='Enabled', negative_label='Disabled', return_label=False), help='Whether to enable caching for this route.')
+        c.argument('cache_duration', help='The duration for which the content needs to be cached. Allowed format is ISO 8601 duration')
+        c.argument('dynamic_compression', arg_type=get_three_state_flag(positive_label='Enabled', negative_label='Disabled', return_label=True), help='Use dynamic compression for cached content.')
+        c.argument('query_parameter_strip_directive', arg_type=get_enum_type(FrontDoorQuery), help='Treatment of URL query terms when forming the cache key.')
+        c.argument('query_parameters', help='Query parameters to include or exclude (comma separated) when using query-parameter-strip-directive type StripAllExcept or StripOnly respectively.')
+
+    with self.argument_context('network front-door rules-engine rule action', arg_group='Redirect Route Override') as c:
+        c.argument('redirect_type', arg_type=get_enum_type(FrontDoorRedirectType), help='The redirect type the rule will use when redirecting traffic.')
+        c.argument('redirect_protocol', arg_type=get_enum_type(FrontDoorRedirectProtocol), help='The protocol of the destination to where the traffic is redirected.')
+        c.argument('custom_host', help='Host to redirect. Leave empty to use use the incoming host as the destination host.')
+        c.argument('custom_path', help='The full path to redirect. Path cannot be empty and must start with /. Leave empty to use the incoming path as destination path.')
+        c.argument('custom_fragment', help='Fragment to add to the redirect URL. Fragment is the part of the URL that comes after #. Do not include the #.')
+        c.argument('custom_query_string', help='The set of query strings to be placed in the redirect URL. Setting this value would replace any existing query string; leave empty to preserve the incoming query string. Query string must be in <key>=<value> format. The first ? and & will be added automatically so do not include them in the front, but do separate multiple query strings with &.')
+
+    with self.argument_context('network front-door rules-engine rule condition remove') as c:
+        c.argument('index', type=int, help='0-based index of the match condition to remove')
+
+    with self.argument_context('network front-door rules-engine rule action remove') as c:
+        c.argument('index', type=int, help='0-based index of the request or response header action to remove. Index parameter is not required for "ForwardRouteOverride" or "RedirectRouteOverride" action remove')
+
+    with self.argument_context('network front-door rules-engine rule list') as c:
+        c.argument('front_door_name', frontdoor_name_type, id_part=None)
+        c.argument('rules_engine_name', rules_engine_name_type, options_list=['--name', '-n'], id_part=None)
+
     # endregion

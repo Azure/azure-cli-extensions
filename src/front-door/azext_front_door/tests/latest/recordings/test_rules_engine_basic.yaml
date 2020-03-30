@@ -1,0 +1,2551 @@
+interactions:
+- request:
+    body: 'b''{"location": "global", "properties": {"friendlyName": "clifrontdoor000002",
+      "routingRules": [{"properties": {"frontendEndpoints": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/frontendEndpoints/DefaultFrontendEndpoint"}],
+      "acceptedProtocols": ["Http"], "patternsToMatch": ["/*"], "enabledState": "Enabled",
+      "routeConfiguration": {"@odata.type": "#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration",
+      "forwardingProtocol": "MatchRequest", "backendPool": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"}},
+      "resourceState": "Enabled"}, "name": "DefaultRoutingRule"}], "loadBalancingSettings":
+      [{"properties": {"sampleSize": 4, "successfulSamplesRequired": 2, "additionalLatencyMilliseconds":
+      0, "resourceState": "Enabled"}, "name": "DefaultLoadBalancingSettings"}], "healthProbeSettings":
+      [{"properties": {"path": "/", "protocol": "Https", "intervalInSeconds": 30,
+      "healthProbeMethod": "HEAD", "resourceState": "Enabled"}, "name": "DefaultProbeSettings"}],
+      "backendPools": [{"properties": {"backends": [{"address": "202.120.2.3", "httpPort":
+      80, "httpsPort": 443, "enabledState": "Enabled", "priority": 1, "weight": 50,
+      "backendHostHeader": "202.120.2.3"}], "loadBalancingSettings": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"},
+      "healthProbeSettings": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"},
+      "resourceState": "Enabled"}, "name": "DefaultBackendPool"}], "frontendEndpoints":
+      [{"properties": {"hostName": "clifrontdoor000002.azurefd.net", "sessionAffinityEnabledState":
+      "Disabled", "resourceState": "Enabled"}, "name": "DefaultFrontendEndpoint"}],
+      "backendPoolsSettings": {"enforceCertificateNameCheck": "Enabled"}, "enabledState":
+      "Enabled"}}'''
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2453'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -g -n --backend-address
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002?api-version=2020-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\":\"clifrontdoor000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002\",\"type\":\"Microsoft.Network/frontdoors\",\"tags\":{\r\n
+        \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"provisioningState\":\"Creating\",\"resourceState\":\"Creating\",\"backendPools\":[\r\n
+        \     {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/DefaultBackendPool\",\"name\":\"DefaultBackendPool\",\"type\":\"Microsoft.Network/Frontdoors/BackendPools\",\"properties\":{\r\n
+        \         \"backends\":[\r\n            {\r\n              \"address\":\"202.120.2.3\",\"httpPort\":80,\"httpsPort\":443,\"priority\":1,\"weight\":50,\"backendHostHeader\":\"202.120.2.3\",\"enabledState\":\"Enabled\",\"privateLinkAlias\":null,\"privateEndpointStatus\":null,\"privateLinkApprovalMessage\":null\r\n
+        \           }\r\n          ],\"healthProbeSettings\":{\r\n            \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings\"\r\n
+        \         },\"loadBalancingSettings\":{\r\n            \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings\"\r\n
+        \         },\"resourceState\":\"Creating\"\r\n        }\r\n      }\r\n    ],\"healthProbeSettings\":[\r\n
+        \     {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/HealthProbeSettings/DefaultProbeSettings\",\"name\":\"DefaultProbeSettings\",\"type\":\"Microsoft.Network/Frontdoors/HealthProbeSettings\",\"properties\":{\r\n
+        \         \"intervalInSeconds\":30,\"path\":\"/\",\"protocol\":\"Https\",\"resourceState\":\"Creating\",\"enabledState\":\"Enabled\",\"healthProbeMethod\":\"Head\"\r\n
+        \       }\r\n      }\r\n    ],\"frontendEndpoints\":[\r\n      {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/FrontendEndpoints/DefaultFrontendEndpoint\",\"name\":\"DefaultFrontendEndpoint\",\"type\":\"Microsoft.Network/Frontdoors/FrontendEndpoints\",\"properties\":{\r\n
+        \         \"hostName\":\"clifrontdoor000002.azurefd.net\",\"sessionAffinityEnabledState\":\"Disabled\",\"sessionAffinityTtlSeconds\":0,\"webApplicationFirewallPolicyLink\":null,\"customHttpsProvisioningState\":null,\"customHttpsProvisioningSubstate\":null,\"customHttpsConfiguration\":null,\"resourceState\":\"Creating\"\r\n
+        \       }\r\n      }\r\n    ],\"loadBalancingSettings\":[\r\n      {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/LoadBalancingSettings/DefaultLoadBalancingSettings\",\"name\":\"DefaultLoadBalancingSettings\",\"type\":\"Microsoft.Network/Frontdoors/LoadBalancingSettings\",\"properties\":{\r\n
+        \         \"additionalLatencyMilliseconds\":0,\"sampleSize\":4,\"successfulSamplesRequired\":2,\"resourceState\":\"Creating\"\r\n
+        \       }\r\n      }\r\n    ],\"rulesEngines\":[\r\n      \r\n    ],\"routingRules\":[\r\n
+        \     {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/RoutingRules/DefaultRoutingRule\",\"name\":\"DefaultRoutingRule\",\"type\":\"Microsoft.Network/Frontdoors/RoutingRules\",\"properties\":{\r\n
+        \         \"frontendEndpoints\":[\r\n            {\r\n              \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/frontendEndpoints/DefaultFrontendEndpoint\"\r\n
+        \           }\r\n          ],\"acceptedProtocols\":[\r\n            \"Http\"\r\n
+        \         ],\"patternsToMatch\":[\r\n            \"/*\"\r\n          ],\"enabledState\":\"Enabled\",\"resourceState\":\"Creating\",\"routeConfiguration\":{\r\n
+        \           \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration\",\"customForwardingPath\":null,\"forwardingProtocol\":\"MatchRequest\",\"cacheConfiguration\":null,\"backendPool\":{\r\n
+        \             \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool\"\r\n
+        \           }\r\n          },\"rulesEngine\":null\r\n        }\r\n      }\r\n
+        \   ],\"backendPoolsSettings\":{\r\n      \"enforceCertificateNameCheck\":\"Enabled\",\"sendRecvTimeoutSeconds\":30\r\n
+        \   },\"enabledState\":\"Enabled\",\"cName\":\"clifrontdoor000002.azurefd.net\",\"frontdoorId\":\"0e4b847e-1dc4-4734-b528-fdfa75cd0a6b\",\"friendlyName\":\"clifrontdoor000002\"\r\n
+        \ }\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/b32af07d-11fd-4c42-b01f-3449f6dc778a?api-version=2020-01-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '5333'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Fri, 27 Mar 2020 07:21:56 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --backend-address
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.2.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/b32af07d-11fd-4c42-b01f-3449f6dc778a?api-version=2020-01-01
+  response:
+    body:
+      string: "{\r\n  \"status\":\"InProgress\",\"error\":{\r\n    \"code\":\"None\",\"message\":null\r\n
+        \ }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '78'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Fri, 27 Mar 2020 07:22:06 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --backend-address
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.2.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/b32af07d-11fd-4c42-b01f-3449f6dc778a?api-version=2020-01-01
+  response:
+    body:
+      string: "{\r\n  \"status\":\"Succeeded\",\"error\":{\r\n    \"code\":\"None\",\"message\":null\r\n
+        \ }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '77'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Fri, 27 Mar 2020 07:22:36 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --backend-address
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.2.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002?api-version=2020-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\":\"clifrontdoor000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002\",\"type\":\"Microsoft.Network/frontdoors\",\"tags\":{\r\n
+        \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"provisioningState\":\"Succeeded\",\"resourceState\":\"Enabled\",\"backendPools\":[\r\n
+        \     {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/DefaultBackendPool\",\"name\":\"DefaultBackendPool\",\"type\":\"Microsoft.Network/Frontdoors/BackendPools\",\"properties\":{\r\n
+        \         \"backends\":[\r\n            {\r\n              \"address\":\"202.120.2.3\",\"httpPort\":80,\"httpsPort\":443,\"priority\":1,\"weight\":50,\"backendHostHeader\":\"202.120.2.3\",\"enabledState\":\"Enabled\",\"privateLinkAlias\":null,\"privateEndpointStatus\":null,\"privateLinkApprovalMessage\":null\r\n
+        \           }\r\n          ],\"healthProbeSettings\":{\r\n            \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings\"\r\n
+        \         },\"loadBalancingSettings\":{\r\n            \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings\"\r\n
+        \         },\"resourceState\":\"Enabled\"\r\n        }\r\n      }\r\n    ],\"healthProbeSettings\":[\r\n
+        \     {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/HealthProbeSettings/DefaultProbeSettings\",\"name\":\"DefaultProbeSettings\",\"type\":\"Microsoft.Network/Frontdoors/HealthProbeSettings\",\"properties\":{\r\n
+        \         \"intervalInSeconds\":30,\"path\":\"/\",\"protocol\":\"Https\",\"resourceState\":\"Enabled\",\"enabledState\":\"Enabled\",\"healthProbeMethod\":\"Head\"\r\n
+        \       }\r\n      }\r\n    ],\"frontendEndpoints\":[\r\n      {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/FrontendEndpoints/DefaultFrontendEndpoint\",\"name\":\"DefaultFrontendEndpoint\",\"type\":\"Microsoft.Network/Frontdoors/FrontendEndpoints\",\"properties\":{\r\n
+        \         \"hostName\":\"clifrontdoor000002.azurefd.net\",\"sessionAffinityEnabledState\":\"Disabled\",\"sessionAffinityTtlSeconds\":0,\"webApplicationFirewallPolicyLink\":null,\"customHttpsProvisioningState\":null,\"customHttpsProvisioningSubstate\":null,\"customHttpsConfiguration\":null,\"resourceState\":\"Enabled\"\r\n
+        \       }\r\n      }\r\n    ],\"loadBalancingSettings\":[\r\n      {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/LoadBalancingSettings/DefaultLoadBalancingSettings\",\"name\":\"DefaultLoadBalancingSettings\",\"type\":\"Microsoft.Network/Frontdoors/LoadBalancingSettings\",\"properties\":{\r\n
+        \         \"additionalLatencyMilliseconds\":0,\"sampleSize\":4,\"successfulSamplesRequired\":2,\"resourceState\":\"Enabled\"\r\n
+        \       }\r\n      }\r\n    ],\"rulesEngines\":[\r\n      \r\n    ],\"routingRules\":[\r\n
+        \     {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/RoutingRules/DefaultRoutingRule\",\"name\":\"DefaultRoutingRule\",\"type\":\"Microsoft.Network/Frontdoors/RoutingRules\",\"properties\":{\r\n
+        \         \"frontendEndpoints\":[\r\n            {\r\n              \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/frontendEndpoints/DefaultFrontendEndpoint\"\r\n
+        \           }\r\n          ],\"acceptedProtocols\":[\r\n            \"Http\"\r\n
+        \         ],\"patternsToMatch\":[\r\n            \"/*\"\r\n          ],\"enabledState\":\"Enabled\",\"resourceState\":\"Enabled\",\"routeConfiguration\":{\r\n
+        \           \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration\",\"customForwardingPath\":null,\"forwardingProtocol\":\"MatchRequest\",\"cacheConfiguration\":null,\"backendPool\":{\r\n
+        \             \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool\"\r\n
+        \           }\r\n          },\"rulesEngine\":null\r\n        }\r\n      }\r\n
+        \   ],\"backendPoolsSettings\":{\r\n      \"enforceCertificateNameCheck\":\"Enabled\",\"sendRecvTimeoutSeconds\":30\r\n
+        \   },\"enabledState\":\"Enabled\",\"cName\":\"clifrontdoor000002.azurefd.net\",\"frontdoorId\":\"0e4b847e-1dc4-4734-b528-fdfa75cd0a6b\",\"friendlyName\":\"clifrontdoor000002\"\r\n
+        \ }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '5328'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Fri, 27 Mar 2020 07:22:37 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door rules-engine rule create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -f -g --rules-engine-name --name --priority --action-type --header-action
+        --header-name --header-value --match-variable --operator --match-values --transforms
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+  response:
+    body:
+      string: "{\r\n  \"error\": {\r\n    \"code\": \"NotFound\",\r\n    \"message\":
+        \"The requested resource was not found.\"\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-language:
+      - en-US
+      content-length:
+      - '104'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 27 Mar 2020 07:22:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: '{"properties": {"rules": [{"name": "rule1", "priority": 1, "action": {"requestHeaderActions":
+      [{"headerActionType": "Overwrite", "headerName": "Rewrite", "value": "True"}],
+      "responseHeaderActions": []}, "matchConditions": [{"rulesEngineMatchVariable":
+      "RequestFilenameExtension", "rulesEngineOperator": "Contains", "rulesEngineMatchValue":
+      ["jpg", "png"], "transforms": ["Lowercase"]}]}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door rules-engine rule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '389'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -f -g --rules-engine-name --name --priority --action-type --header-action
+        --header-name --header-value --match-variable --operator --match-values --transforms
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
+        \   \"name\":\"clirulesengine000003\",\"resourceGroup\":\"clitest.rg000001\",\"resourceState\":\"Enabled\",\"rules\":[\r\n
+        \     {\r\n        \"priority\":1,\"name\":\"rule1\",\"matchProcessingBehavior\":null,\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            {\r\n              \"headerActionType\":\"Overwrite\",\"headerName\":\"Rewrite\",\"value\":\"True\"\r\n
+        \           }\r\n          ],\"responseHeaderActions\":[\r\n            \r\n
+        \         ],\"routeConfigurationOverride\":null,\"name\":null\r\n        },\"matchConditions\":[\r\n
+        \         {\r\n            \"rulesEngineMatchValue\":[\r\n              \"jpg\",\"png\"\r\n
+        \           ],\"rulesEngineMatchVariable\":\"RequestFilenameExtension\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \"Lowercase\"\r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      }\r\n    ]\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1216'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Fri, 27 Mar 2020 07:22:40 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door rules-engine rule create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -f -g --rules-engine-name --name --priority --action-type --header-action
+        --header-name --header-value --match-variable --operator --match-values
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
+        \   \"name\":\"clirulesengine000003\",\"resourceGroup\":\"clitest.rg000001\",\"resourceState\":\"Enabled\",\"rules\":[\r\n
+        \     {\r\n        \"priority\":1,\"name\":\"rule1\",\"matchProcessingBehavior\":null,\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            {\r\n              \"headerActionType\":\"Overwrite\",\"headerName\":\"Rewrite\",\"value\":\"True\"\r\n
+        \           }\r\n          ],\"responseHeaderActions\":[\r\n            \r\n
+        \         ],\"routeConfigurationOverride\":null,\"name\":null\r\n        },\"matchConditions\":[\r\n
+        \         {\r\n            \"rulesEngineMatchValue\":[\r\n              \"jpg\",\"png\"\r\n
+        \           ],\"rulesEngineMatchVariable\":\"RequestFilenameExtension\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \"Lowercase\"\r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      }\r\n    ]\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1216'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Fri, 27 Mar 2020 07:22:42 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"rules": [{"name": "rule1", "priority": 1, "action": {"requestHeaderActions":
+      [{"headerActionType": "Overwrite", "headerName": "Rewrite", "value": "True"}],
+      "responseHeaderActions": []}, "matchConditions": [{"rulesEngineMatchVariable":
+      "RequestFilenameExtension", "rulesEngineOperator": "Contains", "negateCondition":
+      false, "rulesEngineMatchValue": ["jpg", "png"], "transforms": ["Lowercase"]}]},
+      {"name": "rule2", "priority": 2, "action": {"requestHeaderActions": [], "responseHeaderActions":
+      [{"headerActionType": "Append", "headerName": "Security", "value": "Strict"}]},
+      "matchConditions": [{"rulesEngineMatchVariable": "RequestPath", "rulesEngineOperator":
+      "Contains", "rulesEngineMatchValue": ["private"]}]}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door rules-engine rule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '732'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -f -g --rules-engine-name --name --priority --action-type --header-action
+        --header-name --header-value --match-variable --operator --match-values
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
+        \   \"name\":\"clirulesengine000003\",\"resourceGroup\":\"clitest.rg000001\",\"resourceState\":\"Enabled\",\"rules\":[\r\n
+        \     {\r\n        \"priority\":1,\"name\":\"rule1\",\"matchProcessingBehavior\":null,\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            {\r\n              \"headerActionType\":\"Overwrite\",\"headerName\":\"Rewrite\",\"value\":\"True\"\r\n
+        \           }\r\n          ],\"responseHeaderActions\":[\r\n            \r\n
+        \         ],\"routeConfigurationOverride\":null,\"name\":null\r\n        },\"matchConditions\":[\r\n
+        \         {\r\n            \"rulesEngineMatchValue\":[\r\n              \"jpg\",\"png\"\r\n
+        \           ],\"rulesEngineMatchVariable\":\"RequestFilenameExtension\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \"Lowercase\"\r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      },{\r\n        \"priority\":2,\"name\":\"rule2\",\"matchProcessingBehavior\":null,\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            \r\n          ],\"responseHeaderActions\":[\r\n
+        \           {\r\n              \"headerActionType\":\"Append\",\"headerName\":\"Security\",\"value\":\"Strict\"\r\n
+        \           }\r\n          ],\"routeConfigurationOverride\":null,\"name\":null\r\n
+        \       },\"matchConditions\":[\r\n          {\r\n            \"rulesEngineMatchValue\":[\r\n
+        \             \"private\"\r\n            ],\"rulesEngineMatchVariable\":\"RequestPath\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      }\r\n    ]\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1875'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Fri, 27 Mar 2020 07:22:43 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door rules-engine rule update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -f -g --rules-engine-name --name --match-processing-behavior
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
+        \   \"name\":\"clirulesengine000003\",\"resourceGroup\":\"clitest.rg000001\",\"resourceState\":\"Enabled\",\"rules\":[\r\n
+        \     {\r\n        \"priority\":1,\"name\":\"rule1\",\"matchProcessingBehavior\":null,\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            {\r\n              \"headerActionType\":\"Overwrite\",\"headerName\":\"Rewrite\",\"value\":\"True\"\r\n
+        \           }\r\n          ],\"responseHeaderActions\":[\r\n            \r\n
+        \         ],\"routeConfigurationOverride\":null,\"name\":null\r\n        },\"matchConditions\":[\r\n
+        \         {\r\n            \"rulesEngineMatchValue\":[\r\n              \"jpg\",\"png\"\r\n
+        \           ],\"rulesEngineMatchVariable\":\"RequestFilenameExtension\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \"Lowercase\"\r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      },{\r\n        \"priority\":2,\"name\":\"rule2\",\"matchProcessingBehavior\":null,\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            \r\n          ],\"responseHeaderActions\":[\r\n
+        \           {\r\n              \"headerActionType\":\"Append\",\"headerName\":\"Security\",\"value\":\"Strict\"\r\n
+        \           }\r\n          ],\"routeConfigurationOverride\":null,\"name\":null\r\n
+        \       },\"matchConditions\":[\r\n          {\r\n            \"rulesEngineMatchValue\":[\r\n
+        \             \"private\"\r\n            ],\"rulesEngineMatchVariable\":\"RequestPath\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      }\r\n    ]\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1875'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Fri, 27 Mar 2020 07:22:43 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"rules": [{"name": "rule1", "priority": 1, "action": {"requestHeaderActions":
+      [{"headerActionType": "Overwrite", "headerName": "Rewrite", "value": "True"}],
+      "responseHeaderActions": []}, "matchConditions": [{"rulesEngineMatchVariable":
+      "RequestFilenameExtension", "rulesEngineOperator": "Contains", "negateCondition":
+      false, "rulesEngineMatchValue": ["jpg", "png"], "transforms": ["Lowercase"]}],
+      "matchProcessingBehavior": "Stop"}, {"name": "rule2", "priority": 2, "action":
+      {"requestHeaderActions": [], "responseHeaderActions": [{"headerActionType":
+      "Append", "headerName": "Security", "value": "Strict"}]}, "matchConditions":
+      [{"rulesEngineMatchVariable": "RequestPath", "rulesEngineOperator": "Contains",
+      "negateCondition": false, "rulesEngineMatchValue": ["private"], "transforms":
+      []}]}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door rules-engine rule update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '811'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -f -g --rules-engine-name --name --match-processing-behavior
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
+        \   \"name\":\"clirulesengine000003\",\"resourceGroup\":\"clitest.rg000001\",\"resourceState\":\"Enabled\",\"rules\":[\r\n
+        \     {\r\n        \"priority\":1,\"name\":\"rule1\",\"matchProcessingBehavior\":\"Stop\",\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            {\r\n              \"headerActionType\":\"Overwrite\",\"headerName\":\"Rewrite\",\"value\":\"True\"\r\n
+        \           }\r\n          ],\"responseHeaderActions\":[\r\n            \r\n
+        \         ],\"routeConfigurationOverride\":null,\"name\":null\r\n        },\"matchConditions\":[\r\n
+        \         {\r\n            \"rulesEngineMatchValue\":[\r\n              \"jpg\",\"png\"\r\n
+        \           ],\"rulesEngineMatchVariable\":\"RequestFilenameExtension\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \"Lowercase\"\r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      },{\r\n        \"priority\":2,\"name\":\"rule2\",\"matchProcessingBehavior\":null,\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            \r\n          ],\"responseHeaderActions\":[\r\n
+        \           {\r\n              \"headerActionType\":\"Append\",\"headerName\":\"Security\",\"value\":\"Strict\"\r\n
+        \           }\r\n          ],\"routeConfigurationOverride\":null,\"name\":null\r\n
+        \       },\"matchConditions\":[\r\n          {\r\n            \"rulesEngineMatchValue\":[\r\n
+        \             \"private\"\r\n            ],\"rulesEngineMatchVariable\":\"RequestPath\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      }\r\n    ]\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1877'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Fri, 27 Mar 2020 07:22:44 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door rules-engine rule show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -f -g --rules-engine-name -n
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
+        \   \"name\":\"clirulesengine000003\",\"resourceGroup\":\"clitest.rg000001\",\"resourceState\":\"Enabled\",\"rules\":[\r\n
+        \     {\r\n        \"priority\":1,\"name\":\"rule1\",\"matchProcessingBehavior\":\"Stop\",\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            {\r\n              \"headerActionType\":\"Overwrite\",\"headerName\":\"Rewrite\",\"value\":\"True\"\r\n
+        \           }\r\n          ],\"responseHeaderActions\":[\r\n            \r\n
+        \         ],\"routeConfigurationOverride\":null,\"name\":null\r\n        },\"matchConditions\":[\r\n
+        \         {\r\n            \"rulesEngineMatchValue\":[\r\n              \"jpg\",\"png\"\r\n
+        \           ],\"rulesEngineMatchVariable\":\"RequestFilenameExtension\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \"Lowercase\"\r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      },{\r\n        \"priority\":2,\"name\":\"rule2\",\"matchProcessingBehavior\":null,\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            \r\n          ],\"responseHeaderActions\":[\r\n
+        \           {\r\n              \"headerActionType\":\"Append\",\"headerName\":\"Security\",\"value\":\"Strict\"\r\n
+        \           }\r\n          ],\"routeConfigurationOverride\":null,\"name\":null\r\n
+        \       },\"matchConditions\":[\r\n          {\r\n            \"rulesEngineMatchValue\":[\r\n
+        \             \"private\"\r\n            ],\"rulesEngineMatchVariable\":\"RequestPath\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      }\r\n    ]\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1877'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Fri, 27 Mar 2020 07:22:46 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door rules-engine rule list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -f -g --name
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
+        \   \"name\":\"clirulesengine000003\",\"resourceGroup\":\"clitest.rg000001\",\"resourceState\":\"Enabled\",\"rules\":[\r\n
+        \     {\r\n        \"priority\":1,\"name\":\"rule1\",\"matchProcessingBehavior\":\"Stop\",\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            {\r\n              \"headerActionType\":\"Overwrite\",\"headerName\":\"Rewrite\",\"value\":\"True\"\r\n
+        \           }\r\n          ],\"responseHeaderActions\":[\r\n            \r\n
+        \         ],\"routeConfigurationOverride\":null,\"name\":null\r\n        },\"matchConditions\":[\r\n
+        \         {\r\n            \"rulesEngineMatchValue\":[\r\n              \"jpg\",\"png\"\r\n
+        \           ],\"rulesEngineMatchVariable\":\"RequestFilenameExtension\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \"Lowercase\"\r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      },{\r\n        \"priority\":2,\"name\":\"rule2\",\"matchProcessingBehavior\":null,\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            \r\n          ],\"responseHeaderActions\":[\r\n
+        \           {\r\n              \"headerActionType\":\"Append\",\"headerName\":\"Security\",\"value\":\"Strict\"\r\n
+        \           }\r\n          ],\"routeConfigurationOverride\":null,\"name\":null\r\n
+        \       },\"matchConditions\":[\r\n          {\r\n            \"rulesEngineMatchValue\":[\r\n
+        \             \"private\"\r\n            ],\"rulesEngineMatchVariable\":\"RequestPath\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      }\r\n    ]\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1877'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Fri, 27 Mar 2020 07:22:47 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door rules-engine show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -f -g --name
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
+        \   \"name\":\"clirulesengine000003\",\"resourceGroup\":\"clitest.rg000001\",\"resourceState\":\"Enabled\",\"rules\":[\r\n
+        \     {\r\n        \"priority\":1,\"name\":\"rule1\",\"matchProcessingBehavior\":\"Stop\",\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            {\r\n              \"headerActionType\":\"Overwrite\",\"headerName\":\"Rewrite\",\"value\":\"True\"\r\n
+        \           }\r\n          ],\"responseHeaderActions\":[\r\n            \r\n
+        \         ],\"routeConfigurationOverride\":null,\"name\":null\r\n        },\"matchConditions\":[\r\n
+        \         {\r\n            \"rulesEngineMatchValue\":[\r\n              \"jpg\",\"png\"\r\n
+        \           ],\"rulesEngineMatchVariable\":\"RequestFilenameExtension\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \"Lowercase\"\r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      },{\r\n        \"priority\":2,\"name\":\"rule2\",\"matchProcessingBehavior\":null,\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            \r\n          ],\"responseHeaderActions\":[\r\n
+        \           {\r\n              \"headerActionType\":\"Append\",\"headerName\":\"Security\",\"value\":\"Strict\"\r\n
+        \           }\r\n          ],\"routeConfigurationOverride\":null,\"name\":null\r\n
+        \       },\"matchConditions\":[\r\n          {\r\n            \"rulesEngineMatchValue\":[\r\n
+        \             \"private\"\r\n            ],\"rulesEngineMatchVariable\":\"RequestPath\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      }\r\n    ]\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1877'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Fri, 27 Mar 2020 07:22:48 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door rules-engine rule action add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -f -g --rules-engine-name --name --action-type --header-action --header-name
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
+        \   \"name\":\"clirulesengine000003\",\"resourceGroup\":\"clitest.rg000001\",\"resourceState\":\"Enabled\",\"rules\":[\r\n
+        \     {\r\n        \"priority\":1,\"name\":\"rule1\",\"matchProcessingBehavior\":\"Stop\",\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            {\r\n              \"headerActionType\":\"Overwrite\",\"headerName\":\"Rewrite\",\"value\":\"True\"\r\n
+        \           }\r\n          ],\"responseHeaderActions\":[\r\n            \r\n
+        \         ],\"routeConfigurationOverride\":null,\"name\":null\r\n        },\"matchConditions\":[\r\n
+        \         {\r\n            \"rulesEngineMatchValue\":[\r\n              \"jpg\",\"png\"\r\n
+        \           ],\"rulesEngineMatchVariable\":\"RequestFilenameExtension\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \"Lowercase\"\r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      },{\r\n        \"priority\":2,\"name\":\"rule2\",\"matchProcessingBehavior\":null,\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            \r\n          ],\"responseHeaderActions\":[\r\n
+        \           {\r\n              \"headerActionType\":\"Append\",\"headerName\":\"Security\",\"value\":\"Strict\"\r\n
+        \           }\r\n          ],\"routeConfigurationOverride\":null,\"name\":null\r\n
+        \       },\"matchConditions\":[\r\n          {\r\n            \"rulesEngineMatchValue\":[\r\n
+        \             \"private\"\r\n            ],\"rulesEngineMatchVariable\":\"RequestPath\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      }\r\n    ]\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1877'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Fri, 27 Mar 2020 07:22:49 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"rules": [{"name": "rule1", "priority": 1, "action": {"requestHeaderActions":
+      [{"headerActionType": "Overwrite", "headerName": "Rewrite", "value": "True"}],
+      "responseHeaderActions": []}, "matchConditions": [{"rulesEngineMatchVariable":
+      "RequestFilenameExtension", "rulesEngineOperator": "Contains", "negateCondition":
+      false, "rulesEngineMatchValue": ["jpg", "png"], "transforms": ["Lowercase"]}],
+      "matchProcessingBehavior": "Stop"}, {"name": "rule2", "priority": 2, "action":
+      {"requestHeaderActions": [], "responseHeaderActions": [{"headerActionType":
+      "Append", "headerName": "Security", "value": "Strict"}, {"headerActionType":
+      "Delete", "headerName": "Location"}]}, "matchConditions": [{"rulesEngineMatchVariable":
+      "RequestPath", "rulesEngineOperator": "Contains", "negateCondition": false,
+      "rulesEngineMatchValue": ["private"], "transforms": []}]}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door rules-engine rule action add
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '869'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -f -g --rules-engine-name --name --action-type --header-action --header-name
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
+        \   \"name\":\"clirulesengine000003\",\"resourceGroup\":\"clitest.rg000001\",\"resourceState\":\"Enabled\",\"rules\":[\r\n
+        \     {\r\n        \"priority\":1,\"name\":\"rule1\",\"matchProcessingBehavior\":\"Stop\",\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            {\r\n              \"headerActionType\":\"Overwrite\",\"headerName\":\"Rewrite\",\"value\":\"True\"\r\n
+        \           }\r\n          ],\"responseHeaderActions\":[\r\n            \r\n
+        \         ],\"routeConfigurationOverride\":null,\"name\":null\r\n        },\"matchConditions\":[\r\n
+        \         {\r\n            \"rulesEngineMatchValue\":[\r\n              \"jpg\",\"png\"\r\n
+        \           ],\"rulesEngineMatchVariable\":\"RequestFilenameExtension\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \"Lowercase\"\r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      },{\r\n        \"priority\":2,\"name\":\"rule2\",\"matchProcessingBehavior\":null,\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            \r\n          ],\"responseHeaderActions\":[\r\n
+        \           {\r\n              \"headerActionType\":\"Append\",\"headerName\":\"Security\",\"value\":\"Strict\"\r\n
+        \           },{\r\n              \"headerActionType\":\"Delete\",\"headerName\":\"Location\",\"value\":null\r\n
+        \           }\r\n          ],\"routeConfigurationOverride\":null,\"name\":null\r\n
+        \       },\"matchConditions\":[\r\n          {\r\n            \"rulesEngineMatchValue\":[\r\n
+        \             \"private\"\r\n            ],\"rulesEngineMatchVariable\":\"RequestPath\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      }\r\n    ]\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1974'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Fri, 27 Mar 2020 07:22:51 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door rules-engine rule action add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -f -g --rules-engine-name --name --action-type --backend-pool --caching
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
+        \   \"name\":\"clirulesengine000003\",\"resourceGroup\":\"clitest.rg000001\",\"resourceState\":\"Enabled\",\"rules\":[\r\n
+        \     {\r\n        \"priority\":1,\"name\":\"rule1\",\"matchProcessingBehavior\":\"Stop\",\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            {\r\n              \"headerActionType\":\"Overwrite\",\"headerName\":\"Rewrite\",\"value\":\"True\"\r\n
+        \           }\r\n          ],\"responseHeaderActions\":[\r\n            \r\n
+        \         ],\"routeConfigurationOverride\":null,\"name\":null\r\n        },\"matchConditions\":[\r\n
+        \         {\r\n            \"rulesEngineMatchValue\":[\r\n              \"jpg\",\"png\"\r\n
+        \           ],\"rulesEngineMatchVariable\":\"RequestFilenameExtension\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \"Lowercase\"\r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      },{\r\n        \"priority\":2,\"name\":\"rule2\",\"matchProcessingBehavior\":null,\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            \r\n          ],\"responseHeaderActions\":[\r\n
+        \           {\r\n              \"headerActionType\":\"Append\",\"headerName\":\"Security\",\"value\":\"Strict\"\r\n
+        \           },{\r\n              \"headerActionType\":\"Delete\",\"headerName\":\"Location\",\"value\":null\r\n
+        \           }\r\n          ],\"routeConfigurationOverride\":null,\"name\":null\r\n
+        \       },\"matchConditions\":[\r\n          {\r\n            \"rulesEngineMatchValue\":[\r\n
+        \             \"private\"\r\n            ],\"rulesEngineMatchVariable\":\"RequestPath\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      }\r\n    ]\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1974'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Fri, 27 Mar 2020 07:22:52 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: 'b''{"properties": {"rules": [{"name": "rule1", "priority": 1, "action":
+      {"requestHeaderActions": [{"headerActionType": "Overwrite", "headerName": "Rewrite",
+      "value": "True"}], "responseHeaderActions": [], "routeConfigurationOverride":
+      {"@odata.type": "#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration",
+      "cacheConfiguration": {}, "backendPool": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"}}},
+      "matchConditions": [{"rulesEngineMatchVariable": "RequestFilenameExtension",
+      "rulesEngineOperator": "Contains", "negateCondition": false, "rulesEngineMatchValue":
+      ["jpg", "png"], "transforms": ["Lowercase"]}], "matchProcessingBehavior": "Stop"},
+      {"name": "rule2", "priority": 2, "action": {"requestHeaderActions": [], "responseHeaderActions":
+      [{"headerActionType": "Append", "headerName": "Security", "value": "Strict"},
+      {"headerActionType": "Delete", "headerName": "Location"}]}, "matchConditions":
+      [{"rulesEngineMatchVariable": "RequestPath", "rulesEngineOperator": "Contains",
+      "negateCondition": false, "rulesEngineMatchValue": ["private"], "transforms":
+      []}]}]}}'''
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door rules-engine rule action add
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1273'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -f -g --rules-engine-name --name --action-type --backend-pool --caching
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
+        \   \"name\":\"clirulesengine000003\",\"resourceGroup\":\"clitest.rg000001\",\"resourceState\":\"Enabled\",\"rules\":[\r\n
+        \     {\r\n        \"priority\":1,\"name\":\"rule1\",\"matchProcessingBehavior\":\"Stop\",\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            {\r\n              \"headerActionType\":\"Overwrite\",\"headerName\":\"Rewrite\",\"value\":\"True\"\r\n
+        \           }\r\n          ],\"responseHeaderActions\":[\r\n            \r\n
+        \         ],\"routeConfigurationOverride\":{\r\n            \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration\",\"customForwardingPath\":null,\"forwardingProtocol\":\"MatchRequest\",\"cacheConfiguration\":{\r\n
+        \             \"queryParameterStripDirective\":\"StripAll\",\"queryParameters\":null,\"dynamicCompression\":\"Enabled\",\"cacheDuration\":null\r\n
+        \           },\"backendPool\":{\r\n              \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool\"\r\n
+        \           }\r\n          },\"name\":null\r\n        },\"matchConditions\":[\r\n
+        \         {\r\n            \"rulesEngineMatchValue\":[\r\n              \"jpg\",\"png\"\r\n
+        \           ],\"rulesEngineMatchVariable\":\"RequestFilenameExtension\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \"Lowercase\"\r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      },{\r\n        \"priority\":2,\"name\":\"rule2\",\"matchProcessingBehavior\":null,\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            \r\n          ],\"responseHeaderActions\":[\r\n
+        \           {\r\n              \"headerActionType\":\"Append\",\"headerName\":\"Security\",\"value\":\"Strict\"\r\n
+        \           },{\r\n              \"headerActionType\":\"Delete\",\"headerName\":\"Location\",\"value\":null\r\n
+        \           }\r\n          ],\"routeConfigurationOverride\":null,\"name\":null\r\n
+        \       },\"matchConditions\":[\r\n          {\r\n            \"rulesEngineMatchValue\":[\r\n
+        \             \"private\"\r\n            ],\"rulesEngineMatchVariable\":\"RequestPath\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      }\r\n    ]\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2602'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Fri, 27 Mar 2020 07:22:53 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door rules-engine rule action add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -f -g -r --name --action-type --custom-path
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
+        \   \"name\":\"clirulesengine000003\",\"resourceGroup\":\"clitest.rg000001\",\"resourceState\":\"Enabled\",\"rules\":[\r\n
+        \     {\r\n        \"priority\":1,\"name\":\"rule1\",\"matchProcessingBehavior\":\"Stop\",\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            {\r\n              \"headerActionType\":\"Overwrite\",\"headerName\":\"Rewrite\",\"value\":\"True\"\r\n
+        \           }\r\n          ],\"responseHeaderActions\":[\r\n            \r\n
+        \         ],\"routeConfigurationOverride\":{\r\n            \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration\",\"customForwardingPath\":null,\"forwardingProtocol\":\"MatchRequest\",\"cacheConfiguration\":{\r\n
+        \             \"queryParameterStripDirective\":\"StripAll\",\"queryParameters\":null,\"dynamicCompression\":\"Enabled\",\"cacheDuration\":null\r\n
+        \           },\"backendPool\":{\r\n              \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool\"\r\n
+        \           }\r\n          },\"name\":null\r\n        },\"matchConditions\":[\r\n
+        \         {\r\n            \"rulesEngineMatchValue\":[\r\n              \"jpg\",\"png\"\r\n
+        \           ],\"rulesEngineMatchVariable\":\"RequestFilenameExtension\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \"Lowercase\"\r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      },{\r\n        \"priority\":2,\"name\":\"rule2\",\"matchProcessingBehavior\":null,\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            \r\n          ],\"responseHeaderActions\":[\r\n
+        \           {\r\n              \"headerActionType\":\"Append\",\"headerName\":\"Security\",\"value\":\"Strict\"\r\n
+        \           },{\r\n              \"headerActionType\":\"Delete\",\"headerName\":\"Location\",\"value\":null\r\n
+        \           }\r\n          ],\"routeConfigurationOverride\":null,\"name\":null\r\n
+        \       },\"matchConditions\":[\r\n          {\r\n            \"rulesEngineMatchValue\":[\r\n
+        \             \"private\"\r\n            ],\"rulesEngineMatchVariable\":\"RequestPath\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      }\r\n    ]\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2602'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Fri, 27 Mar 2020 07:22:54 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: 'b''{"properties": {"rules": [{"name": "rule1", "priority": 1, "action":
+      {"requestHeaderActions": [{"headerActionType": "Overwrite", "headerName": "Rewrite",
+      "value": "True"}], "responseHeaderActions": [], "routeConfigurationOverride":
+      {"@odata.type": "#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration",
+      "forwardingProtocol": "MatchRequest", "cacheConfiguration": {"queryParameterStripDirective":
+      "StripAll", "dynamicCompression": "Enabled"}, "backendPool": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"}}},
+      "matchConditions": [{"rulesEngineMatchVariable": "RequestFilenameExtension",
+      "rulesEngineOperator": "Contains", "negateCondition": false, "rulesEngineMatchValue":
+      ["jpg", "png"], "transforms": ["Lowercase"]}], "matchProcessingBehavior": "Stop"},
+      {"name": "rule2", "priority": 2, "action": {"requestHeaderActions": [], "responseHeaderActions":
+      [{"headerActionType": "Append", "headerName": "Security", "value": "Strict"},
+      {"headerActionType": "Delete", "headerName": "Location"}], "routeConfigurationOverride":
+      {"@odata.type": "#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration",
+      "redirectType": "Moved", "redirectProtocol": "MatchRequest", "customPath": "/redirect"}},
+      "matchConditions": [{"rulesEngineMatchVariable": "RequestPath", "rulesEngineOperator":
+      "Contains", "negateCondition": false, "rulesEngineMatchValue": ["private"],
+      "transforms": []}]}]}}'''
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door rules-engine rule action add
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1589'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -f -g -r --name --action-type --custom-path
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
+        \   \"name\":\"clirulesengine000003\",\"resourceGroup\":\"clitest.rg000001\",\"resourceState\":\"Enabled\",\"rules\":[\r\n
+        \     {\r\n        \"priority\":1,\"name\":\"rule1\",\"matchProcessingBehavior\":\"Stop\",\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            {\r\n              \"headerActionType\":\"Overwrite\",\"headerName\":\"Rewrite\",\"value\":\"True\"\r\n
+        \           }\r\n          ],\"responseHeaderActions\":[\r\n            \r\n
+        \         ],\"routeConfigurationOverride\":{\r\n            \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration\",\"customForwardingPath\":null,\"forwardingProtocol\":\"MatchRequest\",\"cacheConfiguration\":{\r\n
+        \             \"queryParameterStripDirective\":\"StripAll\",\"queryParameters\":null,\"dynamicCompression\":\"Enabled\",\"cacheDuration\":null\r\n
+        \           },\"backendPool\":{\r\n              \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool\"\r\n
+        \           }\r\n          },\"name\":null\r\n        },\"matchConditions\":[\r\n
+        \         {\r\n            \"rulesEngineMatchValue\":[\r\n              \"jpg\",\"png\"\r\n
+        \           ],\"rulesEngineMatchVariable\":\"RequestFilenameExtension\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \"Lowercase\"\r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      },{\r\n        \"priority\":2,\"name\":\"rule2\",\"matchProcessingBehavior\":null,\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            \r\n          ],\"responseHeaderActions\":[\r\n
+        \           {\r\n              \"headerActionType\":\"Append\",\"headerName\":\"Security\",\"value\":\"Strict\"\r\n
+        \           },{\r\n              \"headerActionType\":\"Delete\",\"headerName\":\"Location\",\"value\":null\r\n
+        \           }\r\n          ],\"routeConfigurationOverride\":{\r\n            \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration\",\"customFragment\":null,\"customHost\":\"\",\"customPath\":\"/redirect\",\"redirectProtocol\":\"MatchRequest\",\"customQueryString\":null,\"redirectType\":\"Moved\"\r\n
+        \         },\"name\":null\r\n        },\"matchConditions\":[\r\n          {\r\n
+        \           \"rulesEngineMatchValue\":[\r\n              \"private\"\r\n            ],\"rulesEngineMatchVariable\":\"RequestPath\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      }\r\n    ]\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2851'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Fri, 27 Mar 2020 07:22:55 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door rules-engine rule action list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -f -g -r --name
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
+        \   \"name\":\"clirulesengine000003\",\"resourceGroup\":\"clitest.rg000001\",\"resourceState\":\"Enabled\",\"rules\":[\r\n
+        \     {\r\n        \"priority\":1,\"name\":\"rule1\",\"matchProcessingBehavior\":\"Stop\",\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            {\r\n              \"headerActionType\":\"Overwrite\",\"headerName\":\"Rewrite\",\"value\":\"True\"\r\n
+        \           }\r\n          ],\"responseHeaderActions\":[\r\n            \r\n
+        \         ],\"routeConfigurationOverride\":{\r\n            \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration\",\"customForwardingPath\":null,\"forwardingProtocol\":\"MatchRequest\",\"cacheConfiguration\":{\r\n
+        \             \"queryParameterStripDirective\":\"StripAll\",\"queryParameters\":null,\"dynamicCompression\":\"Enabled\",\"cacheDuration\":null\r\n
+        \           },\"backendPool\":{\r\n              \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool\"\r\n
+        \           }\r\n          },\"name\":null\r\n        },\"matchConditions\":[\r\n
+        \         {\r\n            \"rulesEngineMatchValue\":[\r\n              \"jpg\",\"png\"\r\n
+        \           ],\"rulesEngineMatchVariable\":\"RequestFilenameExtension\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \"Lowercase\"\r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      },{\r\n        \"priority\":2,\"name\":\"rule2\",\"matchProcessingBehavior\":null,\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            \r\n          ],\"responseHeaderActions\":[\r\n
+        \           {\r\n              \"headerActionType\":\"Append\",\"headerName\":\"Security\",\"value\":\"Strict\"\r\n
+        \           },{\r\n              \"headerActionType\":\"Delete\",\"headerName\":\"Location\",\"value\":null\r\n
+        \           }\r\n          ],\"routeConfigurationOverride\":{\r\n            \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration\",\"customFragment\":null,\"customHost\":\"\",\"customPath\":\"/redirect\",\"redirectProtocol\":\"MatchRequest\",\"customQueryString\":null,\"redirectType\":\"Moved\"\r\n
+        \         },\"name\":null\r\n        },\"matchConditions\":[\r\n          {\r\n
+        \           \"rulesEngineMatchValue\":[\r\n              \"private\"\r\n            ],\"rulesEngineMatchVariable\":\"RequestPath\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      }\r\n    ]\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2851'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Fri, 27 Mar 2020 07:22:56 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door rules-engine rule action list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -f -g -r --name
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
+        \   \"name\":\"clirulesengine000003\",\"resourceGroup\":\"clitest.rg000001\",\"resourceState\":\"Enabled\",\"rules\":[\r\n
+        \     {\r\n        \"priority\":1,\"name\":\"rule1\",\"matchProcessingBehavior\":\"Stop\",\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            {\r\n              \"headerActionType\":\"Overwrite\",\"headerName\":\"Rewrite\",\"value\":\"True\"\r\n
+        \           }\r\n          ],\"responseHeaderActions\":[\r\n            \r\n
+        \         ],\"routeConfigurationOverride\":{\r\n            \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration\",\"customForwardingPath\":null,\"forwardingProtocol\":\"MatchRequest\",\"cacheConfiguration\":{\r\n
+        \             \"queryParameterStripDirective\":\"StripAll\",\"queryParameters\":null,\"dynamicCompression\":\"Enabled\",\"cacheDuration\":null\r\n
+        \           },\"backendPool\":{\r\n              \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool\"\r\n
+        \           }\r\n          },\"name\":null\r\n        },\"matchConditions\":[\r\n
+        \         {\r\n            \"rulesEngineMatchValue\":[\r\n              \"jpg\",\"png\"\r\n
+        \           ],\"rulesEngineMatchVariable\":\"RequestFilenameExtension\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \"Lowercase\"\r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      },{\r\n        \"priority\":2,\"name\":\"rule2\",\"matchProcessingBehavior\":null,\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            \r\n          ],\"responseHeaderActions\":[\r\n
+        \           {\r\n              \"headerActionType\":\"Append\",\"headerName\":\"Security\",\"value\":\"Strict\"\r\n
+        \           },{\r\n              \"headerActionType\":\"Delete\",\"headerName\":\"Location\",\"value\":null\r\n
+        \           }\r\n          ],\"routeConfigurationOverride\":{\r\n            \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration\",\"customFragment\":null,\"customHost\":\"\",\"customPath\":\"/redirect\",\"redirectProtocol\":\"MatchRequest\",\"customQueryString\":null,\"redirectType\":\"Moved\"\r\n
+        \         },\"name\":null\r\n        },\"matchConditions\":[\r\n          {\r\n
+        \           \"rulesEngineMatchValue\":[\r\n              \"private\"\r\n            ],\"rulesEngineMatchVariable\":\"RequestPath\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      }\r\n    ]\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2851'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Fri, 27 Mar 2020 07:22:57 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door rules-engine rule condition add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -f -g -r --name --match-variable --selector --operator --match-values --transforms
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
+        \   \"name\":\"clirulesengine000003\",\"resourceGroup\":\"clitest.rg000001\",\"resourceState\":\"Enabled\",\"rules\":[\r\n
+        \     {\r\n        \"priority\":1,\"name\":\"rule1\",\"matchProcessingBehavior\":\"Stop\",\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            {\r\n              \"headerActionType\":\"Overwrite\",\"headerName\":\"Rewrite\",\"value\":\"True\"\r\n
+        \           }\r\n          ],\"responseHeaderActions\":[\r\n            \r\n
+        \         ],\"routeConfigurationOverride\":{\r\n            \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration\",\"customForwardingPath\":null,\"forwardingProtocol\":\"MatchRequest\",\"cacheConfiguration\":{\r\n
+        \             \"queryParameterStripDirective\":\"StripAll\",\"queryParameters\":null,\"dynamicCompression\":\"Enabled\",\"cacheDuration\":null\r\n
+        \           },\"backendPool\":{\r\n              \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool\"\r\n
+        \           }\r\n          },\"name\":null\r\n        },\"matchConditions\":[\r\n
+        \         {\r\n            \"rulesEngineMatchValue\":[\r\n              \"jpg\",\"png\"\r\n
+        \           ],\"rulesEngineMatchVariable\":\"RequestFilenameExtension\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \"Lowercase\"\r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      },{\r\n        \"priority\":2,\"name\":\"rule2\",\"matchProcessingBehavior\":null,\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            \r\n          ],\"responseHeaderActions\":[\r\n
+        \           {\r\n              \"headerActionType\":\"Append\",\"headerName\":\"Security\",\"value\":\"Strict\"\r\n
+        \           },{\r\n              \"headerActionType\":\"Delete\",\"headerName\":\"Location\",\"value\":null\r\n
+        \           }\r\n          ],\"routeConfigurationOverride\":{\r\n            \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration\",\"customFragment\":null,\"customHost\":\"\",\"customPath\":\"/redirect\",\"redirectProtocol\":\"MatchRequest\",\"customQueryString\":null,\"redirectType\":\"Moved\"\r\n
+        \         },\"name\":null\r\n        },\"matchConditions\":[\r\n          {\r\n
+        \           \"rulesEngineMatchValue\":[\r\n              \"private\"\r\n            ],\"rulesEngineMatchVariable\":\"RequestPath\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      }\r\n    ]\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2851'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Fri, 27 Mar 2020 07:22:58 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: 'b''{"properties": {"rules": [{"name": "rule1", "priority": 1, "action":
+      {"requestHeaderActions": [{"headerActionType": "Overwrite", "headerName": "Rewrite",
+      "value": "True"}], "responseHeaderActions": [], "routeConfigurationOverride":
+      {"@odata.type": "#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration",
+      "forwardingProtocol": "MatchRequest", "cacheConfiguration": {"queryParameterStripDirective":
+      "StripAll", "dynamicCompression": "Enabled"}, "backendPool": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"}}},
+      "matchConditions": [{"rulesEngineMatchVariable": "RequestFilenameExtension",
+      "rulesEngineOperator": "Contains", "negateCondition": false, "rulesEngineMatchValue":
+      ["jpg", "png"], "transforms": ["Lowercase"]}, {"rulesEngineMatchVariable": "RequestHeader",
+      "selector": "x-language", "rulesEngineOperator": "Equal", "rulesEngineMatchValue":
+      ["en-gb", "en-th"], "transforms": ["Lowercase"]}], "matchProcessingBehavior":
+      "Stop"}, {"name": "rule2", "priority": 2, "action": {"requestHeaderActions":
+      [], "responseHeaderActions": [{"headerActionType": "Append", "headerName": "Security",
+      "value": "Strict"}, {"headerActionType": "Delete", "headerName": "Location"}],
+      "routeConfigurationOverride": {"@odata.type": "#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration",
+      "redirectType": "Moved", "redirectProtocol": "MatchRequest", "customHost": "",
+      "customPath": "/redirect"}}, "matchConditions": [{"rulesEngineMatchVariable":
+      "RequestPath", "rulesEngineOperator": "Contains", "negateCondition": false,
+      "rulesEngineMatchValue": ["private"], "transforms": []}]}]}}'''
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door rules-engine rule condition add
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1786'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -f -g -r --name --match-variable --selector --operator --match-values --transforms
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
+        \   \"name\":\"clirulesengine000003\",\"resourceGroup\":\"clitest.rg000001\",\"resourceState\":\"Enabled\",\"rules\":[\r\n
+        \     {\r\n        \"priority\":1,\"name\":\"rule1\",\"matchProcessingBehavior\":\"Stop\",\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            {\r\n              \"headerActionType\":\"Overwrite\",\"headerName\":\"Rewrite\",\"value\":\"True\"\r\n
+        \           }\r\n          ],\"responseHeaderActions\":[\r\n            \r\n
+        \         ],\"routeConfigurationOverride\":{\r\n            \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration\",\"customForwardingPath\":null,\"forwardingProtocol\":\"MatchRequest\",\"cacheConfiguration\":{\r\n
+        \             \"queryParameterStripDirective\":\"StripAll\",\"queryParameters\":null,\"dynamicCompression\":\"Enabled\",\"cacheDuration\":null\r\n
+        \           },\"backendPool\":{\r\n              \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool\"\r\n
+        \           }\r\n          },\"name\":null\r\n        },\"matchConditions\":[\r\n
+        \         {\r\n            \"rulesEngineMatchValue\":[\r\n              \"jpg\",\"png\"\r\n
+        \           ],\"rulesEngineMatchVariable\":\"RequestFilenameExtension\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \"Lowercase\"\r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         },{\r\n            \"rulesEngineMatchValue\":[\r\n              \"en-gb\",\"en-th\"\r\n
+        \           ],\"rulesEngineMatchVariable\":\"RequestHeader\",\"rulesEngineOperator\":\"Equal\",\"transforms\":[\r\n
+        \             \"Lowercase\"\r\n            ],\"negateCondition\":false,\"selector\":\"x-language\"\r\n
+        \         }\r\n        ]\r\n      },{\r\n        \"priority\":2,\"name\":\"rule2\",\"matchProcessingBehavior\":null,\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            \r\n          ],\"responseHeaderActions\":[\r\n
+        \           {\r\n              \"headerActionType\":\"Append\",\"headerName\":\"Security\",\"value\":\"Strict\"\r\n
+        \           },{\r\n              \"headerActionType\":\"Delete\",\"headerName\":\"Location\",\"value\":null\r\n
+        \           }\r\n          ],\"routeConfigurationOverride\":{\r\n            \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration\",\"customFragment\":null,\"customHost\":\"\",\"customPath\":\"/redirect\",\"redirectProtocol\":\"MatchRequest\",\"customQueryString\":null,\"redirectType\":\"Moved\"\r\n
+        \         },\"name\":null\r\n        },\"matchConditions\":[\r\n          {\r\n
+        \           \"rulesEngineMatchValue\":[\r\n              \"private\"\r\n            ],\"rulesEngineMatchVariable\":\"RequestPath\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      }\r\n    ]\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3129'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Fri, 27 Mar 2020 07:23:00 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door rules-engine rule condition list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -f -g --rules-engine-name --name
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
+        \   \"name\":\"clirulesengine000003\",\"resourceGroup\":\"clitest.rg000001\",\"resourceState\":\"Enabled\",\"rules\":[\r\n
+        \     {\r\n        \"priority\":1,\"name\":\"rule1\",\"matchProcessingBehavior\":\"Stop\",\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            {\r\n              \"headerActionType\":\"Overwrite\",\"headerName\":\"Rewrite\",\"value\":\"True\"\r\n
+        \           }\r\n          ],\"responseHeaderActions\":[\r\n            \r\n
+        \         ],\"routeConfigurationOverride\":{\r\n            \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration\",\"customForwardingPath\":null,\"forwardingProtocol\":\"MatchRequest\",\"cacheConfiguration\":{\r\n
+        \             \"queryParameterStripDirective\":\"StripAll\",\"queryParameters\":null,\"dynamicCompression\":\"Enabled\",\"cacheDuration\":null\r\n
+        \           },\"backendPool\":{\r\n              \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool\"\r\n
+        \           }\r\n          },\"name\":null\r\n        },\"matchConditions\":[\r\n
+        \         {\r\n            \"rulesEngineMatchValue\":[\r\n              \"jpg\",\"png\"\r\n
+        \           ],\"rulesEngineMatchVariable\":\"RequestFilenameExtension\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \"Lowercase\"\r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         },{\r\n            \"rulesEngineMatchValue\":[\r\n              \"en-gb\",\"en-th\"\r\n
+        \           ],\"rulesEngineMatchVariable\":\"RequestHeader\",\"rulesEngineOperator\":\"Equal\",\"transforms\":[\r\n
+        \             \"Lowercase\"\r\n            ],\"negateCondition\":false,\"selector\":\"x-language\"\r\n
+        \         }\r\n        ]\r\n      },{\r\n        \"priority\":2,\"name\":\"rule2\",\"matchProcessingBehavior\":null,\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            \r\n          ],\"responseHeaderActions\":[\r\n
+        \           {\r\n              \"headerActionType\":\"Append\",\"headerName\":\"Security\",\"value\":\"Strict\"\r\n
+        \           },{\r\n              \"headerActionType\":\"Delete\",\"headerName\":\"Location\",\"value\":null\r\n
+        \           }\r\n          ],\"routeConfigurationOverride\":{\r\n            \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration\",\"customFragment\":null,\"customHost\":\"\",\"customPath\":\"/redirect\",\"redirectProtocol\":\"MatchRequest\",\"customQueryString\":null,\"redirectType\":\"Moved\"\r\n
+        \         },\"name\":null\r\n        },\"matchConditions\":[\r\n          {\r\n
+        \           \"rulesEngineMatchValue\":[\r\n              \"private\"\r\n            ],\"rulesEngineMatchVariable\":\"RequestPath\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      }\r\n    ]\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3129'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Fri, 27 Mar 2020 07:23:01 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door rules-engine rule condition remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -f -g --rules-engine-name --name --index
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
+        \   \"name\":\"clirulesengine000003\",\"resourceGroup\":\"clitest.rg000001\",\"resourceState\":\"Enabled\",\"rules\":[\r\n
+        \     {\r\n        \"priority\":1,\"name\":\"rule1\",\"matchProcessingBehavior\":\"Stop\",\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            {\r\n              \"headerActionType\":\"Overwrite\",\"headerName\":\"Rewrite\",\"value\":\"True\"\r\n
+        \           }\r\n          ],\"responseHeaderActions\":[\r\n            \r\n
+        \         ],\"routeConfigurationOverride\":{\r\n            \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration\",\"customForwardingPath\":null,\"forwardingProtocol\":\"MatchRequest\",\"cacheConfiguration\":{\r\n
+        \             \"queryParameterStripDirective\":\"StripAll\",\"queryParameters\":null,\"dynamicCompression\":\"Enabled\",\"cacheDuration\":null\r\n
+        \           },\"backendPool\":{\r\n              \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool\"\r\n
+        \           }\r\n          },\"name\":null\r\n        },\"matchConditions\":[\r\n
+        \         {\r\n            \"rulesEngineMatchValue\":[\r\n              \"jpg\",\"png\"\r\n
+        \           ],\"rulesEngineMatchVariable\":\"RequestFilenameExtension\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \"Lowercase\"\r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         },{\r\n            \"rulesEngineMatchValue\":[\r\n              \"en-gb\",\"en-th\"\r\n
+        \           ],\"rulesEngineMatchVariable\":\"RequestHeader\",\"rulesEngineOperator\":\"Equal\",\"transforms\":[\r\n
+        \             \"Lowercase\"\r\n            ],\"negateCondition\":false,\"selector\":\"x-language\"\r\n
+        \         }\r\n        ]\r\n      },{\r\n        \"priority\":2,\"name\":\"rule2\",\"matchProcessingBehavior\":null,\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            \r\n          ],\"responseHeaderActions\":[\r\n
+        \           {\r\n              \"headerActionType\":\"Append\",\"headerName\":\"Security\",\"value\":\"Strict\"\r\n
+        \           },{\r\n              \"headerActionType\":\"Delete\",\"headerName\":\"Location\",\"value\":null\r\n
+        \           }\r\n          ],\"routeConfigurationOverride\":{\r\n            \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration\",\"customFragment\":null,\"customHost\":\"\",\"customPath\":\"/redirect\",\"redirectProtocol\":\"MatchRequest\",\"customQueryString\":null,\"redirectType\":\"Moved\"\r\n
+        \         },\"name\":null\r\n        },\"matchConditions\":[\r\n          {\r\n
+        \           \"rulesEngineMatchValue\":[\r\n              \"private\"\r\n            ],\"rulesEngineMatchVariable\":\"RequestPath\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      }\r\n    ]\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3129'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Fri, 27 Mar 2020 07:23:01 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: 'b''{"properties": {"rules": [{"name": "rule1", "priority": 1, "action":
+      {"requestHeaderActions": [{"headerActionType": "Overwrite", "headerName": "Rewrite",
+      "value": "True"}], "responseHeaderActions": [], "routeConfigurationOverride":
+      {"@odata.type": "#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration",
+      "forwardingProtocol": "MatchRequest", "cacheConfiguration": {"queryParameterStripDirective":
+      "StripAll", "dynamicCompression": "Enabled"}, "backendPool": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"}}},
+      "matchConditions": [{"rulesEngineMatchVariable": "RequestHeader", "selector":
+      "x-language", "rulesEngineOperator": "Equal", "negateCondition": false, "rulesEngineMatchValue":
+      ["en-gb", "en-th"], "transforms": ["Lowercase"]}], "matchProcessingBehavior":
+      "Stop"}, {"name": "rule2", "priority": 2, "action": {"requestHeaderActions":
+      [], "responseHeaderActions": [{"headerActionType": "Append", "headerName": "Security",
+      "value": "Strict"}, {"headerActionType": "Delete", "headerName": "Location"}],
+      "routeConfigurationOverride": {"@odata.type": "#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration",
+      "redirectType": "Moved", "redirectProtocol": "MatchRequest", "customHost": "",
+      "customPath": "/redirect"}}, "matchConditions": [{"rulesEngineMatchVariable":
+      "RequestPath", "rulesEngineOperator": "Contains", "negateCondition": false,
+      "rulesEngineMatchValue": ["private"], "transforms": []}]}]}}'''
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door rules-engine rule condition remove
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1623'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -f -g --rules-engine-name --name --index
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
+        \   \"name\":\"clirulesengine000003\",\"resourceGroup\":\"clitest.rg000001\",\"resourceState\":\"Enabled\",\"rules\":[\r\n
+        \     {\r\n        \"priority\":1,\"name\":\"rule1\",\"matchProcessingBehavior\":\"Stop\",\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            {\r\n              \"headerActionType\":\"Overwrite\",\"headerName\":\"Rewrite\",\"value\":\"True\"\r\n
+        \           }\r\n          ],\"responseHeaderActions\":[\r\n            \r\n
+        \         ],\"routeConfigurationOverride\":{\r\n            \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration\",\"customForwardingPath\":null,\"forwardingProtocol\":\"MatchRequest\",\"cacheConfiguration\":{\r\n
+        \             \"queryParameterStripDirective\":\"StripAll\",\"queryParameters\":null,\"dynamicCompression\":\"Enabled\",\"cacheDuration\":null\r\n
+        \           },\"backendPool\":{\r\n              \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool\"\r\n
+        \           }\r\n          },\"name\":null\r\n        },\"matchConditions\":[\r\n
+        \         {\r\n            \"rulesEngineMatchValue\":[\r\n              \"en-gb\",\"en-th\"\r\n
+        \           ],\"rulesEngineMatchVariable\":\"RequestHeader\",\"rulesEngineOperator\":\"Equal\",\"transforms\":[\r\n
+        \             \"Lowercase\"\r\n            ],\"negateCondition\":false,\"selector\":\"x-language\"\r\n
+        \         }\r\n        ]\r\n      },{\r\n        \"priority\":2,\"name\":\"rule2\",\"matchProcessingBehavior\":null,\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            \r\n          ],\"responseHeaderActions\":[\r\n
+        \           {\r\n              \"headerActionType\":\"Append\",\"headerName\":\"Security\",\"value\":\"Strict\"\r\n
+        \           },{\r\n              \"headerActionType\":\"Delete\",\"headerName\":\"Location\",\"value\":null\r\n
+        \           }\r\n          ],\"routeConfigurationOverride\":{\r\n            \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration\",\"customFragment\":null,\"customHost\":\"\",\"customPath\":\"/redirect\",\"redirectProtocol\":\"MatchRequest\",\"customQueryString\":null,\"redirectType\":\"Moved\"\r\n
+        \         },\"name\":null\r\n        },\"matchConditions\":[\r\n          {\r\n
+        \           \"rulesEngineMatchValue\":[\r\n              \"private\"\r\n            ],\"rulesEngineMatchVariable\":\"RequestPath\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      }\r\n    ]\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2849'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Fri, 27 Mar 2020 07:23:02 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door rules-engine rule action remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -f -g --rules-engine-name --name --action-type
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
+        \   \"name\":\"clirulesengine000003\",\"resourceGroup\":\"clitest.rg000001\",\"resourceState\":\"Enabled\",\"rules\":[\r\n
+        \     {\r\n        \"priority\":1,\"name\":\"rule1\",\"matchProcessingBehavior\":\"Stop\",\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            {\r\n              \"headerActionType\":\"Overwrite\",\"headerName\":\"Rewrite\",\"value\":\"True\"\r\n
+        \           }\r\n          ],\"responseHeaderActions\":[\r\n            \r\n
+        \         ],\"routeConfigurationOverride\":{\r\n            \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration\",\"customForwardingPath\":null,\"forwardingProtocol\":\"MatchRequest\",\"cacheConfiguration\":{\r\n
+        \             \"queryParameterStripDirective\":\"StripAll\",\"queryParameters\":null,\"dynamicCompression\":\"Enabled\",\"cacheDuration\":null\r\n
+        \           },\"backendPool\":{\r\n              \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool\"\r\n
+        \           }\r\n          },\"name\":null\r\n        },\"matchConditions\":[\r\n
+        \         {\r\n            \"rulesEngineMatchValue\":[\r\n              \"en-gb\",\"en-th\"\r\n
+        \           ],\"rulesEngineMatchVariable\":\"RequestHeader\",\"rulesEngineOperator\":\"Equal\",\"transforms\":[\r\n
+        \             \"Lowercase\"\r\n            ],\"negateCondition\":false,\"selector\":\"x-language\"\r\n
+        \         }\r\n        ]\r\n      },{\r\n        \"priority\":2,\"name\":\"rule2\",\"matchProcessingBehavior\":null,\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            \r\n          ],\"responseHeaderActions\":[\r\n
+        \           {\r\n              \"headerActionType\":\"Append\",\"headerName\":\"Security\",\"value\":\"Strict\"\r\n
+        \           },{\r\n              \"headerActionType\":\"Delete\",\"headerName\":\"Location\",\"value\":null\r\n
+        \           }\r\n          ],\"routeConfigurationOverride\":{\r\n            \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration\",\"customFragment\":null,\"customHost\":\"\",\"customPath\":\"/redirect\",\"redirectProtocol\":\"MatchRequest\",\"customQueryString\":null,\"redirectType\":\"Moved\"\r\n
+        \         },\"name\":null\r\n        },\"matchConditions\":[\r\n          {\r\n
+        \           \"rulesEngineMatchValue\":[\r\n              \"private\"\r\n            ],\"rulesEngineMatchVariable\":\"RequestPath\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      }\r\n    ]\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2849'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Fri, 27 Mar 2020 07:23:04 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"rules": [{"name": "rule1", "priority": 1, "action": {"requestHeaderActions":
+      [{"headerActionType": "Overwrite", "headerName": "Rewrite", "value": "True"}],
+      "responseHeaderActions": []}, "matchConditions": [{"rulesEngineMatchVariable":
+      "RequestHeader", "selector": "x-language", "rulesEngineOperator": "Equal", "negateCondition":
+      false, "rulesEngineMatchValue": ["en-gb", "en-th"], "transforms": ["Lowercase"]}],
+      "matchProcessingBehavior": "Stop"}, {"name": "rule2", "priority": 2, "action":
+      {"requestHeaderActions": [], "responseHeaderActions": [{"headerActionType":
+      "Append", "headerName": "Security", "value": "Strict"}, {"headerActionType":
+      "Delete", "headerName": "Location"}], "routeConfigurationOverride": {"@odata.type":
+      "#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration", "redirectType":
+      "Moved", "redirectProtocol": "MatchRequest", "customHost": "", "customPath":
+      "/redirect"}}, "matchConditions": [{"rulesEngineMatchVariable": "RequestPath",
+      "rulesEngineOperator": "Contains", "negateCondition": false, "rulesEngineMatchValue":
+      ["private"], "transforms": []}]}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door rules-engine rule action remove
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1106'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -f -g --rules-engine-name --name --action-type
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
+        \   \"name\":\"clirulesengine000003\",\"resourceGroup\":\"clitest.rg000001\",\"resourceState\":\"Enabled\",\"rules\":[\r\n
+        \     {\r\n        \"priority\":1,\"name\":\"rule1\",\"matchProcessingBehavior\":\"Stop\",\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            {\r\n              \"headerActionType\":\"Overwrite\",\"headerName\":\"Rewrite\",\"value\":\"True\"\r\n
+        \           }\r\n          ],\"responseHeaderActions\":[\r\n            \r\n
+        \         ],\"routeConfigurationOverride\":null,\"name\":null\r\n        },\"matchConditions\":[\r\n
+        \         {\r\n            \"rulesEngineMatchValue\":[\r\n              \"en-gb\",\"en-th\"\r\n
+        \           ],\"rulesEngineMatchVariable\":\"RequestHeader\",\"rulesEngineOperator\":\"Equal\",\"transforms\":[\r\n
+        \             \"Lowercase\"\r\n            ],\"negateCondition\":false,\"selector\":\"x-language\"\r\n
+        \         }\r\n        ]\r\n      },{\r\n        \"priority\":2,\"name\":\"rule2\",\"matchProcessingBehavior\":null,\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            \r\n          ],\"responseHeaderActions\":[\r\n
+        \           {\r\n              \"headerActionType\":\"Append\",\"headerName\":\"Security\",\"value\":\"Strict\"\r\n
+        \           },{\r\n              \"headerActionType\":\"Delete\",\"headerName\":\"Location\",\"value\":null\r\n
+        \           }\r\n          ],\"routeConfigurationOverride\":{\r\n            \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration\",\"customFragment\":null,\"customHost\":\"\",\"customPath\":\"/redirect\",\"redirectProtocol\":\"MatchRequest\",\"customQueryString\":null,\"redirectType\":\"Moved\"\r\n
+        \         },\"name\":null\r\n        },\"matchConditions\":[\r\n          {\r\n
+        \           \"rulesEngineMatchValue\":[\r\n              \"private\"\r\n            ],\"rulesEngineMatchVariable\":\"RequestPath\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      }\r\n    ]\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2221'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Fri, 27 Mar 2020 07:23:05 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door rules-engine rule action remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -f -g --rules-engine-name --name --action-type --index
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
+        \   \"name\":\"clirulesengine000003\",\"resourceGroup\":\"clitest.rg000001\",\"resourceState\":\"Enabled\",\"rules\":[\r\n
+        \     {\r\n        \"priority\":1,\"name\":\"rule1\",\"matchProcessingBehavior\":\"Stop\",\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            {\r\n              \"headerActionType\":\"Overwrite\",\"headerName\":\"Rewrite\",\"value\":\"True\"\r\n
+        \           }\r\n          ],\"responseHeaderActions\":[\r\n            \r\n
+        \         ],\"routeConfigurationOverride\":null,\"name\":null\r\n        },\"matchConditions\":[\r\n
+        \         {\r\n            \"rulesEngineMatchValue\":[\r\n              \"en-gb\",\"en-th\"\r\n
+        \           ],\"rulesEngineMatchVariable\":\"RequestHeader\",\"rulesEngineOperator\":\"Equal\",\"transforms\":[\r\n
+        \             \"Lowercase\"\r\n            ],\"negateCondition\":false,\"selector\":\"x-language\"\r\n
+        \         }\r\n        ]\r\n      },{\r\n        \"priority\":2,\"name\":\"rule2\",\"matchProcessingBehavior\":null,\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            \r\n          ],\"responseHeaderActions\":[\r\n
+        \           {\r\n              \"headerActionType\":\"Append\",\"headerName\":\"Security\",\"value\":\"Strict\"\r\n
+        \           },{\r\n              \"headerActionType\":\"Delete\",\"headerName\":\"Location\",\"value\":null\r\n
+        \           }\r\n          ],\"routeConfigurationOverride\":{\r\n            \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration\",\"customFragment\":null,\"customHost\":\"\",\"customPath\":\"/redirect\",\"redirectProtocol\":\"MatchRequest\",\"customQueryString\":null,\"redirectType\":\"Moved\"\r\n
+        \         },\"name\":null\r\n        },\"matchConditions\":[\r\n          {\r\n
+        \           \"rulesEngineMatchValue\":[\r\n              \"private\"\r\n            ],\"rulesEngineMatchVariable\":\"RequestPath\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      }\r\n    ]\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2221'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Fri, 27 Mar 2020 07:23:06 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"rules": [{"name": "rule1", "priority": 1, "action": {"requestHeaderActions":
+      [{"headerActionType": "Overwrite", "headerName": "Rewrite", "value": "True"}],
+      "responseHeaderActions": []}, "matchConditions": [{"rulesEngineMatchVariable":
+      "RequestHeader", "selector": "x-language", "rulesEngineOperator": "Equal", "negateCondition":
+      false, "rulesEngineMatchValue": ["en-gb", "en-th"], "transforms": ["Lowercase"]}],
+      "matchProcessingBehavior": "Stop"}, {"name": "rule2", "priority": 2, "action":
+      {"requestHeaderActions": [], "responseHeaderActions": [{"headerActionType":
+      "Append", "headerName": "Security", "value": "Strict"}], "routeConfigurationOverride":
+      {"@odata.type": "#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration",
+      "redirectType": "Moved", "redirectProtocol": "MatchRequest", "customHost": "",
+      "customPath": "/redirect"}}, "matchConditions": [{"rulesEngineMatchVariable":
+      "RequestPath", "rulesEngineOperator": "Contains", "negateCondition": false,
+      "rulesEngineMatchValue": ["private"], "transforms": []}]}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door rules-engine rule action remove
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1048'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -f -g --rules-engine-name --name --action-type --index
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
+        \   \"name\":\"clirulesengine000003\",\"resourceGroup\":\"clitest.rg000001\",\"resourceState\":\"Enabled\",\"rules\":[\r\n
+        \     {\r\n        \"priority\":1,\"name\":\"rule1\",\"matchProcessingBehavior\":\"Stop\",\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            {\r\n              \"headerActionType\":\"Overwrite\",\"headerName\":\"Rewrite\",\"value\":\"True\"\r\n
+        \           }\r\n          ],\"responseHeaderActions\":[\r\n            \r\n
+        \         ],\"routeConfigurationOverride\":null,\"name\":null\r\n        },\"matchConditions\":[\r\n
+        \         {\r\n            \"rulesEngineMatchValue\":[\r\n              \"en-gb\",\"en-th\"\r\n
+        \           ],\"rulesEngineMatchVariable\":\"RequestHeader\",\"rulesEngineOperator\":\"Equal\",\"transforms\":[\r\n
+        \             \"Lowercase\"\r\n            ],\"negateCondition\":false,\"selector\":\"x-language\"\r\n
+        \         }\r\n        ]\r\n      },{\r\n        \"priority\":2,\"name\":\"rule2\",\"matchProcessingBehavior\":null,\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            \r\n          ],\"responseHeaderActions\":[\r\n
+        \           {\r\n              \"headerActionType\":\"Append\",\"headerName\":\"Security\",\"value\":\"Strict\"\r\n
+        \           }\r\n          ],\"routeConfigurationOverride\":{\r\n            \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration\",\"customFragment\":null,\"customHost\":\"\",\"customPath\":\"/redirect\",\"redirectProtocol\":\"MatchRequest\",\"customQueryString\":null,\"redirectType\":\"Moved\"\r\n
+        \         },\"name\":null\r\n        },\"matchConditions\":[\r\n          {\r\n
+        \           \"rulesEngineMatchValue\":[\r\n              \"private\"\r\n            ],\"rulesEngineMatchVariable\":\"RequestPath\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      }\r\n    ]\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2124'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Fri, 27 Mar 2020 07:23:08 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door rules-engine rule delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -f -g --rules-engine-name --name
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
+        \   \"name\":\"clirulesengine000003\",\"resourceGroup\":\"clitest.rg000001\",\"resourceState\":\"Enabled\",\"rules\":[\r\n
+        \     {\r\n        \"priority\":1,\"name\":\"rule1\",\"matchProcessingBehavior\":\"Stop\",\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            {\r\n              \"headerActionType\":\"Overwrite\",\"headerName\":\"Rewrite\",\"value\":\"True\"\r\n
+        \           }\r\n          ],\"responseHeaderActions\":[\r\n            \r\n
+        \         ],\"routeConfigurationOverride\":null,\"name\":null\r\n        },\"matchConditions\":[\r\n
+        \         {\r\n            \"rulesEngineMatchValue\":[\r\n              \"en-gb\",\"en-th\"\r\n
+        \           ],\"rulesEngineMatchVariable\":\"RequestHeader\",\"rulesEngineOperator\":\"Equal\",\"transforms\":[\r\n
+        \             \"Lowercase\"\r\n            ],\"negateCondition\":false,\"selector\":\"x-language\"\r\n
+        \         }\r\n        ]\r\n      },{\r\n        \"priority\":2,\"name\":\"rule2\",\"matchProcessingBehavior\":null,\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            \r\n          ],\"responseHeaderActions\":[\r\n
+        \           {\r\n              \"headerActionType\":\"Append\",\"headerName\":\"Security\",\"value\":\"Strict\"\r\n
+        \           }\r\n          ],\"routeConfigurationOverride\":{\r\n            \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration\",\"customFragment\":null,\"customHost\":\"\",\"customPath\":\"/redirect\",\"redirectProtocol\":\"MatchRequest\",\"customQueryString\":null,\"redirectType\":\"Moved\"\r\n
+        \         },\"name\":null\r\n        },\"matchConditions\":[\r\n          {\r\n
+        \           \"rulesEngineMatchValue\":[\r\n              \"private\"\r\n            ],\"rulesEngineMatchVariable\":\"RequestPath\",\"rulesEngineOperator\":\"Contains\",\"transforms\":[\r\n
+        \             \r\n            ],\"negateCondition\":false,\"selector\":null\r\n
+        \         }\r\n        ]\r\n      }\r\n    ]\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2124'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Fri, 27 Mar 2020 07:23:08 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"rules": [{"name": "rule1", "priority": 1, "action": {"requestHeaderActions":
+      [{"headerActionType": "Overwrite", "headerName": "Rewrite", "value": "True"}],
+      "responseHeaderActions": []}, "matchConditions": [{"rulesEngineMatchVariable":
+      "RequestHeader", "selector": "x-language", "rulesEngineOperator": "Equal", "negateCondition":
+      false, "rulesEngineMatchValue": ["en-gb", "en-th"], "transforms": ["Lowercase"]}],
+      "matchProcessingBehavior": "Stop"}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door rules-engine rule delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '466'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -f -g --rules-engine-name --name
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
+        \   \"name\":\"clirulesengine000003\",\"resourceGroup\":\"clitest.rg000001\",\"resourceState\":\"Enabled\",\"rules\":[\r\n
+        \     {\r\n        \"priority\":1,\"name\":\"rule1\",\"matchProcessingBehavior\":\"Stop\",\"action\":{\r\n
+        \         \"requestHeaderActions\":[\r\n            {\r\n              \"headerActionType\":\"Overwrite\",\"headerName\":\"Rewrite\",\"value\":\"True\"\r\n
+        \           }\r\n          ],\"responseHeaderActions\":[\r\n            \r\n
+        \         ],\"routeConfigurationOverride\":null,\"name\":null\r\n        },\"matchConditions\":[\r\n
+        \         {\r\n            \"rulesEngineMatchValue\":[\r\n              \"en-gb\",\"en-th\"\r\n
+        \           ],\"rulesEngineMatchVariable\":\"RequestHeader\",\"rulesEngineOperator\":\"Equal\",\"transforms\":[\r\n
+        \             \"Lowercase\"\r\n            ],\"negateCondition\":false,\"selector\":\"x-language\"\r\n
+        \         }\r\n        ]\r\n      }\r\n    ]\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1216'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Fri, 27 Mar 2020 07:23:09 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door rules-engine list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -f -g
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines?api-version=2020-01-01
+  response:
+    body:
+      string: "{\r\n  \"value\":[\r\n    {\r\n      \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
+        \       \"name\":\"clirulesengine000003\",\"resourceGroup\":\"clitest.rg000001\",\"resourceState\":\"Enabled\",\"rules\":[\r\n
+        \         {\r\n            \"priority\":1,\"name\":\"rule1\",\"matchProcessingBehavior\":\"Stop\",\"action\":{\r\n
+        \             \"requestHeaderActions\":[\r\n                {\r\n                  \"headerActionType\":\"Overwrite\",\"headerName\":\"Rewrite\",\"value\":\"True\"\r\n
+        \               }\r\n              ],\"responseHeaderActions\":[\r\n                \r\n
+        \             ],\"routeConfigurationOverride\":null,\"name\":null\r\n            },\"matchConditions\":[\r\n
+        \             {\r\n                \"rulesEngineMatchValue\":[\r\n                  \"en-gb\",\"en-th\"\r\n
+        \               ],\"rulesEngineMatchVariable\":\"RequestHeader\",\"rulesEngineOperator\":\"Equal\",\"transforms\":[\r\n
+        \                 \"Lowercase\"\r\n                ],\"negateCondition\":false,\"selector\":\"x-language\"\r\n
+        \             }\r\n            ]\r\n          }\r\n        ]\r\n      }\r\n
+        \   }\r\n  ]\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1340'
+      content-type:
+      - application/json; odata.metadata=minimal
+      date:
+      - Fri, 27 Mar 2020 07:23:10 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/8.5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1
