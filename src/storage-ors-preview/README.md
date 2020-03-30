@@ -70,7 +70,9 @@ az storage account ors-policy show -g groupName -n destAccountName --policy-id "
 ```
 
 To save the policyId/ruleId in Powershell Scripts, you can use:
+
 `$policyId = (az storage account ors-policy create --account-name accountName --resource-group groupName --properties @{path}) --query policyId)`
+
 `$ruleId = (az storage account ors-policy create --account-name accountName --resource-group groupName --properties @{path}) --query rules.ruleId)`
 
 ##### List ORS Policies on storage account
