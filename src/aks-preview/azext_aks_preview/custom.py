@@ -835,9 +835,6 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             if no_wait:
                 raise CLIError('When --attach-acr and --enable-managed-identity are both specified, '
                                '--no-wait is not allowed, please wait until the whole operation succeeds.')
-            else:
-                # Attach acr operation will be handled after the cluster is created
-                pass
         else:
             _ensure_aks_acr(cmd.cli_ctx,
                             client_id=service_principal_profile.client_id,
