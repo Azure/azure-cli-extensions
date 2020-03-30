@@ -417,17 +417,21 @@ def list_fd_backends(cmd, resource_group_name, front_door_name, backend_pool_nam
 
 
 def remove_fd_backend(cmd, resource_group_name, front_door_name, backend_pool_name, index):
+    from knack.util import CLIError
     client = cf_frontdoor(cmd.cli_ctx, None)
     frontdoor = client.get(resource_group_name, front_door_name)
     backend_pool = next((x for x in frontdoor.backend_pools if x.name == backend_pool_name), None)
     if not backend_pool:
-        from knack.util import CLIError
         raise CLIError("Backend pool '{}' could not be found on frontdoor '{}'".format(
             backend_pool_name, front_door_name))
     try:
-        backend_pool.backends.pop(index - 1)
+        if index > 0:
+            backend_pool.backends.pop(index - 1)
+        elif index < 0:
+            backend_pool.backends.pop(index)
+        else:
+            raise CLIError('invalid index. Index can range from 1 to {}'.format(len(backend_pool.backends)))
     except IndexError:
-        from knack.util import CLIError
         raise CLIError('invalid index. Index can range from 1 to {}'.format(len(backend_pool.backends)))
     client.create_or_update(resource_group_name, front_door_name, frontdoor).result()
 

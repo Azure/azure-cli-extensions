@@ -1778,6 +1778,8 @@ class ManagedClusterPoolUpgradeProfileUpgradesItem(Model):
 class ManagedClusterPropertiesAutoScalerProfile(Model):
     """Parameters to be applied to the cluster-autoscaler when enabled.
 
+    :param balance_similar_node_groups:
+    :type balance_similar_node_groups: bool
     :param scan_interval:
     :type scan_interval: str
     :param scale_down_delay_after_add:
@@ -1797,6 +1799,7 @@ class ManagedClusterPropertiesAutoScalerProfile(Model):
     """
 
     _attribute_map = {
+        'balance_similar_node_groups': {'key': 'balance-similar-node-groups', 'type': 'bool'},
         'scan_interval': {'key': 'scan-interval', 'type': 'str'},
         'scale_down_delay_after_add': {'key': 'scale-down-delay-after-add', 'type': 'str'},
         'scale_down_delay_after_delete': {'key': 'scale-down-delay-after-delete', 'type': 'str'},
@@ -1809,6 +1812,7 @@ class ManagedClusterPropertiesAutoScalerProfile(Model):
 
     def __init__(self, **kwargs):
         super(ManagedClusterPropertiesAutoScalerProfile, self).__init__(**kwargs)
+        self.balance_similar_node_groups = kwargs.get('balance_similar_node_groups', None)
         self.scan_interval = kwargs.get('scan_interval', None)
         self.scale_down_delay_after_add = kwargs.get('scale_down_delay_after_add', None)
         self.scale_down_delay_after_delete = kwargs.get('scale_down_delay_after_delete', None)

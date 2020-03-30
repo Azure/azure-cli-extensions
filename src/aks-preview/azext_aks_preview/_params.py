@@ -25,7 +25,8 @@ from ._validators import (
     validate_nodepool_labels, validate_vnet_subnet_id)
 from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, \
     CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING, CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SPOT, \
-    CONST_SPOT_EVICTION_POLICY_DELETE, CONST_SPOT_EVICTION_POLICY_DEALLOCATE
+    CONST_SPOT_EVICTION_POLICY_DELETE, CONST_SPOT_EVICTION_POLICY_DEALLOCATE, \
+    CONST_NODEPOOL_MODE_SYSTEM, CONST_NODEPOOL_MODE_USER
 
 
 def load_arguments(self, _):
@@ -142,6 +143,7 @@ def load_arguments(self, _):
             c.argument('eviction_policy', arg_type=get_enum_type([CONST_SPOT_EVICTION_POLICY_DELETE, CONST_SPOT_EVICTION_POLICY_DEALLOCATE]), validator=validate_eviction_policy)
             c.argument('spot_max_price', type=float, validator=validate_spot_max_price)
             c.argument('labels', nargs='*', validator=validate_nodepool_labels)
+            c.argument('mode', arg_type=get_enum_type([CONST_NODEPOOL_MODE_SYSTEM, CONST_NODEPOOL_MODE_USER]))
 
     for scope in ['aks nodepool show', 'aks nodepool delete', 'aks nodepool scale', 'aks nodepool upgrade', 'aks nodepool update']:
         with self.argument_context(scope) as c:
@@ -152,6 +154,7 @@ def load_arguments(self, _):
         c.argument('disable_cluster_autoscaler', options_list=["--disable-cluster-autoscaler", "-d"], action='store_true')
         c.argument('update_cluster_autoscaler', options_list=["--update-cluster-autoscaler", "-u"], action='store_true')
         c.argument('tags', tags_type)
+        c.argument('mode', arg_type=get_enum_type([CONST_NODEPOOL_MODE_SYSTEM, CONST_NODEPOOL_MODE_USER]))
 
     with self.argument_context('aks disable-addons') as c:
         c.argument('addons', options_list=['--addons', '-a'])
