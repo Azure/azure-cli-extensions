@@ -14,12 +14,15 @@ import tempfile
 import unittest
 import hashlib
 import shutil
-try:
-    from wheel.install import WHEEL_INFO_RE
-except ImportError:
-    from wheel.wheelfile import WHEEL_INFO_RE
+import re
 
 from util import get_ext_metadata, get_whl_from_url, get_index_data, verify_dependency
+
+
+WHEEL_INFO_RE = re.compile(
+    r"""^(?P<namever>(?P<name>.+?)-(?P<ver>\d.*?))(-(?P<build>\d.*?))?
+     -(?P<pyver>[a-z].+?)-(?P<abi>.+?)-(?P<plat>.+?)(\.whl|\.dist-info)$""",
+    re.VERBOSE).match
 
 
 def get_sha256sum(a_file):
