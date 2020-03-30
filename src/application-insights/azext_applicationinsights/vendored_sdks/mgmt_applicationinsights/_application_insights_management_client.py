@@ -46,7 +46,7 @@ class ApplicationInsightsManagementClient(MultiApiClientMixin, SDKClient):
     :type profile: azure.profiles.KnownProfiles
     """
 
-    DEFAULT_API_VERSION = '2015-05-01' # manually adjust the default version
+    DEFAULT_API_VERSION = '2015-05-01'
     _PROFILE_TAG = "azure.mgmt.applicationinsights.ApplicationInsightsManagementClient"
     LATEST_PROFILE = ProfileDefinition({
         _PROFILE_TAG: {
@@ -59,7 +59,7 @@ class ApplicationInsightsManagementClient(MultiApiClientMixin, SDKClient):
             'component_current_pricing_plan': '2017-10-01',
             'component_feature_capabilities': '2015-05-01',
             'component_quota_status': '2015-05-01',
-            'components': '2015-05-01', # manually adjust the default version
+            'components': '2020-02-02-preview',
             'ea_subscription_list_migration_date': '2017-10-01',
             'ea_subscription_migrate_to_new_pricing_model': '2017-10-01',
             'ea_subscription_rollback_to_legacy_pricing_model': '2017-10-01',
