@@ -18,7 +18,7 @@ import shutil
 from distutils.version import LooseVersion
 try
     from wheel.install import WHEEL_INFO_RE
-except ImportError
+except ImportError:
     from wheel.wheelfile import WHEEL_INFO_RE
 
 from util import get_ext_metadata, get_whl_from_url, get_index_data, verify_dependency
