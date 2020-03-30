@@ -6,7 +6,7 @@
 # pylint: disable=line-too-long
 from azure.cli.core.commands.parameters import get_datetime_type, get_location_type, tags_type, get_three_state_flag
 from azure.cli.command_modules.monitor.actions import get_period_type
-from ._validators import validate_applications, validate_storage_account_name_or_id
+from ._validators import validate_applications, validate_storage_account_name_or_id, validate_log_analytic_workspace_name_or_id
 
 
 def load_arguments(self, _):
@@ -18,11 +18,15 @@ def load_arguments(self, _):
         c.argument('application-type', options_list=['application-type', '--type', '-t'], help="Type of application being monitored. Possible values include: 'web', 'other'. Default value: 'web' .")
         c.argument('kind', options_list=['--kind', '-k'], help='The kind of application that this component refers to, used to customize UI. This value is a freeform string, values should typically be one of the following: web, ios, other, store, java, phone.')
         c.argument('tags', tags_type)
+        c.argument('workspace_resource_id', options_list=['--workspace'], validator=validate_log_analytic_workspace_name_or_id,
+                   help='Name or resource ID of a log analytics workspace')
 
     with self.argument_context('monitor app-insights component update') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('application-type', options_list=['application-type', '--type', '-t'], help="Type of application being monitored. Possible values include: 'web', 'other'. Default value: 'web' .")
         c.argument('kind', options_list=['--kind', '-k'], help='The kind of application that this component refers to, used to customize UI. This value is a freeform string, values should typically be one of the following: web, ios, other, store, java, phone.')
+        c.argument('workspace_resource_id', options_list=['--workspace'], validator=validate_log_analytic_workspace_name_or_id,
+                   help='Name or resource ID of a log analytics workspace')
 
     with self.argument_context('monitor app-insights component update-tags') as c:
         c.argument('tags', tags_type)
@@ -68,4 +72,4 @@ def load_arguments(self, _):
 
     with self.argument_context('monitor app-insights component linked-storage') as c:
         c.argument('storage_account_id', options_list=['--storage-account', '-s'], validator=validate_storage_account_name_or_id,
-                   help='Name or ID of the linked storage account.')
+                   help='Name or ID of a linked storage account.')

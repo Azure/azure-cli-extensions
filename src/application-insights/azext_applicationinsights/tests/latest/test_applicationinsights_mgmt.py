@@ -125,3 +125,52 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         self.cmd('monitor app-insights component linked-storage show --app {name_a} -g {resource_group}')
 
         self.cmd('monitor app-insights component linked-storage unlink --app {name_a} -g {resource_group}')
+
+
+    @ResourceGroupPreparer(parameter_name_for_location='location')
+    def test_component_with_linked_workspace(self, resource_group, location):
+        self.kwargs.update({
+            'loc': location,
+            'resource_group': resource_group,
+            'name_a': 'demoApp',
+            'name_b': 'testApp',
+            'kind': 'web',
+            'application_type': 'web',
+            'ws_1': self.create_random_name('clitest', 20),
+            'ws_2': self.create_random_name('clitest', 20)
+        })
+
+        self.cmd('monitor log-analytics workspace create -g {resource_group} -n {ws_1}')
+        self.cmd('monitor log-analytics workspace create -g {resource_group} -n {ws_2}')
+        self.cmd(
+            'monitor app-insights component create --app {name_a} --location {loc} --kind {kind} -g {resource_group} --application-type {application_type}',
+            checks=[
+                self.check('name', '{name_a}'),
+                self.check('location', '{loc}'),
+                self.check('kind', '{kind}'),
+                self.check('applicationType', '{application_type}'),
+                self.check('applicationId', '{name_a}'),
+                self.check('provisioningState', 'Succeeded'),
+            ])
+
+        self.kwargs.update({
+            'kind': 'ios'
+        })
+
+        self.cmd('az monitor app-insights component update --app {name_a} --workspace {ws_1} -g {resource_group}', checks=[
+        ])
+
+        self.cmd('az monitor app-insights component update --app {name_a} --workspace {ws_2} -g {resource_group}', checks=[
+        ])
+
+        self.cmd('az monitor app-insights component update --app {name_a} --workspace "" -g {resource_group}', checks=[
+        ])
+
+        self.cmd('az monitor app-insights component update --app {name_a} --workspace {ws_1} --kind {kind} -g {resource_group}', checks=[
+        ])
+
+        self.cmd('az monitor app-insights component create --app {name_b} --workspace {ws_2} --location {loc} --kind {kind} -g {resource_group} --application-type {application_type}', checks=[
+        ])
+
+        self.cmd('az monitor app-insights component update --app {name_b} --kind {kind} -g {resource_group}', checks=[
+        ])

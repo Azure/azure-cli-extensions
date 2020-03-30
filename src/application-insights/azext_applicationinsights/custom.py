@@ -49,7 +49,7 @@ def create_or_update_component(cmd, client, application, resource_group_name, lo
         component = ApplicationInsightsComponent(location=location, kind=kind, application_type=application_type, tags=tags)
         return client.create_or_update(resource_group_name, application, component)
     else:
-        from .vendored_sdks.mgmt_applicationinsights.v2020_02_01_preview.models import ApplicationInsightsComponent
+        from .vendored_sdks.mgmt_applicationinsights.v2020_02_02_preview.models import ApplicationInsightsComponent
         component = ApplicationInsightsComponent(location=location, kind=kind, application_type=application_type,
                                                  tags=tags, workspace_resource_id=workspace_resource_id)
         return client.create_or_update(resource_group_name, application, component)

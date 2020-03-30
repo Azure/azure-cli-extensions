@@ -125,8 +125,6 @@ class ApplicationInsightsComponent(ComponentsResource):
     :type sampling_percentage: float
     :ivar connection_string: Application Insights component connection string.
     :vartype connection_string: str
-    :param retention_in_days: Retention period in days. Default value: 90 .
-    :type retention_in_days: int
     :param disable_ip_masking: Disable IP masking.
     :type disable_ip_masking: bool
     :param immediate_purge_data_on30_days: Purge data immediately after 30
@@ -152,6 +150,7 @@ class ApplicationInsightsComponent(ComponentsResource):
         'hockey_app_token': {'readonly': True},
         'provisioning_state': {'readonly': True},
         'connection_string': {'readonly': True},
+        'retention_in_days': {'readonly': True},
         'workspace_resource_id': {'required': True},
     }
 

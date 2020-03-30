@@ -30,3 +30,17 @@ def validate_storage_account_name_or_id(cmd, namespace):
                 type='storageAccounts',
                 name=namespace.storage_account_id
             )
+
+
+def validate_log_analytic_workspace_name_or_id(cmd, namespace):
+    if namespace.workspace_resource_id:
+        from msrestazure.tools import is_valid_resource_id, resource_id
+        from azure.cli.core.commands.client_factory import get_subscription_id
+        if not is_valid_resource_id(namespace.workspace_resource_id):
+            namespace.workspace_resource_id = resource_id(
+                subscription=get_subscription_id(cmd.cli_ctx),
+                resource_group=namespace.resource_group_name,
+                namespace='microsoft.OperationalInsights',
+                type='workspaces',
+                name=namespace.workspace_resource_id
+            )
