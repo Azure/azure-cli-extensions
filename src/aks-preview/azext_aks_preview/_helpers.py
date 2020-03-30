@@ -47,9 +47,13 @@ def _set_vm_set_type(vm_set_type, kubernetes_version):
     return vm_set_type
 
 
-def _set_outbound_type(outbound_type, network_plugin, load_balancer_sku, load_balancer_profile):
+def _set_outbound_type(outbound_type, vnet_subnet_id, load_balancer_sku, load_balancer_profile):
     if outbound_type != CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING:
         return CONST_OUTBOUND_TYPE_LOAD_BALANCER
+
+    if vnet_subnet_id in ["", None]:
+        raise CLIError("--vnet-subnet-id must be specified for userDefinedRouting and it must \
+        be pre-configured with a route table with egress rules")
 
     if load_balancer_sku == "basic":
         raise CLIError("userDefinedRouting doesn't support basic load balancer sku")
@@ -59,9 +63,6 @@ def _set_outbound_type(outbound_type, network_plugin, load_balancer_sku, load_ba
                 load_balancer_profile.outbound_ips or
                 load_balancer_profile.outbound_ip_prefixes):
             raise CLIError("userDefinedRouting doesn't support customizing a standard load balancer with IP addresses")
-
-    if network_plugin != "azure":
-        raise CLIError("userDefinedRouting requires --network-plugin to be azure")
 
     return CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING
 

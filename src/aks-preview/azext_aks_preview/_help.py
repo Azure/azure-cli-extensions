@@ -124,7 +124,7 @@ helps['aks create'] = """
         - name: --outbound-type
           type: string
           short-summary: How outbound traffic will be configured for a cluster.
-          long-summary: Select between loadBalancer and userDefinedRouting. If not set, defaults to type loadBalancer. Requires --network-plugin to be azure and a standard load balancer SKU.
+          long-summary: Select between loadBalancer and userDefinedRouting. If not set, defaults to type loadBalancer. Requires --vnet-subnet-id to be provided with a preconfigured route table and --load-balancer-sku to be Standard.
         - name: --enable-addons -a
           type: string
           short-summary: Enable the Kubernetes addons in a comma-separated list.
@@ -260,8 +260,8 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --api-server-authorized-ip-ranges 193.168.1.0/24,194.168.1.0/24,195.168.1.0
         - name: Create a kubernetes cluster with server side encryption using your owned key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --node-osdisk-diskencryptionset-id <disk-encryption-set-resource-id>
-        - name: Create a kubernetes cluster with userDefinedRouting, standard load balancer SKU and the azure network plugin
-          text: az aks create -g MyResourceGroup -n MyManagedCluster --outbound-type userDefinedRouting --network-plugin azure --load-balancer-sku standard
+        - name: Create a kubernetes cluster with userDefinedRouting, standard load balancer SKU and a custom subnet preconfigured with a route table
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --outbound-type userDefinedRouting --load-balancer-sku standard --vnet-subnet-id customUserSubnetVnetID
 
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 
@@ -505,6 +505,9 @@ helps['aks nodepool add'] = """
         - name: --labels
           type: string
           short-summary: The node labels for the node pool. You can't change the node labels through CLI after the node pool is created. See https://aka.ms/node-labels for syntax of labels.
+        - name: --mode
+          type: string
+          short-summary: The mode for a node pool which defines a node pool's primary function. If set as "System", AKS prefers system pods scheduling to node pools with mode `System`. Learn more at https://aka.ms/aks/nodepool/mode.
 """
 
 helps['aks nodepool scale'] = """
@@ -544,6 +547,9 @@ helps['aks nodepool update'] = """
         - name: --max-count
           type: int
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100]
+        - name: --mode
+          type: string
+          short-summary: The mode for a node pool which defines a node pool's primary function. If set as "System", AKS prefers system pods scheduling to node pools with mode `System`. Learn more at https://aka.ms/aks/nodepool/mode.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks nodepool update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
@@ -551,6 +557,8 @@ helps['aks nodepool update'] = """
         text: az aks nodepool update --disable-cluster-autoscaler -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
       - name: Update min-count or max-count for cluster autoscaler.
         text: az aks nodepool update --update-cluster-autoscaler --min-count 1 --max-count 10 -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
+      - name: Change a node pool to system mode
+        text: az aks nodepool update --mode System -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
 """
 
 helps['aks nodepool delete'] = """
