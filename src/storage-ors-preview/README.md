@@ -95,7 +95,7 @@ Change source storage account name of existing ORS policy
 ```
 az storage account ors-policy update \
     --policy-id $policyId \
-    --account-name accountName \
+    --account-name destAccountName \
     --resource-group groupName \
     -s newSourceAccount
 ```
@@ -162,7 +162,7 @@ az storage account ors-policy rule remove \
 ```
 az storage account ors-policy remove \
     --policy-id $policyId \
-    --account-name accountName 
+    --account-name accountName \
     --resource-group groupName
 ```
 
