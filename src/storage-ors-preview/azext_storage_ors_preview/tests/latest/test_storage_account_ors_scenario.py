@@ -31,21 +31,27 @@ class StorageAccountORSScenarioTest(StorageScenarioMixin, ScenarioTest):
             'dest_sc': destination_account,
             'new_sc': new_account,
             'scont': src_container,
-            'dcont': dest_container
+            'dcont': dest_container,
         })
 
-        # Enable ChangeFeed for Storage Accounts
+        # Enable ChangeFeed for Source Storage Accounts
         self.cmd('storage account blob-service-properties update -n {src_sc} -g {rg} --enable-change-feed', checks=[
                  JMESPathCheck('changeFeed.enabled', True)])
 
-        self.cmd('storage account blob-service-properties update -n {dest_sc} -g {rg} --enable-change-feed', checks=[
-                 JMESPathCheck('changeFeed.enabled', True)])
+        # Enable Versioning for two Storage Accounts
+        self.cmd('storage account blob-service-properties update -n {src_sc} -g {rg} --enable-versioning', checks=[
+                 JMESPathCheck('isVersioningEnabled', True)])
+
+        self.cmd('storage account blob-service-properties update -n {dest_sc} -g {rg} --enable-versioning', checks=[
+                 JMESPathCheck('isVersioningEnabled', True)])
+
 
         # Create ORS policy on destination account
-        result = self.cmd('storage account ors-policy create -g {rg} -n {dest_sc} -s {src_sc} -d {dest_sc} --destination-container {dcont} --source-container {scont}')\
+        result = self.cmd('storage account ors-policy create -g {rg} -n {dest_sc} -s {src_sc} -d {dest_sc} --destination-container {dcont} --source-container {scont} -t "2020-02-19T16:05:00Z"')\
             .get_output_in_json()
         self.assertIn('policyId', result)
         self.assertIn('ruleId', result['rules'][0])
+        self.assertEqual(result["rules"][0]["filters"]["minCreationTime"], "2020-02-19T16:05:00Z")
 
         self.kwargs.update({
             'policy_id': result["policyId"],
@@ -69,20 +75,26 @@ class StorageAccountORSScenarioTest(StorageScenarioMixin, ScenarioTest):
             .assert_with_checks(JMESPathCheck('ruleId', result["rules"][0]["ruleId"])) \
             .assert_with_checks(JMESPathCheck('sourceContainer', src_container)) \
             .assert_with_checks(JMESPathCheck('destinationContainer', dest_container))
-        result = self.cmd('storage account ors-policy rule add -g {} -n {} --policy-id {} -d {} -s {}'.format(
+
+        result = self.cmd('storage account ors-policy rule add -g {} -n {} --policy-id {} -d {} -s {} -t "2020-02-19T16:05:00Z"'.format(
             resource_group, destination_account, self.kwargs["policy_id"], dest_container1, src_container1)).get_output_in_json()
+        self.assertEqual(result["rules"][0]["filters"]["minCreationTime"], "2020-02-19T16:05:00Z")
+
         self.cmd('storage account ors-policy rule list -g {rg} -n {dest_sc} --policy-id {policy_id}')\
             .assert_with_checks(JMESPathCheck('length(@)', 2))
 
         # Update rules
-        self.cmd('storage account ors-policy rule update -g {} -n {} --policy-id {} --rule-id {} --prefix-match blobA blobB'.format(
+        self.cmd('storage account ors-policy rule update -g {} -n {} --policy-id {} --rule-id {} --prefix-match blobA blobB -t "2020-02-20T16:05:00Z"'.format(
             resource_group, destination_account, result['policyId'], result['rules'][1]['ruleId'])) \
             .assert_with_checks(JMESPathCheck('filters.prefixMatch[0]', 'blobA')) \
-            .assert_with_checks(JMESPathCheck('filters.prefixMatch[1]', 'blobB'))
+            .assert_with_checks(JMESPathCheck('filters.prefixMatch[1]', 'blobB')) \
+            .assert_with_checks(JMESPathCheck('filters.minCreationTime', '2020-02-20T16:05:00Z'))
+
         self.cmd('storage account ors-policy rule show -g {} -n {} --policy-id {} --rule-id {}'.format(
             resource_group, destination_account, result['policyId'], result['rules'][1]['ruleId'])) \
             .assert_with_checks(JMESPathCheck('filters.prefixMatch[0]', 'blobA')) \
-            .assert_with_checks(JMESPathCheck('filters.prefixMatch[1]', 'blobB'))
+            .assert_with_checks(JMESPathCheck('filters.prefixMatch[1]', 'blobB')) \
+            .assert_with_checks(JMESPathCheck('filters.minCreationTime', '2020-02-20T16:05:00Z'))
 
         # Remove rules
         self.cmd('storage account ors-policy rule remove -g {} -n {} --policy-id {} --rule-id {}'.format(
@@ -104,7 +116,8 @@ class StorageAccountORSScenarioTest(StorageScenarioMixin, ScenarioTest):
             .assert_with_checks(JMESPathCheck('sourceAccount', source_account)) \
             .assert_with_checks(JMESPathCheck('destinationAccount', destination_account)) \
             .assert_with_checks(JMESPathCheck('rules[0].sourceContainer', src_container)) \
-            .assert_with_checks(JMESPathCheck('rules[0].destinationContainer', dest_container))
+            .assert_with_checks(JMESPathCheck('rules[0].destinationContainer', dest_container)) \
+            .assert_with_checks(JMESPathCheck('rules[0].filters.minCreationTime', '2020-02-19T16:05:00Z'))
 
         # Update ORS policy
         self.cmd('storage account ors-policy update -g {} -n {} --policy-id {} --source-account {}'.format(

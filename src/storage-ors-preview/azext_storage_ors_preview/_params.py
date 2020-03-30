@@ -5,6 +5,7 @@
 # pylint: disable=line-too-long
 
 from knack.arguments import CLIArgumentType
+from ._validators import get_datetime_type
 
 
 def load_arguments(self, _):
@@ -29,10 +30,14 @@ def load_arguments(self, _):
              'for put policy on source account.'
     )
     prefix_math_type = CLIArgumentType(
-        nargs='+',
+        nargs='+', arg_group='Filters',
         help='Optional. Filter the results to replicate only blobs whose names begin with the specified '
              'prefix.'
     )
+    min_creation_time_type = CLIArgumentType(
+        options_list=['--min-creation-time', '-t'], arg_group='Filters', type=get_datetime_type(True),
+        help="Blobs created after the time will be replicated to the destination. It must be in datetime format "
+             "'yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'. Example: 2020-02-19T16:05:00Z")
 
     with self.argument_context('storage account ors-policy') as c:
         c.argument('account_name', acct_name_type, id_part=None)
@@ -43,6 +48,8 @@ def load_arguments(self, _):
         c.argument('destination_account', options_list=['--destination-account', '-d'],
                    help='The destination storage account name. Required when no --policy provided.')
         c.argument('properties', ors_policy_type)
+        c.argument('prefix_match', prefix_math_type)
+        c.argument('min_creation_time', min_creation_time_type)
 
     for item in ['create', 'update']:
         with self.argument_context('storage account ors-policy {}'.format(item),
@@ -53,7 +60,6 @@ def load_arguments(self, _):
                        help='The source storage container name. Required when no --policy provided.')
             c.argument('destination_container', options_list=['--destination-container'],
                        help='The destination storage container name. Required when no --policy provided.')
-            c.argument('prefix_match', prefix_math_type)
 
     with self.argument_context('storage account ors-policy update') as c:
         c.argument('account_name', acct_name_type, id_part=None)
@@ -65,5 +71,4 @@ def load_arguments(self, _):
                    help='The source storage container name.')
         c.argument('destination_container', options_list=['--destination-container', '-d'],
                    help='The destination storage container name.')
-        c.argument('prefix_match', prefix_math_type)
         c.argument('rule_id', rule_id_type)
