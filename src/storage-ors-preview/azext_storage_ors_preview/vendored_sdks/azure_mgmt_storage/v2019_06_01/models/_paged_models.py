@@ -77,6 +77,19 @@ class ObjectReplicationPolicyPaged(Paged):
     def __init__(self, *args, **kwargs):
 
         super(ObjectReplicationPolicyPaged, self).__init__(*args, **kwargs)
+class EncryptionScopePaged(Paged):
+    """
+    A paging container for iterating over a list of :class:`EncryptionScope <azure.mgmt.storage.v2019_06_01.models.EncryptionScope>` object
+    """
+
+    _attribute_map = {
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+        'current_page': {'key': 'value', 'type': '[EncryptionScope]'}
+    }
+
+    def __init__(self, *args, **kwargs):
+
+        super(EncryptionScopePaged, self).__init__(*args, **kwargs)
 class BlobServicePropertiesPaged(Paged):
     """
     A paging container for iterating over a list of :class:`BlobServiceProperties <azure.mgmt.storage.v2019_06_01.models.BlobServiceProperties>` object
