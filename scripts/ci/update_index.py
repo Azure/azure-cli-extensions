@@ -56,7 +56,7 @@ def main():
     entry[0]['downloadUrl'] = whl_path
     entry[0]['sha256Digest'] = get_sha256sum(ext_file)
     entry[0]['filename'] = whl_path.split('/')[-1]
-    entry[0]['metadata'] = get_ext_metadata(ext_dir, ext_file, extension_name)
+    entry[0]['metadata'] = get_ext_metadata(ext_dir, ext_file)
 
     # update index and write back to file
     curr_index['extensions'][extension_name] = entry
