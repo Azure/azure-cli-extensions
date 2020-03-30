@@ -112,27 +112,61 @@ class TestIndex(unittest.TestCase):
                                                                                    item['sha256Digest'],
                                                                                    item['filename']))
 
-    @unittest.skipUnless(os.getenv('CI'), 'Skipped as not running on CI')
+    # @unittest.skipUnless(os.getenv('CI'), 'Skipped as not running on CI')
     def test_metadata(self):
+        from pprint import pprint
+
         self.maxDiff = None
         extensions_dir = tempfile.mkdtemp()
         for ext_name, exts in self.index['extensions'].items():
             for item in exts:
                 ext_dir = tempfile.mkdtemp(dir=extensions_dir)
-                ext_file = get_whl_from_url(item['downloadUrl'], item['filename'],
-                                            self.whl_cache_dir, self.whl_cache)
-                metadata = get_ext_metadata(ext_dir, ext_file)
-                self.assertDictEqual(metadata, item['metadata'],
-                                     "Metadata for {} in index doesn't match the expected of: \n"
-                                     "{}".format(item['filename'], json.dumps(metadata, indent=2, sort_keys=True,
-                                                                              separators=(',', ': '))))
-                run_requires = metadata.get('run_requires')
-                if run_requires:
-                    deps = run_requires[0]['requires']
-                    self.assertTrue(
-                        all(verify_dependency(dep) for dep in deps),
-                        "Dependencies of {} use disallowed extension dependencies. "
-                        "Remove these dependencies: {}".format(item['filename'], deps))
+                ext_file = get_whl_from_url(item['downloadUrl'], item['filename'], self.whl_cache_dir, self.whl_cache)
+
+                wheel_metadata = get_ext_metadata(ext_dir, ext_file)
+
+                print('-' * 40, ext_name, '-' * 40)
+
+                # print('-' * 50, 'metadata', '-' * 50)
+                # pprint(wheel_metadata)
+                #
+                # print('-' * 50, 'item', '-' * 50)
+                # pprint(item['metadata'])
+
+                # self.assertDictEqual(whl_metadata, item['metadata'],
+                #                      "Metadata for {} in index doesn't match the expected of: \n"
+                #                      "{}".format(item['filename'], json.dumps(whl_metadata, indent=2, sort_keys=True,
+                #                                                               separators=(',', ': '))))
+                # run_requires = whl_metadata.get('run_requires')
+                # if run_requires:
+                #     deps = run_requires[0]['requires']
+                #     self.assertTrue(
+                #         all(verify_dependency(dep) for dep in deps),
+                #         "Dependencies of {} use disallowed extension dependencies. "
+                #         "Remove these dependencies: {}".format(item['filename'], deps))
+
+                index_metadata = item['metadata']
+
+                self.assertEqual(index_metadata['name'], wheel_metadata['name'])
+                self.assertEqual(index_metadata['version'], wheel_metadata['version'])
+                self.assertEqual(index_metadata['license'], wheel_metadata['license'])
+                self.assertEqual(index_metadata['summary'], wheel_metadata['summary'])
+                if index_metadata.get('classifiers') and wheel_metadata.get('classifiers'):
+                    self.assertEqual(index_metadata['classifiers'], wheel_metadata['classifiers'])
+
+                if index_metadata.get('extensions') is not None:
+                    self.assertEqual(index_metadata['extensions']['python.details']['project_urls']['Home'],
+                                     wheel_metadata['home_page'])
+                    self.assertEqual(index_metadata['extensions']['python.details']['contacts'][0]['name'],
+                                     wheel_metadata['author'])
+                    self.assertEqual(index_metadata['extensions']['python.details']['contacts'][0]['email'],
+                                     wheel_metadata['author_email'])
+                else:
+                    self.assertEqual(index_metadata['author'], wheel_metadata['author'])
+                    self.assertEqual(index_metadata['home_page'], wheel_metadata['home_page'])
+                    self.assertEqual(index_metadata['platforms'], wheel_metadata['platforms'])
+                    self.assertEqual(index_metadata['author_email'], wheel_metadata['author_email'])
+
         shutil.rmtree(extensions_dir)
 
 

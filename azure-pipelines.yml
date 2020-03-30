@@ -89,7 +89,7 @@ jobs:
   - bash: |
       #!/usr/bin/env bash
       set -ev
-      pip install wheel requests
+      pip install wheel requests pkginfo
       export CI="ADO"
       python ./scripts/ci/test_index.py -v
     displayName: "Verify Extensions Index"
