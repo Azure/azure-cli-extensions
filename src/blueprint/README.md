@@ -26,7 +26,7 @@ az provider register -n "Microsoft.Blueprint"
 ```
 az blueprint import \
 --name blueprintName \
---input-path "/path/to/blueprint/directory"
+--input-path "path/to/blueprint/directory"
 
 ```
 
@@ -41,7 +41,7 @@ az blueprint create \
     --name blueprintName \
     --description "An example blueprint." \
     --target-scope "subscription" \
-    --parameters @/path/to/blueprint_params.json
+    --parameters path/to/blueprint_params.json
 ```
 An example blueprint_params.json may look like this:
 ```json
@@ -89,7 +89,7 @@ az blueprint artifact policy create \
     --artifact-name my-policy-art \
     --display-name "My Policy Name" \
     --policy-definition-id "/providers/Microsoft.Authorization/policyDefinitions/00000000-0000-0000-0000-000000000000" \
-    --parameters @/path/to/policy_params.json
+    --parameters path/to/policy_params.json
 ```
 An example policy_params.json may look like this:
 ```json
@@ -110,8 +110,8 @@ az blueprint artifact template add \
     --blueprint-name blueprintName \
     --artifact-name my-template-art \
     --display-name "My Template Name" \
-    --parameters @/path/to/params.json \
-    --template @/path/to/template.json
+    --parameters path/to/params.json \
+    --template path/to/template.json
 ```
 
 ##### Publish a Blueprint
@@ -131,7 +131,7 @@ az blueprint assignment create \
     --blueprint-version "/subscriptions/{subscriptionId}/providers/Microsoft.Blueprint/blueprints/blueprintName/versions/1.0" \
     --locks-mode "None" \
     --resource-group-value artifact_name=myRgArt name=blueprint-rg location=westus \
-    --parameters @/path/to/assignment_params.json
+    --parameters path/to/assignment_params.json
 ```
 Values need to be assigned for the parameters when assigning a blueprint.
 
