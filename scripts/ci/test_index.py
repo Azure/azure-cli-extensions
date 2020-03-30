@@ -10,12 +10,15 @@
 from __future__ import print_function
 
 import os
-import json
 import tempfile
 import unittest
 import hashlib
 import shutil
-from wheel.install import WHEEL_INFO_RE
+try
+    from wheel.install import WHEEL_INFO_RE
+except ImportError
+    from wheel.wheelfile import WHEEL_INFO_RE
+
 from util import get_ext_metadata, get_whl_from_url, get_index_data, verify_dependency
 
 
@@ -114,8 +117,6 @@ class TestIndex(unittest.TestCase):
 
     # @unittest.skipUnless(os.getenv('CI'), 'Skipped as not running on CI')
     def test_metadata(self):
-        from pprint import pprint
-
         self.maxDiff = None
         extensions_dir = tempfile.mkdtemp()
         for ext_name, exts in self.index['extensions'].items():
@@ -124,26 +125,6 @@ class TestIndex(unittest.TestCase):
                 ext_file = get_whl_from_url(item['downloadUrl'], item['filename'], self.whl_cache_dir, self.whl_cache)
 
                 wheel_metadata = get_ext_metadata(ext_dir, ext_file)
-
-                print('-' * 40, ext_name, '-' * 40)
-
-                # print('-' * 50, 'metadata', '-' * 50)
-                # pprint(wheel_metadata)
-                #
-                # print('-' * 50, 'item', '-' * 50)
-                # pprint(item['metadata'])
-
-                # self.assertDictEqual(whl_metadata, item['metadata'],
-                #                      "Metadata for {} in index doesn't match the expected of: \n"
-                #                      "{}".format(item['filename'], json.dumps(whl_metadata, indent=2, sort_keys=True,
-                #                                                               separators=(',', ': '))))
-                # run_requires = whl_metadata.get('run_requires')
-                # if run_requires:
-                #     deps = run_requires[0]['requires']
-                #     self.assertTrue(
-                #         all(verify_dependency(dep) for dep in deps),
-                #         "Dependencies of {} use disallowed extension dependencies. "
-                #         "Remove these dependencies: {}".format(item['filename'], deps))
 
                 index_metadata = item['metadata']
 
