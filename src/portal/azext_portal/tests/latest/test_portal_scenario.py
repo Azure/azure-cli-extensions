@@ -74,7 +74,8 @@ class PortalScenarioTest(ScenarioTest):
 
         self.cmd('az portal dashboard delete '
                  '--name "{testDashboard}" '
-                 '--resource-group "{rg}"',
+                 '--resource-group "{rg}" '
+                 '--y',
                  checks=[])
 
         self.cmd('az portal dashboard list '

@@ -25,8 +25,8 @@ def portal_dashboard_show(cmd, client,
 def portal_dashboard_create(cmd, client,
                             resource_group_name,
                             name,
-                            location,
                             input_path,
+                            location=None,
                             tags=None):
     properties_lenses, properties_metadata = parse_properties_json(input_path)
     return client.create_or_update(resource_group_name=resource_group_name, dashboard_name=name, location=location, tags=tags, lenses=properties_lenses, metadata=properties_metadata)
