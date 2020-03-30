@@ -91,6 +91,9 @@ class AppResource(ProxyResource):
     :vartype type: str
     :param properties: Properties of the App resource
     :type properties: ~azure.mgmt.appplatform.models.AppResourceProperties
+    :param location: The GEO location of the application, always the same with
+     its parent resource
+    :type location: str
     """
 
     _validation = {
@@ -104,11 +107,13 @@ class AppResource(ProxyResource):
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
         'properties': {'key': 'properties', 'type': 'AppResourceProperties'},
+        'location': {'key': 'location', 'type': 'str'},
     }
 
     def __init__(self, **kwargs):
         super(AppResource, self).__init__(**kwargs)
         self.properties = kwargs.get('properties', None)
+        self.location = kwargs.get('location', None)
 
 
 class AppResourceProperties(Model):
