@@ -10,18 +10,21 @@
 from __future__ import print_function
 
 import os
+import re
 import tempfile
 import unittest
 import hashlib
 import shutil
 
 from distutils.version import LooseVersion
-try
-    from wheel.install import WHEEL_INFO_RE
-except ImportError:
-    from wheel.wheelfile import WHEEL_INFO_RE
 
 from util import get_ext_metadata, get_whl_from_url, get_index_data, verify_dependency
+
+
+WHEEL_INFO_RE = re.compile(
+    r"""^(?P<namever>(?P<name>.+?)-(?P<ver>\d.*?))(-(?P<build>\d.*?))?
+     -(?P<pyver>[a-z].+?)-(?P<abi>.+?)-(?P<plat>.+?)(\.whl|\.dist-info)$""",
+    re.VERBOSE).match
 
 
 def get_sha256sum(a_file):

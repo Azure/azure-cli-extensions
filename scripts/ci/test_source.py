@@ -16,7 +16,6 @@ import shlex
 from subprocess import check_output, check_call, CalledProcessError
 
 import mock
-from wheel.install import WHEEL_INFO_RE
 from six import with_metaclass
 
 from util import get_ext_metadata, verify_dependency, SRC_PATH
