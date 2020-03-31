@@ -14,7 +14,8 @@ from azure.core.pipeline import policies
 VERSION = "unknown"
 
 class LogicManagementClientConfiguration(Configuration):
-    """Configuration for LogicManagementClient
+    """Configuration for LogicManagementClient.
+
     Note that all parameters used to create this instance are saved as instance
     attributes.
 
@@ -40,8 +41,8 @@ class LogicManagementClientConfiguration(Configuration):
         self.credential = credential
         self.subscription_id = subscription_id
         self.api_version = "2019-05-01"
+        kwargs.setdefault('sdk_moniker', 'logicmanagementclient/{}'.format(VERSION))
         self._configure(**kwargs)
-        self.user_agent_policy.add_user_agent('azsdk-python-logicmanagementclient/{}'.format(VERSION))
 
     def _configure(
         self,

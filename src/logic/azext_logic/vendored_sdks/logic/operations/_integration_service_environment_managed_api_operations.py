@@ -8,12 +8,11 @@
 from typing import Any, Callable, Dict, Generic, Optional, TypeVar, Union
 import warnings
 
-from azure.core.exceptions import map_error
+from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.paging import ItemPaged
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpRequest, HttpResponse
 from azure.core.polling import LROPoller, NoPolling, PollingMethod
-from azure.mgmt.core.polling.arm_polling import ARMPolling
 
 from .. import models
 
@@ -23,7 +22,8 @@ ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dic
 class IntegrationServiceEnvironmentManagedApiOperations(object):
     """IntegrationServiceEnvironmentManagedApiOperations operations.
 
-    You should not instantiate directly this class, but create a Client instance that will create it for you and attach it as attribute.
+    You should not instantiate this class directly. Instead, you should create a Client instance that
+    instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
     :type models: ~logic_management_client.models
@@ -57,10 +57,10 @@ class IntegrationServiceEnvironmentManagedApiOperations(object):
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ManagedApiListResult or the result of cls(response)
         :rtype: ~logic_management_client.models.ManagedApiListResult
-        :raises: ~logic_management_client.models.ErrorResponseException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.ManagedApiListResult"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ManagedApiListResult"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2019-05-01"
 
         def prepare_request(next_link=None):
@@ -77,11 +77,11 @@ class IntegrationServiceEnvironmentManagedApiOperations(object):
                 url = next_link
 
             # Construct parameters
-            query_parameters = {}
+            query_parameters = {}  # type: Dict[str, Any]
             query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
             # Construct headers
-            header_parameters = {}
+            header_parameters = {}  # type: Dict[str, Any]
             header_parameters['Accept'] = 'application/json'
 
             # Construct and send request
@@ -93,7 +93,7 @@ class IntegrationServiceEnvironmentManagedApiOperations(object):
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
-            return deserialized.next_link, iter(list_of_elem)
+            return deserialized.next_link or None, iter(list_of_elem)
 
         def get_next(next_link=None):
             request = prepare_request(next_link)
@@ -102,8 +102,9 @@ class IntegrationServiceEnvironmentManagedApiOperations(object):
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
+                error = self._deserialize(models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise models.ErrorResponseException.from_response(response, self._deserialize)
+                raise HttpResponseError(response=response, model=error)
 
             return pipeline_response
 
@@ -122,7 +123,7 @@ class IntegrationServiceEnvironmentManagedApiOperations(object):
         # type: (...) -> "models.ManagedApi"
         """Gets the integration service environment managed Api.
 
-        :param resource_group: The resource group.
+        :param resource_group: The resource group name.
         :type resource_group: str
         :param integration_service_environment_name: The integration service environment name.
         :type integration_service_environment_name: str
@@ -131,10 +132,10 @@ class IntegrationServiceEnvironmentManagedApiOperations(object):
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ManagedApi or the result of cls(response)
         :rtype: ~logic_management_client.models.ManagedApi
-        :raises: ~logic_management_client.models.ErrorResponseException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.ManagedApi"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ManagedApi"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2019-05-01"
 
         # Construct URL
@@ -148,11 +149,11 @@ class IntegrationServiceEnvironmentManagedApiOperations(object):
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
         # Construct and send request
@@ -162,7 +163,8 @@ class IntegrationServiceEnvironmentManagedApiOperations(object):
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.ErrorResponseException.from_response(response, self._deserialize)
+            error = self._deserialize(models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error)
 
         deserialized = self._deserialize('ManagedApi', pipeline_response)
 
@@ -180,8 +182,8 @@ class IntegrationServiceEnvironmentManagedApiOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.ManagedApi"
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.ManagedApi"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ManagedApi"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2019-05-01"
 
         # Construct URL
@@ -195,11 +197,11 @@ class IntegrationServiceEnvironmentManagedApiOperations(object):
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
         # Construct and send request
@@ -209,7 +211,8 @@ class IntegrationServiceEnvironmentManagedApiOperations(object):
 
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.ErrorResponseException.from_response(response, self._deserialize)
+            error = self._deserialize(models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error)
 
         deserialized = None
         if response.status_code == 200:
@@ -234,7 +237,7 @@ class IntegrationServiceEnvironmentManagedApiOperations(object):
         # type: (...) -> "models.ManagedApi"
         """Puts the integration service environment managed Api.
 
-        :param resource_group: The resource group.
+        :param resource_group: The resource group name.
         :type resource_group: str
         :param integration_service_environment_name: The integration service environment name.
         :type integration_service_environment_name: str
@@ -247,10 +250,10 @@ class IntegrationServiceEnvironmentManagedApiOperations(object):
         :return: An instance of LROPoller that returns ManagedApi
         :rtype: ~azure.core.polling.LROPoller[~logic_management_client.models.ManagedApi]
 
-        :raises ~logic_management_client.models.ErrorResponseException:
+        :raises ~azure.core.exceptions.HttpResponseError:
         """
-        polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.ManagedApi"]
+        polling = kwargs.pop('polling', False)  # type: Union[bool, PollingMethod]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ManagedApi"]
         raw_result = self._put_initial(
             resource_group=resource_group,
             integration_service_environment_name=integration_service_environment_name,
@@ -270,7 +273,7 @@ class IntegrationServiceEnvironmentManagedApiOperations(object):
             'polling_interval',
             self._config.polling_interval
         )
-        if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
+        if polling is True: raise ValueError("polling being True is not valid because no default polling implemetation has been defined.")
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
@@ -284,8 +287,8 @@ class IntegrationServiceEnvironmentManagedApiOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> None
-        cls = kwargs.pop('cls', None )  # type: ClsType[None]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2019-05-01"
 
         # Construct URL
@@ -299,11 +302,11 @@ class IntegrationServiceEnvironmentManagedApiOperations(object):
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
 
         # Construct and send request
         request = self._client.delete(url, query_parameters, header_parameters)
@@ -312,7 +315,8 @@ class IntegrationServiceEnvironmentManagedApiOperations(object):
 
         if response.status_code not in [202, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.ErrorResponseException.from_response(response, self._deserialize)
+            error = self._deserialize(models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error)
 
         if cls:
           return cls(pipeline_response, None, {})
@@ -342,10 +346,10 @@ class IntegrationServiceEnvironmentManagedApiOperations(object):
         :return: An instance of LROPoller that returns None
         :rtype: ~azure.core.polling.LROPoller[None]
 
-        :raises ~logic_management_client.models.ErrorResponseException:
+        :raises ~azure.core.exceptions.HttpResponseError:
         """
-        polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
-        cls = kwargs.pop('cls', None )  # type: ClsType[None]
+        polling = kwargs.pop('polling', False)  # type: Union[bool, PollingMethod]
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
         raw_result = self._delete_initial(
             resource_group=resource_group,
             integration_service_environment_name=integration_service_environment_name,
@@ -362,7 +366,7 @@ class IntegrationServiceEnvironmentManagedApiOperations(object):
             'polling_interval',
             self._config.polling_interval
         )
-        if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
+        if polling is True: raise ValueError("polling being True is not valid because no default polling implemetation has been defined.")
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)

@@ -63,7 +63,7 @@ try:
     from ._models_py3 import EdifactValidationSettings
     from ._models_py3 import ErrorInfo
     from ._models_py3 import ErrorProperties
-    from ._models_py3 import ErrorResponse, ErrorResponseException
+    from ._models_py3 import ErrorResponse
     from ._models_py3 import Expression
     from ._models_py3 import ExpressionRoot
     from ._models_py3 import ExpressionTraces
@@ -76,34 +76,22 @@ try:
     from ._models_py3 import IntegrationAccountAgreement
     from ._models_py3 import IntegrationAccountAgreementFilter
     from ._models_py3 import IntegrationAccountAgreementListResult
-    from ._models_py3 import IntegrationAccountAgreementProperties
-    from ._models_py3 import IntegrationAccountAgreementPropertiesMetadata
     from ._models_py3 import IntegrationAccountCertificate
     from ._models_py3 import IntegrationAccountCertificateListResult
-    from ._models_py3 import IntegrationAccountCertificateProperties
-    from ._models_py3 import IntegrationAccountCertificatePropertiesMetadata
     from ._models_py3 import IntegrationAccountListResult
     from ._models_py3 import IntegrationAccountMap
     from ._models_py3 import IntegrationAccountMapFilter
     from ._models_py3 import IntegrationAccountMapListResult
-    from ._models_py3 import IntegrationAccountMapProperties
-    from ._models_py3 import IntegrationAccountMapPropertiesMetadata
     from ._models_py3 import IntegrationAccountMapPropertiesParametersSchema
     from ._models_py3 import IntegrationAccountPartner
     from ._models_py3 import IntegrationAccountPartnerFilter
     from ._models_py3 import IntegrationAccountPartnerListResult
-    from ._models_py3 import IntegrationAccountPartnerProperties
-    from ._models_py3 import IntegrationAccountPartnerPropertiesMetadata
-    from ._models_py3 import IntegrationAccountProperties
     from ._models_py3 import IntegrationAccountSchema
     from ._models_py3 import IntegrationAccountSchemaFilter
     from ._models_py3 import IntegrationAccountSchemaListResult
-    from ._models_py3 import IntegrationAccountSchemaProperties
-    from ._models_py3 import IntegrationAccountSchemaPropertiesMetadata
     from ._models_py3 import IntegrationAccountSession
     from ._models_py3 import IntegrationAccountSessionFilter
     from ._models_py3 import IntegrationAccountSessionListResult
-    from ._models_py3 import IntegrationAccountSessionProperties
     from ._models_py3 import IntegrationAccountSku
     from ._models_py3 import IntegrationServiceEnvironment
     from ._models_py3 import IntegrationServiceEnvironmentAccessEndpoint
@@ -130,7 +118,6 @@ try:
     from ._models_py3 import ManagedApi
     from ._models_py3 import ManagedApiListResult
     from ._models_py3 import NetworkConfiguration
-    from ._models_py3 import Object, ObjectException
     from ._models_py3 import Operation
     from ._models_py3 import OperationDisplay
     from ._models_py3 import OperationListResult
@@ -172,18 +159,15 @@ try:
     from ._models_py3 import WorkflowListResult
     from ._models_py3 import WorkflowOutputParameter
     from ._models_py3 import WorkflowParameter
-    from ._models_py3 import WorkflowProperties
     from ._models_py3 import WorkflowRun
     from ._models_py3 import WorkflowRunAction
     from ._models_py3 import WorkflowRunActionFilter
     from ._models_py3 import WorkflowRunActionListResult
-    from ._models_py3 import WorkflowRunActionProperties
     from ._models_py3 import WorkflowRunActionRepetitionDefinition
     from ._models_py3 import WorkflowRunActionRepetitionDefinitionCollection
     from ._models_py3 import WorkflowRunActionRepetitionProperties
     from ._models_py3 import WorkflowRunFilter
     from ._models_py3 import WorkflowRunListResult
-    from ._models_py3 import WorkflowRunProperties
     from ._models_py3 import WorkflowRunTrigger
     from ._models_py3 import WorkflowTrigger
     from ._models_py3 import WorkflowTriggerCallbackUrl
@@ -191,14 +175,11 @@ try:
     from ._models_py3 import WorkflowTriggerHistory
     from ._models_py3 import WorkflowTriggerHistoryFilter
     from ._models_py3 import WorkflowTriggerHistoryListResult
-    from ._models_py3 import WorkflowTriggerHistoryProperties
     from ._models_py3 import WorkflowTriggerListCallbackUrlQueries
     from ._models_py3 import WorkflowTriggerListResult
-    from ._models_py3 import WorkflowTriggerProperties
     from ._models_py3 import WorkflowTriggerRecurrence
     from ._models_py3 import WorkflowVersion
     from ._models_py3 import WorkflowVersionListResult
-    from ._models_py3 import WorkflowVersionProperties
     from ._models_py3 import WsdlService
     from ._models_py3 import X12AcknowledgementSettings
     from ._models_py3 import X12AgreementContent
@@ -272,7 +253,7 @@ except (SyntaxError, ImportError):
     from ._models import EdifactValidationSettings  # type: ignore
     from ._models import ErrorInfo  # type: ignore
     from ._models import ErrorProperties  # type: ignore
-    from ._models import ErrorResponse, ErrorResponseException  # type: ignore
+    from ._models import ErrorResponse  # type: ignore
     from ._models import Expression  # type: ignore
     from ._models import ExpressionRoot  # type: ignore
     from ._models import ExpressionTraces  # type: ignore
@@ -285,34 +266,22 @@ except (SyntaxError, ImportError):
     from ._models import IntegrationAccountAgreement  # type: ignore
     from ._models import IntegrationAccountAgreementFilter  # type: ignore
     from ._models import IntegrationAccountAgreementListResult  # type: ignore
-    from ._models import IntegrationAccountAgreementProperties  # type: ignore
-    from ._models import IntegrationAccountAgreementPropertiesMetadata  # type: ignore
     from ._models import IntegrationAccountCertificate  # type: ignore
     from ._models import IntegrationAccountCertificateListResult  # type: ignore
-    from ._models import IntegrationAccountCertificateProperties  # type: ignore
-    from ._models import IntegrationAccountCertificatePropertiesMetadata  # type: ignore
     from ._models import IntegrationAccountListResult  # type: ignore
     from ._models import IntegrationAccountMap  # type: ignore
     from ._models import IntegrationAccountMapFilter  # type: ignore
     from ._models import IntegrationAccountMapListResult  # type: ignore
-    from ._models import IntegrationAccountMapProperties  # type: ignore
-    from ._models import IntegrationAccountMapPropertiesMetadata  # type: ignore
     from ._models import IntegrationAccountMapPropertiesParametersSchema  # type: ignore
     from ._models import IntegrationAccountPartner  # type: ignore
     from ._models import IntegrationAccountPartnerFilter  # type: ignore
     from ._models import IntegrationAccountPartnerListResult  # type: ignore
-    from ._models import IntegrationAccountPartnerProperties  # type: ignore
-    from ._models import IntegrationAccountPartnerPropertiesMetadata  # type: ignore
-    from ._models import IntegrationAccountProperties  # type: ignore
     from ._models import IntegrationAccountSchema  # type: ignore
     from ._models import IntegrationAccountSchemaFilter  # type: ignore
     from ._models import IntegrationAccountSchemaListResult  # type: ignore
-    from ._models import IntegrationAccountSchemaProperties  # type: ignore
-    from ._models import IntegrationAccountSchemaPropertiesMetadata  # type: ignore
     from ._models import IntegrationAccountSession  # type: ignore
     from ._models import IntegrationAccountSessionFilter  # type: ignore
     from ._models import IntegrationAccountSessionListResult  # type: ignore
-    from ._models import IntegrationAccountSessionProperties  # type: ignore
     from ._models import IntegrationAccountSku  # type: ignore
     from ._models import IntegrationServiceEnvironment  # type: ignore
     from ._models import IntegrationServiceEnvironmentAccessEndpoint  # type: ignore
@@ -339,7 +308,6 @@ except (SyntaxError, ImportError):
     from ._models import ManagedApi  # type: ignore
     from ._models import ManagedApiListResult  # type: ignore
     from ._models import NetworkConfiguration  # type: ignore
-    from ._models import Object, ObjectException  # type: ignore
     from ._models import Operation  # type: ignore
     from ._models import OperationDisplay  # type: ignore
     from ._models import OperationListResult  # type: ignore
@@ -381,18 +349,15 @@ except (SyntaxError, ImportError):
     from ._models import WorkflowListResult  # type: ignore
     from ._models import WorkflowOutputParameter  # type: ignore
     from ._models import WorkflowParameter  # type: ignore
-    from ._models import WorkflowProperties  # type: ignore
     from ._models import WorkflowRun  # type: ignore
     from ._models import WorkflowRunAction  # type: ignore
     from ._models import WorkflowRunActionFilter  # type: ignore
     from ._models import WorkflowRunActionListResult  # type: ignore
-    from ._models import WorkflowRunActionProperties  # type: ignore
     from ._models import WorkflowRunActionRepetitionDefinition  # type: ignore
     from ._models import WorkflowRunActionRepetitionDefinitionCollection  # type: ignore
     from ._models import WorkflowRunActionRepetitionProperties  # type: ignore
     from ._models import WorkflowRunFilter  # type: ignore
     from ._models import WorkflowRunListResult  # type: ignore
-    from ._models import WorkflowRunProperties  # type: ignore
     from ._models import WorkflowRunTrigger  # type: ignore
     from ._models import WorkflowTrigger  # type: ignore
     from ._models import WorkflowTriggerCallbackUrl  # type: ignore
@@ -400,14 +365,11 @@ except (SyntaxError, ImportError):
     from ._models import WorkflowTriggerHistory  # type: ignore
     from ._models import WorkflowTriggerHistoryFilter  # type: ignore
     from ._models import WorkflowTriggerHistoryListResult  # type: ignore
-    from ._models import WorkflowTriggerHistoryProperties  # type: ignore
     from ._models import WorkflowTriggerListCallbackUrlQueries  # type: ignore
     from ._models import WorkflowTriggerListResult  # type: ignore
-    from ._models import WorkflowTriggerProperties  # type: ignore
     from ._models import WorkflowTriggerRecurrence  # type: ignore
     from ._models import WorkflowVersion  # type: ignore
     from ._models import WorkflowVersionListResult  # type: ignore
-    from ._models import WorkflowVersionProperties  # type: ignore
     from ._models import WsdlService  # type: ignore
     from ._models import X12AcknowledgementSettings  # type: ignore
     from ._models import X12AgreementContent  # type: ignore
@@ -424,6 +386,7 @@ except (SyntaxError, ImportError):
     from ._models import X12SecuritySettings  # type: ignore
     from ._models import X12ValidationOverride  # type: ignore
     from ._models import X12ValidationSettings  # type: ignore
+
 from ._logic_management_client_enums import (
     AgreementType,
     ApiDeploymentParameterVisibility,
@@ -528,7 +491,7 @@ __all__ = [
     'EdifactValidationSettings',
     'ErrorInfo',
     'ErrorProperties',
-    'ErrorResponse', 'ErrorResponseException',
+    'ErrorResponse',
     'Expression',
     'ExpressionRoot',
     'ExpressionTraces',
@@ -541,34 +504,22 @@ __all__ = [
     'IntegrationAccountAgreement',
     'IntegrationAccountAgreementFilter',
     'IntegrationAccountAgreementListResult',
-    'IntegrationAccountAgreementProperties',
-    'IntegrationAccountAgreementPropertiesMetadata',
     'IntegrationAccountCertificate',
     'IntegrationAccountCertificateListResult',
-    'IntegrationAccountCertificateProperties',
-    'IntegrationAccountCertificatePropertiesMetadata',
     'IntegrationAccountListResult',
     'IntegrationAccountMap',
     'IntegrationAccountMapFilter',
     'IntegrationAccountMapListResult',
-    'IntegrationAccountMapProperties',
-    'IntegrationAccountMapPropertiesMetadata',
     'IntegrationAccountMapPropertiesParametersSchema',
     'IntegrationAccountPartner',
     'IntegrationAccountPartnerFilter',
     'IntegrationAccountPartnerListResult',
-    'IntegrationAccountPartnerProperties',
-    'IntegrationAccountPartnerPropertiesMetadata',
-    'IntegrationAccountProperties',
     'IntegrationAccountSchema',
     'IntegrationAccountSchemaFilter',
     'IntegrationAccountSchemaListResult',
-    'IntegrationAccountSchemaProperties',
-    'IntegrationAccountSchemaPropertiesMetadata',
     'IntegrationAccountSession',
     'IntegrationAccountSessionFilter',
     'IntegrationAccountSessionListResult',
-    'IntegrationAccountSessionProperties',
     'IntegrationAccountSku',
     'IntegrationServiceEnvironment',
     'IntegrationServiceEnvironmentAccessEndpoint',
@@ -595,7 +546,6 @@ __all__ = [
     'ManagedApi',
     'ManagedApiListResult',
     'NetworkConfiguration',
-    'Object', 'ObjectException',
     'Operation',
     'OperationDisplay',
     'OperationListResult',
@@ -637,18 +587,15 @@ __all__ = [
     'WorkflowListResult',
     'WorkflowOutputParameter',
     'WorkflowParameter',
-    'WorkflowProperties',
     'WorkflowRun',
     'WorkflowRunAction',
     'WorkflowRunActionFilter',
     'WorkflowRunActionListResult',
-    'WorkflowRunActionProperties',
     'WorkflowRunActionRepetitionDefinition',
     'WorkflowRunActionRepetitionDefinitionCollection',
     'WorkflowRunActionRepetitionProperties',
     'WorkflowRunFilter',
     'WorkflowRunListResult',
-    'WorkflowRunProperties',
     'WorkflowRunTrigger',
     'WorkflowTrigger',
     'WorkflowTriggerCallbackUrl',
@@ -656,14 +603,11 @@ __all__ = [
     'WorkflowTriggerHistory',
     'WorkflowTriggerHistoryFilter',
     'WorkflowTriggerHistoryListResult',
-    'WorkflowTriggerHistoryProperties',
     'WorkflowTriggerListCallbackUrlQueries',
     'WorkflowTriggerListResult',
-    'WorkflowTriggerProperties',
     'WorkflowTriggerRecurrence',
     'WorkflowVersion',
     'WorkflowVersionListResult',
-    'WorkflowVersionProperties',
     'WsdlService',
     'X12AcknowledgementSettings',
     'X12AgreementContent',

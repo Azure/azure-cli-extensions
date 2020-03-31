@@ -9,6 +9,8 @@
 from enum import Enum
 
 class WorkflowProvisioningState(str, Enum):
+    """The workflow provisioning state.
+    """
 
     not_specified = "NotSpecified"
     accepted = "Accepted"
@@ -30,6 +32,8 @@ class WorkflowProvisioningState(str, Enum):
     completed = "Completed"
 
 class WorkflowState(str, Enum):
+    """The workflow state.
+    """
 
     not_specified = "NotSpecified"
     completed = "Completed"
@@ -38,7 +42,23 @@ class WorkflowState(str, Enum):
     deleted = "Deleted"
     suspended = "Suspended"
 
+class ParameterType(str, Enum):
+    """The parameter type.
+    """
+
+    not_specified = "NotSpecified"
+    string = "String"
+    secure_string = "SecureString"
+    int = "Int"
+    float = "Float"
+    bool = "Bool"
+    array = "Array"
+    object = "Object"
+    secure_object = "SecureObject"
+
 class SkuName(str, Enum):
+    """The sku name.
+    """
 
     not_specified = "NotSpecified"
     free = "Free"
@@ -46,18 +66,6 @@ class SkuName(str, Enum):
     basic = "Basic"
     standard = "Standard"
     premium = "Premium"
-
-class ParameterType(str, Enum):
-
-    not_specified = "NotSpecified"
-    string = "String"
-    secure_string = "SecureString"
-    int_enum = "Int"
-    float_enum = "Float"
-    bool_enum = "Bool"
-    array = "Array"
-    object_enum = "Object"
-    secure_object = "SecureObject"
 
 class DaysOfWeek(str, Enum):
 
@@ -70,6 +78,8 @@ class DaysOfWeek(str, Enum):
     saturday = "Saturday"
 
 class DayOfWeek(str, Enum):
+    """The day of the week.
+    """
 
     sunday = "Sunday"
     monday = "Monday"
@@ -80,6 +90,8 @@ class DayOfWeek(str, Enum):
     saturday = "Saturday"
 
 class WorkflowTriggerProvisioningState(str, Enum):
+    """The workflow trigger provisioning state.
+    """
 
     not_specified = "NotSpecified"
     accepted = "Accepted"
@@ -101,6 +113,8 @@ class WorkflowTriggerProvisioningState(str, Enum):
     completed = "Completed"
 
 class WorkflowStatus(str, Enum):
+    """The workflow status.
+    """
 
     not_specified = "NotSpecified"
     paused = "Paused"
@@ -117,6 +131,8 @@ class WorkflowStatus(str, Enum):
     ignored = "Ignored"
 
 class RecurrenceFrequency(str, Enum):
+    """The recurrence frequency.
+    """
 
     not_specified = "NotSpecified"
     second = "Second"
@@ -128,6 +144,8 @@ class RecurrenceFrequency(str, Enum):
     year = "Year"
 
 class IntegrationAccountSkuName(str, Enum):
+    """The integration account sku name.
+    """
 
     not_specified = "NotSpecified"
     free = "Free"
@@ -135,18 +153,24 @@ class IntegrationAccountSkuName(str, Enum):
     standard = "Standard"
 
 class IntegrationServiceEnvironmentAccessEndpointType(str, Enum):
+    """The integration service environment access endpoint type.
+    """
 
     not_specified = "NotSpecified"
     external = "External"
     internal = "Internal"
 
 class IntegrationServiceEnvironmentSkuName(str, Enum):
+    """The integration service environment sku name.
+    """
 
     not_specified = "NotSpecified"
     premium = "Premium"
     developer = "Developer"
 
 class EventLevel(str, Enum):
+    """The event level.
+    """
 
     log_always = "LogAlways"
     critical = "Critical"
@@ -156,6 +180,8 @@ class EventLevel(str, Enum):
     verbose = "Verbose"
 
 class TrackingRecordType(str, Enum):
+    """The tracking record type.
+    """
 
     not_specified = "NotSpecified"
     custom = "Custom"
@@ -175,11 +201,15 @@ class TrackingRecordType(str, Enum):
     edifact_transaction_set_acknowledgment = "EdifactTransactionSetAcknowledgment"
 
 class SchemaType(str, Enum):
+    """The schema type.
+    """
 
     not_specified = "NotSpecified"
     xml = "Xml"
 
 class MapType(str, Enum):
+    """The map type.
+    """
 
     not_specified = "NotSpecified"
     xslt = "Xslt"
@@ -188,17 +218,23 @@ class MapType(str, Enum):
     liquid = "Liquid"
 
 class PartnerType(str, Enum):
+    """The partner type.
+    """
 
     not_specified = "NotSpecified"
     b2_b = "B2B"
 
 class X12DateFormat(str, Enum):
+    """The x12 date format.
+    """
 
     not_specified = "NotSpecified"
     ccyymmdd = "CCYYMMDD"
     yymmdd = "YYMMDD"
 
 class X12TimeFormat(str, Enum):
+    """The x12 time format.
+    """
 
     not_specified = "NotSpecified"
     hhmm = "HHMM"
@@ -207,6 +243,8 @@ class X12TimeFormat(str, Enum):
     hhmms_sd = "HHMMSSd"
 
 class TrailingSeparatorPolicy(str, Enum):
+    """The trailing separator policy.
+    """
 
     not_specified = "NotSpecified"
     not_allowed = "NotAllowed"
@@ -214,6 +252,8 @@ class TrailingSeparatorPolicy(str, Enum):
     mandatory = "Mandatory"
 
 class SegmentTerminatorSuffix(str, Enum):
+    """The segment terminator suffix.
+    """
 
     not_specified = "NotSpecified"
     none = "None"
@@ -222,12 +262,16 @@ class SegmentTerminatorSuffix(str, Enum):
     crlf = "CRLF"
 
 class EdifactDecimalIndicator(str, Enum):
+    """The edifact decimal indicator.
+    """
 
     not_specified = "NotSpecified"
     comma = "Comma"
-    decimal_enum = "Decimal"
+    decimal = "Decimal"
 
 class AgreementType(str, Enum):
+    """The agreement type.
+    """
 
     not_specified = "NotSpecified"
     as2 = "AS2"
@@ -235,6 +279,8 @@ class AgreementType(str, Enum):
     edifact = "Edifact"
 
 class HashingAlgorithm(str, Enum):
+    """The signing or hashing algorithm.
+    """
 
     not_specified = "NotSpecified"
     none = "None"
@@ -245,6 +291,8 @@ class HashingAlgorithm(str, Enum):
     sha2512 = "SHA2512"
 
 class EncryptionAlgorithm(str, Enum):
+    """The encryption algorithm.
+    """
 
     not_specified = "NotSpecified"
     none = "None"
@@ -255,6 +303,8 @@ class EncryptionAlgorithm(str, Enum):
     aes256 = "AES256"
 
 class SigningAlgorithm(str, Enum):
+    """The signing or hashing algorithm.
+    """
 
     not_specified = "NotSpecified"
     default = "Default"
@@ -264,6 +314,8 @@ class SigningAlgorithm(str, Enum):
     sha2512 = "SHA2512"
 
 class X12CharacterSet(str, Enum):
+    """The X12 character set.
+    """
 
     not_specified = "NotSpecified"
     basic = "Basic"
@@ -271,6 +323,8 @@ class X12CharacterSet(str, Enum):
     utf8 = "UTF8"
 
 class UsageIndicator(str, Enum):
+    """The usage indicator.
+    """
 
     not_specified = "NotSpecified"
     test = "Test"
@@ -278,12 +332,16 @@ class UsageIndicator(str, Enum):
     production = "Production"
 
 class MessageFilterType(str, Enum):
+    """The message filter type.
+    """
 
     not_specified = "NotSpecified"
     include = "Include"
     exclude = "Exclude"
 
 class EdifactCharacterSet(str, Enum):
+    """The edifact character set.
+    """
 
     not_specified = "NotSpecified"
     unob = "UNOB"
@@ -302,12 +360,16 @@ class EdifactCharacterSet(str, Enum):
     keca = "KECA"
 
 class IntegrationServiceEnvironmentSkuScaleType(str, Enum):
+    """The integration service environment sku scale type.
+    """
 
     manual = "Manual"
     automatic = "Automatic"
     none = "None"
 
 class IntegrationServiceEnvironmentNetworkEndPointAccessibilityState(str, Enum):
+    """The integration service environment network endpoint accessibility state.
+    """
 
     not_specified = "NotSpecified"
     unknown = "Unknown"
@@ -315,6 +377,8 @@ class IntegrationServiceEnvironmentNetworkEndPointAccessibilityState(str, Enum):
     not_available = "NotAvailable"
 
 class IntegrationServiceEnvironmentNetworkDependencyCategoryType(str, Enum):
+    """The integration service environment network dependency category type.
+    """
 
     not_specified = "NotSpecified"
     azure_storage = "AzureStorage"
@@ -330,6 +394,8 @@ class IntegrationServiceEnvironmentNetworkDependencyCategoryType(str, Enum):
     regional_service = "RegionalService"
 
 class ErrorResponseCode(str, Enum):
+    """The error response code.
+    """
 
     not_specified = "NotSpecified"
     integration_service_environment_not_found = "IntegrationServiceEnvironmentNotFound"
@@ -343,18 +409,24 @@ class ApiType(str, Enum):
     soap = "Soap"
 
 class WsdlImportMethod(str, Enum):
+    """The WSDL import method.
+    """
 
     not_specified = "NotSpecified"
     soap_to_rest = "SoapToRest"
     soap_pass_through = "SoapPassThrough"
 
 class ApiDeploymentParameterVisibility(str, Enum):
+    """The Api deployment parameter visibility.
+    """
 
     not_specified = "NotSpecified"
     default = "Default"
     internal = "Internal"
 
 class ApiTier(str, Enum):
+    """The Api tier.
+    """
 
     not_specified = "NotSpecified"
     enterprise = "Enterprise"
@@ -362,6 +434,8 @@ class ApiTier(str, Enum):
     premium = "Premium"
 
 class SwaggerSchemaType(str, Enum):
+    """The swagger schema type.
+    """
 
     string = "String"
     number = "Number"
@@ -369,27 +443,35 @@ class SwaggerSchemaType(str, Enum):
     boolean = "Boolean"
     array = "Array"
     file = "File"
-    object_enum = "Object"
+    object = "Object"
     null = "Null"
 
 class StatusAnnotation(str, Enum):
+    """The status annotation.
+    """
 
     not_specified = "NotSpecified"
     preview = "Preview"
     production = "Production"
 
 class KeyType(str, Enum):
+    """The key type.
+    """
 
     not_specified = "NotSpecified"
     primary = "Primary"
     secondary = "Secondary"
 
 class TrackEventsOperationOptions(str, Enum):
+    """The track events operation options.
+    """
 
     none = "None"
     disable_source_info_enrich = "DisableSourceInfoEnrich"
 
 class IntegrationServiceEnvironmentNetworkDependencyHealthState(str, Enum):
+    """The integration service environment network dependency health state.
+    """
 
     not_specified = "NotSpecified"
     healthy = "Healthy"
@@ -397,6 +479,8 @@ class IntegrationServiceEnvironmentNetworkDependencyHealthState(str, Enum):
     unknown = "Unknown"
 
 class AzureAsyncOperationState(str, Enum):
+    """The Azure async operation state.
+    """
 
     failed = "Failed"
     succeeded = "Succeeded"

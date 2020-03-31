@@ -11,7 +11,7 @@ from knack.util import CLIError
 class AddIntegrationAccount(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        namespace.properties_integration_account = action
+        namespace.integration_account = action
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -24,42 +24,6 @@ class AddIntegrationAccount(argparse.Action):
             v = properties[k]
             if kl == 'id':
                 d['id'] = v
-        return d
-
-
-class AddIntegrationServiceEnvironment(argparse.Action):
-    def __call__(self, parser, namespace, values, option_string=None):
-        action = self.get_action(values, option_string)
-        namespace.properties_integration_service_environment = action
-
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
-        try:
-            properties = dict(x.split('=', 1) for x in values)
-        except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
-        d = {}
-        for k in properties:
-            kl = k.lower()
-            v = properties[k]
-            if kl == 'id':
-                d['id'] = v
-        return d
-
-
-class AddDefinition(argparse.Action):
-    def __call__(self, parser, namespace, values, option_string=None):
-        action = self.get_action(values, option_string)
-        namespace.properties_definition = action
-
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
-        try:
-            properties = dict(x.split('=', 1) for x in values)
-        except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
-        d = {}
-        for k in properties:
-            kl = k.lower()
-            v = properties[k]
         return d
 
 

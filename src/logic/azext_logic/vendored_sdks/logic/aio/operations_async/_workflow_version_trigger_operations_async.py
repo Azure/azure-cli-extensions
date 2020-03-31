@@ -9,7 +9,7 @@ import datetime
 from typing import Any, Callable, Dict, Generic, Optional, TypeVar, Union
 import warnings
 
-from azure.core.exceptions import map_error
+from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
 
@@ -21,7 +21,8 @@ ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T
 class WorkflowVersionTriggerOperations:
     """WorkflowVersionTriggerOperations async operations.
 
-    You should not instantiate directly this class, but create a Client instance that will create it for you and attach it as attribute.
+    You should not instantiate this class directly. Instead, you should create a Client instance that
+    instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
     :type models: ~logic_management_client.models
@@ -66,13 +67,14 @@ class WorkflowVersionTriggerOperations:
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: WorkflowTriggerCallbackUrl or the result of cls(response)
         :rtype: ~logic_management_client.models.WorkflowTriggerCallbackUrl
-        :raises: ~logic_management_client.models.ErrorResponseException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls: ClsType["models.WorkflowTriggerCallbackUrl"] = kwargs.pop('cls', None )
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.WorkflowTriggerCallbackUrl"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        parameters = models.GetCallbackUrlParameters(not_after=not_after, key_type=key_type)
+        _parameters = models.GetCallbackUrlParameters(not_after=not_after, key_type=key_type)
         api_version = "2019-05-01"
+        content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
         url = self.list_callback_url.metadata['url']
@@ -86,28 +88,30 @@ class WorkflowVersionTriggerOperations:
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters: Dict[str, Any] = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters: Dict[str, Any] = {}
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'application/json'
-
-        # Construct body
-        if parameters is not None:
-            body_content = self._serialize.body(parameters, 'GetCallbackUrlParameters')
-        else:
-            body_content = None
 
         # Construct and send request
-        request = self._client.post(url, query_parameters, header_parameters, body_content)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        if _parameters is not None:
+            body_content = self._serialize.body(_parameters, 'GetCallbackUrlParameters')
+        else:
+            body_content = None
+        body_content_kwargs['content'] = body_content
+        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.ErrorResponseException.from_response(response, self._deserialize)
+            error = self._deserialize(models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error)
 
         deserialized = self._deserialize('WorkflowTriggerCallbackUrl', pipeline_response)
 

@@ -5,7 +5,6 @@
 
 import os
 from datetime import datetime
-
 from azure.cli.testsdk.preparers import NoTrafficRecordingPreparer
 from azure_devtools.scenario_tests import SingleValueReplacer
 from azure.cli.testsdk.exceptions import CliTestError
@@ -23,7 +22,7 @@ class VirtualNetworkPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
                  resource_group_name=None,
                  resource_group_key=KEY_RESOURCE_GROUP,
                  dev_setting_name='AZURE_CLI_TEST_DEV_VIRTUAL_NETWORK_NAME',
-                 random_name_length=75, key=KEY_VIRTUAL_NETWORK):
+                 random_name_length=24, key=KEY_VIRTUAL_NETWORK):
         if ' ' in name_prefix:
             raise CliTestError(
                 'Error: Space character in name prefix \'%s\'' % name_prefix)
@@ -63,23 +62,23 @@ class VirtualNetworkPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
         # delete vnet if test is being recorded and if the vnet is not a dev rg
         if not self.dev_setting_name:
             self.live_only_execute(
-                self.cli_ctx, 'az network vnet delete --name {}'.format(name))
+                self.cli_ctx, 'az network vnet delete --name {} --resource-group {}'.format(name, self.resource_group_name))
 
 
 class VnetSubnetPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
     def __init__(self, name_prefix='clitest.vn',
-                 parameter_name='virtual_network',
+                 parameter_name='subnet',
                  resource_group_name=None,
                  resource_group_key=KEY_RESOURCE_GROUP,
                  vnet_name=None,
                  vnet_key=KEY_VIRTUAL_NETWORK,
                  address_prefixes="11.0.0.0/24",
                  dev_setting_name='AZURE_CLI_TEST_DEV_VNET_SUBNET_NAME',
-                 random_name_length=75, key=KEY_VNET_SUBNET):
+                 random_name_length=24, key=KEY_VNET_SUBNET):
         if ' ' in name_prefix:
             raise CliTestError(
                 'Error: Space character in name prefix \'%s\'' % name_prefix)
-        super(VirtualNetworkPreparer, self).__init__(
+        super(VnetSubnetPreparer, self).__init__(
             name_prefix, random_name_length)
         self.cli_ctx = get_dummy_cli()
         self.parameter_name = parameter_name
@@ -105,26 +104,8 @@ class VnetSubnetPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
             if not self.vnet_name:
                 raise CliTestError("Error: No vnet configured!")
 
-        # tags = {'product': 'azurecli', 'cause': 'automation',
-        #         'date': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')}
-        # if 'ENV_JOB_NAME' in os.environ:
-        #     tags['job'] = os.environ['ENV_JOB_NAME']
-        # tags = ' '.join(['{}={}'.format(key, value)
-        #                  for key, value in tags.items()])
-        template = "az network vnet subnet create --resource-group {} " \
-            "--vnet-name {} --name {} --address-prefixes {}"
-        self.live_only_execute(self.cli_ctx, template.format(
-            self.resource_group_name, self.vnet_name, name,
-            self.address_prefixes))
-
-        self.test_class_instance.kwargs[self.key] = name
+        self.test_class_instance.kwargs[self.key] = 'default'
         return {self.parameter_name: name}
 
     def remove_resource(self, name, **kwargs):
-        # delete vnet if test is being recorded and if the vnet is not a dev rg
-        if not self.dev_setting_name:
-            self.live_only_execute(self.cli_ctx, "az network vnet subnet"
-                                   "delete --name {} --resource-group {} "
-                                   "--vnet-name {}".format(
-                                       name, self.resource_group_name,
-                                       self.vnet_name))
+        pass

@@ -2,7 +2,6 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
@@ -17,8 +16,6 @@ from azure.cli.core.commands.parameters import (
 )
 from azext_logic.action import (
     AddIntegrationAccount,
-    AddIntegrationServiceEnvironment,
-    AddDefinition,
     AddSku,
     AddKeyVault
 )
@@ -29,28 +26,41 @@ def load_arguments(self, _):
     with self.argument_context('logic workflow list') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
         c.argument('top', help='The number of items to be included in the result.')
-        c.argument('filter', help='The filter to apply on the operation. Options for filters include: State, Trigger, and ReferencedResourceId.')
+        c.argument('filter', help='The filter to apply on the operation. Options for filters include: State, Trigger, a'
+                   'nd ReferencedResourceId.')
 
     with self.argument_context('logic workflow show') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
-        c.argument('name', help='The workflow name.')
-
+        c.argument('workflow_name', help='The workflow name.')
+        
     with self.argument_context('logic workflow create') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
-        c.argument('name', help='The workflow name.')
-        c.argument('input_path', type=file_type, help='Path to a workflow JSON file', completer=FilesCompleter())
+        c.argument('name', options_list=['--name', '-n'],help='The workflow name.')
+        c.argument('definition', type=file_type, help='Path to a workflow JSON file. ' + 
+                   'This JSON format should match what the logic app design tool exports', completer=FilesCompleter())
         c.argument('location', arg_type=get_location_type(self.cli_ctx), help='The resource location.')
+        c.argument('integration_account', action=AddIntegrationAccount, nargs='+', help='The integration account.')
+        c.argument('integration_service_environment', action=AddIntegrationAccount, nargs='+', help='The integration se'
+                   'rvice environment.')
+        c.argument('endpoints_configuration', arg_type=CLIArgumentType(options_list=['--endpoints-configuration'],
+            help='The endpoints configuration.'))
+        c.argument('state', arg_type=get_enum_type(['NotSpecified', 'Completed', 'Enabled', 'Disabled', 'Deleted', 'Sus'
+                   'pended']), help='The state.')
         c.argument('tags', tags_type, help='The resource tags.')
 
     with self.argument_context('logic workflow update') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
-        c.argument('name', help='The workflow name.')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), help='The resource location.')
+        c.argument('name', options_list=['--name', '-n'],help='The workflow name.')
+        c.argument('state', arg_type=get_enum_type(['NotSpecified', 'Completed', 'Enabled', 'Disabled', 'Deleted', 'Sus'
+                   'pended']), help='The state.')
+        c.argument('definition', type=file_type, help='Path to a workflow JSON file. ' +
+                   'This JSON format should match what the logic app design tool exports', completer=FilesCompleter())
+        c.argument('integration_account', action=AddIntegrationAccount, nargs='+', help='The integration account.')
         c.argument('tags', tags_type, help='The resource tags.')
 
     with self.argument_context('logic workflow delete') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
-        c.argument('name', help='The workflow name.')
+        c.argument('workflow_name', help='The workflow name.')
 
     with self.argument_context('logic integration-account list') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
@@ -58,22 +68,44 @@ def load_arguments(self, _):
 
     with self.argument_context('logic integration-account show') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
-        c.argument('name', help='The integration account name.')
+        c.argument('integration_account_name', help='The integration account name.')
 
     with self.argument_context('logic integration-account create') as c:
+        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('integration_account_name', help='The integration account name.')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), help='The resource location.')
+        c.argument('tags', tags_type, help='The resource tags.')
+        c.argument('sku', action=AddSku, nargs='+', help='The sku.')
+        c.argument('integration_service_environment', arg_type=CLIArgumentType(options_list=['--integration-service-env'
+                   'ironment'], help='The integration service environment.'))
+        c.argument('state', arg_type=get_enum_type(['NotSpecified', 'Completed', 'Enabled', 'Disabled', 'Deleted', 'Sus'
+                   'pended']), help='The workflow state.')
+
+    with self.argument_context('logic integration-account update') as c:
+        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('integration_account_name', help='The integration account name.')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), help='The resource location.')
+        c.argument('tags', tags_type, help='The resource tags.')
+        c.argument('sku', action=AddSku, nargs='+', help='The sku.')
+        c.argument('integration_service_environment', arg_type=CLIArgumentType(options_list=['--integration-service-env'
+                   'ironment'], help='The integration service environment.'))
+        c.argument('state', arg_type=get_enum_type(['NotSpecified', 'Completed', 'Enabled', 'Disabled', 'Deleted', 'Sus'
+                   'pended']), help='The workflow state.')
+
+    with self.argument_context('logic integration-account delete') as c:
+        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('integration_account_name', help='The integration account name.')
+
+    with self.argument_context('logic integration-account list-callback-url') as c:
+        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('integration_account_name', help='The integration account name.')
+        c.argument('not_after', help='The expiry time.')
+        c.argument('key_type', arg_type=get_enum_type(['NotSpecified', 'Primary', 'Secondary']), help='The key type.')
+    
+    with self.argument_context('logic integration-account import') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
         c.argument('name', help='The integration account name.')
         c.argument('input_path', type=file_type, help='Path to a intergration-account JSON file', completer=FilesCompleter())
         c.argument('location', arg_type=get_location_type(self.cli_ctx), help='The resource location.')
         c.argument('tags', tags_type, help='The resource tags.')
         c.argument('sku', type=str, help='The integration account sku.')
-
-    with self.argument_context('logic integration-account update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
-        c.argument('name', help='The integration account name.')
-        c.argument('tags', tags_type, help='The resource tags.')
-        c.argument('sku', type=str, help='The integration account sku.')
-
-    with self.argument_context('logic integration-account delete') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
-        c.argument('_name', help='The integration account name.')

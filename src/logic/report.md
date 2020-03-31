@@ -10,9 +10,9 @@ create a logic integration-account.
 |**--integration_account_name**|string|The integration account name.|integration_account_name|integration_account_name|
 |**--location**|string|The resource location.|location|location|
 |**--tags**|dictionary|The resource tags.|tags|tags|
-|**--sku**|object|The integration account sku.|sku|sku|
-|**--integration_service_environment**|object|The integration service environment.|integration_service_environment|properties_integration_service_environment|
-|**--state**|choice|The workflow state.|state|properties_state|
+|**--sku**|object|The sku.|sku|sku|
+|**--integration_service_environment**|object|The integration service environment.|integration_service_environment|integration_service_environment|
+|**--state**|choice|The workflow state.|state|state|
 ### logic integration-account delete
 
 delete a logic integration-account.
@@ -59,7 +59,7 @@ log-tracking-event a logic integration-account.
 |**--integration_account_name**|string|The integration account name.|integration_account_name|integration_account_name|
 |**--source_type**|string|The source type.|source_type|source_type|
 |**--events**|array|The events.|events|events|
-|**--track_events_options**|choice|The track events operation options.|track_events_options|track_events_options|
+|**--track_events_options**|choice|The track events options.|track_events_options|track_events_options|
 ### logic integration-account regenerate-access-key
 
 regenerate-access-key a logic integration-account.
@@ -87,9 +87,9 @@ update a logic integration-account.
 |**--integration_account_name**|string|The integration account name.|integration_account_name|integration_account_name|
 |**--location**|string|The resource location.|location|location|
 |**--tags**|dictionary|The resource tags.|tags|tags|
-|**--sku**|object|The integration account sku.|sku|sku|
-|**--integration_service_environment**|object|The integration service environment.|integration_service_environment|properties_integration_service_environment|
-|**--state**|choice|The workflow state.|state|properties_state|
+|**--sku**|object|The sku.|sku|sku|
+|**--integration_service_environment**|object|The integration service environment.|integration_service_environment|integration_service_environment|
+|**--state**|choice|The workflow state.|state|state|
 ### logic workflow create
 
 create a logic workflow.
@@ -100,13 +100,12 @@ create a logic workflow.
 |**--workflow_name**|string|The workflow name.|workflow_name|workflow_name|
 |**--location**|string|The resource location.|location|location|
 |**--tags**|dictionary|The resource tags.|tags|tags|
-|**--state**|choice|The workflow state.|state|properties_state|
-|**--endpoints_configuration**|object|The endpoints configuration.|endpoints_configuration|properties_endpoints_configuration|
-|**--sku**|object|The sku type.|sku|properties_sku|
-|**--integration_account**|object|The resource reference.|integration_account|properties_integration_account|
-|**--integration_service_environment**|object|The resource reference.|integration_service_environment|properties_integration_service_environment|
-|**--definition**|object||definition|properties_definition|
-|**--parameters**|dictionary|The parameters.|parameters|properties_parameters|
+|**--state**|choice|The state.|state|state|
+|**--endpoints_configuration**|object|The endpoints configuration.|endpoints_configuration|endpoints_configuration|
+|**--integration_account**|object|The integration account.|integration_account|integration_account|
+|**--integration_service_environment**|object|The integration service environment.|integration_service_environment|integration_service_environment|
+|**--definition**|any|The definition.|definition|definition|
+|**--parameters**|dictionary|The parameters.|parameters|parameters|
 ### logic workflow delete
 
 delete a logic workflow.
@@ -177,13 +176,12 @@ move a logic workflow.
 |**--workflow_name**|string|The workflow name.|workflow_name|workflow_name|
 |**--location**|string|The resource location.|location|location|
 |**--tags**|dictionary|The resource tags.|tags|tags|
-|**--state**|choice|The workflow state.|state|properties_state|
-|**--endpoints_configuration**|object|The endpoints configuration.|endpoints_configuration|properties_endpoints_configuration|
-|**--sku**|object|The sku type.|sku|properties_sku|
-|**--integration_account**|object|The resource reference.|integration_account|properties_integration_account|
-|**--integration_service_environment**|object|The resource reference.|integration_service_environment|properties_integration_service_environment|
-|**--definition**|object||definition|properties_definition|
-|**--parameters**|dictionary|The parameters.|parameters|properties_parameters|
+|**--state**|choice|The state.|state|state|
+|**--endpoints_configuration**|object|The endpoints configuration.|endpoints_configuration|endpoints_configuration|
+|**--integration_account**|object|The integration account.|integration_account|integration_account|
+|**--integration_service_environment**|object|The integration service environment.|integration_service_environment|integration_service_environment|
+|**--definition**|any|The definition.|definition|definition|
+|**--parameters**|dictionary|The parameters.|parameters|parameters|
 ### logic workflow regenerate-access-key
 
 regenerate-access-key a logic workflow.
@@ -211,13 +209,12 @@ update a logic workflow.
 |**--workflow_name**|string|The workflow name.|workflow_name|workflow_name|
 |**--location**|string|The resource location.|location|location|
 |**--tags**|dictionary|The resource tags.|tags|tags|
-|**--state**|choice|The workflow state.|state|properties_state|
-|**--endpoints_configuration**|object|The endpoints configuration.|endpoints_configuration|properties_endpoints_configuration|
-|**--sku**|object|The sku type.|sku|properties_sku|
-|**--integration_account**|object|The resource reference.|integration_account|properties_integration_account|
-|**--integration_service_environment**|object|The resource reference.|integration_service_environment|properties_integration_service_environment|
-|**--definition**|object||definition|properties_definition|
-|**--parameters**|dictionary|The parameters.|parameters|properties_parameters|
+|**--state**|choice|The state.|state|state|
+|**--endpoints_configuration**|object|The endpoints configuration.|endpoints_configuration|endpoints_configuration|
+|**--integration_account**|object|The integration account.|integration_account|integration_account|
+|**--integration_service_environment**|object|The integration service environment.|integration_service_environment|integration_service_environment|
+|**--definition**|any|The definition.|definition|definition|
+|**--parameters**|dictionary|The parameters.|parameters|parameters|
 ### logic workflow validate-by-location
 
 validate-by-location a logic workflow.
@@ -237,10 +234,9 @@ validate-by-resource-group a logic workflow.
 |**--workflow_name**|string|The workflow name.|workflow_name|workflow_name|
 |**--location**|string|The resource location.|location|location|
 |**--tags**|dictionary|The resource tags.|tags|tags|
-|**--state**|choice|The workflow state.|state|properties_state|
-|**--endpoints_configuration**|object|The endpoints configuration.|endpoints_configuration|properties_endpoints_configuration|
-|**--sku**|object|The sku type.|sku|properties_sku|
-|**--integration_account**|object|The resource reference.|integration_account|properties_integration_account|
-|**--integration_service_environment**|object|The resource reference.|integration_service_environment|properties_integration_service_environment|
-|**--definition**|object||definition|properties_definition|
-|**--parameters**|dictionary|The parameters.|parameters|properties_parameters|
+|**--state**|choice|The state.|state|state|
+|**--endpoints_configuration**|object|The endpoints configuration.|endpoints_configuration|endpoints_configuration|
+|**--integration_account**|object|The integration account.|integration_account|integration_account|
+|**--integration_service_environment**|object|The integration service environment.|integration_service_environment|integration_service_environment|
+|**--definition**|any|The definition.|definition|definition|
+|**--parameters**|dictionary|The parameters.|parameters|parameters|

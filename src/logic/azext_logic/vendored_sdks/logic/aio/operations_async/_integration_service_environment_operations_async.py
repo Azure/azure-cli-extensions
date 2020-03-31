@@ -9,11 +9,10 @@ from typing import Any, Callable, Dict, Generic, Optional, TypeVar, Union
 import warnings
 
 from azure.core.async_paging import AsyncItemPaged, AsyncList
-from azure.core.exceptions import map_error
+from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
 from azure.core.polling import AsyncNoPolling, AsyncPollingMethod, async_poller
-from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
 
 from ... import models
 
@@ -23,7 +22,8 @@ ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T
 class IntegrationServiceEnvironmentOperations:
     """IntegrationServiceEnvironmentOperations async operations.
 
-    You should not instantiate directly this class, but create a Client instance that will create it for you and attach it as attribute.
+    You should not instantiate this class directly. Instead, you should create a Client instance that
+    instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
     :type models: ~logic_management_client.models
@@ -53,10 +53,10 @@ class IntegrationServiceEnvironmentOperations:
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationServiceEnvironmentListResult or the result of cls(response)
         :rtype: ~logic_management_client.models.IntegrationServiceEnvironmentListResult
-        :raises: ~logic_management_client.models.ErrorResponseException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls: ClsType["models.IntegrationServiceEnvironmentListResult"] = kwargs.pop('cls', None )
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationServiceEnvironmentListResult"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2019-05-01"
 
         def prepare_request(next_link=None):
@@ -71,13 +71,13 @@ class IntegrationServiceEnvironmentOperations:
                 url = next_link
 
             # Construct parameters
-            query_parameters: Dict[str, Any] = {}
+            query_parameters = {}  # type: Dict[str, Any]
             query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
             if top is not None:
                 query_parameters['$top'] = self._serialize.query("top", top, 'int')
 
             # Construct headers
-            header_parameters: Dict[str, Any] = {}
+            header_parameters = {}  # type: Dict[str, Any]
             header_parameters['Accept'] = 'application/json'
 
             # Construct and send request
@@ -89,7 +89,7 @@ class IntegrationServiceEnvironmentOperations:
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
-            return deserialized.next_link, AsyncList(list_of_elem)
+            return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
             request = prepare_request(next_link)
@@ -98,8 +98,9 @@ class IntegrationServiceEnvironmentOperations:
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
+                error = self._deserialize(models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise models.ErrorResponseException.from_response(response, self._deserialize)
+                raise HttpResponseError(response=response, model=error)
 
             return pipeline_response
 
@@ -123,10 +124,10 @@ class IntegrationServiceEnvironmentOperations:
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationServiceEnvironmentListResult or the result of cls(response)
         :rtype: ~logic_management_client.models.IntegrationServiceEnvironmentListResult
-        :raises: ~logic_management_client.models.ErrorResponseException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls: ClsType["models.IntegrationServiceEnvironmentListResult"] = kwargs.pop('cls', None )
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationServiceEnvironmentListResult"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2019-05-01"
 
         def prepare_request(next_link=None):
@@ -142,13 +143,13 @@ class IntegrationServiceEnvironmentOperations:
                 url = next_link
 
             # Construct parameters
-            query_parameters: Dict[str, Any] = {}
+            query_parameters = {}  # type: Dict[str, Any]
             query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
             if top is not None:
                 query_parameters['$top'] = self._serialize.query("top", top, 'int')
 
             # Construct headers
-            header_parameters: Dict[str, Any] = {}
+            header_parameters = {}  # type: Dict[str, Any]
             header_parameters['Accept'] = 'application/json'
 
             # Construct and send request
@@ -160,7 +161,7 @@ class IntegrationServiceEnvironmentOperations:
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
-            return deserialized.next_link, AsyncList(list_of_elem)
+            return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
             request = prepare_request(next_link)
@@ -169,8 +170,9 @@ class IntegrationServiceEnvironmentOperations:
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
+                error = self._deserialize(models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise models.ErrorResponseException.from_response(response, self._deserialize)
+                raise HttpResponseError(response=response, model=error)
 
             return pipeline_response
 
@@ -194,10 +196,10 @@ class IntegrationServiceEnvironmentOperations:
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationServiceEnvironment or the result of cls(response)
         :rtype: ~logic_management_client.models.IntegrationServiceEnvironment
-        :raises: ~logic_management_client.models.ErrorResponseException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls: ClsType["models.IntegrationServiceEnvironment"] = kwargs.pop('cls', None )
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationServiceEnvironment"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2019-05-01"
 
         # Construct URL
@@ -210,11 +212,11 @@ class IntegrationServiceEnvironmentOperations:
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters: Dict[str, Any] = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters: Dict[str, Any] = {}
+        header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
         # Construct and send request
@@ -224,7 +226,8 @@ class IntegrationServiceEnvironmentOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.ErrorResponseException.from_response(response, self._deserialize)
+            error = self._deserialize(models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error)
 
         deserialized = self._deserialize('IntegrationServiceEnvironment', pipeline_response)
 
@@ -244,11 +247,12 @@ class IntegrationServiceEnvironmentOperations:
         sku: Optional["models.IntegrationServiceEnvironmentSku"] = None,
         **kwargs
     ) -> "models.IntegrationServiceEnvironment":
-        cls: ClsType["models.IntegrationServiceEnvironment"] = kwargs.pop('cls', None )
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationServiceEnvironment"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        integration_service_environment = models.IntegrationServiceEnvironment(location=location, tags=tags, properties=properties, sku=sku)
+        _integration_service_environment = models.IntegrationServiceEnvironment(location=location, tags=tags, properties=properties, sku=sku)
         api_version = "2019-05-01"
+        content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
         url = self._create_or_update_initial.metadata['url']
@@ -260,25 +264,27 @@ class IntegrationServiceEnvironmentOperations:
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters: Dict[str, Any] = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters: Dict[str, Any] = {}
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'application/json'
-
-        # Construct body
-        body_content = self._serialize.body(integration_service_environment, 'IntegrationServiceEnvironment')
 
         # Construct and send request
-        request = self._client.put(url, query_parameters, header_parameters, body_content)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(_integration_service_environment, 'IntegrationServiceEnvironment')
+        body_content_kwargs['content'] = body_content
+        request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
+
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.ErrorResponseException.from_response(response, self._deserialize)
+            error = self._deserialize(models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error)
 
         deserialized = None
         if response.status_code == 200:
@@ -315,7 +321,7 @@ class IntegrationServiceEnvironmentOperations:
         :type tags: dict[str, str]
         :param properties: The integration service environment properties.
         :type properties: ~logic_management_client.models.IntegrationServiceEnvironmentProperties
-        :param sku: The integration service environment sku.
+        :param sku: The sku.
         :type sku: ~logic_management_client.models.IntegrationServiceEnvironmentSku
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -324,10 +330,10 @@ class IntegrationServiceEnvironmentOperations:
         :return: An instance of LROPoller that returns IntegrationServiceEnvironment
         :rtype: ~azure.core.polling.LROPoller[~logic_management_client.models.IntegrationServiceEnvironment]
 
-        :raises ~logic_management_client.models.ErrorResponseException:
+        :raises ~azure.core.exceptions.HttpResponseError:
         """
-        polling: Union[bool, AsyncPollingMethod] = kwargs.pop('polling', True)
-        cls: ClsType["models.IntegrationServiceEnvironment"] = kwargs.pop('cls', None )
+        polling = kwargs.pop('polling', False)  # type: Union[bool, AsyncPollingMethod]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationServiceEnvironment"]
         raw_result = await self._create_or_update_initial(
             resource_group=resource_group,
             integration_service_environment_name=integration_service_environment_name,
@@ -350,7 +356,7 @@ class IntegrationServiceEnvironmentOperations:
             'polling_interval',
             self._config.polling_interval
         )
-        if polling is True: polling_method = AsyncARMPolling(lro_delay,  **kwargs)
+        if polling is True: raise ValueError("polling being True is not valid because no default polling implemetation has been defined.")
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         return await async_poller(self._client, raw_result, get_long_running_output, polling_method)
@@ -366,11 +372,12 @@ class IntegrationServiceEnvironmentOperations:
         sku: Optional["models.IntegrationServiceEnvironmentSku"] = None,
         **kwargs
     ) -> "models.IntegrationServiceEnvironment":
-        cls: ClsType["models.IntegrationServiceEnvironment"] = kwargs.pop('cls', None )
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationServiceEnvironment"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        integration_service_environment = models.IntegrationServiceEnvironment(location=location, tags=tags, properties=properties, sku=sku)
+        _integration_service_environment = models.IntegrationServiceEnvironment(location=location, tags=tags, properties=properties, sku=sku)
         api_version = "2019-05-01"
+        content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
         url = self._update_initial.metadata['url']
@@ -382,25 +389,27 @@ class IntegrationServiceEnvironmentOperations:
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters: Dict[str, Any] = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters: Dict[str, Any] = {}
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'application/json'
-
-        # Construct body
-        body_content = self._serialize.body(integration_service_environment, 'IntegrationServiceEnvironment')
 
         # Construct and send request
-        request = self._client.patch(url, query_parameters, header_parameters, body_content)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(_integration_service_environment, 'IntegrationServiceEnvironment')
+        body_content_kwargs['content'] = body_content
+        request = self._client.patch(url, query_parameters, header_parameters, **body_content_kwargs)
+
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.ErrorResponseException.from_response(response, self._deserialize)
+            error = self._deserialize(models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error)
 
         deserialized = self._deserialize('IntegrationServiceEnvironment', pipeline_response)
 
@@ -432,7 +441,7 @@ class IntegrationServiceEnvironmentOperations:
         :type tags: dict[str, str]
         :param properties: The integration service environment properties.
         :type properties: ~logic_management_client.models.IntegrationServiceEnvironmentProperties
-        :param sku: The integration service environment sku.
+        :param sku: The sku.
         :type sku: ~logic_management_client.models.IntegrationServiceEnvironmentSku
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -441,10 +450,10 @@ class IntegrationServiceEnvironmentOperations:
         :return: An instance of LROPoller that returns IntegrationServiceEnvironment
         :rtype: ~azure.core.polling.LROPoller[~logic_management_client.models.IntegrationServiceEnvironment]
 
-        :raises ~logic_management_client.models.ErrorResponseException:
+        :raises ~azure.core.exceptions.HttpResponseError:
         """
-        polling: Union[bool, AsyncPollingMethod] = kwargs.pop('polling', True)
-        cls: ClsType["models.IntegrationServiceEnvironment"] = kwargs.pop('cls', None )
+        polling = kwargs.pop('polling', False)  # type: Union[bool, AsyncPollingMethod]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationServiceEnvironment"]
         raw_result = await self._update_initial(
             resource_group=resource_group,
             integration_service_environment_name=integration_service_environment_name,
@@ -467,7 +476,7 @@ class IntegrationServiceEnvironmentOperations:
             'polling_interval',
             self._config.polling_interval
         )
-        if polling is True: polling_method = AsyncARMPolling(lro_delay,  **kwargs)
+        if polling is True: raise ValueError("polling being True is not valid because no default polling implemetation has been defined.")
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         return await async_poller(self._client, raw_result, get_long_running_output, polling_method)
@@ -488,10 +497,10 @@ class IntegrationServiceEnvironmentOperations:
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None or the result of cls(response)
         :rtype: None
-        :raises: ~logic_management_client.models.ErrorResponseException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls: ClsType[None] = kwargs.pop('cls', None )
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2019-05-01"
 
         # Construct URL
@@ -504,11 +513,11 @@ class IntegrationServiceEnvironmentOperations:
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters: Dict[str, Any] = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters: Dict[str, Any] = {}
+        header_parameters = {}  # type: Dict[str, Any]
 
         # Construct and send request
         request = self._client.delete(url, query_parameters, header_parameters)
@@ -517,7 +526,8 @@ class IntegrationServiceEnvironmentOperations:
 
         if response.status_code not in [200, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.ErrorResponseException.from_response(response, self._deserialize)
+            error = self._deserialize(models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error)
 
         if cls:
           return cls(pipeline_response, None, {})
@@ -539,10 +549,10 @@ class IntegrationServiceEnvironmentOperations:
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None or the result of cls(response)
         :rtype: None
-        :raises: ~logic_management_client.models.ErrorResponseException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls: ClsType[None] = kwargs.pop('cls', None )
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2019-05-01"
 
         # Construct URL
@@ -555,11 +565,11 @@ class IntegrationServiceEnvironmentOperations:
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters: Dict[str, Any] = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters: Dict[str, Any] = {}
+        header_parameters = {}  # type: Dict[str, Any]
 
         # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
@@ -568,7 +578,8 @@ class IntegrationServiceEnvironmentOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.ErrorResponseException.from_response(response, self._deserialize)
+            error = self._deserialize(models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error)
 
         if cls:
           return cls(pipeline_response, None, {})

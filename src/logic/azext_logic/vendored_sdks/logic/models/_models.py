@@ -13,11 +13,11 @@ import msrest.serialization
 class AgreementContent(msrest.serialization.Model):
     """The integration account agreement content.
 
-    :param a_s2: The integration account AS2 agreement content.
+    :param a_s2: The AS2 agreement content.
     :type a_s2: ~logic_management_client.models.As2AgreementContent
     :param x12: The X12 agreement content.
     :type x12: ~logic_management_client.models.X12AgreementContent
-    :param edifact: The Edifact agreement content.
+    :param edifact: The EDIFACT agreement content.
     :type edifact: ~logic_management_client.models.EdifactAgreementContent
     """
 
@@ -48,8 +48,8 @@ class ApiDeploymentParameterMetadata(msrest.serialization.Model):
     :type display_name: str
     :param description: The description.
     :type description: str
-    :param visibility: The Api deployment parameter visibility. Possible values include:
-     'NotSpecified', 'Default', 'Internal'.
+    :param visibility: The visibility. Possible values include: 'NotSpecified', 'Default',
+     'Internal'.
     :type visibility: str or ~logic_management_client.models.ApiDeploymentParameterVisibility
     """
 
@@ -76,9 +76,9 @@ class ApiDeploymentParameterMetadata(msrest.serialization.Model):
 class ApiDeploymentParameterMetadataSet(msrest.serialization.Model):
     """The API deployment parameters metadata.
 
-    :param package_content_link: The API deployment parameter metadata.
+    :param package_content_link: The package content link parameter.
     :type package_content_link: ~logic_management_client.models.ApiDeploymentParameterMetadata
-    :param redis_cache_connection_string: The API deployment parameter metadata.
+    :param redis_cache_connection_string: The package content link parameter.
     :type redis_cache_connection_string:
      ~logic_management_client.models.ApiDeploymentParameterMetadata
     """
@@ -248,11 +248,11 @@ class ApiOperationPropertiesDefinition(msrest.serialization.Model):
     :type trigger_hint: str
     :param pageable: Indicates whether the api operation is pageable.
     :type pageable: bool
-    :param annotation: The Api Operation Annotation.
+    :param annotation: The annotation of api operation.
     :type annotation: ~logic_management_client.models.ApiOperationAnnotation
-    :param api: The Api reference.
+    :param api: The api reference.
     :type api: ~logic_management_client.models.ApiReference
-    :param inputs_definition: The swagger schema.
+    :param inputs_definition: The operation inputs definition schema.
     :type inputs_definition: ~logic_management_client.models.SwaggerSchema
     :param responses_definition: The operation responses definition schemas.
     :type responses_definition: dict[str, ~logic_management_client.models.SwaggerSchema]
@@ -347,14 +347,14 @@ class ApiReference(ResourceReference):
     :type description: str
     :param icon_uri: The icon uri of the api.
     :type icon_uri: str
-    :param swagger:
-    :type swagger: ~logic_management_client.models.Object
+    :param swagger: The swagger of the api.
+    :type swagger: object
     :param brand_color: The brand color of the api.
     :type brand_color: str
-    :param category: The Api tier. Possible values include: 'NotSpecified', 'Enterprise',
-     'Standard', 'Premium'.
+    :param category: The tier. Possible values include: 'NotSpecified', 'Enterprise', 'Standard',
+     'Premium'.
     :type category: str or ~logic_management_client.models.ApiTier
-    :param integration_service_environment: The resource reference.
+    :param integration_service_environment: The integration service environment reference.
     :type integration_service_environment: ~logic_management_client.models.ResourceReference
     """
 
@@ -370,7 +370,7 @@ class ApiReference(ResourceReference):
         'display_name': {'key': 'displayName', 'type': 'str'},
         'description': {'key': 'description', 'type': 'str'},
         'icon_uri': {'key': 'iconUri', 'type': 'str'},
-        'swagger': {'key': 'swagger', 'type': 'Object'},
+        'swagger': {'key': 'swagger', 'type': 'object'},
         'brand_color': {'key': 'brandColor', 'type': 'str'},
         'category': {'key': 'category', 'type': 'str'},
         'integration_service_environment': {'key': 'integrationServiceEnvironment', 'type': 'ResourceReference'},
@@ -445,7 +445,7 @@ class ApiResourceGeneralInformation(msrest.serialization.Model):
     :type terms_of_use_url: str
     :param release_tag: The release tag.
     :type release_tag: str
-    :param tier: The Api tier. Possible values include: 'NotSpecified', 'Enterprise', 'Standard',
+    :param tier: The tier. Possible values include: 'NotSpecified', 'Enterprise', 'Standard',
      'Premium'.
     :type tier: str or ~logic_management_client.models.ApiTier
     """
@@ -483,7 +483,7 @@ class ApiResourceMetadata(msrest.serialization.Model):
     :type hide_key: str
     :param tags: A set of tags. The tags.
     :type tags: dict[str, str]
-    :param api_type:  Possible values include: 'NotSpecified', 'Rest', 'Soap'.
+    :param api_type: The api type. Possible values include: 'NotSpecified', 'Rest', 'Soap'.
     :type api_type: str or ~logic_management_client.models.ApiType
     :param wsdl_service: The WSDL service.
     :type wsdl_service: ~logic_management_client.models.WsdlService
@@ -492,12 +492,12 @@ class ApiResourceMetadata(msrest.serialization.Model):
     :type wsdl_import_method: str or ~logic_management_client.models.WsdlImportMethod
     :param connection_type: The connection type.
     :type connection_type: str
-    :param provisioning_state: The workflow provisioning state. Possible values include:
-     'NotSpecified', 'Accepted', 'Running', 'Ready', 'Creating', 'Created', 'Deleting', 'Deleted',
-     'Canceled', 'Failed', 'Succeeded', 'Moving', 'Updating', 'Registering', 'Registered',
-     'Unregistering', 'Unregistered', 'Completed'.
+    :param provisioning_state: The provisioning state. Possible values include: 'NotSpecified',
+     'Accepted', 'Running', 'Ready', 'Creating', 'Created', 'Deleting', 'Deleted', 'Canceled',
+     'Failed', 'Succeeded', 'Moving', 'Updating', 'Registering', 'Registered', 'Unregistering',
+     'Unregistered', 'Completed'.
     :type provisioning_state: str or ~logic_management_client.models.WorkflowProvisioningState
-    :param deployment_parameters: The API deployment parameters metadata.
+    :param deployment_parameters: The connector deployment parameters metadata.
     :type deployment_parameters: ~logic_management_client.models.ApiDeploymentParameterMetadataSet
     """
 
@@ -561,30 +561,30 @@ class ApiResourceProperties(msrest.serialization.Model):
     :type name: str
     :param connection_parameters: The connection parameters.
     :type connection_parameters: dict[str, object]
-    :param metadata: The api resource metadata.
+    :param metadata: The metadata.
     :type metadata: ~logic_management_client.models.ApiResourceMetadata
     :param runtime_urls: The runtime urls.
     :type runtime_urls: list[str]
-    :param general_information: The API general information.
+    :param general_information: The api general information.
     :type general_information: ~logic_management_client.models.ApiResourceGeneralInformation
     :param capabilities: The capabilities.
     :type capabilities: list[str]
-    :param backend_service: The API backend service.
+    :param backend_service: The backend service.
     :type backend_service: ~logic_management_client.models.ApiResourceBackendService
-    :param policies: The API resource policies.
+    :param policies: The policies for the API.
     :type policies: ~logic_management_client.models.ApiResourcePolicies
     :param api_definition_url: The API definition.
     :type api_definition_url: str
-    :param api_definitions: The Api resource definition.
+    :param api_definitions: The api definitions.
     :type api_definitions: ~logic_management_client.models.ApiResourceDefinitions
-    :param integration_service_environment: The resource reference.
+    :param integration_service_environment: The integration service environment reference.
     :type integration_service_environment: ~logic_management_client.models.ResourceReference
-    :param provisioning_state: The workflow provisioning state. Possible values include:
-     'NotSpecified', 'Accepted', 'Running', 'Ready', 'Creating', 'Created', 'Deleting', 'Deleted',
-     'Canceled', 'Failed', 'Succeeded', 'Moving', 'Updating', 'Registering', 'Registered',
-     'Unregistering', 'Unregistered', 'Completed'.
+    :param provisioning_state: The provisioning state. Possible values include: 'NotSpecified',
+     'Accepted', 'Running', 'Ready', 'Creating', 'Created', 'Deleting', 'Deleted', 'Canceled',
+     'Failed', 'Succeeded', 'Moving', 'Updating', 'Registering', 'Registered', 'Unregistering',
+     'Unregistered', 'Completed'.
     :type provisioning_state: str or ~logic_management_client.models.WorkflowProvisioningState
-    :param category: The Api tier. Possible values include: 'NotSpecified', 'Enterprise',
+    :param category: The category. Possible values include: 'NotSpecified', 'Enterprise',
      'Standard', 'Premium'.
     :type category: str or ~logic_management_client.models.ApiTier
     """
@@ -735,9 +735,9 @@ class As2AgreementContent(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param receive_agreement: Required. The integration account AS2 one-way agreement.
+    :param receive_agreement: Required. The AS2 one-way receive agreement.
     :type receive_agreement: ~logic_management_client.models.As2OneWayAgreement
-    :param send_agreement: Required. The integration account AS2 one-way agreement.
+    :param send_agreement: Required. The AS2 one-way send agreement.
     :type send_agreement: ~logic_management_client.models.As2OneWayAgreement
     """
 
@@ -954,12 +954,11 @@ class As2OneWayAgreement(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param sender_business_identity: Required. The integration account partner's business identity.
+    :param sender_business_identity: Required. The sender business identity.
     :type sender_business_identity: ~logic_management_client.models.BusinessIdentity
-    :param receiver_business_identity: Required. The integration account partner's business
-     identity.
+    :param receiver_business_identity: Required. The receiver business identity.
     :type receiver_business_identity: ~logic_management_client.models.BusinessIdentity
-    :param protocol_settings: Required. The AS2 agreement protocol settings.
+    :param protocol_settings: Required. The AS2 protocol settings.
     :type protocol_settings: ~logic_management_client.models.As2ProtocolSettings
     """
 
@@ -990,21 +989,20 @@ class As2ProtocolSettings(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param message_connection_settings: Required. The AS2 agreement message connection settings.
+    :param message_connection_settings: Required. The message connection settings.
     :type message_connection_settings: ~logic_management_client.models.As2MessageConnectionSettings
-    :param acknowledgement_connection_settings: Required. The AS2 agreement acknowledgement
-     connection settings.
+    :param acknowledgement_connection_settings: Required. The acknowledgement connection settings.
     :type acknowledgement_connection_settings:
      ~logic_management_client.models.As2AcknowledgementConnectionSettings
-    :param mdn_settings: Required. The AS2 agreement mdn settings.
+    :param mdn_settings: Required. The MDN settings.
     :type mdn_settings: ~logic_management_client.models.As2MdnSettings
-    :param security_settings: Required. The AS2 agreement security settings.
+    :param security_settings: Required. The security settings.
     :type security_settings: ~logic_management_client.models.As2SecuritySettings
-    :param validation_settings: Required. The AS2 agreement validation settings.
+    :param validation_settings: Required. The validation settings.
     :type validation_settings: ~logic_management_client.models.As2ValidationSettings
-    :param envelope_settings: Required. The AS2 agreement envelope settings.
+    :param envelope_settings: Required. The envelope settings.
     :type envelope_settings: ~logic_management_client.models.As2EnvelopeSettings
-    :param error_settings: Required. The AS2 agreement error settings.
+    :param error_settings: Required. The error settings.
     :type error_settings: ~logic_management_client.models.As2ErrorSettings
     """
 
@@ -1147,8 +1145,8 @@ class As2ValidationSettings(msrest.serialization.Model):
     :param encryption_algorithm: Required. The encryption algorithm. Possible values include:
      'NotSpecified', 'None', 'DES3', 'RC2', 'AES128', 'AES192', 'AES256'.
     :type encryption_algorithm: str or ~logic_management_client.models.EncryptionAlgorithm
-    :param signing_algorithm: The signing or hashing algorithm. Possible values include:
-     'NotSpecified', 'Default', 'SHA1', 'SHA2256', 'SHA2384', 'SHA2512'.
+    :param signing_algorithm: The signing algorithm. Possible values include: 'NotSpecified',
+     'Default', 'SHA1', 'SHA2256', 'SHA2384', 'SHA2512'.
     :type signing_algorithm: str or ~logic_management_client.models.SigningAlgorithm
     """
 
@@ -1230,7 +1228,7 @@ class AssemblyDefinition(Resource):
     :type location: str
     :param tags: A set of tags. The resource tags.
     :type tags: dict[str, str]
-    :param properties: Required. The assembly properties definition.
+    :param properties: Required. The assembly properties.
     :type properties: ~logic_management_client.models.AssemblyProperties
     """
 
@@ -1407,7 +1405,7 @@ class BatchConfiguration(Resource):
     :type location: str
     :param tags: A set of tags. The resource tags.
     :type tags: dict[str, str]
-    :param properties: Required. The batch configuration properties definition.
+    :param properties: Required. The batch configuration properties.
     :type properties: ~logic_management_client.models.BatchConfigurationProperties
     """
 
@@ -1500,7 +1498,7 @@ class BatchReleaseCriteria(msrest.serialization.Model):
     :type message_count: int
     :param batch_size: The batch size in bytes.
     :type batch_size: int
-    :param recurrence: The workflow trigger recurrence.
+    :param recurrence: The recurrence.
     :type recurrence: ~logic_management_client.models.WorkflowTriggerRecurrence
     """
 
@@ -1603,8 +1601,8 @@ class ContentLink(msrest.serialization.Model):
     :type content_size: long
     :param content_hash: The content hash.
     :type content_hash: ~logic_management_client.models.ContentHash
-    :param metadata:
-    :type metadata: ~logic_management_client.models.Object
+    :param metadata: The metadata.
+    :type metadata: object
     """
 
     _attribute_map = {
@@ -1612,7 +1610,7 @@ class ContentLink(msrest.serialization.Model):
         'content_version': {'key': 'contentVersion', 'type': 'str'},
         'content_size': {'key': 'contentSize', 'type': 'long'},
         'content_hash': {'key': 'contentHash', 'type': 'ContentHash'},
-        'metadata': {'key': 'metadata', 'type': 'Object'},
+        'metadata': {'key': 'metadata', 'type': 'object'},
     }
 
     def __init__(
@@ -1733,9 +1731,9 @@ class EdifactAgreementContent(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param receive_agreement: Required. The Edifact one way agreement.
+    :param receive_agreement: Required. The EDIFACT one-way receive agreement.
     :type receive_agreement: ~logic_management_client.models.EdifactOneWayAgreement
-    :param send_agreement: Required. The Edifact one way agreement.
+    :param send_agreement: Required. The EDIFACT one-way send agreement.
     :type send_agreement: ~logic_management_client.models.EdifactOneWayAgreement
     """
 
@@ -1780,8 +1778,8 @@ class EdifactDelimiterOverride(msrest.serialization.Model):
     :param segment_terminator_suffix: Required. The segment terminator suffix. Possible values
      include: 'NotSpecified', 'None', 'CR', 'LF', 'CRLF'.
     :type segment_terminator_suffix: str or ~logic_management_client.models.SegmentTerminatorSuffix
-    :param decimal_point_indicator: Required. The edifact decimal indicator. Possible values
-     include: 'NotSpecified', 'Comma', 'Decimal'.
+    :param decimal_point_indicator: Required. The decimal point indicator. Possible values include:
+     'NotSpecified', 'Comma', 'Decimal'.
     :type decimal_point_indicator: str or ~logic_management_client.models.EdifactDecimalIndicator
     :param release_indicator: Required. The release indicator.
     :type release_indicator: int
@@ -2144,15 +2142,15 @@ class EdifactFramingSettings(msrest.serialization.Model):
     :type release_indicator: int
     :param repetition_separator: Required. The repetition separator.
     :type repetition_separator: int
-    :param character_set: Required. The edifact character set. Possible values include:
-     'NotSpecified', 'UNOB', 'UNOA', 'UNOC', 'UNOD', 'UNOE', 'UNOF', 'UNOG', 'UNOH', 'UNOI', 'UNOJ',
-     'UNOK', 'UNOX', 'UNOY', 'KECA'.
+    :param character_set: Required. The EDIFACT frame setting characterSet. Possible values
+     include: 'NotSpecified', 'UNOB', 'UNOA', 'UNOC', 'UNOD', 'UNOE', 'UNOF', 'UNOG', 'UNOH',
+     'UNOI', 'UNOJ', 'UNOK', 'UNOX', 'UNOY', 'KECA'.
     :type character_set: str or ~logic_management_client.models.EdifactCharacterSet
-    :param decimal_point_indicator: Required. The edifact decimal indicator. Possible values
-     include: 'NotSpecified', 'Comma', 'Decimal'.
+    :param decimal_point_indicator: Required. The EDIFACT frame setting decimal indicator. Possible
+     values include: 'NotSpecified', 'Comma', 'Decimal'.
     :type decimal_point_indicator: str or ~logic_management_client.models.EdifactDecimalIndicator
-    :param segment_terminator_suffix: Required. The segment terminator suffix. Possible values
-     include: 'NotSpecified', 'None', 'CR', 'LF', 'CRLF'.
+    :param segment_terminator_suffix: Required. The EDIFACT frame setting segment terminator
+     suffix. Possible values include: 'NotSpecified', 'None', 'CR', 'LF', 'CRLF'.
     :type segment_terminator_suffix: str or ~logic_management_client.models.SegmentTerminatorSuffix
     """
 
@@ -2256,12 +2254,11 @@ class EdifactOneWayAgreement(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param sender_business_identity: Required. The integration account partner's business identity.
+    :param sender_business_identity: Required. The sender business identity.
     :type sender_business_identity: ~logic_management_client.models.BusinessIdentity
-    :param receiver_business_identity: Required. The integration account partner's business
-     identity.
+    :param receiver_business_identity: Required. The receiver business identity.
     :type receiver_business_identity: ~logic_management_client.models.BusinessIdentity
-    :param protocol_settings: Required. The Edifact agreement protocol settings.
+    :param protocol_settings: Required. The EDIFACT protocol settings.
     :type protocol_settings: ~logic_management_client.models.EdifactProtocolSettings
     """
 
@@ -2340,17 +2337,17 @@ class EdifactProtocolSettings(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param validation_settings: Required. The Edifact agreement validation settings.
+    :param validation_settings: Required. The EDIFACT validation settings.
     :type validation_settings: ~logic_management_client.models.EdifactValidationSettings
-    :param framing_settings: Required. The Edifact agreement framing settings.
+    :param framing_settings: Required. The EDIFACT framing settings.
     :type framing_settings: ~logic_management_client.models.EdifactFramingSettings
-    :param envelope_settings: Required. The Edifact agreement envelope settings.
+    :param envelope_settings: Required. The EDIFACT envelope settings.
     :type envelope_settings: ~logic_management_client.models.EdifactEnvelopeSettings
-    :param acknowledgement_settings: Required. The Edifact agreement acknowledgement settings.
+    :param acknowledgement_settings: Required. The EDIFACT acknowledgement settings.
     :type acknowledgement_settings: ~logic_management_client.models.EdifactAcknowledgementSettings
-    :param message_filter: Required. The Edifact message filter for odata query.
+    :param message_filter: Required. The EDIFACT message filter.
     :type message_filter: ~logic_management_client.models.EdifactMessageFilter
-    :param processing_settings: Required. The Edifact agreement protocol settings.
+    :param processing_settings: Required. The EDIFACT processing Settings.
     :type processing_settings: ~logic_management_client.models.EdifactProcessingSettings
     :param envelope_overrides: The EDIFACT envelope override settings.
     :type envelope_overrides: list[~logic_management_client.models.EdifactEnvelopeOverride]
@@ -2620,39 +2617,12 @@ class ErrorProperties(msrest.serialization.Model):
         self.message = kwargs.get('message', None)
 
 
-class ErrorResponseException(HttpResponseError):
-    """Server responded with exception of type: 'ErrorResponse'.
-
-    :param response: Server response to be deserialized.
-    :param error_model: A deserialized model of the response body as model.
-    """
-
-    def __init__(self, response, error_model):
-        self.error = error_model
-        super(ErrorResponseException, self).__init__(response=response, error_model=error_model)
-
-    @classmethod
-    def from_response(cls, response, deserialize):
-        """Deserialize this response as this exception, or a subclass of this exception.
-
-        :param response: Server response to be deserialized.
-        :param deserialize: A deserializer
-        """
-        model_name = 'ErrorResponse'
-        error = deserialize(model_name, response)
-        if error is None:
-            error = deserialize.dependencies[model_name]()
-        return error._EXCEPTION_TYPE(response, error)
-
-
 class ErrorResponse(msrest.serialization.Model):
     """Error response indicates Logic service is not able to process the incoming request. The error property contains the error details.
 
-    :param error: Error properties indicate why the Logic service was not able to process the
-     incoming request. The reason is provided in the error message.
+    :param error: The error properties.
     :type error: ~logic_management_client.models.ErrorProperties
     """
-    _EXCEPTION_TYPE = ErrorResponseException
 
     _attribute_map = {
         'error': {'key': 'error', 'type': 'ErrorProperties'},
@@ -2752,15 +2722,15 @@ class ExtendedErrorInfo(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param code: Required. The error response code. Possible values include: 'NotSpecified',
+    :param code: Required. The error code. Possible values include: 'NotSpecified',
      'IntegrationServiceEnvironmentNotFound', 'InternalServerError', 'InvalidOperationId'.
     :type code: str or ~logic_management_client.models.ErrorResponseCode
     :param message: Required. The error message.
     :type message: str
     :param details: The error message details.
     :type details: list[~logic_management_client.models.ExtendedErrorInfo]
-    :param inner_error:
-    :type inner_error: ~logic_management_client.models.Object
+    :param inner_error: The inner error.
+    :type inner_error: object
     """
 
     _validation = {
@@ -2772,7 +2742,7 @@ class ExtendedErrorInfo(msrest.serialization.Model):
         'code': {'key': 'code', 'type': 'str'},
         'message': {'key': 'message', 'type': 'str'},
         'details': {'key': 'details', 'type': '[ExtendedErrorInfo]'},
-        'inner_error': {'key': 'innerError', 'type': 'Object'},
+        'inner_error': {'key': 'innerError', 'type': 'object'},
     }
 
     def __init__(
@@ -2812,9 +2782,9 @@ class FlowEndpoints(msrest.serialization.Model):
 class FlowEndpointsConfiguration(msrest.serialization.Model):
     """The endpoints configuration.
 
-    :param workflow: The flow endpoints configuration.
+    :param workflow: The workflow endpoints.
     :type workflow: ~logic_management_client.models.FlowEndpoints
-    :param connector: The flow endpoints configuration.
+    :param connector: The connector endpoints.
     :type connector: ~logic_management_client.models.FlowEndpoints
     """
 
@@ -2889,7 +2859,7 @@ class IntegrationAccount(Resource):
     :type location: str
     :param tags: A set of tags. The resource tags.
     :type tags: dict[str, str]
-    :param sku: The integration account sku.
+    :param sku: The sku.
     :type sku: ~logic_management_client.models.IntegrationAccountSku
     :param integration_service_environment: The integration service environment.
     :type integration_service_environment:
@@ -2948,7 +2918,7 @@ class IntegrationAccountAgreement(Resource):
     :ivar changed_time: The changed time.
     :vartype changed_time: ~datetime.datetime
     :param metadata: The metadata.
-    :type metadata: ~logic_management_client.models.IntegrationAccountAgreementPropertiesMetadata
+    :type metadata: object
     :param agreement_type: Required. The agreement type. Possible values include: 'NotSpecified',
      'AS2', 'X12', 'Edifact'.
     :type agreement_type: str or ~logic_management_client.models.AgreementType
@@ -2958,11 +2928,11 @@ class IntegrationAccountAgreement(Resource):
     :param guest_partner: Required. The integration account partner that is set as guest partner
      for this agreement.
     :type guest_partner: str
-    :param host_identity: Required. The integration account partner's business identity.
+    :param host_identity: Required. The business identity of the host partner.
     :type host_identity: ~logic_management_client.models.BusinessIdentity
-    :param guest_identity: Required. The integration account partner's business identity.
+    :param guest_identity: Required. The business identity of the guest partner.
     :type guest_identity: ~logic_management_client.models.BusinessIdentity
-    :param content: Required. The integration account agreement content.
+    :param content: Required. The agreement content.
     :type content: ~logic_management_client.models.AgreementContent
     """
 
@@ -2988,7 +2958,7 @@ class IntegrationAccountAgreement(Resource):
         'tags': {'key': 'tags', 'type': '{str}'},
         'created_time': {'key': 'properties.createdTime', 'type': 'iso-8601'},
         'changed_time': {'key': 'properties.changedTime', 'type': 'iso-8601'},
-        'metadata': {'key': 'properties.metadata', 'type': 'IntegrationAccountAgreementPropertiesMetadata'},
+        'metadata': {'key': 'properties.metadata', 'type': 'object'},
         'agreement_type': {'key': 'properties.agreementType', 'type': 'str'},
         'host_partner': {'key': 'properties.hostPartner', 'type': 'str'},
         'guest_partner': {'key': 'properties.guestPartner', 'type': 'str'},
@@ -3018,8 +2988,8 @@ class IntegrationAccountAgreementFilter(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param agreement_type: Required. The agreement type. Possible values include: 'NotSpecified',
-     'AS2', 'X12', 'Edifact'.
+    :param agreement_type: Required. The agreement type of integration account agreement. Possible
+     values include: 'NotSpecified', 'AS2', 'X12', 'Edifact'.
     :type agreement_type: str or ~logic_management_client.models.AgreementType
     """
 
@@ -3062,90 +3032,6 @@ class IntegrationAccountAgreementListResult(msrest.serialization.Model):
         self.next_link = kwargs.get('next_link', None)
 
 
-class IntegrationAccountAgreementProperties(msrest.serialization.Model):
-    """The integration account agreement properties.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    All required parameters must be populated in order to send to Azure.
-
-    :ivar created_time: The created time.
-    :vartype created_time: ~datetime.datetime
-    :ivar changed_time: The changed time.
-    :vartype changed_time: ~datetime.datetime
-    :param metadata: The metadata.
-    :type metadata: ~logic_management_client.models.IntegrationAccountAgreementPropertiesMetadata
-    :param agreement_type: Required. The agreement type. Possible values include: 'NotSpecified',
-     'AS2', 'X12', 'Edifact'.
-    :type agreement_type: str or ~logic_management_client.models.AgreementType
-    :param host_partner: Required. The integration account partner that is set as host partner for
-     this agreement.
-    :type host_partner: str
-    :param guest_partner: Required. The integration account partner that is set as guest partner
-     for this agreement.
-    :type guest_partner: str
-    :param host_identity: Required. The integration account partner's business identity.
-    :type host_identity: ~logic_management_client.models.BusinessIdentity
-    :param guest_identity: Required. The integration account partner's business identity.
-    :type guest_identity: ~logic_management_client.models.BusinessIdentity
-    :param content: Required. The integration account agreement content.
-    :type content: ~logic_management_client.models.AgreementContent
-    """
-
-    _validation = {
-        'created_time': {'readonly': True},
-        'changed_time': {'readonly': True},
-        'agreement_type': {'required': True},
-        'host_partner': {'required': True},
-        'guest_partner': {'required': True},
-        'host_identity': {'required': True},
-        'guest_identity': {'required': True},
-        'content': {'required': True},
-    }
-
-    _attribute_map = {
-        'created_time': {'key': 'createdTime', 'type': 'iso-8601'},
-        'changed_time': {'key': 'changedTime', 'type': 'iso-8601'},
-        'metadata': {'key': 'metadata', 'type': 'IntegrationAccountAgreementPropertiesMetadata'},
-        'agreement_type': {'key': 'agreementType', 'type': 'str'},
-        'host_partner': {'key': 'hostPartner', 'type': 'str'},
-        'guest_partner': {'key': 'guestPartner', 'type': 'str'},
-        'host_identity': {'key': 'hostIdentity', 'type': 'BusinessIdentity'},
-        'guest_identity': {'key': 'guestIdentity', 'type': 'BusinessIdentity'},
-        'content': {'key': 'content', 'type': 'AgreementContent'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(IntegrationAccountAgreementProperties, self).__init__(**kwargs)
-        self.created_time = None
-        self.changed_time = None
-        self.metadata = kwargs.get('metadata', None)
-        self.agreement_type = kwargs.get('agreement_type', None)
-        self.host_partner = kwargs.get('host_partner', None)
-        self.guest_partner = kwargs.get('guest_partner', None)
-        self.host_identity = kwargs.get('host_identity', None)
-        self.guest_identity = kwargs.get('guest_identity', None)
-        self.content = kwargs.get('content', None)
-
-
-class IntegrationAccountAgreementPropertiesMetadata(msrest.serialization.Model):
-    """The metadata.
-
-    """
-
-    _attribute_map = {
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(IntegrationAccountAgreementPropertiesMetadata, self).__init__(**kwargs)
-
-
 class IntegrationAccountCertificate(Resource):
     """The integration account certificate.
 
@@ -3166,8 +3052,8 @@ class IntegrationAccountCertificate(Resource):
     :ivar changed_time: The changed time.
     :vartype changed_time: ~datetime.datetime
     :param metadata: The metadata.
-    :type metadata: ~logic_management_client.models.IntegrationAccountCertificatePropertiesMetadata
-    :param key: The reference to the key vault key.
+    :type metadata: object
+    :param key: The key details in the key vault.
     :type key: ~logic_management_client.models.KeyVaultKeyReference
     :param public_certificate: The public certificate.
     :type public_certificate: str
@@ -3189,7 +3075,7 @@ class IntegrationAccountCertificate(Resource):
         'tags': {'key': 'tags', 'type': '{str}'},
         'created_time': {'key': 'properties.createdTime', 'type': 'iso-8601'},
         'changed_time': {'key': 'properties.changedTime', 'type': 'iso-8601'},
-        'metadata': {'key': 'properties.metadata', 'type': 'IntegrationAccountCertificatePropertiesMetadata'},
+        'metadata': {'key': 'properties.metadata', 'type': 'object'},
         'key': {'key': 'properties.key', 'type': 'KeyVaultKeyReference'},
         'public_certificate': {'key': 'properties.publicCertificate', 'type': 'str'},
     }
@@ -3227,63 +3113,6 @@ class IntegrationAccountCertificateListResult(msrest.serialization.Model):
         super(IntegrationAccountCertificateListResult, self).__init__(**kwargs)
         self.value = kwargs.get('value', None)
         self.next_link = kwargs.get('next_link', None)
-
-
-class IntegrationAccountCertificateProperties(msrest.serialization.Model):
-    """The integration account certificate properties.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar created_time: The created time.
-    :vartype created_time: ~datetime.datetime
-    :ivar changed_time: The changed time.
-    :vartype changed_time: ~datetime.datetime
-    :param metadata: The metadata.
-    :type metadata: ~logic_management_client.models.IntegrationAccountCertificatePropertiesMetadata
-    :param key: The reference to the key vault key.
-    :type key: ~logic_management_client.models.KeyVaultKeyReference
-    :param public_certificate: The public certificate.
-    :type public_certificate: str
-    """
-
-    _validation = {
-        'created_time': {'readonly': True},
-        'changed_time': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'created_time': {'key': 'createdTime', 'type': 'iso-8601'},
-        'changed_time': {'key': 'changedTime', 'type': 'iso-8601'},
-        'metadata': {'key': 'metadata', 'type': 'IntegrationAccountCertificatePropertiesMetadata'},
-        'key': {'key': 'key', 'type': 'KeyVaultKeyReference'},
-        'public_certificate': {'key': 'publicCertificate', 'type': 'str'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(IntegrationAccountCertificateProperties, self).__init__(**kwargs)
-        self.created_time = None
-        self.changed_time = None
-        self.metadata = kwargs.get('metadata', None)
-        self.key = kwargs.get('key', None)
-        self.public_certificate = kwargs.get('public_certificate', None)
-
-
-class IntegrationAccountCertificatePropertiesMetadata(msrest.serialization.Model):
-    """The metadata.
-
-    """
-
-    _attribute_map = {
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(IntegrationAccountCertificatePropertiesMetadata, self).__init__(**kwargs)
 
 
 class IntegrationAccountListResult(msrest.serialization.Model):
@@ -3343,7 +3172,7 @@ class IntegrationAccountMap(Resource):
     :ivar content_link: The content link.
     :vartype content_link: ~logic_management_client.models.ContentLink
     :param metadata: The metadata.
-    :type metadata: ~logic_management_client.models.IntegrationAccountMapPropertiesMetadata
+    :type metadata: object
     """
 
     _validation = {
@@ -3369,7 +3198,7 @@ class IntegrationAccountMap(Resource):
         'content': {'key': 'properties.content', 'type': 'str'},
         'content_type': {'key': 'properties.contentType', 'type': 'str'},
         'content_link': {'key': 'properties.contentLink', 'type': 'ContentLink'},
-        'metadata': {'key': 'properties.metadata', 'type': 'IntegrationAccountMapPropertiesMetadata'},
+        'metadata': {'key': 'properties.metadata', 'type': 'object'},
     }
 
     def __init__(
@@ -3392,8 +3221,8 @@ class IntegrationAccountMapFilter(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param map_type: Required. The map type. Possible values include: 'NotSpecified', 'Xslt',
-     'Xslt20', 'Xslt30', 'Liquid'.
+    :param map_type: Required. The map type of integration account map. Possible values include:
+     'NotSpecified', 'Xslt', 'Xslt20', 'Xslt30', 'Liquid'.
     :type map_type: str or ~logic_management_client.models.MapType
     """
 
@@ -3434,81 +3263,6 @@ class IntegrationAccountMapListResult(msrest.serialization.Model):
         super(IntegrationAccountMapListResult, self).__init__(**kwargs)
         self.value = kwargs.get('value', None)
         self.next_link = kwargs.get('next_link', None)
-
-
-class IntegrationAccountMapProperties(msrest.serialization.Model):
-    """The integration account map.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    All required parameters must be populated in order to send to Azure.
-
-    :param map_type: Required. The map type. Possible values include: 'NotSpecified', 'Xslt',
-     'Xslt20', 'Xslt30', 'Liquid'.
-    :type map_type: str or ~logic_management_client.models.MapType
-    :param parameters_schema: The parameters schema of integration account map.
-    :type parameters_schema:
-     ~logic_management_client.models.IntegrationAccountMapPropertiesParametersSchema
-    :ivar created_time: The created time.
-    :vartype created_time: ~datetime.datetime
-    :ivar changed_time: The changed time.
-    :vartype changed_time: ~datetime.datetime
-    :param content: The content.
-    :type content: str
-    :param content_type: The content type.
-    :type content_type: str
-    :ivar content_link: The content link.
-    :vartype content_link: ~logic_management_client.models.ContentLink
-    :param metadata: The metadata.
-    :type metadata: ~logic_management_client.models.IntegrationAccountMapPropertiesMetadata
-    """
-
-    _validation = {
-        'map_type': {'required': True},
-        'created_time': {'readonly': True},
-        'changed_time': {'readonly': True},
-        'content_link': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'map_type': {'key': 'mapType', 'type': 'str'},
-        'parameters_schema': {'key': 'parametersSchema', 'type': 'IntegrationAccountMapPropertiesParametersSchema'},
-        'created_time': {'key': 'createdTime', 'type': 'iso-8601'},
-        'changed_time': {'key': 'changedTime', 'type': 'iso-8601'},
-        'content': {'key': 'content', 'type': 'str'},
-        'content_type': {'key': 'contentType', 'type': 'str'},
-        'content_link': {'key': 'contentLink', 'type': 'ContentLink'},
-        'metadata': {'key': 'metadata', 'type': 'IntegrationAccountMapPropertiesMetadata'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(IntegrationAccountMapProperties, self).__init__(**kwargs)
-        self.map_type = kwargs.get('map_type', None)
-        self.parameters_schema = kwargs.get('parameters_schema', None)
-        self.created_time = None
-        self.changed_time = None
-        self.content = kwargs.get('content', None)
-        self.content_type = kwargs.get('content_type', None)
-        self.content_link = None
-        self.metadata = kwargs.get('metadata', None)
-
-
-class IntegrationAccountMapPropertiesMetadata(msrest.serialization.Model):
-    """The metadata.
-
-    """
-
-    _attribute_map = {
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(IntegrationAccountMapPropertiesMetadata, self).__init__(**kwargs)
 
 
 class IntegrationAccountMapPropertiesParametersSchema(msrest.serialization.Model):
@@ -3555,8 +3309,8 @@ class IntegrationAccountPartner(Resource):
     :ivar changed_time: The changed time.
     :vartype changed_time: ~datetime.datetime
     :param metadata: The metadata.
-    :type metadata: ~logic_management_client.models.IntegrationAccountPartnerPropertiesMetadata
-    :param content: Required. The integration account partner content.
+    :type metadata: object
+    :param content: Required. The partner content.
     :type content: ~logic_management_client.models.PartnerContent
     """
 
@@ -3579,7 +3333,7 @@ class IntegrationAccountPartner(Resource):
         'partner_type': {'key': 'properties.partnerType', 'type': 'str'},
         'created_time': {'key': 'properties.createdTime', 'type': 'iso-8601'},
         'changed_time': {'key': 'properties.changedTime', 'type': 'iso-8601'},
-        'metadata': {'key': 'properties.metadata', 'type': 'IntegrationAccountPartnerPropertiesMetadata'},
+        'metadata': {'key': 'properties.metadata', 'type': 'object'},
         'content': {'key': 'properties.content', 'type': 'PartnerContent'},
     }
 
@@ -3600,8 +3354,8 @@ class IntegrationAccountPartnerFilter(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param partner_type: Required. The partner type. Possible values include: 'NotSpecified',
-     'B2B'.
+    :param partner_type: Required. The partner type of integration account partner. Possible values
+     include: 'NotSpecified', 'B2B'.
     :type partner_type: str or ~logic_management_client.models.PartnerType
     """
 
@@ -3644,93 +3398,6 @@ class IntegrationAccountPartnerListResult(msrest.serialization.Model):
         self.next_link = kwargs.get('next_link', None)
 
 
-class IntegrationAccountPartnerProperties(msrest.serialization.Model):
-    """The integration account partner properties.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    All required parameters must be populated in order to send to Azure.
-
-    :param partner_type: Required. The partner type. Possible values include: 'NotSpecified',
-     'B2B'.
-    :type partner_type: str or ~logic_management_client.models.PartnerType
-    :ivar created_time: The created time.
-    :vartype created_time: ~datetime.datetime
-    :ivar changed_time: The changed time.
-    :vartype changed_time: ~datetime.datetime
-    :param metadata: The metadata.
-    :type metadata: ~logic_management_client.models.IntegrationAccountPartnerPropertiesMetadata
-    :param content: Required. The integration account partner content.
-    :type content: ~logic_management_client.models.PartnerContent
-    """
-
-    _validation = {
-        'partner_type': {'required': True},
-        'created_time': {'readonly': True},
-        'changed_time': {'readonly': True},
-        'content': {'required': True},
-    }
-
-    _attribute_map = {
-        'partner_type': {'key': 'partnerType', 'type': 'str'},
-        'created_time': {'key': 'createdTime', 'type': 'iso-8601'},
-        'changed_time': {'key': 'changedTime', 'type': 'iso-8601'},
-        'metadata': {'key': 'metadata', 'type': 'IntegrationAccountPartnerPropertiesMetadata'},
-        'content': {'key': 'content', 'type': 'PartnerContent'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(IntegrationAccountPartnerProperties, self).__init__(**kwargs)
-        self.partner_type = kwargs.get('partner_type', None)
-        self.created_time = None
-        self.changed_time = None
-        self.metadata = kwargs.get('metadata', None)
-        self.content = kwargs.get('content', None)
-
-
-class IntegrationAccountPartnerPropertiesMetadata(msrest.serialization.Model):
-    """The metadata.
-
-    """
-
-    _attribute_map = {
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(IntegrationAccountPartnerPropertiesMetadata, self).__init__(**kwargs)
-
-
-class IntegrationAccountProperties(msrest.serialization.Model):
-    """The integration account properties.
-
-    :param integration_service_environment: The integration service environment.
-    :type integration_service_environment:
-     ~logic_management_client.models.IntegrationServiceEnvironment
-    :param state: The workflow state. Possible values include: 'NotSpecified', 'Completed',
-     'Enabled', 'Disabled', 'Deleted', 'Suspended'.
-    :type state: str or ~logic_management_client.models.WorkflowState
-    """
-
-    _attribute_map = {
-        'integration_service_environment': {'key': 'integrationServiceEnvironment', 'type': 'IntegrationServiceEnvironment'},
-        'state': {'key': 'state', 'type': 'str'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(IntegrationAccountProperties, self).__init__(**kwargs)
-        self.integration_service_environment = kwargs.get('integration_service_environment', None)
-        self.state = kwargs.get('state', None)
-
-
 class IntegrationAccountSchema(Resource):
     """The integration account schema.
 
@@ -3761,7 +3428,7 @@ class IntegrationAccountSchema(Resource):
     :ivar changed_time: The changed time.
     :vartype changed_time: ~datetime.datetime
     :param metadata: The metadata.
-    :type metadata: ~logic_management_client.models.IntegrationAccountSchemaPropertiesMetadata
+    :type metadata: object
     :param content: The content.
     :type content: str
     :param content_type: The content type.
@@ -3792,7 +3459,7 @@ class IntegrationAccountSchema(Resource):
         'file_name': {'key': 'properties.fileName', 'type': 'str'},
         'created_time': {'key': 'properties.createdTime', 'type': 'iso-8601'},
         'changed_time': {'key': 'properties.changedTime', 'type': 'iso-8601'},
-        'metadata': {'key': 'properties.metadata', 'type': 'IntegrationAccountSchemaPropertiesMetadata'},
+        'metadata': {'key': 'properties.metadata', 'type': 'object'},
         'content': {'key': 'properties.content', 'type': 'str'},
         'content_type': {'key': 'properties.contentType', 'type': 'str'},
         'content_link': {'key': 'properties.contentLink', 'type': 'ContentLink'},
@@ -3820,7 +3487,8 @@ class IntegrationAccountSchemaFilter(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param schema_type: Required. The schema type. Possible values include: 'NotSpecified', 'Xml'.
+    :param schema_type: Required. The schema type of integration account schema. Possible values
+     include: 'NotSpecified', 'Xml'.
     :type schema_type: str or ~logic_management_client.models.SchemaType
     """
 
@@ -3863,87 +3531,6 @@ class IntegrationAccountSchemaListResult(msrest.serialization.Model):
         self.next_link = kwargs.get('next_link', None)
 
 
-class IntegrationAccountSchemaProperties(msrest.serialization.Model):
-    """The integration account schema properties.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    All required parameters must be populated in order to send to Azure.
-
-    :param schema_type: Required. The schema type. Possible values include: 'NotSpecified', 'Xml'.
-    :type schema_type: str or ~logic_management_client.models.SchemaType
-    :param target_namespace: The target namespace of the schema.
-    :type target_namespace: str
-    :param document_name: The document name.
-    :type document_name: str
-    :param file_name: The file name.
-    :type file_name: str
-    :ivar created_time: The created time.
-    :vartype created_time: ~datetime.datetime
-    :ivar changed_time: The changed time.
-    :vartype changed_time: ~datetime.datetime
-    :param metadata: The metadata.
-    :type metadata: ~logic_management_client.models.IntegrationAccountSchemaPropertiesMetadata
-    :param content: The content.
-    :type content: str
-    :param content_type: The content type.
-    :type content_type: str
-    :ivar content_link: The content link.
-    :vartype content_link: ~logic_management_client.models.ContentLink
-    """
-
-    _validation = {
-        'schema_type': {'required': True},
-        'created_time': {'readonly': True},
-        'changed_time': {'readonly': True},
-        'content_link': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'schema_type': {'key': 'schemaType', 'type': 'str'},
-        'target_namespace': {'key': 'targetNamespace', 'type': 'str'},
-        'document_name': {'key': 'documentName', 'type': 'str'},
-        'file_name': {'key': 'fileName', 'type': 'str'},
-        'created_time': {'key': 'createdTime', 'type': 'iso-8601'},
-        'changed_time': {'key': 'changedTime', 'type': 'iso-8601'},
-        'metadata': {'key': 'metadata', 'type': 'IntegrationAccountSchemaPropertiesMetadata'},
-        'content': {'key': 'content', 'type': 'str'},
-        'content_type': {'key': 'contentType', 'type': 'str'},
-        'content_link': {'key': 'contentLink', 'type': 'ContentLink'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(IntegrationAccountSchemaProperties, self).__init__(**kwargs)
-        self.schema_type = kwargs.get('schema_type', None)
-        self.target_namespace = kwargs.get('target_namespace', None)
-        self.document_name = kwargs.get('document_name', None)
-        self.file_name = kwargs.get('file_name', None)
-        self.created_time = None
-        self.changed_time = None
-        self.metadata = kwargs.get('metadata', None)
-        self.content = kwargs.get('content', None)
-        self.content_type = kwargs.get('content_type', None)
-        self.content_link = None
-
-
-class IntegrationAccountSchemaPropertiesMetadata(msrest.serialization.Model):
-    """The metadata.
-
-    """
-
-    _attribute_map = {
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(IntegrationAccountSchemaPropertiesMetadata, self).__init__(**kwargs)
-
-
 class IntegrationAccountSession(Resource):
     """The integration account session.
 
@@ -3963,8 +3550,8 @@ class IntegrationAccountSession(Resource):
     :vartype created_time: ~datetime.datetime
     :ivar changed_time: The changed time.
     :vartype changed_time: ~datetime.datetime
-    :param content:
-    :type content: ~logic_management_client.models.Object
+    :param content: The session content.
+    :type content: object
     """
 
     _validation = {
@@ -3983,7 +3570,7 @@ class IntegrationAccountSession(Resource):
         'tags': {'key': 'tags', 'type': '{str}'},
         'created_time': {'key': 'properties.createdTime', 'type': 'iso-8601'},
         'changed_time': {'key': 'properties.changedTime', 'type': 'iso-8601'},
-        'content': {'key': 'properties.content', 'type': 'Object'},
+        'content': {'key': 'properties.content', 'type': 'object'},
     }
 
     def __init__(
@@ -4044,47 +3631,13 @@ class IntegrationAccountSessionListResult(msrest.serialization.Model):
         self.next_link = kwargs.get('next_link', None)
 
 
-class IntegrationAccountSessionProperties(msrest.serialization.Model):
-    """The integration account session properties.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar created_time: The created time.
-    :vartype created_time: ~datetime.datetime
-    :ivar changed_time: The changed time.
-    :vartype changed_time: ~datetime.datetime
-    :param content:
-    :type content: ~logic_management_client.models.Object
-    """
-
-    _validation = {
-        'created_time': {'readonly': True},
-        'changed_time': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'created_time': {'key': 'createdTime', 'type': 'iso-8601'},
-        'changed_time': {'key': 'changedTime', 'type': 'iso-8601'},
-        'content': {'key': 'content', 'type': 'Object'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(IntegrationAccountSessionProperties, self).__init__(**kwargs)
-        self.created_time = None
-        self.changed_time = None
-        self.content = kwargs.get('content', None)
-
-
 class IntegrationAccountSku(msrest.serialization.Model):
     """The integration account sku.
 
     All required parameters must be populated in order to send to Azure.
 
-    :param name: Required. The integration account sku name. Possible values include:
-     'NotSpecified', 'Free', 'Basic', 'Standard'.
+    :param name: Required. The sku name. Possible values include: 'NotSpecified', 'Free', 'Basic',
+     'Standard'.
     :type name: str or ~logic_management_client.models.IntegrationAccountSkuName
     """
 
@@ -4121,7 +3674,7 @@ class IntegrationServiceEnvironment(Resource):
     :type tags: dict[str, str]
     :param properties: The integration service environment properties.
     :type properties: ~logic_management_client.models.IntegrationServiceEnvironmentProperties
-    :param sku: The integration service environment sku.
+    :param sku: The sku.
     :type sku: ~logic_management_client.models.IntegrationServiceEnvironmentSku
     """
 
@@ -4153,8 +3706,8 @@ class IntegrationServiceEnvironment(Resource):
 class IntegrationServiceEnvironmentAccessEndpoint(msrest.serialization.Model):
     """The integration service environment access endpoint.
 
-    :param type: The integration service environment access endpoint type. Possible values include:
-     'NotSpecified', 'External', 'Internal'.
+    :param type: The access endpoint type. Possible values include: 'NotSpecified', 'External',
+     'Internal'.
     :type type: str or
      ~logic_management_client.models.IntegrationServiceEnvironmentAccessEndpointType
     """
@@ -4197,11 +3750,10 @@ class IntegrationServiceEnvironmentListResult(msrest.serialization.Model):
 class IntegrationServiceEnvironmentNetworkDependency(msrest.serialization.Model):
     """The azure async operation resource.
 
-    :param category: The integration service environment network dependency category type. Possible
-     values include: 'NotSpecified', 'AzureStorage', 'AzureManagement', 'AzureActiveDirectory',
-     'SSLCertificateVerification', 'DiagnosticLogsAndMetrics',
-     'IntegrationServiceEnvironmentConnectors', 'RedisCache', 'AccessEndpoints', 'RecoveryService',
-     'SQL', 'RegionalService'.
+    :param category: The network dependency category type. Possible values include: 'NotSpecified',
+     'AzureStorage', 'AzureManagement', 'AzureActiveDirectory', 'SSLCertificateVerification',
+     'DiagnosticLogsAndMetrics', 'IntegrationServiceEnvironmentConnectors', 'RedisCache',
+     'AccessEndpoints', 'RecoveryService', 'SQL', 'RegionalService'.
     :type category: str or
      ~logic_management_client.models.IntegrationServiceEnvironmentNetworkDependencyCategoryType
     :param display_name: The display name.
@@ -4230,10 +3782,10 @@ class IntegrationServiceEnvironmentNetworkDependency(msrest.serialization.Model)
 class IntegrationServiceEnvironmentNetworkDependencyHealth(msrest.serialization.Model):
     """The integration service environment subnet network health.
 
-    :param error: The extended error info.
+    :param error: The error if any occurred during the operation.
     :type error: ~logic_management_client.models.ExtendedErrorInfo
-    :param state: The integration service environment network dependency health state. Possible
-     values include: 'NotSpecified', 'Healthy', 'Unhealthy', 'Unknown'.
+    :param state: The network dependency health state. Possible values include: 'NotSpecified',
+     'Healthy', 'Unhealthy', 'Unknown'.
     :type state: str or
      ~logic_management_client.models.IntegrationServiceEnvironmentNetworkDependencyHealthState
     """
@@ -4255,8 +3807,8 @@ class IntegrationServiceEnvironmentNetworkDependencyHealth(msrest.serialization.
 class IntegrationServiceEnvironmentNetworkEndpoint(msrest.serialization.Model):
     """The network endpoint.
 
-    :param accessibility: The integration service environment network endpoint accessibility state.
-     Possible values include: 'NotSpecified', 'Unknown', 'Available', 'NotAvailable'.
+    :param accessibility: The accessibility state. Possible values include: 'NotSpecified',
+     'Unknown', 'Available', 'NotAvailable'.
     :type accessibility: str or
      ~logic_management_client.models.IntegrationServiceEnvironmentNetworkEndPointAccessibilityState
     :param domain_name: The domain name.
@@ -4284,13 +3836,13 @@ class IntegrationServiceEnvironmentNetworkEndpoint(msrest.serialization.Model):
 class IntegrationServiceEnvironmentProperties(msrest.serialization.Model):
     """The integration service environment properties.
 
-    :param provisioning_state: The workflow provisioning state. Possible values include:
-     'NotSpecified', 'Accepted', 'Running', 'Ready', 'Creating', 'Created', 'Deleting', 'Deleted',
-     'Canceled', 'Failed', 'Succeeded', 'Moving', 'Updating', 'Registering', 'Registered',
-     'Unregistering', 'Unregistered', 'Completed'.
+    :param provisioning_state: The provisioning state. Possible values include: 'NotSpecified',
+     'Accepted', 'Running', 'Ready', 'Creating', 'Created', 'Deleting', 'Deleted', 'Canceled',
+     'Failed', 'Succeeded', 'Moving', 'Updating', 'Registering', 'Registered', 'Unregistering',
+     'Unregistered', 'Completed'.
     :type provisioning_state: str or ~logic_management_client.models.WorkflowProvisioningState
-    :param state: The workflow state. Possible values include: 'NotSpecified', 'Completed',
-     'Enabled', 'Disabled', 'Deleted', 'Suspended'.
+    :param state: The integration service environment state. Possible values include:
+     'NotSpecified', 'Completed', 'Enabled', 'Disabled', 'Deleted', 'Suspended'.
     :type state: str or ~logic_management_client.models.WorkflowState
     :param integration_service_environment_id: Gets the tracking id.
     :type integration_service_environment_id: str
@@ -4323,8 +3875,7 @@ class IntegrationServiceEnvironmentProperties(msrest.serialization.Model):
 class IntegrationServiceEnvironmentSku(msrest.serialization.Model):
     """The integration service environment sku.
 
-    :param name: The integration service environment sku name. Possible values include:
-     'NotSpecified', 'Premium', 'Developer'.
+    :param name: The sku name. Possible values include: 'NotSpecified', 'Premium', 'Developer'.
     :type name: str or ~logic_management_client.models.IntegrationServiceEnvironmentSkuName
     :param capacity: The sku capacity.
     :type capacity: int
@@ -4353,8 +3904,7 @@ class IntegrationServiceEnvironmentSkuCapacity(msrest.serialization.Model):
     :type maximum: int
     :param default: The default capacity.
     :type default: int
-    :param scale_type: The integration service environment sku scale type. Possible values include:
-     'Manual', 'Automatic', 'None'.
+    :param scale_type: The sku scale type. Possible values include: 'Manual', 'Automatic', 'None'.
     :type scale_type: str or
      ~logic_management_client.models.IntegrationServiceEnvironmentSkuScaleType
     """
@@ -4384,7 +3934,7 @@ class IntegrationServiceEnvironmentSkuDefinition(msrest.serialization.Model):
     :type resource_type: str
     :param sku: The sku.
     :type sku: ~logic_management_client.models.IntegrationServiceEnvironmentSkuDefinitionSku
-    :param capacity: The integration service environment sku capacity.
+    :param capacity: The sku capacity.
     :type capacity: ~logic_management_client.models.IntegrationServiceEnvironmentSkuCapacity
     """
 
@@ -4407,8 +3957,7 @@ class IntegrationServiceEnvironmentSkuDefinition(msrest.serialization.Model):
 class IntegrationServiceEnvironmentSkuDefinitionSku(msrest.serialization.Model):
     """The sku.
 
-    :param name: The integration service environment sku name. Possible values include:
-     'NotSpecified', 'Premium', 'Developer'.
+    :param name: The sku name. Possible values include: 'NotSpecified', 'Premium', 'Developer'.
     :type name: str or ~logic_management_client.models.IntegrationServiceEnvironmentSkuName
     :param tier: The sku tier.
     :type tier: str
@@ -4459,12 +4008,11 @@ class IntegrationServiceEnvironmentSubnetNetworkHealth(msrest.serialization.Mode
     :param outbound_network_dependencies: The outbound network dependencies.
     :type outbound_network_dependencies:
      list[~logic_management_client.models.IntegrationServiceEnvironmentNetworkDependency]
-    :param outbound_network_health: The integration service environment subnet network health.
+    :param outbound_network_health: The integration service environment network health.
     :type outbound_network_health:
      ~logic_management_client.models.IntegrationServiceEnvironmentNetworkDependencyHealth
     :param network_dependency_health_state: Required. The integration service environment network
-     endpoint accessibility state. Possible values include: 'NotSpecified', 'Unknown', 'Available',
-     'NotAvailable'.
+     health state. Possible values include: 'NotSpecified', 'Unknown', 'Available', 'NotAvailable'.
     :type network_dependency_health_state: str or
      ~logic_management_client.models.IntegrationServiceEnvironmentNetworkEndPointAccessibilityState
     """
@@ -4747,7 +4295,7 @@ class ManagedApi(Resource):
     :type location: str
     :param tags: A set of tags. The resource tags.
     :type tags: dict[str, str]
-    :param properties: The API resource properties.
+    :param properties: The api resource properties.
     :type properties: ~logic_management_client.models.ApiResourceProperties
     """
 
@@ -4802,7 +4350,7 @@ class NetworkConfiguration(msrest.serialization.Model):
 
     :param virtual_network_address_space: Gets the virtual network address space.
     :type virtual_network_address_space: str
-    :param access_endpoint: The integration service environment access endpoint.
+    :param access_endpoint: The access endpoint.
     :type access_endpoint:
      ~logic_management_client.models.IntegrationServiceEnvironmentAccessEndpoint
     :param subnets: The subnets.
@@ -4823,47 +4371,6 @@ class NetworkConfiguration(msrest.serialization.Model):
         self.virtual_network_address_space = kwargs.get('virtual_network_address_space', None)
         self.access_endpoint = kwargs.get('access_endpoint', None)
         self.subnets = kwargs.get('subnets', None)
-
-
-class ObjectException(HttpResponseError):
-    """Server responded with exception of type: 'Object'.
-
-    :param response: Server response to be deserialized.
-    :param error_model: A deserialized model of the response body as model.
-    """
-
-    def __init__(self, response, error_model):
-        self.error = error_model
-        super(ObjectException, self).__init__(response=response, error_model=error_model)
-
-    @classmethod
-    def from_response(cls, response, deserialize):
-        """Deserialize this response as this exception, or a subclass of this exception.
-
-        :param response: Server response to be deserialized.
-        :param deserialize: A deserializer
-        """
-        model_name = 'Object'
-        error = deserialize(model_name, response)
-        if error is None:
-            error = deserialize.dependencies[model_name]()
-        return error._EXCEPTION_TYPE(response, error)
-
-
-class Object(msrest.serialization.Model):
-    """Object.
-
-    """
-    _EXCEPTION_TYPE = ObjectException
-
-    _attribute_map = {
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(Object, self).__init__(**kwargs)
 
 
 class Operation(msrest.serialization.Model):
@@ -4946,11 +4453,11 @@ class OperationResultProperties(msrest.serialization.Model):
     :type start_time: ~datetime.datetime
     :param end_time: The end time of the workflow scope repetition.
     :type end_time: ~datetime.datetime
-    :param correlation: The workflow run action correlation properties.
+    :param correlation: The correlation properties.
     :type correlation: ~logic_management_client.models.RunActionCorrelation
-    :param status: The workflow status. Possible values include: 'NotSpecified', 'Paused',
-     'Running', 'Waiting', 'Succeeded', 'Skipped', 'Suspended', 'Cancelled', 'Failed', 'Faulted',
-     'TimedOut', 'Aborted', 'Ignored'.
+    :param status: The status of the workflow scope repetition. Possible values include:
+     'NotSpecified', 'Paused', 'Running', 'Waiting', 'Succeeded', 'Skipped', 'Suspended',
+     'Cancelled', 'Failed', 'Faulted', 'TimedOut', 'Aborted', 'Ignored'.
     :type status: str or ~logic_management_client.models.WorkflowStatus
     :param code: The workflow scope repetition code.
     :type code: str
@@ -4989,11 +4496,11 @@ class OperationResult(OperationResultProperties):
     :type start_time: ~datetime.datetime
     :param end_time: The end time of the workflow scope repetition.
     :type end_time: ~datetime.datetime
-    :param correlation: The workflow run action correlation properties.
+    :param correlation: The correlation properties.
     :type correlation: ~logic_management_client.models.RunActionCorrelation
-    :param status: The workflow status. Possible values include: 'NotSpecified', 'Paused',
-     'Running', 'Waiting', 'Succeeded', 'Skipped', 'Suspended', 'Cancelled', 'Failed', 'Faulted',
-     'TimedOut', 'Aborted', 'Ignored'.
+    :param status: The status of the workflow scope repetition. Possible values include:
+     'NotSpecified', 'Paused', 'Running', 'Waiting', 'Succeeded', 'Skipped', 'Suspended',
+     'Cancelled', 'Failed', 'Faulted', 'TimedOut', 'Aborted', 'Ignored'.
     :type status: str or ~logic_management_client.models.WorkflowStatus
     :param code: The workflow scope repetition code.
     :type code: str
@@ -5001,16 +4508,16 @@ class OperationResult(OperationResultProperties):
     :type error: object
     :ivar tracking_id: Gets the tracking id.
     :vartype tracking_id: str
-    :ivar inputs:
-    :vartype inputs: ~logic_management_client.models.Object
-    :ivar inputs_link: The content link.
+    :ivar inputs: Gets the inputs.
+    :vartype inputs: object
+    :ivar inputs_link: Gets the link to inputs.
     :vartype inputs_link: ~logic_management_client.models.ContentLink
-    :ivar outputs:
-    :vartype outputs: ~logic_management_client.models.Object
-    :ivar outputs_link: The content link.
+    :ivar outputs: Gets the outputs.
+    :vartype outputs: object
+    :ivar outputs_link: Gets the link to outputs.
     :vartype outputs_link: ~logic_management_client.models.ContentLink
-    :ivar tracked_properties:
-    :vartype tracked_properties: ~logic_management_client.models.Object
+    :ivar tracked_properties: Gets the tracked properties.
+    :vartype tracked_properties: object
     :param retry_history: Gets the retry histories.
     :type retry_history: list[~logic_management_client.models.RetryHistory]
     :param iteration_count:
@@ -5034,11 +4541,11 @@ class OperationResult(OperationResultProperties):
         'code': {'key': 'code', 'type': 'str'},
         'error': {'key': 'error', 'type': 'object'},
         'tracking_id': {'key': 'trackingId', 'type': 'str'},
-        'inputs': {'key': 'inputs', 'type': 'Object'},
+        'inputs': {'key': 'inputs', 'type': 'object'},
         'inputs_link': {'key': 'inputsLink', 'type': 'ContentLink'},
-        'outputs': {'key': 'outputs', 'type': 'Object'},
+        'outputs': {'key': 'outputs', 'type': 'object'},
         'outputs_link': {'key': 'outputsLink', 'type': 'ContentLink'},
-        'tracked_properties': {'key': 'trackedProperties', 'type': 'Object'},
+        'tracked_properties': {'key': 'trackedProperties', 'type': 'object'},
         'retry_history': {'key': 'retryHistory', 'type': '[RetryHistory]'},
         'iteration_count': {'key': 'iterationCount', 'type': 'int'},
     }
@@ -5187,8 +4694,8 @@ class RepetitionIndex(msrest.serialization.Model):
 class Request(msrest.serialization.Model):
     """A request.
 
-    :param headers:
-    :type headers: ~logic_management_client.models.Object
+    :param headers: A list of all the headers attached to the request.
+    :type headers: object
     :param uri: The destination for the request.
     :type uri: str
     :param method: The HTTP method used for the request.
@@ -5196,7 +4703,7 @@ class Request(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'headers': {'key': 'headers', 'type': 'Object'},
+        'headers': {'key': 'headers', 'type': 'object'},
         'uri': {'key': 'uri', 'type': 'str'},
         'method': {'key': 'method', 'type': 'str'},
     }
@@ -5226,7 +4733,7 @@ class RequestHistory(Resource):
     :type location: str
     :param tags: A set of tags. The resource tags.
     :type tags: dict[str, str]
-    :param properties: The request history.
+    :param properties: The request history properties.
     :type properties: ~logic_management_client.models.RequestHistoryProperties
     """
 
@@ -5283,9 +4790,9 @@ class RequestHistoryProperties(msrest.serialization.Model):
     :type start_time: ~datetime.datetime
     :param end_time: The time the request ended.
     :type end_time: ~datetime.datetime
-    :param request: A request.
+    :param request: The request.
     :type request: ~logic_management_client.models.Request
-    :param response: A response.
+    :param response: The response.
     :type response: ~logic_management_client.models.Response
     """
 
@@ -5310,16 +4817,16 @@ class RequestHistoryProperties(msrest.serialization.Model):
 class Response(msrest.serialization.Model):
     """A response.
 
-    :param headers:
-    :type headers: ~logic_management_client.models.Object
+    :param headers: A list of all the headers attached to the response.
+    :type headers: object
     :param status_code: The status code of the response.
     :type status_code: int
-    :param body_link: The content link.
+    :param body_link: Details on the location of the body content.
     :type body_link: ~logic_management_client.models.ContentLink
     """
 
     _attribute_map = {
-        'headers': {'key': 'headers', 'type': 'Object'},
+        'headers': {'key': 'headers', 'type': 'object'},
         'status_code': {'key': 'statusCode', 'type': 'int'},
         'body_link': {'key': 'bodyLink', 'type': 'ContentLink'},
     }
@@ -5347,8 +4854,7 @@ class RetryHistory(msrest.serialization.Model):
     :type client_request_id: str
     :param service_request_id: Gets the service request Id.
     :type service_request_id: str
-    :param error: Error response indicates Logic service is not able to process the incoming
-     request. The error property contains the error details.
+    :param error: Gets the error response.
     :type error: ~logic_management_client.models.ErrorResponse
     """
 
@@ -5427,7 +4933,7 @@ class SetTriggerStateActionDefinition(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param source: Required. The workflow trigger.
+    :param source: Required. The source.
     :type source: ~logic_management_client.models.WorkflowTrigger
     """
 
@@ -5452,10 +4958,10 @@ class Sku(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param name: Required. The sku name. Possible values include: 'NotSpecified', 'Free', 'Shared',
+    :param name: Required. The name. Possible values include: 'NotSpecified', 'Free', 'Shared',
      'Basic', 'Standard', 'Premium'.
     :type name: str or ~logic_management_client.models.SkuName
-    :param plan: The resource reference.
+    :param plan: The reference to plan.
     :type plan: ~logic_management_client.models.ResourceReference
     """
 
@@ -5600,11 +5106,11 @@ class SwaggerCustomDynamicSchema(msrest.serialization.Model):
 class SwaggerCustomDynamicTree(msrest.serialization.Model):
     """The swagger custom dynamic tree.
 
-    :param settings: The swagger custom dynamic tree settings.
+    :param settings: The tree settings.
     :type settings: ~logic_management_client.models.SwaggerCustomDynamicTreeSettings
-    :param open: The swagger tree command.
+    :param open: The tree on-open configuration.
     :type open: ~logic_management_client.models.SwaggerCustomDynamicTreeCommand
-    :param browse: The swagger tree command.
+    :param browse: The tree on-browse configuration.
     :type browse: ~logic_management_client.models.SwaggerCustomDynamicTreeCommand
     """
 
@@ -5681,8 +5187,8 @@ class SwaggerCustomDynamicTreeParameter(msrest.serialization.Model):
     :param selected_item_value_path: Gets or sets a path to a property in the currently selected
      item to pass as a value to a parameter for the given operation.
     :type selected_item_value_path: str
-    :param value:
-    :type value: ~logic_management_client.models.Object
+    :param value: The parameter value.
+    :type value: object
     :param parameter_reference: The parameter reference.
     :type parameter_reference: str
     :param required: Indicates whether the parameter is required.
@@ -5691,7 +5197,7 @@ class SwaggerCustomDynamicTreeParameter(msrest.serialization.Model):
 
     _attribute_map = {
         'selected_item_value_path': {'key': 'selectedItemValuePath', 'type': 'str'},
-        'value': {'key': 'value', 'type': 'Object'},
+        'value': {'key': 'value', 'type': 'object'},
         'parameter_reference': {'key': 'parameterReference', 'type': 'str'},
         'required': {'key': 'required', 'type': 'bool'},
     }
@@ -5762,17 +5268,17 @@ class SwaggerSchema(msrest.serialization.Model):
 
     :param ref: The reference.
     :type ref: str
-    :param type: The swagger schema type. Possible values include: 'String', 'Number', 'Integer',
-     'Boolean', 'Array', 'File', 'Object', 'Null'.
+    :param type: The type. Possible values include: 'String', 'Number', 'Integer', 'Boolean',
+     'Array', 'File', 'Object', 'Null'.
     :type type: str or ~logic_management_client.models.SwaggerSchemaType
     :param title: The title.
     :type title: str
-    :param items: The swagger schema.
+    :param items: The items schema.
     :type items: ~logic_management_client.models.SwaggerSchema
     :param properties: The object properties.
     :type properties: dict[str, ~logic_management_client.models.SwaggerSchema]
-    :param additional_properties:
-    :type additional_properties: ~logic_management_client.models.Object
+    :param additional_properties: The additional properties.
+    :type additional_properties: object
     :param required: The object required properties.
     :type required: list[str]
     :param max_properties: The maximum number of allowed properties.
@@ -5785,22 +5291,22 @@ class SwaggerSchema(msrest.serialization.Model):
     :type discriminator: str
     :param read_only: Indicates whether this property must be present in the a request.
     :type read_only: bool
-    :param xml: The Swagger XML.
+    :param xml: The xml representation format for a property.
     :type xml: ~logic_management_client.models.SwaggerXml
-    :param external_docs: The swagger external documentation.
+    :param external_docs: The external documentation.
     :type external_docs: ~logic_management_client.models.SwaggerExternalDocumentation
-    :param example:
-    :type example: ~logic_management_client.models.Object
+    :param example: The example value.
+    :type example: object
     :param notification_url_extension: Indicates the notification url extension. If this is set,
      the property's value should be a callback url for a webhook.
     :type notification_url_extension: bool
-    :param dynamic_schema_old: The swagger custom dynamic schema.
+    :param dynamic_schema_old: The dynamic schema configuration.
     :type dynamic_schema_old: ~logic_management_client.models.SwaggerCustomDynamicSchema
-    :param dynamic_schema_new: The swagger custom dynamic properties.
+    :param dynamic_schema_new: The dynamic schema configuration.
     :type dynamic_schema_new: ~logic_management_client.models.SwaggerCustomDynamicProperties
-    :param dynamic_list_new: The swagger custom dynamic list.
+    :param dynamic_list_new: The dynamic list.
     :type dynamic_list_new: ~logic_management_client.models.SwaggerCustomDynamicList
-    :param dynamic_tree: The swagger custom dynamic tree.
+    :param dynamic_tree: The dynamic values tree configuration.
     :type dynamic_tree: ~logic_management_client.models.SwaggerCustomDynamicTree
     """
 
@@ -5810,7 +5316,7 @@ class SwaggerSchema(msrest.serialization.Model):
         'title': {'key': 'title', 'type': 'str'},
         'items': {'key': 'items', 'type': 'SwaggerSchema'},
         'properties': {'key': 'properties', 'type': '{SwaggerSchema}'},
-        'additional_properties': {'key': 'additionalProperties', 'type': 'Object'},
+        'additional_properties': {'key': 'additionalProperties', 'type': 'object'},
         'required': {'key': 'required', 'type': '[str]'},
         'max_properties': {'key': 'maxProperties', 'type': 'int'},
         'min_properties': {'key': 'minProperties', 'type': 'int'},
@@ -5819,7 +5325,7 @@ class SwaggerSchema(msrest.serialization.Model):
         'read_only': {'key': 'readOnly', 'type': 'bool'},
         'xml': {'key': 'xml', 'type': 'SwaggerXml'},
         'external_docs': {'key': 'externalDocs', 'type': 'SwaggerExternalDocumentation'},
-        'example': {'key': 'example', 'type': 'Object'},
+        'example': {'key': 'example', 'type': 'object'},
         'notification_url_extension': {'key': 'notificationUrlExtension', 'type': 'bool'},
         'dynamic_schema_old': {'key': 'dynamicSchemaOld', 'type': 'SwaggerCustomDynamicSchema'},
         'dynamic_schema_new': {'key': 'dynamicSchemaNew', 'type': 'SwaggerCustomDynamicProperties'},
@@ -5903,14 +5409,14 @@ class TrackingEvent(msrest.serialization.Model):
     :type event_level: str or ~logic_management_client.models.EventLevel
     :param event_time: Required. The event time.
     :type event_time: ~datetime.datetime
-    :param record_type: Required. The tracking record type. Possible values include:
-     'NotSpecified', 'Custom', 'AS2Message', 'AS2MDN', 'X12Interchange', 'X12FunctionalGroup',
-     'X12TransactionSet', 'X12InterchangeAcknowledgment', 'X12FunctionalGroupAcknowledgment',
+    :param record_type: Required. The record type. Possible values include: 'NotSpecified',
+     'Custom', 'AS2Message', 'AS2MDN', 'X12Interchange', 'X12FunctionalGroup', 'X12TransactionSet',
+     'X12InterchangeAcknowledgment', 'X12FunctionalGroupAcknowledgment',
      'X12TransactionSetAcknowledgment', 'EdifactInterchange', 'EdifactFunctionalGroup',
      'EdifactTransactionSet', 'EdifactInterchangeAcknowledgment',
      'EdifactFunctionalGroupAcknowledgment', 'EdifactTransactionSetAcknowledgment'.
     :type record_type: str or ~logic_management_client.models.TrackingRecordType
-    :param error: The tracking event error info.
+    :param error: The error.
     :type error: ~logic_management_client.models.TrackingEventErrorInfo
     """
 
@@ -5968,8 +5474,8 @@ class TrackingEventsDefinition(msrest.serialization.Model):
 
     :param source_type: Required. The source type.
     :type source_type: str
-    :param track_events_options: The track events operation options. Possible values include:
-     'None', 'DisableSourceInfoEnrich'.
+    :param track_events_options: The track events options. Possible values include: 'None',
+     'DisableSourceInfoEnrich'.
     :type track_events_options: str or ~logic_management_client.models.TrackEventsOperationOptions
     :param events: Required. The events.
     :type events: list[~logic_management_client.models.TrackingEvent]
@@ -6011,17 +5517,17 @@ class Workflow(Resource):
     :type location: str
     :param tags: A set of tags. The resource tags.
     :type tags: dict[str, str]
-    :ivar provisioning_state: The workflow provisioning state. Possible values include:
-     'NotSpecified', 'Accepted', 'Running', 'Ready', 'Creating', 'Created', 'Deleting', 'Deleted',
-     'Canceled', 'Failed', 'Succeeded', 'Moving', 'Updating', 'Registering', 'Registered',
-     'Unregistering', 'Unregistered', 'Completed'.
+    :ivar provisioning_state: Gets the provisioning state. Possible values include: 'NotSpecified',
+     'Accepted', 'Running', 'Ready', 'Creating', 'Created', 'Deleting', 'Deleted', 'Canceled',
+     'Failed', 'Succeeded', 'Moving', 'Updating', 'Registering', 'Registered', 'Unregistering',
+     'Unregistered', 'Completed'.
     :vartype provisioning_state: str or ~logic_management_client.models.WorkflowProvisioningState
     :ivar created_time: Gets the created time.
     :vartype created_time: ~datetime.datetime
     :ivar changed_time: Gets the changed time.
     :vartype changed_time: ~datetime.datetime
-    :param state: The workflow state. Possible values include: 'NotSpecified', 'Completed',
-     'Enabled', 'Disabled', 'Deleted', 'Suspended'.
+    :param state: The state. Possible values include: 'NotSpecified', 'Completed', 'Enabled',
+     'Disabled', 'Deleted', 'Suspended'.
     :type state: str or ~logic_management_client.models.WorkflowState
     :ivar version: Gets the version.
     :vartype version: str
@@ -6029,14 +5535,12 @@ class Workflow(Resource):
     :vartype access_endpoint: str
     :param endpoints_configuration: The endpoints configuration.
     :type endpoints_configuration: ~logic_management_client.models.FlowEndpointsConfiguration
-    :param sku: The sku type.
-    :type sku: ~logic_management_client.models.Sku
-    :param integration_account: The resource reference.
+    :param integration_account: The integration account.
     :type integration_account: ~logic_management_client.models.ResourceReference
-    :param integration_service_environment: The resource reference.
+    :param integration_service_environment: The integration service environment.
     :type integration_service_environment: ~logic_management_client.models.ResourceReference
-    :param definition:
-    :type definition: ~logic_management_client.models.Object
+    :param definition: The definition.
+    :type definition: object
     :param parameters: The parameters.
     :type parameters: dict[str, ~logic_management_client.models.WorkflowParameter]
     """
@@ -6065,10 +5569,9 @@ class Workflow(Resource):
         'version': {'key': 'properties.version', 'type': 'str'},
         'access_endpoint': {'key': 'properties.accessEndpoint', 'type': 'str'},
         'endpoints_configuration': {'key': 'properties.endpointsConfiguration', 'type': 'FlowEndpointsConfiguration'},
-        'sku': {'key': 'properties.sku', 'type': 'Sku'},
         'integration_account': {'key': 'properties.integrationAccount', 'type': 'ResourceReference'},
         'integration_service_environment': {'key': 'properties.integrationServiceEnvironment', 'type': 'ResourceReference'},
-        'definition': {'key': 'properties.definition', 'type': 'Object'},
+        'definition': {'key': 'properties.definition', 'type': 'object'},
         'parameters': {'key': 'properties.parameters', 'type': '{WorkflowParameter}'},
     }
 
@@ -6084,7 +5587,6 @@ class Workflow(Resource):
         self.version = None
         self.access_endpoint = None
         self.endpoints_configuration = kwargs.get('endpoints_configuration', None)
-        self.sku = kwargs.get('sku', None)
         self.integration_account = kwargs.get('integration_account', None)
         self.integration_service_environment = kwargs.get('integration_service_environment', None)
         self.definition = kwargs.get('definition', None)
@@ -6094,7 +5596,7 @@ class Workflow(Resource):
 class WorkflowFilter(msrest.serialization.Model):
     """The workflow filter.
 
-    :param state: The workflow state. Possible values include: 'NotSpecified', 'Completed',
+    :param state: The state of workflows. Possible values include: 'NotSpecified', 'Completed',
      'Enabled', 'Disabled', 'Deleted', 'Suspended'.
     :type state: str or ~logic_management_client.models.WorkflowState
     """
@@ -6137,21 +5639,21 @@ class WorkflowListResult(msrest.serialization.Model):
 class WorkflowParameter(msrest.serialization.Model):
     """The workflow parameters.
 
-    :param type: The parameter type. Possible values include: 'NotSpecified', 'String',
-     'SecureString', 'Int', 'Float', 'Bool', 'Array', 'Object', 'SecureObject'.
+    :param type: The type. Possible values include: 'NotSpecified', 'String', 'SecureString',
+     'Int', 'Float', 'Bool', 'Array', 'Object', 'SecureObject'.
     :type type: str or ~logic_management_client.models.ParameterType
-    :param value:
-    :type value: ~logic_management_client.models.Object
-    :param metadata:
-    :type metadata: ~logic_management_client.models.Object
+    :param value: The value.
+    :type value: object
+    :param metadata: The metadata.
+    :type metadata: object
     :param description: The description.
     :type description: str
     """
 
     _attribute_map = {
         'type': {'key': 'type', 'type': 'str'},
-        'value': {'key': 'value', 'type': 'Object'},
-        'metadata': {'key': 'metadata', 'type': 'Object'},
+        'value': {'key': 'value', 'type': 'object'},
+        'metadata': {'key': 'metadata', 'type': 'object'},
         'description': {'key': 'description', 'type': 'str'},
     }
 
@@ -6171,17 +5673,17 @@ class WorkflowOutputParameter(WorkflowParameter):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :param type: The parameter type. Possible values include: 'NotSpecified', 'String',
-     'SecureString', 'Int', 'Float', 'Bool', 'Array', 'Object', 'SecureObject'.
+    :param type: The type. Possible values include: 'NotSpecified', 'String', 'SecureString',
+     'Int', 'Float', 'Bool', 'Array', 'Object', 'SecureObject'.
     :type type: str or ~logic_management_client.models.ParameterType
-    :param value:
-    :type value: ~logic_management_client.models.Object
-    :param metadata:
-    :type metadata: ~logic_management_client.models.Object
+    :param value: The value.
+    :type value: object
+    :param metadata: The metadata.
+    :type metadata: object
     :param description: The description.
     :type description: str
-    :ivar error:
-    :vartype error: ~logic_management_client.models.Object
+    :ivar error: Gets the error.
+    :vartype error: object
     """
 
     _validation = {
@@ -6190,10 +5692,10 @@ class WorkflowOutputParameter(WorkflowParameter):
 
     _attribute_map = {
         'type': {'key': 'type', 'type': 'str'},
-        'value': {'key': 'value', 'type': 'Object'},
-        'metadata': {'key': 'metadata', 'type': 'Object'},
+        'value': {'key': 'value', 'type': 'object'},
+        'metadata': {'key': 'metadata', 'type': 'object'},
         'description': {'key': 'description', 'type': 'str'},
-        'error': {'key': 'error', 'type': 'Object'},
+        'error': {'key': 'error', 'type': 'object'},
     }
 
     def __init__(
@@ -6202,83 +5704,6 @@ class WorkflowOutputParameter(WorkflowParameter):
     ):
         super(WorkflowOutputParameter, self).__init__(**kwargs)
         self.error = None
-
-
-class WorkflowProperties(msrest.serialization.Model):
-    """The workflow properties.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar provisioning_state: The workflow provisioning state. Possible values include:
-     'NotSpecified', 'Accepted', 'Running', 'Ready', 'Creating', 'Created', 'Deleting', 'Deleted',
-     'Canceled', 'Failed', 'Succeeded', 'Moving', 'Updating', 'Registering', 'Registered',
-     'Unregistering', 'Unregistered', 'Completed'.
-    :vartype provisioning_state: str or ~logic_management_client.models.WorkflowProvisioningState
-    :ivar created_time: Gets the created time.
-    :vartype created_time: ~datetime.datetime
-    :ivar changed_time: Gets the changed time.
-    :vartype changed_time: ~datetime.datetime
-    :param state: The workflow state. Possible values include: 'NotSpecified', 'Completed',
-     'Enabled', 'Disabled', 'Deleted', 'Suspended'.
-    :type state: str or ~logic_management_client.models.WorkflowState
-    :ivar version: Gets the version.
-    :vartype version: str
-    :ivar access_endpoint: Gets the access endpoint.
-    :vartype access_endpoint: str
-    :param endpoints_configuration: The endpoints configuration.
-    :type endpoints_configuration: ~logic_management_client.models.FlowEndpointsConfiguration
-    :param sku: The sku type.
-    :type sku: ~logic_management_client.models.Sku
-    :param integration_account: The resource reference.
-    :type integration_account: ~logic_management_client.models.ResourceReference
-    :param integration_service_environment: The resource reference.
-    :type integration_service_environment: ~logic_management_client.models.ResourceReference
-    :param definition:
-    :type definition: ~logic_management_client.models.Object
-    :param parameters: The parameters.
-    :type parameters: dict[str, ~logic_management_client.models.WorkflowParameter]
-    """
-
-    _validation = {
-        'provisioning_state': {'readonly': True},
-        'created_time': {'readonly': True},
-        'changed_time': {'readonly': True},
-        'version': {'readonly': True},
-        'access_endpoint': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-        'created_time': {'key': 'createdTime', 'type': 'iso-8601'},
-        'changed_time': {'key': 'changedTime', 'type': 'iso-8601'},
-        'state': {'key': 'state', 'type': 'str'},
-        'version': {'key': 'version', 'type': 'str'},
-        'access_endpoint': {'key': 'accessEndpoint', 'type': 'str'},
-        'endpoints_configuration': {'key': 'endpointsConfiguration', 'type': 'FlowEndpointsConfiguration'},
-        'sku': {'key': 'sku', 'type': 'Sku'},
-        'integration_account': {'key': 'integrationAccount', 'type': 'ResourceReference'},
-        'integration_service_environment': {'key': 'integrationServiceEnvironment', 'type': 'ResourceReference'},
-        'definition': {'key': 'definition', 'type': 'Object'},
-        'parameters': {'key': 'parameters', 'type': '{WorkflowParameter}'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(WorkflowProperties, self).__init__(**kwargs)
-        self.provisioning_state = None
-        self.created_time = None
-        self.changed_time = None
-        self.state = kwargs.get('state', None)
-        self.version = None
-        self.access_endpoint = None
-        self.endpoints_configuration = kwargs.get('endpoints_configuration', None)
-        self.sku = kwargs.get('sku', None)
-        self.integration_account = kwargs.get('integration_account', None)
-        self.integration_service_environment = kwargs.get('integration_service_environment', None)
-        self.definition = kwargs.get('definition', None)
-        self.parameters = kwargs.get('parameters', None)
 
 
 class WorkflowRun(SubResource):
@@ -6298,25 +5723,25 @@ class WorkflowRun(SubResource):
     :vartype start_time: ~datetime.datetime
     :ivar end_time: Gets the end time.
     :vartype end_time: ~datetime.datetime
-    :ivar status: The workflow status. Possible values include: 'NotSpecified', 'Paused',
-     'Running', 'Waiting', 'Succeeded', 'Skipped', 'Suspended', 'Cancelled', 'Failed', 'Faulted',
-     'TimedOut', 'Aborted', 'Ignored'.
+    :ivar status: Gets the status. Possible values include: 'NotSpecified', 'Paused', 'Running',
+     'Waiting', 'Succeeded', 'Skipped', 'Suspended', 'Cancelled', 'Failed', 'Faulted', 'TimedOut',
+     'Aborted', 'Ignored'.
     :vartype status: str or ~logic_management_client.models.WorkflowStatus
     :ivar code: Gets the code.
     :vartype code: str
-    :ivar error:
-    :vartype error: ~logic_management_client.models.Object
+    :ivar error: Gets the error.
+    :vartype error: object
     :ivar correlation_id: Gets the correlation id.
     :vartype correlation_id: str
-    :param correlation: The correlation property.
+    :param correlation: The run correlation.
     :type correlation: ~logic_management_client.models.Correlation
-    :ivar workflow: The resource reference.
+    :ivar workflow: Gets the reference to workflow version.
     :vartype workflow: ~logic_management_client.models.ResourceReference
-    :ivar trigger: The workflow run trigger.
+    :ivar trigger: Gets the fired trigger.
     :vartype trigger: ~logic_management_client.models.WorkflowRunTrigger
     :ivar outputs: Gets the outputs.
     :vartype outputs: dict[str, ~logic_management_client.models.WorkflowOutputParameter]
-    :ivar response: The workflow run trigger.
+    :ivar response: Gets the response of the flow run.
     :vartype response: ~logic_management_client.models.WorkflowRunTrigger
     """
 
@@ -6346,7 +5771,7 @@ class WorkflowRun(SubResource):
         'end_time': {'key': 'properties.endTime', 'type': 'iso-8601'},
         'status': {'key': 'properties.status', 'type': 'str'},
         'code': {'key': 'properties.code', 'type': 'str'},
-        'error': {'key': 'properties.error', 'type': 'Object'},
+        'error': {'key': 'properties.error', 'type': 'object'},
         'correlation_id': {'key': 'properties.correlationId', 'type': 'str'},
         'correlation': {'key': 'properties.correlation', 'type': 'Correlation'},
         'workflow': {'key': 'properties.workflow', 'type': 'ResourceReference'},
@@ -6391,24 +5816,24 @@ class WorkflowRunAction(SubResource):
     :vartype start_time: ~datetime.datetime
     :ivar end_time: Gets the end time.
     :vartype end_time: ~datetime.datetime
-    :ivar status: The workflow status. Possible values include: 'NotSpecified', 'Paused',
-     'Running', 'Waiting', 'Succeeded', 'Skipped', 'Suspended', 'Cancelled', 'Failed', 'Faulted',
-     'TimedOut', 'Aborted', 'Ignored'.
+    :ivar status: Gets the status. Possible values include: 'NotSpecified', 'Paused', 'Running',
+     'Waiting', 'Succeeded', 'Skipped', 'Suspended', 'Cancelled', 'Failed', 'Faulted', 'TimedOut',
+     'Aborted', 'Ignored'.
     :vartype status: str or ~logic_management_client.models.WorkflowStatus
     :ivar code: Gets the code.
     :vartype code: str
-    :ivar error:
-    :vartype error: ~logic_management_client.models.Object
+    :ivar error: Gets the error.
+    :vartype error: object
     :ivar tracking_id: Gets the tracking id.
     :vartype tracking_id: str
-    :param correlation: The correlation property.
+    :param correlation: The correlation properties.
     :type correlation: ~logic_management_client.models.Correlation
-    :ivar inputs_link: The content link.
+    :ivar inputs_link: Gets the link to inputs.
     :vartype inputs_link: ~logic_management_client.models.ContentLink
-    :ivar outputs_link: The content link.
+    :ivar outputs_link: Gets the link to outputs.
     :vartype outputs_link: ~logic_management_client.models.ContentLink
-    :ivar tracked_properties:
-    :vartype tracked_properties: ~logic_management_client.models.Object
+    :ivar tracked_properties: Gets the tracked properties.
+    :vartype tracked_properties: object
     :param retry_history: Gets the retry histories.
     :type retry_history: list[~logic_management_client.models.RetryHistory]
     """
@@ -6436,12 +5861,12 @@ class WorkflowRunAction(SubResource):
         'end_time': {'key': 'properties.endTime', 'type': 'iso-8601'},
         'status': {'key': 'properties.status', 'type': 'str'},
         'code': {'key': 'properties.code', 'type': 'str'},
-        'error': {'key': 'properties.error', 'type': 'Object'},
+        'error': {'key': 'properties.error', 'type': 'object'},
         'tracking_id': {'key': 'properties.trackingId', 'type': 'str'},
         'correlation': {'key': 'properties.correlation', 'type': 'Correlation'},
         'inputs_link': {'key': 'properties.inputsLink', 'type': 'ContentLink'},
         'outputs_link': {'key': 'properties.outputsLink', 'type': 'ContentLink'},
-        'tracked_properties': {'key': 'properties.trackedProperties', 'type': 'Object'},
+        'tracked_properties': {'key': 'properties.trackedProperties', 'type': 'object'},
         'retry_history': {'key': 'properties.retryHistory', 'type': '[RetryHistory]'},
     }
 
@@ -6468,9 +5893,9 @@ class WorkflowRunAction(SubResource):
 class WorkflowRunActionFilter(msrest.serialization.Model):
     """The workflow run action filter.
 
-    :param status: The workflow status. Possible values include: 'NotSpecified', 'Paused',
-     'Running', 'Waiting', 'Succeeded', 'Skipped', 'Suspended', 'Cancelled', 'Failed', 'Faulted',
-     'TimedOut', 'Aborted', 'Ignored'.
+    :param status: The status of workflow run action. Possible values include: 'NotSpecified',
+     'Paused', 'Running', 'Waiting', 'Succeeded', 'Skipped', 'Suspended', 'Cancelled', 'Failed',
+     'Faulted', 'TimedOut', 'Aborted', 'Ignored'.
     :type status: str or ~logic_management_client.models.WorkflowStatus
     """
 
@@ -6509,81 +5934,6 @@ class WorkflowRunActionListResult(msrest.serialization.Model):
         self.next_link = kwargs.get('next_link', None)
 
 
-class WorkflowRunActionProperties(msrest.serialization.Model):
-    """The workflow run action properties.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar start_time: Gets the start time.
-    :vartype start_time: ~datetime.datetime
-    :ivar end_time: Gets the end time.
-    :vartype end_time: ~datetime.datetime
-    :ivar status: The workflow status. Possible values include: 'NotSpecified', 'Paused',
-     'Running', 'Waiting', 'Succeeded', 'Skipped', 'Suspended', 'Cancelled', 'Failed', 'Faulted',
-     'TimedOut', 'Aborted', 'Ignored'.
-    :vartype status: str or ~logic_management_client.models.WorkflowStatus
-    :ivar code: Gets the code.
-    :vartype code: str
-    :ivar error:
-    :vartype error: ~logic_management_client.models.Object
-    :ivar tracking_id: Gets the tracking id.
-    :vartype tracking_id: str
-    :param correlation: The correlation property.
-    :type correlation: ~logic_management_client.models.Correlation
-    :ivar inputs_link: The content link.
-    :vartype inputs_link: ~logic_management_client.models.ContentLink
-    :ivar outputs_link: The content link.
-    :vartype outputs_link: ~logic_management_client.models.ContentLink
-    :ivar tracked_properties:
-    :vartype tracked_properties: ~logic_management_client.models.Object
-    :param retry_history: Gets the retry histories.
-    :type retry_history: list[~logic_management_client.models.RetryHistory]
-    """
-
-    _validation = {
-        'start_time': {'readonly': True},
-        'end_time': {'readonly': True},
-        'status': {'readonly': True},
-        'code': {'readonly': True},
-        'error': {'readonly': True},
-        'tracking_id': {'readonly': True},
-        'inputs_link': {'readonly': True},
-        'outputs_link': {'readonly': True},
-        'tracked_properties': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'start_time': {'key': 'startTime', 'type': 'iso-8601'},
-        'end_time': {'key': 'endTime', 'type': 'iso-8601'},
-        'status': {'key': 'status', 'type': 'str'},
-        'code': {'key': 'code', 'type': 'str'},
-        'error': {'key': 'error', 'type': 'Object'},
-        'tracking_id': {'key': 'trackingId', 'type': 'str'},
-        'correlation': {'key': 'correlation', 'type': 'Correlation'},
-        'inputs_link': {'key': 'inputsLink', 'type': 'ContentLink'},
-        'outputs_link': {'key': 'outputsLink', 'type': 'ContentLink'},
-        'tracked_properties': {'key': 'trackedProperties', 'type': 'Object'},
-        'retry_history': {'key': 'retryHistory', 'type': '[RetryHistory]'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(WorkflowRunActionProperties, self).__init__(**kwargs)
-        self.start_time = None
-        self.end_time = None
-        self.status = None
-        self.code = None
-        self.error = None
-        self.tracking_id = None
-        self.correlation = kwargs.get('correlation', None)
-        self.inputs_link = None
-        self.outputs_link = None
-        self.tracked_properties = None
-        self.retry_history = kwargs.get('retry_history', None)
-
-
 class WorkflowRunActionRepetitionDefinition(Resource):
     """The workflow run action repetition definition.
 
@@ -6603,11 +5953,11 @@ class WorkflowRunActionRepetitionDefinition(Resource):
     :type start_time: ~datetime.datetime
     :param end_time: The end time of the workflow scope repetition.
     :type end_time: ~datetime.datetime
-    :param correlation: The workflow run action correlation properties.
+    :param correlation: The correlation properties.
     :type correlation: ~logic_management_client.models.RunActionCorrelation
-    :param status: The workflow status. Possible values include: 'NotSpecified', 'Paused',
-     'Running', 'Waiting', 'Succeeded', 'Skipped', 'Suspended', 'Cancelled', 'Failed', 'Faulted',
-     'TimedOut', 'Aborted', 'Ignored'.
+    :param status: The status of the workflow scope repetition. Possible values include:
+     'NotSpecified', 'Paused', 'Running', 'Waiting', 'Succeeded', 'Skipped', 'Suspended',
+     'Cancelled', 'Failed', 'Faulted', 'TimedOut', 'Aborted', 'Ignored'.
     :type status: str or ~logic_management_client.models.WorkflowStatus
     :param code: The workflow scope repetition code.
     :type code: str
@@ -6615,16 +5965,16 @@ class WorkflowRunActionRepetitionDefinition(Resource):
     :type error: object
     :ivar tracking_id: Gets the tracking id.
     :vartype tracking_id: str
-    :ivar inputs:
-    :vartype inputs: ~logic_management_client.models.Object
-    :ivar inputs_link: The content link.
+    :ivar inputs: Gets the inputs.
+    :vartype inputs: object
+    :ivar inputs_link: Gets the link to inputs.
     :vartype inputs_link: ~logic_management_client.models.ContentLink
-    :ivar outputs:
-    :vartype outputs: ~logic_management_client.models.Object
-    :ivar outputs_link: The content link.
+    :ivar outputs: Gets the outputs.
+    :vartype outputs: object
+    :ivar outputs_link: Gets the link to outputs.
     :vartype outputs_link: ~logic_management_client.models.ContentLink
-    :ivar tracked_properties:
-    :vartype tracked_properties: ~logic_management_client.models.Object
+    :ivar tracked_properties: Gets the tracked properties.
+    :vartype tracked_properties: object
     :param retry_history: Gets the retry histories.
     :type retry_history: list[~logic_management_client.models.RetryHistory]
     :param iteration_count:
@@ -6658,11 +6008,11 @@ class WorkflowRunActionRepetitionDefinition(Resource):
         'code': {'key': 'properties.code', 'type': 'str'},
         'error': {'key': 'properties.error', 'type': 'object'},
         'tracking_id': {'key': 'properties.trackingId', 'type': 'str'},
-        'inputs': {'key': 'properties.inputs', 'type': 'Object'},
+        'inputs': {'key': 'properties.inputs', 'type': 'object'},
         'inputs_link': {'key': 'properties.inputsLink', 'type': 'ContentLink'},
-        'outputs': {'key': 'properties.outputs', 'type': 'Object'},
+        'outputs': {'key': 'properties.outputs', 'type': 'object'},
         'outputs_link': {'key': 'properties.outputsLink', 'type': 'ContentLink'},
-        'tracked_properties': {'key': 'properties.trackedProperties', 'type': 'Object'},
+        'tracked_properties': {'key': 'properties.trackedProperties', 'type': 'object'},
         'retry_history': {'key': 'properties.retryHistory', 'type': '[RetryHistory]'},
         'iteration_count': {'key': 'properties.iterationCount', 'type': 'int'},
         'repetition_indexes': {'key': 'properties.repetitionIndexes', 'type': '[RepetitionIndex]'},
@@ -6722,11 +6072,11 @@ class WorkflowRunActionRepetitionProperties(OperationResult):
     :type start_time: ~datetime.datetime
     :param end_time: The end time of the workflow scope repetition.
     :type end_time: ~datetime.datetime
-    :param correlation: The workflow run action correlation properties.
+    :param correlation: The correlation properties.
     :type correlation: ~logic_management_client.models.RunActionCorrelation
-    :param status: The workflow status. Possible values include: 'NotSpecified', 'Paused',
-     'Running', 'Waiting', 'Succeeded', 'Skipped', 'Suspended', 'Cancelled', 'Failed', 'Faulted',
-     'TimedOut', 'Aborted', 'Ignored'.
+    :param status: The status of the workflow scope repetition. Possible values include:
+     'NotSpecified', 'Paused', 'Running', 'Waiting', 'Succeeded', 'Skipped', 'Suspended',
+     'Cancelled', 'Failed', 'Faulted', 'TimedOut', 'Aborted', 'Ignored'.
     :type status: str or ~logic_management_client.models.WorkflowStatus
     :param code: The workflow scope repetition code.
     :type code: str
@@ -6734,16 +6084,16 @@ class WorkflowRunActionRepetitionProperties(OperationResult):
     :type error: object
     :ivar tracking_id: Gets the tracking id.
     :vartype tracking_id: str
-    :ivar inputs:
-    :vartype inputs: ~logic_management_client.models.Object
-    :ivar inputs_link: The content link.
+    :ivar inputs: Gets the inputs.
+    :vartype inputs: object
+    :ivar inputs_link: Gets the link to inputs.
     :vartype inputs_link: ~logic_management_client.models.ContentLink
-    :ivar outputs:
-    :vartype outputs: ~logic_management_client.models.Object
-    :ivar outputs_link: The content link.
+    :ivar outputs: Gets the outputs.
+    :vartype outputs: object
+    :ivar outputs_link: Gets the link to outputs.
     :vartype outputs_link: ~logic_management_client.models.ContentLink
-    :ivar tracked_properties:
-    :vartype tracked_properties: ~logic_management_client.models.Object
+    :ivar tracked_properties: Gets the tracked properties.
+    :vartype tracked_properties: object
     :param retry_history: Gets the retry histories.
     :type retry_history: list[~logic_management_client.models.RetryHistory]
     :param iteration_count:
@@ -6769,11 +6119,11 @@ class WorkflowRunActionRepetitionProperties(OperationResult):
         'code': {'key': 'code', 'type': 'str'},
         'error': {'key': 'error', 'type': 'object'},
         'tracking_id': {'key': 'trackingId', 'type': 'str'},
-        'inputs': {'key': 'inputs', 'type': 'Object'},
+        'inputs': {'key': 'inputs', 'type': 'object'},
         'inputs_link': {'key': 'inputsLink', 'type': 'ContentLink'},
-        'outputs': {'key': 'outputs', 'type': 'Object'},
+        'outputs': {'key': 'outputs', 'type': 'object'},
         'outputs_link': {'key': 'outputsLink', 'type': 'ContentLink'},
-        'tracked_properties': {'key': 'trackedProperties', 'type': 'Object'},
+        'tracked_properties': {'key': 'trackedProperties', 'type': 'object'},
         'retry_history': {'key': 'retryHistory', 'type': '[RetryHistory]'},
         'iteration_count': {'key': 'iterationCount', 'type': 'int'},
         'repetition_indexes': {'key': 'repetitionIndexes', 'type': '[RepetitionIndex]'},
@@ -6790,7 +6140,7 @@ class WorkflowRunActionRepetitionProperties(OperationResult):
 class WorkflowRunFilter(msrest.serialization.Model):
     """The workflow run filter.
 
-    :param status: The workflow status. Possible values include: 'NotSpecified', 'Paused',
+    :param status: The status of workflow run. Possible values include: 'NotSpecified', 'Paused',
      'Running', 'Waiting', 'Succeeded', 'Skipped', 'Suspended', 'Cancelled', 'Failed', 'Faulted',
      'TimedOut', 'Aborted', 'Ignored'.
     :type status: str or ~logic_management_client.models.WorkflowStatus
@@ -6831,87 +6181,6 @@ class WorkflowRunListResult(msrest.serialization.Model):
         self.next_link = kwargs.get('next_link', None)
 
 
-class WorkflowRunProperties(msrest.serialization.Model):
-    """The workflow run properties.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar wait_end_time: Gets the wait end time.
-    :vartype wait_end_time: ~datetime.datetime
-    :ivar start_time: Gets the start time.
-    :vartype start_time: ~datetime.datetime
-    :ivar end_time: Gets the end time.
-    :vartype end_time: ~datetime.datetime
-    :ivar status: The workflow status. Possible values include: 'NotSpecified', 'Paused',
-     'Running', 'Waiting', 'Succeeded', 'Skipped', 'Suspended', 'Cancelled', 'Failed', 'Faulted',
-     'TimedOut', 'Aborted', 'Ignored'.
-    :vartype status: str or ~logic_management_client.models.WorkflowStatus
-    :ivar code: Gets the code.
-    :vartype code: str
-    :ivar error:
-    :vartype error: ~logic_management_client.models.Object
-    :ivar correlation_id: Gets the correlation id.
-    :vartype correlation_id: str
-    :param correlation: The correlation property.
-    :type correlation: ~logic_management_client.models.Correlation
-    :ivar workflow: The resource reference.
-    :vartype workflow: ~logic_management_client.models.ResourceReference
-    :ivar trigger: The workflow run trigger.
-    :vartype trigger: ~logic_management_client.models.WorkflowRunTrigger
-    :ivar outputs: Gets the outputs.
-    :vartype outputs: dict[str, ~logic_management_client.models.WorkflowOutputParameter]
-    :ivar response: The workflow run trigger.
-    :vartype response: ~logic_management_client.models.WorkflowRunTrigger
-    """
-
-    _validation = {
-        'wait_end_time': {'readonly': True},
-        'start_time': {'readonly': True},
-        'end_time': {'readonly': True},
-        'status': {'readonly': True},
-        'code': {'readonly': True},
-        'error': {'readonly': True},
-        'correlation_id': {'readonly': True},
-        'workflow': {'readonly': True},
-        'trigger': {'readonly': True},
-        'outputs': {'readonly': True},
-        'response': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'wait_end_time': {'key': 'waitEndTime', 'type': 'iso-8601'},
-        'start_time': {'key': 'startTime', 'type': 'iso-8601'},
-        'end_time': {'key': 'endTime', 'type': 'iso-8601'},
-        'status': {'key': 'status', 'type': 'str'},
-        'code': {'key': 'code', 'type': 'str'},
-        'error': {'key': 'error', 'type': 'Object'},
-        'correlation_id': {'key': 'correlationId', 'type': 'str'},
-        'correlation': {'key': 'correlation', 'type': 'Correlation'},
-        'workflow': {'key': 'workflow', 'type': 'ResourceReference'},
-        'trigger': {'key': 'trigger', 'type': 'WorkflowRunTrigger'},
-        'outputs': {'key': 'outputs', 'type': '{WorkflowOutputParameter}'},
-        'response': {'key': 'response', 'type': 'WorkflowRunTrigger'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(WorkflowRunProperties, self).__init__(**kwargs)
-        self.wait_end_time = None
-        self.start_time = None
-        self.end_time = None
-        self.status = None
-        self.code = None
-        self.error = None
-        self.correlation_id = None
-        self.correlation = kwargs.get('correlation', None)
-        self.workflow = None
-        self.trigger = None
-        self.outputs = None
-        self.response = None
-
-
 class WorkflowRunTrigger(msrest.serialization.Model):
     """The workflow run trigger.
 
@@ -6919,13 +6188,13 @@ class WorkflowRunTrigger(msrest.serialization.Model):
 
     :ivar name: Gets the name.
     :vartype name: str
-    :ivar inputs:
-    :vartype inputs: ~logic_management_client.models.Object
-    :ivar inputs_link: The content link.
+    :ivar inputs: Gets the inputs.
+    :vartype inputs: object
+    :ivar inputs_link: Gets the link to inputs.
     :vartype inputs_link: ~logic_management_client.models.ContentLink
-    :ivar outputs:
-    :vartype outputs: ~logic_management_client.models.Object
-    :ivar outputs_link: The content link.
+    :ivar outputs: Gets the outputs.
+    :vartype outputs: object
+    :ivar outputs_link: Gets the link to outputs.
     :vartype outputs_link: ~logic_management_client.models.ContentLink
     :ivar scheduled_time: Gets the scheduled time.
     :vartype scheduled_time: ~datetime.datetime
@@ -6935,18 +6204,18 @@ class WorkflowRunTrigger(msrest.serialization.Model):
     :vartype end_time: ~datetime.datetime
     :ivar tracking_id: Gets the tracking id.
     :vartype tracking_id: str
-    :param correlation: The correlation property.
+    :param correlation: The run correlation.
     :type correlation: ~logic_management_client.models.Correlation
     :ivar code: Gets the code.
     :vartype code: str
-    :ivar status: The workflow status. Possible values include: 'NotSpecified', 'Paused',
-     'Running', 'Waiting', 'Succeeded', 'Skipped', 'Suspended', 'Cancelled', 'Failed', 'Faulted',
-     'TimedOut', 'Aborted', 'Ignored'.
+    :ivar status: Gets the status. Possible values include: 'NotSpecified', 'Paused', 'Running',
+     'Waiting', 'Succeeded', 'Skipped', 'Suspended', 'Cancelled', 'Failed', 'Faulted', 'TimedOut',
+     'Aborted', 'Ignored'.
     :vartype status: str or ~logic_management_client.models.WorkflowStatus
-    :ivar error:
-    :vartype error: ~logic_management_client.models.Object
-    :ivar tracked_properties:
-    :vartype tracked_properties: ~logic_management_client.models.Object
+    :ivar error: Gets the error.
+    :vartype error: object
+    :ivar tracked_properties: Gets the tracked properties.
+    :vartype tracked_properties: object
     """
 
     _validation = {
@@ -6967,9 +6236,9 @@ class WorkflowRunTrigger(msrest.serialization.Model):
 
     _attribute_map = {
         'name': {'key': 'name', 'type': 'str'},
-        'inputs': {'key': 'inputs', 'type': 'Object'},
+        'inputs': {'key': 'inputs', 'type': 'object'},
         'inputs_link': {'key': 'inputsLink', 'type': 'ContentLink'},
-        'outputs': {'key': 'outputs', 'type': 'Object'},
+        'outputs': {'key': 'outputs', 'type': 'object'},
         'outputs_link': {'key': 'outputsLink', 'type': 'ContentLink'},
         'scheduled_time': {'key': 'scheduledTime', 'type': 'iso-8601'},
         'start_time': {'key': 'startTime', 'type': 'iso-8601'},
@@ -6978,8 +6247,8 @@ class WorkflowRunTrigger(msrest.serialization.Model):
         'correlation': {'key': 'correlation', 'type': 'Correlation'},
         'code': {'key': 'code', 'type': 'str'},
         'status': {'key': 'status', 'type': 'str'},
-        'error': {'key': 'error', 'type': 'Object'},
-        'tracked_properties': {'key': 'trackedProperties', 'type': 'Object'},
+        'error': {'key': 'error', 'type': 'object'},
+        'tracked_properties': {'key': 'trackedProperties', 'type': 'object'},
     }
 
     def __init__(
@@ -7014,30 +6283,30 @@ class WorkflowTrigger(SubResource):
     :vartype name: str
     :ivar type: Gets the workflow trigger type.
     :vartype type: str
-    :ivar provisioning_state: The workflow trigger provisioning state. Possible values include:
-     'NotSpecified', 'Accepted', 'Running', 'Ready', 'Creating', 'Created', 'Deleting', 'Deleted',
-     'Canceled', 'Failed', 'Succeeded', 'Moving', 'Updating', 'Registering', 'Registered',
-     'Unregistering', 'Unregistered', 'Completed'.
+    :ivar provisioning_state: Gets the provisioning state. Possible values include: 'NotSpecified',
+     'Accepted', 'Running', 'Ready', 'Creating', 'Created', 'Deleting', 'Deleted', 'Canceled',
+     'Failed', 'Succeeded', 'Moving', 'Updating', 'Registering', 'Registered', 'Unregistering',
+     'Unregistered', 'Completed'.
     :vartype provisioning_state: str or
      ~logic_management_client.models.WorkflowTriggerProvisioningState
     :ivar created_time: Gets the created time.
     :vartype created_time: ~datetime.datetime
     :ivar changed_time: Gets the changed time.
     :vartype changed_time: ~datetime.datetime
-    :ivar state: The workflow state. Possible values include: 'NotSpecified', 'Completed',
-     'Enabled', 'Disabled', 'Deleted', 'Suspended'.
+    :ivar state: Gets the state. Possible values include: 'NotSpecified', 'Completed', 'Enabled',
+     'Disabled', 'Deleted', 'Suspended'.
     :vartype state: str or ~logic_management_client.models.WorkflowState
-    :ivar status: The workflow status. Possible values include: 'NotSpecified', 'Paused',
-     'Running', 'Waiting', 'Succeeded', 'Skipped', 'Suspended', 'Cancelled', 'Failed', 'Faulted',
-     'TimedOut', 'Aborted', 'Ignored'.
+    :ivar status: Gets the status. Possible values include: 'NotSpecified', 'Paused', 'Running',
+     'Waiting', 'Succeeded', 'Skipped', 'Suspended', 'Cancelled', 'Failed', 'Faulted', 'TimedOut',
+     'Aborted', 'Ignored'.
     :vartype status: str or ~logic_management_client.models.WorkflowStatus
     :ivar last_execution_time: Gets the last execution time.
     :vartype last_execution_time: ~datetime.datetime
     :ivar next_execution_time: Gets the next execution time.
     :vartype next_execution_time: ~datetime.datetime
-    :ivar recurrence: The workflow trigger recurrence.
+    :ivar recurrence: Gets the workflow trigger recurrence.
     :vartype recurrence: ~logic_management_client.models.WorkflowTriggerRecurrence
-    :ivar workflow: The resource reference.
+    :ivar workflow: Gets the reference to workflow.
     :vartype workflow: ~logic_management_client.models.ResourceReference
     """
 
@@ -7141,8 +6410,8 @@ class WorkflowTriggerCallbackUrl(msrest.serialization.Model):
 class WorkflowTriggerFilter(msrest.serialization.Model):
     """The workflow trigger filter.
 
-    :param state: The workflow state. Possible values include: 'NotSpecified', 'Completed',
-     'Enabled', 'Disabled', 'Deleted', 'Suspended'.
+    :param state: The state of workflow trigger. Possible values include: 'NotSpecified',
+     'Completed', 'Enabled', 'Disabled', 'Deleted', 'Suspended'.
     :type state: str or ~logic_management_client.models.WorkflowState
     """
 
@@ -7173,25 +6442,25 @@ class WorkflowTriggerHistory(SubResource):
     :vartype start_time: ~datetime.datetime
     :ivar end_time: Gets the end time.
     :vartype end_time: ~datetime.datetime
-    :ivar status: The workflow status. Possible values include: 'NotSpecified', 'Paused',
-     'Running', 'Waiting', 'Succeeded', 'Skipped', 'Suspended', 'Cancelled', 'Failed', 'Faulted',
-     'TimedOut', 'Aborted', 'Ignored'.
+    :ivar status: Gets the status. Possible values include: 'NotSpecified', 'Paused', 'Running',
+     'Waiting', 'Succeeded', 'Skipped', 'Suspended', 'Cancelled', 'Failed', 'Faulted', 'TimedOut',
+     'Aborted', 'Ignored'.
     :vartype status: str or ~logic_management_client.models.WorkflowStatus
     :ivar code: Gets the code.
     :vartype code: str
-    :ivar error:
-    :vartype error: ~logic_management_client.models.Object
+    :ivar error: Gets the error.
+    :vartype error: object
     :ivar tracking_id: Gets the tracking id.
     :vartype tracking_id: str
-    :param correlation: The correlation property.
+    :param correlation: The run correlation.
     :type correlation: ~logic_management_client.models.Correlation
-    :ivar inputs_link: The content link.
+    :ivar inputs_link: Gets the link to input parameters.
     :vartype inputs_link: ~logic_management_client.models.ContentLink
-    :ivar outputs_link: The content link.
+    :ivar outputs_link: Gets the link to output parameters.
     :vartype outputs_link: ~logic_management_client.models.ContentLink
     :ivar fired: The value indicating whether trigger was fired.
     :vartype fired: bool
-    :ivar run: The resource reference.
+    :ivar run: Gets the reference to workflow run.
     :vartype run: ~logic_management_client.models.ResourceReference
     """
 
@@ -7219,7 +6488,7 @@ class WorkflowTriggerHistory(SubResource):
         'end_time': {'key': 'properties.endTime', 'type': 'iso-8601'},
         'status': {'key': 'properties.status', 'type': 'str'},
         'code': {'key': 'properties.code', 'type': 'str'},
-        'error': {'key': 'properties.error', 'type': 'Object'},
+        'error': {'key': 'properties.error', 'type': 'object'},
         'tracking_id': {'key': 'properties.trackingId', 'type': 'str'},
         'correlation': {'key': 'properties.correlation', 'type': 'Correlation'},
         'inputs_link': {'key': 'properties.inputsLink', 'type': 'ContentLink'},
@@ -7251,9 +6520,9 @@ class WorkflowTriggerHistory(SubResource):
 class WorkflowTriggerHistoryFilter(msrest.serialization.Model):
     """The workflow trigger history filter.
 
-    :param status: The workflow status. Possible values include: 'NotSpecified', 'Paused',
-     'Running', 'Waiting', 'Succeeded', 'Skipped', 'Suspended', 'Cancelled', 'Failed', 'Faulted',
-     'TimedOut', 'Aborted', 'Ignored'.
+    :param status: The status of workflow trigger history. Possible values include: 'NotSpecified',
+     'Paused', 'Running', 'Waiting', 'Succeeded', 'Skipped', 'Suspended', 'Cancelled', 'Failed',
+     'Faulted', 'TimedOut', 'Aborted', 'Ignored'.
     :type status: str or ~logic_management_client.models.WorkflowStatus
     """
 
@@ -7290,82 +6559,6 @@ class WorkflowTriggerHistoryListResult(msrest.serialization.Model):
         super(WorkflowTriggerHistoryListResult, self).__init__(**kwargs)
         self.value = kwargs.get('value', None)
         self.next_link = kwargs.get('next_link', None)
-
-
-class WorkflowTriggerHistoryProperties(msrest.serialization.Model):
-    """The workflow trigger history properties.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar start_time: Gets the start time.
-    :vartype start_time: ~datetime.datetime
-    :ivar end_time: Gets the end time.
-    :vartype end_time: ~datetime.datetime
-    :ivar status: The workflow status. Possible values include: 'NotSpecified', 'Paused',
-     'Running', 'Waiting', 'Succeeded', 'Skipped', 'Suspended', 'Cancelled', 'Failed', 'Faulted',
-     'TimedOut', 'Aborted', 'Ignored'.
-    :vartype status: str or ~logic_management_client.models.WorkflowStatus
-    :ivar code: Gets the code.
-    :vartype code: str
-    :ivar error:
-    :vartype error: ~logic_management_client.models.Object
-    :ivar tracking_id: Gets the tracking id.
-    :vartype tracking_id: str
-    :param correlation: The correlation property.
-    :type correlation: ~logic_management_client.models.Correlation
-    :ivar inputs_link: The content link.
-    :vartype inputs_link: ~logic_management_client.models.ContentLink
-    :ivar outputs_link: The content link.
-    :vartype outputs_link: ~logic_management_client.models.ContentLink
-    :ivar fired: The value indicating whether trigger was fired.
-    :vartype fired: bool
-    :ivar run: The resource reference.
-    :vartype run: ~logic_management_client.models.ResourceReference
-    """
-
-    _validation = {
-        'start_time': {'readonly': True},
-        'end_time': {'readonly': True},
-        'status': {'readonly': True},
-        'code': {'readonly': True},
-        'error': {'readonly': True},
-        'tracking_id': {'readonly': True},
-        'inputs_link': {'readonly': True},
-        'outputs_link': {'readonly': True},
-        'fired': {'readonly': True},
-        'run': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'start_time': {'key': 'startTime', 'type': 'iso-8601'},
-        'end_time': {'key': 'endTime', 'type': 'iso-8601'},
-        'status': {'key': 'status', 'type': 'str'},
-        'code': {'key': 'code', 'type': 'str'},
-        'error': {'key': 'error', 'type': 'Object'},
-        'tracking_id': {'key': 'trackingId', 'type': 'str'},
-        'correlation': {'key': 'correlation', 'type': 'Correlation'},
-        'inputs_link': {'key': 'inputsLink', 'type': 'ContentLink'},
-        'outputs_link': {'key': 'outputsLink', 'type': 'ContentLink'},
-        'fired': {'key': 'fired', 'type': 'bool'},
-        'run': {'key': 'run', 'type': 'ResourceReference'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(WorkflowTriggerHistoryProperties, self).__init__(**kwargs)
-        self.start_time = None
-        self.end_time = None
-        self.status = None
-        self.code = None
-        self.error = None
-        self.tracking_id = None
-        self.correlation = kwargs.get('correlation', None)
-        self.inputs_link = None
-        self.outputs_link = None
-        self.fired = None
-        self.run = None
 
 
 class WorkflowTriggerListCallbackUrlQueries(msrest.serialization.Model):
@@ -7426,83 +6619,11 @@ class WorkflowTriggerListResult(msrest.serialization.Model):
         self.next_link = kwargs.get('next_link', None)
 
 
-class WorkflowTriggerProperties(msrest.serialization.Model):
-    """The workflow trigger properties.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar provisioning_state: The workflow trigger provisioning state. Possible values include:
-     'NotSpecified', 'Accepted', 'Running', 'Ready', 'Creating', 'Created', 'Deleting', 'Deleted',
-     'Canceled', 'Failed', 'Succeeded', 'Moving', 'Updating', 'Registering', 'Registered',
-     'Unregistering', 'Unregistered', 'Completed'.
-    :vartype provisioning_state: str or
-     ~logic_management_client.models.WorkflowTriggerProvisioningState
-    :ivar created_time: Gets the created time.
-    :vartype created_time: ~datetime.datetime
-    :ivar changed_time: Gets the changed time.
-    :vartype changed_time: ~datetime.datetime
-    :ivar state: The workflow state. Possible values include: 'NotSpecified', 'Completed',
-     'Enabled', 'Disabled', 'Deleted', 'Suspended'.
-    :vartype state: str or ~logic_management_client.models.WorkflowState
-    :ivar status: The workflow status. Possible values include: 'NotSpecified', 'Paused',
-     'Running', 'Waiting', 'Succeeded', 'Skipped', 'Suspended', 'Cancelled', 'Failed', 'Faulted',
-     'TimedOut', 'Aborted', 'Ignored'.
-    :vartype status: str or ~logic_management_client.models.WorkflowStatus
-    :ivar last_execution_time: Gets the last execution time.
-    :vartype last_execution_time: ~datetime.datetime
-    :ivar next_execution_time: Gets the next execution time.
-    :vartype next_execution_time: ~datetime.datetime
-    :ivar recurrence: The workflow trigger recurrence.
-    :vartype recurrence: ~logic_management_client.models.WorkflowTriggerRecurrence
-    :ivar workflow: The resource reference.
-    :vartype workflow: ~logic_management_client.models.ResourceReference
-    """
-
-    _validation = {
-        'provisioning_state': {'readonly': True},
-        'created_time': {'readonly': True},
-        'changed_time': {'readonly': True},
-        'state': {'readonly': True},
-        'status': {'readonly': True},
-        'last_execution_time': {'readonly': True},
-        'next_execution_time': {'readonly': True},
-        'recurrence': {'readonly': True},
-        'workflow': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-        'created_time': {'key': 'createdTime', 'type': 'iso-8601'},
-        'changed_time': {'key': 'changedTime', 'type': 'iso-8601'},
-        'state': {'key': 'state', 'type': 'str'},
-        'status': {'key': 'status', 'type': 'str'},
-        'last_execution_time': {'key': 'lastExecutionTime', 'type': 'iso-8601'},
-        'next_execution_time': {'key': 'nextExecutionTime', 'type': 'iso-8601'},
-        'recurrence': {'key': 'recurrence', 'type': 'WorkflowTriggerRecurrence'},
-        'workflow': {'key': 'workflow', 'type': 'ResourceReference'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(WorkflowTriggerProperties, self).__init__(**kwargs)
-        self.provisioning_state = None
-        self.created_time = None
-        self.changed_time = None
-        self.state = None
-        self.status = None
-        self.last_execution_time = None
-        self.next_execution_time = None
-        self.recurrence = None
-        self.workflow = None
-
-
 class WorkflowTriggerRecurrence(msrest.serialization.Model):
     """The workflow trigger recurrence.
 
-    :param frequency: The recurrence frequency. Possible values include: 'NotSpecified', 'Second',
-     'Minute', 'Hour', 'Day', 'Week', 'Month', 'Year'.
+    :param frequency: The frequency. Possible values include: 'NotSpecified', 'Second', 'Minute',
+     'Hour', 'Day', 'Week', 'Month', 'Year'.
     :type frequency: str or ~logic_management_client.models.RecurrenceFrequency
     :param interval: The interval.
     :type interval: int
@@ -7557,19 +6678,19 @@ class WorkflowVersion(Resource):
     :vartype created_time: ~datetime.datetime
     :ivar changed_time: Gets the changed time.
     :vartype changed_time: ~datetime.datetime
-    :param state: The workflow state. Possible values include: 'NotSpecified', 'Completed',
-     'Enabled', 'Disabled', 'Deleted', 'Suspended'.
+    :param state: The state. Possible values include: 'NotSpecified', 'Completed', 'Enabled',
+     'Disabled', 'Deleted', 'Suspended'.
     :type state: str or ~logic_management_client.models.WorkflowState
     :ivar version: Gets the version.
     :vartype version: str
     :ivar access_endpoint: Gets the access endpoint.
     :vartype access_endpoint: str
-    :param sku: The sku type.
+    :param sku: The sku.
     :type sku: ~logic_management_client.models.Sku
-    :param integration_account: The resource reference.
+    :param integration_account: The integration account.
     :type integration_account: ~logic_management_client.models.ResourceReference
-    :param definition:
-    :type definition: ~logic_management_client.models.Object
+    :param definition: The definition.
+    :type definition: object
     :param parameters: The parameters.
     :type parameters: dict[str, ~logic_management_client.models.WorkflowParameter]
     """
@@ -7597,7 +6718,7 @@ class WorkflowVersion(Resource):
         'access_endpoint': {'key': 'properties.accessEndpoint', 'type': 'str'},
         'sku': {'key': 'properties.sku', 'type': 'Sku'},
         'integration_account': {'key': 'properties.integrationAccount', 'type': 'ResourceReference'},
-        'definition': {'key': 'properties.definition', 'type': 'Object'},
+        'definition': {'key': 'properties.definition', 'type': 'object'},
         'parameters': {'key': 'properties.parameters', 'type': '{WorkflowParameter}'},
     }
 
@@ -7638,67 +6759,6 @@ class WorkflowVersionListResult(msrest.serialization.Model):
         super(WorkflowVersionListResult, self).__init__(**kwargs)
         self.value = kwargs.get('value', None)
         self.next_link = kwargs.get('next_link', None)
-
-
-class WorkflowVersionProperties(msrest.serialization.Model):
-    """The workflow version properties.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar created_time: Gets the created time.
-    :vartype created_time: ~datetime.datetime
-    :ivar changed_time: Gets the changed time.
-    :vartype changed_time: ~datetime.datetime
-    :param state: The workflow state. Possible values include: 'NotSpecified', 'Completed',
-     'Enabled', 'Disabled', 'Deleted', 'Suspended'.
-    :type state: str or ~logic_management_client.models.WorkflowState
-    :ivar version: Gets the version.
-    :vartype version: str
-    :ivar access_endpoint: Gets the access endpoint.
-    :vartype access_endpoint: str
-    :param sku: The sku type.
-    :type sku: ~logic_management_client.models.Sku
-    :param integration_account: The resource reference.
-    :type integration_account: ~logic_management_client.models.ResourceReference
-    :param definition:
-    :type definition: ~logic_management_client.models.Object
-    :param parameters: The parameters.
-    :type parameters: dict[str, ~logic_management_client.models.WorkflowParameter]
-    """
-
-    _validation = {
-        'created_time': {'readonly': True},
-        'changed_time': {'readonly': True},
-        'version': {'readonly': True},
-        'access_endpoint': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'created_time': {'key': 'createdTime', 'type': 'iso-8601'},
-        'changed_time': {'key': 'changedTime', 'type': 'iso-8601'},
-        'state': {'key': 'state', 'type': 'str'},
-        'version': {'key': 'version', 'type': 'str'},
-        'access_endpoint': {'key': 'accessEndpoint', 'type': 'str'},
-        'sku': {'key': 'sku', 'type': 'Sku'},
-        'integration_account': {'key': 'integrationAccount', 'type': 'ResourceReference'},
-        'definition': {'key': 'definition', 'type': 'Object'},
-        'parameters': {'key': 'parameters', 'type': '{WorkflowParameter}'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(WorkflowVersionProperties, self).__init__(**kwargs)
-        self.created_time = None
-        self.changed_time = None
-        self.state = kwargs.get('state', None)
-        self.version = None
-        self.access_endpoint = None
-        self.sku = kwargs.get('sku', None)
-        self.integration_account = kwargs.get('integration_account', None)
-        self.definition = kwargs.get('definition', None)
-        self.parameters = kwargs.get('parameters', None)
 
 
 class WsdlService(msrest.serialization.Model):
@@ -7831,9 +6891,9 @@ class X12AgreementContent(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param receive_agreement: Required. The X12 one-way agreement.
+    :param receive_agreement: Required. The X12 one-way receive agreement.
     :type receive_agreement: ~logic_management_client.models.X12OneWayAgreement
-    :param send_agreement: Required. The X12 one-way agreement.
+    :param send_agreement: Required. The X12 one-way send agreement.
     :type send_agreement: ~logic_management_client.models.X12OneWayAgreement
     """
 
@@ -7944,11 +7004,11 @@ class X12EnvelopeOverride(msrest.serialization.Model):
     :type receiver_application_id: str
     :param functional_identifier_code: The functional identifier code.
     :type functional_identifier_code: str
-    :param date_format: Required. The x12 date format. Possible values include: 'NotSpecified',
+    :param date_format: Required. The date format. Possible values include: 'NotSpecified',
      'CCYYMMDD', 'YYMMDD'.
     :type date_format: str or ~logic_management_client.models.X12DateFormat
-    :param time_format: Required. The x12 time format. Possible values include: 'NotSpecified',
-     'HHMM', 'HHMMSS', 'HHMMSSdd', 'HHMMSSd'.
+    :param time_format: Required. The time format. Possible values include: 'NotSpecified', 'HHMM',
+     'HHMMSS', 'HHMMSSdd', 'HHMMSSd'.
     :type time_format: str or ~logic_management_client.models.X12TimeFormat
     """
 
@@ -8051,11 +7111,11 @@ class X12EnvelopeSettings(msrest.serialization.Model):
     :param overwrite_existing_transaction_set_control_number: Required. The value indicating
      whether to overwrite existing transaction set control number.
     :type overwrite_existing_transaction_set_control_number: bool
-    :param group_header_date_format: Required. The x12 date format. Possible values include:
-     'NotSpecified', 'CCYYMMDD', 'YYMMDD'.
+    :param group_header_date_format: Required. The group header date format. Possible values
+     include: 'NotSpecified', 'CCYYMMDD', 'YYMMDD'.
     :type group_header_date_format: str or ~logic_management_client.models.X12DateFormat
-    :param group_header_time_format: Required. The x12 time format. Possible values include:
-     'NotSpecified', 'HHMM', 'HHMMSS', 'HHMMSSdd', 'HHMMSSd'.
+    :param group_header_time_format: Required. The group header time format. Possible values
+     include: 'NotSpecified', 'HHMM', 'HHMMSS', 'HHMMSSdd', 'HHMMSSd'.
     :type group_header_time_format: str or ~logic_management_client.models.X12TimeFormat
     :param usage_indicator: Required. The usage indicator. Possible values include: 'NotSpecified',
      'Test', 'Information', 'Production'.
@@ -8258,12 +7318,11 @@ class X12OneWayAgreement(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param sender_business_identity: Required. The integration account partner's business identity.
+    :param sender_business_identity: Required. The sender business identity.
     :type sender_business_identity: ~logic_management_client.models.BusinessIdentity
-    :param receiver_business_identity: Required. The integration account partner's business
-     identity.
+    :param receiver_business_identity: Required. The receiver business identity.
     :type receiver_business_identity: ~logic_management_client.models.BusinessIdentity
-    :param protocol_settings: Required. The X12 agreement protocol settings.
+    :param protocol_settings: Required. The X12 protocol settings.
     :type protocol_settings: ~logic_management_client.models.X12ProtocolSettings
     """
 
@@ -8348,17 +7407,17 @@ class X12ProtocolSettings(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param validation_settings: Required. The X12 agreement validation settings.
+    :param validation_settings: Required. The X12 validation settings.
     :type validation_settings: ~logic_management_client.models.X12ValidationSettings
-    :param framing_settings: Required. The X12 agreement framing settings.
+    :param framing_settings: Required. The X12 framing settings.
     :type framing_settings: ~logic_management_client.models.X12FramingSettings
-    :param envelope_settings: Required. The X12 agreement envelope settings.
+    :param envelope_settings: Required. The X12 envelope settings.
     :type envelope_settings: ~logic_management_client.models.X12EnvelopeSettings
-    :param acknowledgement_settings: Required. The X12 agreement acknowledgement settings.
+    :param acknowledgement_settings: Required. The X12 acknowledgment settings.
     :type acknowledgement_settings: ~logic_management_client.models.X12AcknowledgementSettings
-    :param message_filter: Required. The X12 message filter for odata query.
+    :param message_filter: Required. The X12 message filter.
     :type message_filter: ~logic_management_client.models.X12MessageFilter
-    :param security_settings: Required. The X12 agreement security settings.
+    :param security_settings: Required. The X12 security settings.
     :type security_settings: ~logic_management_client.models.X12SecuritySettings
     :param processing_settings: Required. The X12 processing settings.
     :type processing_settings: ~logic_management_client.models.X12ProcessingSettings

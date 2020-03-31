@@ -38,8 +38,8 @@ helps['logic workflow create'] = """
     examples:
       - name: Create or update a workflow
         text: |-
-               az logic workflow create --resource-group "test-resource-group" --location "centralus"
-               --name "testWorkflow"
+               az logic workflow create -g "test-resource-group" -l "centralus"
+               -n "testWorkflow" --defintion "workflow.json"
 """
 
 helps['logic workflow update'] = """

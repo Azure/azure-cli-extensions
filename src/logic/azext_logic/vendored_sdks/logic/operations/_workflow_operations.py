@@ -9,12 +9,11 @@ import datetime
 from typing import Any, Callable, Dict, Generic, Optional, TypeVar, Union
 import warnings
 
-from azure.core.exceptions import map_error
+from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.paging import ItemPaged
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpRequest, HttpResponse
 from azure.core.polling import LROPoller, NoPolling, PollingMethod
-from azure.mgmt.core.polling.arm_polling import ARMPolling
 
 from .. import models
 
@@ -24,7 +23,8 @@ ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dic
 class WorkflowOperations(object):
     """WorkflowOperations operations.
 
-    You should not instantiate directly this class, but create a Client instance that will create it for you and attach it as attribute.
+    You should not instantiate this class directly. Instead, you should create a Client instance that
+    instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
     :type models: ~logic_management_client.models
@@ -54,15 +54,15 @@ class WorkflowOperations(object):
         :param top: The number of items to be included in the result.
         :type top: int
         :param filter: The filter to apply on the operation. Options for filters include: State,
-         Trigger, and ReferencedResourceId.
+     Trigger, and ReferencedResourceId.
         :type filter: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: WorkflowListResult or the result of cls(response)
         :rtype: ~logic_management_client.models.WorkflowListResult
-        :raises: ~logic_management_client.models.ErrorResponseException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.WorkflowListResult"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.WorkflowListResult"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2019-05-01"
 
         def prepare_request(next_link=None):
@@ -77,7 +77,7 @@ class WorkflowOperations(object):
                 url = next_link
 
             # Construct parameters
-            query_parameters = {}
+            query_parameters = {}  # type: Dict[str, Any]
             query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
             if top is not None:
                 query_parameters['$top'] = self._serialize.query("top", top, 'int')
@@ -85,7 +85,7 @@ class WorkflowOperations(object):
                 query_parameters['$filter'] = self._serialize.query("filter", filter, 'str')
 
             # Construct headers
-            header_parameters = {}
+            header_parameters = {}  # type: Dict[str, Any]
             header_parameters['Accept'] = 'application/json'
 
             # Construct and send request
@@ -97,7 +97,7 @@ class WorkflowOperations(object):
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
-            return deserialized.next_link, iter(list_of_elem)
+            return deserialized.next_link or None, iter(list_of_elem)
 
         def get_next(next_link=None):
             request = prepare_request(next_link)
@@ -106,8 +106,9 @@ class WorkflowOperations(object):
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
+                error = self._deserialize(models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise models.ErrorResponseException.from_response(response, self._deserialize)
+                raise HttpResponseError(response=response, model=error)
 
             return pipeline_response
 
@@ -131,15 +132,15 @@ class WorkflowOperations(object):
         :param top: The number of items to be included in the result.
         :type top: int
         :param filter: The filter to apply on the operation. Options for filters include: State,
-         Trigger, and ReferencedResourceId.
+     Trigger, and ReferencedResourceId.
         :type filter: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: WorkflowListResult or the result of cls(response)
         :rtype: ~logic_management_client.models.WorkflowListResult
-        :raises: ~logic_management_client.models.ErrorResponseException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.WorkflowListResult"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.WorkflowListResult"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2019-05-01"
 
         def prepare_request(next_link=None):
@@ -155,7 +156,7 @@ class WorkflowOperations(object):
                 url = next_link
 
             # Construct parameters
-            query_parameters = {}
+            query_parameters = {}  # type: Dict[str, Any]
             query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
             if top is not None:
                 query_parameters['$top'] = self._serialize.query("top", top, 'int')
@@ -163,7 +164,7 @@ class WorkflowOperations(object):
                 query_parameters['$filter'] = self._serialize.query("filter", filter, 'str')
 
             # Construct headers
-            header_parameters = {}
+            header_parameters = {}  # type: Dict[str, Any]
             header_parameters['Accept'] = 'application/json'
 
             # Construct and send request
@@ -175,7 +176,7 @@ class WorkflowOperations(object):
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
-            return deserialized.next_link, iter(list_of_elem)
+            return deserialized.next_link or None, iter(list_of_elem)
 
         def get_next(next_link=None):
             request = prepare_request(next_link)
@@ -184,8 +185,9 @@ class WorkflowOperations(object):
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
+                error = self._deserialize(models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise models.ErrorResponseException.from_response(response, self._deserialize)
+                raise HttpResponseError(response=response, model=error)
 
             return pipeline_response
 
@@ -210,10 +212,10 @@ class WorkflowOperations(object):
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Workflow or the result of cls(response)
         :rtype: ~logic_management_client.models.Workflow
-        :raises: ~logic_management_client.models.ErrorResponseException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.Workflow"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.Workflow"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2019-05-01"
 
         # Construct URL
@@ -226,11 +228,11 @@ class WorkflowOperations(object):
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
         # Construct and send request
@@ -240,7 +242,8 @@ class WorkflowOperations(object):
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.ErrorResponseException.from_response(response, self._deserialize)
+            error = self._deserialize(models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error)
 
         deserialized = self._deserialize('Workflow', pipeline_response)
 
@@ -254,7 +257,14 @@ class WorkflowOperations(object):
         self,
         resource_group_name,  # type: str
         workflow_name,  # type: str
-        workflow, # type: dict
+        location=None,  # type: Optional[str]
+        tags=None,  # type: Optional[Dict[str, str]]
+        state=None,  # type: Optional[Union[str, "models.WorkflowState"]]
+        endpoints_configuration=None,  # type: Optional["models.FlowEndpointsConfiguration"]
+        integration_account=None,  # type: Optional["models.ResourceReference"]
+        integration_service_environment=None,  # type: Optional["models.ResourceReference"]
+        definition=None,  # type: Optional[object]
+        parameters=None,  # type: Optional[Dict[str, "WorkflowParameter"]]
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.Workflow"
@@ -264,12 +274,33 @@ class WorkflowOperations(object):
         :type resource_group_name: str
         :param workflow_name: The workflow name.
         :type workflow_name: str
-        :param workflow: dictionary of workflow params 
+        :param location: The resource location.
+        :type location: str
+        :param tags: The resource tags.
+        :type tags: dict[str, str]
+        :param state: The state.
+        :type state: str or ~logic_management_client.models.WorkflowState
+        :param endpoints_configuration: The endpoints configuration.
+        :type endpoints_configuration: ~logic_management_client.models.FlowEndpointsConfiguration
+        :param integration_account: The integration account.
+        :type integration_account: ~logic_management_client.models.ResourceReference
+        :param integration_service_environment: The integration service environment.
+        :type integration_service_environment: ~logic_management_client.models.ResourceReference
+        :param definition: The definition.
+        :type definition: object
+        :param parameters: The parameters.
+        :type parameters: dict[str, ~logic_management_client.models.WorkflowParameter]
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: Workflow or the result of cls(response)
+        :rtype: ~logic_management_client.models.Workflow or ~logic_management_client.models.Workflow
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.Workflow"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.Workflow"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
+        _workflow = models.Workflow(location=location, tags=tags, state=state, endpoints_configuration=endpoints_configuration, integration_account=integration_account, integration_service_environment=integration_service_environment, definition=definition, parameters=parameters)
         api_version = "2019-05-01"
+        content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
         url = self.create_or_update.metadata['url']
@@ -281,21 +312,27 @@ class WorkflowOperations(object):
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'application/json'
-        
-        request = self._client.put(url, query_parameters, header_parameters, workflow)
+
+        # Construct and send request
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(_workflow, 'Workflow')
+        body_content_kwargs['content'] = body_content
+        request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
+
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.ErrorResponseException.from_response(response, self._deserialize)
+            error = self._deserialize(models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error)
 
         deserialized = None
         if response.status_code == 200:
@@ -314,7 +351,14 @@ class WorkflowOperations(object):
         self,
         resource_group_name,  # type: str
         workflow_name,  # type: str
-        tags,  # type: dict
+        location=None,  # type: Optional[str]
+        tags=None,  # type: Optional[Dict[str, str]]
+        state=None,  # type: Optional[Union[str, "models.WorkflowState"]]
+        endpoints_configuration=None,  # type: Optional["models.FlowEndpointsConfiguration"]
+        integration_account=None,  # type: Optional["models.ResourceReference"]
+        integration_service_environment=None,  # type: Optional["models.ResourceReference"]
+        definition=None,  # type: Optional[object]
+        parameters=None,  # type: Optional[Dict[str, "WorkflowParameter"]]
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.Workflow"
@@ -324,11 +368,33 @@ class WorkflowOperations(object):
         :type resource_group_name: str
         :param workflow_name: The workflow name.
         :type workflow_name: str
-        :tags dictionary of tags
+        :param location: The resource location.
+        :type location: str
+        :param tags: The resource tags.
+        :type tags: dict[str, str]
+        :param state: The state.
+        :type state: str or ~logic_management_client.models.WorkflowState
+        :param endpoints_configuration: The endpoints configuration.
+        :type endpoints_configuration: ~logic_management_client.models.FlowEndpointsConfiguration
+        :param integration_account: The integration account.
+        :type integration_account: ~logic_management_client.models.ResourceReference
+        :param integration_service_environment: The integration service environment.
+        :type integration_service_environment: ~logic_management_client.models.ResourceReference
+        :param definition: The definition.
+        :type definition: object
+        :param parameters: The parameters.
+        :type parameters: dict[str, ~logic_management_client.models.WorkflowParameter]
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: Workflow or the result of cls(response)
+        :rtype: ~logic_management_client.models.Workflow
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.Workflow"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.Workflow"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+
+        _workflow = models.Workflow(location=location, tags=tags, state=state, endpoints_configuration=endpoints_configuration, integration_account=integration_account, integration_service_environment=integration_service_environment, definition=definition, parameters=parameters)
         api_version = "2019-05-01"
+        content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
         url = self.update.metadata['url']
@@ -340,22 +406,27 @@ class WorkflowOperations(object):
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'application/json'
 
         # Construct and send request
-        request = self._client.patch(url, query_parameters, header_parameters, tags)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(_workflow, 'Workflow')
+        body_content_kwargs['content'] = body_content
+        request = self._client.patch(url, query_parameters, header_parameters, **body_content_kwargs)
+
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.ErrorResponseException.from_response(response, self._deserialize)
+            error = self._deserialize(models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error)
 
         deserialized = self._deserialize('Workflow', pipeline_response)
 
@@ -381,10 +452,10 @@ class WorkflowOperations(object):
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None or the result of cls(response)
         :rtype: None
-        :raises: ~logic_management_client.models.ErrorResponseException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType[None]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2019-05-01"
 
         # Construct URL
@@ -397,11 +468,11 @@ class WorkflowOperations(object):
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
 
         # Construct and send request
         request = self._client.delete(url, query_parameters, header_parameters)
@@ -410,7 +481,8 @@ class WorkflowOperations(object):
 
         if response.status_code not in [200, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.ErrorResponseException.from_response(response, self._deserialize)
+            error = self._deserialize(models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error)
 
         if cls:
           return cls(pipeline_response, None, {})
@@ -433,10 +505,10 @@ class WorkflowOperations(object):
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None or the result of cls(response)
         :rtype: None
-        :raises: ~logic_management_client.models.ErrorResponseException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType[None]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2019-05-01"
 
         # Construct URL
@@ -449,11 +521,11 @@ class WorkflowOperations(object):
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
 
         # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
@@ -462,7 +534,8 @@ class WorkflowOperations(object):
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.ErrorResponseException.from_response(response, self._deserialize)
+            error = self._deserialize(models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error)
 
         if cls:
           return cls(pipeline_response, None, {})
@@ -485,10 +558,10 @@ class WorkflowOperations(object):
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None or the result of cls(response)
         :rtype: None
-        :raises: ~logic_management_client.models.ErrorResponseException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType[None]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2019-05-01"
 
         # Construct URL
@@ -501,11 +574,11 @@ class WorkflowOperations(object):
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
 
         # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
@@ -514,7 +587,8 @@ class WorkflowOperations(object):
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.ErrorResponseException.from_response(response, self._deserialize)
+            error = self._deserialize(models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error)
 
         if cls:
           return cls(pipeline_response, None, {})
@@ -528,7 +602,7 @@ class WorkflowOperations(object):
         target_schema_version=None,  # type: Optional[str]
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.Object"
+        # type: (...) -> object
         """Generates the upgraded definition for a workflow.
 
         :param resource_group_name: The resource group name.
@@ -538,15 +612,16 @@ class WorkflowOperations(object):
         :param target_schema_version: The target schema version.
         :type target_schema_version: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: Object or the result of cls(response)
-        :rtype: ~logic_management_client.models.Object
-        :raises: ~logic_management_client.models.ErrorResponseException:
+        :return: object or the result of cls(response)
+        :rtype: object
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.Object"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType[object]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        parameters = models.GenerateUpgradedDefinitionParameters(target_schema_version=target_schema_version)
+        _parameters = models.GenerateUpgradedDefinitionParameters(target_schema_version=target_schema_version)
         api_version = "2019-05-01"
+        content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
         url = self.generate_upgraded_definition.metadata['url']
@@ -558,27 +633,29 @@ class WorkflowOperations(object):
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'application/json'
-
-        # Construct body
-        body_content = self._serialize.body(parameters, 'GenerateUpgradedDefinitionParameters')
 
         # Construct and send request
-        request = self._client.post(url, query_parameters, header_parameters, body_content)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(_parameters, 'GenerateUpgradedDefinitionParameters')
+        body_content_kwargs['content'] = body_content
+        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.ErrorResponseException.from_response(response, self._deserialize)
+            error = self._deserialize(models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error)
 
-        deserialized = self._deserialize('Object', pipeline_response)
+        deserialized = self._deserialize('object', pipeline_response)
 
         if cls:
           return cls(pipeline_response, deserialized, {})
@@ -608,13 +685,14 @@ class WorkflowOperations(object):
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: WorkflowTriggerCallbackUrl or the result of cls(response)
         :rtype: ~logic_management_client.models.WorkflowTriggerCallbackUrl
-        :raises: ~logic_management_client.models.ErrorResponseException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.WorkflowTriggerCallbackUrl"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.WorkflowTriggerCallbackUrl"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        list_callback_url = models.GetCallbackUrlParameters(not_after=not_after, key_type=key_type)
+        _list_callback_url = models.GetCallbackUrlParameters(not_after=not_after, key_type=key_type)
         api_version = "2019-05-01"
+        content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
         url = self.list_callback_url.metadata['url']
@@ -626,25 +704,27 @@ class WorkflowOperations(object):
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'application/json'
-
-        # Construct body
-        body_content = self._serialize.body(list_callback_url, 'GetCallbackUrlParameters')
 
         # Construct and send request
-        request = self._client.post(url, query_parameters, header_parameters, body_content)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(_list_callback_url, 'GetCallbackUrlParameters')
+        body_content_kwargs['content'] = body_content
+        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.ErrorResponseException.from_response(response, self._deserialize)
+            error = self._deserialize(models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error)
 
         deserialized = self._deserialize('WorkflowTriggerCallbackUrl', pipeline_response)
 
@@ -660,7 +740,7 @@ class WorkflowOperations(object):
         workflow_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.Object"
+        # type: (...) -> object
         """Gets an OpenAPI definition for the workflow.
 
         :param resource_group_name: The resource group name.
@@ -668,12 +748,12 @@ class WorkflowOperations(object):
         :param workflow_name: The workflow name.
         :type workflow_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: Object or the result of cls(response)
-        :rtype: ~logic_management_client.models.Object
-        :raises: ~logic_management_client.models.ErrorResponseException:
+        :return: object or the result of cls(response)
+        :rtype: object
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.Object"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType[object]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2019-05-01"
 
         # Construct URL
@@ -686,11 +766,11 @@ class WorkflowOperations(object):
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
         # Construct and send request
@@ -700,9 +780,10 @@ class WorkflowOperations(object):
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.ErrorResponseException.from_response(response, self._deserialize)
+            error = self._deserialize(models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error)
 
-        deserialized = self._deserialize('Object', pipeline_response)
+        deserialized = self._deserialize('object', pipeline_response)
 
         if cls:
           return cls(pipeline_response, deserialized, {})
@@ -718,19 +799,19 @@ class WorkflowOperations(object):
         tags=None,  # type: Optional[Dict[str, str]]
         state=None,  # type: Optional[Union[str, "models.WorkflowState"]]
         endpoints_configuration=None,  # type: Optional["models.FlowEndpointsConfiguration"]
-        sku=None,  # type: Optional["models.Sku"]
         integration_account=None,  # type: Optional["models.ResourceReference"]
         integration_service_environment=None,  # type: Optional["models.ResourceReference"]
-        definition=None,  # type: Optional["models.Object"]
+        definition=None,  # type: Optional[object]
         parameters=None,  # type: Optional[Dict[str, "WorkflowParameter"]]
         **kwargs  # type: Any
     ):
         # type: (...) -> None
-        cls = kwargs.pop('cls', None )  # type: ClsType[None]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        move = models.Workflow(location=location, tags=tags, state=state, endpoints_configuration=endpoints_configuration, sku=sku, integration_account=integration_account, integration_service_environment=integration_service_environment, definition=definition, parameters=parameters)
+        _move = models.Workflow(location=location, tags=tags, state=state, endpoints_configuration=endpoints_configuration, integration_account=integration_account, integration_service_environment=integration_service_environment, definition=definition, parameters=parameters)
         api_version = "2019-05-01"
+        content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
         url = self._move_initial.metadata['url']
@@ -742,24 +823,26 @@ class WorkflowOperations(object):
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
-        header_parameters['Content-Type'] = 'application/json'
-
-        # Construct body
-        body_content = self._serialize.body(move, 'Workflow')
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
 
         # Construct and send request
-        request = self._client.post(url, query_parameters, header_parameters, body_content)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(_move, 'Workflow')
+        body_content_kwargs['content'] = body_content
+        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.ErrorResponseException.from_response(response, self._deserialize)
+            error = self._deserialize(models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error)
 
         if cls:
           return cls(pipeline_response, None, {})
@@ -774,10 +857,9 @@ class WorkflowOperations(object):
         tags=None,  # type: Optional[Dict[str, str]]
         state=None,  # type: Optional[Union[str, "models.WorkflowState"]]
         endpoints_configuration=None,  # type: Optional["models.FlowEndpointsConfiguration"]
-        sku=None,  # type: Optional["models.Sku"]
         integration_account=None,  # type: Optional["models.ResourceReference"]
         integration_service_environment=None,  # type: Optional["models.ResourceReference"]
-        definition=None,  # type: Optional["models.Object"]
+        definition=None,  # type: Optional[object]
         parameters=None,  # type: Optional[Dict[str, "WorkflowParameter"]]
         **kwargs  # type: Any
     ):
@@ -792,18 +874,16 @@ class WorkflowOperations(object):
         :type location: str
         :param tags: The resource tags.
         :type tags: dict[str, str]
-        :param state: The workflow state.
+        :param state: The state.
         :type state: str or ~logic_management_client.models.WorkflowState
         :param endpoints_configuration: The endpoints configuration.
         :type endpoints_configuration: ~logic_management_client.models.FlowEndpointsConfiguration
-        :param sku: The sku type.
-        :type sku: ~logic_management_client.models.Sku
-        :param integration_account: The resource reference.
+        :param integration_account: The integration account.
         :type integration_account: ~logic_management_client.models.ResourceReference
-        :param integration_service_environment: The resource reference.
+        :param integration_service_environment: The integration service environment.
         :type integration_service_environment: ~logic_management_client.models.ResourceReference
-        :param definition:
-        :type definition: ~logic_management_client.models.Object
+        :param definition: The definition.
+        :type definition: object
         :param parameters: The parameters.
         :type parameters: dict[str, ~logic_management_client.models.WorkflowParameter]
         :keyword callable cls: A custom type or function that will be passed the direct response
@@ -813,10 +893,10 @@ class WorkflowOperations(object):
         :return: An instance of LROPoller that returns None
         :rtype: ~azure.core.polling.LROPoller[None]
 
-        :raises ~logic_management_client.models.ErrorResponseException:
+        :raises ~azure.core.exceptions.HttpResponseError:
         """
-        polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
-        cls = kwargs.pop('cls', None )  # type: ClsType[None]
+        polling = kwargs.pop('polling', False)  # type: Union[bool, PollingMethod]
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
         raw_result = self._move_initial(
             resource_group_name=resource_group_name,
             workflow_name=workflow_name,
@@ -824,7 +904,6 @@ class WorkflowOperations(object):
             tags=tags,
             state=state,
             endpoints_configuration=endpoints_configuration,
-            sku=sku,
             integration_account=integration_account,
             integration_service_environment=integration_service_environment,
             definition=definition,
@@ -841,7 +920,7 @@ class WorkflowOperations(object):
             'polling_interval',
             self._config.polling_interval
         )
-        if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
+        if polling is True: raise ValueError("polling being True is not valid because no default polling implemetation has been defined.")
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
@@ -866,13 +945,14 @@ class WorkflowOperations(object):
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None or the result of cls(response)
         :rtype: None
-        :raises: ~logic_management_client.models.ErrorResponseException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType[None]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        key_type = models.RegenerateActionParameter(key_type=key_type)
+        _key_type = models.RegenerateActionParameter(key_type=key_type)
         api_version = "2019-05-01"
+        content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
         url = self.regenerate_access_key.metadata['url']
@@ -884,24 +964,26 @@ class WorkflowOperations(object):
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
-        header_parameters['Content-Type'] = 'application/json'
-
-        # Construct body
-        body_content = self._serialize.body(key_type, 'RegenerateActionParameter')
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
 
         # Construct and send request
-        request = self._client.post(url, query_parameters, header_parameters, body_content)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(_key_type, 'RegenerateActionParameter')
+        body_content_kwargs['content'] = body_content
+        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.ErrorResponseException.from_response(response, self._deserialize)
+            error = self._deserialize(models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error)
 
         if cls:
           return cls(pipeline_response, None, {})
@@ -916,10 +998,9 @@ class WorkflowOperations(object):
         tags=None,  # type: Optional[Dict[str, str]]
         state=None,  # type: Optional[Union[str, "models.WorkflowState"]]
         endpoints_configuration=None,  # type: Optional["models.FlowEndpointsConfiguration"]
-        sku=None,  # type: Optional["models.Sku"]
         integration_account=None,  # type: Optional["models.ResourceReference"]
         integration_service_environment=None,  # type: Optional["models.ResourceReference"]
-        definition=None,  # type: Optional["models.Object"]
+        definition=None,  # type: Optional[object]
         parameters=None,  # type: Optional[Dict[str, "WorkflowParameter"]]
         **kwargs  # type: Any
     ):
@@ -934,30 +1015,29 @@ class WorkflowOperations(object):
         :type location: str
         :param tags: The resource tags.
         :type tags: dict[str, str]
-        :param state: The workflow state.
+        :param state: The state.
         :type state: str or ~logic_management_client.models.WorkflowState
         :param endpoints_configuration: The endpoints configuration.
         :type endpoints_configuration: ~logic_management_client.models.FlowEndpointsConfiguration
-        :param sku: The sku type.
-        :type sku: ~logic_management_client.models.Sku
-        :param integration_account: The resource reference.
+        :param integration_account: The integration account.
         :type integration_account: ~logic_management_client.models.ResourceReference
-        :param integration_service_environment: The resource reference.
+        :param integration_service_environment: The integration service environment.
         :type integration_service_environment: ~logic_management_client.models.ResourceReference
-        :param definition:
-        :type definition: ~logic_management_client.models.Object
+        :param definition: The definition.
+        :type definition: object
         :param parameters: The parameters.
         :type parameters: dict[str, ~logic_management_client.models.WorkflowParameter]
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None or the result of cls(response)
         :rtype: None
-        :raises: ~logic_management_client.models.ErrorResponseException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType[None]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        validate = models.Workflow(location=location, tags=tags, state=state, endpoints_configuration=endpoints_configuration, sku=sku, integration_account=integration_account, integration_service_environment=integration_service_environment, definition=definition, parameters=parameters)
+        _validate = models.Workflow(location=location, tags=tags, state=state, endpoints_configuration=endpoints_configuration, integration_account=integration_account, integration_service_environment=integration_service_environment, definition=definition, parameters=parameters)
         api_version = "2019-05-01"
+        content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
         url = self.validate_by_resource_group.metadata['url']
@@ -969,24 +1049,26 @@ class WorkflowOperations(object):
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
-        header_parameters['Content-Type'] = 'application/json'
-
-        # Construct body
-        body_content = self._serialize.body(validate, 'Workflow')
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
 
         # Construct and send request
-        request = self._client.post(url, query_parameters, header_parameters, body_content)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(_validate, 'Workflow')
+        body_content_kwargs['content'] = body_content
+        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.ErrorResponseException.from_response(response, self._deserialize)
+            error = self._deserialize(models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error)
 
         if cls:
           return cls(pipeline_response, None, {})
@@ -1012,10 +1094,10 @@ class WorkflowOperations(object):
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None or the result of cls(response)
         :rtype: None
-        :raises: ~logic_management_client.models.ErrorResponseException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType[None]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2019-05-01"
 
         # Construct URL
@@ -1029,11 +1111,11 @@ class WorkflowOperations(object):
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
 
         # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
@@ -1042,7 +1124,8 @@ class WorkflowOperations(object):
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.ErrorResponseException.from_response(response, self._deserialize)
+            error = self._deserialize(models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error)
 
         if cls:
           return cls(pipeline_response, None, {})

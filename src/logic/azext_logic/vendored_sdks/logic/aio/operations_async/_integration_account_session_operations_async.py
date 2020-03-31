@@ -9,7 +9,7 @@ from typing import Any, Callable, Dict, Generic, Optional, TypeVar, Union
 import warnings
 
 from azure.core.async_paging import AsyncItemPaged, AsyncList
-from azure.core.exceptions import map_error
+from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
 
@@ -21,7 +21,8 @@ ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T
 class IntegrationAccountSessionOperations:
     """IntegrationAccountSessionOperations async operations.
 
-    You should not instantiate directly this class, but create a Client instance that will create it for you and attach it as attribute.
+    You should not instantiate this class directly. Instead, you should create a Client instance that
+    instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
     :type models: ~logic_management_client.models
@@ -55,16 +56,15 @@ class IntegrationAccountSessionOperations:
         :type integration_account_name: str
         :param top: The number of items to be included in the result.
         :type top: int
-        :param filter: The filter to apply on the operation. Options for filters include: State,
-         Trigger, and ReferencedResourceId.
+        :param filter: The filter to apply on the operation. Options for filters include: ChangedTime.
         :type filter: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationAccountSessionListResult or the result of cls(response)
         :rtype: ~logic_management_client.models.IntegrationAccountSessionListResult
-        :raises: ~logic_management_client.models.ErrorResponseException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls: ClsType["models.IntegrationAccountSessionListResult"] = kwargs.pop('cls', None )
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationAccountSessionListResult"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2019-05-01"
 
         def prepare_request(next_link=None):
@@ -81,7 +81,7 @@ class IntegrationAccountSessionOperations:
                 url = next_link
 
             # Construct parameters
-            query_parameters: Dict[str, Any] = {}
+            query_parameters = {}  # type: Dict[str, Any]
             query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
             if top is not None:
                 query_parameters['$top'] = self._serialize.query("top", top, 'int')
@@ -89,7 +89,7 @@ class IntegrationAccountSessionOperations:
                 query_parameters['$filter'] = self._serialize.query("filter", filter, 'str')
 
             # Construct headers
-            header_parameters: Dict[str, Any] = {}
+            header_parameters = {}  # type: Dict[str, Any]
             header_parameters['Accept'] = 'application/json'
 
             # Construct and send request
@@ -101,7 +101,7 @@ class IntegrationAccountSessionOperations:
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
-            return deserialized.next_link, AsyncList(list_of_elem)
+            return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
             request = prepare_request(next_link)
@@ -110,8 +110,9 @@ class IntegrationAccountSessionOperations:
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
+                error = self._deserialize(models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise models.ErrorResponseException.from_response(response, self._deserialize)
+                raise HttpResponseError(response=response, model=error)
 
             return pipeline_response
 
@@ -138,10 +139,10 @@ class IntegrationAccountSessionOperations:
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationAccountSession or the result of cls(response)
         :rtype: ~logic_management_client.models.IntegrationAccountSession
-        :raises: ~logic_management_client.models.ErrorResponseException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls: ClsType["models.IntegrationAccountSession"] = kwargs.pop('cls', None )
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationAccountSession"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2019-05-01"
 
         # Construct URL
@@ -155,11 +156,11 @@ class IntegrationAccountSessionOperations:
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters: Dict[str, Any] = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters: Dict[str, Any] = {}
+        header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
         # Construct and send request
@@ -169,7 +170,8 @@ class IntegrationAccountSessionOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.ErrorResponseException.from_response(response, self._deserialize)
+            error = self._deserialize(models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error)
 
         deserialized = self._deserialize('IntegrationAccountSession', pipeline_response)
 
@@ -186,7 +188,7 @@ class IntegrationAccountSessionOperations:
         session_name: str,
         location: Optional[str] = None,
         tags: Optional[Dict[str, str]] = None,
-        content: Optional["models.Object"] = None,
+        content: Optional[object] = None,
         **kwargs
     ) -> "models.IntegrationAccountSession":
         """Creates or updates an integration account session.
@@ -201,18 +203,19 @@ class IntegrationAccountSessionOperations:
         :type location: str
         :param tags: The resource tags.
         :type tags: dict[str, str]
-        :param content:
-        :type content: ~logic_management_client.models.Object
+        :param content: The session content.
+        :type content: object
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: IntegrationAccountSession or IntegrationAccountSession or the result of cls(response)
+        :return: IntegrationAccountSession or the result of cls(response)
         :rtype: ~logic_management_client.models.IntegrationAccountSession or ~logic_management_client.models.IntegrationAccountSession
-        :raises: ~logic_management_client.models.ErrorResponseException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls: ClsType["models.IntegrationAccountSession"] = kwargs.pop('cls', None )
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationAccountSession"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        session = models.IntegrationAccountSession(location=location, tags=tags, content=content)
+        _session = models.IntegrationAccountSession(location=location, tags=tags, content=content)
         api_version = "2019-05-01"
+        content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
         url = self.create_or_update.metadata['url']
@@ -225,25 +228,27 @@ class IntegrationAccountSessionOperations:
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters: Dict[str, Any] = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters: Dict[str, Any] = {}
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'application/json'
-
-        # Construct body
-        body_content = self._serialize.body(session, 'IntegrationAccountSession')
 
         # Construct and send request
-        request = self._client.put(url, query_parameters, header_parameters, body_content)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(_session, 'IntegrationAccountSession')
+        body_content_kwargs['content'] = body_content
+        request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
+
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.ErrorResponseException.from_response(response, self._deserialize)
+            error = self._deserialize(models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error)
 
         deserialized = None
         if response.status_code == 200:
@@ -276,10 +281,10 @@ class IntegrationAccountSessionOperations:
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None or the result of cls(response)
         :rtype: None
-        :raises: ~logic_management_client.models.ErrorResponseException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls: ClsType[None] = kwargs.pop('cls', None )
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2019-05-01"
 
         # Construct URL
@@ -293,11 +298,11 @@ class IntegrationAccountSessionOperations:
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters: Dict[str, Any] = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters: Dict[str, Any] = {}
+        header_parameters = {}  # type: Dict[str, Any]
 
         # Construct and send request
         request = self._client.delete(url, query_parameters, header_parameters)
@@ -306,7 +311,8 @@ class IntegrationAccountSessionOperations:
 
         if response.status_code not in [200, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.ErrorResponseException.from_response(response, self._deserialize)
+            error = self._deserialize(models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error)
 
         if cls:
           return cls(pipeline_response, None, {})
