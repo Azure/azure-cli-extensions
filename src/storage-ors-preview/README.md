@@ -22,7 +22,7 @@ az storage account create -n storageaccount -g groupName --kind StorageV2
 az storage account blob-service-properties update --enable-versioning --account-name srcAccountName
 ```
 Note:
-- `--enable-versioning` is supported in azure cli 2.3.0, which will be officially release at 2020/03/31.
+- `--enable-versioning` is supported in [azure cli 2.3.0](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest#install), which will be officially release at 2020/03/31.
 - Another option to enable Versioning in azure cli is as follows:
 ```
 az storage account blob-service-properties update --account-name srcAccountName --set is_versioning_enabled=True
@@ -73,7 +73,7 @@ az storage account ors-policy create \
 az storage account ors-policy show -g groupName -n destAccountName --policy-id "3496e652-4cea-4581-b2f7-c86b3971ba92" | az storage account ors-policy create -g ResourceGroupName -n srcAccountName -p "@-"
 ```
 
-To save the policyId/ruleId in Powershell Scripts, you can use:
+To save the policyId/ruleId in PowerShell Scripts, you can use:
 
 `$policyId = (az storage account ors-policy create --account-name accountName --resource-group groupName --properties @{path}) --query policyId)`
 
@@ -140,7 +140,7 @@ az storage account ors-policy rule show \
     --resource-group groupName
 ```
 
-##### Update properties for secific ORS Policy Rule
+##### Update properties for specific ORS Policy Rule
 Change prefix match filter properties.
 ```
 az storage account ors-policy rule update \
