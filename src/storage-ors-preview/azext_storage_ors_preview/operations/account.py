@@ -5,6 +5,8 @@
 
 """Custom operations for storage account commands"""
 
+from azure.cli.core.util import find_child_item
+
 from knack.log import get_logger
 from knack.util import CLIError
 
@@ -72,7 +74,7 @@ def add_ors_rule(cmd, client, resource_group_name, account_name, policy_id,
     new_ors_rule = ObjectReplicationPolicyRule(
         source_container=source_container,
         destination_container=destination_container,
-        filters=ObjectReplicationPolicyFilter(predix_match=prefix_match, min_creation_time=min_creation_time)
+        filters=ObjectReplicationPolicyFilter(prefix_match=prefix_match, min_creation_time=min_creation_time)
     )
     policy_properties.rules.append(new_ors_rule)
     return client.create_or_update(resource_group_name, account_name, policy_id, policy_properties)
@@ -80,18 +82,14 @@ def add_ors_rule(cmd, client, resource_group_name, account_name, policy_id,
 
 def remove_ors_rule(client, resource_group_name, account_name, policy_id, rule_id):
 
-    policy_properties = client.get(resource_group_name=resource_group_name,
-                                   account_name=account_name,
-                                   object_replication_policy_id=policy_id)
-    n = len(policy_properties.rules)
-    for i in range(n):
-        if policy_properties.rules[i].rule_id == rule_id:
-            policy_properties.rules.pop(i)
-            break
-    if i == n:
-        raise CLIError("--rule-id is invalid.")
+    ors_policy = client.get(resource_group_name=resource_group_name,
+                            account_name=account_name,
+                            object_replication_policy_id=policy_id)
 
-    return client.create_or_update(resource_group_name, account_name, policy_id, policy_properties)
+    rule = find_child_item(ors_policy, rule_id, path='rules', key_path='rule_id')
+    ors_policy.rules.remove(rule)
+
+    return client.create_or_update(resource_group_name, account_name, policy_id, ors_policy)
 
 
 def get_ors_rule(client, resource_group_name, account_name, policy_id, rule_id):

@@ -29,14 +29,14 @@ def validate_ors_policy(namespace):
             namespace.source_account = ors_policy["sourceAccount"]
         except KeyError:
             namespace.source_account = ors_policy["source_account"]
-        except KeyError:
+        if namespace.source_account is None:
             error_elements.append("source_account")
 
         try:
             namespace.destination_account = ors_policy["destinationAccount"]
         except KeyError:
             namespace.destination_account = ors_policy["destination_account"]
-        except KeyError:
+        if namespace.source_account is None:
             error_elements.append("destination_account")
 
         if "rules" not in ors_policy.keys() or not ors_policy["rules"]:

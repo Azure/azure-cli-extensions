@@ -9,6 +9,8 @@ import shutil
 
 from azure.cli.testsdk.preparers import AbstractPreparer
 
+# pylint: disable=unused-argument
+
 
 class StorageScenarioMixin(object):
     profile = None

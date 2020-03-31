@@ -1,5 +1,5 @@
 # Azure CLI storage-ors-preview Extension #
-This is a extension for storage-ors-preview features.
+This is an extension for storage-ors-preview features.
 
 ### How to use ###
 Install this extension using the below CLI command
