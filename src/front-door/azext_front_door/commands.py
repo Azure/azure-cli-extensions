@@ -8,7 +8,7 @@ from azure.cli.core.commands import CliCommandType
 
 from .custom import (
     list_frontdoor_resource_property, get_frontdoor_resource_property_entry, delete_frontdoor_resource_property_entry)
-from ._client_factory import cf_frontdoor, cf_fd_endpoints, cf_waf_policies
+from ._client_factory import cf_frontdoor, cf_fd_endpoints, cf_waf_policies, cf_fd_rules_engines
 
 
 # pylint: disable=too-many-locals, too-many-statements
@@ -17,7 +17,7 @@ def load_command_table(self, _):
     frontdoor_custom = CliCommandType(operations_tmpl='azext_front_door.custom#{}')
 
     frontdoor_sdk = CliCommandType(
-        operations_tmpl='azext_front_door.vendored_sdks.operations.front_doors_operations#FrontDoorsOperations.{}',
+        operations_tmpl='azext_front_door.vendored_sdks.operations._front_doors_operations#FrontDoorsOperations.{}',
         client_factory=cf_frontdoor
     )
 
@@ -27,7 +27,7 @@ def load_command_table(self, _):
     # )
 
     fd_endpoint_sdk = CliCommandType(
-        operations_tmpl='azext_front_door.vendored_sdks.operations.endpoints_operations#EndpointsOperations.{}',
+        operations_tmpl='azext_front_door.vendored_sdks.operations._endpoints_operations#EndpointsOperations.{}',
         client_factory=cf_fd_endpoints
     )
 
@@ -51,8 +51,13 @@ def load_command_table(self, _):
     #     client_factory=cf_fd_routing_rules
     # )
 
+    rules_engine_sdk = CliCommandType(
+        operations_tmpl='azext_front_door.vendored_sdks.operations._rules_engines_operations#RulesEnginesOperations.{}',
+        client_factory=cf_fd_rules_engines
+    )
+
     waf_policy_sdk = CliCommandType(
-        operations_tmpl='azext_front_door.vendored_sdks.operations.policies_operations#PoliciesOperations.{}',
+        operations_tmpl='azext_front_door.vendored_sdks.operations._policies_operations#PoliciesOperations.{}',
         client_factory=cf_waf_policies
     )
 
@@ -169,4 +174,29 @@ def load_command_table(self, _):
         g.custom_command('add', 'add_custom_rule_match_condition')
         g.custom_command('remove', 'remove_custom_rule_match_condition')
         g.custom_command('list', 'list_custom_rule_match_conditions')
+    # endregion
+
+    # region RulesEngine
+
+    with self.command_group('network front-door rules-engine', rules_engine_sdk, is_preview=True) as g:
+        g.show_command('show', 'get')
+        g.command('list', 'list_by_front_door')
+        g.command('delete', 'delete')
+
+    with self.command_group('network front-door rules-engine rule', rules_engine_sdk, is_preview=True) as g:
+        g.custom_command('create', 'create_rules_engine_rule')
+        g.custom_command('delete', 'delete_rules_engine_rule')
+        g.custom_show_command('show', 'show_rules_engine_rule')
+        g.custom_command('list', 'list_rules_engine_rule')
+        g.custom_command('update', 'update_rules_engine_rule')
+
+    with self.command_group('network front-door rules-engine rule condition', rules_engine_sdk, is_preview=True) as g:
+        g.custom_command('add', 'add_rules_engine_condition')
+        g.custom_command('remove', 'remove_rules_engine_condition')
+        g.custom_command('list', 'list_rules_engine_condition')
+
+    with self.command_group('network front-door rules-engine rule action', rules_engine_sdk, is_preview=True) as g:
+        g.custom_command('add', 'add_rules_engine_action')
+        g.custom_command('remove', 'remove_rules_engine_action')
+        g.custom_command('list', 'list_rules_engine_action')
     # endregion

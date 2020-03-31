@@ -7,9 +7,9 @@ from azure.cli.testsdk import (ScenarioTest, JMESPathCheck, ResourceGroupPrepare
 from .frontdoor_test_util import WafScenarioMixin
 from knack.cli import CLIError
 try:
-    from azext_front_door.vendored_sdks.models.error_response_py3 import ErrorResponseException
+    from azext_front_door.vendored_sdks.models._models_py3 import ErrorResponseException
 except (SyntaxError, ImportError):
-    from azext_front_door.vendored_sdks.models.error_response import ErrorResponseException
+    from azext_front_door.vendored_sdks.models._models import ErrorResponseException
 
 
 class WafTests(WafScenarioMixin, ScenarioTest):

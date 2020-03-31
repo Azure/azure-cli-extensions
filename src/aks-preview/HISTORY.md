@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.4.38
++++++
+* Add support for AAD V2.
+
 0.4.37
 +++++
 * Added slb outbound ip fix
