@@ -2,9 +2,13 @@
 This is an extension for storage-ors-preview features.
 
 ### How to use ###
-Install this extension using the below CLI command
+Install this extension using the below CLI command after release:
 ```
-az extension add -s https://azurecliprod.blob.core.windows.net/cli-extensions/storage_ors_preview-0.1.0-py2.py3-none-any.whl
+az extension add -n storage-ors-preview
+```
+Currently you can install use source wheel:
+```
+az extension add -s https://storageextension.blob.core.windows.net/cliextension/storage_ors_preview-0.2.0-py2.py3-none-any.whl
 ```
 
 ### Prepare
