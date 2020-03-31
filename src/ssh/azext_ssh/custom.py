@@ -14,14 +14,14 @@ from . import rsa_parser
 from . import ssh_utils
 
 
-def ssh_vm(cmd, resource_group, vm_name, ssh_ip, public_key_file, private_key_file):
-    _do_ssh_op(cmd, resource_group, vm_name, ssh_ip,
+def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_file=None, private_key_file=None):
+    _do_ssh_op(cmd, resource_group_name, vm_name, ssh_ip,
                public_key_file, private_key_file, ssh_utils.start_ssh_connection)
 
 
-def ssh_config(cmd, config_path, resource_group, vm_name, ssh_ip, public_key_file, private_key_file):
-    op_call = functools.partial(ssh_utils.write_ssh_config, config_path, resource_group, vm_name)
-    _do_ssh_op(cmd, resource_group, vm_name, ssh_ip, public_key_file, private_key_file, op_call)
+def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_file=None, private_key_file=None):
+    op_call = functools.partial(ssh_utils.write_ssh_config, config_path, resource_group_name, vm_name)
+    _do_ssh_op(cmd, resource_group_name, vm_name, ssh_ip, public_key_file, private_key_file, op_call)
 
 
 def _do_ssh_op(cmd, resource_group, vm_name, ssh_ip, public_key_file, private_key_file, op_call):

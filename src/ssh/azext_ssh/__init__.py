@@ -54,19 +54,17 @@ class SshCommandsLoader(AzCommandsLoader):
 
     def load_arguments(self, _):
         with self.argument_context('ssh vm') as c:
-            c.extra('resource_group', options_list=['--resource-group'])
-            c.extra('vm_name', options_list=['--name'])
-            c.extra('ssh_ip', options_list=['--ip'])
-            c.extra('public_key_file', options_list=['--public-key-file'])
-            c.extra('private_key_file', options_list=['--private-key-file'])
+            c.argument('vm_name', options_list=['--name'], help='The name of the VM')
+            c.argument('ssh_ip', options_list=['--ip'], help='The public IP address of the VM')
+            c.argument('public_key_file', options_list=['--public-key-file'], help='The RSA public key file path')
+            c.argument('private_key_file', options_list=['--private-key-file'], help='The RSA private key file path')
 
         with self.argument_context('ssh config') as c:
-            c.argument('config_path', options_list=['--file'])
-            c.extra('resource_group', options_list=['--resource-group'])
-            c.extra('vm_name', options_list=['--name'])
-            c.extra('ssh_ip', options_list=['--ip'])
-            c.extra('public_key_file', options_list=['--public-key-file'])
-            c.extra('private_key_file', options_list=['--private-key-file'])
+            c.argument('config_path', options_list=['--file'], help='The file path to write the SSH config to')
+            c.argument('vm_name', options_list=['--name'], help='The name of the VM')
+            c.argument('ssh_ip', options_list=['--ip'], help='The public IP address of the VM')
+            c.argument('public_key_file', options_list=['--public-key-file'], help='The RSA public key file path')
+            c.argument('private_key_file', options_list=['--private-key-file'], help='The RSA private key file path')
 
 
 COMMAND_LOADER_CLS = SshCommandsLoader
