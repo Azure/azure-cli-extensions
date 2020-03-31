@@ -22,7 +22,7 @@ class RouteRuleScenarioTests(ScenarioTest):
                  '--patterns /forward2 --caching Disabled',
                  checks=[
                      self.check('patternsToMatch[0]', '/forward2'),
-                     self.check('contains(keys(routeConfiguration), "cacheConfiguration")', False)
+                     self.check('routeConfiguration.cacheConfiguration', None)
                  ])
         self.cmd('network front-door routing-rule create -f {front_door} -g {rg} -n {rule2} '
                  '--frontend-endpoints DefaultFrontendEndpoint --route-type Redirect '
