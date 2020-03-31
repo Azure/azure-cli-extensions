@@ -19,7 +19,7 @@ helps['logic workflow list'] = """
     examples:
       - name: List all workflows in a resource group
         text: |-
-               az logic workflow list --resource-group "test-resource-group"
+               az logic workflow list --resource-group "testResourceGroup"
 """
 
 helps['logic workflow show'] = """
@@ -28,7 +28,7 @@ helps['logic workflow show'] = """
     examples:
       - name: Get a workflow
         text: |-
-               az logic workflow show --resource-group "test-resource-group" --name
+               az logic workflow show --resource-group "testResourceGroup" --name
                "testWorkflow"
 """
 
@@ -38,8 +38,8 @@ helps['logic workflow create'] = """
     examples:
       - name: Create or update a workflow
         text: |-
-               az logic workflow create -g "test-resource-group" -l "centralus"
-               -n "testWorkflow" --defintion "workflow.json"
+               az logic workflow create --resource-group "testResourceGroup" --location "centralus"
+               -name "testWorkflow" --defintion "workflow.json"
 """
 
 helps['logic workflow update'] = """
@@ -48,7 +48,7 @@ helps['logic workflow update'] = """
     examples:
       - name: Patch a workflow
         text: |-
-               az logic workflow update --resource-group "test-resource-group" --location "centralus"
+               az logic workflow update --resource-group "testResourceGroup" --location "centralus"
                --input-file workflow.json --name "testWorkflow"
 """
 
@@ -58,7 +58,7 @@ helps['logic workflow delete'] = """
     examples:
       - name: Delete a workflow
         text: |-
-               az logic workflow delete --resource-group "test-resource-group" --name
+               az logic workflow delete --resource-group "testResourceGroup" --name
                "testWorkflow"
 """
 
