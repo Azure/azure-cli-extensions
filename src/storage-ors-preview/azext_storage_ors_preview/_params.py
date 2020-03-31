@@ -37,7 +37,7 @@ def load_arguments(self, _):
     min_creation_time_type = CLIArgumentType(
         options_list=['--min-creation-time', '-t'], arg_group='Filters', type=get_datetime_type(True),
         help="Blobs created after the time will be replicated to the destination. It must be in datetime format "
-             "'yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'. Example: 2020-02-19T16:05:00Z")
+             "'yyyy-MM-ddTHH:mm:ssZ'. Example: 2020-02-19T16:05:00Z")
 
     with self.argument_context('storage account ors-policy') as c:
         c.argument('account_name', acct_name_type, id_part=None)
