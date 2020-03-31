@@ -28,6 +28,12 @@ class RequestSource(str, Enum):
     rest = "rest"
 
 
+class PublicNetworkAccessType(str, Enum):
+
+    enabled = "Enabled"  #: Enables connectivity to Application Insights through public DNS.
+    disabled = "Disabled"  #: Disables public connectivity to Application Insights through public DNS.
+
+
 class PurgeState(str, Enum):
 
     pending = "pending"

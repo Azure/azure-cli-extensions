@@ -25,7 +25,7 @@ class ComponentLinkedStorageAccountsOperations(object):
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
     :ivar api_version: The API version to use for this operation. Constant value: "2020-03-01-preview".
-    :ivar storage_type: The type of the Application Insights component data source for the linked storage account. Constant value: "ServiceProfiler".
+    :ivar storage_type: The type of the Application Insights component data source for the linked storage account. Constant value: "serviceprofiler".
     """
 
     models = models

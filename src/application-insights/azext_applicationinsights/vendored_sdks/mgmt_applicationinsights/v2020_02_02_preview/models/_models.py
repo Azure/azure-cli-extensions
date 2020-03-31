@@ -133,6 +133,20 @@ class ApplicationInsightsComponent(ComponentsResource):
     :param workspace_resource_id: Required. ResourceId of the log analytics
      workspace which the data will be ingested to.
     :type workspace_resource_id: str
+    :ivar private_link_scoped_resources: List of linked private link scope
+     resources.
+    :vartype private_link_scoped_resources:
+     list[~azure.mgmt.applicationinsights.v2020_02_02_preview.models.PrivateLinkScopedResource]
+    :param public_network_access_for_ingestion: The network access type for
+     accessing Application Insights ingestion. Possible values include:
+     'Enabled', 'Disabled'. Default value: "Enabled" .
+    :type public_network_access_for_ingestion: str or
+     ~azure.mgmt.applicationinsights.v2020_02_02_preview.models.PublicNetworkAccessType
+    :param public_network_access_for_query: The network access type for
+     accessing Application Insights query. Possible values include: 'Enabled',
+     'Disabled'. Default value: "Enabled" .
+    :type public_network_access_for_query: str or
+     ~azure.mgmt.applicationinsights.v2020_02_02_preview.models.PublicNetworkAccessType
     """
 
     _validation = {
@@ -150,8 +164,8 @@ class ApplicationInsightsComponent(ComponentsResource):
         'hockey_app_token': {'readonly': True},
         'provisioning_state': {'readonly': True},
         'connection_string': {'readonly': True},
-        'retention_in_days': {'readonly': True},
         'workspace_resource_id': {'required': True},
+        'private_link_scoped_resources': {'readonly': True},
     }
 
     _attribute_map = {
@@ -174,10 +188,12 @@ class ApplicationInsightsComponent(ComponentsResource):
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'sampling_percentage': {'key': 'properties.SamplingPercentage', 'type': 'float'},
         'connection_string': {'key': 'properties.ConnectionString', 'type': 'str'},
-        'retention_in_days': {'key': 'properties.RetentionInDays', 'type': 'int'},
         'disable_ip_masking': {'key': 'properties.DisableIpMasking', 'type': 'bool'},
         'immediate_purge_data_on30_days': {'key': 'properties.ImmediatePurgeDataOn30Days', 'type': 'bool'},
         'workspace_resource_id': {'key': 'properties.WorkspaceResourceId', 'type': 'str'},
+        'private_link_scoped_resources': {'key': 'properties.PrivateLinkScopedResources', 'type': '[PrivateLinkScopedResource]'},
+        'public_network_access_for_ingestion': {'key': 'properties.publicNetworkAccessForIngestion', 'type': 'str'},
+        'public_network_access_for_query': {'key': 'properties.publicNetworkAccessForQuery', 'type': 'str'},
     }
 
     def __init__(self, **kwargs):
@@ -196,10 +212,12 @@ class ApplicationInsightsComponent(ComponentsResource):
         self.provisioning_state = None
         self.sampling_percentage = kwargs.get('sampling_percentage', None)
         self.connection_string = None
-        self.retention_in_days = kwargs.get('retention_in_days', 90)
         self.disable_ip_masking = kwargs.get('disable_ip_masking', None)
         self.immediate_purge_data_on30_days = kwargs.get('immediate_purge_data_on30_days', None)
         self.workspace_resource_id = kwargs.get('workspace_resource_id', None)
+        self.private_link_scoped_resources = None
+        self.public_network_access_for_ingestion = kwargs.get('public_network_access_for_ingestion', "Enabled")
+        self.public_network_access_for_query = kwargs.get('public_network_access_for_query', "Enabled")
 
 
 class CloudError(Model):
@@ -318,6 +336,27 @@ class ComponentPurgeStatusResponse(Model):
     def __init__(self, **kwargs):
         super(ComponentPurgeStatusResponse, self).__init__(**kwargs)
         self.status = kwargs.get('status', None)
+
+
+class PrivateLinkScopedResource(Model):
+    """The private link scope resource reference.
+
+    :param resource_id: The full resource Id of the private link scope
+     resource.
+    :type resource_id: str
+    :param scope_id: The private link scope unique Identifier.
+    :type scope_id: str
+    """
+
+    _attribute_map = {
+        'resource_id': {'key': 'ResourceId', 'type': 'str'},
+        'scope_id': {'key': 'ScopeId', 'type': 'str'},
+    }
+
+    def __init__(self, **kwargs):
+        super(PrivateLinkScopedResource, self).__init__(**kwargs)
+        self.resource_id = kwargs.get('resource_id', None)
+        self.scope_id = kwargs.get('scope_id', None)
 
 
 class TagsResource(Model):
