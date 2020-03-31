@@ -301,7 +301,6 @@ class IntegrationAccountOperations(object):
         # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
         body_content = self._serialize.body(_integration_account, 'IntegrationAccount')
-        print("\nraw body is " + str(body_content))
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
 
