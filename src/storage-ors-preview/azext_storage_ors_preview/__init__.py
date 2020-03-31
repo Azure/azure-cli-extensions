@@ -6,7 +6,7 @@
 from azure.cli.core import AzCommandsLoader
 from azure.cli.core.profiles import register_resource_type
 
-from azext_storage_ors_preview._help import helps  # pylint: disable=unused-import
+from ._help import helps  # pylint: disable=unused-import
 from .profiles import CUSTOM_MGMT_STORAGE_ORS
 
 
