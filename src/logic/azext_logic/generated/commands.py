@@ -17,7 +17,7 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'logic_workflow_show')
         g.custom_command('create', 'logic_workflow_create')
         g.custom_command('update', 'logic_workflow_update')
-        g.custom_command('delete', 'logic_workflow_delete')
+        g.custom_command('delete', 'logic_workflow_delete', confirmation=True)
 
     from azext_logic.generated._client_factory import cf_integration_account
     logic_integration_account = CliCommandType(
@@ -30,5 +30,5 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'logic_integration_account_show')
         g.custom_command('create', 'logic_integration_account_create')
         g.custom_command('update', 'logic_integration_account_update')
-        g.custom_command('delete', 'logic_integration_account_delete')
+        g.custom_command('delete', 'logic_integration_account_delete', confirmation=True)
         g.custom_command('import', 'logic_integration_account_import')

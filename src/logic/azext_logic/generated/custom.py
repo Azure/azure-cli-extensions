@@ -11,7 +11,7 @@ def logic_workflow_list(cmd, client,
                         resource_group_name=None,
                         top=None,
                         filter=None):
-    if resource_group_name is not None:
+    if resource_group_name:
         return client.list_by_resource_group(resource_group_name=resource_group_name,
                                              top=top,
                                              filter=filter)
@@ -64,6 +64,7 @@ def logic_workflow_update(cmd, client,
                           state=None,
                           endpoints_configuration=None,
                           integration_account=None):
+    
     # check workflow exist before another update is done via a put
     workflow = client.get(resource_group_name=resource_group_name,
                       workflow_name=name) 
@@ -87,7 +88,7 @@ def logic_workflow_delete(cmd, client,
 def logic_integration_account_list(cmd, client,
                                    resource_group_name=None,
                                    top=None):
-    if resource_group_name is not None:
+    if resource_group_name:
         return client.list_by_resource_group(resource_group_name=resource_group_name,
                                              top=top)
     return client.list_by_subscription(top=top)
