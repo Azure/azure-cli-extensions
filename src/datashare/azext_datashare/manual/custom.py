@@ -9,7 +9,7 @@
 def datashare_account_list(cmd, client,
                            resource_group_name=None,
                            skip_token=None):
-    if resource_group_name is not None:
+    if resource_group_name:
         return client.list_by_resource_group(resource_group_name=resource_group_name, skip_token=skip_token)
     return client.list_by_subscription(skip_token=skip_token)
 
