@@ -34,7 +34,7 @@ helps['logic workflow show'] = """
 
 helps['logic workflow create'] = """
     type: command
-    short-summary: Creates or updates a workflow.
+    short-summary: Creates or updates a workflow using a JSON file for the defintion.
     examples:
       - name: Create or update a workflow
         text: |-
@@ -93,7 +93,7 @@ helps['logic integration-account create'] = """
       - name: Create or update an integration account
         text: |-
                az logic integration-account create --location "centralus" 
-               --name "testIntegrationAccount" --resource-group "testResourceGroup" --input-file integration.json
+               --name "testIntegrationAccount" --resource-group "testResourceGroup" --sku name=Standard 
 """
 
 helps['logic integration-account update'] = """
@@ -102,8 +102,19 @@ helps['logic integration-account update'] = """
     examples:
       - name: Patch an integration account
         text: |-
-               az logic integration-account update --sku Standard --tag atag=123
+               az logic integration-account update --sku name=Basic --tag atag=123
                --name "testIntegrationAccount" --resource-group "testResourceGroup"
+"""
+
+
+helps['logic integration-account import'] = """
+    type: command
+    short-summary: Import an integration account from a JSON file.
+    examples:
+      - name: Import an integration account.
+        text: |-
+               az logic integration-account import --name "testIntegrationAccount" 
+               --resource-group "testResourceGroup --input-path integration.json"
 """
 
 helps['logic integration-account delete'] = """

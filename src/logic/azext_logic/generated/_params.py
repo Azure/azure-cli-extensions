@@ -31,7 +31,7 @@ def load_arguments(self, _):
 
     with self.argument_context('logic workflow show') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
-        c.argument('workflow_name', help='The workflow name.')
+        c.argument('name', options_list=['--name', '-n'], help='The workflow name.')
         
     with self.argument_context('logic workflow create') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
@@ -60,7 +60,7 @@ def load_arguments(self, _):
 
     with self.argument_context('logic workflow delete') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
-        c.argument('workflow_name', help='The workflow name.')
+        c.argument('name', options_list=['--name', '-n'], help='The workflow name.')
 
     with self.argument_context('logic integration-account list') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
@@ -68,11 +68,11 @@ def load_arguments(self, _):
 
     with self.argument_context('logic integration-account show') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
-        c.argument('integration_account_name', help='The integration account name.')
+        c.argument('name', options_list=['--name', '-n'], help='The integration account name.')
 
     with self.argument_context('logic integration-account create') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
-        c.argument('integration_account_name', help='The integration account name.')
+        c.argument('name', options_list=['--name', '-n'], help='The integration account name.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx), help='The resource location.')
         c.argument('tags', tags_type, help='The resource tags.')
         c.argument('sku', action=AddSku, nargs='+', help='The sku.')
@@ -83,8 +83,7 @@ def load_arguments(self, _):
 
     with self.argument_context('logic integration-account update') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
-        c.argument('integration_account_name', help='The integration account name.')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), help='The resource location.')
+        c.argument('name', options_list=['--name', '-n'], help='The integration account name.')
         c.argument('tags', tags_type, help='The resource tags.')
         c.argument('sku', action=AddSku, nargs='+', help='The sku.')
         c.argument('integration_service_environment', arg_type=CLIArgumentType(options_list=['--integration-service-env'
@@ -94,17 +93,11 @@ def load_arguments(self, _):
 
     with self.argument_context('logic integration-account delete') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
-        c.argument('integration_account_name', help='The integration account name.')
-
-    with self.argument_context('logic integration-account list-callback-url') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
-        c.argument('integration_account_name', help='The integration account name.')
-        c.argument('not_after', help='The expiry time.')
-        c.argument('key_type', arg_type=get_enum_type(['NotSpecified', 'Primary', 'Secondary']), help='The key type.')
+        c.argument('name', options_list=['--name', '-n'], help='The integration account name.')
     
     with self.argument_context('logic integration-account import') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
-        c.argument('name', help='The integration account name.')
+        c.argument('name', options_list=['--name', '-n'], help='The integration account name.')
         c.argument('input_path', type=file_type, help='Path to a intergration-account JSON file', completer=FilesCompleter())
         c.argument('location', arg_type=get_location_type(self.cli_ctx), help='The resource location.')
         c.argument('tags', tags_type, help='The resource tags.')

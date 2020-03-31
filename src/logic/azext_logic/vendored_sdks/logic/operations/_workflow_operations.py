@@ -295,6 +295,7 @@ class WorkflowOperations(object):
         :rtype: ~logic_management_client.models.Workflow or ~logic_management_client.models.Workflow
         :raises: ~azure.core.exceptions.HttpResponseError
         """
+        print("\ntags are " +str(tags))
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Workflow"]
         error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
@@ -323,6 +324,7 @@ class WorkflowOperations(object):
         # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
         body_content = self._serialize.body(_workflow, 'Workflow')
+        print("\nraw body " + str(body_content))
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
 

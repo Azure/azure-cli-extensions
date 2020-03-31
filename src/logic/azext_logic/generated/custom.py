@@ -21,9 +21,9 @@ def logic_workflow_list(cmd, client,
 
 def logic_workflow_show(cmd, client,
                         resource_group_name,
-                        workflow_name):
+                        name):
     return client.get(resource_group_name=resource_group_name,
-                      workflow_name=workflow_name)
+                      workflow_name=name)
 
 
 def logic_workflow_create(cmd, client,
@@ -64,24 +64,24 @@ def logic_workflow_update(cmd, client,
                           state=None,
                           endpoints_configuration=None,
                           integration_account=None):
+    # check workflow exist before another update is done via a put
     workflow = client.get(resource_group_name=resource_group_name,
-                      workflow_name=name)
-    if not workflow:
-        raise CLIError(name + " does not exist under " + 
-                       resource_group_name + " resouce group") 
+                      workflow_name=name) 
     integration_account = integration_account if integration_account else workflow.integration_account
     endpoints_configuration = endpoints_configuration if endpoints_configuration else workflow.endpoints_configuration
     return logic_workflow_create(cmd, client, resource_group_name, name,
-                          definition, workflow.location, workflow.tags, state, 
+                          definition, workflow.location, 
+                          tags if tags else workflow.tags, 
+                          state,
                           endpoints_configuration, 
                           integration_account, 
                           workflow.integration_service_environment)
                           
 def logic_workflow_delete(cmd, client,
                           resource_group_name,
-                          workflow_name):
+                          name):
     return client.delete(resource_group_name=resource_group_name,
-                         workflow_name=workflow_name)
+                         workflow_name=name)
     
 
 def logic_integration_account_list(cmd, client,
@@ -95,14 +95,14 @@ def logic_integration_account_list(cmd, client,
 
 def logic_integration_account_show(cmd, client,
                                    resource_group_name,
-                                   integration_account_name):
+                                   name):
     return client.get(resource_group_name=resource_group_name,
-                      integration_account_name=integration_account_name)
+                      integration_account_name=name)
 
 
 def logic_integration_account_create(cmd, client,
                                      resource_group_name,
-                                     integration_account_name,
+                                     name,
                                      location=None,
                                      tags=None,
                                      sku=None,
@@ -111,13 +111,12 @@ def logic_integration_account_create(cmd, client,
     if isinstance(integration_service_environment, str):
         integration_service_environment = json.loads(integration_service_environment)
     return client.create_or_update(resource_group_name=resource_group_name,
-                                   integration_account_name=integration_account_name,
+                                   integration_account_name=name,
                                    location=location,
                                    tags=tags,
                                    sku=sku,
                                    integration_service_environment=integration_service_environment,
-                                   state=state)
-
+                                   state=state if state else 'Enabled')
 
 
 def logic_integration_account_import(cmd, client,
@@ -134,33 +133,30 @@ def logic_integration_account_import(cmd, client,
             raise CLIError('JSON decode error for {}: {}'.format(integrationJson, str(ex)))
         if 'properties' not in integration:
             raise CLIError(str(integrationJson) + " does not contain a 'properties' key")
-        integration['location'] = integration.get('location', location)
-        integration['tags'] = integration.get('tags', tags)
-        integration['sku'] = integration.get('sku', sku)
-        integration_service_environment = integration['properties'].get('integrationServiceEnvironment', None)
+        
         integration_service_environment = integration['properties'].get('integrationServiceEnvironment', None)
         return client.create_or_update(resource_group_name=resource_group_name,
                                 integration_account_name=name,
-                                location=location,
-                                tags=tags,
-                                sku=sku,
+                                location=integration.get('location', location),
+                                tags=integration.get('tags', tags),
+                                sku=integration.get('sku', sku),
                                 integration_service_environment=integration_service_environment,
-                                state=None)
+                                state=integration['properties'].get('state', 'Enabled'))
 
 
 def logic_integration_account_update(cmd, client,
+                                     name,
                                      resource_group_name,
-                                     integration_account_name,
-                                     location=None,
                                      tags=None,
                                      sku=None,
                                      integration_service_environment=None,
                                      state=None):
+
     if isinstance(integration_service_environment, str):
         integration_service_environment = json.loads(integration_service_environment)
     return client.update(resource_group_name=resource_group_name,
-                         integration_account_name=integration_account_name,
-                         location=location,
+                         integration_account_name=name,
+                         location=None,
                          tags=tags,
                          sku=sku,
                          integration_service_environment=integration_service_environment,
@@ -169,6 +165,6 @@ def logic_integration_account_update(cmd, client,
 
 def logic_integration_account_delete(cmd, client,
                                      resource_group_name,
-                                     integration_account_name):
+                                     name):
     return client.delete(resource_group_name=resource_group_name,
-                         integration_account_name=integration_account_name)
+                         integration_account_name=name)
