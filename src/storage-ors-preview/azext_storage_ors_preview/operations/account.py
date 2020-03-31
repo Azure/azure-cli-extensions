@@ -41,7 +41,7 @@ def create_ors_policy(cmd, client, resource_group_name, account_name, properties
                                    object_replication_policy_id=policy_id, properties=ors_policy)
 
 
-def update_ors_policy(client, parameters, resource_group_name, account_name, object_replication_policy_id,
+def update_ors_policy(client, parameters, resource_group_name, account_name, object_replication_policy_id=None,
                       properties=None, source_account=None, destination_account=None, ):
 
     if source_account is not None:
@@ -51,6 +51,8 @@ def update_ors_policy(client, parameters, resource_group_name, account_name, obj
 
     if properties is not None:
         parameters = properties
+        if "policyId" in properties.keys() and properties["policyId"]:
+            object_replication_policy_id = properties["policyId"]
 
     return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
                                    object_replication_policy_id=object_replication_policy_id, properties=parameters)

@@ -124,11 +124,11 @@ class StorageAccountORSScenarioTest(StorageScenarioMixin, ScenarioTest):
             resource_group, destination_account, self.kwargs["policy_id"], new_account)) \
             .assert_with_checks(JMESPathCheck('sourceAccount', new_account))
 
-        # Remove policy from destination and source account
-        self.cmd('storage account ors-policy remove -g {rg} -n {src_sc} --policy-id {policy_id}')
+        # Delete policy from destination and source account
+        self.cmd('storage account ors-policy delete -g {rg} -n {src_sc} --policy-id {policy_id}')
         self.cmd('storage account ors-policy list -g {rg} -n {src_sc}') \
             .assert_with_checks(JMESPathCheck('length(@)', 0))
 
-        self.cmd('storage account ors-policy remove -g {rg} -n {dest_sc} --policy-id {policy_id}')
+        self.cmd('storage account ors-policy delete -g {rg} -n {dest_sc} --policy-id {policy_id}')
         self.cmd('storage account ors-policy list -g {rg} -n {dest_sc}') \
             .assert_with_checks(JMESPathCheck('length(@)', 0))

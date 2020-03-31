@@ -36,14 +36,14 @@ Manage data policy rules associated with a storage account: [more info](https://
 *Examples:*
 
 ##### Create ORS Policy on destination storage account
-1. Using JSON file or JSON string
+1. Using JSON file or JSON string.
 ```
 az storage account ors-policy create \
     --account-name destAccountName \
     --resource-group groupName \
     --properties @{path}
 ```
-2. Using command parameters
+2. Using command parameters.
 ```
 az storage account ors-policy create \
     --account-name destAccountName \
@@ -91,7 +91,7 @@ az storage account ors-policy show \
 ```
 
 ##### Update ORS Policy on storage account
-Change source storage account name of existing ORS policy
+Change source storage account name of existing ORS policy.
 ```
 az storage account ors-policy update \
     --policy-id $policyId \
@@ -100,6 +100,13 @@ az storage account ors-policy update \
     -s newSourceAccount
 ```
 
+Update existing ORS policy through json file.
+```
+az storage account ors-policy update \
+    --policy @policy.json \
+    --account-name destAccountName \
+    --resource-group groupName \
+```
 ##### Add rule to existing ORS Policy
 ```
 az storage account ors-policy rule add \
@@ -130,7 +137,7 @@ az storage account ors-policy rule show \
 ```
 
 ##### Update properties for secific ORS Policy Rule
-Change prefix match filter properties
+Change prefix match filter properties.
 ```
 az storage account ors-policy rule update \
     --rule-id $ruleId \
@@ -140,7 +147,7 @@ az storage account ors-policy rule update \
     --prefix-match blobA
 ```
 
-Change min creation time in filter properties
+Change min creation time in filter properties.
 ```
 az storage account ors-policy rule update \
     --rule-id $ruleId \
@@ -158,9 +165,9 @@ az storage account ors-policy rule remove \
     --resource-group groupName
 ```
 
-##### Remove the specified ORS Policy for storage account
+##### Delete the specified ORS Policy for storage account
 ```
-az storage account ors-policy remove \
+az storage account ors-policy delete \
     --policy-id $policyId \
     --account-name accountName \
     --resource-group groupName

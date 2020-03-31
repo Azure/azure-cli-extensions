@@ -9,7 +9,7 @@ from azure.cli.core.util import get_file_json, shell_safe_json_parse
 def validate_ors_policy(namespace):
     error_elements = []
     if namespace.properties is None:
-        error_msg = "Please provide --properties in JSON format or the following arguments: "
+        error_msg = "Please provide --policy in JSON format or the following arguments: "
         if namespace.source_account is None:
             error_elements.append("--source-account")
         if namespace.destination_account is None:

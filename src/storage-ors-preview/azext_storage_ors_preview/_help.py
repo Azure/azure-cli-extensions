@@ -32,20 +32,12 @@ examples:
     text: az storage account ors-policy list -g ResourceGroupName -n StorageAccountName
 """
 
-helps['storage account ors-policy remove'] = """
+helps['storage account ors-policy delete'] = """
 type: command
-short-summary: Remove specified Object Replication Service Policy associated with the specified storage account.
+short-summary: Delete specified Object Replication Service Policy associated with the specified storage account.
 examples:
-  - name: Remove Object Replication Service Policy associated with the specified storage account.
-    text: az storage account ors-policy remove -g ResourceGroupName -n StorageAccountName --policy-id "04344ea7-aa3c-4846-bfb9-e908e32d3bf8"
-"""
-
-helps['storage account ors-policy set'] = """
-type: command
-short-summary: Set existing specified Object Replication Service Policy properties to specified storage account.
-examples:
-  - name: Set existing specified Object Replication Service Policy properties to specified storage account.
-    text: az storage account ors-policy set -g ResourceGroupName -n storageAccountName --policy-id "3496e652-4cea-4581-b2f7-c86b3971ba92"
+  - name: Delete Object Replication Service Policy associated with the specified storage account.
+    text: az storage account ors-policy delete -g ResourceGroupName -n StorageAccountName --policy-id "04344ea7-aa3c-4846-bfb9-e908e32d3bf8"
 """
 
 helps['storage account ors-policy show'] = """
@@ -62,9 +54,7 @@ short-summary: Update Object Replication Service Policy properties for storage a
 examples:
   - name: Update source storage account in Object Replication Service Policy.
     text: az storage account ors-policy update -g ResourceGroupName -n StorageAccountName --source-account newSourceAccount --policy-id "04344ea7-aa3c-4846-bfb9-e908e32d3bf8"
-  - name: Update source storage account in Object Replication Service Policy Rule.
-    text: az storage account ors-policy update -g ResourceGroupName -n StorageAccountName --policy-id "04344ea7-aa3c-4846-bfb9-e908e32d3bf8" --rule-id "78746d86-d3b7-4397-a99c-0837e6741332" --sourceContainer newSourceContainer
-  - name: Update Object Replication Service Policy for storage account.
+  - name: Update Object Replication Service Policy through json file.
     text: az storage account ors-policy update -g ResourceGroupName -n StorageAccountName -p @policy.json
 """
 
@@ -110,5 +100,5 @@ type: command
 short-summary: Update rule properties to Object Replication Service Policy.
 examples:
   - name: Update rule properties to Object Replication Service Policy.
-    text: az storage account ors-policy rule remove -g ResourceGroupName -n StorageAccountName --policy-id "04344ea7-aa3c-4846-bfb9-e908e32d3bf8" --rule-id "78746d86-d3b7-4397-a99c-0837e6741332" --prefix-match blobA blobB
+    text: az storage account ors-policy rule update -g ResourceGroupName -n StorageAccountName --policy-id "04344ea7-aa3c-4846-bfb9-e908e32d3bf8" --rule-id "78746d86-d3b7-4397-a99c-0837e6741332" --prefix-match blobA blobB
 """
