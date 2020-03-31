@@ -132,7 +132,7 @@ def load_arguments(self, _):
         c.argument('rules_engine', help='Name or ID of a Rules Engine configuration.', validator=validate_rules_engine)
         c.argument('frontend_endpoints', help='Space-separated list of frontend endpoint names or IDs.', nargs='+', validator=validate_frontend_endpoints)
     with self.argument_context('network front-door routing-rule', arg_group='Forward Routing Rule') as c:
-        c.argument('backend_pool', help='Name or ID of a backend pool.', validator=validate_backend_pool)
+        c.argument('backend_pool', help="Name or ID of a backend pool. It's required to create a Forward routing rule.", validator=validate_backend_pool)
         c.argument('forwarding_protocol', help='Protocol to use for forwarding traffic.')
         c.argument('custom_forwarding_path', help='Custom path used to rewrite resource paths matched by this rule. Leave empty to use incoming path.')
         c.argument('caching', arg_type=get_three_state_flag(positive_label='Enabled', negative_label='Disabled', return_label=False), help='Whether to enable caching for this route.')
