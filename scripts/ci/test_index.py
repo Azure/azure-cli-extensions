@@ -118,7 +118,7 @@ class TestIndex(unittest.TestCase):
                                                                                    item['sha256Digest'],
                                                                                    item['filename']))
 
-    # @unittest.skipUnless(os.getenv('CI'), 'Skipped as not running on CI')
+    @unittest.skipUnless(os.getenv('CI'), 'Skipped as not running on CI')
     def test_metadata(self):
         self.maxDiff = None
         extensions_dir = tempfile.mkdtemp()
