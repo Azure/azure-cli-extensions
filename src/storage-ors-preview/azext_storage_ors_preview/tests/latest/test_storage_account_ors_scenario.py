@@ -45,7 +45,6 @@ class StorageAccountORSScenarioTest(StorageScenarioMixin, ScenarioTest):
         self.cmd('storage account blob-service-properties update -n {dest_sc} -g {rg} --enable-versioning', checks=[
                  JMESPathCheck('isVersioningEnabled', True)])
 
-
         # Create ORS policy on destination account
         result = self.cmd('storage account ors-policy create -g {rg} -n {dest_sc} -s {src_sc} -d {dest_sc} --destination-container {dcont} --source-container {scont} -t "2020-02-19T16:05:00Z"')\
             .get_output_in_json()
