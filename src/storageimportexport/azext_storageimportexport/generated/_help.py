@@ -48,7 +48,7 @@ helps['storageimportexport job list'] = """
     examples:
       - name: List jobs in a resource group
         text: |-
-               az storageimportexport job list --resource-group "Default-Storage-WestUS"
+               az storageimportexport job list --resource-group "myResourceGroup"
 """
 
 helps['storageimportexport job show'] = """
@@ -57,7 +57,7 @@ helps['storageimportexport job show'] = """
     examples:
       - name: Get job
         text: |-
-               az storageimportexport job show --job-name "test-by1-import" --resource-group "Default-Storage-WestUS"
+               az storageimportexport job show --job-name "myJob" --resource-group "myResourceGroup"
 """
 
 helps['storageimportexport job create'] = """
@@ -85,7 +85,7 @@ be used to cancel an existing job.
       - name: Update job
         text: |-
                az storageimportexport job update --properties-backup-drive-manifest true --properties-log-level "Verbos\
-e" --properties-state "" --job-name "test-by1-import" --resource-group "Default-Storage-WestUS"
+e" --properties-state "" --job-name "myJob" --resource-group "myResourceGroup"
 """
 
 helps['storageimportexport job delete'] = """
@@ -94,7 +94,7 @@ helps['storageimportexport job delete'] = """
     examples:
       - name: Delete job
         text: |-
-               az storageimportexport job delete --job-name "test-by1-import" --resource-group "Default-Storage-WestUS"
+               az storageimportexport job delete --job-name "myJob" --resource-group "myResourceGroup"
 """
 
 helps['storageimportexport bit-locker-key'] = """
@@ -108,6 +108,5 @@ helps['storageimportexport bit-locker-key list'] = """
     examples:
       - name: List BitLocker Keys for drives in a job
         text: |-
-               az storageimportexport bit-locker-key list --job-name "test-by1-import" --resource-group "Default-Storag\
-e-WestUS"
+               az storageimportexport bit-locker-key list --job-name "myJob" --resource-group "myResourceGroup"
 """

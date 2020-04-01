@@ -51,8 +51,8 @@ def step__jobs_put_create_job(test):
 @try_manual
 def step__jobs_get_get_job(test):
     test.cmd('az storageimportexport job show '
-             '--job-name "{Jobs_2}" '
-             '--resource-group "{rg_2}"',
+             '--job-name "{myJob}" '
+             '--resource-group "{rg}"',
              checks=[])
 
 
@@ -68,8 +68,8 @@ def step__locations_get_get_locations(test):
 @try_manual
 def step__bitlockerkeys_post_list_bitlocker_keys_for_drives_in_a_job(test):
     test.cmd('az storageimportexport bit-locker-key list '
-             '--job-name "{Jobs_2}" '
-             '--resource-group "{rg_2}"',
+             '--job-name "{myJob}" '
+             '--resource-group "{rg}"',
              checks=[])
 
 
@@ -77,7 +77,7 @@ def step__bitlockerkeys_post_list_bitlocker_keys_for_drives_in_a_job(test):
 @try_manual
 def step__jobs_get_list_jobs_in_a_resource_group(test):
     test.cmd('az storageimportexport job list '
-             '--resource-group "{rg_2}"',
+             '--resource-group "{rg}"',
              checks=[])
 
 
@@ -102,8 +102,8 @@ def step__jobs_patch_update_job(test):
              '--properties-backup-drive-manifest true '
              '--properties-log-level "Verbose" '
              '--properties-state "" '
-             '--job-name "{Jobs_2}" '
-             '--resource-group "{rg_2}"',
+             '--job-name "{myJob}" '
+             '--resource-group "{rg}"',
              checks=[])
 
 
@@ -111,8 +111,8 @@ def step__jobs_patch_update_job(test):
 @try_manual
 def step__jobs_delete_delete_job(test):
     test.cmd('az storageimportexport job delete '
-             '--job-name "{Jobs_2}" '
-             '--resource-group "{rg_2}"',
+             '--job-name "{myJob}" '
+             '--resource-group "{rg}"',
              checks=[])
 
 
@@ -124,7 +124,6 @@ def cleanup(test):
 class StorageImportExportScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_storageimportexport_myResourceGroup'[:9], key='rg')
-    @ResourceGroupPreparer(name_prefix='cli_test_storageimportexport_Default-Storage-WestUS'[:9], key='rg_2')
     def test_storageimportexport(self, resource_group):
 
         self.kwargs.update({
@@ -134,7 +133,6 @@ class StorageImportExportScenarioTest(ScenarioTest):
         self.kwargs.update({
             'West US': 'West US',
             'myJob': self.create_random_name(prefix='cli_test_jobs'[:9], length=24),
-            'Jobs_2': 'Jobs_2',
         })
 
         setup(self)
