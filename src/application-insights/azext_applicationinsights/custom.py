@@ -45,7 +45,7 @@ def create_or_update_component(cmd, client, application, resource_group_name, lo
     if workspace_resource_id is None:
         from .vendored_sdks.mgmt_applicationinsights.v2015_05_01.models import ApplicationInsightsComponent
         from ._client_factory import applicationinsights_mgmt_plane_client
-        client = applicationinsights_mgmt_plane_client(cmd.cli_ctx, api_version='2015-05-01').components
+        client = applicationinsights_mgmt_plane_client(cmd.cli_ctx, api_version='2018-05-01-preview').components
         component = ApplicationInsightsComponent(location=location, kind=kind, application_type=application_type, tags=tags)
         return client.create_or_update(resource_group_name, application, component)
     else:
@@ -66,7 +66,7 @@ def update_component(cmd, client, application, resource_group_name, kind=None, w
     else:
         from .vendored_sdks.mgmt_applicationinsights.v2015_05_01.models import ApplicationInsightsComponent
         from ._client_factory import applicationinsights_mgmt_plane_client
-        client = applicationinsights_mgmt_plane_client(cmd.cli_ctx, api_version='2015-05-01').components
+        client = applicationinsights_mgmt_plane_client(cmd.cli_ctx, api_version='2018-05-01-preview').components
         component = ApplicationInsightsComponent(**(vars(existing_component)))
         return client.create_or_update(resource_group_name, application, component)
 

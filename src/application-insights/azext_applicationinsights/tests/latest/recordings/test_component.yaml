@@ -2,8 +2,7 @@ interactions:
 - request:
     body: '{"location": "westus", "kind": "web", "properties": {"Application_Type":
       "web", "Flow_Type": "Bluefield", "Request_Source": "rest", "RetentionInDays":
-      90, "publicNetworkAccessForIngestion": "Enabled", "publicNetworkAccessForQuery":
-      "Enabled"}}'
+      90}}'
     headers:
       Accept:
       - application/json
@@ -14,21 +13,21 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '243'
+      - '155'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
       - --app --location --kind -g --application-type
       User-Agent:
       - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.2 azure-mgmt-applicationinsights/0.2.0
-        Azure-SDK-For-Python AZURECLI/2.2.0
+        Azure-SDK-For-Python AZURECLI/2.3.0
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Insights/components/demoApp?api-version=2015-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Insights/components/demoApp?api-version=2018-05-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp","name":"demoApp","type":"microsoft.insights/components","location":"westus","tags":{},"kind":"web","etag":"\"1b00ce01-0000-0700-0000-5e816ae30000\"","properties":{"Ver":"v2","ApplicationId":"demoApp","AppId":"11219969-8c38-4154-97c2-61594de1b704","Application_Type":"web","Flow_Type":"Bluefield","Request_Source":"rest","InstrumentationKey":"4e88c3ce-eb85-4d25-8759-8b5fc85cf06c","ConnectionString":"InstrumentationKey=4e88c3ce-eb85-4d25-8759-8b5fc85cf06c","Name":"demoApp","CreationDate":"2020-03-30T03:43:31.4161285+00:00","TenantId":"57947cb5-aadd-4b6c-9e8e-27f545bb7bf5","provisioningState":"Succeeded","SamplingPercentage":null,"RetentionInDays":90,"Retention":"P90D","publicNetworkAccessForIngestion":"Enabled","publicNetworkAccessForQuery":"Enabled"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp","name":"demoApp","type":"microsoft.insights/components","location":"westus","tags":{},"kind":"web","etag":"\"1b00160b-0000-0700-0000-5e8405e90000\"","properties":{"Ver":"v2","ApplicationId":"demoApp","AppId":"1c110690-d304-4b40-b944-9b73f06aa6cf","Application_Type":"web","Flow_Type":"Bluefield","Request_Source":"rest","InstrumentationKey":"e2e6751a-f46d-4640-ad77-05a8897c0e28","ConnectionString":"InstrumentationKey=e2e6751a-f46d-4640-ad77-05a8897c0e28","Name":"demoApp","CreationDate":"2020-04-01T03:09:29.4469379+00:00","TenantId":"0b1f6471-1bf0-4dda-aec3-cb9272f09590","provisioningState":"Succeeded","SamplingPercentage":null,"RetentionInDays":90,"Retention":"P90D","publicNetworkAccessForIngestion":"Enabled","publicNetworkAccessForQuery":"Enabled"}}'
     headers:
       access-control-expose-headers:
       - Request-Context
@@ -39,7 +38,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 30 Mar 2020 03:43:36 GMT
+      - Wed, 01 Apr 2020 03:09:32 GMT
       expires:
       - '-1'
       pragma:
@@ -57,7 +56,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1195'
       x-powered-by:
       - ASP.NET
     status:
@@ -78,14 +77,14 @@ interactions:
       - --app -g
       User-Agent:
       - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.2 azure-mgmt-applicationinsights/0.2.0
-        Azure-SDK-For-Python AZURECLI/2.2.0
+        Azure-SDK-For-Python AZURECLI/2.3.0
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Insights/components/demoApp/currentbillingfeatures?api-version=2015-05-01
   response:
     body:
-      string: '{"CurrentBillingFeatures":["Basic"],"DataVolumeCap":{"Cap":100.0,"MaxHistoryCap":1000.0,"ResetTime":10,"WarningThreshold":90,"StopSendNotificationWhenHitThreshold":false,"StopSendNotificationWhenHitCap":false},"EndTime":"2018-04-02T13:00:00+00:00"}'
+      string: '{"CurrentBillingFeatures":["Basic"],"DataVolumeCap":{"Cap":100.0,"MaxHistoryCap":1000.0,"ResetTime":15,"WarningThreshold":90,"StopSendNotificationWhenHitThreshold":false,"StopSendNotificationWhenHitCap":false},"EndTime":"2018-04-02T13:00:00+00:00"}'
     headers:
       access-control-expose-headers:
       - Request-Context
@@ -96,7 +95,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 30 Mar 2020 03:43:38 GMT
+      - Wed, 01 Apr 2020 03:10:02 GMT
       expires:
       - '-1'
       pragma:
@@ -133,14 +132,14 @@ interactions:
       - --app -g --cap -s
       User-Agent:
       - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.2 azure-mgmt-applicationinsights/0.2.0
-        Azure-SDK-For-Python AZURECLI/2.2.0
+        Azure-SDK-For-Python AZURECLI/2.3.0
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Insights/components/demoApp/currentbillingfeatures?api-version=2015-05-01
   response:
     body:
-      string: '{"CurrentBillingFeatures":["Basic"],"DataVolumeCap":{"Cap":100.0,"MaxHistoryCap":1000.0,"ResetTime":10,"WarningThreshold":90,"StopSendNotificationWhenHitThreshold":false,"StopSendNotificationWhenHitCap":false},"EndTime":"2018-04-02T13:00:00+00:00"}'
+      string: '{"CurrentBillingFeatures":["Basic"],"DataVolumeCap":{"Cap":100.0,"MaxHistoryCap":1000.0,"ResetTime":15,"WarningThreshold":90,"StopSendNotificationWhenHitThreshold":false,"StopSendNotificationWhenHitCap":false},"EndTime":"2018-04-02T13:00:00+00:00"}'
     headers:
       access-control-expose-headers:
       - Request-Context
@@ -151,7 +150,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 30 Mar 2020 03:43:40 GMT
+      - Wed, 01 Apr 2020 03:10:05 GMT
       expires:
       - '-1'
       pragma:
@@ -193,7 +192,7 @@ interactions:
       - --app -g --cap -s
       User-Agent:
       - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.2 azure-mgmt-applicationinsights/0.2.0
-        Azure-SDK-For-Python AZURECLI/2.2.0
+        Azure-SDK-For-Python AZURECLI/2.3.0
       accept-language:
       - en-US
     method: PUT
@@ -211,7 +210,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 30 Mar 2020 03:43:42 GMT
+      - Wed, 01 Apr 2020 03:10:11 GMT
       expires:
       - '-1'
       pragma:
@@ -229,7 +228,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1192'
       x-powered-by:
       - ASP.NET
     status:
@@ -250,14 +249,14 @@ interactions:
       - --app --kind -g
       User-Agent:
       - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.2 azure-mgmt-applicationinsights/0.2.0
-        Azure-SDK-For-Python AZURECLI/2.2.0
+        Azure-SDK-For-Python AZURECLI/2.3.0
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Insights/components/demoApp?api-version=2020-02-02-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp","name":"demoApp","type":"microsoft.insights/components","location":"westus","tags":{},"kind":"web","etag":"\"1b00ce01-0000-0700-0000-5e816ae30000\"","properties":{"Ver":"v2","ApplicationId":"demoApp","AppId":"11219969-8c38-4154-97c2-61594de1b704","Application_Type":"web","Flow_Type":"Bluefield","Request_Source":"rest","InstrumentationKey":"4e88c3ce-eb85-4d25-8759-8b5fc85cf06c","Name":"demoApp","CreationDate":"2020-03-30T03:43:31.4161285+00:00","TenantId":"57947cb5-aadd-4b6c-9e8e-27f545bb7bf5","provisioningState":"Succeeded","SamplingPercentage":null,"RetentionInDays":90,"Retention":"P90D","publicNetworkAccessForIngestion":"Enabled","publicNetworkAccessForQuery":"Enabled"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp","name":"demoApp","type":"microsoft.insights/components","location":"westus","tags":{},"kind":"web","etag":"\"1b00160b-0000-0700-0000-5e8405e90000\"","properties":{"Ver":"v2","ApplicationId":"demoApp","AppId":"1c110690-d304-4b40-b944-9b73f06aa6cf","Application_Type":"web","Flow_Type":"Bluefield","Request_Source":"rest","InstrumentationKey":"e2e6751a-f46d-4640-ad77-05a8897c0e28","Name":"demoApp","CreationDate":"2020-04-01T03:09:29.4469379+00:00","TenantId":"0b1f6471-1bf0-4dda-aec3-cb9272f09590","provisioningState":"Succeeded","SamplingPercentage":null,"RetentionInDays":90,"Retention":"P90D","publicNetworkAccessForIngestion":"Enabled","publicNetworkAccessForQuery":"Enabled"}}'
     headers:
       access-control-expose-headers:
       - Request-Context
@@ -268,7 +267,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 30 Mar 2020 03:43:43 GMT
+      - Wed, 01 Apr 2020 03:10:12 GMT
       expires:
       - '-1'
       pragma:
@@ -293,8 +292,7 @@ interactions:
 - request:
     body: '{"location": "westus", "tags": {}, "kind": "ios", "properties": {"Application_Type":
       "web", "Flow_Type": "Bluefield", "Request_Source": "rest", "RetentionInDays":
-      90, "publicNetworkAccessForIngestion": "Enabled", "publicNetworkAccessForQuery":
-      "Enabled"}}'
+      90}}'
     headers:
       Accept:
       - application/json
@@ -305,21 +303,21 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '255'
+      - '167'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
       - --app --kind -g
       User-Agent:
       - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.2 azure-mgmt-applicationinsights/0.2.0
-        Azure-SDK-For-Python AZURECLI/2.2.0
+        Azure-SDK-For-Python AZURECLI/2.3.0
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Insights/components/demoApp?api-version=2015-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Insights/components/demoApp?api-version=2018-05-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp","name":"demoApp","type":"microsoft.insights/components","location":"westus","tags":{},"kind":"ios","etag":"\"1b00e501-0000-0700-0000-5e816af20000\"","properties":{"Ver":"v2","ApplicationId":"demoApp","AppId":"11219969-8c38-4154-97c2-61594de1b704","Application_Type":"web","Flow_Type":"Bluefield","Request_Source":"rest","InstrumentationKey":"4e88c3ce-eb85-4d25-8759-8b5fc85cf06c","ConnectionString":"InstrumentationKey=4e88c3ce-eb85-4d25-8759-8b5fc85cf06c","Name":"demoApp","CreationDate":"2020-03-30T03:43:31.4161285+00:00","TenantId":"57947cb5-aadd-4b6c-9e8e-27f545bb7bf5","provisioningState":"Succeeded","SamplingPercentage":null,"RetentionInDays":90,"Retention":"P90D","publicNetworkAccessForIngestion":"Enabled","publicNetworkAccessForQuery":"Enabled"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp","name":"demoApp","type":"microsoft.insights/components","location":"westus","tags":{},"kind":"ios","etag":"\"1b00990e-0000-0700-0000-5e8406160000\"","properties":{"Ver":"v2","ApplicationId":"demoApp","AppId":"1c110690-d304-4b40-b944-9b73f06aa6cf","Application_Type":"web","Flow_Type":"Bluefield","Request_Source":"rest","InstrumentationKey":"e2e6751a-f46d-4640-ad77-05a8897c0e28","ConnectionString":"InstrumentationKey=e2e6751a-f46d-4640-ad77-05a8897c0e28","Name":"demoApp","CreationDate":"2020-04-01T03:09:29.4469379+00:00","TenantId":"0b1f6471-1bf0-4dda-aec3-cb9272f09590","provisioningState":"Succeeded","SamplingPercentage":null,"RetentionInDays":90,"Retention":"P90D","publicNetworkAccessForIngestion":"Enabled","publicNetworkAccessForQuery":"Enabled"}}'
     headers:
       access-control-expose-headers:
       - Request-Context
@@ -330,7 +328,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 30 Mar 2020 03:43:49 GMT
+      - Wed, 01 Apr 2020 03:10:19 GMT
       expires:
       - '-1'
       pragma:
@@ -357,8 +355,7 @@ interactions:
 - request:
     body: '{"location": "westus", "kind": "ios", "properties": {"Application_Type":
       "web", "Flow_Type": "Bluefield", "Request_Source": "rest", "RetentionInDays":
-      90, "publicNetworkAccessForIngestion": "Enabled", "publicNetworkAccessForQuery":
-      "Enabled"}}'
+      90}}'
     headers:
       Accept:
       - application/json
@@ -369,21 +366,21 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '243'
+      - '155'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
       - --app --location --kind -g --application-type
       User-Agent:
       - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.2 azure-mgmt-applicationinsights/0.2.0
-        Azure-SDK-For-Python AZURECLI/2.2.0
+        Azure-SDK-For-Python AZURECLI/2.3.0
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Insights/components/testApp?api-version=2015-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Insights/components/testApp?api-version=2018-05-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/testApp","name":"testApp","type":"microsoft.insights/components","location":"westus","tags":{},"kind":"ios","etag":"\"1b00ff01-0000-0700-0000-5e816af90000\"","properties":{"Ver":"v2","ApplicationId":"testApp","AppId":"a4d00b5b-4dc2-4419-8090-0c52fcbe5529","Application_Type":"web","Flow_Type":"Bluefield","Request_Source":"rest","InstrumentationKey":"78f0c41b-0614-4cf1-845d-37fc8b407f15","ConnectionString":"InstrumentationKey=78f0c41b-0614-4cf1-845d-37fc8b407f15","Name":"testApp","CreationDate":"2020-03-30T03:43:53.3391099+00:00","TenantId":"57947cb5-aadd-4b6c-9e8e-27f545bb7bf5","provisioningState":"Succeeded","SamplingPercentage":null,"RetentionInDays":90,"Retention":"P90D","publicNetworkAccessForIngestion":"Enabled","publicNetworkAccessForQuery":"Enabled"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/testApp","name":"testApp","type":"microsoft.insights/components","location":"westus","tags":{},"kind":"ios","etag":"\"1b003f0f-0000-0700-0000-5e8406210000\"","properties":{"Ver":"v2","ApplicationId":"testApp","AppId":"c0276498-b8a7-4caa-893f-50e4a7913867","Application_Type":"web","Flow_Type":"Bluefield","Request_Source":"rest","InstrumentationKey":"abb19909-9f38-4f4a-8802-dd4d6f10f444","ConnectionString":"InstrumentationKey=abb19909-9f38-4f4a-8802-dd4d6f10f444","Name":"testApp","CreationDate":"2020-04-01T03:10:25.6245137+00:00","TenantId":"0b1f6471-1bf0-4dda-aec3-cb9272f09590","provisioningState":"Succeeded","SamplingPercentage":null,"RetentionInDays":90,"Retention":"P90D","publicNetworkAccessForIngestion":"Enabled","publicNetworkAccessForQuery":"Enabled"}}'
     headers:
       access-control-expose-headers:
       - Request-Context
@@ -394,7 +391,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 30 Mar 2020 03:43:54 GMT
+      - Wed, 01 Apr 2020 03:10:26 GMT
       expires:
       - '-1'
       pragma:
@@ -433,14 +430,14 @@ interactions:
       - -g
       User-Agent:
       - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.2 azure-mgmt-applicationinsights/0.2.0
-        Azure-SDK-For-Python AZURECLI/2.2.0
+        Azure-SDK-For-Python AZURECLI/2.3.0
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Insights/components?api-version=2020-02-02-preview
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp","name":"demoApp","type":"microsoft.insights/components","location":"westus","tags":{},"kind":"ios","etag":"\"1b00e501-0000-0700-0000-5e816af20000\"","properties":{"ApplicationId":"demoApp","AppId":"11219969-8c38-4154-97c2-61594de1b704","Application_Type":"web","Flow_Type":"Bluefield","Request_Source":"rest","InstrumentationKey":"4e88c3ce-eb85-4d25-8759-8b5fc85cf06c","Name":"demoApp","CreationDate":"2020-03-30T03:43:31.4161285+00:00","TenantId":"57947cb5-aadd-4b6c-9e8e-27f545bb7bf5","provisioningState":"Succeeded","SamplingPercentage":null,"RetentionInDays":90,"Retention":"P90D","publicNetworkAccessForIngestion":"Enabled","publicNetworkAccessForQuery":"Enabled"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/testApp","name":"testApp","type":"microsoft.insights/components","location":"westus","tags":{},"kind":"ios","etag":"\"1b00ff01-0000-0700-0000-5e816af90000\"","properties":{"ApplicationId":"testApp","AppId":"a4d00b5b-4dc2-4419-8090-0c52fcbe5529","Application_Type":"web","Flow_Type":"Bluefield","Request_Source":"rest","InstrumentationKey":"78f0c41b-0614-4cf1-845d-37fc8b407f15","Name":"testApp","CreationDate":"2020-03-30T03:43:53.3391099+00:00","TenantId":"57947cb5-aadd-4b6c-9e8e-27f545bb7bf5","provisioningState":"Succeeded","SamplingPercentage":null,"RetentionInDays":90,"Retention":"P90D","publicNetworkAccessForIngestion":"Enabled","publicNetworkAccessForQuery":"Enabled"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp","name":"demoApp","type":"microsoft.insights/components","location":"westus","tags":{},"kind":"ios","etag":"\"1b00990e-0000-0700-0000-5e8406160000\"","properties":{"ApplicationId":"demoApp","AppId":"1c110690-d304-4b40-b944-9b73f06aa6cf","Application_Type":"web","Flow_Type":"Bluefield","Request_Source":"rest","InstrumentationKey":"e2e6751a-f46d-4640-ad77-05a8897c0e28","Name":"demoApp","CreationDate":"2020-04-01T03:09:29.4469379+00:00","TenantId":"0b1f6471-1bf0-4dda-aec3-cb9272f09590","provisioningState":"Succeeded","SamplingPercentage":null,"RetentionInDays":90,"Retention":"P90D","publicNetworkAccessForIngestion":"Enabled","publicNetworkAccessForQuery":"Enabled"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/testApp","name":"testApp","type":"microsoft.insights/components","location":"westus","tags":{},"kind":"ios","etag":"\"1b003f0f-0000-0700-0000-5e8406210000\"","properties":{"ApplicationId":"testApp","AppId":"c0276498-b8a7-4caa-893f-50e4a7913867","Application_Type":"web","Flow_Type":"Bluefield","Request_Source":"rest","InstrumentationKey":"abb19909-9f38-4f4a-8802-dd4d6f10f444","Name":"testApp","CreationDate":"2020-04-01T03:10:25.6245137+00:00","TenantId":"0b1f6471-1bf0-4dda-aec3-cb9272f09590","provisioningState":"Succeeded","SamplingPercentage":null,"RetentionInDays":90,"Retention":"P90D","publicNetworkAccessForIngestion":"Enabled","publicNetworkAccessForQuery":"Enabled"}}]}'
     headers:
       cache-control:
       - no-cache
@@ -449,7 +446,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 30 Mar 2020 03:43:56 GMT
+      - Wed, 01 Apr 2020 03:10:29 GMT
       expires:
       - '-1'
       pragma:
@@ -461,8 +458,8 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - ae31d2de-7238-11ea-beac-c8d9d2028398
-      - ae31d2de-7238-11ea-beac-c8d9d2028398
+      - 56429652-73c6-11ea-aa68-c8d9d2028398
+      - 56429652-73c6-11ea-aa68-c8d9d2028398
     status:
       code: 200
       message: OK
@@ -483,7 +480,7 @@ interactions:
       - --app -g
       User-Agent:
       - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.2 azure-mgmt-applicationinsights/0.2.0
-        Azure-SDK-For-Python AZURECLI/2.2.0
+        Azure-SDK-For-Python AZURECLI/2.3.0
       accept-language:
       - en-US
     method: DELETE
@@ -499,7 +496,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 30 Mar 2020 03:44:02 GMT
+      - Wed, 01 Apr 2020 03:10:35 GMT
       expires:
       - '-1'
       pragma:
@@ -513,7 +510,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14998'
+      - '14997'
       x-powered-by:
       - ASP.NET
     status:

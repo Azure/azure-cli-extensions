@@ -2,8 +2,7 @@ interactions:
 - request:
     body: '{"location": "westus", "kind": "web", "properties": {"Application_Type":
       "web", "Flow_Type": "Bluefield", "Request_Source": "rest", "RetentionInDays":
-      90, "publicNetworkAccessForIngestion": "Enabled", "publicNetworkAccessForQuery":
-      "Enabled"}}'
+      90}}'
     headers:
       Accept:
       - application/json
@@ -14,21 +13,21 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '243'
+      - '155'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
       - --app --location --kind -g --application-type
       User-Agent:
       - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.2 azure-mgmt-applicationinsights/0.2.0
-        Azure-SDK-For-Python AZURECLI/2.2.0
+        Azure-SDK-For-Python AZURECLI/2.3.0
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Insights/components/demoApp?api-version=2015-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Insights/components/demoApp?api-version=2018-05-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp","name":"demoApp","type":"microsoft.insights/components","location":"westus","tags":{},"kind":"web","etag":"\"09035f54-0000-0700-0000-5e818aef0000\"","properties":{"Ver":"v2","ApplicationId":"demoApp","AppId":"3230fb1e-b82e-4bfa-a490-2dc426a70350","Application_Type":"web","Flow_Type":"Bluefield","Request_Source":"rest","InstrumentationKey":"da9381a1-648a-4122-a98b-ec0e90bd3fd3","ConnectionString":"InstrumentationKey=da9381a1-648a-4122-a98b-ec0e90bd3fd3","Name":"demoApp","CreationDate":"2020-03-30T06:00:15.7336021+00:00","TenantId":"0b1f6471-1bf0-4dda-aec3-cb9272f09590","provisioningState":"Succeeded","SamplingPercentage":null,"RetentionInDays":90,"Retention":"P90D","publicNetworkAccessForIngestion":"Enabled","publicNetworkAccessForQuery":"Enabled"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp","name":"demoApp","type":"microsoft.insights/components","location":"westus","tags":{},"kind":"web","etag":"\"1b00ab0e-0000-0700-0000-5e8406170000\"","properties":{"Ver":"v2","ApplicationId":"demoApp","AppId":"21c31efd-b109-4064-a986-21599c6ca684","Application_Type":"web","Flow_Type":"Bluefield","Request_Source":"rest","InstrumentationKey":"498484b3-a529-4543-8a89-2485f11c1e1d","ConnectionString":"InstrumentationKey=498484b3-a529-4543-8a89-2485f11c1e1d","Name":"demoApp","CreationDate":"2020-04-01T03:10:15.7186895+00:00","TenantId":"0b1f6471-1bf0-4dda-aec3-cb9272f09590","provisioningState":"Succeeded","SamplingPercentage":null,"RetentionInDays":90,"Retention":"P90D","publicNetworkAccessForIngestion":"Enabled","publicNetworkAccessForQuery":"Enabled"}}'
     headers:
       access-control-expose-headers:
       - Request-Context
@@ -39,7 +38,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 30 Mar 2020 06:00:17 GMT
+      - Wed, 01 Apr 2020 03:10:17 GMT
       expires:
       - '-1'
       pragma:
@@ -57,7 +56,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1194'
       x-powered-by:
       - ASP.NET
     status:
@@ -82,7 +81,7 @@ interactions:
       - --app -g -s
       User-Agent:
       - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.2 azure-mgmt-applicationinsights/0.2.0
-        Azure-SDK-For-Python AZURECLI/2.2.0
+        Azure-SDK-For-Python AZURECLI/2.3.0
       accept-language:
       - en-US
     method: PUT
@@ -103,7 +102,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 30 Mar 2020 06:00:29 GMT
+      - Wed, 01 Apr 2020 03:10:20 GMT
       expires:
       - '-1'
       pragma:
@@ -121,7 +120,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1191'
       x-powered-by:
       - ASP.NET
     status:
@@ -142,7 +141,7 @@ interactions:
       - --app -g
       User-Agent:
       - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.2 azure-mgmt-applicationinsights/0.2.0
-        Azure-SDK-For-Python AZURECLI/2.2.0
+        Azure-SDK-For-Python AZURECLI/2.3.0
       accept-language:
       - en-US
     method: GET
@@ -163,7 +162,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 30 Mar 2020 06:00:31 GMT
+      - Wed, 01 Apr 2020 03:10:22 GMT
       expires:
       - '-1'
       pragma:
@@ -204,7 +203,7 @@ interactions:
       - --app -g -s
       User-Agent:
       - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.2 azure-mgmt-applicationinsights/0.2.0
-        Azure-SDK-For-Python AZURECLI/2.2.0
+        Azure-SDK-For-Python AZURECLI/2.3.0
       accept-language:
       - en-US
     method: PATCH
@@ -225,7 +224,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 30 Mar 2020 06:00:35 GMT
+      - Wed, 01 Apr 2020 03:10:25 GMT
       expires:
       - '-1'
       pragma:
@@ -243,7 +242,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1195'
       x-powered-by:
       - ASP.NET
     status:
@@ -264,7 +263,7 @@ interactions:
       - --app -g
       User-Agent:
       - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.2 azure-mgmt-applicationinsights/0.2.0
-        Azure-SDK-For-Python AZURECLI/2.2.0
+        Azure-SDK-For-Python AZURECLI/2.3.0
       accept-language:
       - en-US
     method: GET
@@ -285,7 +284,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 30 Mar 2020 06:00:38 GMT
+      - Wed, 01 Apr 2020 03:10:28 GMT
       expires:
       - '-1'
       pragma:
@@ -324,7 +323,7 @@ interactions:
       - --app -g
       User-Agent:
       - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.2 azure-mgmt-applicationinsights/0.2.0
-        Azure-SDK-For-Python AZURECLI/2.2.0
+        Azure-SDK-For-Python AZURECLI/2.3.0
       accept-language:
       - en-US
     method: DELETE
@@ -340,7 +339,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 30 Mar 2020 06:00:40 GMT
+      - Wed, 01 Apr 2020 03:10:32 GMT
       expires:
       - '-1'
       pragma:
