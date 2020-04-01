@@ -41,6 +41,7 @@ try:
     from ._models_py3 import LinkProperties
     from ._models_py3 import Operation
     from ._models_py3 import OperationDisplay
+    from ._models_py3 import PrivateLinkScopedResource
     from ._models_py3 import TagsResource
     from ._models_py3 import WebTest
     from ._models_py3 import WebTestGeolocation
@@ -84,6 +85,7 @@ except (SyntaxError, ImportError):
     from ._models import LinkProperties
     from ._models import Operation
     from ._models import OperationDisplay
+    from ._models import PrivateLinkScopedResource
     from ._models import TagsResource
     from ._models import WebTest
     from ._models import WebTestGeolocation
@@ -107,8 +109,8 @@ from ._application_insights_management_client_enums import (
     ApplicationType,
     FlowType,
     RequestSource,
-    PublicNetworkAccessType,
     PurgeState,
+    PublicNetworkAccessType,
     FavoriteType,
     WebTestKind,
     ItemScope,
@@ -152,6 +154,7 @@ __all__ = [
     'LinkProperties',
     'Operation',
     'OperationDisplay',
+    'PrivateLinkScopedResource',
     'TagsResource',
     'WebTest',
     'WebTestGeolocation',
@@ -174,8 +177,8 @@ __all__ = [
     'ApplicationType',
     'FlowType',
     'RequestSource',
-    'PublicNetworkAccessType',
     'PurgeState',
+    'PublicNetworkAccessType',
     'FavoriteType',
     'WebTestKind',
     'ItemScope',

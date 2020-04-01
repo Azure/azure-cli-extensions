@@ -10,7 +10,9 @@
 # --------------------------------------------------------------------------
 
 from ._proactive_detection_configurations_operations import ProactiveDetectionConfigurationsOperations
+from ._components_operations import ComponentsOperations
 
 __all__ = [
     'ProactiveDetectionConfigurationsOperations',
+    'ComponentsOperations',
 ]

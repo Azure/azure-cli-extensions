@@ -125,6 +125,8 @@ class ApplicationInsightsComponent(ComponentsResource):
     :type sampling_percentage: float
     :ivar connection_string: Application Insights component connection string.
     :vartype connection_string: str
+    :ivar retention_in_days: Retention period in days.
+    :vartype retention_in_days: int
     :param disable_ip_masking: Disable IP masking.
     :type disable_ip_masking: bool
     :param immediate_purge_data_on30_days: Purge data immediately after 30
@@ -164,6 +166,7 @@ class ApplicationInsightsComponent(ComponentsResource):
         'hockey_app_token': {'readonly': True},
         'provisioning_state': {'readonly': True},
         'connection_string': {'readonly': True},
+        'retention_in_days': {'readonly': True},
         'workspace_resource_id': {'required': True},
         'private_link_scoped_resources': {'readonly': True},
     }
@@ -188,6 +191,7 @@ class ApplicationInsightsComponent(ComponentsResource):
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'sampling_percentage': {'key': 'properties.SamplingPercentage', 'type': 'float'},
         'connection_string': {'key': 'properties.ConnectionString', 'type': 'str'},
+        'retention_in_days': {'key': 'properties.RetentionInDays', 'type': 'int'},
         'disable_ip_masking': {'key': 'properties.DisableIpMasking', 'type': 'bool'},
         'immediate_purge_data_on30_days': {'key': 'properties.ImmediatePurgeDataOn30Days', 'type': 'bool'},
         'workspace_resource_id': {'key': 'properties.WorkspaceResourceId', 'type': 'str'},
@@ -212,6 +216,7 @@ class ApplicationInsightsComponent(ComponentsResource):
         self.provisioning_state = None
         self.sampling_percentage = kwargs.get('sampling_percentage', None)
         self.connection_string = None
+        self.retention_in_days = None
         self.disable_ip_masking = kwargs.get('disable_ip_masking', None)
         self.immediate_purge_data_on30_days = kwargs.get('immediate_purge_data_on30_days', None)
         self.workspace_resource_id = kwargs.get('workspace_resource_id', None)

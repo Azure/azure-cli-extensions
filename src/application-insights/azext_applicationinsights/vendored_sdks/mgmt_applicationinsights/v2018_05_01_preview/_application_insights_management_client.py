@@ -14,6 +14,7 @@ from msrest import Serializer, Deserializer
 
 from ._configuration import ApplicationInsightsManagementClientConfiguration
 from .operations import ProactiveDetectionConfigurationsOperations
+from .operations import ComponentsOperations
 from . import models
 
 
@@ -25,11 +26,13 @@ class ApplicationInsightsManagementClient(SDKClient):
 
     :ivar proactive_detection_configurations: ProactiveDetectionConfigurations operations
     :vartype proactive_detection_configurations: azure.mgmt.applicationinsights.v2018_05_01_preview.operations.ProactiveDetectionConfigurationsOperations
+    :ivar components: Components operations
+    :vartype components: azure.mgmt.applicationinsights.v2018_05_01_preview.operations.ComponentsOperations
 
     :param credentials: Credentials needed for the client to connect to Azure.
     :type credentials: :mod:`A msrestazure Credentials
      object<msrestazure.azure_active_directory>`
-    :param subscription_id: The Azure subscription ID.
+    :param subscription_id: The ID of the target subscription.
     :type subscription_id: str
     :param str base_url: Service URL
     """
@@ -46,4 +49,6 @@ class ApplicationInsightsManagementClient(SDKClient):
         self._deserialize = Deserializer(client_models)
 
         self.proactive_detection_configurations = ProactiveDetectionConfigurationsOperations(
+            self._client, self.config, self._serialize, self._deserialize)
+        self.components = ComponentsOperations(
             self._client, self.config, self._serialize, self._deserialize)

@@ -46,7 +46,7 @@ class ApplicationInsightsManagementClient(MultiApiClientMixin, SDKClient):
     :type profile: azure.profiles.KnownProfiles
     """
 
-    DEFAULT_API_VERSION = '2015-05-01'
+    DEFAULT_API_VERSION = '2020-03-01-preview'
     _PROFILE_TAG = "azure.mgmt.applicationinsights.ApplicationInsightsManagementClient"
     LATEST_PROFILE = ProfileDefinition({
         _PROFILE_TAG: {
@@ -58,7 +58,6 @@ class ApplicationInsightsManagementClient(MultiApiClientMixin, SDKClient):
             'component_current_billing_features': '2015-05-01',
             'component_current_pricing_plan': '2017-10-01',
             'component_feature_capabilities': '2015-05-01',
-            "component_linked_storage_accounts": '2020-03-01-preview',
             'component_quota_status': '2015-05-01',
             'components': '2020-02-02-preview',
             'ea_subscription_list_migration_date': '2017-10-01',
@@ -253,11 +252,14 @@ class ApplicationInsightsManagementClient(MultiApiClientMixin, SDKClient):
         """Instance depends on the API version:
 
            * 2015-05-01: :class:`ComponentsOperations<azure.mgmt.applicationinsights.v2015_05_01.operations.ComponentsOperations>`
+           * 2018-05-01-preview: :class:`ComponentsOperations<azure.mgmt.applicationinsights.v2018_05_01_preview.operations.ComponentsOperations>`
            * 2020-02-02-preview: :class:`ComponentsOperations<azure.mgmt.applicationinsights.v2020_02_02_preview.operations.ComponentsOperations>`
         """
         api_version = self._get_api_version('components')
         if api_version == '2015-05-01':
             from .v2015_05_01.operations import ComponentsOperations as OperationClass
+        elif api_version == '2018-05-01-preview':
+            from .v2018_05_01_preview.operations import ComponentsOperations as OperationClass
         elif api_version == '2020-02-02-preview':
             from .v2020_02_02_preview.operations import ComponentsOperations as OperationClass
         else:

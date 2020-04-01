@@ -232,16 +232,10 @@ class ApplicationInsightsComponent(ComponentsResource):
     :param immediate_purge_data_on30_days: Purge data immediately after 30
      days.
     :type immediate_purge_data_on30_days: bool
-    :param public_network_access_for_ingestion: The network access type for
-     accessing Application Insights ingestion. Possible values include:
-     'Enabled', 'Disabled'. Default value: "Enabled" .
-    :type public_network_access_for_ingestion: str or
-     ~azure.mgmt.applicationinsights.v2015_05_01.models.PublicNetworkAccessType
-    :param public_network_access_for_query: The network access type for
-     accessing Application Insights query. Possible values include: 'Enabled',
-     'Disabled'. Default value: "Enabled" .
-    :type public_network_access_for_query: str or
-     ~azure.mgmt.applicationinsights.v2015_05_01.models.PublicNetworkAccessType
+    :ivar private_link_scoped_resources: List of linked private link scope
+     resources.
+    :vartype private_link_scoped_resources:
+     list[~azure.mgmt.applicationinsights.v2015_05_01.models.PrivateLinkScopedResource]
     """
 
     _validation = {
@@ -259,6 +253,7 @@ class ApplicationInsightsComponent(ComponentsResource):
         'hockey_app_token': {'readonly': True},
         'provisioning_state': {'readonly': True},
         'connection_string': {'readonly': True},
+        'private_link_scoped_resources': {'readonly': True},
     }
 
     _attribute_map = {
@@ -284,8 +279,7 @@ class ApplicationInsightsComponent(ComponentsResource):
         'retention_in_days': {'key': 'properties.RetentionInDays', 'type': 'int'},
         'disable_ip_masking': {'key': 'properties.DisableIpMasking', 'type': 'bool'},
         'immediate_purge_data_on30_days': {'key': 'properties.ImmediatePurgeDataOn30Days', 'type': 'bool'},
-        'public_network_access_for_ingestion': {'key': 'properties.publicNetworkAccessForIngestion', 'type': 'str'},
-        'public_network_access_for_query': {'key': 'properties.publicNetworkAccessForQuery', 'type': 'str'},
+        'private_link_scoped_resources': {'key': 'properties.PrivateLinkScopedResources', 'type': '[PrivateLinkScopedResource]'},
     }
 
     def __init__(self, **kwargs):
@@ -307,8 +301,7 @@ class ApplicationInsightsComponent(ComponentsResource):
         self.retention_in_days = kwargs.get('retention_in_days', 90)
         self.disable_ip_masking = kwargs.get('disable_ip_masking', None)
         self.immediate_purge_data_on30_days = kwargs.get('immediate_purge_data_on30_days', None)
-        self.public_network_access_for_ingestion = kwargs.get('public_network_access_for_ingestion', "Enabled")
-        self.public_network_access_for_query = kwargs.get('public_network_access_for_query', "Enabled")
+        self.private_link_scoped_resources = None
 
 
 class ApplicationInsightsComponentAnalyticsItem(Model):
@@ -1432,6 +1425,27 @@ class OperationDisplay(Model):
         self.provider = kwargs.get('provider', None)
         self.resource = kwargs.get('resource', None)
         self.operation = kwargs.get('operation', None)
+
+
+class PrivateLinkScopedResource(Model):
+    """The private link scope resource reference.
+
+    :param resource_id: The full resource Id of the private link scope
+     resource.
+    :type resource_id: str
+    :param scope_id: The private link scope unique Identifier.
+    :type scope_id: str
+    """
+
+    _attribute_map = {
+        'resource_id': {'key': 'ResourceId', 'type': 'str'},
+        'scope_id': {'key': 'ScopeId', 'type': 'str'},
+    }
+
+    def __init__(self, **kwargs):
+        super(PrivateLinkScopedResource, self).__init__(**kwargs)
+        self.resource_id = kwargs.get('resource_id', None)
+        self.scope_id = kwargs.get('scope_id', None)
 
 
 class TagsResource(Model):
