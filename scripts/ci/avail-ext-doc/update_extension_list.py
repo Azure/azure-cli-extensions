@@ -36,11 +36,18 @@ def get_extensions():
     for _, exts in index_extensions.items():
         # Get latest version
         exts = sorted(exts, key=lambda c: parse_version(c['metadata']['version']), reverse=True)
+
+        try:
+            # compatible with older wheel to build extension
+            home_page = exts[0]['metadata']['extensions']['python.details']['project_urls']['Home']
+        except KeyError:
+            home_page = exts[0]['metadata']['home_page']
+
         extensions.append({
             'name': exts[0]['metadata']['name'],
             'desc': exts[0]['metadata']['summary'],
             'version': exts[0]['metadata']['version'],
-            'project_url': exts[0]['metadata']['extensions']['python.details']['project_urls']['Home'],
+            'project_url': home_page,
             'preview': 'Yes' if exts[0]['metadata'].get('azext.isPreview') else ''
         })
     return extensions
