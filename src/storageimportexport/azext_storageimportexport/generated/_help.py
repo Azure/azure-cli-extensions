@@ -72,8 +72,8 @@ ies-diagnostics-path "waimportexport" --properties-drive-list bit-locker-key="23
 597EF36D5785F08303F3638" --properties-job-type "Import" --properties-log-level "Verbose" --properties-return-address ci\
 ty="Redmond" country-or-region="USA" email="Test@contoso.com" phone="4250000000" postal-code="98007" recipient-name="Te\
 ts" state-or-province="wa" street-address1="Street1" street-address2="street2" --properties-storage-account-id "/subscr\
-iptions/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee/resourceGroups/Default-Storage-WestUS/providers/Microsoft.ClassicStorage/s\
-torageAccounts/test" --job-name "test-by1-import" --resource-group "Default-Storage-WestUS"
+iptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroup/providers/Microsoft.ClassicStorage/storageA\
+ccounts/test" --job-name "myJob" --resource-group "myResourceGroup"
 """
 
 helps['storageimportexport job update'] = """
