@@ -16,7 +16,7 @@ def load_command_table(self, _):
     blueprint_blueprints = CliCommandType(
         operations_tmpl='azext_blueprint.vendored_sdks.blueprint.operations._blueprints_operations#BlueprintsOperations.{}',
         client_factory=cf_blueprints)
-    with self.command_group('blueprint', blueprint_blueprints, client_factory=cf_blueprints) as g:
+    with self.command_group('blueprint', blueprint_blueprints, client_factory=cf_blueprints, is_experimental=True) as g:
         g.custom_command('create', 'create_blueprint')
         g.custom_command('update', 'update_blueprint')
         g.generic_update_command('update', custom_func_name='update_blueprint',
@@ -59,7 +59,7 @@ def load_command_table(self, _):
     blueprint_published_blueprints = CliCommandType(
         operations_tmpl='azext_blueprint.vendored_sdks.blueprint.operations._published_blueprints_operations#PublishedBlueprintsOperations.{}',
         client_factory=cf_published_blueprints)
-    with self.command_group('blueprint', blueprint_published_blueprints, client_factory=cf_published_blueprints) as g:
+    with self.command_group('blueprint', blueprint_published_blueprints, client_factory=cf_published_blueprints, is_experimental=True) as g:
         g.custom_command('publish', 'publish_blueprint')
         g.custom_command('version delete', 'delete_blueprint_version', confirmation=True)
         g.custom_command('version show', 'get_blueprint_version')
