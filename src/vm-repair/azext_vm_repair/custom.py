@@ -11,6 +11,7 @@ import pkgutil
 import traceback
 import requests
 from knack.log import get_logger
+from json import loads
 
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
 from azure.cli.command_modules.storage.storage_url_helpers import StorageResourceIdentifier
@@ -38,7 +39,7 @@ from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyE
 logger = get_logger(__name__)
 
 
-def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None):
+def create(cmd, vm_name, Encryption, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None):
 
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair create')
@@ -102,6 +103,22 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             _call_az_command(create_repair_vm_command, secure_params=[repair_password, repair_username])
             logger.info('Attaching copied disk to repair VM...')
             _call_az_command(attach_disk_command)
+
+            # Install extension in case of single pass encrypted VM
+            disk_id = source_vm.storage_profile.os_disk.managed_disk.id
+
+            disk_settings_command = 'az disk show --ids {ids} -o json' \
+                                    .format(ids=disk_id)
+            settings = _call_az_command(disk_settings_command)
+            settings1 =  json.loads(settings)
+            settings2 = (settings1["encryptionSettingsCollection"]["encryptionSettings"])
+            key_vault = ( settings2[0]['keyEncryptionKey']['sourceVault']['id'] )
+            key_encryption_url = ( settings2[0]['keyEncryptionKey']['keyUrl'] )
+            install_ade_extension_command = 'az vm encryption enable --disk-encryption-keyvault {vault} --name {repair} --resource-group {g} --key-encryption-key {kek_url} --volume-type DATA' \
+                                     .format(g=repair_group_name, repair=repair_vm_name, vault=key_vault, kek_url=key_encryption_url)
+            _call_az_command(install_ade_extension_command)
+            
+
         # UNMANAGED DISK
         else:
             logger.info('Source VM uses unmanaged disks. Creating repair VM with unmanaged disks.\n')
@@ -155,7 +172,8 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         created_resources = _list_resource_ids_in_rg(repair_group_name)
         command.set_status_success()
 
-    # Some error happened. Stop command and clean-up resources.
+    # Some error happened. Stop command and clean-up resources. 
+     
     except KeyboardInterrupt:
         command.error_stack_trace = traceback.format_exc()
         command.error_message = "Command interrupted by user input."
@@ -180,16 +198,32 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         command.error_stack_trace = traceback.format_exc()
         command.error_message = str(exception)
         command.message = 'An unexpected error occurred. Try running again with the --debug flag to debug.'
+        
     finally:
+        # Execute commands on repair VM through run command option to unlock the copy of encrypted disk and mount.
+        REPAIR_DIR_NAME = 'azext_vm_repair'
+        SCRIPTS_DIR_NAME = 'scripts'
+        LINUX_RUN_SCRIPT_NAME = 'script.sh'
+        RUN_COMMAND_RUN_SHELL_ID = 'RunShellScript'
+        command_id = 'RunShellScript'
+        loader = pkgutil.get_loader(REPAIR_DIR_NAME)
+        mod = loader.load_module(REPAIR_DIR_NAME)
+        rootpath = os.path.dirname(mod.__file__)
+        run_script = os.path.join(rootpath, SCRIPTS_DIR_NAME, LINUX_RUN_SCRIPT_NAME)
+        repair_run_command = 'az vm run-command invoke -g {rg} -n {vm} --command-id {command_id} ' \
+                             '--scripts "@{run_script}" -o json' \
+                             .format(rg=repair_group_name, vm=repair_vm_name, command_id=command_id, run_script=run_script)
+        _call_az_command(repair_run_command)
         if command.error_stack_trace:
             logger.debug(command.error_stack_trace)
 
     # Generate return results depending on command state
-    if not command.is_status_success():
-        command.set_status_error()
-        return_dict = command.init_return_dict()
-        _clean_up_resources(repair_group_name, confirm=False)
-    else:
+    
+#    if not command.is_status_success():
+#        command.set_status_error()
+#        return_dict = command.init_return_dict()
+#        _clean_up_resources(repair_group_name, confirm=False)
+#    else:
         created_resources.append(copy_disk_id)
         command.message = 'Your repair VM \'{n}\' has been created in the resource group \'{repair_rg}\' with disk \'{d}\' attached as data disk. ' \
                           'Please use this VM to troubleshoot and repair. Once the repairs are complete use the command ' \
@@ -206,9 +240,8 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         return_dict['created_resources'] = created_resources
 
         logger.info('\n%s\n', command.message)
-
-    return return_dict
-
+    return return_dict 
+    
 
 def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None, yes=False):
 
