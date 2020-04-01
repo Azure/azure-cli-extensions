@@ -16,7 +16,7 @@ from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.util import CLIError
 import azure.cli.core.keys as keys
 
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterPropertiesAutoScalerProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_02_01.models import ManagedClusterPropertiesAutoScalerProfile
 
 logger = get_logger(__name__)
 
