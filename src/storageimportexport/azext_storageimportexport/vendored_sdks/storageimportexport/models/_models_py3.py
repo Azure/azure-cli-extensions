@@ -666,14 +666,74 @@ class PutJobParameters(msrest.serialization.Model):
     :type location: str
     :param tags: A set of tags. Specifies the tags that will be assigned to the job.
     :type tags: object
-    :param properties: Specifies the job properties.
-    :type properties: ~azure.mgmt.storageimportexport.models.JobDetails
+    :param storage_account_id: The resource identifier of the storage account where data will be
+     imported to or exported from.
+    :type storage_account_id: str
+    :param job_type: The type of job.
+    :type job_type: str
+    :param return_address: Specifies the return address information for the job.
+    :type return_address: ~azure.mgmt.storageimportexport.models.ReturnAddress
+    :param return_shipping: Specifies the return carrier and customer's account with the carrier.
+    :type return_shipping: ~azure.mgmt.storageimportexport.models.ReturnShipping
+    :param shipping_information: Contains information about the Microsoft datacenter to which the
+     drives should be shipped.
+    :type shipping_information: ~azure.mgmt.storageimportexport.models.ShippingInformation
+    :param delivery_package: Contains information about the package being shipped by the customer
+     to the Microsoft data center.
+    :type delivery_package: ~azure.mgmt.storageimportexport.models.PackageInfomation
+    :param return_package: Contains information about the package being shipped from the Microsoft
+     data center to the customer to return the drives. The format is the same as the deliveryPackage
+     property above. This property is not included if the drives have not yet been returned.
+    :type return_package: ~azure.mgmt.storageimportexport.models.PackageInfomation
+    :param diagnostics_path: The virtual blob directory to which the copy logs and backups of drive
+     manifest files (if enabled) will be stored.
+    :type diagnostics_path: str
+    :param log_level: Default value is Error. Indicates whether error logging or verbose logging
+     will be enabled.
+    :type log_level: str
+    :param backup_drive_manifest: Default value is false. Indicates whether the manifest files on
+     the drives should be copied to block blobs.
+    :type backup_drive_manifest: bool
+    :param state: Current state of the job.
+    :type state: str
+    :param cancel_requested: Indicates whether a request has been submitted to cancel the job.
+    :type cancel_requested: bool
+    :param percent_complete: Overall percentage completed for the job.
+    :type percent_complete: int
+    :param incomplete_blob_list_uri: A blob path that points to a block blob containing a list of
+     blob names that were not exported due to insufficient drive space. If all blobs were exported
+     successfully, then this element is not included in the response.
+    :type incomplete_blob_list_uri: str
+    :param drive_list: List of up to ten drives that comprise the job. The drive list is a required
+     element for an import job; it is not specified for export jobs.
+    :type drive_list: list[~azure.mgmt.storageimportexport.models.DriveStatus]
+    :param export: A property containing information about the blobs to be exported for an export
+     job. This property is included for export jobs only.
+    :type export: ~azure.mgmt.storageimportexport.models.Export
+    :param provisioning_state: Specifies the provisioning state of the job.
+    :type provisioning_state: str
     """
 
     _attribute_map = {
         'location': {'key': 'location', 'type': 'str'},
         'tags': {'key': 'tags', 'type': 'object'},
-        'properties': {'key': 'properties', 'type': 'JobDetails'},
+        'storage_account_id': {'key': 'properties.storageAccountId', 'type': 'str'},
+        'job_type': {'key': 'properties.jobType', 'type': 'str'},
+        'return_address': {'key': 'properties.returnAddress', 'type': 'ReturnAddress'},
+        'return_shipping': {'key': 'properties.returnShipping', 'type': 'ReturnShipping'},
+        'shipping_information': {'key': 'properties.shippingInformation', 'type': 'ShippingInformation'},
+        'delivery_package': {'key': 'properties.deliveryPackage', 'type': 'PackageInfomation'},
+        'return_package': {'key': 'properties.returnPackage', 'type': 'PackageInfomation'},
+        'diagnostics_path': {'key': 'properties.diagnosticsPath', 'type': 'str'},
+        'log_level': {'key': 'properties.logLevel', 'type': 'str'},
+        'backup_drive_manifest': {'key': 'properties.backupDriveManifest', 'type': 'bool'},
+        'state': {'key': 'properties.state', 'type': 'str'},
+        'cancel_requested': {'key': 'properties.cancelRequested', 'type': 'bool'},
+        'percent_complete': {'key': 'properties.percentComplete', 'type': 'int'},
+        'incomplete_blob_list_uri': {'key': 'properties.incompleteBlobListUri', 'type': 'str'},
+        'drive_list': {'key': 'properties.driveList', 'type': '[DriveStatus]'},
+        'export': {'key': 'properties.export', 'type': 'Export'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
     }
 
     def __init__(
@@ -681,13 +741,45 @@ class PutJobParameters(msrest.serialization.Model):
         *,
         location: Optional[str] = None,
         tags: Optional[object] = None,
-        properties: Optional["JobDetails"] = None,
+        storage_account_id: Optional[str] = None,
+        job_type: Optional[str] = None,
+        return_address: Optional["ReturnAddress"] = None,
+        return_shipping: Optional["ReturnShipping"] = None,
+        shipping_information: Optional["ShippingInformation"] = None,
+        delivery_package: Optional["PackageInfomation"] = None,
+        return_package: Optional["PackageInfomation"] = None,
+        diagnostics_path: Optional[str] = None,
+        log_level: Optional[str] = None,
+        backup_drive_manifest: Optional[bool] = None,
+        state: Optional[str] = None,
+        cancel_requested: Optional[bool] = None,
+        percent_complete: Optional[int] = None,
+        incomplete_blob_list_uri: Optional[str] = None,
+        drive_list: Optional[List["DriveStatus"]] = None,
+        export: Optional["Export"] = None,
+        provisioning_state: Optional[str] = None,
         **kwargs
     ):
         super(PutJobParameters, self).__init__(**kwargs)
         self.location = location
         self.tags = tags
-        self.properties = properties
+        self.storage_account_id = storage_account_id
+        self.job_type = job_type
+        self.return_address = return_address
+        self.return_shipping = return_shipping
+        self.shipping_information = shipping_information
+        self.delivery_package = delivery_package
+        self.return_package = return_package
+        self.diagnostics_path = diagnostics_path
+        self.log_level = log_level
+        self.backup_drive_manifest = backup_drive_manifest
+        self.state = state
+        self.cancel_requested = cancel_requested
+        self.percent_complete = percent_complete
+        self.incomplete_blob_list_uri = incomplete_blob_list_uri
+        self.drive_list = drive_list
+        self.export = export
+        self.provisioning_state = provisioning_state
 
 
 class ReturnAddress(msrest.serialization.Model):

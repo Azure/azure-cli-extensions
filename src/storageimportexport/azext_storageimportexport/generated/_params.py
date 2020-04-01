@@ -20,8 +20,11 @@ from azure.cli.core.commands.parameters import (
 from azext_storageimportexport.action import (
     AddReturnAddress,
     AddReturnShipping,
+    AddShippingInformation,
     AddDeliveryPackage,
-    AddDriveList
+    AddReturnPackage,
+    AddDriveList,
+    AddExport
 )
 
 
@@ -53,8 +56,40 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx), help='Specifies the supported Azure location w'
                    'here the job should be created')
         c.argument('tags', tags_type, help='Specifies the tags that will be assigned to the job.')
-        c.argument('properties', arg_type=CLIArgumentType(options_list=['--properties'], help='Specifies the job proper'
-                   'ties'))
+        c.argument('properties_storage_account_id', help='The resource identifier of the storage account where data wil'
+                   'l be imported to or exported from.')
+        c.argument('properties_job_type', help='The type of job')
+        c.argument('properties_return_address', action=AddReturnAddress, nargs='+', help='Specifies the return address '
+                   'information for the job.')
+        c.argument('properties_return_shipping', action=AddReturnShipping, nargs='+', help='Specifies the return carrie'
+                   'r and customer\'s account with the carrier.')
+        c.argument('properties_shipping_information', action=AddShippingInformation, nargs='+', help='Contains informat'
+                   'ion about the Microsoft datacenter to which the drives should be shipped.')
+        c.argument('properties_delivery_package', action=AddDeliveryPackage, nargs='+', help='Contains information abou'
+                   't the package being shipped by the customer to the Microsoft data center.')
+        c.argument('properties_return_package', action=AddReturnPackage, nargs='+', help='Contains information about th'
+                   'e package being shipped from the Microsoft data center to the customer to return the drives. The fo'
+                   'rmat is the same as the deliveryPackage property above. This property is not included if the drives'
+                   ' have not yet been returned.')
+        c.argument('properties_diagnostics_path', help='The virtual blob directory to which the copy logs and backups o'
+                   'f drive manifest files (if enabled) will be stored.')
+        c.argument('properties_log_level', help='Default value is Error. Indicates whether error logging or verbose log'
+                   'ging will be enabled.')
+        c.argument('properties_backup_drive_manifest', arg_type=get_three_state_flag(), help='Default value is false. I'
+                   'ndicates whether the manifest files on the drives should be copied to block blobs.')
+        c.argument('properties_state', help='Current state of the job.')
+        c.argument('properties_cancel_requested', arg_type=get_three_state_flag(), help='Indicates whether a request ha'
+                   's been submitted to cancel the job.')
+        c.argument('properties_percent_complete', help='Overall percentage completed for the job.')
+        c.argument('properties_incomplete_blob_list_uri', help='A blob path that points to a block blob containing a li'
+                   'st of blob names that were not exported due to insufficient drive space. If all blobs were exported'
+                   ' successfully, then this element is not included in the response.')
+        c.argument('properties_drive_list', action=AddDriveList, nargs='+', help='List of up to ten drives that compris'
+                   'e the job. The drive list is a required element for an import job; it is not specified for export j'
+                   'obs.')
+        c.argument('properties_export', action=AddExport, nargs='+', help='A property containing information about the '
+                   'blobs to be exported for an export job. This property is included for export jobs only.')
+        c.argument('properties_provisioning_state', help='Specifies the provisioning state of the job.')
 
     with self.argument_context('storageimportexport job update') as c:
         c.argument('job_name', help='The name of the import/export job.')

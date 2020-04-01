@@ -76,10 +76,74 @@ class AddReturnShipping(argparse.Action):
         return d
 
 
+class AddShippingInformation(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        namespace.properties_shipping_information = action
+
+    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+            if kl == 'recipient-name':
+                d['recipient_name'] = v[0]
+            elif kl == 'street-address1':
+                d['street_address1'] = v[0]
+            elif kl == 'street-address2':
+                d['street_address2'] = v[0]
+            elif kl == 'city':
+                d['city'] = v[0]
+            elif kl == 'state-or-province':
+                d['state_or_province'] = v[0]
+            elif kl == 'postal-code':
+                d['postal_code'] = v[0]
+            elif kl == 'country-or-region':
+                d['country_or_region'] = v[0]
+            elif kl == 'phone':
+                d['phone'] = v[0]
+        return d
+
+
 class AddDeliveryPackage(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
         namespace.properties_delivery_package = action
+
+    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+            if kl == 'carrier-name':
+                d['carrier_name'] = v[0]
+            elif kl == 'tracking-number':
+                d['tracking_number'] = v[0]
+            elif kl == 'drive-count':
+                d['drive_count'] = v[0]
+            elif kl == 'ship-date':
+                d['ship_date'] = v[0]
+        return d
+
+
+class AddReturnPackage(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        namespace.properties_return_package = action
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -145,4 +209,30 @@ class AddDriveList(argparse._AppendAction):
                 d['manifest_uri'] = v[0]
             elif kl == 'bytes-succeeded':
                 d['bytes_succeeded'] = v[0]
+        return d
+
+
+class AddExport(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        namespace.properties_export = action
+
+    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+            if kl == 'blob-listblob-path':
+                d['blob_listblob_path'] = v[0]
+            elif kl == 'blob-path':
+                d['blob_path'] = v
+            elif kl == 'blob-path-prefix':
+                d['blob_path_prefix'] = v
         return d

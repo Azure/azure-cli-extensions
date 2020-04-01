@@ -367,7 +367,23 @@ class JobOperations(object):
         client_tenant_id=None,  # type: Optional[str]
         location=None,  # type: Optional[str]
         tags=None,  # type: Optional[object]
-        properties=None,  # type: Optional["models.JobDetails"]
+        storage_account_id=None,  # type: Optional[str]
+        job_type=None,  # type: Optional[str]
+        return_address=None,  # type: Optional["models.ReturnAddress"]
+        return_shipping=None,  # type: Optional["models.ReturnShipping"]
+        shipping_information=None,  # type: Optional["models.ShippingInformation"]
+        delivery_package=None,  # type: Optional["models.PackageInfomation"]
+        return_package=None,  # type: Optional["models.PackageInfomation"]
+        diagnostics_path=None,  # type: Optional[str]
+        log_level=None,  # type: Optional[str]
+        backup_drive_manifest=None,  # type: Optional[bool]
+        state=None,  # type: Optional[str]
+        cancel_requested=None,  # type: Optional[bool]
+        percent_complete=None,  # type: Optional[int]
+        incomplete_blob_list_uri=None,  # type: Optional[str]
+        drive_list=None,  # type: Optional[List["DriveStatus"]]
+        export=None,  # type: Optional["models.Export"]
+        provisioning_state=None,  # type: Optional[str]
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.JobResponse"
@@ -384,8 +400,52 @@ class JobOperations(object):
         :type location: str
         :param tags: Specifies the tags that will be assigned to the job.
         :type tags: object
-        :param properties: Specifies the job properties.
-        :type properties: ~azure.mgmt.storageimportexport.models.JobDetails
+        :param storage_account_id: The resource identifier of the storage account where data will be
+         imported to or exported from.
+        :type storage_account_id: str
+        :param job_type: The type of job.
+        :type job_type: str
+        :param return_address: Specifies the return address information for the job.
+        :type return_address: ~azure.mgmt.storageimportexport.models.ReturnAddress
+        :param return_shipping: Specifies the return carrier and customer's account with the carrier.
+        :type return_shipping: ~azure.mgmt.storageimportexport.models.ReturnShipping
+        :param shipping_information: Contains information about the Microsoft datacenter to which the
+         drives should be shipped.
+        :type shipping_information: ~azure.mgmt.storageimportexport.models.ShippingInformation
+        :param delivery_package: Contains information about the package being shipped by the customer
+         to the Microsoft data center.
+        :type delivery_package: ~azure.mgmt.storageimportexport.models.PackageInfomation
+        :param return_package: Contains information about the package being shipped from the Microsoft
+         data center to the customer to return the drives. The format is the same as the deliveryPackage
+         property above. This property is not included if the drives have not yet been returned.
+        :type return_package: ~azure.mgmt.storageimportexport.models.PackageInfomation
+        :param diagnostics_path: The virtual blob directory to which the copy logs and backups of drive
+         manifest files (if enabled) will be stored.
+        :type diagnostics_path: str
+        :param log_level: Default value is Error. Indicates whether error logging or verbose logging
+         will be enabled.
+        :type log_level: str
+        :param backup_drive_manifest: Default value is false. Indicates whether the manifest files on
+         the drives should be copied to block blobs.
+        :type backup_drive_manifest: bool
+        :param state: Current state of the job.
+        :type state: str
+        :param cancel_requested: Indicates whether a request has been submitted to cancel the job.
+        :type cancel_requested: bool
+        :param percent_complete: Overall percentage completed for the job.
+        :type percent_complete: int
+        :param incomplete_blob_list_uri: A blob path that points to a block blob containing a list of
+         blob names that were not exported due to insufficient drive space. If all blobs were exported
+         successfully, then this element is not included in the response.
+        :type incomplete_blob_list_uri: str
+        :param drive_list: List of up to ten drives that comprise the job. The drive list is a required
+         element for an import job; it is not specified for export jobs.
+        :type drive_list: list[~azure.mgmt.storageimportexport.models.DriveStatus]
+        :param export: A property containing information about the blobs to be exported for an export
+         job. This property is included for export jobs only.
+        :type export: ~azure.mgmt.storageimportexport.models.Export
+        :param provisioning_state: Specifies the provisioning state of the job.
+        :type provisioning_state: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: JobResponse or the result of cls(response)
         :rtype: ~azure.mgmt.storageimportexport.models.JobResponse or ~azure.mgmt.storageimportexport.models.JobResponse
@@ -394,7 +454,7 @@ class JobOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType["models.JobResponse"]
         error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        _body = models.PutJobParameters(location=location, tags=tags, properties=properties)
+        _body = models.PutJobParameters(location=location, tags=tags, storage_account_id=storage_account_id, job_type=job_type, return_address=return_address, return_shipping=return_shipping, shipping_information=shipping_information, delivery_package=delivery_package, return_package=return_package, diagnostics_path=diagnostics_path, log_level=log_level, backup_drive_manifest=backup_drive_manifest, state=state, cancel_requested=cancel_requested, percent_complete=percent_complete, incomplete_blob_list_uri=incomplete_blob_list_uri, drive_list=drive_list, export=export, provisioning_state=provisioning_state)
         api_version = "2016-11-01"
 
         # Construct URL

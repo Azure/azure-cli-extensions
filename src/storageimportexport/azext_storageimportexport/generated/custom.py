@@ -46,17 +46,47 @@ def storageimportexport_job_create(cmd, client,
                                    client_tenant_id=None,
                                    location=None,
                                    tags=None,
-                                   properties=None):
+                                   properties_storage_account_id=None,
+                                   properties_job_type=None,
+                                   properties_return_address=None,
+                                   properties_return_shipping=None,
+                                   properties_shipping_information=None,
+                                   properties_delivery_package=None,
+                                   properties_return_package=None,
+                                   properties_diagnostics_path=None,
+                                   properties_log_level=None,
+                                   properties_backup_drive_manifest=None,
+                                   properties_state=None,
+                                   properties_cancel_requested=None,
+                                   properties_percent_complete=None,
+                                   properties_incomplete_blob_list_uri=None,
+                                   properties_drive_list=None,
+                                   properties_export=None,
+                                   properties_provisioning_state=None):
     if isinstance(tags, str):
         tags = json.loads(tags)
-    if isinstance(properties, str):
-        properties = json.loads(properties)
     return client.create(job_name=job_name,
                          resource_group_name=resource_group_name,
                          client_tenant_id=client_tenant_id,
                          location=location,
                          tags=tags,
-                         properties=properties)
+                         storage_account_id=properties_storage_account_id,
+                         job_type=properties_job_type,
+                         return_address=properties_return_address,
+                         return_shipping=properties_return_shipping,
+                         shipping_information=properties_shipping_information,
+                         delivery_package=properties_delivery_package,
+                         return_package=properties_return_package,
+                         diagnostics_path=properties_diagnostics_path,
+                         log_level=properties_log_level,
+                         backup_drive_manifest=properties_backup_drive_manifest,
+                         state=properties_state,
+                         cancel_requested=properties_cancel_requested,
+                         percent_complete=properties_percent_complete,
+                         incomplete_blob_list_uri=properties_incomplete_blob_list_uri,
+                         drive_list=properties_drive_list,
+                         export=properties_export,
+                         provisioning_state=properties_provisioning_state)
 
 
 def storageimportexport_job_update(cmd, client,

@@ -66,15 +66,14 @@ helps['storageimportexport job create'] = """
     examples:
       - name: Create job
         text: |-
-               az storageimportexport job create --location "West US" --properties "{\\"backupDriveManifest\\":true,\\"\
-diagnosticsPath\\":\\"waimportexport\\",\\"driveList\\":[{\\"bitLockerKey\\":\\"238810-662376-448998-450120-652806-2033\
-90-606320-483076\\",\\"driveHeaderHash\\":\\"\\",\\"driveId\\":\\"9CA995BB\\",\\"manifestFile\\":\\"\\\\\\\\DriveManife\
-st.xml\\",\\"manifestHash\\":\\"109B21108597EF36D5785F08303F3638\\"}],\\"jobType\\":\\"Import\\",\\"logLevel\\":\\"Verb\
-ose\\",\\"returnAddress\\":{\\"city\\":\\"Redmond\\",\\"countryOrRegion\\":\\"USA\\",\\"email\\":\\"Test@contoso.com\\"\
-,\\"phone\\":\\"4250000000\\",\\"postalCode\\":\\"98007\\",\\"recipientName\\":\\"Tets\\",\\"stateOrProvince\\":\\"wa\\\
-",\\"streetAddress1\\":\\"Street1\\",\\"streetAddress2\\":\\"street2\\"},\\"storageAccountId\\":\\"/subscriptions/aaaaa\
-aaa-bbbb-cccc-dddd-eeeeeeeeeeee/resourceGroups/Default-Storage-WestUS/providers/Microsoft.ClassicStorage/storageAccount\
-s/test\\"}" --job-name "test-by1-import" --resource-group "Default-Storage-WestUS"
+               az storageimportexport job create --location "West US" --properties-backup-drive-manifest true --propert\
+ies-diagnostics-path "waimportexport" --properties-drive-list bit-locker-key="238810-662376-448998-450120-652806-203390\
+-606320-483076" drive-header-hash="" drive-id="9CA995BB" manifest-file="\\\\DriveManifest.xml" manifest-hash="109B21108\
+597EF36D5785F08303F3638" --properties-job-type "Import" --properties-log-level "Verbose" --properties-return-address ci\
+ty="Redmond" country-or-region="USA" email="Test@contoso.com" phone="4250000000" postal-code="98007" recipient-name="Te\
+ts" state-or-province="wa" street-address1="Street1" street-address2="street2" --properties-storage-account-id "/subscr\
+iptions/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee/resourceGroups/Default-Storage-WestUS/providers/Microsoft.ClassicStorage/s\
+torageAccounts/test" --job-name "test-by1-import" --resource-group "Default-Storage-WestUS"
 """
 
 helps['storageimportexport job update'] = """
