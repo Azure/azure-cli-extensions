@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: connect-proxy-agent
+  namespace: azure-arc
+  labels:
+    app.kubernetes.io/name:  azure-arc-k8s
+    app.kubernetes.io/component: connect-proxy-agent
+  annotations:
+    description: {{ .Chart.Description }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: azure-arc-k8s
+      app.kubernetes.io/component: connect-proxy-agent
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: azure-arc-k8s
+        app.kubernetes.io/component: connect-proxy-agent
+    spec:
+      serviceAccountName: azure-arc-operatorsa
+      containers:
+        - name: connect-proxy-agent
+          image: "{{ .Values.systemDefaultValues.image.repository }}/{{ .Values.systemDefaultValues.image.releaseName }}/{{ index .Values.systemDefaultValues "connect-proxy-agent" "image" }}:{{ index .Values.systemDefaultValues "connect-proxy-agent" "tag" }}"
+          imagePullPolicy: {{ .Values.systemDefaultValues.image.imagePullPolicy }}
+          envFrom:
+          - configMapRef:
+              name: azure-clusterconfig

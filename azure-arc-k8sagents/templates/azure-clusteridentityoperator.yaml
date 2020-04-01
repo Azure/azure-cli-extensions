@@ -1,0 +1,102 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clusteridentityoperator
+  namespace: azure-arc
+  labels:
+    control-plane: cluster-identity-manager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      control-plane: cluster-identity-manager
+  template:
+    metadata:
+      labels:
+        control-plane: cluster-identity-manager
+    spec:
+      serviceAccountName: azure-arc-operatorsa
+      containers:
+        - name: kube-rbac-proxy
+          image: gcr.io/kubebuilder/kube-rbac-proxy:v0.4.0
+          args:
+            - "--secure-listen-address=0.0.0.0:8443"
+            - "--upstream=http://127.0.0.1:8080/"
+            - "--logtostderr=true"
+            - "--v=10"
+          ports:
+            - containerPort: 8443
+              name: https
+        - name: manager
+          args:
+            {{if .Values.systemDefaultValues.IsIdentityDebug}}
+            - "--listen=:40000"
+            - "--headless=true"
+            - "--api-version=2"
+            - "exec"
+            - "/data/identityOperator"
+            - "--"
+            {{end}}
+            - "--metrics-addr=127.0.0.1:8080"
+            - "--enable-leader-election"
+          command:
+          {{ if .Values.systemDefaultValues.IsIdentityDebug}}
+          - /dlv
+          {{else}}
+          - /data/identityOperator
+          {{end}}
+          image: "{{ .Values.systemDefaultValues.image.repository }}/{{ .Values.systemDefaultValues.image.releaseName }}/{{ index .Values.systemDefaultValues "clusteridentityoperator" "image" }}:{{ index .Values.systemDefaultValues "clusteridentityoperator" "tag" }}"
+          imagePullPolicy: {{ .Values.systemDefaultValues.image.imagePullPolicy }}
+          envFrom:
+          - configMapRef:
+              name: azure-clusterconfig
+          {{if .Values.systemDefaultValues.clusteridentityoperator.armIdOverride}}
+          env:
+          - name: AZURE_RESOURCE_NAME
+            value:  {{.Values.systemDefaultValues.clusteridentityoperator.resourceName}}
+          - name: AZURE_SUBSCRIPTION_ID
+            value:  {{ .Values.systemDefaultValues.clusteridentityoperator.subscription}}
+          - name: AZURE_RESOURCE_GROUP
+            value:  {{ .Values.systemDefaultValues.clusteridentityoperator.resourceGroup}}
+          - name: ONBOARDING_SECRET_NAME
+            value:  {{ .Values.systemDefaultValues.clusteridentityoperator.secretName}}
+          - name: ONBOARDING_SECRET_NAMESPACE
+            value:  {{ .Values.systemDefaultValues.clusteridentityoperator.secretNamespace}}
+          {{end}}
+          resources:
+            limits:
+              cpu: 100m
+              memory: 300Mi
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          {{ if .Values.systemDefaultValues.IsIdentityDebug}}
+          ports:
+            - containerPort: 40000
+              name: debug
+              protocol: TCP
+          securityContext:
+            capabilities:
+              add:
+                - SYS_PTRACE
+          {{end}}
+      terminationGracePeriodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/port: "8443"
+    prometheus.io/scheme: https
+    prometheus.io/scrape: "true"
+  labels:
+    control-plane: cluster-identity-manager
+  name: cluster-identity-manager-metrics-service
+  namespace: azure-arc
+spec:
+  ports:
+    - name: https
+      port: 8443
+      targetPort: https
+  selector:
+    control-plane: cluster-identity-manager
