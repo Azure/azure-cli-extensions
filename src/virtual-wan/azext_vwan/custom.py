@@ -167,7 +167,11 @@ def create_hub_vnet_connection(cmd, resource_group_name, virtual_hub_name, conne
     )
     _upsert(hub, 'virtual_network_connections', connection, 'name', warn=True)
     poller = sdk_no_wait(no_wait, client.create_or_update, resource_group_name, virtual_hub_name, hub)
-    return _get_property(poller.result().virtual_network_connections, connection_name)
+    if no_wait:
+        return poller
+
+    from azure.cli.core.commands import LongRunningOperation
+    return _get_property(LongRunningOperation(cmd.cli_ctx)(poller).virtual_network_connections, connection_name)
 
 
 # pylint: disable=inconsistent-return-statements
