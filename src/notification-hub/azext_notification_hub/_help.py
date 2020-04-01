@@ -166,7 +166,7 @@ helps['notification-hub create'] = """
       - name: Create a Notification Hub
         text: |-
                az notification-hub create --resource-group MyResourceGroup --namespace-name my-namespace \\
-               --name my-hub --location "South Central US" --sku "Free"
+               --name my-hub --location "South Central US"
 """
 
 helps['notification-hub update'] = """

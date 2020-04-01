@@ -17,7 +17,7 @@ def load_command_table(self, _):
     notificationhubs_namespaces = CliCommandType(
         operations_tmpl='azext_notification_hub.vendored_sdks.notificationhubs.operations.namespaces_operations#NamespacesOperations.{}',
         client_factory=cf_namespaces)
-    with self.command_group('notification-hub namespace', notificationhubs_namespaces, client_factory=cf_namespaces, is_preview=True) as g:
+    with self.command_group('notification-hub namespace', notificationhubs_namespaces, client_factory=cf_namespaces) as g:
         g.custom_command('create', 'create_notificationhubs_namespace')
         g.custom_command('update', 'update_notificationhubs_namespace')
         g.custom_command('delete', 'delete_notificationhubs_namespace', supports_no_wait=True, confirmation='Are you sure to delete this namespace and all its hubs?')
@@ -25,18 +25,20 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_notificationhubs_namespace')
         g.custom_command('check-availability', 'check_availability_notificationhubs_namespace')
         g.wait_command('wait')
-        g.custom_show_command('authorization-rule show', 'get_authorization_rule_notificationhubs_namespace')
-        g.custom_command('authorization-rule list', 'list_authorization_rules_notificationhubs_namespace')
-        g.custom_command('authorization-rule create', 'create_or_update_authorization_rule_notificationhubs_namespace')
-        g.custom_command('authorization-rule delete', 'delete_authorization_rule_notificationhubs_namespace', confirmation=True)
-        g.custom_command('authorization-rule list-keys', 'list_keys_notificationhubs_namespace')
-        g.custom_command('authorization-rule regenerate-keys', 'regenerate_keys_notificationhubs_namespace')
+
+    with self.command_group('notification-hub namespace authorization-rule', notificationhubs_namespaces, client_factory=cf_namespaces) as g:
+        g.custom_show_command('show', 'get_authorization_rule_notificationhubs_namespace')
+        g.custom_command('list', 'list_authorization_rules_notificationhubs_namespace')
+        g.custom_command('create', 'create_or_update_authorization_rule_notificationhubs_namespace')
+        g.custom_command('delete', 'delete_authorization_rule_notificationhubs_namespace', confirmation=True)
+        g.custom_command('list-keys', 'list_keys_notificationhubs_namespace')
+        g.custom_command('regenerate-keys', 'regenerate_keys_notificationhubs_namespace')
 
     from ._client_factory import cf_notification_hubs
     notificationhubs_notification_hubs = CliCommandType(
         operations_tmpl='azext_notification_hub.vendored_sdks.notificationhubs.operations.notification_hubs_operations#NotificationHubsOperations.{}',
         client_factory=cf_notification_hubs)
-    with self.command_group('notification-hub', notificationhubs_notification_hubs, client_factory=cf_notification_hubs, is_preview=True) as g:
+    with self.command_group('notification-hub', notificationhubs_notification_hubs, client_factory=cf_notification_hubs, is_experimental=True) as g:
         g.custom_command('create', 'create_notificationhubs_hub')
         g.custom_command('update', 'update_notificationhubs_hub')
         g.custom_command('delete', 'delete_notificationhubs_hub', confirmation=True)
@@ -44,12 +46,14 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_notificationhubs_hub')
         g.custom_command('check-availability', 'check_notification_hub_availability_notificationhubs_hub')
         g.custom_command('test-send', 'debug_send_notificationhubs_hub', validator=validate_notification_message)
-        g.custom_command('authorization-rule list', 'list_authorization_rules_notificationhubs_hub')
-        g.custom_show_command('authorization-rule show', 'get_authorization_rule_notificationhubs_hub')
-        g.custom_command('authorization-rule create', 'create_or_update_authorization_rule_notificationhubs_hub')
-        g.custom_command('authorization-rule delete', 'delete_authorization_rule_notificationhubs_hub')
-        g.custom_command('authorization-rule list-keys', 'list_keys_notificationhubs_hub')
-        g.custom_command('authorization-rule regenerate-keys', 'regenerate_keys_notificationhubs_hub')
+
+    with self.command_group('notification-hub authorization-rule', notificationhubs_notification_hubs, client_factory=cf_notification_hubs) as g:
+        g.custom_command('list', 'list_authorization_rules_notificationhubs_hub')
+        g.custom_show_command('show', 'get_authorization_rule_notificationhubs_hub')
+        g.custom_command('create', 'create_or_update_authorization_rule_notificationhubs_hub')
+        g.custom_command('delete', 'delete_authorization_rule_notificationhubs_hub')
+        g.custom_command('list-keys', 'list_keys_notificationhubs_hub')
+        g.custom_command('regenerate-keys', 'regenerate_keys_notificationhubs_hub')
 
     with self.command_group('notification-hub credential', notificationhubs_notification_hubs, client_factory=cf_notification_hubs) as g:
         g.custom_command('list', 'get_pns_credentials_notificationhubs_hub')
