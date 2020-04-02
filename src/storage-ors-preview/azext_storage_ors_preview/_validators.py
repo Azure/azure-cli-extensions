@@ -12,8 +12,9 @@ def validate_or_policy(namespace):
         error_msg = "Please provide --policy in JSON format or the following arguments: "
         if namespace.source_account is None:
             error_elements.append("--source-account")
+
         if namespace.destination_account is None:
-            error_elements.append("--destination-account")
+            namespace.destination_account = namespace.account_name
 
         if error_elements:
             error_msg += ", ".join(error_elements)
@@ -36,9 +37,10 @@ def validate_or_policy(namespace):
             namespace.destination_account = or_policy["destinationAccount"]
         except KeyError:
             namespace.destination_account = or_policy["destination_account"]
-        if namespace.source_account is None:
+            """
+        if namespace.destination_account is None:
             error_elements.append("destination_account")
-
+"""
         if "rules" not in or_policy.keys() or not or_policy["rules"]:
             error_elements.append("rules")
         error_msg = "Missing input parameters: "

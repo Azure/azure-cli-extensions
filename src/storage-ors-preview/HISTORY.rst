@@ -14,3 +14,4 @@ Release History
 0.3.0
 ++++++
 * Rename `az storage account ors-policy` to `az storage account or-policy`.
+* Default to --account-name for --destination-account when creating policy in destination account.

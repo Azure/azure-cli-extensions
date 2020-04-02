@@ -46,7 +46,7 @@ class StorageAccountORSScenarioTest(StorageScenarioMixin, ScenarioTest):
                  JMESPathCheck('isVersioningEnabled', True)])
 
         # Create ORS policy on destination account
-        result = self.cmd('storage account or-policy create -g {rg} -n {dest_sc} -s {src_sc} -d {dest_sc} --destination-container {dcont} --source-container {scont} -t "2020-02-19T16:05:00Z"')\
+        result = self.cmd('storage account or-policy create -g {rg} -n {dest_sc} -s {src_sc} --destination-container {dcont} --source-container {scont} -t "2020-02-19T16:05:00Z"')\
             .get_output_in_json()
         self.assertIn('policyId', result)
         self.assertIn('ruleId', result['rules'][0])
