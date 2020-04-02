@@ -128,6 +128,10 @@ jobs:
       inputs:
         versionSpec: 3.6
     - bash: |
+        echo "${AZURE_CONFIG_DIR}"
+
+        ls -al /opt/az/azcliextensions
+    - bash: |
         set -ev
 
         # prepare and activate virtualenv
