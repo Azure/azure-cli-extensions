@@ -51,8 +51,7 @@ class NotificationHubsScenarioTest(ScenarioTest):
                  '--resource-group {rg} '
                  '--namespace-name {namespace-name} '
                  '--name {notification-hub-name} '
-                 '--location "South Central US" '
-                 '--sku "Free"',
+                 '--location "South Central US"',
                  checks=[JMESPathCheck('name', self.kwargs.get('notification-hub-name', ''))])
 
         self.cmd('az notification-hub namespace authorization-rule create '
