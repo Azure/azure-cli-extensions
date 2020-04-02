@@ -14,7 +14,7 @@ import unittest
 from azure_devtools.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import ScenarioTest
 from .. import try_manual
-from azure.cli.testsdk import ResourceGroupPreparer
+from azure.cli.testsdk import ResourceGroupPreparer, StorageAccountPreparer
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -28,6 +28,26 @@ def setup(test):
 # EXAMPLE: /Jobs/put/Create job
 @try_manual
 def step__jobs_put_create_job(test):
+
+    text_file = open("/_/out.txt", "w")
+    text_file.write('az storageimportexport job create '
+             '--location "West US" '
+             '--properties-backup-drive-manifest true '
+             '--properties-diagnostics-path "waimportexport" '
+             '--properties-drive-list bit-locker-key="238810-662376-448998-450120-652806-203390-606320-483076" drive-he'
+             'ader-hash="" drive-id="9CA995BB" manifest-file="\\\\DriveManifest.xml" manifest-hash="109B21108597EF36D57'
+             '85F08303F3638" '
+             '--properties-job-type "Import" '
+             '--properties-log-level "Verbose" '
+             '--properties-return-address city="Redmond" country-or-region="USA" email="Test@contoso.com" phone="425000'
+             '0000" postal-code="98007" recipient-name="Tets" state-or-province="wa" street-address1="Street1" street-a'
+             'ddress2="street2" '
+             '--properties-storage-account-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft'
+             '.ClassicStorage/storageAccounts/{sa}" '
+             '--job-name "{myJob}" '
+             '--resource-group "{rg}"')
+    text_file.close()
+
     test.cmd('az storageimportexport job create '
              '--location "West US" '
              '--properties-backup-drive-manifest true '
@@ -41,11 +61,10 @@ def step__jobs_put_create_job(test):
              '0000" postal-code="98007" recipient-name="Tets" state-or-province="wa" street-address1="Street1" street-a'
              'ddress2="street2" '
              '--properties-storage-account-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft'
-             '.ClassicStorage/storageAccounts/test" '
+             '.ClassicStorage/storageAccounts/{sa}" '
              '--job-name "{myJob}" '
              '--resource-group "{rg}"',
              checks=[])
-
 
 # EXAMPLE: /Jobs/get/Get job
 @try_manual
@@ -124,10 +143,13 @@ def cleanup(test):
 class StorageImportExportScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_storageimportexport_myResourceGroup'[:9], key='rg')
-    def test_storageimportexport(self, resource_group):
+    @StorageAccountPreparer(location="eastus")
+
+    def test_storageimportexport(self, resource_group, storage_account):
 
         self.kwargs.update({
-            'subscription_id': self.get_subscription_id()
+            'subscription_id': self.get_subscription_id(),
+            'sa': storage_account
         })
 
         self.kwargs.update({
