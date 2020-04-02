@@ -42,14 +42,14 @@ Manage data policy rules associated with a storage account: [more info](https://
 ##### Create ORS Policy on destination storage account
 1. Using JSON file or JSON string.
 ```
-az storage account ors-policy create \
+az storage account or-policy create \
     --account-name destAccountName \
     --resource-group groupName \
     --properties @{path}
 ```
 2. Using command parameters.
 ```
-az storage account ors-policy create \
+az storage account or-policy create \
     --account-name destAccountName \
     --resource-group groupName \
     --source-account srcAccountName \
@@ -58,7 +58,7 @@ az storage account ors-policy create \
     --destination-container destContainer \
 ```
 ```
-az storage account ors-policy create \
+az storage account or-policy create \
     --account-name destAccountName \
     --resource-group groupName \
     --source-account srcAccountName \
@@ -70,25 +70,25 @@ az storage account ors-policy create \
 
 3. Create Object Replication Service Policy to source storage account through policy associated with destination storage account.
 ```
-az storage account ors-policy show -g groupName -n destAccountName --policy-id "3496e652-4cea-4581-b2f7-c86b3971ba92" | az storage account ors-policy create -g ResourceGroupName -n srcAccountName -p "@-"
+az storage account or-policy show -g groupName -n destAccountName --policy-id "3496e652-4cea-4581-b2f7-c86b3971ba92" | az storage account or-policy create -g ResourceGroupName -n srcAccountName -p "@-"
 ```
 
 To save the policyId/ruleId in PowerShell Scripts, you can use:
 
-`$policyId = (az storage account ors-policy create --account-name accountName --resource-group groupName --properties @{path}) --query policyId)`
+`$policyId = (az storage account or-policy create --account-name accountName --resource-group groupName --properties @{path}) --query policyId)`
 
-`$ruleId = (az storage account ors-policy create --account-name accountName --resource-group groupName --properties @{path}) --query rules.ruleId)`
+`$ruleId = (az storage account or-policy create --account-name accountName --resource-group groupName --properties @{path}) --query rules.ruleId)`
 
 ##### List ORS Policies on storage account
 ```
-az storage account ors-policy list \
+az storage account or-policy list \
     --account-name accountName \
     --resource-group groupName
 ```
 
 ##### Show ORS Policy on storage account
 ```
-az storage account ors-policy show \
+az storage account or-policy show \
     --policy-id $policyId \
     --account-name accountName \
     --resource-group groupName
@@ -97,7 +97,7 @@ az storage account ors-policy show \
 ##### Update ORS Policy on storage account
 Change source storage account name of existing ORS policy.
 ```
-az storage account ors-policy update \
+az storage account or-policy update \
     --policy-id $policyId \
     --account-name destAccountName \
     --resource-group groupName \
@@ -106,14 +106,14 @@ az storage account ors-policy update \
 
 Update existing ORS policy through json file.
 ```
-az storage account ors-policy update \
+az storage account or-policy update \
     --policy @policy.json \
     --account-name destAccountName \
     --resource-group groupName \
 ```
 ##### Add rule to existing ORS Policy
 ```
-az storage account ors-policy rule add \
+az storage account or-policy rule add \
     --policy-id $policyId \
     --account-name accountName \
     --resource-group groupName \
@@ -125,7 +125,7 @@ az storage account ors-policy rule add \
 
 ##### List rules for ORS Policy
 ```
-az storage account ors-policy rule list \
+az storage account or-policy rule list \
     --policy-id $policyId \
     --account-name accountName \
     --resource-group groupName
@@ -133,7 +133,7 @@ az storage account ors-policy rule list \
 
 ##### Show properties of specific rule in ORS Policy
 ```
-az storage account ors-policy rule show \
+az storage account or-policy rule show \
     --rule-id $ruleId \
     --policy-id $policyId \
     --account-name accountName \
@@ -143,7 +143,7 @@ az storage account ors-policy rule show \
 ##### Update properties for specific ORS Policy Rule
 Change prefix match filter properties.
 ```
-az storage account ors-policy rule update \
+az storage account or-policy rule update \
     --rule-id $ruleId \
     --policy-id $policyId \
     --account-name accountName \
@@ -153,7 +153,7 @@ az storage account ors-policy rule update \
 
 Change min creation time in filter properties.
 ```
-az storage account ors-policy rule update \
+az storage account or-policy rule update \
     --rule-id $ruleId \
     --policy-id $policyId \
     --account-name accountName \
@@ -162,7 +162,7 @@ az storage account ors-policy rule update \
 ```
 ##### Remove the specified rule in existing ORS Policy
 ```
-az storage account ors-policy rule remove \
+az storage account or-policy rule remove \
     --rule-id $ruleId \
     --policy-id $policyId \
     --account-name accountName \
@@ -171,7 +171,7 @@ az storage account ors-policy rule remove \
 
 ##### Delete the specified ORS Policy for storage account
 ```
-az storage account ors-policy delete \
+az storage account or-policy delete \
     --policy-id $policyId \
     --account-name accountName \
     --resource-group groupName

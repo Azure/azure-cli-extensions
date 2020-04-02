@@ -10,3 +10,7 @@ Release History
 0.2.0
 ++++++
 * Support --min-creation-time for ORS filter.
+
+0.3.0
+++++++
+* Rename `az storage account ors-policy` to `az storage account or-policy`.

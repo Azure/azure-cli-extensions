@@ -6,7 +6,7 @@ import os
 from azure.cli.core.util import get_file_json, shell_safe_json_parse
 
 
-def validate_ors_policy(namespace):
+def validate_or_policy(namespace):
     error_elements = []
     if namespace.properties is None:
         error_msg = "Please provide --policy in JSON format or the following arguments: "
@@ -17,39 +17,39 @@ def validate_ors_policy(namespace):
 
         if error_elements:
             error_msg += ", ".join(error_elements)
-            error_msg += " to initialize ORS Policy for storage account."
+            error_msg += " to initialize or Policy for storage account."
             raise ValueError(error_msg)
     else:
         if os.path.exists(namespace.properties):
-            ors_policy = get_file_json(namespace.properties)
+            or_policy = get_file_json(namespace.properties)
         else:
-            ors_policy = shell_safe_json_parse(namespace.properties)
+            or_policy = shell_safe_json_parse(namespace.properties)
 
         try:
-            namespace.source_account = ors_policy["sourceAccount"]
+            namespace.source_account = or_policy["sourceAccount"]
         except KeyError:
-            namespace.source_account = ors_policy["source_account"]
+            namespace.source_account = or_policy["source_account"]
         if namespace.source_account is None:
             error_elements.append("source_account")
 
         try:
-            namespace.destination_account = ors_policy["destinationAccount"]
+            namespace.destination_account = or_policy["destinationAccount"]
         except KeyError:
-            namespace.destination_account = ors_policy["destination_account"]
+            namespace.destination_account = or_policy["destination_account"]
         if namespace.source_account is None:
             error_elements.append("destination_account")
 
-        if "rules" not in ors_policy.keys() or not ors_policy["rules"]:
+        if "rules" not in or_policy.keys() or not or_policy["rules"]:
             error_elements.append("rules")
         error_msg = "Missing input parameters: "
         if error_elements:
             error_msg += ", ".join(error_elements)
-            error_msg += " in properties to initialize ORS Policy for storage account."
+            error_msg += " in properties to initialize or Policy for storage account."
             raise ValueError(error_msg)
-        namespace.properties = ors_policy
+        namespace.properties = or_policy
 
-        if "policyId" in ors_policy.keys() and ors_policy["policyId"]:
-            namespace.policy_id = ors_policy['policyId']
+        if "policyId" in or_policy.keys() and or_policy["policyId"]:
+            namespace.policy_id = or_policy['policyId']
 
 
 def get_datetime_type(to_string):

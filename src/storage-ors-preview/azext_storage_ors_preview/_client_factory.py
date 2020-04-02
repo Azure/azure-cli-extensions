@@ -16,5 +16,5 @@ def cf_sa(cli_ctx, _):
     return storage_client_factory(cli_ctx).storage_accounts
 
 
-def cf_ors_policy(cli_ctx, _):
+def cf_or_policy(cli_ctx, _):
     return storage_client_factory(cli_ctx).object_replication_policies
