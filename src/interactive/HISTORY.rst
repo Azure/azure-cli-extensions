@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.4.4
++++++
+* Remove dependency of azure-cli-core's ENV_ADDITIONAL_USER_AGENT
+
 0.4.3
 +++++
 * Fix config problem in interactive
