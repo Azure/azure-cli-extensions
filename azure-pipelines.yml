@@ -132,6 +132,8 @@ jobs:
 
         echo "${AZURE_CONFIG_DIR}"
 
+        which az
+
         ls -al /opt/az/
 
         ls -al /opt/az/azcliextensions
@@ -165,6 +167,11 @@ jobs:
 
         python scripts/ci/verify_linter.py
       displayName: "CLI Linter on Modified Extension"
+    - bash:
+        set -ev
+
+        ls -al ~/.azure/
+      
       env:
         ADO_PULL_REQUEST_LATEST_COMMIT: $(System.PullRequest.SourceCommitId)
         ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
