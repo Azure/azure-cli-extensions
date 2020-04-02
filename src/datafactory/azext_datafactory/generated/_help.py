@@ -46,8 +46,8 @@ helps['datafactory factory update'] = """
     examples:
       - name: Factories_Update
         text: |-
-               az datafactory factory update --factory-name "exampleFactoryName" --tags exampleTag=exampleValue --resou\
-rce-group "exampleResourceGroup"
+               az datafactory factory update --factory-name "exampleFactoryName" --tags exampleTag="exampleValue" --res\
+ource-group "exampleResourceGroup"
 """
 
 helps['datafactory factory delete'] = """
@@ -529,12 +529,12 @@ helps['datafactory linked-service azure-batch create'] = """
       - name: LinkedServices_Create
         text: |-
                az datafactory linked-service azure-batch create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --type-properties-linked-service-name "\\"exampleLinkedService\\"" --resource-group "exampleResourceGroup"
+e" --type-properties-linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
       - name: LinkedServices_Update
         text: |-
                az datafactory linked-service azure-batch create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --description "Example description" --type-properties-linked-service-name "\\"exampleLinkedService\\"" --resource-gr\
-oup "exampleResourceGroup"
+e" --description "Example description" --type-properties-linked-service-name "exampleLinkedService" --resource-group "e\
+xampleResourceGroup"
 """
 
 helps['datafactory linked-service azure-batch update'] = """
@@ -544,12 +544,12 @@ helps['datafactory linked-service azure-batch update'] = """
       - name: LinkedServices_Create
         text: |-
                az datafactory linked-service azure-batch create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --type-properties-linked-service-name "\\"exampleLinkedService\\"" --resource-group "exampleResourceGroup"
+e" --type-properties-linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
       - name: LinkedServices_Update
         text: |-
                az datafactory linked-service azure-batch create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --description "Example description" --type-properties-linked-service-name "\\"exampleLinkedService\\"" --resource-gr\
-oup "exampleResourceGroup"
+e" --description "Example description" --type-properties-linked-service-name "exampleLinkedService" --resource-group "e\
+xampleResourceGroup"
 """
 
 helps['datafactory linked-service azure-blob-f-s'] = """
@@ -669,14 +669,13 @@ helps['datafactory linked-service azure-data-lake-analytics create'] = """
       - name: LinkedServices_Create
         text: |-
                az datafactory linked-service azure-data-lake-analytics create --factory-name "exampleFactoryName" --typ\
-e "AzureStorage" --linked-service-name "exampleLinkedService" --type-properties-resource-group-name "\\"exampleResource\
-Group\\"" --type-properties-subscription-id "\\"12345678-1234-1234-1234-12345678abc\\""
+e "AzureStorage" --linked-service-name "exampleLinkedService" --type-properties-resource-group-name "exampleResourceGro\
+up" --type-properties-subscription-id "12345678-1234-1234-1234-12345678abc"
       - name: LinkedServices_Update
         text: |-
                az datafactory linked-service azure-data-lake-analytics create --factory-name "exampleFactoryName" --typ\
 e "AzureStorage" --description "Example description" --linked-service-name "exampleLinkedService" --type-properties-res\
-ource-group-name "\\"exampleResourceGroup\\"" --type-properties-subscription-id "\\"12345678-1234-1234-1234-12345678abc\
-\\""
+ource-group-name "exampleResourceGroup" --type-properties-subscription-id "12345678-1234-1234-1234-12345678abc"
 """
 
 helps['datafactory linked-service azure-data-lake-analytics update'] = """
@@ -686,14 +685,13 @@ helps['datafactory linked-service azure-data-lake-analytics update'] = """
       - name: LinkedServices_Create
         text: |-
                az datafactory linked-service azure-data-lake-analytics create --factory-name "exampleFactoryName" --typ\
-e "AzureStorage" --linked-service-name "exampleLinkedService" --type-properties-resource-group-name "\\"exampleResource\
-Group\\"" --type-properties-subscription-id "\\"12345678-1234-1234-1234-12345678abc\\""
+e "AzureStorage" --linked-service-name "exampleLinkedService" --type-properties-resource-group-name "exampleResourceGro\
+up" --type-properties-subscription-id "12345678-1234-1234-1234-12345678abc"
       - name: LinkedServices_Update
         text: |-
                az datafactory linked-service azure-data-lake-analytics create --factory-name "exampleFactoryName" --typ\
 e "AzureStorage" --description "Example description" --linked-service-name "exampleLinkedService" --type-properties-res\
-ource-group-name "\\"exampleResourceGroup\\"" --type-properties-subscription-id "\\"12345678-1234-1234-1234-12345678abc\
-\\""
+ource-group-name "exampleResourceGroup" --type-properties-subscription-id "12345678-1234-1234-1234-12345678abc"
 """
 
 helps['datafactory linked-service azure-data-lake-store'] = """
@@ -708,13 +706,13 @@ helps['datafactory linked-service azure-data-lake-store create'] = """
       - name: LinkedServices_Create
         text: |-
                az datafactory linked-service azure-data-lake-store create --factory-name "exampleFactoryName" --type "A\
-zureStorage" --linked-service-name "exampleLinkedService" --type-properties-resource-group-name "\\"exampleResourceGrou\
-p\\"" --type-properties-subscription-id "\\"12345678-1234-1234-1234-12345678abc\\""
+zureStorage" --linked-service-name "exampleLinkedService" --type-properties-resource-group-name "exampleResourceGroup" \
+--type-properties-subscription-id "12345678-1234-1234-1234-12345678abc"
       - name: LinkedServices_Update
         text: |-
                az datafactory linked-service azure-data-lake-store create --factory-name "exampleFactoryName" --type "A\
 zureStorage" --description "Example description" --linked-service-name "exampleLinkedService" --type-properties-resourc\
-e-group-name "\\"exampleResourceGroup\\"" --type-properties-subscription-id "\\"12345678-1234-1234-1234-12345678abc\\""
+e-group-name "exampleResourceGroup" --type-properties-subscription-id "12345678-1234-1234-1234-12345678abc"
 """
 
 helps['datafactory linked-service azure-data-lake-store update'] = """
@@ -724,13 +722,13 @@ helps['datafactory linked-service azure-data-lake-store update'] = """
       - name: LinkedServices_Create
         text: |-
                az datafactory linked-service azure-data-lake-store create --factory-name "exampleFactoryName" --type "A\
-zureStorage" --linked-service-name "exampleLinkedService" --type-properties-resource-group-name "\\"exampleResourceGrou\
-p\\"" --type-properties-subscription-id "\\"12345678-1234-1234-1234-12345678abc\\""
+zureStorage" --linked-service-name "exampleLinkedService" --type-properties-resource-group-name "exampleResourceGroup" \
+--type-properties-subscription-id "12345678-1234-1234-1234-12345678abc"
       - name: LinkedServices_Update
         text: |-
                az datafactory linked-service azure-data-lake-store create --factory-name "exampleFactoryName" --type "A\
 zureStorage" --description "Example description" --linked-service-name "exampleLinkedService" --type-properties-resourc\
-e-group-name "\\"exampleResourceGroup\\"" --type-properties-subscription-id "\\"12345678-1234-1234-1234-12345678abc\\""
+e-group-name "exampleResourceGroup" --type-properties-subscription-id "12345678-1234-1234-1234-12345678abc"
 """
 
 helps['datafactory linked-service azure-databricks'] = """
@@ -920,13 +918,13 @@ helps['datafactory linked-service azure-m-l-service create'] = """
       - name: LinkedServices_Create
         text: |-
                az datafactory linked-service azure-m-l-service create --factory-name "exampleFactoryName" --type "Azure\
-Storage" --linked-service-name "exampleLinkedService" --type-properties-resource-group-name "\\"exampleResourceGroup\\"\
-" --type-properties-subscription-id "\\"12345678-1234-1234-1234-12345678abc\\""
+Storage" --linked-service-name "exampleLinkedService" --type-properties-resource-group-name "exampleResourceGroup" --ty\
+pe-properties-subscription-id "12345678-1234-1234-1234-12345678abc"
       - name: LinkedServices_Update
         text: |-
                az datafactory linked-service azure-m-l-service create --factory-name "exampleFactoryName" --type "Azure\
 Storage" --description "Example description" --linked-service-name "exampleLinkedService" --type-properties-resource-gr\
-oup-name "\\"exampleResourceGroup\\"" --type-properties-subscription-id "\\"12345678-1234-1234-1234-12345678abc\\""
+oup-name "exampleResourceGroup" --type-properties-subscription-id "12345678-1234-1234-1234-12345678abc"
 """
 
 helps['datafactory linked-service azure-m-l-service update'] = """
@@ -936,13 +934,13 @@ helps['datafactory linked-service azure-m-l-service update'] = """
       - name: LinkedServices_Create
         text: |-
                az datafactory linked-service azure-m-l-service create --factory-name "exampleFactoryName" --type "Azure\
-Storage" --linked-service-name "exampleLinkedService" --type-properties-resource-group-name "\\"exampleResourceGroup\\"\
-" --type-properties-subscription-id "\\"12345678-1234-1234-1234-12345678abc\\""
+Storage" --linked-service-name "exampleLinkedService" --type-properties-resource-group-name "exampleResourceGroup" --ty\
+pe-properties-subscription-id "12345678-1234-1234-1234-12345678abc"
       - name: LinkedServices_Update
         text: |-
                az datafactory linked-service azure-m-l-service create --factory-name "exampleFactoryName" --type "Azure\
 Storage" --description "Example description" --linked-service-name "exampleLinkedService" --type-properties-resource-gr\
-oup-name "\\"exampleResourceGroup\\"" --type-properties-subscription-id "\\"12345678-1234-1234-1234-12345678abc\\""
+oup-name "exampleResourceGroup" --type-properties-subscription-id "12345678-1234-1234-1234-12345678abc"
 """
 
 helps['datafactory linked-service azure-maria-d-b'] = """
@@ -1968,12 +1966,12 @@ helps['datafactory linked-service h-d-insight create'] = """
       - name: LinkedServices_Create
         text: |-
                az datafactory linked-service h-d-insight create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --type-properties-linked-service-name "\\"exampleLinkedService\\"" --resource-group "exampleResourceGroup"
+e" --type-properties-linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
       - name: LinkedServices_Update
         text: |-
                az datafactory linked-service h-d-insight create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --description "Example description" --type-properties-linked-service-name "\\"exampleLinkedService\\"" --resource-gr\
-oup "exampleResourceGroup"
+e" --description "Example description" --type-properties-linked-service-name "exampleLinkedService" --resource-group "e\
+xampleResourceGroup"
 """
 
 helps['datafactory linked-service h-d-insight update'] = """
@@ -1983,12 +1981,12 @@ helps['datafactory linked-service h-d-insight update'] = """
       - name: LinkedServices_Create
         text: |-
                az datafactory linked-service h-d-insight create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --type-properties-linked-service-name "\\"exampleLinkedService\\"" --resource-group "exampleResourceGroup"
+e" --type-properties-linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
       - name: LinkedServices_Update
         text: |-
                az datafactory linked-service h-d-insight create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --description "Example description" --type-properties-linked-service-name "\\"exampleLinkedService\\"" --resource-gr\
-oup "exampleResourceGroup"
+e" --description "Example description" --type-properties-linked-service-name "exampleLinkedService" --resource-group "e\
+xampleResourceGroup"
 """
 
 helps['datafactory linked-service h-d-insight-on-demand'] = """
@@ -2003,12 +2001,12 @@ helps['datafactory linked-service h-d-insight-on-demand create'] = """
       - name: LinkedServices_Create
         text: |-
                az datafactory linked-service h-d-insight-on-demand create --factory-name "exampleFactoryName" --type "A\
-zureStorage" --type-properties-linked-service-name "\\"exampleLinkedService\\"" --resource-group "exampleResourceGroup"
+zureStorage" --type-properties-linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
       - name: LinkedServices_Update
         text: |-
                az datafactory linked-service h-d-insight-on-demand create --factory-name "exampleFactoryName" --type "A\
-zureStorage" --description "Example description" --type-properties-linked-service-name "\\"exampleLinkedService\\"" --r\
-esource-group "exampleResourceGroup"
+zureStorage" --description "Example description" --type-properties-linked-service-name "exampleLinkedService" --resourc\
+e-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service h-d-insight-on-demand update'] = """
@@ -2018,12 +2016,12 @@ helps['datafactory linked-service h-d-insight-on-demand update'] = """
       - name: LinkedServices_Create
         text: |-
                az datafactory linked-service h-d-insight-on-demand create --factory-name "exampleFactoryName" --type "A\
-zureStorage" --type-properties-linked-service-name "\\"exampleLinkedService\\"" --resource-group "exampleResourceGroup"
+zureStorage" --type-properties-linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
       - name: LinkedServices_Update
         text: |-
                az datafactory linked-service h-d-insight-on-demand create --factory-name "exampleFactoryName" --type "A\
-zureStorage" --description "Example description" --type-properties-linked-service-name "\\"exampleLinkedService\\"" --r\
-esource-group "exampleResourceGroup"
+zureStorage" --description "Example description" --type-properties-linked-service-name "exampleLinkedService" --resourc\
+e-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service hdfs'] = """
@@ -4603,20 +4601,21 @@ helps['datafactory dataset cosmos-db-sql-api-collection create'] = """
     examples:
       - name: Datasets_Create
         text: |-
-               az datafactory dataset cosmos-db-sql-api-collection create --properties type=AzureBlob linked-service-na\
-me={\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"} parameters={\\"MyFileName\\\
-":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}} typeProperties={\\"format\\":{\\"type\\":\\"T\
-extFormat\\"},\\"fileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFileName\\"},\\"folderPath\\":{\\\
-"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}} --dataset-name "exampleDataset" --factory-name "e\
-xampleFactoryName" --resource-group "exampleResourceGroup"
+               az datafactory dataset cosmos-db-sql-api-collection create --properties "{\\"type\\":\\"AzureBlob\\",\\"\
+linkedServiceName\\":{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"},\\"parame\
+ters\\":{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}},\\"typeProperties\\":\
+{\\"format\\":{\\"type\\":\\"TextFormat\\"},\\"fileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFil\
+eName\\"},\\"folderPath\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}" --dataset-name "e\
+xampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
       - name: Datasets_Update
         text: |-
-               az datafactory dataset cosmos-db-sql-api-collection create --properties type=AzureBlob description=Examp\
-le description linked-service-name={\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\
-\\"} parameters={\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}} typePropertie\
-s={\\"format\\":{\\"type\\":\\"TextFormat\\"},\\"fileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyF\
-ileName\\"},\\"folderPath\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}} --dataset-name "e\
-xampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
+               az datafactory dataset cosmos-db-sql-api-collection create --properties "{\\"type\\":\\"AzureBlob\\",\\"\
+description\\":\\"Example description\\",\\"linkedServiceName\\":{\\"type\\":\\"LinkedServiceReference\\",\\"referenceN\
+ame\\":\\"exampleLinkedService\\"},\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"\
+type\\":\\"String\\"}},\\"typeProperties\\":{\\"format\\":{\\"type\\":\\"TextFormat\\"},\\"fileName\\":{\\"type\\":\\"E\
+xpression\\",\\"value\\":\\"@dataset().MyFileName\\"},\\"folderPath\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dat\
+aset().MyFolderPath\\"}}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampl\
+eResourceGroup"
 """
 
 helps['datafactory dataset cosmos-db-sql-api-collection update'] = """
@@ -4625,20 +4624,21 @@ helps['datafactory dataset cosmos-db-sql-api-collection update'] = """
     examples:
       - name: Datasets_Create
         text: |-
-               az datafactory dataset cosmos-db-sql-api-collection create --properties type=AzureBlob linked-service-na\
-me={\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"} parameters={\\"MyFileName\\\
-":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}} typeProperties={\\"format\\":{\\"type\\":\\"T\
-extFormat\\"},\\"fileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFileName\\"},\\"folderPath\\":{\\\
-"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}} --dataset-name "exampleDataset" --factory-name "e\
-xampleFactoryName" --resource-group "exampleResourceGroup"
+               az datafactory dataset cosmos-db-sql-api-collection create --properties "{\\"type\\":\\"AzureBlob\\",\\"\
+linkedServiceName\\":{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"},\\"parame\
+ters\\":{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}},\\"typeProperties\\":\
+{\\"format\\":{\\"type\\":\\"TextFormat\\"},\\"fileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFil\
+eName\\"},\\"folderPath\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}" --dataset-name "e\
+xampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
       - name: Datasets_Update
         text: |-
-               az datafactory dataset cosmos-db-sql-api-collection create --properties type=AzureBlob description=Examp\
-le description linked-service-name={\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\
-\\"} parameters={\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}} typePropertie\
-s={\\"format\\":{\\"type\\":\\"TextFormat\\"},\\"fileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyF\
-ileName\\"},\\"folderPath\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}} --dataset-name "e\
-xampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
+               az datafactory dataset cosmos-db-sql-api-collection create --properties "{\\"type\\":\\"AzureBlob\\",\\"\
+description\\":\\"Example description\\",\\"linkedServiceName\\":{\\"type\\":\\"LinkedServiceReference\\",\\"referenceN\
+ame\\":\\"exampleLinkedService\\"},\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"\
+type\\":\\"String\\"}},\\"typeProperties\\":{\\"format\\":{\\"type\\":\\"TextFormat\\"},\\"fileName\\":{\\"type\\":\\"E\
+xpression\\",\\"value\\":\\"@dataset().MyFileName\\"},\\"folderPath\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dat\
+aset().MyFolderPath\\"}}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampl\
+eResourceGroup"
 """
 
 helps['datafactory dataset couchbase-table'] = """
@@ -7479,8 +7479,8 @@ helps['datafactory pipeline create-run'] = """
     examples:
       - name: Pipelines_CreateRun
         text: |-
-               az datafactory pipeline create-run --factory-name "exampleFactoryName" --parameters OutputBlobNameList=[\
-\\"exampleoutput.csv\\"] --pipeline-name "examplePipeline" --resource-group "exampleResourceGroup"
+               az datafactory pipeline create-run --factory-name "exampleFactoryName" --parameters "{\\"OutputBlobNameL\
+ist\\":[\\"exampleoutput.csv\\"]}" --pipeline-name "examplePipeline" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory pipeline-run'] = """
@@ -7514,9 +7514,9 @@ helps['datafactory pipeline-run query-by-factory'] = """
     examples:
       - name: PipelineRuns_QueryByFactory
         text: |-
-               az datafactory pipeline-run query-by-factory --factory-name "exampleFactoryName" --filters operand=Pipel\
-ineName operator=Equals values=[\\"examplePipeline\\"] --last-updated-after "2018-06-16T00:36:44.3345758Z" --last-updat\
-ed-before "2018-06-16T00:49:48.3686473Z" --resource-group "exampleResourceGroup"
+               az datafactory pipeline-run query-by-factory --factory-name "exampleFactoryName" --filters operand="Pipe\
+lineName" operator="Equals" values="examplePipeline" --last-updated-after "2018-06-16T00:36:44.3345758Z" --last-updated\
+-before "2018-06-16T00:49:48.3686473Z" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory activity-run'] = """
@@ -7684,9 +7684,9 @@ helps['datafactory trigger-run query-by-factory'] = """
     examples:
       - name: TriggerRuns_QueryByFactory
         text: |-
-               az datafactory trigger-run query-by-factory --factory-name "exampleFactoryName" --filters operand=Trigge\
-rName operator=Equals values=[\\"exampleTrigger\\"] --last-updated-after "2018-06-16T00:36:44.3345758Z" --last-updated-\
-before "2018-06-16T00:49:48.3686473Z" --resource-group "exampleResourceGroup"
+               az datafactory trigger-run query-by-factory --factory-name "exampleFactoryName" --filters operand="Trigg\
+erName" operator="Equals" values="exampleTrigger" --last-updated-after "2018-06-16T00:36:44.3345758Z" --last-updated-be\
+fore "2018-06-16T00:49:48.3686473Z" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory trigger-run rerun'] = """
@@ -7736,14 +7736,14 @@ eProperties\\":{\\"script\\":\\"source(output(PreviousConversionRate as double,C
 rrentConversionRate as double),allowSchemaDrift: false,validateSchema: false) ~> USDCurrency\\\\nsource(output(Previous\
 ConversionRate as double,Country as string,DateTime1 as string,CurrentConversionRate as double),allowSchemaDrift: true,\
 validateSchema: false) ~> CADSource\\\\nUSDCurrency, CADSource union(byName: true)~> Union\\\\nUnion derive(NewCurrency\
-Rate = round(CurrentConversionRate*1.25)) ~> NewCurrencyColumn\\\\nNewCurrencyColumn split(Country == 'USD',Country == \
-'CAD',disjoint: false) ~> ConditionalSplit1@(USD, CAD)\\\\nConditionalSplit1@USD sink(saveMode:'overwrite' ) ~> USDSink\
-\\\\nConditionalSplit1@CAD sink(saveMode:'overwrite' ) ~> CADSink\\",\\"sinks\\":[{\\"name\\":\\"USDSink\\",\\"dataset\
-\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"USDOutput\\"}},{\\"name\\":\\"CADSink\\",\\"dataset\\":{\
-\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CADOutput\\"}}],\\"sources\\":[{\\"name\\":\\"USDCurrency\\",\
-\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetUSD\\"}},{\\"name\\":\\"CADSourc\
-e\\",\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetCAD\\"}}]}}" --data-flow-na\
-me "exampleDataFlow" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
+Rate = round(CurrentConversionRate*1.25)) ~> NewCurrencyColumn\\\\nNewCurrencyColumn split(Country == \'USD\',Country =\
+= \'CAD\',disjoint: false) ~> ConditionalSplit1@(USD, CAD)\\\\nConditionalSplit1@USD sink(saveMode:\'overwrite\' ) ~> U\
+SDSink\\\\nConditionalSplit1@CAD sink(saveMode:\'overwrite\' ) ~> CADSink\\",\\"sinks\\":[{\\"name\\":\\"USDSink\\",\\"\
+dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"USDOutput\\"}},{\\"name\\":\\"CADSink\\",\\"datase\
+t\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CADOutput\\"}}],\\"sources\\":[{\\"name\\":\\"USDCurrenc\
+y\\",\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetUSD\\"}},{\\"name\\":\\"CAD\
+Source\\",\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetCAD\\"}}]}}" --data-fl\
+ow-name "exampleDataFlow" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
       - name: DataFlows_Update
         text: |-
                az datafactory data-flow create --properties "{\\"type\\":\\"MappingDataFlow\\",\\"description\\":\\"Sam\
@@ -7752,14 +7752,14 @@ eProperties\\":{\\"script\\":\\"source(output(PreviousConversionRate as double,C
 rrentConversionRate as double),allowSchemaDrift: false,validateSchema: false) ~> USDCurrency\\\\nsource(output(Previous\
 ConversionRate as double,Country as string,DateTime1 as string,CurrentConversionRate as double),allowSchemaDrift: true,\
 validateSchema: false) ~> CADSource\\\\nUSDCurrency, CADSource union(byName: true)~> Union\\\\nUnion derive(NewCurrency\
-Rate = round(CurrentConversionRate*1.25)) ~> NewCurrencyColumn\\\\nNewCurrencyColumn split(Country == 'USD',Country == \
-'CAD',disjoint: false) ~> ConditionalSplit1@(USD, CAD)\\\\nConditionalSplit1@USD sink(saveMode:'overwrite' ) ~> USDSink\
-\\\\nConditionalSplit1@CAD sink(saveMode:'overwrite' ) ~> CADSink\\",\\"sinks\\":[{\\"name\\":\\"USDSink\\",\\"dataset\
-\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"USDOutput\\"}},{\\"name\\":\\"CADSink\\",\\"dataset\\":{\
-\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CADOutput\\"}}],\\"sources\\":[{\\"name\\":\\"USDCurrency\\",\
-\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetUSD\\"}},{\\"name\\":\\"CADSourc\
-e\\",\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetCAD\\"}}]}}" --data-flow-na\
-me "exampleDataFlow" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
+Rate = round(CurrentConversionRate*1.25)) ~> NewCurrencyColumn\\\\nNewCurrencyColumn split(Country == \'USD\',Country =\
+= \'CAD\',disjoint: false) ~> ConditionalSplit1@(USD, CAD)\\\\nConditionalSplit1@USD sink(saveMode:\'overwrite\' ) ~> U\
+SDSink\\\\nConditionalSplit1@CAD sink(saveMode:\'overwrite\' ) ~> CADSink\\",\\"sinks\\":[{\\"name\\":\\"USDSink\\",\\"\
+dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"USDOutput\\"}},{\\"name\\":\\"CADSink\\",\\"datase\
+t\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CADOutput\\"}}],\\"sources\\":[{\\"name\\":\\"USDCurrenc\
+y\\",\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetUSD\\"}},{\\"name\\":\\"CAD\
+Source\\",\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetCAD\\"}}]}}" --data-fl\
+ow-name "exampleDataFlow" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory data-flow update'] = """
@@ -7774,14 +7774,14 @@ eProperties\\":{\\"script\\":\\"source(output(PreviousConversionRate as double,C
 rrentConversionRate as double),allowSchemaDrift: false,validateSchema: false) ~> USDCurrency\\\\nsource(output(Previous\
 ConversionRate as double,Country as string,DateTime1 as string,CurrentConversionRate as double),allowSchemaDrift: true,\
 validateSchema: false) ~> CADSource\\\\nUSDCurrency, CADSource union(byName: true)~> Union\\\\nUnion derive(NewCurrency\
-Rate = round(CurrentConversionRate*1.25)) ~> NewCurrencyColumn\\\\nNewCurrencyColumn split(Country == 'USD',Country == \
-'CAD',disjoint: false) ~> ConditionalSplit1@(USD, CAD)\\\\nConditionalSplit1@USD sink(saveMode:'overwrite' ) ~> USDSink\
-\\\\nConditionalSplit1@CAD sink(saveMode:'overwrite' ) ~> CADSink\\",\\"sinks\\":[{\\"name\\":\\"USDSink\\",\\"dataset\
-\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"USDOutput\\"}},{\\"name\\":\\"CADSink\\",\\"dataset\\":{\
-\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CADOutput\\"}}],\\"sources\\":[{\\"name\\":\\"USDCurrency\\",\
-\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetUSD\\"}},{\\"name\\":\\"CADSourc\
-e\\",\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetCAD\\"}}]}}" --data-flow-na\
-me "exampleDataFlow" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
+Rate = round(CurrentConversionRate*1.25)) ~> NewCurrencyColumn\\\\nNewCurrencyColumn split(Country == \'USD\',Country =\
+= \'CAD\',disjoint: false) ~> ConditionalSplit1@(USD, CAD)\\\\nConditionalSplit1@USD sink(saveMode:\'overwrite\' ) ~> U\
+SDSink\\\\nConditionalSplit1@CAD sink(saveMode:\'overwrite\' ) ~> CADSink\\",\\"sinks\\":[{\\"name\\":\\"USDSink\\",\\"\
+dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"USDOutput\\"}},{\\"name\\":\\"CADSink\\",\\"datase\
+t\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CADOutput\\"}}],\\"sources\\":[{\\"name\\":\\"USDCurrenc\
+y\\",\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetUSD\\"}},{\\"name\\":\\"CAD\
+Source\\",\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetCAD\\"}}]}}" --data-fl\
+ow-name "exampleDataFlow" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
       - name: DataFlows_Update
         text: |-
                az datafactory data-flow create --properties "{\\"type\\":\\"MappingDataFlow\\",\\"description\\":\\"Sam\
@@ -7790,14 +7790,14 @@ eProperties\\":{\\"script\\":\\"source(output(PreviousConversionRate as double,C
 rrentConversionRate as double),allowSchemaDrift: false,validateSchema: false) ~> USDCurrency\\\\nsource(output(Previous\
 ConversionRate as double,Country as string,DateTime1 as string,CurrentConversionRate as double),allowSchemaDrift: true,\
 validateSchema: false) ~> CADSource\\\\nUSDCurrency, CADSource union(byName: true)~> Union\\\\nUnion derive(NewCurrency\
-Rate = round(CurrentConversionRate*1.25)) ~> NewCurrencyColumn\\\\nNewCurrencyColumn split(Country == 'USD',Country == \
-'CAD',disjoint: false) ~> ConditionalSplit1@(USD, CAD)\\\\nConditionalSplit1@USD sink(saveMode:'overwrite' ) ~> USDSink\
-\\\\nConditionalSplit1@CAD sink(saveMode:'overwrite' ) ~> CADSink\\",\\"sinks\\":[{\\"name\\":\\"USDSink\\",\\"dataset\
-\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"USDOutput\\"}},{\\"name\\":\\"CADSink\\",\\"dataset\\":{\
-\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CADOutput\\"}}],\\"sources\\":[{\\"name\\":\\"USDCurrency\\",\
-\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetUSD\\"}},{\\"name\\":\\"CADSourc\
-e\\",\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetCAD\\"}}]}}" --data-flow-na\
-me "exampleDataFlow" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
+Rate = round(CurrentConversionRate*1.25)) ~> NewCurrencyColumn\\\\nNewCurrencyColumn split(Country == \'USD\',Country =\
+= \'CAD\',disjoint: false) ~> ConditionalSplit1@(USD, CAD)\\\\nConditionalSplit1@USD sink(saveMode:\'overwrite\' ) ~> U\
+SDSink\\\\nConditionalSplit1@CAD sink(saveMode:\'overwrite\' ) ~> CADSink\\",\\"sinks\\":[{\\"name\\":\\"USDSink\\",\\"\
+dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"USDOutput\\"}},{\\"name\\":\\"CADSink\\",\\"datase\
+t\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CADOutput\\"}}],\\"sources\\":[{\\"name\\":\\"USDCurrenc\
+y\\",\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetUSD\\"}},{\\"name\\":\\"CAD\
+Source\\",\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetCAD\\"}}]}}" --data-fl\
+ow-name "exampleDataFlow" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory data-flow delete'] = """
@@ -7868,8 +7868,8 @@ helps['datafactory data-flow-debug-session execute-command'] = """
       - name: DataFlowDebugSession_ExecuteCommand
         text: |-
                az datafactory data-flow-debug-session execute-command --factory-name "exampleFactoryName" --resource-gr\
-oup "exampleResourceGroup" --command "executePreviewQuery" --command-payload row-limits=100 stream-name=source1 --sessi\
-on-id "f06ed247-9d07-49b2-b05e-2cb4a2fc871e"
+oup "exampleResourceGroup" --command "executePreviewQuery" --command-payload row-limits=100 stream-name="source1" --ses\
+sion-id "f06ed247-9d07-49b2-b05e-2cb4a2fc871e"
 """
 
 helps['datafactory data-flow-debug-session query-by-factory'] = """

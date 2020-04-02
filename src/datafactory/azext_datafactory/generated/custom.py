@@ -6,6 +6,7 @@
 # pylint: disable=too-many-lines
 
 import json
+from knack.util import CLIError
 
 
 def datafactory_factory_list(cmd, client,
@@ -31,9 +32,17 @@ def datafactory_factory_create(cmd, client,
                                if_match=None,
                                tags=None,
                                identity=None,
-                               repo_configuration=None):
-    if isinstance(repo_configuration, str):
-        repo_configuration = json.loads(repo_configuration)
+                               factory_vsts_configuration=None,
+                               factory_git_hub_configuration=None):
+    all_repo_configuration = []
+    if factory_vsts_configuration is not None:
+        all_repo_configuration.append(factory_vsts_configuration)
+    if factory_git_hub_configuration is not None:
+        all_repo_configuration.append(factory_git_hub_configuration)
+    if len(all_repo_configuration) > 1:
+        raise CLIError('at most one of  factory_vsts_configuration, factory_git_hub_configuration is needed for repo_co'
+                       'nfiguration!')
+    repo_configuration = all_repo_configuration[0] if len(all_repo_configuration) == 1 else None
     return client.create_or_update(resource_group_name=resource_group_name,
                                    factory_name=factory_name,
                                    if_match=if_match,
@@ -64,9 +73,17 @@ def datafactory_factory_delete(cmd, client,
 def datafactory_factory_configure_factory_repo(cmd, client,
                                                location_id,
                                                factory_resource_id=None,
-                                               repo_configuration=None):
-    if isinstance(repo_configuration, str):
-        repo_configuration = json.loads(repo_configuration)
+                                               factory_vsts_configuration=None,
+                                               factory_git_hub_configuration=None):
+    all_repo_configuration = []
+    if factory_vsts_configuration is not None:
+        all_repo_configuration.append(factory_vsts_configuration)
+    if factory_git_hub_configuration is not None:
+        all_repo_configuration.append(factory_git_hub_configuration)
+    if len(all_repo_configuration) > 1:
+        raise CLIError('at most one of  factory_vsts_configuration, factory_git_hub_configuration is needed for repo_co'
+                       'nfiguration!')
+    repo_configuration = all_repo_configuration[0] if len(all_repo_configuration) == 1 else None
     return client.configure_factory_repo(location_id=location_id,
                                          factory_resource_id=factory_resource_id,
                                          repo_configuration=repo_configuration)
@@ -144,7 +161,6 @@ def datafactory_integration_runtime_managed_create(cmd, client,
                                                    resource_group_name,
                                                    factory_name,
                                                    integration_runtime_name,
-                                                   type_,
                                                    if_match=None,
                                                    description=None,
                                                    type_properties_compute_properties=None,
@@ -154,7 +170,7 @@ def datafactory_integration_runtime_managed_create(cmd, client,
     if isinstance(type_properties_ssis_properties, str):
         type_properties_ssis_properties = json.loads(type_properties_ssis_properties)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Managed'
     properties['description'] = description
     properties['compute_properties'] = type_properties_compute_properties
     properties['ssis_properties'] = type_properties_ssis_properties
@@ -169,14 +185,13 @@ def datafactory_integration_runtime_self_hosted_create(cmd, client,
                                                        resource_group_name,
                                                        factory_name,
                                                        integration_runtime_name,
-                                                       type_,
                                                        if_match=None,
                                                        description=None,
                                                        type_properties_linked_info=None):
     if isinstance(type_properties_linked_info, str):
         type_properties_linked_info = json.loads(type_properties_linked_info)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'SelfHosted'
     properties['description'] = description
     properties['linked_info'] = type_properties_linked_info
     return client.create_or_update(resource_group_name=resource_group_name,
@@ -407,7 +422,6 @@ def datafactory_linked_service_amazon_m_w_s_create(cmd, client,
                                                    resource_group_name,
                                                    factory_name,
                                                    linked_service_name,
-                                                   type_,
                                                    type_properties_endpoint,
                                                    type_properties_marketplace_id,
                                                    type_properties_seller_id,
@@ -450,7 +464,7 @@ def datafactory_linked_service_amazon_m_w_s_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AmazonMWS'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -476,7 +490,6 @@ def datafactory_linked_service_amazon_m_w_s_update(instance, cmd,
                                                    resource_group_name,
                                                    factory_name,
                                                    linked_service_name,
-                                                   type_,
                                                    type_properties_endpoint,
                                                    type_properties_marketplace_id,
                                                    type_properties_seller_id,
@@ -518,7 +531,7 @@ def datafactory_linked_service_amazon_m_w_s_update(instance, cmd,
         type_properties_use_peer_verification = json.loads(type_properties_use_peer_verification)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'AmazonMWS'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -540,7 +553,6 @@ def datafactory_linked_service_amazon_redshift_create(cmd, client,
                                                       resource_group_name,
                                                       factory_name,
                                                       linked_service_name,
-                                                      type_,
                                                       type_properties_server,
                                                       type_properties_database,
                                                       if_match=None,
@@ -571,7 +583,7 @@ def datafactory_linked_service_amazon_redshift_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AmazonRedshift'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -593,7 +605,6 @@ def datafactory_linked_service_amazon_redshift_update(instance, cmd,
                                                       resource_group_name,
                                                       factory_name,
                                                       linked_service_name,
-                                                      type_,
                                                       type_properties_server,
                                                       type_properties_database,
                                                       if_match=None,
@@ -623,7 +634,7 @@ def datafactory_linked_service_amazon_redshift_update(instance, cmd,
         type_properties_port = json.loads(type_properties_port)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'AmazonRedshift'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -641,7 +652,6 @@ def datafactory_linked_service_amazon_s3_create(cmd, client,
                                                 resource_group_name,
                                                 factory_name,
                                                 linked_service_name,
-                                                type_,
                                                 if_match=None,
                                                 connect_via=None,
                                                 description=None,
@@ -666,7 +676,7 @@ def datafactory_linked_service_amazon_s3_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AmazonS3'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -686,7 +696,6 @@ def datafactory_linked_service_amazon_s3_update(instance, cmd,
                                                 resource_group_name,
                                                 factory_name,
                                                 linked_service_name,
-                                                type_,
                                                 if_match=None,
                                                 connect_via=None,
                                                 description=None,
@@ -710,7 +719,7 @@ def datafactory_linked_service_amazon_s3_update(instance, cmd,
         type_properties_service_url = json.loads(type_properties_service_url)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'AmazonS3'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -726,7 +735,6 @@ def datafactory_linked_service_azure_batch_create(cmd, client,
                                                   resource_group_name,
                                                   factory_name,
                                                   linked_service_name,
-                                                  type_,
                                                   type_properties_account_name,
                                                   type_properties_batch_uri,
                                                   type_properties_pool_name,
@@ -757,7 +765,7 @@ def datafactory_linked_service_azure_batch_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AzureBatch'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -779,7 +787,6 @@ def datafactory_linked_service_azure_batch_update(instance, cmd,
                                                   resource_group_name,
                                                   factory_name,
                                                   linked_service_name,
-                                                  type_,
                                                   type_properties_account_name,
                                                   type_properties_batch_uri,
                                                   type_properties_pool_name,
@@ -809,7 +816,7 @@ def datafactory_linked_service_azure_batch_update(instance, cmd,
         type_properties_linked_service_name = json.loads(type_properties_linked_service_name)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'AzureBatch'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -827,7 +834,6 @@ def datafactory_linked_service_azure_blob_f_s_create(cmd, client,
                                                      resource_group_name,
                                                      factory_name,
                                                      linked_service_name,
-                                                     type_,
                                                      type_properties_url,
                                                      if_match=None,
                                                      connect_via=None,
@@ -858,7 +864,7 @@ def datafactory_linked_service_azure_blob_f_s_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AzureBlobFS'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -880,7 +886,6 @@ def datafactory_linked_service_azure_blob_f_s_update(instance, cmd,
                                                      resource_group_name,
                                                      factory_name,
                                                      linked_service_name,
-                                                     type_,
                                                      type_properties_url,
                                                      if_match=None,
                                                      connect_via=None,
@@ -910,7 +915,7 @@ def datafactory_linked_service_azure_blob_f_s_update(instance, cmd,
         type_properties_tenant = json.loads(type_properties_tenant)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'AzureBlobFS'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -928,7 +933,6 @@ def datafactory_linked_service_azure_blob_storage_create(cmd, client,
                                                          resource_group_name,
                                                          factory_name,
                                                          linked_service_name,
-                                                         type_,
                                                          if_match=None,
                                                          connect_via=None,
                                                          description=None,
@@ -964,7 +968,7 @@ def datafactory_linked_service_azure_blob_storage_create(cmd, client,
     if isinstance(type_properties_tenant, str):
         type_properties_tenant = json.loads(type_properties_tenant)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AzureBlobStorage'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -989,7 +993,6 @@ def datafactory_linked_service_azure_blob_storage_update(instance, cmd,
                                                          resource_group_name,
                                                          factory_name,
                                                          linked_service_name,
-                                                         type_,
                                                          if_match=None,
                                                          connect_via=None,
                                                          description=None,
@@ -1024,7 +1027,7 @@ def datafactory_linked_service_azure_blob_storage_update(instance, cmd,
         type_properties_service_principal_key = json.loads(type_properties_service_principal_key)
     if isinstance(type_properties_tenant, str):
         type_properties_tenant = json.loads(type_properties_tenant)
-    instance.type = type_
+    instance.type = 'AzureBlobStorage'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -1045,7 +1048,6 @@ def datafactory_linked_service_azure_data_explorer_create(cmd, client,
                                                           resource_group_name,
                                                           factory_name,
                                                           linked_service_name,
-                                                          type_,
                                                           type_properties_endpoint,
                                                           type_properties_service_principal_id,
                                                           type_properties_service_principal_key,
@@ -1073,7 +1075,7 @@ def datafactory_linked_service_azure_data_explorer_create(cmd, client,
     if isinstance(type_properties_tenant, str):
         type_properties_tenant = json.loads(type_properties_tenant)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AzureDataExplorer'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -1094,7 +1096,6 @@ def datafactory_linked_service_azure_data_explorer_update(instance, cmd,
                                                           resource_group_name,
                                                           factory_name,
                                                           linked_service_name,
-                                                          type_,
                                                           type_properties_endpoint,
                                                           type_properties_service_principal_id,
                                                           type_properties_service_principal_key,
@@ -1121,7 +1122,7 @@ def datafactory_linked_service_azure_data_explorer_update(instance, cmd,
         type_properties_database = json.loads(type_properties_database)
     if isinstance(type_properties_tenant, str):
         type_properties_tenant = json.loads(type_properties_tenant)
-    instance.type = type_
+    instance.type = 'AzureDataExplorer'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -1138,7 +1139,6 @@ def datafactory_linked_service_azure_data_lake_analytics_create(cmd, client,
                                                                 resource_group_name,
                                                                 factory_name,
                                                                 linked_service_name,
-                                                                type_,
                                                                 type_properties_account_name,
                                                                 type_properties_tenant,
                                                                 if_match=None,
@@ -1175,7 +1175,7 @@ def datafactory_linked_service_azure_data_lake_analytics_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AzureDataLakeAnalytics'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -1199,7 +1199,6 @@ def datafactory_linked_service_azure_data_lake_analytics_update(instance, cmd,
                                                                 resource_group_name,
                                                                 factory_name,
                                                                 linked_service_name,
-                                                                type_,
                                                                 type_properties_account_name,
                                                                 type_properties_tenant,
                                                                 if_match=None,
@@ -1235,7 +1234,7 @@ def datafactory_linked_service_azure_data_lake_analytics_update(instance, cmd,
         type_properties_data_lake_analytics_uri = json.loads(type_properties_data_lake_analytics_uri)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'AzureDataLakeAnalytics'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -1255,7 +1254,6 @@ def datafactory_linked_service_azure_data_lake_store_create(cmd, client,
                                                             resource_group_name,
                                                             factory_name,
                                                             linked_service_name,
-                                                            type_,
                                                             type_properties_data_lake_store_uri,
                                                             if_match=None,
                                                             connect_via=None,
@@ -1292,7 +1290,7 @@ def datafactory_linked_service_azure_data_lake_store_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AzureDataLakeStore'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -1316,7 +1314,6 @@ def datafactory_linked_service_azure_data_lake_store_update(instance, cmd,
                                                             resource_group_name,
                                                             factory_name,
                                                             linked_service_name,
-                                                            type_,
                                                             type_properties_data_lake_store_uri,
                                                             if_match=None,
                                                             connect_via=None,
@@ -1352,7 +1349,7 @@ def datafactory_linked_service_azure_data_lake_store_update(instance, cmd,
         type_properties_resource_group_name = json.loads(type_properties_resource_group_name)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'AzureDataLakeStore'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -1372,7 +1369,6 @@ def datafactory_linked_service_azure_databricks_create(cmd, client,
                                                        resource_group_name,
                                                        factory_name,
                                                        linked_service_name,
-                                                       type_,
                                                        type_properties_domain,
                                                        type_properties_access_token,
                                                        if_match=None,
@@ -1412,6 +1408,12 @@ def datafactory_linked_service_azure_databricks_create(cmd, client,
         type_properties_new_cluster_num_of_worker = json.loads(type_properties_new_cluster_num_of_worker)
     if isinstance(type_properties_new_cluster_node_type, str):
         type_properties_new_cluster_node_type = json.loads(type_properties_new_cluster_node_type)
+    if isinstance(type_properties_new_cluster_spark_conf, str):
+        type_properties_new_cluster_spark_conf = json.loads(type_properties_new_cluster_spark_conf)
+    if isinstance(type_properties_new_cluster_spark_env_vars, str):
+        type_properties_new_cluster_spark_env_vars = json.loads(type_properties_new_cluster_spark_env_vars)
+    if isinstance(type_properties_new_cluster_custom_tags, str):
+        type_properties_new_cluster_custom_tags = json.loads(type_properties_new_cluster_custom_tags)
     if isinstance(type_properties_new_cluster_driver_node_type, str):
         type_properties_new_cluster_driver_node_type = json.loads(type_properties_new_cluster_driver_node_type)
     if isinstance(type_properties_new_cluster_init_scripts, str):
@@ -1421,7 +1423,7 @@ def datafactory_linked_service_azure_databricks_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AzureDatabricks'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -1451,7 +1453,6 @@ def datafactory_linked_service_azure_databricks_update(instance, cmd,
                                                        resource_group_name,
                                                        factory_name,
                                                        linked_service_name,
-                                                       type_,
                                                        type_properties_domain,
                                                        type_properties_access_token,
                                                        if_match=None,
@@ -1491,6 +1492,12 @@ def datafactory_linked_service_azure_databricks_update(instance, cmd,
         type_properties_new_cluster_num_of_worker = json.loads(type_properties_new_cluster_num_of_worker)
     if isinstance(type_properties_new_cluster_node_type, str):
         type_properties_new_cluster_node_type = json.loads(type_properties_new_cluster_node_type)
+    if isinstance(type_properties_new_cluster_spark_conf, str):
+        type_properties_new_cluster_spark_conf = json.loads(type_properties_new_cluster_spark_conf)
+    if isinstance(type_properties_new_cluster_spark_env_vars, str):
+        type_properties_new_cluster_spark_env_vars = json.loads(type_properties_new_cluster_spark_env_vars)
+    if isinstance(type_properties_new_cluster_custom_tags, str):
+        type_properties_new_cluster_custom_tags = json.loads(type_properties_new_cluster_custom_tags)
     if isinstance(type_properties_new_cluster_driver_node_type, str):
         type_properties_new_cluster_driver_node_type = json.loads(type_properties_new_cluster_driver_node_type)
     if isinstance(type_properties_new_cluster_init_scripts, str):
@@ -1499,7 +1506,7 @@ def datafactory_linked_service_azure_databricks_update(instance, cmd,
         type_properties_new_cluster_enable_elastic_disk = json.loads(type_properties_new_cluster_enable_elastic_disk)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'AzureDatabricks'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -1525,7 +1532,6 @@ def datafactory_linked_service_azure_file_storage_create(cmd, client,
                                                          resource_group_name,
                                                          factory_name,
                                                          linked_service_name,
-                                                         type_,
                                                          type_properties_host,
                                                          if_match=None,
                                                          connect_via=None,
@@ -1550,7 +1556,7 @@ def datafactory_linked_service_azure_file_storage_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AzureFileStorage'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -1570,7 +1576,6 @@ def datafactory_linked_service_azure_file_storage_update(instance, cmd,
                                                          resource_group_name,
                                                          factory_name,
                                                          linked_service_name,
-                                                         type_,
                                                          type_properties_host,
                                                          if_match=None,
                                                          connect_via=None,
@@ -1594,7 +1599,7 @@ def datafactory_linked_service_azure_file_storage_update(instance, cmd,
         type_properties_password = json.loads(type_properties_password)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'AzureFileStorage'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -1610,7 +1615,6 @@ def datafactory_linked_service_azure_function_create(cmd, client,
                                                      resource_group_name,
                                                      factory_name,
                                                      linked_service_name,
-                                                     type_,
                                                      type_properties_function_app_url,
                                                      if_match=None,
                                                      connect_via=None,
@@ -1632,7 +1636,7 @@ def datafactory_linked_service_azure_function_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AzureFunction'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -1651,7 +1655,6 @@ def datafactory_linked_service_azure_function_update(instance, cmd,
                                                      resource_group_name,
                                                      factory_name,
                                                      linked_service_name,
-                                                     type_,
                                                      type_properties_function_app_url,
                                                      if_match=None,
                                                      connect_via=None,
@@ -1672,7 +1675,7 @@ def datafactory_linked_service_azure_function_update(instance, cmd,
         type_properties_function_key = json.loads(type_properties_function_key)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'AzureFunction'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -1687,7 +1690,6 @@ def datafactory_linked_service_azure_key_vault_create(cmd, client,
                                                       resource_group_name,
                                                       factory_name,
                                                       linked_service_name,
-                                                      type_,
                                                       type_properties_base_url,
                                                       if_match=None,
                                                       connect_via=None,
@@ -1703,7 +1705,7 @@ def datafactory_linked_service_azure_key_vault_create(cmd, client,
     if isinstance(type_properties_base_url, str):
         type_properties_base_url = json.loads(type_properties_base_url)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AzureKeyVault'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -1720,7 +1722,6 @@ def datafactory_linked_service_azure_key_vault_update(instance, cmd,
                                                       resource_group_name,
                                                       factory_name,
                                                       linked_service_name,
-                                                      type_,
                                                       type_properties_base_url,
                                                       if_match=None,
                                                       connect_via=None,
@@ -1735,7 +1736,7 @@ def datafactory_linked_service_azure_key_vault_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_base_url, str):
         type_properties_base_url = json.loads(type_properties_base_url)
-    instance.type = type_
+    instance.type = 'AzureKeyVault'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -1748,7 +1749,6 @@ def datafactory_linked_service_azure_m_l_create(cmd, client,
                                                 resource_group_name,
                                                 factory_name,
                                                 linked_service_name,
-                                                type_,
                                                 type_properties_ml_endpoint,
                                                 type_properties_api_key,
                                                 if_match=None,
@@ -1782,7 +1782,7 @@ def datafactory_linked_service_azure_m_l_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AzureML'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -1805,7 +1805,6 @@ def datafactory_linked_service_azure_m_l_update(instance, cmd,
                                                 resource_group_name,
                                                 factory_name,
                                                 linked_service_name,
-                                                type_,
                                                 type_properties_ml_endpoint,
                                                 type_properties_api_key,
                                                 if_match=None,
@@ -1838,7 +1837,7 @@ def datafactory_linked_service_azure_m_l_update(instance, cmd,
         type_properties_tenant = json.loads(type_properties_tenant)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'AzureML'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -1857,7 +1856,6 @@ def datafactory_linked_service_azure_m_l_service_create(cmd, client,
                                                         resource_group_name,
                                                         factory_name,
                                                         linked_service_name,
-                                                        type_,
                                                         type_properties_subscription_id,
                                                         type_properties_resource_group_name,
                                                         type_properties_ml_workspace_name,
@@ -1891,7 +1889,7 @@ def datafactory_linked_service_azure_m_l_service_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AzureMLService'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -1914,7 +1912,6 @@ def datafactory_linked_service_azure_m_l_service_update(instance, cmd,
                                                         resource_group_name,
                                                         factory_name,
                                                         linked_service_name,
-                                                        type_,
                                                         type_properties_subscription_id,
                                                         type_properties_resource_group_name,
                                                         type_properties_ml_workspace_name,
@@ -1947,7 +1944,7 @@ def datafactory_linked_service_azure_m_l_service_update(instance, cmd,
         type_properties_tenant = json.loads(type_properties_tenant)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'AzureMLService'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -1966,7 +1963,6 @@ def datafactory_linked_service_azure_maria_d_b_create(cmd, client,
                                                       resource_group_name,
                                                       factory_name,
                                                       linked_service_name,
-                                                      type_,
                                                       if_match=None,
                                                       connect_via=None,
                                                       description=None,
@@ -1988,7 +1984,7 @@ def datafactory_linked_service_azure_maria_d_b_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AzureMariaDB'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -2007,7 +2003,6 @@ def datafactory_linked_service_azure_maria_d_b_update(instance, cmd,
                                                       resource_group_name,
                                                       factory_name,
                                                       linked_service_name,
-                                                      type_,
                                                       if_match=None,
                                                       connect_via=None,
                                                       description=None,
@@ -2028,7 +2023,7 @@ def datafactory_linked_service_azure_maria_d_b_update(instance, cmd,
         type_properties_pwd = json.loads(type_properties_pwd)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'AzureMariaDB'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -2043,7 +2038,6 @@ def datafactory_linked_service_azure_my_sql_create(cmd, client,
                                                    resource_group_name,
                                                    factory_name,
                                                    linked_service_name,
-                                                   type_,
                                                    type_properties_connection_string,
                                                    if_match=None,
                                                    connect_via=None,
@@ -2065,7 +2059,7 @@ def datafactory_linked_service_azure_my_sql_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AzureMySql'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -2084,7 +2078,6 @@ def datafactory_linked_service_azure_my_sql_update(instance, cmd,
                                                    resource_group_name,
                                                    factory_name,
                                                    linked_service_name,
-                                                   type_,
                                                    type_properties_connection_string,
                                                    if_match=None,
                                                    connect_via=None,
@@ -2105,7 +2098,7 @@ def datafactory_linked_service_azure_my_sql_update(instance, cmd,
         type_properties_password = json.loads(type_properties_password)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'AzureMySql'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -2120,7 +2113,6 @@ def datafactory_linked_service_azure_postgre_sql_create(cmd, client,
                                                         resource_group_name,
                                                         factory_name,
                                                         linked_service_name,
-                                                        type_,
                                                         if_match=None,
                                                         connect_via=None,
                                                         description=None,
@@ -2142,7 +2134,7 @@ def datafactory_linked_service_azure_postgre_sql_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AzurePostgreSql'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -2161,7 +2153,6 @@ def datafactory_linked_service_azure_postgre_sql_update(instance, cmd,
                                                         resource_group_name,
                                                         factory_name,
                                                         linked_service_name,
-                                                        type_,
                                                         if_match=None,
                                                         connect_via=None,
                                                         description=None,
@@ -2182,7 +2173,7 @@ def datafactory_linked_service_azure_postgre_sql_update(instance, cmd,
         type_properties_password = json.loads(type_properties_password)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'AzurePostgreSql'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -2197,7 +2188,6 @@ def datafactory_linked_service_azure_search_create(cmd, client,
                                                    resource_group_name,
                                                    factory_name,
                                                    linked_service_name,
-                                                   type_,
                                                    type_properties_url,
                                                    if_match=None,
                                                    connect_via=None,
@@ -2219,7 +2209,7 @@ def datafactory_linked_service_azure_search_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AzureSearch'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -2238,7 +2228,6 @@ def datafactory_linked_service_azure_search_update(instance, cmd,
                                                    resource_group_name,
                                                    factory_name,
                                                    linked_service_name,
-                                                   type_,
                                                    type_properties_url,
                                                    if_match=None,
                                                    connect_via=None,
@@ -2259,7 +2248,7 @@ def datafactory_linked_service_azure_search_update(instance, cmd,
         type_properties_key = json.loads(type_properties_key)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'AzureSearch'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -2274,7 +2263,6 @@ def datafactory_linked_service_azure_sql_d_w_create(cmd, client,
                                                     resource_group_name,
                                                     factory_name,
                                                     linked_service_name,
-                                                    type_,
                                                     type_properties_connection_string,
                                                     if_match=None,
                                                     connect_via=None,
@@ -2305,7 +2293,7 @@ def datafactory_linked_service_azure_sql_d_w_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AzureSqlDW'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -2327,7 +2315,6 @@ def datafactory_linked_service_azure_sql_d_w_update(instance, cmd,
                                                     resource_group_name,
                                                     factory_name,
                                                     linked_service_name,
-                                                    type_,
                                                     type_properties_connection_string,
                                                     if_match=None,
                                                     connect_via=None,
@@ -2357,7 +2344,7 @@ def datafactory_linked_service_azure_sql_d_w_update(instance, cmd,
         type_properties_tenant = json.loads(type_properties_tenant)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'AzureSqlDW'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -2375,7 +2362,6 @@ def datafactory_linked_service_azure_sql_database_create(cmd, client,
                                                          resource_group_name,
                                                          factory_name,
                                                          linked_service_name,
-                                                         type_,
                                                          type_properties_connection_string,
                                                          if_match=None,
                                                          connect_via=None,
@@ -2406,7 +2392,7 @@ def datafactory_linked_service_azure_sql_database_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AzureSqlDatabase'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -2428,7 +2414,6 @@ def datafactory_linked_service_azure_sql_database_update(instance, cmd,
                                                          resource_group_name,
                                                          factory_name,
                                                          linked_service_name,
-                                                         type_,
                                                          type_properties_connection_string,
                                                          if_match=None,
                                                          connect_via=None,
@@ -2458,7 +2443,7 @@ def datafactory_linked_service_azure_sql_database_update(instance, cmd,
         type_properties_tenant = json.loads(type_properties_tenant)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'AzureSqlDatabase'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -2476,7 +2461,6 @@ def datafactory_linked_service_azure_sql_m_i_create(cmd, client,
                                                     resource_group_name,
                                                     factory_name,
                                                     linked_service_name,
-                                                    type_,
                                                     type_properties_connection_string,
                                                     if_match=None,
                                                     connect_via=None,
@@ -2507,7 +2491,7 @@ def datafactory_linked_service_azure_sql_m_i_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AzureSqlMI'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -2529,7 +2513,6 @@ def datafactory_linked_service_azure_sql_m_i_update(instance, cmd,
                                                     resource_group_name,
                                                     factory_name,
                                                     linked_service_name,
-                                                    type_,
                                                     type_properties_connection_string,
                                                     if_match=None,
                                                     connect_via=None,
@@ -2559,7 +2542,7 @@ def datafactory_linked_service_azure_sql_m_i_update(instance, cmd,
         type_properties_tenant = json.loads(type_properties_tenant)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'AzureSqlMI'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -2577,7 +2560,6 @@ def datafactory_linked_service_azure_storage_create(cmd, client,
                                                     resource_group_name,
                                                     factory_name,
                                                     linked_service_name,
-                                                    type_,
                                                     if_match=None,
                                                     connect_via=None,
                                                     description=None,
@@ -2603,7 +2585,7 @@ def datafactory_linked_service_azure_storage_create(cmd, client,
     if isinstance(type_properties_sas_token, str):
         type_properties_sas_token = json.loads(type_properties_sas_token)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AzureStorage'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -2624,7 +2606,6 @@ def datafactory_linked_service_azure_storage_update(instance, cmd,
                                                     resource_group_name,
                                                     factory_name,
                                                     linked_service_name,
-                                                    type_,
                                                     if_match=None,
                                                     connect_via=None,
                                                     description=None,
@@ -2649,7 +2630,7 @@ def datafactory_linked_service_azure_storage_update(instance, cmd,
         type_properties_sas_uri = json.loads(type_properties_sas_uri)
     if isinstance(type_properties_sas_token, str):
         type_properties_sas_token = json.loads(type_properties_sas_token)
-    instance.type = type_
+    instance.type = 'AzureStorage'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -2666,7 +2647,6 @@ def datafactory_linked_service_azure_table_storage_create(cmd, client,
                                                           resource_group_name,
                                                           factory_name,
                                                           linked_service_name,
-                                                          type_,
                                                           if_match=None,
                                                           connect_via=None,
                                                           description=None,
@@ -2692,7 +2672,7 @@ def datafactory_linked_service_azure_table_storage_create(cmd, client,
     if isinstance(type_properties_sas_token, str):
         type_properties_sas_token = json.loads(type_properties_sas_token)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AzureTableStorage'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -2713,7 +2693,6 @@ def datafactory_linked_service_azure_table_storage_update(instance, cmd,
                                                           resource_group_name,
                                                           factory_name,
                                                           linked_service_name,
-                                                          type_,
                                                           if_match=None,
                                                           connect_via=None,
                                                           description=None,
@@ -2738,7 +2717,7 @@ def datafactory_linked_service_azure_table_storage_update(instance, cmd,
         type_properties_sas_uri = json.loads(type_properties_sas_uri)
     if isinstance(type_properties_sas_token, str):
         type_properties_sas_token = json.loads(type_properties_sas_token)
-    instance.type = type_
+    instance.type = 'AzureTableStorage'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -2755,7 +2734,6 @@ def datafactory_linked_service_cassandra_create(cmd, client,
                                                 resource_group_name,
                                                 factory_name,
                                                 linked_service_name,
-                                                type_,
                                                 type_properties_host,
                                                 if_match=None,
                                                 connect_via=None,
@@ -2786,7 +2764,7 @@ def datafactory_linked_service_cassandra_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Cassandra'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -2808,7 +2786,6 @@ def datafactory_linked_service_cassandra_update(instance, cmd,
                                                 resource_group_name,
                                                 factory_name,
                                                 linked_service_name,
-                                                type_,
                                                 type_properties_host,
                                                 if_match=None,
                                                 connect_via=None,
@@ -2838,7 +2815,7 @@ def datafactory_linked_service_cassandra_update(instance, cmd,
         type_properties_password = json.loads(type_properties_password)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'Cassandra'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -2856,7 +2833,6 @@ def datafactory_linked_service_common_data_service_for_apps_create(cmd, client,
                                                                    resource_group_name,
                                                                    factory_name,
                                                                    linked_service_name,
-                                                                   type_,
                                                                    type_properties_deployment_type,
                                                                    type_properties_authentication_type,
                                                                    if_match=None,
@@ -2899,7 +2875,7 @@ def datafactory_linked_service_common_data_service_for_apps_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'CommonDataServiceForApps'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -2927,7 +2903,6 @@ def datafactory_linked_service_common_data_service_for_apps_update(instance, cmd
                                                                    resource_group_name,
                                                                    factory_name,
                                                                    linked_service_name,
-                                                                   type_,
                                                                    type_properties_deployment_type,
                                                                    type_properties_authentication_type,
                                                                    if_match=None,
@@ -2969,7 +2944,7 @@ def datafactory_linked_service_common_data_service_for_apps_update(instance, cmd
         type_properties_service_principal_credential = json.loads(type_properties_service_principal_credential)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'CommonDataServiceForApps'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -2993,7 +2968,6 @@ def datafactory_linked_service_concur_create(cmd, client,
                                              resource_group_name,
                                              factory_name,
                                              linked_service_name,
-                                             type_,
                                              type_properties_client_id,
                                              type_properties_username,
                                              if_match=None,
@@ -3027,7 +3001,7 @@ def datafactory_linked_service_concur_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Concur'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -3050,7 +3024,6 @@ def datafactory_linked_service_concur_update(instance, cmd,
                                              resource_group_name,
                                              factory_name,
                                              linked_service_name,
-                                             type_,
                                              type_properties_client_id,
                                              type_properties_username,
                                              if_match=None,
@@ -3083,7 +3056,7 @@ def datafactory_linked_service_concur_update(instance, cmd,
         type_properties_use_peer_verification = json.loads(type_properties_use_peer_verification)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'Concur'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -3102,7 +3075,6 @@ def datafactory_linked_service_cosmos_db_create(cmd, client,
                                                 resource_group_name,
                                                 factory_name,
                                                 linked_service_name,
-                                                type_,
                                                 if_match=None,
                                                 connect_via=None,
                                                 description=None,
@@ -3130,7 +3102,7 @@ def datafactory_linked_service_cosmos_db_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'CosmosDb'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -3151,7 +3123,6 @@ def datafactory_linked_service_cosmos_db_update(instance, cmd,
                                                 resource_group_name,
                                                 factory_name,
                                                 linked_service_name,
-                                                type_,
                                                 if_match=None,
                                                 connect_via=None,
                                                 description=None,
@@ -3178,7 +3149,7 @@ def datafactory_linked_service_cosmos_db_update(instance, cmd,
         type_properties_account_key = json.loads(type_properties_account_key)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'CosmosDb'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -3195,7 +3166,6 @@ def datafactory_linked_service_cosmos_db_mongo_db_api_create(cmd, client,
                                                              resource_group_name,
                                                              factory_name,
                                                              linked_service_name,
-                                                             type_,
                                                              type_properties_connection_string,
                                                              type_properties_database,
                                                              if_match=None,
@@ -3214,7 +3184,7 @@ def datafactory_linked_service_cosmos_db_mongo_db_api_create(cmd, client,
     if isinstance(type_properties_database, str):
         type_properties_database = json.loads(type_properties_database)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'CosmosDbMongoDbApi'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -3232,7 +3202,6 @@ def datafactory_linked_service_cosmos_db_mongo_db_api_update(instance, cmd,
                                                              resource_group_name,
                                                              factory_name,
                                                              linked_service_name,
-                                                             type_,
                                                              type_properties_connection_string,
                                                              type_properties_database,
                                                              if_match=None,
@@ -3250,7 +3219,7 @@ def datafactory_linked_service_cosmos_db_mongo_db_api_update(instance, cmd,
         type_properties_connection_string = json.loads(type_properties_connection_string)
     if isinstance(type_properties_database, str):
         type_properties_database = json.loads(type_properties_database)
-    instance.type = type_
+    instance.type = 'CosmosDbMongoDbApi'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -3264,7 +3233,6 @@ def datafactory_linked_service_couchbase_create(cmd, client,
                                                 resource_group_name,
                                                 factory_name,
                                                 linked_service_name,
-                                                type_,
                                                 if_match=None,
                                                 connect_via=None,
                                                 description=None,
@@ -3286,7 +3254,7 @@ def datafactory_linked_service_couchbase_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Couchbase'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -3305,7 +3273,6 @@ def datafactory_linked_service_couchbase_update(instance, cmd,
                                                 resource_group_name,
                                                 factory_name,
                                                 linked_service_name,
-                                                type_,
                                                 if_match=None,
                                                 connect_via=None,
                                                 description=None,
@@ -3326,7 +3293,7 @@ def datafactory_linked_service_couchbase_update(instance, cmd,
         type_properties_cred_string = json.loads(type_properties_cred_string)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'Couchbase'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -3341,7 +3308,6 @@ def datafactory_linked_service_custom_data_source_create(cmd, client,
                                                          resource_group_name,
                                                          factory_name,
                                                          linked_service_name,
-                                                         type_,
                                                          type_properties,
                                                          if_match=None,
                                                          connect_via=None,
@@ -3357,7 +3323,7 @@ def datafactory_linked_service_custom_data_source_create(cmd, client,
     if isinstance(type_properties, str):
         type_properties = json.loads(type_properties)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'CustomDataSource'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -3374,7 +3340,6 @@ def datafactory_linked_service_custom_data_source_update(instance, cmd,
                                                          resource_group_name,
                                                          factory_name,
                                                          linked_service_name,
-                                                         type_,
                                                          type_properties,
                                                          if_match=None,
                                                          connect_via=None,
@@ -3389,7 +3354,7 @@ def datafactory_linked_service_custom_data_source_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties, str):
         type_properties = json.loads(type_properties)
-    instance.type = type_
+    instance.type = 'CustomDataSource'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -3402,7 +3367,6 @@ def datafactory_linked_service_db2_create(cmd, client,
                                           resource_group_name,
                                           factory_name,
                                           linked_service_name,
-                                          type_,
                                           if_match=None,
                                           connect_via=None,
                                           description=None,
@@ -3439,7 +3403,7 @@ def datafactory_linked_service_db2_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Db2'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -3464,7 +3428,6 @@ def datafactory_linked_service_db2_update(instance, cmd,
                                           resource_group_name,
                                           factory_name,
                                           linked_service_name,
-                                          type_,
                                           if_match=None,
                                           connect_via=None,
                                           description=None,
@@ -3500,7 +3463,7 @@ def datafactory_linked_service_db2_update(instance, cmd,
         type_properties_certificate_common_name = json.loads(type_properties_certificate_common_name)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'Db2'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -3521,7 +3484,6 @@ def datafactory_linked_service_drill_create(cmd, client,
                                             resource_group_name,
                                             factory_name,
                                             linked_service_name,
-                                            type_,
                                             if_match=None,
                                             connect_via=None,
                                             description=None,
@@ -3543,7 +3505,7 @@ def datafactory_linked_service_drill_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Drill'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -3562,7 +3524,6 @@ def datafactory_linked_service_drill_update(instance, cmd,
                                             resource_group_name,
                                             factory_name,
                                             linked_service_name,
-                                            type_,
                                             if_match=None,
                                             connect_via=None,
                                             description=None,
@@ -3583,7 +3544,7 @@ def datafactory_linked_service_drill_update(instance, cmd,
         type_properties_pwd = json.loads(type_properties_pwd)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'Drill'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -3598,7 +3559,6 @@ def datafactory_linked_service_dynamics_create(cmd, client,
                                                resource_group_name,
                                                factory_name,
                                                linked_service_name,
-                                               type_,
                                                type_properties_deployment_type,
                                                type_properties_authentication_type,
                                                if_match=None,
@@ -3641,7 +3601,7 @@ def datafactory_linked_service_dynamics_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Dynamics'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -3669,7 +3629,6 @@ def datafactory_linked_service_dynamics_update(instance, cmd,
                                                resource_group_name,
                                                factory_name,
                                                linked_service_name,
-                                               type_,
                                                type_properties_deployment_type,
                                                type_properties_authentication_type,
                                                if_match=None,
@@ -3711,7 +3670,7 @@ def datafactory_linked_service_dynamics_update(instance, cmd,
         type_properties_service_principal_credential = json.loads(type_properties_service_principal_credential)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'Dynamics'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -3735,7 +3694,6 @@ def datafactory_linked_service_dynamics_a_x_create(cmd, client,
                                                    resource_group_name,
                                                    factory_name,
                                                    linked_service_name,
-                                                   type_,
                                                    type_properties_url,
                                                    type_properties_service_principal_id,
                                                    type_properties_service_principal_key,
@@ -3766,7 +3724,7 @@ def datafactory_linked_service_dynamics_a_x_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'DynamicsAX'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -3788,7 +3746,6 @@ def datafactory_linked_service_dynamics_a_x_update(instance, cmd,
                                                    resource_group_name,
                                                    factory_name,
                                                    linked_service_name,
-                                                   type_,
                                                    type_properties_url,
                                                    type_properties_service_principal_id,
                                                    type_properties_service_principal_key,
@@ -3818,7 +3775,7 @@ def datafactory_linked_service_dynamics_a_x_update(instance, cmd,
         type_properties_aad_resource_id = json.loads(type_properties_aad_resource_id)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'DynamicsAX'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -3836,7 +3793,6 @@ def datafactory_linked_service_dynamics_crm_create(cmd, client,
                                                    resource_group_name,
                                                    factory_name,
                                                    linked_service_name,
-                                                   type_,
                                                    type_properties_deployment_type,
                                                    type_properties_authentication_type,
                                                    if_match=None,
@@ -3879,7 +3835,7 @@ def datafactory_linked_service_dynamics_crm_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'DynamicsCrm'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -3907,7 +3863,6 @@ def datafactory_linked_service_dynamics_crm_update(instance, cmd,
                                                    resource_group_name,
                                                    factory_name,
                                                    linked_service_name,
-                                                   type_,
                                                    type_properties_deployment_type,
                                                    type_properties_authentication_type,
                                                    if_match=None,
@@ -3949,7 +3904,7 @@ def datafactory_linked_service_dynamics_crm_update(instance, cmd,
         type_properties_service_principal_credential = json.loads(type_properties_service_principal_credential)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'DynamicsCrm'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -3973,7 +3928,6 @@ def datafactory_linked_service_eloqua_create(cmd, client,
                                              resource_group_name,
                                              factory_name,
                                              linked_service_name,
-                                             type_,
                                              type_properties_endpoint,
                                              type_properties_username,
                                              if_match=None,
@@ -4007,7 +3961,7 @@ def datafactory_linked_service_eloqua_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Eloqua'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -4030,7 +3984,6 @@ def datafactory_linked_service_eloqua_update(instance, cmd,
                                              resource_group_name,
                                              factory_name,
                                              linked_service_name,
-                                             type_,
                                              type_properties_endpoint,
                                              type_properties_username,
                                              if_match=None,
@@ -4063,7 +4016,7 @@ def datafactory_linked_service_eloqua_update(instance, cmd,
         type_properties_use_peer_verification = json.loads(type_properties_use_peer_verification)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'Eloqua'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -4082,7 +4035,6 @@ def datafactory_linked_service_file_server_create(cmd, client,
                                                   resource_group_name,
                                                   factory_name,
                                                   linked_service_name,
-                                                  type_,
                                                   type_properties_host,
                                                   if_match=None,
                                                   connect_via=None,
@@ -4107,7 +4059,7 @@ def datafactory_linked_service_file_server_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'FileServer'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -4127,7 +4079,6 @@ def datafactory_linked_service_file_server_update(instance, cmd,
                                                   resource_group_name,
                                                   factory_name,
                                                   linked_service_name,
-                                                  type_,
                                                   type_properties_host,
                                                   if_match=None,
                                                   connect_via=None,
@@ -4151,7 +4102,7 @@ def datafactory_linked_service_file_server_update(instance, cmd,
         type_properties_password = json.loads(type_properties_password)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'FileServer'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -4167,7 +4118,6 @@ def datafactory_linked_service_ftp_server_create(cmd, client,
                                                  resource_group_name,
                                                  factory_name,
                                                  linked_service_name,
-                                                 type_,
                                                  type_properties_host,
                                                  if_match=None,
                                                  connect_via=None,
@@ -4202,7 +4152,7 @@ def datafactory_linked_service_ftp_server_create(cmd, client,
     if isinstance(type_properties_enable_server_certificate_validation, str):
         type_properties_enable_server_certificate_validation = json.loads(type_properties_enable_server_certificate_validation)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'FtpServer'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -4226,7 +4176,6 @@ def datafactory_linked_service_ftp_server_update(instance, cmd,
                                                  resource_group_name,
                                                  factory_name,
                                                  linked_service_name,
-                                                 type_,
                                                  type_properties_host,
                                                  if_match=None,
                                                  connect_via=None,
@@ -4260,7 +4209,7 @@ def datafactory_linked_service_ftp_server_update(instance, cmd,
         type_properties_enable_ssl = json.loads(type_properties_enable_ssl)
     if isinstance(type_properties_enable_server_certificate_validation, str):
         type_properties_enable_server_certificate_validation = json.loads(type_properties_enable_server_certificate_validation)
-    instance.type = type_
+    instance.type = 'FtpServer'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -4280,7 +4229,6 @@ def datafactory_linked_service_google_ad_words_create(cmd, client,
                                                       resource_group_name,
                                                       factory_name,
                                                       linked_service_name,
-                                                      type_,
                                                       type_properties_client_customer_id,
                                                       type_properties_developer_token,
                                                       type_properties_authentication_type,
@@ -4324,7 +4272,7 @@ def datafactory_linked_service_google_ad_words_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'GoogleAdWords'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -4351,7 +4299,6 @@ def datafactory_linked_service_google_ad_words_update(instance, cmd,
                                                       resource_group_name,
                                                       factory_name,
                                                       linked_service_name,
-                                                      type_,
                                                       type_properties_client_customer_id,
                                                       type_properties_developer_token,
                                                       type_properties_authentication_type,
@@ -4394,7 +4341,7 @@ def datafactory_linked_service_google_ad_words_update(instance, cmd,
         type_properties_use_system_trust_store = json.loads(type_properties_use_system_trust_store)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'GoogleAdWords'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -4417,7 +4364,6 @@ def datafactory_linked_service_google_big_query_create(cmd, client,
                                                        resource_group_name,
                                                        factory_name,
                                                        linked_service_name,
-                                                       type_,
                                                        type_properties_project,
                                                        type_properties_authentication_type,
                                                        if_match=None,
@@ -4464,7 +4410,7 @@ def datafactory_linked_service_google_big_query_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'GoogleBigQuery'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -4492,7 +4438,6 @@ def datafactory_linked_service_google_big_query_update(instance, cmd,
                                                        resource_group_name,
                                                        factory_name,
                                                        linked_service_name,
-                                                       type_,
                                                        type_properties_project,
                                                        type_properties_authentication_type,
                                                        if_match=None,
@@ -4538,7 +4483,7 @@ def datafactory_linked_service_google_big_query_update(instance, cmd,
         type_properties_use_system_trust_store = json.loads(type_properties_use_system_trust_store)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'GoogleBigQuery'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -4562,7 +4507,6 @@ def datafactory_linked_service_google_cloud_storage_create(cmd, client,
                                                            resource_group_name,
                                                            factory_name,
                                                            linked_service_name,
-                                                           type_,
                                                            if_match=None,
                                                            connect_via=None,
                                                            description=None,
@@ -4587,7 +4531,7 @@ def datafactory_linked_service_google_cloud_storage_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'GoogleCloudStorage'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -4607,7 +4551,6 @@ def datafactory_linked_service_google_cloud_storage_update(instance, cmd,
                                                            resource_group_name,
                                                            factory_name,
                                                            linked_service_name,
-                                                           type_,
                                                            if_match=None,
                                                            connect_via=None,
                                                            description=None,
@@ -4631,7 +4574,7 @@ def datafactory_linked_service_google_cloud_storage_update(instance, cmd,
         type_properties_service_url = json.loads(type_properties_service_url)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'GoogleCloudStorage'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -4647,7 +4590,6 @@ def datafactory_linked_service_greenplum_create(cmd, client,
                                                 resource_group_name,
                                                 factory_name,
                                                 linked_service_name,
-                                                type_,
                                                 if_match=None,
                                                 connect_via=None,
                                                 description=None,
@@ -4669,7 +4611,7 @@ def datafactory_linked_service_greenplum_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Greenplum'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -4688,7 +4630,6 @@ def datafactory_linked_service_greenplum_update(instance, cmd,
                                                 resource_group_name,
                                                 factory_name,
                                                 linked_service_name,
-                                                type_,
                                                 if_match=None,
                                                 connect_via=None,
                                                 description=None,
@@ -4709,7 +4650,7 @@ def datafactory_linked_service_greenplum_update(instance, cmd,
         type_properties_pwd = json.loads(type_properties_pwd)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'Greenplum'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -4724,7 +4665,6 @@ def datafactory_linked_service_h_base_create(cmd, client,
                                              resource_group_name,
                                              factory_name,
                                              linked_service_name,
-                                             type_,
                                              type_properties_host,
                                              type_properties_authentication_type,
                                              if_match=None,
@@ -4768,7 +4708,7 @@ def datafactory_linked_service_h_base_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'HBase'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -4795,7 +4735,6 @@ def datafactory_linked_service_h_base_update(instance, cmd,
                                              resource_group_name,
                                              factory_name,
                                              linked_service_name,
-                                             type_,
                                              type_properties_host,
                                              type_properties_authentication_type,
                                              if_match=None,
@@ -4838,7 +4777,7 @@ def datafactory_linked_service_h_base_update(instance, cmd,
         type_properties_allow_self_signed_server_cert = json.loads(type_properties_allow_self_signed_server_cert)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'HBase'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -4861,7 +4800,6 @@ def datafactory_linked_service_h_d_insight_create(cmd, client,
                                                   resource_group_name,
                                                   factory_name,
                                                   linked_service_name,
-                                                  type_,
                                                   type_properties_cluster_uri,
                                                   if_match=None,
                                                   connect_via=None,
@@ -4898,7 +4836,7 @@ def datafactory_linked_service_h_d_insight_create(cmd, client,
     if isinstance(type_properties_file_system, str):
         type_properties_file_system = json.loads(type_properties_file_system)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'HDInsight'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -4922,7 +4860,6 @@ def datafactory_linked_service_h_d_insight_update(instance, cmd,
                                                   resource_group_name,
                                                   factory_name,
                                                   linked_service_name,
-                                                  type_,
                                                   type_properties_cluster_uri,
                                                   if_match=None,
                                                   connect_via=None,
@@ -4958,7 +4895,7 @@ def datafactory_linked_service_h_d_insight_update(instance, cmd,
         type_properties_is_esp_enabled = json.loads(type_properties_is_esp_enabled)
     if isinstance(type_properties_file_system, str):
         type_properties_file_system = json.loads(type_properties_file_system)
-    instance.type = type_
+    instance.type = 'HDInsight'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -4978,7 +4915,6 @@ def datafactory_linked_service_h_d_insight_on_demand_create(cmd, client,
                                                             resource_group_name,
                                                             factory_name,
                                                             linked_service_name,
-                                                            type_,
                                                             type_properties_cluster_size,
                                                             type_properties_time_to_live,
                                                             type_properties_version,
@@ -5088,7 +5024,7 @@ def datafactory_linked_service_h_d_insight_on_demand_create(cmd, client,
     if isinstance(type_properties_subnet_name, str):
         type_properties_subnet_name = json.loads(type_properties_subnet_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'HDInsightOnDemand'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -5137,7 +5073,6 @@ def datafactory_linked_service_h_d_insight_on_demand_update(instance, cmd,
                                                             resource_group_name,
                                                             factory_name,
                                                             linked_service_name,
-                                                            type_,
                                                             type_properties_cluster_size,
                                                             type_properties_time_to_live,
                                                             type_properties_version,
@@ -5246,7 +5181,7 @@ def datafactory_linked_service_h_d_insight_on_demand_update(instance, cmd,
         type_properties_virtual_network_id = json.loads(type_properties_virtual_network_id)
     if isinstance(type_properties_subnet_name, str):
         type_properties_subnet_name = json.loads(type_properties_subnet_name)
-    instance.type = type_
+    instance.type = 'HDInsightOnDemand'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -5291,7 +5226,6 @@ def datafactory_linked_service_hdfs_create(cmd, client,
                                            resource_group_name,
                                            factory_name,
                                            linked_service_name,
-                                           type_,
                                            type_properties_url,
                                            if_match=None,
                                            connect_via=None,
@@ -5319,7 +5253,7 @@ def datafactory_linked_service_hdfs_create(cmd, client,
     if isinstance(type_properties_password, str):
         type_properties_password = json.loads(type_properties_password)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Hdfs'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -5340,7 +5274,6 @@ def datafactory_linked_service_hdfs_update(instance, cmd,
                                            resource_group_name,
                                            factory_name,
                                            linked_service_name,
-                                           type_,
                                            type_properties_url,
                                            if_match=None,
                                            connect_via=None,
@@ -5367,7 +5300,7 @@ def datafactory_linked_service_hdfs_update(instance, cmd,
         type_properties_user_name = json.loads(type_properties_user_name)
     if isinstance(type_properties_password, str):
         type_properties_password = json.loads(type_properties_password)
-    instance.type = type_
+    instance.type = 'Hdfs'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -5384,7 +5317,6 @@ def datafactory_linked_service_hive_create(cmd, client,
                                            resource_group_name,
                                            factory_name,
                                            linked_service_name,
-                                           type_,
                                            type_properties_host,
                                            type_properties_authentication_type,
                                            if_match=None,
@@ -5442,7 +5374,7 @@ def datafactory_linked_service_hive_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Hive'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -5475,7 +5407,6 @@ def datafactory_linked_service_hive_update(instance, cmd,
                                            resource_group_name,
                                            factory_name,
                                            linked_service_name,
-                                           type_,
                                            type_properties_host,
                                            type_properties_authentication_type,
                                            if_match=None,
@@ -5532,7 +5463,7 @@ def datafactory_linked_service_hive_update(instance, cmd,
         type_properties_allow_self_signed_server_cert = json.loads(type_properties_allow_self_signed_server_cert)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'Hive'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -5561,7 +5492,6 @@ def datafactory_linked_service_http_server_create(cmd, client,
                                                   resource_group_name,
                                                   factory_name,
                                                   linked_service_name,
-                                                  type_,
                                                   type_properties_url,
                                                   if_match=None,
                                                   connect_via=None,
@@ -5596,7 +5526,7 @@ def datafactory_linked_service_http_server_create(cmd, client,
     if isinstance(type_properties_enable_server_certificate_validation, str):
         type_properties_enable_server_certificate_validation = json.loads(type_properties_enable_server_certificate_validation)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'HttpServer'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -5620,7 +5550,6 @@ def datafactory_linked_service_http_server_update(instance, cmd,
                                                   resource_group_name,
                                                   factory_name,
                                                   linked_service_name,
-                                                  type_,
                                                   type_properties_url,
                                                   if_match=None,
                                                   connect_via=None,
@@ -5654,7 +5583,7 @@ def datafactory_linked_service_http_server_update(instance, cmd,
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     if isinstance(type_properties_enable_server_certificate_validation, str):
         type_properties_enable_server_certificate_validation = json.loads(type_properties_enable_server_certificate_validation)
-    instance.type = type_
+    instance.type = 'HttpServer'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -5674,7 +5603,6 @@ def datafactory_linked_service_hubspot_create(cmd, client,
                                               resource_group_name,
                                               factory_name,
                                               linked_service_name,
-                                              type_,
                                               type_properties_client_id,
                                               if_match=None,
                                               connect_via=None,
@@ -5711,7 +5639,7 @@ def datafactory_linked_service_hubspot_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Hubspot'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -5735,7 +5663,6 @@ def datafactory_linked_service_hubspot_update(instance, cmd,
                                               resource_group_name,
                                               factory_name,
                                               linked_service_name,
-                                              type_,
                                               type_properties_client_id,
                                               if_match=None,
                                               connect_via=None,
@@ -5771,7 +5698,7 @@ def datafactory_linked_service_hubspot_update(instance, cmd,
         type_properties_use_peer_verification = json.loads(type_properties_use_peer_verification)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'Hubspot'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -5791,7 +5718,6 @@ def datafactory_linked_service_impala_create(cmd, client,
                                              resource_group_name,
                                              factory_name,
                                              linked_service_name,
-                                             type_,
                                              type_properties_host,
                                              type_properties_authentication_type,
                                              if_match=None,
@@ -5835,7 +5761,7 @@ def datafactory_linked_service_impala_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Impala'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -5862,7 +5788,6 @@ def datafactory_linked_service_impala_update(instance, cmd,
                                              resource_group_name,
                                              factory_name,
                                              linked_service_name,
-                                             type_,
                                              type_properties_host,
                                              type_properties_authentication_type,
                                              if_match=None,
@@ -5905,7 +5830,7 @@ def datafactory_linked_service_impala_update(instance, cmd,
         type_properties_allow_self_signed_server_cert = json.loads(type_properties_allow_self_signed_server_cert)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'Impala'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -5928,7 +5853,6 @@ def datafactory_linked_service_informix_create(cmd, client,
                                                resource_group_name,
                                                factory_name,
                                                linked_service_name,
-                                               type_,
                                                type_properties_connection_string,
                                                if_match=None,
                                                connect_via=None,
@@ -5959,7 +5883,7 @@ def datafactory_linked_service_informix_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Informix'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -5981,7 +5905,6 @@ def datafactory_linked_service_informix_update(instance, cmd,
                                                resource_group_name,
                                                factory_name,
                                                linked_service_name,
-                                               type_,
                                                type_properties_connection_string,
                                                if_match=None,
                                                connect_via=None,
@@ -6011,7 +5934,7 @@ def datafactory_linked_service_informix_update(instance, cmd,
         type_properties_password = json.loads(type_properties_password)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'Informix'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -6029,7 +5952,6 @@ def datafactory_linked_service_jira_create(cmd, client,
                                            resource_group_name,
                                            factory_name,
                                            linked_service_name,
-                                           type_,
                                            type_properties_host,
                                            type_properties_username,
                                            if_match=None,
@@ -6066,7 +5988,7 @@ def datafactory_linked_service_jira_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Jira'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -6090,7 +6012,6 @@ def datafactory_linked_service_jira_update(instance, cmd,
                                            resource_group_name,
                                            factory_name,
                                            linked_service_name,
-                                           type_,
                                            type_properties_host,
                                            type_properties_username,
                                            if_match=None,
@@ -6126,7 +6047,7 @@ def datafactory_linked_service_jira_update(instance, cmd,
         type_properties_use_peer_verification = json.loads(type_properties_use_peer_verification)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'Jira'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -6146,7 +6067,6 @@ def datafactory_linked_service_magento_create(cmd, client,
                                               resource_group_name,
                                               factory_name,
                                               linked_service_name,
-                                              type_,
                                               type_properties_host,
                                               if_match=None,
                                               connect_via=None,
@@ -6177,7 +6097,7 @@ def datafactory_linked_service_magento_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Magento'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -6199,7 +6119,6 @@ def datafactory_linked_service_magento_update(instance, cmd,
                                               resource_group_name,
                                               factory_name,
                                               linked_service_name,
-                                              type_,
                                               type_properties_host,
                                               if_match=None,
                                               connect_via=None,
@@ -6229,7 +6148,7 @@ def datafactory_linked_service_magento_update(instance, cmd,
         type_properties_use_peer_verification = json.loads(type_properties_use_peer_verification)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'Magento'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -6247,7 +6166,6 @@ def datafactory_linked_service_maria_d_b_create(cmd, client,
                                                 resource_group_name,
                                                 factory_name,
                                                 linked_service_name,
-                                                type_,
                                                 if_match=None,
                                                 connect_via=None,
                                                 description=None,
@@ -6269,7 +6187,7 @@ def datafactory_linked_service_maria_d_b_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'MariaDB'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -6288,7 +6206,6 @@ def datafactory_linked_service_maria_d_b_update(instance, cmd,
                                                 resource_group_name,
                                                 factory_name,
                                                 linked_service_name,
-                                                type_,
                                                 if_match=None,
                                                 connect_via=None,
                                                 description=None,
@@ -6309,7 +6226,7 @@ def datafactory_linked_service_maria_d_b_update(instance, cmd,
         type_properties_pwd = json.loads(type_properties_pwd)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'MariaDB'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -6324,7 +6241,6 @@ def datafactory_linked_service_marketo_create(cmd, client,
                                               resource_group_name,
                                               factory_name,
                                               linked_service_name,
-                                              type_,
                                               type_properties_endpoint,
                                               type_properties_client_id,
                                               if_match=None,
@@ -6358,7 +6274,7 @@ def datafactory_linked_service_marketo_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Marketo'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -6381,7 +6297,6 @@ def datafactory_linked_service_marketo_update(instance, cmd,
                                               resource_group_name,
                                               factory_name,
                                               linked_service_name,
-                                              type_,
                                               type_properties_endpoint,
                                               type_properties_client_id,
                                               if_match=None,
@@ -6414,7 +6329,7 @@ def datafactory_linked_service_marketo_update(instance, cmd,
         type_properties_use_peer_verification = json.loads(type_properties_use_peer_verification)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'Marketo'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -6433,7 +6348,6 @@ def datafactory_linked_service_microsoft_access_create(cmd, client,
                                                        resource_group_name,
                                                        factory_name,
                                                        linked_service_name,
-                                                       type_,
                                                        type_properties_connection_string,
                                                        if_match=None,
                                                        connect_via=None,
@@ -6464,7 +6378,7 @@ def datafactory_linked_service_microsoft_access_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'MicrosoftAccess'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -6486,7 +6400,6 @@ def datafactory_linked_service_microsoft_access_update(instance, cmd,
                                                        resource_group_name,
                                                        factory_name,
                                                        linked_service_name,
-                                                       type_,
                                                        type_properties_connection_string,
                                                        if_match=None,
                                                        connect_via=None,
@@ -6516,7 +6429,7 @@ def datafactory_linked_service_microsoft_access_update(instance, cmd,
         type_properties_password = json.loads(type_properties_password)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'MicrosoftAccess'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -6534,7 +6447,6 @@ def datafactory_linked_service_mongo_db_create(cmd, client,
                                                resource_group_name,
                                                factory_name,
                                                linked_service_name,
-                                               type_,
                                                type_properties_server,
                                                type_properties_database_name,
                                                if_match=None,
@@ -6575,7 +6487,7 @@ def datafactory_linked_service_mongo_db_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'MongoDb'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -6601,7 +6513,6 @@ def datafactory_linked_service_mongo_db_update(instance, cmd,
                                                resource_group_name,
                                                factory_name,
                                                linked_service_name,
-                                               type_,
                                                type_properties_server,
                                                type_properties_database_name,
                                                if_match=None,
@@ -6641,7 +6552,7 @@ def datafactory_linked_service_mongo_db_update(instance, cmd,
         type_properties_allow_self_signed_server_cert = json.loads(type_properties_allow_self_signed_server_cert)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'MongoDb'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -6663,7 +6574,6 @@ def datafactory_linked_service_mongo_db_v2_create(cmd, client,
                                                   resource_group_name,
                                                   factory_name,
                                                   linked_service_name,
-                                                  type_,
                                                   type_properties_connection_string,
                                                   type_properties_database,
                                                   if_match=None,
@@ -6682,7 +6592,7 @@ def datafactory_linked_service_mongo_db_v2_create(cmd, client,
     if isinstance(type_properties_database, str):
         type_properties_database = json.loads(type_properties_database)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'MongoDbV2'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -6700,7 +6610,6 @@ def datafactory_linked_service_mongo_db_v2_update(instance, cmd,
                                                   resource_group_name,
                                                   factory_name,
                                                   linked_service_name,
-                                                  type_,
                                                   type_properties_connection_string,
                                                   type_properties_database,
                                                   if_match=None,
@@ -6718,7 +6627,7 @@ def datafactory_linked_service_mongo_db_v2_update(instance, cmd,
         type_properties_connection_string = json.loads(type_properties_connection_string)
     if isinstance(type_properties_database, str):
         type_properties_database = json.loads(type_properties_database)
-    instance.type = type_
+    instance.type = 'MongoDbV2'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -6732,7 +6641,6 @@ def datafactory_linked_service_my_sql_create(cmd, client,
                                              resource_group_name,
                                              factory_name,
                                              linked_service_name,
-                                             type_,
                                              type_properties_connection_string,
                                              if_match=None,
                                              connect_via=None,
@@ -6754,7 +6662,7 @@ def datafactory_linked_service_my_sql_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'MySql'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -6773,7 +6681,6 @@ def datafactory_linked_service_my_sql_update(instance, cmd,
                                              resource_group_name,
                                              factory_name,
                                              linked_service_name,
-                                             type_,
                                              type_properties_connection_string,
                                              if_match=None,
                                              connect_via=None,
@@ -6794,7 +6701,7 @@ def datafactory_linked_service_my_sql_update(instance, cmd,
         type_properties_password = json.loads(type_properties_password)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'MySql'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -6809,7 +6716,6 @@ def datafactory_linked_service_netezza_create(cmd, client,
                                               resource_group_name,
                                               factory_name,
                                               linked_service_name,
-                                              type_,
                                               if_match=None,
                                               connect_via=None,
                                               description=None,
@@ -6831,7 +6737,7 @@ def datafactory_linked_service_netezza_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Netezza'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -6850,7 +6756,6 @@ def datafactory_linked_service_netezza_update(instance, cmd,
                                               resource_group_name,
                                               factory_name,
                                               linked_service_name,
-                                              type_,
                                               if_match=None,
                                               connect_via=None,
                                               description=None,
@@ -6871,7 +6776,7 @@ def datafactory_linked_service_netezza_update(instance, cmd,
         type_properties_pwd = json.loads(type_properties_pwd)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'Netezza'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -6886,7 +6791,6 @@ def datafactory_linked_service_o_data_create(cmd, client,
                                              resource_group_name,
                                              factory_name,
                                              linked_service_name,
-                                             type_,
                                              type_properties_url,
                                              if_match=None,
                                              connect_via=None,
@@ -6931,7 +6835,7 @@ def datafactory_linked_service_o_data_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'OData'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -6959,7 +6863,6 @@ def datafactory_linked_service_o_data_update(instance, cmd,
                                              resource_group_name,
                                              factory_name,
                                              linked_service_name,
-                                             type_,
                                              type_properties_url,
                                              if_match=None,
                                              connect_via=None,
@@ -7003,7 +6906,7 @@ def datafactory_linked_service_o_data_update(instance, cmd,
         type_properties_service_principal_embedded_cert_password = json.loads(type_properties_service_principal_embedded_cert_password)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'OData'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -7027,7 +6930,6 @@ def datafactory_linked_service_odbc_create(cmd, client,
                                            resource_group_name,
                                            factory_name,
                                            linked_service_name,
-                                           type_,
                                            type_properties_connection_string,
                                            if_match=None,
                                            connect_via=None,
@@ -7058,7 +6960,7 @@ def datafactory_linked_service_odbc_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Odbc'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -7080,7 +6982,6 @@ def datafactory_linked_service_odbc_update(instance, cmd,
                                            resource_group_name,
                                            factory_name,
                                            linked_service_name,
-                                           type_,
                                            type_properties_connection_string,
                                            if_match=None,
                                            connect_via=None,
@@ -7110,7 +7011,7 @@ def datafactory_linked_service_odbc_update(instance, cmd,
         type_properties_password = json.loads(type_properties_password)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'Odbc'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -7128,7 +7029,6 @@ def datafactory_linked_service_office365_create(cmd, client,
                                                 resource_group_name,
                                                 factory_name,
                                                 linked_service_name,
-                                                type_,
                                                 type_properties_office365tenant_id,
                                                 type_properties_service_principal_tenant_id,
                                                 type_properties_service_principal_id,
@@ -7156,7 +7056,7 @@ def datafactory_linked_service_office365_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Office365'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -7177,7 +7077,6 @@ def datafactory_linked_service_office365_update(instance, cmd,
                                                 resource_group_name,
                                                 factory_name,
                                                 linked_service_name,
-                                                type_,
                                                 type_properties_office365tenant_id,
                                                 type_properties_service_principal_tenant_id,
                                                 type_properties_service_principal_id,
@@ -7204,7 +7103,7 @@ def datafactory_linked_service_office365_update(instance, cmd,
         type_properties_service_principal_key = json.loads(type_properties_service_principal_key)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'Office365'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -7221,7 +7120,6 @@ def datafactory_linked_service_oracle_create(cmd, client,
                                              resource_group_name,
                                              factory_name,
                                              linked_service_name,
-                                             type_,
                                              type_properties_connection_string,
                                              if_match=None,
                                              connect_via=None,
@@ -7243,7 +7141,7 @@ def datafactory_linked_service_oracle_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Oracle'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -7262,7 +7160,6 @@ def datafactory_linked_service_oracle_update(instance, cmd,
                                              resource_group_name,
                                              factory_name,
                                              linked_service_name,
-                                             type_,
                                              type_properties_connection_string,
                                              if_match=None,
                                              connect_via=None,
@@ -7283,7 +7180,7 @@ def datafactory_linked_service_oracle_update(instance, cmd,
         type_properties_password = json.loads(type_properties_password)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'Oracle'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -7298,7 +7195,6 @@ def datafactory_linked_service_oracle_service_cloud_create(cmd, client,
                                                            resource_group_name,
                                                            factory_name,
                                                            linked_service_name,
-                                                           type_,
                                                            type_properties_host,
                                                            type_properties_username,
                                                            type_properties_password,
@@ -7332,7 +7228,7 @@ def datafactory_linked_service_oracle_service_cloud_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'OracleServiceCloud'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -7355,7 +7251,6 @@ def datafactory_linked_service_oracle_service_cloud_update(instance, cmd,
                                                            resource_group_name,
                                                            factory_name,
                                                            linked_service_name,
-                                                           type_,
                                                            type_properties_host,
                                                            type_properties_username,
                                                            type_properties_password,
@@ -7388,7 +7283,7 @@ def datafactory_linked_service_oracle_service_cloud_update(instance, cmd,
         type_properties_use_peer_verification = json.loads(type_properties_use_peer_verification)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'OracleServiceCloud'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -7407,7 +7302,6 @@ def datafactory_linked_service_paypal_create(cmd, client,
                                              resource_group_name,
                                              factory_name,
                                              linked_service_name,
-                                             type_,
                                              type_properties_host,
                                              type_properties_client_id,
                                              if_match=None,
@@ -7441,7 +7335,7 @@ def datafactory_linked_service_paypal_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Paypal'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -7464,7 +7358,6 @@ def datafactory_linked_service_paypal_update(instance, cmd,
                                              resource_group_name,
                                              factory_name,
                                              linked_service_name,
-                                             type_,
                                              type_properties_host,
                                              type_properties_client_id,
                                              if_match=None,
@@ -7497,7 +7390,7 @@ def datafactory_linked_service_paypal_update(instance, cmd,
         type_properties_use_peer_verification = json.loads(type_properties_use_peer_verification)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'Paypal'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -7516,7 +7409,6 @@ def datafactory_linked_service_phoenix_create(cmd, client,
                                               resource_group_name,
                                               factory_name,
                                               linked_service_name,
-                                              type_,
                                               type_properties_host,
                                               type_properties_authentication_type,
                                               if_match=None,
@@ -7563,7 +7455,7 @@ def datafactory_linked_service_phoenix_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Phoenix'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -7591,7 +7483,6 @@ def datafactory_linked_service_phoenix_update(instance, cmd,
                                               resource_group_name,
                                               factory_name,
                                               linked_service_name,
-                                              type_,
                                               type_properties_host,
                                               type_properties_authentication_type,
                                               if_match=None,
@@ -7637,7 +7528,7 @@ def datafactory_linked_service_phoenix_update(instance, cmd,
         type_properties_allow_self_signed_server_cert = json.loads(type_properties_allow_self_signed_server_cert)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'Phoenix'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -7661,7 +7552,6 @@ def datafactory_linked_service_postgre_sql_create(cmd, client,
                                                   resource_group_name,
                                                   factory_name,
                                                   linked_service_name,
-                                                  type_,
                                                   type_properties_connection_string,
                                                   if_match=None,
                                                   connect_via=None,
@@ -7683,7 +7573,7 @@ def datafactory_linked_service_postgre_sql_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'PostgreSql'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -7702,7 +7592,6 @@ def datafactory_linked_service_postgre_sql_update(instance, cmd,
                                                   resource_group_name,
                                                   factory_name,
                                                   linked_service_name,
-                                                  type_,
                                                   type_properties_connection_string,
                                                   if_match=None,
                                                   connect_via=None,
@@ -7723,7 +7612,7 @@ def datafactory_linked_service_postgre_sql_update(instance, cmd,
         type_properties_password = json.loads(type_properties_password)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'PostgreSql'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -7738,7 +7627,6 @@ def datafactory_linked_service_presto_create(cmd, client,
                                              resource_group_name,
                                              factory_name,
                                              linked_service_name,
-                                             type_,
                                              type_properties_host,
                                              type_properties_server_version,
                                              type_properties_catalog,
@@ -7791,7 +7679,7 @@ def datafactory_linked_service_presto_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Presto'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -7821,7 +7709,6 @@ def datafactory_linked_service_presto_update(instance, cmd,
                                              resource_group_name,
                                              factory_name,
                                              linked_service_name,
-                                             type_,
                                              type_properties_host,
                                              type_properties_server_version,
                                              type_properties_catalog,
@@ -7873,7 +7760,7 @@ def datafactory_linked_service_presto_update(instance, cmd,
         type_properties_time_zone_id = json.loads(type_properties_time_zone_id)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'Presto'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -7899,7 +7786,6 @@ def datafactory_linked_service_quick_books_create(cmd, client,
                                                   resource_group_name,
                                                   factory_name,
                                                   linked_service_name,
-                                                  type_,
                                                   type_properties_endpoint,
                                                   type_properties_company_id,
                                                   type_properties_consumer_key,
@@ -7936,7 +7822,7 @@ def datafactory_linked_service_quick_books_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'QuickBooks'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -7960,7 +7846,6 @@ def datafactory_linked_service_quick_books_update(instance, cmd,
                                                   resource_group_name,
                                                   factory_name,
                                                   linked_service_name,
-                                                  type_,
                                                   type_properties_endpoint,
                                                   type_properties_company_id,
                                                   type_properties_consumer_key,
@@ -7996,7 +7881,7 @@ def datafactory_linked_service_quick_books_update(instance, cmd,
         type_properties_use_encrypted_endpoints = json.loads(type_properties_use_encrypted_endpoints)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'QuickBooks'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -8016,7 +7901,6 @@ def datafactory_linked_service_responsys_create(cmd, client,
                                                 resource_group_name,
                                                 factory_name,
                                                 linked_service_name,
-                                                type_,
                                                 type_properties_endpoint,
                                                 type_properties_client_id,
                                                 if_match=None,
@@ -8050,7 +7934,7 @@ def datafactory_linked_service_responsys_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Responsys'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -8073,7 +7957,6 @@ def datafactory_linked_service_responsys_update(instance, cmd,
                                                 resource_group_name,
                                                 factory_name,
                                                 linked_service_name,
-                                                type_,
                                                 type_properties_endpoint,
                                                 type_properties_client_id,
                                                 if_match=None,
@@ -8106,7 +7989,7 @@ def datafactory_linked_service_responsys_update(instance, cmd,
         type_properties_use_peer_verification = json.loads(type_properties_use_peer_verification)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'Responsys'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -8125,7 +8008,6 @@ def datafactory_linked_service_rest_service_create(cmd, client,
                                                    resource_group_name,
                                                    factory_name,
                                                    linked_service_name,
-                                                   type_,
                                                    type_properties_url,
                                                    type_properties_authentication_type,
                                                    if_match=None,
@@ -8166,7 +8048,7 @@ def datafactory_linked_service_rest_service_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'RestService'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -8192,7 +8074,6 @@ def datafactory_linked_service_rest_service_update(instance, cmd,
                                                    resource_group_name,
                                                    factory_name,
                                                    linked_service_name,
-                                                   type_,
                                                    type_properties_url,
                                                    type_properties_authentication_type,
                                                    if_match=None,
@@ -8232,7 +8113,7 @@ def datafactory_linked_service_rest_service_update(instance, cmd,
         type_properties_aad_resource_id = json.loads(type_properties_aad_resource_id)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'RestService'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -8254,7 +8135,6 @@ def datafactory_linked_service_salesforce_create(cmd, client,
                                                  resource_group_name,
                                                  factory_name,
                                                  linked_service_name,
-                                                 type_,
                                                  if_match=None,
                                                  connect_via=None,
                                                  description=None,
@@ -8285,7 +8165,7 @@ def datafactory_linked_service_salesforce_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Salesforce'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -8307,7 +8187,6 @@ def datafactory_linked_service_salesforce_update(instance, cmd,
                                                  resource_group_name,
                                                  factory_name,
                                                  linked_service_name,
-                                                 type_,
                                                  if_match=None,
                                                  connect_via=None,
                                                  description=None,
@@ -8337,7 +8216,7 @@ def datafactory_linked_service_salesforce_update(instance, cmd,
         type_properties_api_version = json.loads(type_properties_api_version)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'Salesforce'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -8355,7 +8234,6 @@ def datafactory_linked_service_salesforce_marketing_cloud_create(cmd, client,
                                                                  resource_group_name,
                                                                  factory_name,
                                                                  linked_service_name,
-                                                                 type_,
                                                                  type_properties_client_id,
                                                                  if_match=None,
                                                                  connect_via=None,
@@ -8386,7 +8264,7 @@ def datafactory_linked_service_salesforce_marketing_cloud_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'SalesforceMarketingCloud'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -8408,7 +8286,6 @@ def datafactory_linked_service_salesforce_marketing_cloud_update(instance, cmd,
                                                                  resource_group_name,
                                                                  factory_name,
                                                                  linked_service_name,
-                                                                 type_,
                                                                  type_properties_client_id,
                                                                  if_match=None,
                                                                  connect_via=None,
@@ -8438,7 +8315,7 @@ def datafactory_linked_service_salesforce_marketing_cloud_update(instance, cmd,
         type_properties_use_peer_verification = json.loads(type_properties_use_peer_verification)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'SalesforceMarketingCloud'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -8456,7 +8333,6 @@ def datafactory_linked_service_salesforce_service_cloud_create(cmd, client,
                                                                resource_group_name,
                                                                factory_name,
                                                                linked_service_name,
-                                                               type_,
                                                                if_match=None,
                                                                connect_via=None,
                                                                description=None,
@@ -8490,7 +8366,7 @@ def datafactory_linked_service_salesforce_service_cloud_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'SalesforceServiceCloud'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -8513,7 +8389,6 @@ def datafactory_linked_service_salesforce_service_cloud_update(instance, cmd,
                                                                resource_group_name,
                                                                factory_name,
                                                                linked_service_name,
-                                                               type_,
                                                                if_match=None,
                                                                connect_via=None,
                                                                description=None,
@@ -8546,7 +8421,7 @@ def datafactory_linked_service_salesforce_service_cloud_update(instance, cmd,
         type_properties_extended_properties = json.loads(type_properties_extended_properties)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'SalesforceServiceCloud'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -8565,7 +8440,6 @@ def datafactory_linked_service_sap_b_w_create(cmd, client,
                                               resource_group_name,
                                               factory_name,
                                               linked_service_name,
-                                              type_,
                                               type_properties_server,
                                               type_properties_system_number,
                                               type_properties_client_id,
@@ -8596,7 +8470,7 @@ def datafactory_linked_service_sap_b_w_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'SapBW'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -8618,7 +8492,6 @@ def datafactory_linked_service_sap_b_w_update(instance, cmd,
                                               resource_group_name,
                                               factory_name,
                                               linked_service_name,
-                                              type_,
                                               type_properties_server,
                                               type_properties_system_number,
                                               type_properties_client_id,
@@ -8648,7 +8521,7 @@ def datafactory_linked_service_sap_b_w_update(instance, cmd,
         type_properties_password = json.loads(type_properties_password)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'SapBW'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -8666,7 +8539,6 @@ def datafactory_linked_service_sap_cloud_for_customer_create(cmd, client,
                                                              resource_group_name,
                                                              factory_name,
                                                              linked_service_name,
-                                                             type_,
                                                              type_properties_url,
                                                              if_match=None,
                                                              connect_via=None,
@@ -8691,7 +8563,7 @@ def datafactory_linked_service_sap_cloud_for_customer_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'SapCloudForCustomer'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -8711,7 +8583,6 @@ def datafactory_linked_service_sap_cloud_for_customer_update(instance, cmd,
                                                              resource_group_name,
                                                              factory_name,
                                                              linked_service_name,
-                                                             type_,
                                                              type_properties_url,
                                                              if_match=None,
                                                              connect_via=None,
@@ -8735,7 +8606,7 @@ def datafactory_linked_service_sap_cloud_for_customer_update(instance, cmd,
         type_properties_password = json.loads(type_properties_password)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'SapCloudForCustomer'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -8751,7 +8622,6 @@ def datafactory_linked_service_sap_ecc_create(cmd, client,
                                               resource_group_name,
                                               factory_name,
                                               linked_service_name,
-                                              type_,
                                               type_properties_url,
                                               if_match=None,
                                               connect_via=None,
@@ -8770,7 +8640,7 @@ def datafactory_linked_service_sap_ecc_create(cmd, client,
     if isinstance(type_properties_password, str):
         type_properties_password = json.loads(type_properties_password)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'SapEcc'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -8790,7 +8660,6 @@ def datafactory_linked_service_sap_ecc_update(instance, cmd,
                                               resource_group_name,
                                               factory_name,
                                               linked_service_name,
-                                              type_,
                                               type_properties_url,
                                               if_match=None,
                                               connect_via=None,
@@ -8808,7 +8677,7 @@ def datafactory_linked_service_sap_ecc_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_password, str):
         type_properties_password = json.loads(type_properties_password)
-    instance.type = type_
+    instance.type = 'SapEcc'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -8824,7 +8693,6 @@ def datafactory_linked_service_sap_hana_create(cmd, client,
                                                resource_group_name,
                                                factory_name,
                                                linked_service_name,
-                                               type_,
                                                if_match=None,
                                                connect_via=None,
                                                description=None,
@@ -8853,7 +8721,7 @@ def datafactory_linked_service_sap_hana_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'SapHana'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -8875,7 +8743,6 @@ def datafactory_linked_service_sap_hana_update(instance, cmd,
                                                resource_group_name,
                                                factory_name,
                                                linked_service_name,
-                                               type_,
                                                if_match=None,
                                                connect_via=None,
                                                description=None,
@@ -8903,7 +8770,7 @@ def datafactory_linked_service_sap_hana_update(instance, cmd,
         type_properties_password = json.loads(type_properties_password)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'SapHana'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -8921,7 +8788,6 @@ def datafactory_linked_service_sap_open_hub_create(cmd, client,
                                                    resource_group_name,
                                                    factory_name,
                                                    linked_service_name,
-                                                   type_,
                                                    type_properties_server,
                                                    type_properties_system_number,
                                                    type_properties_client_id,
@@ -8955,7 +8821,7 @@ def datafactory_linked_service_sap_open_hub_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'SapOpenHub'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -8978,7 +8844,6 @@ def datafactory_linked_service_sap_open_hub_update(instance, cmd,
                                                    resource_group_name,
                                                    factory_name,
                                                    linked_service_name,
-                                                   type_,
                                                    type_properties_server,
                                                    type_properties_system_number,
                                                    type_properties_client_id,
@@ -9011,7 +8876,7 @@ def datafactory_linked_service_sap_open_hub_update(instance, cmd,
         type_properties_password = json.loads(type_properties_password)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'SapOpenHub'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -9030,7 +8895,6 @@ def datafactory_linked_service_sap_table_create(cmd, client,
                                                 resource_group_name,
                                                 factory_name,
                                                 linked_service_name,
-                                                type_,
                                                 if_match=None,
                                                 connect_via=None,
                                                 description=None,
@@ -9091,7 +8955,7 @@ def datafactory_linked_service_sap_table_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'SapTable'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -9123,7 +8987,6 @@ def datafactory_linked_service_sap_table_update(instance, cmd,
                                                 resource_group_name,
                                                 factory_name,
                                                 linked_service_name,
-                                                type_,
                                                 if_match=None,
                                                 connect_via=None,
                                                 description=None,
@@ -9183,7 +9046,7 @@ def datafactory_linked_service_sap_table_update(instance, cmd,
         type_properties_logon_group = json.loads(type_properties_logon_group)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'SapTable'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -9211,7 +9074,6 @@ def datafactory_linked_service_service_now_create(cmd, client,
                                                   resource_group_name,
                                                   factory_name,
                                                   linked_service_name,
-                                                  type_,
                                                   type_properties_endpoint,
                                                   type_properties_authentication_type,
                                                   if_match=None,
@@ -9252,7 +9114,7 @@ def datafactory_linked_service_service_now_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'ServiceNow'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -9278,7 +9140,6 @@ def datafactory_linked_service_service_now_update(instance, cmd,
                                                   resource_group_name,
                                                   factory_name,
                                                   linked_service_name,
-                                                  type_,
                                                   type_properties_endpoint,
                                                   type_properties_authentication_type,
                                                   if_match=None,
@@ -9318,7 +9179,7 @@ def datafactory_linked_service_service_now_update(instance, cmd,
         type_properties_use_peer_verification = json.loads(type_properties_use_peer_verification)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'ServiceNow'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -9340,7 +9201,6 @@ def datafactory_linked_service_sftp_create(cmd, client,
                                            resource_group_name,
                                            factory_name,
                                            linked_service_name,
-                                           type_,
                                            type_properties_host,
                                            if_match=None,
                                            connect_via=None,
@@ -9384,7 +9244,7 @@ def datafactory_linked_service_sftp_create(cmd, client,
     if isinstance(type_properties_host_key_fingerprint, str):
         type_properties_host_key_fingerprint = json.loads(type_properties_host_key_fingerprint)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Sftp'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -9411,7 +9271,6 @@ def datafactory_linked_service_sftp_update(instance, cmd,
                                            resource_group_name,
                                            factory_name,
                                            linked_service_name,
-                                           type_,
                                            type_properties_host,
                                            if_match=None,
                                            connect_via=None,
@@ -9454,7 +9313,7 @@ def datafactory_linked_service_sftp_update(instance, cmd,
         type_properties_skip_host_key_validation = json.loads(type_properties_skip_host_key_validation)
     if isinstance(type_properties_host_key_fingerprint, str):
         type_properties_host_key_fingerprint = json.loads(type_properties_host_key_fingerprint)
-    instance.type = type_
+    instance.type = 'Sftp'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -9477,7 +9336,6 @@ def datafactory_linked_service_shopify_create(cmd, client,
                                               resource_group_name,
                                               factory_name,
                                               linked_service_name,
-                                              type_,
                                               type_properties_host,
                                               if_match=None,
                                               connect_via=None,
@@ -9508,7 +9366,7 @@ def datafactory_linked_service_shopify_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Shopify'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -9530,7 +9388,6 @@ def datafactory_linked_service_shopify_update(instance, cmd,
                                               resource_group_name,
                                               factory_name,
                                               linked_service_name,
-                                              type_,
                                               type_properties_host,
                                               if_match=None,
                                               connect_via=None,
@@ -9560,7 +9417,7 @@ def datafactory_linked_service_shopify_update(instance, cmd,
         type_properties_use_peer_verification = json.loads(type_properties_use_peer_verification)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'Shopify'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -9578,7 +9435,6 @@ def datafactory_linked_service_snowflake_create(cmd, client,
                                                 resource_group_name,
                                                 factory_name,
                                                 linked_service_name,
-                                                type_,
                                                 type_properties_connection_string,
                                                 if_match=None,
                                                 connect_via=None,
@@ -9600,7 +9456,7 @@ def datafactory_linked_service_snowflake_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Snowflake'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -9619,7 +9475,6 @@ def datafactory_linked_service_snowflake_update(instance, cmd,
                                                 resource_group_name,
                                                 factory_name,
                                                 linked_service_name,
-                                                type_,
                                                 type_properties_connection_string,
                                                 if_match=None,
                                                 connect_via=None,
@@ -9640,7 +9495,7 @@ def datafactory_linked_service_snowflake_update(instance, cmd,
         type_properties_password = json.loads(type_properties_password)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'Snowflake'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -9655,7 +9510,6 @@ def datafactory_linked_service_spark_create(cmd, client,
                                             resource_group_name,
                                             factory_name,
                                             linked_service_name,
-                                            type_,
                                             type_properties_host,
                                             type_properties_port,
                                             type_properties_authentication_type,
@@ -9704,7 +9558,7 @@ def datafactory_linked_service_spark_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Spark'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -9734,7 +9588,6 @@ def datafactory_linked_service_spark_update(instance, cmd,
                                             resource_group_name,
                                             factory_name,
                                             linked_service_name,
-                                            type_,
                                             type_properties_host,
                                             type_properties_port,
                                             type_properties_authentication_type,
@@ -9782,7 +9635,7 @@ def datafactory_linked_service_spark_update(instance, cmd,
         type_properties_allow_self_signed_server_cert = json.loads(type_properties_allow_self_signed_server_cert)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'Spark'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -9808,7 +9661,6 @@ def datafactory_linked_service_sql_server_create(cmd, client,
                                                  resource_group_name,
                                                  factory_name,
                                                  linked_service_name,
-                                                 type_,
                                                  type_properties_connection_string,
                                                  if_match=None,
                                                  connect_via=None,
@@ -9833,7 +9685,7 @@ def datafactory_linked_service_sql_server_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'SqlServer'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -9853,7 +9705,6 @@ def datafactory_linked_service_sql_server_update(instance, cmd,
                                                  resource_group_name,
                                                  factory_name,
                                                  linked_service_name,
-                                                 type_,
                                                  type_properties_connection_string,
                                                  if_match=None,
                                                  connect_via=None,
@@ -9877,7 +9728,7 @@ def datafactory_linked_service_sql_server_update(instance, cmd,
         type_properties_password = json.loads(type_properties_password)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'SqlServer'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -9893,7 +9744,6 @@ def datafactory_linked_service_square_create(cmd, client,
                                              resource_group_name,
                                              factory_name,
                                              linked_service_name,
-                                             type_,
                                              type_properties_host,
                                              type_properties_client_id,
                                              type_properties_redirect_uri,
@@ -9930,7 +9780,7 @@ def datafactory_linked_service_square_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Square'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -9954,7 +9804,6 @@ def datafactory_linked_service_square_update(instance, cmd,
                                              resource_group_name,
                                              factory_name,
                                              linked_service_name,
-                                             type_,
                                              type_properties_host,
                                              type_properties_client_id,
                                              type_properties_redirect_uri,
@@ -9990,7 +9839,7 @@ def datafactory_linked_service_square_update(instance, cmd,
         type_properties_use_peer_verification = json.loads(type_properties_use_peer_verification)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'Square'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -10010,7 +9859,6 @@ def datafactory_linked_service_sybase_create(cmd, client,
                                              resource_group_name,
                                              factory_name,
                                              linked_service_name,
-                                             type_,
                                              type_properties_server,
                                              type_properties_database,
                                              if_match=None,
@@ -10042,7 +9890,7 @@ def datafactory_linked_service_sybase_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Sybase'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -10065,7 +9913,6 @@ def datafactory_linked_service_sybase_update(instance, cmd,
                                              resource_group_name,
                                              factory_name,
                                              linked_service_name,
-                                             type_,
                                              type_properties_server,
                                              type_properties_database,
                                              if_match=None,
@@ -10096,7 +9943,7 @@ def datafactory_linked_service_sybase_update(instance, cmd,
         type_properties_password = json.loads(type_properties_password)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'Sybase'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -10115,7 +9962,6 @@ def datafactory_linked_service_teradata_create(cmd, client,
                                                resource_group_name,
                                                factory_name,
                                                linked_service_name,
-                                               type_,
                                                if_match=None,
                                                connect_via=None,
                                                description=None,
@@ -10144,7 +9990,7 @@ def datafactory_linked_service_teradata_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Teradata'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -10166,7 +10012,6 @@ def datafactory_linked_service_teradata_update(instance, cmd,
                                                resource_group_name,
                                                factory_name,
                                                linked_service_name,
-                                               type_,
                                                if_match=None,
                                                connect_via=None,
                                                description=None,
@@ -10194,7 +10039,7 @@ def datafactory_linked_service_teradata_update(instance, cmd,
         type_properties_password = json.loads(type_properties_password)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'Teradata'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -10212,7 +10057,6 @@ def datafactory_linked_service_vertica_create(cmd, client,
                                               resource_group_name,
                                               factory_name,
                                               linked_service_name,
-                                              type_,
                                               if_match=None,
                                               connect_via=None,
                                               description=None,
@@ -10234,7 +10078,7 @@ def datafactory_linked_service_vertica_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Vertica'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -10253,7 +10097,6 @@ def datafactory_linked_service_vertica_update(instance, cmd,
                                               resource_group_name,
                                               factory_name,
                                               linked_service_name,
-                                              type_,
                                               if_match=None,
                                               connect_via=None,
                                               description=None,
@@ -10274,7 +10117,7 @@ def datafactory_linked_service_vertica_update(instance, cmd,
         type_properties_pwd = json.loads(type_properties_pwd)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'Vertica'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -10289,7 +10132,6 @@ def datafactory_linked_service_web_create(cmd, client,
                                           resource_group_name,
                                           factory_name,
                                           linked_service_name,
-                                          type_,
                                           type_properties,
                                           if_match=None,
                                           connect_via=None,
@@ -10305,7 +10147,7 @@ def datafactory_linked_service_web_create(cmd, client,
     if isinstance(type_properties, str):
         type_properties = json.loads(type_properties)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Web'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -10322,7 +10164,6 @@ def datafactory_linked_service_web_update(instance, cmd,
                                           resource_group_name,
                                           factory_name,
                                           linked_service_name,
-                                          type_,
                                           type_properties,
                                           if_match=None,
                                           connect_via=None,
@@ -10337,7 +10178,7 @@ def datafactory_linked_service_web_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties, str):
         type_properties = json.loads(type_properties)
-    instance.type = type_
+    instance.type = 'Web'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -10350,7 +10191,6 @@ def datafactory_linked_service_xero_create(cmd, client,
                                            resource_group_name,
                                            factory_name,
                                            linked_service_name,
-                                           type_,
                                            type_properties_host,
                                            if_match=None,
                                            connect_via=None,
@@ -10384,7 +10224,7 @@ def datafactory_linked_service_xero_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Xero'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -10407,7 +10247,6 @@ def datafactory_linked_service_xero_update(instance, cmd,
                                            resource_group_name,
                                            factory_name,
                                            linked_service_name,
-                                           type_,
                                            type_properties_host,
                                            if_match=None,
                                            connect_via=None,
@@ -10440,7 +10279,7 @@ def datafactory_linked_service_xero_update(instance, cmd,
         type_properties_use_peer_verification = json.loads(type_properties_use_peer_verification)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'Xero'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -10459,7 +10298,6 @@ def datafactory_linked_service_zoho_create(cmd, client,
                                            resource_group_name,
                                            factory_name,
                                            linked_service_name,
-                                           type_,
                                            type_properties_endpoint,
                                            if_match=None,
                                            connect_via=None,
@@ -10490,7 +10328,7 @@ def datafactory_linked_service_zoho_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Zoho'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -10512,7 +10350,6 @@ def datafactory_linked_service_zoho_update(instance, cmd,
                                            resource_group_name,
                                            factory_name,
                                            linked_service_name,
-                                           type_,
                                            type_properties_endpoint,
                                            if_match=None,
                                            connect_via=None,
@@ -10542,7 +10379,7 @@ def datafactory_linked_service_zoho_update(instance, cmd,
         type_properties_use_peer_verification = json.loads(type_properties_use_peer_verification)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = type_
+    instance.type = 'Zoho'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -10587,7 +10424,6 @@ def datafactory_dataset_amazon_m_w_s_object_create(cmd, client,
                                                    resource_group_name,
                                                    factory_name,
                                                    dataset_name,
-                                                   type_,
                                                    linked_service_name,
                                                    if_match=None,
                                                    description=None,
@@ -10610,7 +10446,7 @@ def datafactory_dataset_amazon_m_w_s_object_create(cmd, client,
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AmazonMWSObject'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -10630,7 +10466,6 @@ def datafactory_dataset_amazon_m_w_s_object_update(instance, cmd,
                                                    resource_group_name,
                                                    factory_name,
                                                    dataset_name,
-                                                   type_,
                                                    linked_service_name,
                                                    if_match=None,
                                                    description=None,
@@ -10652,7 +10487,7 @@ def datafactory_dataset_amazon_m_w_s_object_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
-    instance.type = type_
+    instance.type = 'AmazonMWSObject'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -10668,7 +10503,6 @@ def datafactory_dataset_amazon_redshift_table_create(cmd, client,
                                                      resource_group_name,
                                                      factory_name,
                                                      dataset_name,
-                                                     type_,
                                                      linked_service_name,
                                                      if_match=None,
                                                      description=None,
@@ -10697,7 +10531,7 @@ def datafactory_dataset_amazon_redshift_table_create(cmd, client,
     if isinstance(type_properties_schema, str):
         type_properties_schema = json.loads(type_properties_schema)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AmazonRedshiftTable'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -10719,7 +10553,6 @@ def datafactory_dataset_amazon_redshift_table_update(instance, cmd,
                                                      resource_group_name,
                                                      factory_name,
                                                      dataset_name,
-                                                     type_,
                                                      linked_service_name,
                                                      if_match=None,
                                                      description=None,
@@ -10747,7 +10580,7 @@ def datafactory_dataset_amazon_redshift_table_update(instance, cmd,
         type_properties_table = json.loads(type_properties_table)
     if isinstance(type_properties_schema, str):
         type_properties_schema = json.loads(type_properties_schema)
-    instance.type = type_
+    instance.type = 'AmazonRedshiftTable'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -10765,7 +10598,6 @@ def datafactory_dataset_amazon_s3_object_create(cmd, client,
                                                 resource_group_name,
                                                 factory_name,
                                                 dataset_name,
-                                                type_,
                                                 linked_service_name,
                                                 type_properties_bucket_name,
                                                 if_match=None,
@@ -10781,7 +10613,10 @@ def datafactory_dataset_amazon_s3_object_create(cmd, client,
                                                 type_properties_modified_datetime_start=None,
                                                 type_properties_modified_datetime_end=None,
                                                 type_properties_format=None,
-                                                type_properties_compression=None):
+                                                dataset_b_zip2_compression=None,
+                                                dataset_g_zip_compression=None,
+                                                dataset_deflate_compression=None,
+                                                dataset_zip_deflate_compression=None):
     if isinstance(structure, str):
         structure = json.loads(structure)
     if isinstance(schema, str):
@@ -10806,10 +10641,21 @@ def datafactory_dataset_amazon_s3_object_create(cmd, client,
         type_properties_modified_datetime_end = json.loads(type_properties_modified_datetime_end)
     if isinstance(type_properties_format, str):
         type_properties_format = json.loads(type_properties_format)
-    if isinstance(type_properties_compression, str):
-        type_properties_compression = json.loads(type_properties_compression)
+    all_type_properties_compression = []
+    if dataset_b_zip2_compression is not None:
+        all_type_properties_compression.append(dataset_b_zip2_compression)
+    if dataset_g_zip_compression is not None:
+        all_type_properties_compression.append(dataset_g_zip_compression)
+    if dataset_deflate_compression is not None:
+        all_type_properties_compression.append(dataset_deflate_compression)
+    if dataset_zip_deflate_compression is not None:
+        all_type_properties_compression.append(dataset_zip_deflate_compression)
+    if len(all_type_properties_compression) > 1:
+        raise CLIError('at most one of  dataset_b_zip2_compression, dataset_g_zip_compression, dataset_deflate_compress'
+                       'ion, dataset_zip_deflate_compression is needed for type_properties_compression!')
+    type_properties_compression = all_type_properties_compression[0] if len(all_type_properties_compression) == 1 else None
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AmazonS3Object'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -10836,7 +10682,6 @@ def datafactory_dataset_amazon_s3_object_update(instance, cmd,
                                                 resource_group_name,
                                                 factory_name,
                                                 dataset_name,
-                                                type_,
                                                 linked_service_name,
                                                 type_properties_bucket_name,
                                                 if_match=None,
@@ -10852,7 +10697,10 @@ def datafactory_dataset_amazon_s3_object_update(instance, cmd,
                                                 type_properties_modified_datetime_start=None,
                                                 type_properties_modified_datetime_end=None,
                                                 type_properties_format=None,
-                                                type_properties_compression=None):
+                                                dataset_b_zip2_compression=None,
+                                                dataset_g_zip_compression=None,
+                                                dataset_deflate_compression=None,
+                                                dataset_zip_deflate_compression=None):
     if isinstance(structure, str):
         structure = json.loads(structure)
     if isinstance(schema, str):
@@ -10877,9 +10725,20 @@ def datafactory_dataset_amazon_s3_object_update(instance, cmd,
         type_properties_modified_datetime_end = json.loads(type_properties_modified_datetime_end)
     if isinstance(type_properties_format, str):
         type_properties_format = json.loads(type_properties_format)
-    if isinstance(type_properties_compression, str):
-        type_properties_compression = json.loads(type_properties_compression)
-    instance.type = type_
+    all_type_properties_compression = []
+    if dataset_b_zip2_compression is not None:
+        all_type_properties_compression.append(dataset_b_zip2_compression)
+    if dataset_g_zip_compression is not None:
+        all_type_properties_compression.append(dataset_g_zip_compression)
+    if dataset_deflate_compression is not None:
+        all_type_properties_compression.append(dataset_deflate_compression)
+    if dataset_zip_deflate_compression is not None:
+        all_type_properties_compression.append(dataset_zip_deflate_compression)
+    if len(all_type_properties_compression) > 1:
+        raise CLIError('at most one of  dataset_b_zip2_compression, dataset_g_zip_compression, dataset_deflate_compress'
+                       'ion, dataset_zip_deflate_compression is needed for type_properties_compression!')
+    type_properties_compression = all_type_properties_compression[0] if len(all_type_properties_compression) == 1 else None
+    instance.type = 'AmazonS3Object'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -10902,7 +10761,6 @@ def datafactory_dataset_avro_create(cmd, client,
                                     resource_group_name,
                                     factory_name,
                                     dataset_name,
-                                    type_,
                                     linked_service_name,
                                     if_match=None,
                                     description=None,
@@ -10927,7 +10785,7 @@ def datafactory_dataset_avro_create(cmd, client,
     if isinstance(type_properties_location, str):
         type_properties_location = json.loads(type_properties_location)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Avro'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -10949,7 +10807,6 @@ def datafactory_dataset_avro_update(instance, cmd,
                                     resource_group_name,
                                     factory_name,
                                     dataset_name,
-                                    type_,
                                     linked_service_name,
                                     if_match=None,
                                     description=None,
@@ -10973,7 +10830,7 @@ def datafactory_dataset_avro_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_location, str):
         type_properties_location = json.loads(type_properties_location)
-    instance.type = type_
+    instance.type = 'Avro'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -10991,7 +10848,6 @@ def datafactory_dataset_azure_blob_create(cmd, client,
                                           resource_group_name,
                                           factory_name,
                                           dataset_name,
-                                          type_,
                                           linked_service_name,
                                           if_match=None,
                                           description=None,
@@ -11006,7 +10862,10 @@ def datafactory_dataset_azure_blob_create(cmd, client,
                                           type_properties_modified_datetime_start=None,
                                           type_properties_modified_datetime_end=None,
                                           type_properties_format=None,
-                                          type_properties_compression=None):
+                                          dataset_b_zip2_compression=None,
+                                          dataset_g_zip_compression=None,
+                                          dataset_deflate_compression=None,
+                                          dataset_zip_deflate_compression=None):
     if isinstance(structure, str):
         structure = json.loads(structure)
     if isinstance(schema, str):
@@ -11029,10 +10888,21 @@ def datafactory_dataset_azure_blob_create(cmd, client,
         type_properties_modified_datetime_end = json.loads(type_properties_modified_datetime_end)
     if isinstance(type_properties_format, str):
         type_properties_format = json.loads(type_properties_format)
-    if isinstance(type_properties_compression, str):
-        type_properties_compression = json.loads(type_properties_compression)
+    all_type_properties_compression = []
+    if dataset_b_zip2_compression is not None:
+        all_type_properties_compression.append(dataset_b_zip2_compression)
+    if dataset_g_zip_compression is not None:
+        all_type_properties_compression.append(dataset_g_zip_compression)
+    if dataset_deflate_compression is not None:
+        all_type_properties_compression.append(dataset_deflate_compression)
+    if dataset_zip_deflate_compression is not None:
+        all_type_properties_compression.append(dataset_zip_deflate_compression)
+    if len(all_type_properties_compression) > 1:
+        raise CLIError('at most one of  dataset_b_zip2_compression, dataset_g_zip_compression, dataset_deflate_compress'
+                       'ion, dataset_zip_deflate_compression is needed for type_properties_compression!')
+    type_properties_compression = all_type_properties_compression[0] if len(all_type_properties_compression) == 1 else None
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AzureBlob'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -11058,7 +10928,6 @@ def datafactory_dataset_azure_blob_update(instance, cmd,
                                           resource_group_name,
                                           factory_name,
                                           dataset_name,
-                                          type_,
                                           linked_service_name,
                                           if_match=None,
                                           description=None,
@@ -11073,7 +10942,10 @@ def datafactory_dataset_azure_blob_update(instance, cmd,
                                           type_properties_modified_datetime_start=None,
                                           type_properties_modified_datetime_end=None,
                                           type_properties_format=None,
-                                          type_properties_compression=None):
+                                          dataset_b_zip2_compression=None,
+                                          dataset_g_zip_compression=None,
+                                          dataset_deflate_compression=None,
+                                          dataset_zip_deflate_compression=None):
     if isinstance(structure, str):
         structure = json.loads(structure)
     if isinstance(schema, str):
@@ -11096,9 +10968,20 @@ def datafactory_dataset_azure_blob_update(instance, cmd,
         type_properties_modified_datetime_end = json.loads(type_properties_modified_datetime_end)
     if isinstance(type_properties_format, str):
         type_properties_format = json.loads(type_properties_format)
-    if isinstance(type_properties_compression, str):
-        type_properties_compression = json.loads(type_properties_compression)
-    instance.type = type_
+    all_type_properties_compression = []
+    if dataset_b_zip2_compression is not None:
+        all_type_properties_compression.append(dataset_b_zip2_compression)
+    if dataset_g_zip_compression is not None:
+        all_type_properties_compression.append(dataset_g_zip_compression)
+    if dataset_deflate_compression is not None:
+        all_type_properties_compression.append(dataset_deflate_compression)
+    if dataset_zip_deflate_compression is not None:
+        all_type_properties_compression.append(dataset_zip_deflate_compression)
+    if len(all_type_properties_compression) > 1:
+        raise CLIError('at most one of  dataset_b_zip2_compression, dataset_g_zip_compression, dataset_deflate_compress'
+                       'ion, dataset_zip_deflate_compression is needed for type_properties_compression!')
+    type_properties_compression = all_type_properties_compression[0] if len(all_type_properties_compression) == 1 else None
+    instance.type = 'AzureBlob'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -11120,7 +11003,6 @@ def datafactory_dataset_azure_blob_f_s_file_create(cmd, client,
                                                    resource_group_name,
                                                    factory_name,
                                                    dataset_name,
-                                                   type_,
                                                    linked_service_name,
                                                    if_match=None,
                                                    description=None,
@@ -11132,7 +11014,10 @@ def datafactory_dataset_azure_blob_f_s_file_create(cmd, client,
                                                    type_properties_folder_path=None,
                                                    type_properties_file_name=None,
                                                    type_properties_format=None,
-                                                   type_properties_compression=None):
+                                                   dataset_b_zip2_compression=None,
+                                                   dataset_g_zip_compression=None,
+                                                   dataset_deflate_compression=None,
+                                                   dataset_zip_deflate_compression=None):
     if isinstance(structure, str):
         structure = json.loads(structure)
     if isinstance(schema, str):
@@ -11149,10 +11034,21 @@ def datafactory_dataset_azure_blob_f_s_file_create(cmd, client,
         type_properties_file_name = json.loads(type_properties_file_name)
     if isinstance(type_properties_format, str):
         type_properties_format = json.loads(type_properties_format)
-    if isinstance(type_properties_compression, str):
-        type_properties_compression = json.loads(type_properties_compression)
+    all_type_properties_compression = []
+    if dataset_b_zip2_compression is not None:
+        all_type_properties_compression.append(dataset_b_zip2_compression)
+    if dataset_g_zip_compression is not None:
+        all_type_properties_compression.append(dataset_g_zip_compression)
+    if dataset_deflate_compression is not None:
+        all_type_properties_compression.append(dataset_deflate_compression)
+    if dataset_zip_deflate_compression is not None:
+        all_type_properties_compression.append(dataset_zip_deflate_compression)
+    if len(all_type_properties_compression) > 1:
+        raise CLIError('at most one of  dataset_b_zip2_compression, dataset_g_zip_compression, dataset_deflate_compress'
+                       'ion, dataset_zip_deflate_compression is needed for type_properties_compression!')
+    type_properties_compression = all_type_properties_compression[0] if len(all_type_properties_compression) == 1 else None
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AzureBlobFSFile'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -11175,7 +11071,6 @@ def datafactory_dataset_azure_blob_f_s_file_update(instance, cmd,
                                                    resource_group_name,
                                                    factory_name,
                                                    dataset_name,
-                                                   type_,
                                                    linked_service_name,
                                                    if_match=None,
                                                    description=None,
@@ -11187,7 +11082,10 @@ def datafactory_dataset_azure_blob_f_s_file_update(instance, cmd,
                                                    type_properties_folder_path=None,
                                                    type_properties_file_name=None,
                                                    type_properties_format=None,
-                                                   type_properties_compression=None):
+                                                   dataset_b_zip2_compression=None,
+                                                   dataset_g_zip_compression=None,
+                                                   dataset_deflate_compression=None,
+                                                   dataset_zip_deflate_compression=None):
     if isinstance(structure, str):
         structure = json.loads(structure)
     if isinstance(schema, str):
@@ -11204,9 +11102,20 @@ def datafactory_dataset_azure_blob_f_s_file_update(instance, cmd,
         type_properties_file_name = json.loads(type_properties_file_name)
     if isinstance(type_properties_format, str):
         type_properties_format = json.loads(type_properties_format)
-    if isinstance(type_properties_compression, str):
-        type_properties_compression = json.loads(type_properties_compression)
-    instance.type = type_
+    all_type_properties_compression = []
+    if dataset_b_zip2_compression is not None:
+        all_type_properties_compression.append(dataset_b_zip2_compression)
+    if dataset_g_zip_compression is not None:
+        all_type_properties_compression.append(dataset_g_zip_compression)
+    if dataset_deflate_compression is not None:
+        all_type_properties_compression.append(dataset_deflate_compression)
+    if dataset_zip_deflate_compression is not None:
+        all_type_properties_compression.append(dataset_zip_deflate_compression)
+    if len(all_type_properties_compression) > 1:
+        raise CLIError('at most one of  dataset_b_zip2_compression, dataset_g_zip_compression, dataset_deflate_compress'
+                       'ion, dataset_zip_deflate_compression is needed for type_properties_compression!')
+    type_properties_compression = all_type_properties_compression[0] if len(all_type_properties_compression) == 1 else None
+    instance.type = 'AzureBlobFSFile'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -11225,7 +11134,6 @@ def datafactory_dataset_azure_data_explorer_table_create(cmd, client,
                                                          resource_group_name,
                                                          factory_name,
                                                          dataset_name,
-                                                         type_,
                                                          linked_service_name,
                                                          if_match=None,
                                                          description=None,
@@ -11248,7 +11156,7 @@ def datafactory_dataset_azure_data_explorer_table_create(cmd, client,
     if isinstance(type_properties_table, str):
         type_properties_table = json.loads(type_properties_table)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AzureDataExplorerTable'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -11268,7 +11176,6 @@ def datafactory_dataset_azure_data_explorer_table_update(instance, cmd,
                                                          resource_group_name,
                                                          factory_name,
                                                          dataset_name,
-                                                         type_,
                                                          linked_service_name,
                                                          if_match=None,
                                                          description=None,
@@ -11290,7 +11197,7 @@ def datafactory_dataset_azure_data_explorer_table_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_table, str):
         type_properties_table = json.loads(type_properties_table)
-    instance.type = type_
+    instance.type = 'AzureDataExplorerTable'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -11306,7 +11213,6 @@ def datafactory_dataset_azure_data_lake_store_file_create(cmd, client,
                                                           resource_group_name,
                                                           factory_name,
                                                           dataset_name,
-                                                          type_,
                                                           linked_service_name,
                                                           if_match=None,
                                                           description=None,
@@ -11318,7 +11224,10 @@ def datafactory_dataset_azure_data_lake_store_file_create(cmd, client,
                                                           type_properties_folder_path=None,
                                                           type_properties_file_name=None,
                                                           type_properties_format=None,
-                                                          type_properties_compression=None):
+                                                          dataset_b_zip2_compression=None,
+                                                          dataset_g_zip_compression=None,
+                                                          dataset_deflate_compression=None,
+                                                          dataset_zip_deflate_compression=None):
     if isinstance(structure, str):
         structure = json.loads(structure)
     if isinstance(schema, str):
@@ -11335,10 +11244,21 @@ def datafactory_dataset_azure_data_lake_store_file_create(cmd, client,
         type_properties_file_name = json.loads(type_properties_file_name)
     if isinstance(type_properties_format, str):
         type_properties_format = json.loads(type_properties_format)
-    if isinstance(type_properties_compression, str):
-        type_properties_compression = json.loads(type_properties_compression)
+    all_type_properties_compression = []
+    if dataset_b_zip2_compression is not None:
+        all_type_properties_compression.append(dataset_b_zip2_compression)
+    if dataset_g_zip_compression is not None:
+        all_type_properties_compression.append(dataset_g_zip_compression)
+    if dataset_deflate_compression is not None:
+        all_type_properties_compression.append(dataset_deflate_compression)
+    if dataset_zip_deflate_compression is not None:
+        all_type_properties_compression.append(dataset_zip_deflate_compression)
+    if len(all_type_properties_compression) > 1:
+        raise CLIError('at most one of  dataset_b_zip2_compression, dataset_g_zip_compression, dataset_deflate_compress'
+                       'ion, dataset_zip_deflate_compression is needed for type_properties_compression!')
+    type_properties_compression = all_type_properties_compression[0] if len(all_type_properties_compression) == 1 else None
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AzureDataLakeStoreFile'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -11361,7 +11281,6 @@ def datafactory_dataset_azure_data_lake_store_file_update(instance, cmd,
                                                           resource_group_name,
                                                           factory_name,
                                                           dataset_name,
-                                                          type_,
                                                           linked_service_name,
                                                           if_match=None,
                                                           description=None,
@@ -11373,7 +11292,10 @@ def datafactory_dataset_azure_data_lake_store_file_update(instance, cmd,
                                                           type_properties_folder_path=None,
                                                           type_properties_file_name=None,
                                                           type_properties_format=None,
-                                                          type_properties_compression=None):
+                                                          dataset_b_zip2_compression=None,
+                                                          dataset_g_zip_compression=None,
+                                                          dataset_deflate_compression=None,
+                                                          dataset_zip_deflate_compression=None):
     if isinstance(structure, str):
         structure = json.loads(structure)
     if isinstance(schema, str):
@@ -11390,9 +11312,20 @@ def datafactory_dataset_azure_data_lake_store_file_update(instance, cmd,
         type_properties_file_name = json.loads(type_properties_file_name)
     if isinstance(type_properties_format, str):
         type_properties_format = json.loads(type_properties_format)
-    if isinstance(type_properties_compression, str):
-        type_properties_compression = json.loads(type_properties_compression)
-    instance.type = type_
+    all_type_properties_compression = []
+    if dataset_b_zip2_compression is not None:
+        all_type_properties_compression.append(dataset_b_zip2_compression)
+    if dataset_g_zip_compression is not None:
+        all_type_properties_compression.append(dataset_g_zip_compression)
+    if dataset_deflate_compression is not None:
+        all_type_properties_compression.append(dataset_deflate_compression)
+    if dataset_zip_deflate_compression is not None:
+        all_type_properties_compression.append(dataset_zip_deflate_compression)
+    if len(all_type_properties_compression) > 1:
+        raise CLIError('at most one of  dataset_b_zip2_compression, dataset_g_zip_compression, dataset_deflate_compress'
+                       'ion, dataset_zip_deflate_compression is needed for type_properties_compression!')
+    type_properties_compression = all_type_properties_compression[0] if len(all_type_properties_compression) == 1 else None
+    instance.type = 'AzureDataLakeStoreFile'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -11411,7 +11344,6 @@ def datafactory_dataset_azure_maria_d_b_table_create(cmd, client,
                                                      resource_group_name,
                                                      factory_name,
                                                      dataset_name,
-                                                     type_,
                                                      linked_service_name,
                                                      if_match=None,
                                                      description=None,
@@ -11434,7 +11366,7 @@ def datafactory_dataset_azure_maria_d_b_table_create(cmd, client,
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AzureMariaDBTable'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -11454,7 +11386,6 @@ def datafactory_dataset_azure_maria_d_b_table_update(instance, cmd,
                                                      resource_group_name,
                                                      factory_name,
                                                      dataset_name,
-                                                     type_,
                                                      linked_service_name,
                                                      if_match=None,
                                                      description=None,
@@ -11476,7 +11407,7 @@ def datafactory_dataset_azure_maria_d_b_table_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
-    instance.type = type_
+    instance.type = 'AzureMariaDBTable'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -11492,7 +11423,6 @@ def datafactory_dataset_azure_my_sql_table_create(cmd, client,
                                                   resource_group_name,
                                                   factory_name,
                                                   dataset_name,
-                                                  type_,
                                                   linked_service_name,
                                                   if_match=None,
                                                   description=None,
@@ -11518,7 +11448,7 @@ def datafactory_dataset_azure_my_sql_table_create(cmd, client,
     if isinstance(type_properties_table, str):
         type_properties_table = json.loads(type_properties_table)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AzureMySqlTable'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -11539,7 +11469,6 @@ def datafactory_dataset_azure_my_sql_table_update(instance, cmd,
                                                   resource_group_name,
                                                   factory_name,
                                                   dataset_name,
-                                                  type_,
                                                   linked_service_name,
                                                   if_match=None,
                                                   description=None,
@@ -11564,7 +11493,7 @@ def datafactory_dataset_azure_my_sql_table_update(instance, cmd,
         type_properties_table_name = json.loads(type_properties_table_name)
     if isinstance(type_properties_table, str):
         type_properties_table = json.loads(type_properties_table)
-    instance.type = type_
+    instance.type = 'AzureMySqlTable'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -11581,7 +11510,6 @@ def datafactory_dataset_azure_postgre_sql_table_create(cmd, client,
                                                        resource_group_name,
                                                        factory_name,
                                                        dataset_name,
-                                                       type_,
                                                        linked_service_name,
                                                        if_match=None,
                                                        description=None,
@@ -11610,7 +11538,7 @@ def datafactory_dataset_azure_postgre_sql_table_create(cmd, client,
     if isinstance(type_properties_schema, str):
         type_properties_schema = json.loads(type_properties_schema)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AzurePostgreSqlTable'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -11632,7 +11560,6 @@ def datafactory_dataset_azure_postgre_sql_table_update(instance, cmd,
                                                        resource_group_name,
                                                        factory_name,
                                                        dataset_name,
-                                                       type_,
                                                        linked_service_name,
                                                        if_match=None,
                                                        description=None,
@@ -11660,7 +11587,7 @@ def datafactory_dataset_azure_postgre_sql_table_update(instance, cmd,
         type_properties_table = json.loads(type_properties_table)
     if isinstance(type_properties_schema, str):
         type_properties_schema = json.loads(type_properties_schema)
-    instance.type = type_
+    instance.type = 'AzurePostgreSqlTable'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -11678,7 +11605,6 @@ def datafactory_dataset_azure_search_index_create(cmd, client,
                                                   resource_group_name,
                                                   factory_name,
                                                   dataset_name,
-                                                  type_,
                                                   linked_service_name,
                                                   type_properties_index_name,
                                                   if_match=None,
@@ -11701,7 +11627,7 @@ def datafactory_dataset_azure_search_index_create(cmd, client,
     if isinstance(type_properties_index_name, str):
         type_properties_index_name = json.loads(type_properties_index_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AzureSearchIndex'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -11721,7 +11647,6 @@ def datafactory_dataset_azure_search_index_update(instance, cmd,
                                                   resource_group_name,
                                                   factory_name,
                                                   dataset_name,
-                                                  type_,
                                                   linked_service_name,
                                                   type_properties_index_name,
                                                   if_match=None,
@@ -11743,7 +11668,7 @@ def datafactory_dataset_azure_search_index_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_index_name, str):
         type_properties_index_name = json.loads(type_properties_index_name)
-    instance.type = type_
+    instance.type = 'AzureSearchIndex'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -11759,7 +11684,6 @@ def datafactory_dataset_azure_sql_d_w_table_create(cmd, client,
                                                    resource_group_name,
                                                    factory_name,
                                                    dataset_name,
-                                                   type_,
                                                    linked_service_name,
                                                    if_match=None,
                                                    description=None,
@@ -11788,7 +11712,7 @@ def datafactory_dataset_azure_sql_d_w_table_create(cmd, client,
     if isinstance(type_properties_table, str):
         type_properties_table = json.loads(type_properties_table)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AzureSqlDWTable'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -11810,7 +11734,6 @@ def datafactory_dataset_azure_sql_d_w_table_update(instance, cmd,
                                                    resource_group_name,
                                                    factory_name,
                                                    dataset_name,
-                                                   type_,
                                                    linked_service_name,
                                                    if_match=None,
                                                    description=None,
@@ -11838,7 +11761,7 @@ def datafactory_dataset_azure_sql_d_w_table_update(instance, cmd,
         type_properties_schema = json.loads(type_properties_schema)
     if isinstance(type_properties_table, str):
         type_properties_table = json.loads(type_properties_table)
-    instance.type = type_
+    instance.type = 'AzureSqlDWTable'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -11856,7 +11779,6 @@ def datafactory_dataset_azure_sql_m_i_table_create(cmd, client,
                                                    resource_group_name,
                                                    factory_name,
                                                    dataset_name,
-                                                   type_,
                                                    linked_service_name,
                                                    if_match=None,
                                                    description=None,
@@ -11885,7 +11807,7 @@ def datafactory_dataset_azure_sql_m_i_table_create(cmd, client,
     if isinstance(type_properties_table, str):
         type_properties_table = json.loads(type_properties_table)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AzureSqlMITable'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -11907,7 +11829,6 @@ def datafactory_dataset_azure_sql_m_i_table_update(instance, cmd,
                                                    resource_group_name,
                                                    factory_name,
                                                    dataset_name,
-                                                   type_,
                                                    linked_service_name,
                                                    if_match=None,
                                                    description=None,
@@ -11935,7 +11856,7 @@ def datafactory_dataset_azure_sql_m_i_table_update(instance, cmd,
         type_properties_schema = json.loads(type_properties_schema)
     if isinstance(type_properties_table, str):
         type_properties_table = json.loads(type_properties_table)
-    instance.type = type_
+    instance.type = 'AzureSqlMITable'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -11953,7 +11874,6 @@ def datafactory_dataset_azure_sql_table_create(cmd, client,
                                                resource_group_name,
                                                factory_name,
                                                dataset_name,
-                                               type_,
                                                linked_service_name,
                                                if_match=None,
                                                description=None,
@@ -11982,7 +11902,7 @@ def datafactory_dataset_azure_sql_table_create(cmd, client,
     if isinstance(type_properties_table, str):
         type_properties_table = json.loads(type_properties_table)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AzureSqlTable'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -12004,7 +11924,6 @@ def datafactory_dataset_azure_sql_table_update(instance, cmd,
                                                resource_group_name,
                                                factory_name,
                                                dataset_name,
-                                               type_,
                                                linked_service_name,
                                                if_match=None,
                                                description=None,
@@ -12032,7 +11951,7 @@ def datafactory_dataset_azure_sql_table_update(instance, cmd,
         type_properties_schema = json.loads(type_properties_schema)
     if isinstance(type_properties_table, str):
         type_properties_table = json.loads(type_properties_table)
-    instance.type = type_
+    instance.type = 'AzureSqlTable'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -12050,7 +11969,6 @@ def datafactory_dataset_azure_table_create(cmd, client,
                                            resource_group_name,
                                            factory_name,
                                            dataset_name,
-                                           type_,
                                            linked_service_name,
                                            type_properties_table_name,
                                            if_match=None,
@@ -12073,7 +11991,7 @@ def datafactory_dataset_azure_table_create(cmd, client,
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'AzureTable'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -12093,7 +12011,6 @@ def datafactory_dataset_azure_table_update(instance, cmd,
                                            resource_group_name,
                                            factory_name,
                                            dataset_name,
-                                           type_,
                                            linked_service_name,
                                            type_properties_table_name,
                                            if_match=None,
@@ -12115,7 +12032,7 @@ def datafactory_dataset_azure_table_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
-    instance.type = type_
+    instance.type = 'AzureTable'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -12131,7 +12048,6 @@ def datafactory_dataset_binary_create(cmd, client,
                                       resource_group_name,
                                       factory_name,
                                       dataset_name,
-                                      type_,
                                       linked_service_name,
                                       if_match=None,
                                       description=None,
@@ -12141,7 +12057,10 @@ def datafactory_dataset_binary_create(cmd, client,
                                       annotations=None,
                                       folder=None,
                                       type_properties_location=None,
-                                      type_properties_compression=None):
+                                      dataset_b_zip2_compression=None,
+                                      dataset_g_zip_compression=None,
+                                      dataset_deflate_compression=None,
+                                      dataset_zip_deflate_compression=None):
     if isinstance(structure, str):
         structure = json.loads(structure)
     if isinstance(schema, str):
@@ -12154,10 +12073,21 @@ def datafactory_dataset_binary_create(cmd, client,
         annotations = json.loads(annotations)
     if isinstance(type_properties_location, str):
         type_properties_location = json.loads(type_properties_location)
-    if isinstance(type_properties_compression, str):
-        type_properties_compression = json.loads(type_properties_compression)
+    all_type_properties_compression = []
+    if dataset_b_zip2_compression is not None:
+        all_type_properties_compression.append(dataset_b_zip2_compression)
+    if dataset_g_zip_compression is not None:
+        all_type_properties_compression.append(dataset_g_zip_compression)
+    if dataset_deflate_compression is not None:
+        all_type_properties_compression.append(dataset_deflate_compression)
+    if dataset_zip_deflate_compression is not None:
+        all_type_properties_compression.append(dataset_zip_deflate_compression)
+    if len(all_type_properties_compression) > 1:
+        raise CLIError('at most one of  dataset_b_zip2_compression, dataset_g_zip_compression, dataset_deflate_compress'
+                       'ion, dataset_zip_deflate_compression is needed for type_properties_compression!')
+    type_properties_compression = all_type_properties_compression[0] if len(all_type_properties_compression) == 1 else None
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Binary'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -12178,7 +12108,6 @@ def datafactory_dataset_binary_update(instance, cmd,
                                       resource_group_name,
                                       factory_name,
                                       dataset_name,
-                                      type_,
                                       linked_service_name,
                                       if_match=None,
                                       description=None,
@@ -12188,7 +12117,10 @@ def datafactory_dataset_binary_update(instance, cmd,
                                       annotations=None,
                                       folder=None,
                                       type_properties_location=None,
-                                      type_properties_compression=None):
+                                      dataset_b_zip2_compression=None,
+                                      dataset_g_zip_compression=None,
+                                      dataset_deflate_compression=None,
+                                      dataset_zip_deflate_compression=None):
     if isinstance(structure, str):
         structure = json.loads(structure)
     if isinstance(schema, str):
@@ -12201,9 +12133,20 @@ def datafactory_dataset_binary_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_location, str):
         type_properties_location = json.loads(type_properties_location)
-    if isinstance(type_properties_compression, str):
-        type_properties_compression = json.loads(type_properties_compression)
-    instance.type = type_
+    all_type_properties_compression = []
+    if dataset_b_zip2_compression is not None:
+        all_type_properties_compression.append(dataset_b_zip2_compression)
+    if dataset_g_zip_compression is not None:
+        all_type_properties_compression.append(dataset_g_zip_compression)
+    if dataset_deflate_compression is not None:
+        all_type_properties_compression.append(dataset_deflate_compression)
+    if dataset_zip_deflate_compression is not None:
+        all_type_properties_compression.append(dataset_zip_deflate_compression)
+    if len(all_type_properties_compression) > 1:
+        raise CLIError('at most one of  dataset_b_zip2_compression, dataset_g_zip_compression, dataset_deflate_compress'
+                       'ion, dataset_zip_deflate_compression is needed for type_properties_compression!')
+    type_properties_compression = all_type_properties_compression[0] if len(all_type_properties_compression) == 1 else None
+    instance.type = 'Binary'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -12220,7 +12163,6 @@ def datafactory_dataset_cassandra_table_create(cmd, client,
                                                resource_group_name,
                                                factory_name,
                                                dataset_name,
-                                               type_,
                                                linked_service_name,
                                                if_match=None,
                                                description=None,
@@ -12246,7 +12188,7 @@ def datafactory_dataset_cassandra_table_create(cmd, client,
     if isinstance(type_properties_keyspace, str):
         type_properties_keyspace = json.loads(type_properties_keyspace)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'CassandraTable'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -12267,7 +12209,6 @@ def datafactory_dataset_cassandra_table_update(instance, cmd,
                                                resource_group_name,
                                                factory_name,
                                                dataset_name,
-                                               type_,
                                                linked_service_name,
                                                if_match=None,
                                                description=None,
@@ -12292,7 +12233,7 @@ def datafactory_dataset_cassandra_table_update(instance, cmd,
         type_properties_table_name = json.loads(type_properties_table_name)
     if isinstance(type_properties_keyspace, str):
         type_properties_keyspace = json.loads(type_properties_keyspace)
-    instance.type = type_
+    instance.type = 'CassandraTable'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -12309,7 +12250,6 @@ def datafactory_dataset_common_data_service_for_apps_entity_create(cmd, client,
                                                                    resource_group_name,
                                                                    factory_name,
                                                                    dataset_name,
-                                                                   type_,
                                                                    linked_service_name,
                                                                    if_match=None,
                                                                    description=None,
@@ -12332,7 +12272,7 @@ def datafactory_dataset_common_data_service_for_apps_entity_create(cmd, client,
     if isinstance(type_properties_entity_name, str):
         type_properties_entity_name = json.loads(type_properties_entity_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'CommonDataServiceForAppsEntity'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -12352,7 +12292,6 @@ def datafactory_dataset_common_data_service_for_apps_entity_update(instance, cmd
                                                                    resource_group_name,
                                                                    factory_name,
                                                                    dataset_name,
-                                                                   type_,
                                                                    linked_service_name,
                                                                    if_match=None,
                                                                    description=None,
@@ -12374,7 +12313,7 @@ def datafactory_dataset_common_data_service_for_apps_entity_update(instance, cmd
         annotations = json.loads(annotations)
     if isinstance(type_properties_entity_name, str):
         type_properties_entity_name = json.loads(type_properties_entity_name)
-    instance.type = type_
+    instance.type = 'CommonDataServiceForAppsEntity'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -12390,7 +12329,6 @@ def datafactory_dataset_concur_object_create(cmd, client,
                                              resource_group_name,
                                              factory_name,
                                              dataset_name,
-                                             type_,
                                              linked_service_name,
                                              if_match=None,
                                              description=None,
@@ -12413,7 +12351,7 @@ def datafactory_dataset_concur_object_create(cmd, client,
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'ConcurObject'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -12433,7 +12371,6 @@ def datafactory_dataset_concur_object_update(instance, cmd,
                                              resource_group_name,
                                              factory_name,
                                              dataset_name,
-                                             type_,
                                              linked_service_name,
                                              if_match=None,
                                              description=None,
@@ -12455,7 +12392,7 @@ def datafactory_dataset_concur_object_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
-    instance.type = type_
+    instance.type = 'ConcurObject'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -12471,7 +12408,6 @@ def datafactory_dataset_cosmos_db_mongo_db_api_collection_create(cmd, client,
                                                                  resource_group_name,
                                                                  factory_name,
                                                                  dataset_name,
-                                                                 type_,
                                                                  linked_service_name,
                                                                  type_properties_collection,
                                                                  if_match=None,
@@ -12494,7 +12430,7 @@ def datafactory_dataset_cosmos_db_mongo_db_api_collection_create(cmd, client,
     if isinstance(type_properties_collection, str):
         type_properties_collection = json.loads(type_properties_collection)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'CosmosDbMongoDbApiCollection'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -12514,7 +12450,6 @@ def datafactory_dataset_cosmos_db_mongo_db_api_collection_update(instance, cmd,
                                                                  resource_group_name,
                                                                  factory_name,
                                                                  dataset_name,
-                                                                 type_,
                                                                  linked_service_name,
                                                                  type_properties_collection,
                                                                  if_match=None,
@@ -12536,7 +12471,7 @@ def datafactory_dataset_cosmos_db_mongo_db_api_collection_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_collection, str):
         type_properties_collection = json.loads(type_properties_collection)
-    instance.type = type_
+    instance.type = 'CosmosDbMongoDbApiCollection'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -12554,6 +12489,8 @@ def datafactory_dataset_cosmos_db_sql_api_collection_create(cmd, client,
                                                             dataset_name,
                                                             properties,
                                                             if_match=None):
+    if isinstance(properties, str):
+        properties = json.loads(properties)
     return client.create_or_update(resource_group_name=resource_group_name,
                                    factory_name=factory_name,
                                    dataset_name=dataset_name,
@@ -12567,6 +12504,8 @@ def datafactory_dataset_cosmos_db_sql_api_collection_update(instance, cmd,
                                                             dataset_name,
                                                             properties,
                                                             if_match=None):
+    if isinstance(properties, str):
+        properties = json.loads(properties)
     return instance
 
 
@@ -12574,7 +12513,6 @@ def datafactory_dataset_couchbase_table_create(cmd, client,
                                                resource_group_name,
                                                factory_name,
                                                dataset_name,
-                                               type_,
                                                linked_service_name,
                                                if_match=None,
                                                description=None,
@@ -12597,7 +12535,7 @@ def datafactory_dataset_couchbase_table_create(cmd, client,
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'CouchbaseTable'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -12617,7 +12555,6 @@ def datafactory_dataset_couchbase_table_update(instance, cmd,
                                                resource_group_name,
                                                factory_name,
                                                dataset_name,
-                                               type_,
                                                linked_service_name,
                                                if_match=None,
                                                description=None,
@@ -12639,7 +12576,7 @@ def datafactory_dataset_couchbase_table_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
-    instance.type = type_
+    instance.type = 'CouchbaseTable'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -12655,7 +12592,6 @@ def datafactory_dataset_custom_dataset_create(cmd, client,
                                               resource_group_name,
                                               factory_name,
                                               dataset_name,
-                                              type_,
                                               linked_service_name,
                                               if_match=None,
                                               description=None,
@@ -12678,7 +12614,7 @@ def datafactory_dataset_custom_dataset_create(cmd, client,
     if isinstance(type_properties, str):
         type_properties = json.loads(type_properties)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'CustomDataset'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -12698,7 +12634,6 @@ def datafactory_dataset_custom_dataset_update(instance, cmd,
                                               resource_group_name,
                                               factory_name,
                                               dataset_name,
-                                              type_,
                                               linked_service_name,
                                               if_match=None,
                                               description=None,
@@ -12720,7 +12655,7 @@ def datafactory_dataset_custom_dataset_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties, str):
         type_properties = json.loads(type_properties)
-    instance.type = type_
+    instance.type = 'CustomDataset'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -12736,7 +12671,6 @@ def datafactory_dataset_db2_table_create(cmd, client,
                                          resource_group_name,
                                          factory_name,
                                          dataset_name,
-                                         type_,
                                          linked_service_name,
                                          if_match=None,
                                          description=None,
@@ -12765,7 +12699,7 @@ def datafactory_dataset_db2_table_create(cmd, client,
     if isinstance(type_properties_table, str):
         type_properties_table = json.loads(type_properties_table)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Db2Table'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -12787,7 +12721,6 @@ def datafactory_dataset_db2_table_update(instance, cmd,
                                          resource_group_name,
                                          factory_name,
                                          dataset_name,
-                                         type_,
                                          linked_service_name,
                                          if_match=None,
                                          description=None,
@@ -12815,7 +12748,7 @@ def datafactory_dataset_db2_table_update(instance, cmd,
         type_properties_schema = json.loads(type_properties_schema)
     if isinstance(type_properties_table, str):
         type_properties_table = json.loads(type_properties_table)
-    instance.type = type_
+    instance.type = 'Db2Table'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -12833,7 +12766,6 @@ def datafactory_dataset_delimited_text_create(cmd, client,
                                               resource_group_name,
                                               factory_name,
                                               dataset_name,
-                                              type_,
                                               linked_service_name,
                                               if_match=None,
                                               description=None,
@@ -12879,7 +12811,7 @@ def datafactory_dataset_delimited_text_create(cmd, client,
     if isinstance(type_properties_null_value, str):
         type_properties_null_value = json.loads(type_properties_null_value)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'DelimitedText'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -12908,7 +12840,6 @@ def datafactory_dataset_delimited_text_update(instance, cmd,
                                               resource_group_name,
                                               factory_name,
                                               dataset_name,
-                                              type_,
                                               linked_service_name,
                                               if_match=None,
                                               description=None,
@@ -12953,7 +12884,7 @@ def datafactory_dataset_delimited_text_update(instance, cmd,
         type_properties_first_row_as_header = json.loads(type_properties_first_row_as_header)
     if isinstance(type_properties_null_value, str):
         type_properties_null_value = json.loads(type_properties_null_value)
-    instance.type = type_
+    instance.type = 'DelimitedText'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -12978,7 +12909,6 @@ def datafactory_dataset_document_db_collection_create(cmd, client,
                                                       resource_group_name,
                                                       factory_name,
                                                       dataset_name,
-                                                      type_,
                                                       linked_service_name,
                                                       type_properties_collection_name,
                                                       if_match=None,
@@ -13001,7 +12931,7 @@ def datafactory_dataset_document_db_collection_create(cmd, client,
     if isinstance(type_properties_collection_name, str):
         type_properties_collection_name = json.loads(type_properties_collection_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'DocumentDbCollection'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -13021,7 +12951,6 @@ def datafactory_dataset_document_db_collection_update(instance, cmd,
                                                       resource_group_name,
                                                       factory_name,
                                                       dataset_name,
-                                                      type_,
                                                       linked_service_name,
                                                       type_properties_collection_name,
                                                       if_match=None,
@@ -13043,7 +12972,7 @@ def datafactory_dataset_document_db_collection_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_collection_name, str):
         type_properties_collection_name = json.loads(type_properties_collection_name)
-    instance.type = type_
+    instance.type = 'DocumentDbCollection'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -13059,7 +12988,6 @@ def datafactory_dataset_drill_table_create(cmd, client,
                                            resource_group_name,
                                            factory_name,
                                            dataset_name,
-                                           type_,
                                            linked_service_name,
                                            if_match=None,
                                            description=None,
@@ -13088,7 +13016,7 @@ def datafactory_dataset_drill_table_create(cmd, client,
     if isinstance(type_properties_schema, str):
         type_properties_schema = json.loads(type_properties_schema)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'DrillTable'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -13110,7 +13038,6 @@ def datafactory_dataset_drill_table_update(instance, cmd,
                                            resource_group_name,
                                            factory_name,
                                            dataset_name,
-                                           type_,
                                            linked_service_name,
                                            if_match=None,
                                            description=None,
@@ -13138,7 +13065,7 @@ def datafactory_dataset_drill_table_update(instance, cmd,
         type_properties_table = json.loads(type_properties_table)
     if isinstance(type_properties_schema, str):
         type_properties_schema = json.loads(type_properties_schema)
-    instance.type = type_
+    instance.type = 'DrillTable'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -13156,7 +13083,6 @@ def datafactory_dataset_dynamics_a_x_resource_create(cmd, client,
                                                      resource_group_name,
                                                      factory_name,
                                                      dataset_name,
-                                                     type_,
                                                      linked_service_name,
                                                      type_properties_path,
                                                      if_match=None,
@@ -13179,7 +13105,7 @@ def datafactory_dataset_dynamics_a_x_resource_create(cmd, client,
     if isinstance(type_properties_path, str):
         type_properties_path = json.loads(type_properties_path)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'DynamicsAXResource'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -13199,7 +13125,6 @@ def datafactory_dataset_dynamics_a_x_resource_update(instance, cmd,
                                                      resource_group_name,
                                                      factory_name,
                                                      dataset_name,
-                                                     type_,
                                                      linked_service_name,
                                                      type_properties_path,
                                                      if_match=None,
@@ -13221,7 +13146,7 @@ def datafactory_dataset_dynamics_a_x_resource_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_path, str):
         type_properties_path = json.loads(type_properties_path)
-    instance.type = type_
+    instance.type = 'DynamicsAXResource'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -13237,7 +13162,6 @@ def datafactory_dataset_dynamics_crm_entity_create(cmd, client,
                                                    resource_group_name,
                                                    factory_name,
                                                    dataset_name,
-                                                   type_,
                                                    linked_service_name,
                                                    if_match=None,
                                                    description=None,
@@ -13260,7 +13184,7 @@ def datafactory_dataset_dynamics_crm_entity_create(cmd, client,
     if isinstance(type_properties_entity_name, str):
         type_properties_entity_name = json.loads(type_properties_entity_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'DynamicsCrmEntity'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -13280,7 +13204,6 @@ def datafactory_dataset_dynamics_crm_entity_update(instance, cmd,
                                                    resource_group_name,
                                                    factory_name,
                                                    dataset_name,
-                                                   type_,
                                                    linked_service_name,
                                                    if_match=None,
                                                    description=None,
@@ -13302,7 +13225,7 @@ def datafactory_dataset_dynamics_crm_entity_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_entity_name, str):
         type_properties_entity_name = json.loads(type_properties_entity_name)
-    instance.type = type_
+    instance.type = 'DynamicsCrmEntity'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -13318,7 +13241,6 @@ def datafactory_dataset_dynamics_entity_create(cmd, client,
                                                resource_group_name,
                                                factory_name,
                                                dataset_name,
-                                               type_,
                                                linked_service_name,
                                                if_match=None,
                                                description=None,
@@ -13341,7 +13263,7 @@ def datafactory_dataset_dynamics_entity_create(cmd, client,
     if isinstance(type_properties_entity_name, str):
         type_properties_entity_name = json.loads(type_properties_entity_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'DynamicsEntity'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -13361,7 +13283,6 @@ def datafactory_dataset_dynamics_entity_update(instance, cmd,
                                                resource_group_name,
                                                factory_name,
                                                dataset_name,
-                                               type_,
                                                linked_service_name,
                                                if_match=None,
                                                description=None,
@@ -13383,7 +13304,7 @@ def datafactory_dataset_dynamics_entity_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_entity_name, str):
         type_properties_entity_name = json.loads(type_properties_entity_name)
-    instance.type = type_
+    instance.type = 'DynamicsEntity'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -13399,7 +13320,6 @@ def datafactory_dataset_eloqua_object_create(cmd, client,
                                              resource_group_name,
                                              factory_name,
                                              dataset_name,
-                                             type_,
                                              linked_service_name,
                                              if_match=None,
                                              description=None,
@@ -13422,7 +13342,7 @@ def datafactory_dataset_eloqua_object_create(cmd, client,
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'EloquaObject'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -13442,7 +13362,6 @@ def datafactory_dataset_eloqua_object_update(instance, cmd,
                                              resource_group_name,
                                              factory_name,
                                              dataset_name,
-                                             type_,
                                              linked_service_name,
                                              if_match=None,
                                              description=None,
@@ -13464,7 +13383,7 @@ def datafactory_dataset_eloqua_object_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
-    instance.type = type_
+    instance.type = 'EloquaObject'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -13480,7 +13399,6 @@ def datafactory_dataset_file_share_create(cmd, client,
                                           resource_group_name,
                                           factory_name,
                                           dataset_name,
-                                          type_,
                                           linked_service_name,
                                           if_match=None,
                                           description=None,
@@ -13495,7 +13413,10 @@ def datafactory_dataset_file_share_create(cmd, client,
                                           type_properties_modified_datetime_end=None,
                                           type_properties_format=None,
                                           type_properties_file_filter=None,
-                                          type_properties_compression=None):
+                                          dataset_b_zip2_compression=None,
+                                          dataset_g_zip_compression=None,
+                                          dataset_deflate_compression=None,
+                                          dataset_zip_deflate_compression=None):
     if isinstance(structure, str):
         structure = json.loads(structure)
     if isinstance(schema, str):
@@ -13518,10 +13439,21 @@ def datafactory_dataset_file_share_create(cmd, client,
         type_properties_format = json.loads(type_properties_format)
     if isinstance(type_properties_file_filter, str):
         type_properties_file_filter = json.loads(type_properties_file_filter)
-    if isinstance(type_properties_compression, str):
-        type_properties_compression = json.loads(type_properties_compression)
+    all_type_properties_compression = []
+    if dataset_b_zip2_compression is not None:
+        all_type_properties_compression.append(dataset_b_zip2_compression)
+    if dataset_g_zip_compression is not None:
+        all_type_properties_compression.append(dataset_g_zip_compression)
+    if dataset_deflate_compression is not None:
+        all_type_properties_compression.append(dataset_deflate_compression)
+    if dataset_zip_deflate_compression is not None:
+        all_type_properties_compression.append(dataset_zip_deflate_compression)
+    if len(all_type_properties_compression) > 1:
+        raise CLIError('at most one of  dataset_b_zip2_compression, dataset_g_zip_compression, dataset_deflate_compress'
+                       'ion, dataset_zip_deflate_compression is needed for type_properties_compression!')
+    type_properties_compression = all_type_properties_compression[0] if len(all_type_properties_compression) == 1 else None
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'FileShare'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -13547,7 +13479,6 @@ def datafactory_dataset_file_share_update(instance, cmd,
                                           resource_group_name,
                                           factory_name,
                                           dataset_name,
-                                          type_,
                                           linked_service_name,
                                           if_match=None,
                                           description=None,
@@ -13562,7 +13493,10 @@ def datafactory_dataset_file_share_update(instance, cmd,
                                           type_properties_modified_datetime_end=None,
                                           type_properties_format=None,
                                           type_properties_file_filter=None,
-                                          type_properties_compression=None):
+                                          dataset_b_zip2_compression=None,
+                                          dataset_g_zip_compression=None,
+                                          dataset_deflate_compression=None,
+                                          dataset_zip_deflate_compression=None):
     if isinstance(structure, str):
         structure = json.loads(structure)
     if isinstance(schema, str):
@@ -13585,9 +13519,20 @@ def datafactory_dataset_file_share_update(instance, cmd,
         type_properties_format = json.loads(type_properties_format)
     if isinstance(type_properties_file_filter, str):
         type_properties_file_filter = json.loads(type_properties_file_filter)
-    if isinstance(type_properties_compression, str):
-        type_properties_compression = json.loads(type_properties_compression)
-    instance.type = type_
+    all_type_properties_compression = []
+    if dataset_b_zip2_compression is not None:
+        all_type_properties_compression.append(dataset_b_zip2_compression)
+    if dataset_g_zip_compression is not None:
+        all_type_properties_compression.append(dataset_g_zip_compression)
+    if dataset_deflate_compression is not None:
+        all_type_properties_compression.append(dataset_deflate_compression)
+    if dataset_zip_deflate_compression is not None:
+        all_type_properties_compression.append(dataset_zip_deflate_compression)
+    if len(all_type_properties_compression) > 1:
+        raise CLIError('at most one of  dataset_b_zip2_compression, dataset_g_zip_compression, dataset_deflate_compress'
+                       'ion, dataset_zip_deflate_compression is needed for type_properties_compression!')
+    type_properties_compression = all_type_properties_compression[0] if len(all_type_properties_compression) == 1 else None
+    instance.type = 'FileShare'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -13609,7 +13554,6 @@ def datafactory_dataset_google_ad_words_object_create(cmd, client,
                                                       resource_group_name,
                                                       factory_name,
                                                       dataset_name,
-                                                      type_,
                                                       linked_service_name,
                                                       if_match=None,
                                                       description=None,
@@ -13632,7 +13576,7 @@ def datafactory_dataset_google_ad_words_object_create(cmd, client,
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'GoogleAdWordsObject'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -13652,7 +13596,6 @@ def datafactory_dataset_google_ad_words_object_update(instance, cmd,
                                                       resource_group_name,
                                                       factory_name,
                                                       dataset_name,
-                                                      type_,
                                                       linked_service_name,
                                                       if_match=None,
                                                       description=None,
@@ -13674,7 +13617,7 @@ def datafactory_dataset_google_ad_words_object_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
-    instance.type = type_
+    instance.type = 'GoogleAdWordsObject'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -13690,7 +13633,6 @@ def datafactory_dataset_google_big_query_object_create(cmd, client,
                                                        resource_group_name,
                                                        factory_name,
                                                        dataset_name,
-                                                       type_,
                                                        linked_service_name,
                                                        if_match=None,
                                                        description=None,
@@ -13719,7 +13661,7 @@ def datafactory_dataset_google_big_query_object_create(cmd, client,
     if isinstance(type_properties_dataset, str):
         type_properties_dataset = json.loads(type_properties_dataset)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'GoogleBigQueryObject'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -13741,7 +13683,6 @@ def datafactory_dataset_google_big_query_object_update(instance, cmd,
                                                        resource_group_name,
                                                        factory_name,
                                                        dataset_name,
-                                                       type_,
                                                        linked_service_name,
                                                        if_match=None,
                                                        description=None,
@@ -13769,7 +13710,7 @@ def datafactory_dataset_google_big_query_object_update(instance, cmd,
         type_properties_table = json.loads(type_properties_table)
     if isinstance(type_properties_dataset, str):
         type_properties_dataset = json.loads(type_properties_dataset)
-    instance.type = type_
+    instance.type = 'GoogleBigQueryObject'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -13787,7 +13728,6 @@ def datafactory_dataset_greenplum_table_create(cmd, client,
                                                resource_group_name,
                                                factory_name,
                                                dataset_name,
-                                               type_,
                                                linked_service_name,
                                                if_match=None,
                                                description=None,
@@ -13816,7 +13756,7 @@ def datafactory_dataset_greenplum_table_create(cmd, client,
     if isinstance(type_properties_schema, str):
         type_properties_schema = json.loads(type_properties_schema)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'GreenplumTable'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -13838,7 +13778,6 @@ def datafactory_dataset_greenplum_table_update(instance, cmd,
                                                resource_group_name,
                                                factory_name,
                                                dataset_name,
-                                               type_,
                                                linked_service_name,
                                                if_match=None,
                                                description=None,
@@ -13866,7 +13805,7 @@ def datafactory_dataset_greenplum_table_update(instance, cmd,
         type_properties_table = json.loads(type_properties_table)
     if isinstance(type_properties_schema, str):
         type_properties_schema = json.loads(type_properties_schema)
-    instance.type = type_
+    instance.type = 'GreenplumTable'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -13884,7 +13823,6 @@ def datafactory_dataset_h_base_object_create(cmd, client,
                                              resource_group_name,
                                              factory_name,
                                              dataset_name,
-                                             type_,
                                              linked_service_name,
                                              if_match=None,
                                              description=None,
@@ -13907,7 +13845,7 @@ def datafactory_dataset_h_base_object_create(cmd, client,
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'HBaseObject'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -13927,7 +13865,6 @@ def datafactory_dataset_h_base_object_update(instance, cmd,
                                              resource_group_name,
                                              factory_name,
                                              dataset_name,
-                                             type_,
                                              linked_service_name,
                                              if_match=None,
                                              description=None,
@@ -13949,7 +13886,7 @@ def datafactory_dataset_h_base_object_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
-    instance.type = type_
+    instance.type = 'HBaseObject'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -13965,7 +13902,6 @@ def datafactory_dataset_hive_object_create(cmd, client,
                                            resource_group_name,
                                            factory_name,
                                            dataset_name,
-                                           type_,
                                            linked_service_name,
                                            if_match=None,
                                            description=None,
@@ -13994,7 +13930,7 @@ def datafactory_dataset_hive_object_create(cmd, client,
     if isinstance(type_properties_schema, str):
         type_properties_schema = json.loads(type_properties_schema)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'HiveObject'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -14016,7 +13952,6 @@ def datafactory_dataset_hive_object_update(instance, cmd,
                                            resource_group_name,
                                            factory_name,
                                            dataset_name,
-                                           type_,
                                            linked_service_name,
                                            if_match=None,
                                            description=None,
@@ -14044,7 +13979,7 @@ def datafactory_dataset_hive_object_update(instance, cmd,
         type_properties_table = json.loads(type_properties_table)
     if isinstance(type_properties_schema, str):
         type_properties_schema = json.loads(type_properties_schema)
-    instance.type = type_
+    instance.type = 'HiveObject'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -14062,7 +13997,6 @@ def datafactory_dataset_http_file_create(cmd, client,
                                          resource_group_name,
                                          factory_name,
                                          dataset_name,
-                                         type_,
                                          linked_service_name,
                                          if_match=None,
                                          description=None,
@@ -14076,7 +14010,10 @@ def datafactory_dataset_http_file_create(cmd, client,
                                          type_properties_request_body=None,
                                          type_properties_additional_headers=None,
                                          type_properties_format=None,
-                                         type_properties_compression=None):
+                                         dataset_b_zip2_compression=None,
+                                         dataset_g_zip_compression=None,
+                                         dataset_deflate_compression=None,
+                                         dataset_zip_deflate_compression=None):
     if isinstance(structure, str):
         structure = json.loads(structure)
     if isinstance(schema, str):
@@ -14097,10 +14034,21 @@ def datafactory_dataset_http_file_create(cmd, client,
         type_properties_additional_headers = json.loads(type_properties_additional_headers)
     if isinstance(type_properties_format, str):
         type_properties_format = json.loads(type_properties_format)
-    if isinstance(type_properties_compression, str):
-        type_properties_compression = json.loads(type_properties_compression)
+    all_type_properties_compression = []
+    if dataset_b_zip2_compression is not None:
+        all_type_properties_compression.append(dataset_b_zip2_compression)
+    if dataset_g_zip_compression is not None:
+        all_type_properties_compression.append(dataset_g_zip_compression)
+    if dataset_deflate_compression is not None:
+        all_type_properties_compression.append(dataset_deflate_compression)
+    if dataset_zip_deflate_compression is not None:
+        all_type_properties_compression.append(dataset_zip_deflate_compression)
+    if len(all_type_properties_compression) > 1:
+        raise CLIError('at most one of  dataset_b_zip2_compression, dataset_g_zip_compression, dataset_deflate_compress'
+                       'ion, dataset_zip_deflate_compression is needed for type_properties_compression!')
+    type_properties_compression = all_type_properties_compression[0] if len(all_type_properties_compression) == 1 else None
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'HttpFile'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -14125,7 +14073,6 @@ def datafactory_dataset_http_file_update(instance, cmd,
                                          resource_group_name,
                                          factory_name,
                                          dataset_name,
-                                         type_,
                                          linked_service_name,
                                          if_match=None,
                                          description=None,
@@ -14139,7 +14086,10 @@ def datafactory_dataset_http_file_update(instance, cmd,
                                          type_properties_request_body=None,
                                          type_properties_additional_headers=None,
                                          type_properties_format=None,
-                                         type_properties_compression=None):
+                                         dataset_b_zip2_compression=None,
+                                         dataset_g_zip_compression=None,
+                                         dataset_deflate_compression=None,
+                                         dataset_zip_deflate_compression=None):
     if isinstance(structure, str):
         structure = json.loads(structure)
     if isinstance(schema, str):
@@ -14160,9 +14110,20 @@ def datafactory_dataset_http_file_update(instance, cmd,
         type_properties_additional_headers = json.loads(type_properties_additional_headers)
     if isinstance(type_properties_format, str):
         type_properties_format = json.loads(type_properties_format)
-    if isinstance(type_properties_compression, str):
-        type_properties_compression = json.loads(type_properties_compression)
-    instance.type = type_
+    all_type_properties_compression = []
+    if dataset_b_zip2_compression is not None:
+        all_type_properties_compression.append(dataset_b_zip2_compression)
+    if dataset_g_zip_compression is not None:
+        all_type_properties_compression.append(dataset_g_zip_compression)
+    if dataset_deflate_compression is not None:
+        all_type_properties_compression.append(dataset_deflate_compression)
+    if dataset_zip_deflate_compression is not None:
+        all_type_properties_compression.append(dataset_zip_deflate_compression)
+    if len(all_type_properties_compression) > 1:
+        raise CLIError('at most one of  dataset_b_zip2_compression, dataset_g_zip_compression, dataset_deflate_compress'
+                       'ion, dataset_zip_deflate_compression is needed for type_properties_compression!')
+    type_properties_compression = all_type_properties_compression[0] if len(all_type_properties_compression) == 1 else None
+    instance.type = 'HttpFile'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -14183,7 +14144,6 @@ def datafactory_dataset_hubspot_object_create(cmd, client,
                                               resource_group_name,
                                               factory_name,
                                               dataset_name,
-                                              type_,
                                               linked_service_name,
                                               if_match=None,
                                               description=None,
@@ -14206,7 +14166,7 @@ def datafactory_dataset_hubspot_object_create(cmd, client,
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'HubspotObject'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -14226,7 +14186,6 @@ def datafactory_dataset_hubspot_object_update(instance, cmd,
                                               resource_group_name,
                                               factory_name,
                                               dataset_name,
-                                              type_,
                                               linked_service_name,
                                               if_match=None,
                                               description=None,
@@ -14248,7 +14207,7 @@ def datafactory_dataset_hubspot_object_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
-    instance.type = type_
+    instance.type = 'HubspotObject'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -14264,7 +14223,6 @@ def datafactory_dataset_impala_object_create(cmd, client,
                                              resource_group_name,
                                              factory_name,
                                              dataset_name,
-                                             type_,
                                              linked_service_name,
                                              if_match=None,
                                              description=None,
@@ -14293,7 +14251,7 @@ def datafactory_dataset_impala_object_create(cmd, client,
     if isinstance(type_properties_schema, str):
         type_properties_schema = json.loads(type_properties_schema)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'ImpalaObject'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -14315,7 +14273,6 @@ def datafactory_dataset_impala_object_update(instance, cmd,
                                              resource_group_name,
                                              factory_name,
                                              dataset_name,
-                                             type_,
                                              linked_service_name,
                                              if_match=None,
                                              description=None,
@@ -14343,7 +14300,7 @@ def datafactory_dataset_impala_object_update(instance, cmd,
         type_properties_table = json.loads(type_properties_table)
     if isinstance(type_properties_schema, str):
         type_properties_schema = json.loads(type_properties_schema)
-    instance.type = type_
+    instance.type = 'ImpalaObject'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -14361,7 +14318,6 @@ def datafactory_dataset_informix_table_create(cmd, client,
                                               resource_group_name,
                                               factory_name,
                                               dataset_name,
-                                              type_,
                                               linked_service_name,
                                               if_match=None,
                                               description=None,
@@ -14384,7 +14340,7 @@ def datafactory_dataset_informix_table_create(cmd, client,
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'InformixTable'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -14404,7 +14360,6 @@ def datafactory_dataset_informix_table_update(instance, cmd,
                                               resource_group_name,
                                               factory_name,
                                               dataset_name,
-                                              type_,
                                               linked_service_name,
                                               if_match=None,
                                               description=None,
@@ -14426,7 +14381,7 @@ def datafactory_dataset_informix_table_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
-    instance.type = type_
+    instance.type = 'InformixTable'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -14442,7 +14397,6 @@ def datafactory_dataset_jira_object_create(cmd, client,
                                            resource_group_name,
                                            factory_name,
                                            dataset_name,
-                                           type_,
                                            linked_service_name,
                                            if_match=None,
                                            description=None,
@@ -14465,7 +14419,7 @@ def datafactory_dataset_jira_object_create(cmd, client,
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'JiraObject'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -14485,7 +14439,6 @@ def datafactory_dataset_jira_object_update(instance, cmd,
                                            resource_group_name,
                                            factory_name,
                                            dataset_name,
-                                           type_,
                                            linked_service_name,
                                            if_match=None,
                                            description=None,
@@ -14507,7 +14460,7 @@ def datafactory_dataset_jira_object_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
-    instance.type = type_
+    instance.type = 'JiraObject'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -14523,7 +14476,6 @@ def datafactory_dataset_json_create(cmd, client,
                                     resource_group_name,
                                     factory_name,
                                     dataset_name,
-                                    type_,
                                     linked_service_name,
                                     if_match=None,
                                     description=None,
@@ -14534,7 +14486,10 @@ def datafactory_dataset_json_create(cmd, client,
                                     folder=None,
                                     type_properties_location=None,
                                     type_properties_encoding_name=None,
-                                    type_properties_compression=None):
+                                    dataset_b_zip2_compression=None,
+                                    dataset_g_zip_compression=None,
+                                    dataset_deflate_compression=None,
+                                    dataset_zip_deflate_compression=None):
     if isinstance(structure, str):
         structure = json.loads(structure)
     if isinstance(schema, str):
@@ -14549,10 +14504,21 @@ def datafactory_dataset_json_create(cmd, client,
         type_properties_location = json.loads(type_properties_location)
     if isinstance(type_properties_encoding_name, str):
         type_properties_encoding_name = json.loads(type_properties_encoding_name)
-    if isinstance(type_properties_compression, str):
-        type_properties_compression = json.loads(type_properties_compression)
+    all_type_properties_compression = []
+    if dataset_b_zip2_compression is not None:
+        all_type_properties_compression.append(dataset_b_zip2_compression)
+    if dataset_g_zip_compression is not None:
+        all_type_properties_compression.append(dataset_g_zip_compression)
+    if dataset_deflate_compression is not None:
+        all_type_properties_compression.append(dataset_deflate_compression)
+    if dataset_zip_deflate_compression is not None:
+        all_type_properties_compression.append(dataset_zip_deflate_compression)
+    if len(all_type_properties_compression) > 1:
+        raise CLIError('at most one of  dataset_b_zip2_compression, dataset_g_zip_compression, dataset_deflate_compress'
+                       'ion, dataset_zip_deflate_compression is needed for type_properties_compression!')
+    type_properties_compression = all_type_properties_compression[0] if len(all_type_properties_compression) == 1 else None
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Json'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -14574,7 +14540,6 @@ def datafactory_dataset_json_update(instance, cmd,
                                     resource_group_name,
                                     factory_name,
                                     dataset_name,
-                                    type_,
                                     linked_service_name,
                                     if_match=None,
                                     description=None,
@@ -14585,7 +14550,10 @@ def datafactory_dataset_json_update(instance, cmd,
                                     folder=None,
                                     type_properties_location=None,
                                     type_properties_encoding_name=None,
-                                    type_properties_compression=None):
+                                    dataset_b_zip2_compression=None,
+                                    dataset_g_zip_compression=None,
+                                    dataset_deflate_compression=None,
+                                    dataset_zip_deflate_compression=None):
     if isinstance(structure, str):
         structure = json.loads(structure)
     if isinstance(schema, str):
@@ -14600,9 +14568,20 @@ def datafactory_dataset_json_update(instance, cmd,
         type_properties_location = json.loads(type_properties_location)
     if isinstance(type_properties_encoding_name, str):
         type_properties_encoding_name = json.loads(type_properties_encoding_name)
-    if isinstance(type_properties_compression, str):
-        type_properties_compression = json.loads(type_properties_compression)
-    instance.type = type_
+    all_type_properties_compression = []
+    if dataset_b_zip2_compression is not None:
+        all_type_properties_compression.append(dataset_b_zip2_compression)
+    if dataset_g_zip_compression is not None:
+        all_type_properties_compression.append(dataset_g_zip_compression)
+    if dataset_deflate_compression is not None:
+        all_type_properties_compression.append(dataset_deflate_compression)
+    if dataset_zip_deflate_compression is not None:
+        all_type_properties_compression.append(dataset_zip_deflate_compression)
+    if len(all_type_properties_compression) > 1:
+        raise CLIError('at most one of  dataset_b_zip2_compression, dataset_g_zip_compression, dataset_deflate_compress'
+                       'ion, dataset_zip_deflate_compression is needed for type_properties_compression!')
+    type_properties_compression = all_type_properties_compression[0] if len(all_type_properties_compression) == 1 else None
+    instance.type = 'Json'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -14620,7 +14599,6 @@ def datafactory_dataset_magento_object_create(cmd, client,
                                               resource_group_name,
                                               factory_name,
                                               dataset_name,
-                                              type_,
                                               linked_service_name,
                                               if_match=None,
                                               description=None,
@@ -14643,7 +14621,7 @@ def datafactory_dataset_magento_object_create(cmd, client,
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'MagentoObject'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -14663,7 +14641,6 @@ def datafactory_dataset_magento_object_update(instance, cmd,
                                               resource_group_name,
                                               factory_name,
                                               dataset_name,
-                                              type_,
                                               linked_service_name,
                                               if_match=None,
                                               description=None,
@@ -14685,7 +14662,7 @@ def datafactory_dataset_magento_object_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
-    instance.type = type_
+    instance.type = 'MagentoObject'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -14701,7 +14678,6 @@ def datafactory_dataset_maria_d_b_table_create(cmd, client,
                                                resource_group_name,
                                                factory_name,
                                                dataset_name,
-                                               type_,
                                                linked_service_name,
                                                if_match=None,
                                                description=None,
@@ -14724,7 +14700,7 @@ def datafactory_dataset_maria_d_b_table_create(cmd, client,
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'MariaDBTable'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -14744,7 +14720,6 @@ def datafactory_dataset_maria_d_b_table_update(instance, cmd,
                                                resource_group_name,
                                                factory_name,
                                                dataset_name,
-                                               type_,
                                                linked_service_name,
                                                if_match=None,
                                                description=None,
@@ -14766,7 +14741,7 @@ def datafactory_dataset_maria_d_b_table_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
-    instance.type = type_
+    instance.type = 'MariaDBTable'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -14782,7 +14757,6 @@ def datafactory_dataset_marketo_object_create(cmd, client,
                                               resource_group_name,
                                               factory_name,
                                               dataset_name,
-                                              type_,
                                               linked_service_name,
                                               if_match=None,
                                               description=None,
@@ -14805,7 +14779,7 @@ def datafactory_dataset_marketo_object_create(cmd, client,
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'MarketoObject'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -14825,7 +14799,6 @@ def datafactory_dataset_marketo_object_update(instance, cmd,
                                               resource_group_name,
                                               factory_name,
                                               dataset_name,
-                                              type_,
                                               linked_service_name,
                                               if_match=None,
                                               description=None,
@@ -14847,7 +14820,7 @@ def datafactory_dataset_marketo_object_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
-    instance.type = type_
+    instance.type = 'MarketoObject'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -14863,7 +14836,6 @@ def datafactory_dataset_microsoft_access_table_create(cmd, client,
                                                       resource_group_name,
                                                       factory_name,
                                                       dataset_name,
-                                                      type_,
                                                       linked_service_name,
                                                       if_match=None,
                                                       description=None,
@@ -14886,7 +14858,7 @@ def datafactory_dataset_microsoft_access_table_create(cmd, client,
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'MicrosoftAccessTable'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -14906,7 +14878,6 @@ def datafactory_dataset_microsoft_access_table_update(instance, cmd,
                                                       resource_group_name,
                                                       factory_name,
                                                       dataset_name,
-                                                      type_,
                                                       linked_service_name,
                                                       if_match=None,
                                                       description=None,
@@ -14928,7 +14899,7 @@ def datafactory_dataset_microsoft_access_table_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
-    instance.type = type_
+    instance.type = 'MicrosoftAccessTable'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -14944,7 +14915,6 @@ def datafactory_dataset_mongo_db_collection_create(cmd, client,
                                                    resource_group_name,
                                                    factory_name,
                                                    dataset_name,
-                                                   type_,
                                                    linked_service_name,
                                                    type_properties_collection_name,
                                                    if_match=None,
@@ -14967,7 +14937,7 @@ def datafactory_dataset_mongo_db_collection_create(cmd, client,
     if isinstance(type_properties_collection_name, str):
         type_properties_collection_name = json.loads(type_properties_collection_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'MongoDbCollection'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -14987,7 +14957,6 @@ def datafactory_dataset_mongo_db_collection_update(instance, cmd,
                                                    resource_group_name,
                                                    factory_name,
                                                    dataset_name,
-                                                   type_,
                                                    linked_service_name,
                                                    type_properties_collection_name,
                                                    if_match=None,
@@ -15009,7 +14978,7 @@ def datafactory_dataset_mongo_db_collection_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_collection_name, str):
         type_properties_collection_name = json.loads(type_properties_collection_name)
-    instance.type = type_
+    instance.type = 'MongoDbCollection'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -15025,7 +14994,6 @@ def datafactory_dataset_mongo_db_v2_collection_create(cmd, client,
                                                       resource_group_name,
                                                       factory_name,
                                                       dataset_name,
-                                                      type_,
                                                       linked_service_name,
                                                       type_properties_collection,
                                                       if_match=None,
@@ -15048,7 +15016,7 @@ def datafactory_dataset_mongo_db_v2_collection_create(cmd, client,
     if isinstance(type_properties_collection, str):
         type_properties_collection = json.loads(type_properties_collection)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'MongoDbV2Collection'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -15068,7 +15036,6 @@ def datafactory_dataset_mongo_db_v2_collection_update(instance, cmd,
                                                       resource_group_name,
                                                       factory_name,
                                                       dataset_name,
-                                                      type_,
                                                       linked_service_name,
                                                       type_properties_collection,
                                                       if_match=None,
@@ -15090,7 +15057,7 @@ def datafactory_dataset_mongo_db_v2_collection_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_collection, str):
         type_properties_collection = json.loads(type_properties_collection)
-    instance.type = type_
+    instance.type = 'MongoDbV2Collection'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -15106,7 +15073,6 @@ def datafactory_dataset_my_sql_table_create(cmd, client,
                                             resource_group_name,
                                             factory_name,
                                             dataset_name,
-                                            type_,
                                             linked_service_name,
                                             if_match=None,
                                             description=None,
@@ -15129,7 +15095,7 @@ def datafactory_dataset_my_sql_table_create(cmd, client,
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'MySqlTable'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -15149,7 +15115,6 @@ def datafactory_dataset_my_sql_table_update(instance, cmd,
                                             resource_group_name,
                                             factory_name,
                                             dataset_name,
-                                            type_,
                                             linked_service_name,
                                             if_match=None,
                                             description=None,
@@ -15171,7 +15136,7 @@ def datafactory_dataset_my_sql_table_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
-    instance.type = type_
+    instance.type = 'MySqlTable'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -15187,7 +15152,6 @@ def datafactory_dataset_netezza_table_create(cmd, client,
                                              resource_group_name,
                                              factory_name,
                                              dataset_name,
-                                             type_,
                                              linked_service_name,
                                              if_match=None,
                                              description=None,
@@ -15216,7 +15180,7 @@ def datafactory_dataset_netezza_table_create(cmd, client,
     if isinstance(type_properties_schema, str):
         type_properties_schema = json.loads(type_properties_schema)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'NetezzaTable'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -15238,7 +15202,6 @@ def datafactory_dataset_netezza_table_update(instance, cmd,
                                              resource_group_name,
                                              factory_name,
                                              dataset_name,
-                                             type_,
                                              linked_service_name,
                                              if_match=None,
                                              description=None,
@@ -15266,7 +15229,7 @@ def datafactory_dataset_netezza_table_update(instance, cmd,
         type_properties_table = json.loads(type_properties_table)
     if isinstance(type_properties_schema, str):
         type_properties_schema = json.loads(type_properties_schema)
-    instance.type = type_
+    instance.type = 'NetezzaTable'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -15284,7 +15247,6 @@ def datafactory_dataset_o_data_resource_create(cmd, client,
                                                resource_group_name,
                                                factory_name,
                                                dataset_name,
-                                               type_,
                                                linked_service_name,
                                                if_match=None,
                                                description=None,
@@ -15307,7 +15269,7 @@ def datafactory_dataset_o_data_resource_create(cmd, client,
     if isinstance(type_properties_path, str):
         type_properties_path = json.loads(type_properties_path)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'ODataResource'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -15327,7 +15289,6 @@ def datafactory_dataset_o_data_resource_update(instance, cmd,
                                                resource_group_name,
                                                factory_name,
                                                dataset_name,
-                                               type_,
                                                linked_service_name,
                                                if_match=None,
                                                description=None,
@@ -15349,7 +15310,7 @@ def datafactory_dataset_o_data_resource_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_path, str):
         type_properties_path = json.loads(type_properties_path)
-    instance.type = type_
+    instance.type = 'ODataResource'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -15365,7 +15326,6 @@ def datafactory_dataset_odbc_table_create(cmd, client,
                                           resource_group_name,
                                           factory_name,
                                           dataset_name,
-                                          type_,
                                           linked_service_name,
                                           if_match=None,
                                           description=None,
@@ -15388,7 +15348,7 @@ def datafactory_dataset_odbc_table_create(cmd, client,
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'OdbcTable'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -15408,7 +15368,6 @@ def datafactory_dataset_odbc_table_update(instance, cmd,
                                           resource_group_name,
                                           factory_name,
                                           dataset_name,
-                                          type_,
                                           linked_service_name,
                                           if_match=None,
                                           description=None,
@@ -15430,7 +15389,7 @@ def datafactory_dataset_odbc_table_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
-    instance.type = type_
+    instance.type = 'OdbcTable'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -15446,7 +15405,6 @@ def datafactory_dataset_office365_table_create(cmd, client,
                                                resource_group_name,
                                                factory_name,
                                                dataset_name,
-                                               type_,
                                                linked_service_name,
                                                type_properties_table_name,
                                                if_match=None,
@@ -15472,7 +15430,7 @@ def datafactory_dataset_office365_table_create(cmd, client,
     if isinstance(type_properties_predicate, str):
         type_properties_predicate = json.loads(type_properties_predicate)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Office365Table'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -15493,7 +15451,6 @@ def datafactory_dataset_office365_table_update(instance, cmd,
                                                resource_group_name,
                                                factory_name,
                                                dataset_name,
-                                               type_,
                                                linked_service_name,
                                                type_properties_table_name,
                                                if_match=None,
@@ -15518,7 +15475,7 @@ def datafactory_dataset_office365_table_update(instance, cmd,
         type_properties_table_name = json.loads(type_properties_table_name)
     if isinstance(type_properties_predicate, str):
         type_properties_predicate = json.loads(type_properties_predicate)
-    instance.type = type_
+    instance.type = 'Office365Table'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -15535,7 +15492,6 @@ def datafactory_dataset_oracle_service_cloud_object_create(cmd, client,
                                                            resource_group_name,
                                                            factory_name,
                                                            dataset_name,
-                                                           type_,
                                                            linked_service_name,
                                                            if_match=None,
                                                            description=None,
@@ -15558,7 +15514,7 @@ def datafactory_dataset_oracle_service_cloud_object_create(cmd, client,
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'OracleServiceCloudObject'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -15578,7 +15534,6 @@ def datafactory_dataset_oracle_service_cloud_object_update(instance, cmd,
                                                            resource_group_name,
                                                            factory_name,
                                                            dataset_name,
-                                                           type_,
                                                            linked_service_name,
                                                            if_match=None,
                                                            description=None,
@@ -15600,7 +15555,7 @@ def datafactory_dataset_oracle_service_cloud_object_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
-    instance.type = type_
+    instance.type = 'OracleServiceCloudObject'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -15616,7 +15571,6 @@ def datafactory_dataset_oracle_table_create(cmd, client,
                                             resource_group_name,
                                             factory_name,
                                             dataset_name,
-                                            type_,
                                             linked_service_name,
                                             if_match=None,
                                             description=None,
@@ -15645,7 +15599,7 @@ def datafactory_dataset_oracle_table_create(cmd, client,
     if isinstance(type_properties_table, str):
         type_properties_table = json.loads(type_properties_table)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'OracleTable'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -15667,7 +15621,6 @@ def datafactory_dataset_oracle_table_update(instance, cmd,
                                             resource_group_name,
                                             factory_name,
                                             dataset_name,
-                                            type_,
                                             linked_service_name,
                                             if_match=None,
                                             description=None,
@@ -15695,7 +15648,7 @@ def datafactory_dataset_oracle_table_update(instance, cmd,
         type_properties_schema = json.loads(type_properties_schema)
     if isinstance(type_properties_table, str):
         type_properties_table = json.loads(type_properties_table)
-    instance.type = type_
+    instance.type = 'OracleTable'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -15713,7 +15666,6 @@ def datafactory_dataset_orc_create(cmd, client,
                                    resource_group_name,
                                    factory_name,
                                    dataset_name,
-                                   type_,
                                    linked_service_name,
                                    if_match=None,
                                    description=None,
@@ -15737,7 +15689,7 @@ def datafactory_dataset_orc_create(cmd, client,
     if isinstance(type_properties_location, str):
         type_properties_location = json.loads(type_properties_location)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Orc'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -15758,7 +15710,6 @@ def datafactory_dataset_orc_update(instance, cmd,
                                    resource_group_name,
                                    factory_name,
                                    dataset_name,
-                                   type_,
                                    linked_service_name,
                                    if_match=None,
                                    description=None,
@@ -15781,7 +15732,7 @@ def datafactory_dataset_orc_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_location, str):
         type_properties_location = json.loads(type_properties_location)
-    instance.type = type_
+    instance.type = 'Orc'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -15798,7 +15749,6 @@ def datafactory_dataset_parquet_create(cmd, client,
                                        resource_group_name,
                                        factory_name,
                                        dataset_name,
-                                       type_,
                                        linked_service_name,
                                        if_match=None,
                                        description=None,
@@ -15822,7 +15772,7 @@ def datafactory_dataset_parquet_create(cmd, client,
     if isinstance(type_properties_location, str):
         type_properties_location = json.loads(type_properties_location)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'Parquet'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -15843,7 +15793,6 @@ def datafactory_dataset_parquet_update(instance, cmd,
                                        resource_group_name,
                                        factory_name,
                                        dataset_name,
-                                       type_,
                                        linked_service_name,
                                        if_match=None,
                                        description=None,
@@ -15866,7 +15815,7 @@ def datafactory_dataset_parquet_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_location, str):
         type_properties_location = json.loads(type_properties_location)
-    instance.type = type_
+    instance.type = 'Parquet'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -15883,7 +15832,6 @@ def datafactory_dataset_paypal_object_create(cmd, client,
                                              resource_group_name,
                                              factory_name,
                                              dataset_name,
-                                             type_,
                                              linked_service_name,
                                              if_match=None,
                                              description=None,
@@ -15906,7 +15854,7 @@ def datafactory_dataset_paypal_object_create(cmd, client,
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'PaypalObject'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -15926,7 +15874,6 @@ def datafactory_dataset_paypal_object_update(instance, cmd,
                                              resource_group_name,
                                              factory_name,
                                              dataset_name,
-                                             type_,
                                              linked_service_name,
                                              if_match=None,
                                              description=None,
@@ -15948,7 +15895,7 @@ def datafactory_dataset_paypal_object_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
-    instance.type = type_
+    instance.type = 'PaypalObject'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -15964,7 +15911,6 @@ def datafactory_dataset_phoenix_object_create(cmd, client,
                                               resource_group_name,
                                               factory_name,
                                               dataset_name,
-                                              type_,
                                               linked_service_name,
                                               if_match=None,
                                               description=None,
@@ -15993,7 +15939,7 @@ def datafactory_dataset_phoenix_object_create(cmd, client,
     if isinstance(type_properties_schema, str):
         type_properties_schema = json.loads(type_properties_schema)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'PhoenixObject'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -16015,7 +15961,6 @@ def datafactory_dataset_phoenix_object_update(instance, cmd,
                                               resource_group_name,
                                               factory_name,
                                               dataset_name,
-                                              type_,
                                               linked_service_name,
                                               if_match=None,
                                               description=None,
@@ -16043,7 +15988,7 @@ def datafactory_dataset_phoenix_object_update(instance, cmd,
         type_properties_table = json.loads(type_properties_table)
     if isinstance(type_properties_schema, str):
         type_properties_schema = json.loads(type_properties_schema)
-    instance.type = type_
+    instance.type = 'PhoenixObject'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -16061,7 +16006,6 @@ def datafactory_dataset_postgre_sql_table_create(cmd, client,
                                                  resource_group_name,
                                                  factory_name,
                                                  dataset_name,
-                                                 type_,
                                                  linked_service_name,
                                                  if_match=None,
                                                  description=None,
@@ -16090,7 +16034,7 @@ def datafactory_dataset_postgre_sql_table_create(cmd, client,
     if isinstance(type_properties_schema, str):
         type_properties_schema = json.loads(type_properties_schema)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'PostgreSqlTable'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -16112,7 +16056,6 @@ def datafactory_dataset_postgre_sql_table_update(instance, cmd,
                                                  resource_group_name,
                                                  factory_name,
                                                  dataset_name,
-                                                 type_,
                                                  linked_service_name,
                                                  if_match=None,
                                                  description=None,
@@ -16140,7 +16083,7 @@ def datafactory_dataset_postgre_sql_table_update(instance, cmd,
         type_properties_table = json.loads(type_properties_table)
     if isinstance(type_properties_schema, str):
         type_properties_schema = json.loads(type_properties_schema)
-    instance.type = type_
+    instance.type = 'PostgreSqlTable'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -16158,7 +16101,6 @@ def datafactory_dataset_presto_object_create(cmd, client,
                                              resource_group_name,
                                              factory_name,
                                              dataset_name,
-                                             type_,
                                              linked_service_name,
                                              if_match=None,
                                              description=None,
@@ -16187,7 +16129,7 @@ def datafactory_dataset_presto_object_create(cmd, client,
     if isinstance(type_properties_schema, str):
         type_properties_schema = json.loads(type_properties_schema)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'PrestoObject'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -16209,7 +16151,6 @@ def datafactory_dataset_presto_object_update(instance, cmd,
                                              resource_group_name,
                                              factory_name,
                                              dataset_name,
-                                             type_,
                                              linked_service_name,
                                              if_match=None,
                                              description=None,
@@ -16237,7 +16178,7 @@ def datafactory_dataset_presto_object_update(instance, cmd,
         type_properties_table = json.loads(type_properties_table)
     if isinstance(type_properties_schema, str):
         type_properties_schema = json.loads(type_properties_schema)
-    instance.type = type_
+    instance.type = 'PrestoObject'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -16255,7 +16196,6 @@ def datafactory_dataset_quick_books_object_create(cmd, client,
                                                   resource_group_name,
                                                   factory_name,
                                                   dataset_name,
-                                                  type_,
                                                   linked_service_name,
                                                   if_match=None,
                                                   description=None,
@@ -16278,7 +16218,7 @@ def datafactory_dataset_quick_books_object_create(cmd, client,
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'QuickBooksObject'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -16298,7 +16238,6 @@ def datafactory_dataset_quick_books_object_update(instance, cmd,
                                                   resource_group_name,
                                                   factory_name,
                                                   dataset_name,
-                                                  type_,
                                                   linked_service_name,
                                                   if_match=None,
                                                   description=None,
@@ -16320,7 +16259,7 @@ def datafactory_dataset_quick_books_object_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
-    instance.type = type_
+    instance.type = 'QuickBooksObject'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -16336,7 +16275,6 @@ def datafactory_dataset_relational_table_create(cmd, client,
                                                 resource_group_name,
                                                 factory_name,
                                                 dataset_name,
-                                                type_,
                                                 linked_service_name,
                                                 if_match=None,
                                                 description=None,
@@ -16359,7 +16297,7 @@ def datafactory_dataset_relational_table_create(cmd, client,
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'RelationalTable'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -16379,7 +16317,6 @@ def datafactory_dataset_relational_table_update(instance, cmd,
                                                 resource_group_name,
                                                 factory_name,
                                                 dataset_name,
-                                                type_,
                                                 linked_service_name,
                                                 if_match=None,
                                                 description=None,
@@ -16401,7 +16338,7 @@ def datafactory_dataset_relational_table_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
-    instance.type = type_
+    instance.type = 'RelationalTable'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -16417,7 +16354,6 @@ def datafactory_dataset_responsys_object_create(cmd, client,
                                                 resource_group_name,
                                                 factory_name,
                                                 dataset_name,
-                                                type_,
                                                 linked_service_name,
                                                 if_match=None,
                                                 description=None,
@@ -16440,7 +16376,7 @@ def datafactory_dataset_responsys_object_create(cmd, client,
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'ResponsysObject'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -16460,7 +16396,6 @@ def datafactory_dataset_responsys_object_update(instance, cmd,
                                                 resource_group_name,
                                                 factory_name,
                                                 dataset_name,
-                                                type_,
                                                 linked_service_name,
                                                 if_match=None,
                                                 description=None,
@@ -16482,7 +16417,7 @@ def datafactory_dataset_responsys_object_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
-    instance.type = type_
+    instance.type = 'ResponsysObject'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -16498,7 +16433,6 @@ def datafactory_dataset_rest_resource_create(cmd, client,
                                              resource_group_name,
                                              factory_name,
                                              dataset_name,
-                                             type_,
                                              linked_service_name,
                                              if_match=None,
                                              description=None,
@@ -16533,7 +16467,7 @@ def datafactory_dataset_rest_resource_create(cmd, client,
     if isinstance(type_properties_pagination_rules, str):
         type_properties_pagination_rules = json.loads(type_properties_pagination_rules)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'RestResource'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -16557,7 +16491,6 @@ def datafactory_dataset_rest_resource_update(instance, cmd,
                                              resource_group_name,
                                              factory_name,
                                              dataset_name,
-                                             type_,
                                              linked_service_name,
                                              if_match=None,
                                              description=None,
@@ -16591,7 +16524,7 @@ def datafactory_dataset_rest_resource_update(instance, cmd,
         type_properties_additional_headers = json.loads(type_properties_additional_headers)
     if isinstance(type_properties_pagination_rules, str):
         type_properties_pagination_rules = json.loads(type_properties_pagination_rules)
-    instance.type = type_
+    instance.type = 'RestResource'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -16611,7 +16544,6 @@ def datafactory_dataset_salesforce_marketing_cloud_object_create(cmd, client,
                                                                  resource_group_name,
                                                                  factory_name,
                                                                  dataset_name,
-                                                                 type_,
                                                                  linked_service_name,
                                                                  if_match=None,
                                                                  description=None,
@@ -16634,7 +16566,7 @@ def datafactory_dataset_salesforce_marketing_cloud_object_create(cmd, client,
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'SalesforceMarketingCloudObject'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -16654,7 +16586,6 @@ def datafactory_dataset_salesforce_marketing_cloud_object_update(instance, cmd,
                                                                  resource_group_name,
                                                                  factory_name,
                                                                  dataset_name,
-                                                                 type_,
                                                                  linked_service_name,
                                                                  if_match=None,
                                                                  description=None,
@@ -16676,7 +16607,7 @@ def datafactory_dataset_salesforce_marketing_cloud_object_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
-    instance.type = type_
+    instance.type = 'SalesforceMarketingCloudObject'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -16692,7 +16623,6 @@ def datafactory_dataset_salesforce_object_create(cmd, client,
                                                  resource_group_name,
                                                  factory_name,
                                                  dataset_name,
-                                                 type_,
                                                  linked_service_name,
                                                  if_match=None,
                                                  description=None,
@@ -16715,7 +16645,7 @@ def datafactory_dataset_salesforce_object_create(cmd, client,
     if isinstance(type_properties_object_api_name, str):
         type_properties_object_api_name = json.loads(type_properties_object_api_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'SalesforceObject'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -16735,7 +16665,6 @@ def datafactory_dataset_salesforce_object_update(instance, cmd,
                                                  resource_group_name,
                                                  factory_name,
                                                  dataset_name,
-                                                 type_,
                                                  linked_service_name,
                                                  if_match=None,
                                                  description=None,
@@ -16757,7 +16686,7 @@ def datafactory_dataset_salesforce_object_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_object_api_name, str):
         type_properties_object_api_name = json.loads(type_properties_object_api_name)
-    instance.type = type_
+    instance.type = 'SalesforceObject'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -16773,7 +16702,6 @@ def datafactory_dataset_salesforce_service_cloud_object_create(cmd, client,
                                                                resource_group_name,
                                                                factory_name,
                                                                dataset_name,
-                                                               type_,
                                                                linked_service_name,
                                                                if_match=None,
                                                                description=None,
@@ -16796,7 +16724,7 @@ def datafactory_dataset_salesforce_service_cloud_object_create(cmd, client,
     if isinstance(type_properties_object_api_name, str):
         type_properties_object_api_name = json.loads(type_properties_object_api_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'SalesforceServiceCloudObject'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -16816,7 +16744,6 @@ def datafactory_dataset_salesforce_service_cloud_object_update(instance, cmd,
                                                                resource_group_name,
                                                                factory_name,
                                                                dataset_name,
-                                                               type_,
                                                                linked_service_name,
                                                                if_match=None,
                                                                description=None,
@@ -16838,7 +16765,7 @@ def datafactory_dataset_salesforce_service_cloud_object_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_object_api_name, str):
         type_properties_object_api_name = json.loads(type_properties_object_api_name)
-    instance.type = type_
+    instance.type = 'SalesforceServiceCloudObject'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -16854,7 +16781,6 @@ def datafactory_dataset_sap_bw_cube_create(cmd, client,
                                            resource_group_name,
                                            factory_name,
                                            dataset_name,
-                                           type_,
                                            linked_service_name,
                                            if_match=None,
                                            description=None,
@@ -16874,7 +16800,7 @@ def datafactory_dataset_sap_bw_cube_create(cmd, client,
     if isinstance(annotations, str):
         annotations = json.loads(annotations)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'SapBwCube'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -16893,7 +16819,6 @@ def datafactory_dataset_sap_bw_cube_update(instance, cmd,
                                            resource_group_name,
                                            factory_name,
                                            dataset_name,
-                                           type_,
                                            linked_service_name,
                                            if_match=None,
                                            description=None,
@@ -16912,7 +16837,7 @@ def datafactory_dataset_sap_bw_cube_update(instance, cmd,
         parameters = json.loads(parameters)
     if isinstance(annotations, str):
         annotations = json.loads(annotations)
-    instance.type = type_
+    instance.type = 'SapBwCube'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -16927,7 +16852,6 @@ def datafactory_dataset_sap_cloud_for_customer_resource_create(cmd, client,
                                                                resource_group_name,
                                                                factory_name,
                                                                dataset_name,
-                                                               type_,
                                                                linked_service_name,
                                                                type_properties_path,
                                                                if_match=None,
@@ -16950,7 +16874,7 @@ def datafactory_dataset_sap_cloud_for_customer_resource_create(cmd, client,
     if isinstance(type_properties_path, str):
         type_properties_path = json.loads(type_properties_path)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'SapCloudForCustomerResource'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -16970,7 +16894,6 @@ def datafactory_dataset_sap_cloud_for_customer_resource_update(instance, cmd,
                                                                resource_group_name,
                                                                factory_name,
                                                                dataset_name,
-                                                               type_,
                                                                linked_service_name,
                                                                type_properties_path,
                                                                if_match=None,
@@ -16992,7 +16915,7 @@ def datafactory_dataset_sap_cloud_for_customer_resource_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_path, str):
         type_properties_path = json.loads(type_properties_path)
-    instance.type = type_
+    instance.type = 'SapCloudForCustomerResource'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -17008,7 +16931,6 @@ def datafactory_dataset_sap_ecc_resource_create(cmd, client,
                                                 resource_group_name,
                                                 factory_name,
                                                 dataset_name,
-                                                type_,
                                                 linked_service_name,
                                                 type_properties_path,
                                                 if_match=None,
@@ -17031,7 +16953,7 @@ def datafactory_dataset_sap_ecc_resource_create(cmd, client,
     if isinstance(type_properties_path, str):
         type_properties_path = json.loads(type_properties_path)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'SapEccResource'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -17051,7 +16973,6 @@ def datafactory_dataset_sap_ecc_resource_update(instance, cmd,
                                                 resource_group_name,
                                                 factory_name,
                                                 dataset_name,
-                                                type_,
                                                 linked_service_name,
                                                 type_properties_path,
                                                 if_match=None,
@@ -17073,7 +16994,7 @@ def datafactory_dataset_sap_ecc_resource_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_path, str):
         type_properties_path = json.loads(type_properties_path)
-    instance.type = type_
+    instance.type = 'SapEccResource'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -17089,7 +17010,6 @@ def datafactory_dataset_sap_hana_table_create(cmd, client,
                                               resource_group_name,
                                               factory_name,
                                               dataset_name,
-                                              type_,
                                               linked_service_name,
                                               if_match=None,
                                               description=None,
@@ -17115,7 +17035,7 @@ def datafactory_dataset_sap_hana_table_create(cmd, client,
     if isinstance(type_properties_table, str):
         type_properties_table = json.loads(type_properties_table)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'SapHanaTable'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -17136,7 +17056,6 @@ def datafactory_dataset_sap_hana_table_update(instance, cmd,
                                               resource_group_name,
                                               factory_name,
                                               dataset_name,
-                                              type_,
                                               linked_service_name,
                                               if_match=None,
                                               description=None,
@@ -17161,7 +17080,7 @@ def datafactory_dataset_sap_hana_table_update(instance, cmd,
         type_properties_schema = json.loads(type_properties_schema)
     if isinstance(type_properties_table, str):
         type_properties_table = json.loads(type_properties_table)
-    instance.type = type_
+    instance.type = 'SapHanaTable'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -17178,7 +17097,6 @@ def datafactory_dataset_sap_open_hub_table_create(cmd, client,
                                                   resource_group_name,
                                                   factory_name,
                                                   dataset_name,
-                                                  type_,
                                                   linked_service_name,
                                                   type_properties_open_hub_destination_name,
                                                   if_match=None,
@@ -17207,7 +17125,7 @@ def datafactory_dataset_sap_open_hub_table_create(cmd, client,
     if isinstance(type_properties_base_request_id, str):
         type_properties_base_request_id = json.loads(type_properties_base_request_id)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'SapOpenHubTable'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -17229,7 +17147,6 @@ def datafactory_dataset_sap_open_hub_table_update(instance, cmd,
                                                   resource_group_name,
                                                   factory_name,
                                                   dataset_name,
-                                                  type_,
                                                   linked_service_name,
                                                   type_properties_open_hub_destination_name,
                                                   if_match=None,
@@ -17257,7 +17174,7 @@ def datafactory_dataset_sap_open_hub_table_update(instance, cmd,
         type_properties_exclude_last_request = json.loads(type_properties_exclude_last_request)
     if isinstance(type_properties_base_request_id, str):
         type_properties_base_request_id = json.loads(type_properties_base_request_id)
-    instance.type = type_
+    instance.type = 'SapOpenHubTable'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -17275,7 +17192,6 @@ def datafactory_dataset_sap_table_resource_create(cmd, client,
                                                   resource_group_name,
                                                   factory_name,
                                                   dataset_name,
-                                                  type_,
                                                   linked_service_name,
                                                   type_properties_table_name,
                                                   if_match=None,
@@ -17298,7 +17214,7 @@ def datafactory_dataset_sap_table_resource_create(cmd, client,
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'SapTableResource'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -17318,7 +17234,6 @@ def datafactory_dataset_sap_table_resource_update(instance, cmd,
                                                   resource_group_name,
                                                   factory_name,
                                                   dataset_name,
-                                                  type_,
                                                   linked_service_name,
                                                   type_properties_table_name,
                                                   if_match=None,
@@ -17340,7 +17255,7 @@ def datafactory_dataset_sap_table_resource_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
-    instance.type = type_
+    instance.type = 'SapTableResource'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -17356,7 +17271,6 @@ def datafactory_dataset_service_now_object_create(cmd, client,
                                                   resource_group_name,
                                                   factory_name,
                                                   dataset_name,
-                                                  type_,
                                                   linked_service_name,
                                                   if_match=None,
                                                   description=None,
@@ -17379,7 +17293,7 @@ def datafactory_dataset_service_now_object_create(cmd, client,
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'ServiceNowObject'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -17399,7 +17313,6 @@ def datafactory_dataset_service_now_object_update(instance, cmd,
                                                   resource_group_name,
                                                   factory_name,
                                                   dataset_name,
-                                                  type_,
                                                   linked_service_name,
                                                   if_match=None,
                                                   description=None,
@@ -17421,7 +17334,7 @@ def datafactory_dataset_service_now_object_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
-    instance.type = type_
+    instance.type = 'ServiceNowObject'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -17437,7 +17350,6 @@ def datafactory_dataset_shopify_object_create(cmd, client,
                                               resource_group_name,
                                               factory_name,
                                               dataset_name,
-                                              type_,
                                               linked_service_name,
                                               if_match=None,
                                               description=None,
@@ -17460,7 +17372,7 @@ def datafactory_dataset_shopify_object_create(cmd, client,
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'ShopifyObject'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -17480,7 +17392,6 @@ def datafactory_dataset_shopify_object_update(instance, cmd,
                                               resource_group_name,
                                               factory_name,
                                               dataset_name,
-                                              type_,
                                               linked_service_name,
                                               if_match=None,
                                               description=None,
@@ -17502,7 +17413,7 @@ def datafactory_dataset_shopify_object_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
-    instance.type = type_
+    instance.type = 'ShopifyObject'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -17518,7 +17429,6 @@ def datafactory_dataset_snowflake_table_create(cmd, client,
                                                resource_group_name,
                                                factory_name,
                                                dataset_name,
-                                               type_,
                                                linked_service_name,
                                                if_match=None,
                                                description=None,
@@ -17544,7 +17454,7 @@ def datafactory_dataset_snowflake_table_create(cmd, client,
     if isinstance(type_properties_table, str):
         type_properties_table = json.loads(type_properties_table)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'SnowflakeTable'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -17565,7 +17475,6 @@ def datafactory_dataset_snowflake_table_update(instance, cmd,
                                                resource_group_name,
                                                factory_name,
                                                dataset_name,
-                                               type_,
                                                linked_service_name,
                                                if_match=None,
                                                description=None,
@@ -17590,7 +17499,7 @@ def datafactory_dataset_snowflake_table_update(instance, cmd,
         type_properties_schema = json.loads(type_properties_schema)
     if isinstance(type_properties_table, str):
         type_properties_table = json.loads(type_properties_table)
-    instance.type = type_
+    instance.type = 'SnowflakeTable'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -17607,7 +17516,6 @@ def datafactory_dataset_spark_object_create(cmd, client,
                                             resource_group_name,
                                             factory_name,
                                             dataset_name,
-                                            type_,
                                             linked_service_name,
                                             if_match=None,
                                             description=None,
@@ -17636,7 +17544,7 @@ def datafactory_dataset_spark_object_create(cmd, client,
     if isinstance(type_properties_schema, str):
         type_properties_schema = json.loads(type_properties_schema)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'SparkObject'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -17658,7 +17566,6 @@ def datafactory_dataset_spark_object_update(instance, cmd,
                                             resource_group_name,
                                             factory_name,
                                             dataset_name,
-                                            type_,
                                             linked_service_name,
                                             if_match=None,
                                             description=None,
@@ -17686,7 +17593,7 @@ def datafactory_dataset_spark_object_update(instance, cmd,
         type_properties_table = json.loads(type_properties_table)
     if isinstance(type_properties_schema, str):
         type_properties_schema = json.loads(type_properties_schema)
-    instance.type = type_
+    instance.type = 'SparkObject'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -17704,7 +17611,6 @@ def datafactory_dataset_sql_server_table_create(cmd, client,
                                                 resource_group_name,
                                                 factory_name,
                                                 dataset_name,
-                                                type_,
                                                 linked_service_name,
                                                 if_match=None,
                                                 description=None,
@@ -17733,7 +17639,7 @@ def datafactory_dataset_sql_server_table_create(cmd, client,
     if isinstance(type_properties_table, str):
         type_properties_table = json.loads(type_properties_table)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'SqlServerTable'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -17755,7 +17661,6 @@ def datafactory_dataset_sql_server_table_update(instance, cmd,
                                                 resource_group_name,
                                                 factory_name,
                                                 dataset_name,
-                                                type_,
                                                 linked_service_name,
                                                 if_match=None,
                                                 description=None,
@@ -17783,7 +17688,7 @@ def datafactory_dataset_sql_server_table_update(instance, cmd,
         type_properties_schema = json.loads(type_properties_schema)
     if isinstance(type_properties_table, str):
         type_properties_table = json.loads(type_properties_table)
-    instance.type = type_
+    instance.type = 'SqlServerTable'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -17801,7 +17706,6 @@ def datafactory_dataset_square_object_create(cmd, client,
                                              resource_group_name,
                                              factory_name,
                                              dataset_name,
-                                             type_,
                                              linked_service_name,
                                              if_match=None,
                                              description=None,
@@ -17824,7 +17728,7 @@ def datafactory_dataset_square_object_create(cmd, client,
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'SquareObject'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -17844,7 +17748,6 @@ def datafactory_dataset_square_object_update(instance, cmd,
                                              resource_group_name,
                                              factory_name,
                                              dataset_name,
-                                             type_,
                                              linked_service_name,
                                              if_match=None,
                                              description=None,
@@ -17866,7 +17769,7 @@ def datafactory_dataset_square_object_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
-    instance.type = type_
+    instance.type = 'SquareObject'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -17882,7 +17785,6 @@ def datafactory_dataset_sybase_table_create(cmd, client,
                                             resource_group_name,
                                             factory_name,
                                             dataset_name,
-                                            type_,
                                             linked_service_name,
                                             if_match=None,
                                             description=None,
@@ -17905,7 +17807,7 @@ def datafactory_dataset_sybase_table_create(cmd, client,
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'SybaseTable'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -17925,7 +17827,6 @@ def datafactory_dataset_sybase_table_update(instance, cmd,
                                             resource_group_name,
                                             factory_name,
                                             dataset_name,
-                                            type_,
                                             linked_service_name,
                                             if_match=None,
                                             description=None,
@@ -17947,7 +17848,7 @@ def datafactory_dataset_sybase_table_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
-    instance.type = type_
+    instance.type = 'SybaseTable'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -17963,7 +17864,6 @@ def datafactory_dataset_teradata_table_create(cmd, client,
                                               resource_group_name,
                                               factory_name,
                                               dataset_name,
-                                              type_,
                                               linked_service_name,
                                               if_match=None,
                                               description=None,
@@ -17989,7 +17889,7 @@ def datafactory_dataset_teradata_table_create(cmd, client,
     if isinstance(type_properties_table, str):
         type_properties_table = json.loads(type_properties_table)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'TeradataTable'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -18010,7 +17910,6 @@ def datafactory_dataset_teradata_table_update(instance, cmd,
                                               resource_group_name,
                                               factory_name,
                                               dataset_name,
-                                              type_,
                                               linked_service_name,
                                               if_match=None,
                                               description=None,
@@ -18035,7 +17934,7 @@ def datafactory_dataset_teradata_table_update(instance, cmd,
         type_properties_database = json.loads(type_properties_database)
     if isinstance(type_properties_table, str):
         type_properties_table = json.loads(type_properties_table)
-    instance.type = type_
+    instance.type = 'TeradataTable'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -18052,7 +17951,6 @@ def datafactory_dataset_vertica_table_create(cmd, client,
                                              resource_group_name,
                                              factory_name,
                                              dataset_name,
-                                             type_,
                                              linked_service_name,
                                              if_match=None,
                                              description=None,
@@ -18081,7 +17979,7 @@ def datafactory_dataset_vertica_table_create(cmd, client,
     if isinstance(type_properties_schema, str):
         type_properties_schema = json.loads(type_properties_schema)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'VerticaTable'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -18103,7 +18001,6 @@ def datafactory_dataset_vertica_table_update(instance, cmd,
                                              resource_group_name,
                                              factory_name,
                                              dataset_name,
-                                             type_,
                                              linked_service_name,
                                              if_match=None,
                                              description=None,
@@ -18131,7 +18028,7 @@ def datafactory_dataset_vertica_table_update(instance, cmd,
         type_properties_table = json.loads(type_properties_table)
     if isinstance(type_properties_schema, str):
         type_properties_schema = json.loads(type_properties_schema)
-    instance.type = type_
+    instance.type = 'VerticaTable'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -18149,7 +18046,6 @@ def datafactory_dataset_web_table_create(cmd, client,
                                          resource_group_name,
                                          factory_name,
                                          dataset_name,
-                                         type_,
                                          linked_service_name,
                                          type_properties_index,
                                          if_match=None,
@@ -18175,7 +18071,7 @@ def datafactory_dataset_web_table_create(cmd, client,
     if isinstance(type_properties_path, str):
         type_properties_path = json.loads(type_properties_path)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'WebTable'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -18196,7 +18092,6 @@ def datafactory_dataset_web_table_update(instance, cmd,
                                          resource_group_name,
                                          factory_name,
                                          dataset_name,
-                                         type_,
                                          linked_service_name,
                                          type_properties_index,
                                          if_match=None,
@@ -18221,7 +18116,7 @@ def datafactory_dataset_web_table_update(instance, cmd,
         type_properties_index = json.loads(type_properties_index)
     if isinstance(type_properties_path, str):
         type_properties_path = json.loads(type_properties_path)
-    instance.type = type_
+    instance.type = 'WebTable'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -18238,7 +18133,6 @@ def datafactory_dataset_xero_object_create(cmd, client,
                                            resource_group_name,
                                            factory_name,
                                            dataset_name,
-                                           type_,
                                            linked_service_name,
                                            if_match=None,
                                            description=None,
@@ -18261,7 +18155,7 @@ def datafactory_dataset_xero_object_create(cmd, client,
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'XeroObject'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -18281,7 +18175,6 @@ def datafactory_dataset_xero_object_update(instance, cmd,
                                            resource_group_name,
                                            factory_name,
                                            dataset_name,
-                                           type_,
                                            linked_service_name,
                                            if_match=None,
                                            description=None,
@@ -18303,7 +18196,7 @@ def datafactory_dataset_xero_object_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
-    instance.type = type_
+    instance.type = 'XeroObject'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -18319,7 +18212,6 @@ def datafactory_dataset_zoho_object_create(cmd, client,
                                            resource_group_name,
                                            factory_name,
                                            dataset_name,
-                                           type_,
                                            linked_service_name,
                                            if_match=None,
                                            description=None,
@@ -18342,7 +18234,7 @@ def datafactory_dataset_zoho_object_create(cmd, client,
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
     properties = {}
-    properties['type'] = type_
+    properties['type'] = 'ZohoObject'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -18362,7 +18254,6 @@ def datafactory_dataset_zoho_object_update(instance, cmd,
                                            resource_group_name,
                                            factory_name,
                                            dataset_name,
-                                           type_,
                                            linked_service_name,
                                            if_match=None,
                                            description=None,
@@ -18384,7 +18275,7 @@ def datafactory_dataset_zoho_object_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
-    instance.type = type_
+    instance.type = 'ZohoObject'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -18467,6 +18358,8 @@ def datafactory_pipeline_create_run(cmd, client,
                                     start_activity_name=None,
                                     start_from_failure=None,
                                     parameters=None):
+    if isinstance(parameters, str):
+        parameters = json.loads(parameters)
     return client.create_run(resource_group_name=resource_group_name,
                              factory_name=factory_name,
                              pipeline_name=pipeline_name,

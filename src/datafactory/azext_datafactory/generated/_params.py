@@ -16,13 +16,14 @@ from azure.cli.core.commands.parameters import (
 )
 from azext_datafactory.action import (
     AddIdentity,
-    AddTypePropertiesNewClusterSparkConf,
-    AddTypePropertiesNewClusterSparkEnvVars,
-    AddTypePropertiesNewClusterCustomTags,
+    AddFactoryVstsConfiguration,
+    AddFactoryGitHubConfiguration,
     AddTypePropertiesScriptActions,
     AddFolder,
-    AddProperties,
-    AddParameters,
+    AddDatasetBZip2Compression,
+    AddDatasetGZipCompression,
+    AddDatasetDeflateCompression,
+    AddDatasetZipDeflateCompression,
     AddFilters,
     AddOrderBy,
     AddCommandPayload
@@ -48,8 +49,10 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx), help='The resource location.')
         c.argument('tags', tags_type, help='The resource tags.')
         c.argument('identity', action=AddIdentity, nargs='+', help='Managed service identity of the factory.')
-        c.argument('repo_configuration', arg_type=CLIArgumentType(options_list=['--repo-configuration'], help='Git repo'
-                   ' information of the factory.'))
+        c.argument('factory_vsts_configuration', action=AddFactoryVstsConfiguration, nargs='+', help='Factory\'s VSTS r'
+                   'epo information.')
+        c.argument('factory_git_hub_configuration', action=AddFactoryGitHubConfiguration, nargs='+', help='Factory\'s G'
+                   'itHub repo information.')
 
     with self.argument_context('datafactory factory update') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
@@ -64,8 +67,10 @@ def load_arguments(self, _):
     with self.argument_context('datafactory factory configure-factory-repo') as c:
         c.argument('location_id', help='The location identifier.')
         c.argument('factory_resource_id', help='The factory resource id.')
-        c.argument('repo_configuration', arg_type=CLIArgumentType(options_list=['--repo-configuration'], help='Git repo'
-                   ' information of the factory.'))
+        c.argument('factory_vsts_configuration', action=AddFactoryVstsConfiguration, nargs='+', help='Factory\'s VSTS r'
+                   'epo information.')
+        c.argument('factory_git_hub_configuration', action=AddFactoryGitHubConfiguration, nargs='+', help='Factory\'s G'
+                   'itHub repo information.')
 
     with self.argument_context('datafactory factory get-data-plane-access') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
@@ -115,8 +120,6 @@ def load_arguments(self, _):
         c.argument('integration_runtime_name', help='The integration runtime name.')
         c.argument('if_match', help='ETag of the integration runtime entity. Should only be specified for update, for w'
                    'hich it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['Managed', 'SelfHosted']), help='Type of i'
-                   'ntegration runtime.')
         c.argument('description', help='Integration runtime description.')
         c.argument('type_properties_compute_properties', arg_type=CLIArgumentType(options_list=['--type-properties-comp'
                    'ute-properties'], help='The compute resource for managed integration runtime.'))
@@ -129,8 +132,6 @@ def load_arguments(self, _):
         c.argument('integration_runtime_name', help='The integration runtime name.')
         c.argument('if_match', help='ETag of the integration runtime entity. Should only be specified for update, for w'
                    'hich it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['Managed', 'SelfHosted']), help='Type of i'
-                   'ntegration runtime.')
         c.argument('description', help='Integration runtime description.')
         c.argument('type_properties_linked_info', arg_type=CLIArgumentType(options_list=['--type-properties-linked-info'
                    ''], help='The base definition of a linked integration runtime.'))
@@ -268,7 +269,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -310,7 +310,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -353,7 +352,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -385,7 +383,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -418,7 +415,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -447,7 +443,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -477,7 +472,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -507,7 +501,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -538,7 +531,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -572,7 +564,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -607,7 +598,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -646,7 +636,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -686,7 +675,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -716,7 +704,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -747,7 +734,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -787,7 +773,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -828,7 +813,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -867,7 +851,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -907,7 +890,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -942,13 +924,15 @@ def load_arguments(self, _):
                    'ew-cluster-node-type'], help='The node type of the new job cluster. This property is required if ne'
                    'wClusterVersion is specified and instancePoolId is not specified. If instancePoolId is specified, t'
                    'his property is ignored. Type: string (or Expression with resultType string).'))
-        c.argument('type_properties_new_cluster_spark_conf', action=AddTypePropertiesNewClusterSparkConf, nargs='+',
-                   help='A set of optional, user-specified Spark configuration key-value pairs.')
-        c.argument('type_properties_new_cluster_spark_env_vars', action=AddTypePropertiesNewClusterSparkEnvVars,
-                   nargs='+', help='A set of optional, user-specified Spark environment variables key-value pairs.')
-        c.argument('type_properties_new_cluster_custom_tags', action=AddTypePropertiesNewClusterCustomTags, nargs='+',
-                   help='Additional tags for cluster resources. This property is ignored in instance pool configuration'
-                   's.')
+        c.argument('type_properties_new_cluster_spark_conf', arg_type=CLIArgumentType(options_list=['--type-properties-'
+                   'new-cluster-spark-conf'], help='A set of optional, user-specified Spark configuration key-value pai'
+                   'rs.'))
+        c.argument('type_properties_new_cluster_spark_env_vars', arg_type=CLIArgumentType(options_list=['--type-propert'
+                   'ies-new-cluster-spark-env-vars'], help='A set of optional, user-specified Spark environment variabl'
+                   'es key-value pairs.'))
+        c.argument('type_properties_new_cluster_custom_tags', arg_type=CLIArgumentType(options_list=['--type-properties'
+                   '-new-cluster-custom-tags'], help='Additional tags for cluster resources. This property is ignored i'
+                   'n instance pool configurations.'))
         c.argument('type_properties_new_cluster_driver_node_type', arg_type=CLIArgumentType(options_list=['--type-prope'
                    'rties-new-cluster-driver-node-type'], help='The driver node type for the new job cluster. This prop'
                    'erty is ignored in instance pool configurations. Type: string (or Expression with resultType string'
@@ -971,7 +955,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -1006,13 +989,15 @@ def load_arguments(self, _):
                    'ew-cluster-node-type'], help='The node type of the new job cluster. This property is required if ne'
                    'wClusterVersion is specified and instancePoolId is not specified. If instancePoolId is specified, t'
                    'his property is ignored. Type: string (or Expression with resultType string).'))
-        c.argument('type_properties_new_cluster_spark_conf', action=AddTypePropertiesNewClusterSparkConf, nargs='+',
-                   help='A set of optional, user-specified Spark configuration key-value pairs.')
-        c.argument('type_properties_new_cluster_spark_env_vars', action=AddTypePropertiesNewClusterSparkEnvVars,
-                   nargs='+', help='A set of optional, user-specified Spark environment variables key-value pairs.')
-        c.argument('type_properties_new_cluster_custom_tags', action=AddTypePropertiesNewClusterCustomTags, nargs='+',
-                   help='Additional tags for cluster resources. This property is ignored in instance pool configuration'
-                   's.')
+        c.argument('type_properties_new_cluster_spark_conf', arg_type=CLIArgumentType(options_list=['--type-properties-'
+                   'new-cluster-spark-conf'], help='A set of optional, user-specified Spark configuration key-value pai'
+                   'rs.'))
+        c.argument('type_properties_new_cluster_spark_env_vars', arg_type=CLIArgumentType(options_list=['--type-propert'
+                   'ies-new-cluster-spark-env-vars'], help='A set of optional, user-specified Spark environment variabl'
+                   'es key-value pairs.'))
+        c.argument('type_properties_new_cluster_custom_tags', arg_type=CLIArgumentType(options_list=['--type-properties'
+                   '-new-cluster-custom-tags'], help='Additional tags for cluster resources. This property is ignored i'
+                   'n instance pool configurations.'))
         c.argument('type_properties_new_cluster_driver_node_type', arg_type=CLIArgumentType(options_list=['--type-prope'
                    'rties-new-cluster-driver-node-type'], help='The driver node type for the new job cluster. This prop'
                    'erty is ignored in instance pool configurations. Type: string (or Expression with resultType string'
@@ -1036,7 +1021,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -1061,7 +1045,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -1087,7 +1070,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -1111,7 +1093,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -1136,7 +1117,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -1154,7 +1134,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -1173,7 +1152,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -1210,7 +1188,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -1248,7 +1225,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -1285,7 +1261,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -1323,7 +1298,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -1347,7 +1321,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -1372,7 +1345,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -1396,7 +1368,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -1421,7 +1392,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -1445,7 +1415,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -1470,7 +1439,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -1493,7 +1461,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -1517,7 +1484,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -1550,7 +1516,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -1584,7 +1549,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -1617,7 +1581,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -1651,7 +1614,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -1684,7 +1646,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -1718,7 +1679,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -1746,7 +1706,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -1775,7 +1734,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -1803,7 +1761,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -1832,7 +1789,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -1862,7 +1818,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -1893,7 +1848,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -1953,7 +1907,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -2014,7 +1967,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -2048,7 +2000,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -2083,7 +2034,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -2113,7 +2063,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -2144,7 +2093,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -2165,7 +2113,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -2187,7 +2134,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -2211,7 +2157,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -2236,7 +2181,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -2253,7 +2197,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -2271,7 +2214,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -2311,7 +2253,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -2352,7 +2293,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -2376,7 +2316,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -2401,7 +2340,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -2457,7 +2395,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -2514,7 +2451,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -2549,7 +2485,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -2585,7 +2520,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -2642,7 +2576,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -2700,7 +2633,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -2735,7 +2667,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -2771,7 +2702,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -2796,7 +2726,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -2822,7 +2751,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -2860,7 +2788,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -2899,7 +2826,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -2948,7 +2874,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -2998,7 +2923,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -3049,7 +2973,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -3101,7 +3024,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -3130,7 +3052,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -3160,7 +3081,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -3184,7 +3104,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -3209,7 +3128,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -3253,7 +3171,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -3298,7 +3215,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -3334,7 +3250,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -3371,7 +3286,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -3482,7 +3396,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -3594,7 +3507,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -3623,7 +3535,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -3653,7 +3564,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -3714,7 +3624,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -3776,7 +3685,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -3819,7 +3727,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -3863,7 +3770,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -3899,7 +3805,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -3936,7 +3841,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -3982,7 +3886,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -4029,7 +3932,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -4061,7 +3963,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -4094,7 +3995,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -4131,7 +4031,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -4169,7 +4068,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -4201,7 +4099,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -4234,7 +4131,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -4258,7 +4154,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -4283,7 +4178,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -4317,7 +4211,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -4352,7 +4245,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -4385,7 +4277,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -4419,7 +4310,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -4463,7 +4353,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -4508,7 +4397,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -4529,7 +4417,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -4551,7 +4438,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -4574,7 +4460,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -4598,7 +4483,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -4622,7 +4506,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -4647,7 +4530,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -4698,7 +4580,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -4750,7 +4631,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -4782,7 +4662,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -4815,7 +4694,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -4845,7 +4723,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -4876,7 +4753,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -4900,7 +4776,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -4925,7 +4800,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -4960,7 +4834,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -4996,7 +4869,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -5030,7 +4902,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -5065,7 +4936,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -5114,7 +4984,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -5164,7 +5033,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -5187,7 +5055,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -5211,7 +5078,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -5263,7 +5129,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -5316,7 +5181,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -5351,7 +5215,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -5387,7 +5250,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -5424,7 +5286,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -5462,7 +5323,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -5505,7 +5365,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -5549,7 +5408,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -5583,7 +5441,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -5618,7 +5475,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -5653,7 +5509,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -5689,7 +5544,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -5726,7 +5580,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -5764,7 +5617,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -5795,7 +5647,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -5827,7 +5678,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -5853,7 +5703,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -5880,7 +5729,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -5904,7 +5752,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -5929,7 +5776,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -5959,7 +5805,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -5990,7 +5835,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -6028,7 +5872,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -6067,7 +5910,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -6130,7 +5972,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -6194,7 +6035,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -6234,7 +6074,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -6275,7 +6114,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -6324,7 +6162,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -6374,7 +6211,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -6407,7 +6243,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -6441,7 +6276,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -6464,7 +6298,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -6488,7 +6321,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -6540,7 +6372,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -6593,7 +6424,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -6620,7 +6450,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -6648,7 +6477,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -6685,7 +6513,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -6723,7 +6550,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -6754,7 +6580,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -6786,7 +6611,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -6816,7 +6640,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -6847,7 +6670,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -6871,7 +6693,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -6896,7 +6717,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -6913,7 +6733,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -6931,7 +6750,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -6966,7 +6784,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -7002,7 +6819,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -7034,7 +6850,6 @@ def load_arguments(self, _):
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of linked service.')
         c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
                    'e reference.'))
         c.argument('description', help='Linked service description.')
@@ -7083,7 +6898,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -7109,7 +6923,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -7136,7 +6949,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -7166,7 +6978,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -7197,7 +7008,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -7230,8 +7040,14 @@ def load_arguments(self, _):
                    'n with resultType string).'))
         c.argument('type_properties_format', arg_type=CLIArgumentType(options_list=['--type-properties-format'], help=
                    'The format of files.'))
-        c.argument('type_properties_compression', arg_type=CLIArgumentType(options_list=['--type-properties-compression'
-                   ''], help='The data compression method used for the Amazon S3 object.'))
+        c.argument('dataset_b_zip2_compression', action=AddDatasetBZip2Compression, nargs='+', help='The BZip2 compress'
+                   'ion method used on a dataset.')
+        c.argument('dataset_g_zip_compression', action=AddDatasetGZipCompression, nargs='+', help='The GZip compression'
+                   ' method used on a dataset.')
+        c.argument('dataset_deflate_compression', action=AddDatasetDeflateCompression, nargs='+', help='The Deflate com'
+                   'pression method used on a dataset.')
+        c.argument('dataset_zip_deflate_compression', action=AddDatasetZipDeflateCompression, nargs='+', help='The ZipD'
+                   'eflate compression method used on a dataset.')
 
     with self.argument_context('datafactory dataset amazon-s3-object update') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
@@ -7239,7 +7055,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -7272,8 +7087,14 @@ def load_arguments(self, _):
                    'n with resultType string).'))
         c.argument('type_properties_format', arg_type=CLIArgumentType(options_list=['--type-properties-format'], help=
                    'The format of files.'))
-        c.argument('type_properties_compression', arg_type=CLIArgumentType(options_list=['--type-properties-compression'
-                   ''], help='The data compression method used for the Amazon S3 object.'))
+        c.argument('dataset_b_zip2_compression', action=AddDatasetBZip2Compression, nargs='+', help='The BZip2 compress'
+                   'ion method used on a dataset.')
+        c.argument('dataset_g_zip_compression', action=AddDatasetGZipCompression, nargs='+', help='The GZip compression'
+                   ' method used on a dataset.')
+        c.argument('dataset_deflate_compression', action=AddDatasetDeflateCompression, nargs='+', help='The Deflate com'
+                   'pression method used on a dataset.')
+        c.argument('dataset_zip_deflate_compression', action=AddDatasetZipDeflateCompression, nargs='+', help='The ZipD'
+                   'eflate compression method used on a dataset.')
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset avro create') as c:
@@ -7282,7 +7103,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -7310,7 +7130,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -7339,7 +7158,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -7371,8 +7189,14 @@ def load_arguments(self, _):
                    'on with resultType string).'))
         c.argument('type_properties_format', arg_type=CLIArgumentType(options_list=['--type-properties-format'], help=
                    'The format of the Azure Blob storage.'))
-        c.argument('type_properties_compression', arg_type=CLIArgumentType(options_list=['--type-properties-compression'
-                   ''], help='The data compression method used for the blob storage.'))
+        c.argument('dataset_b_zip2_compression', action=AddDatasetBZip2Compression, nargs='+', help='The BZip2 compress'
+                   'ion method used on a dataset.')
+        c.argument('dataset_g_zip_compression', action=AddDatasetGZipCompression, nargs='+', help='The GZip compression'
+                   ' method used on a dataset.')
+        c.argument('dataset_deflate_compression', action=AddDatasetDeflateCompression, nargs='+', help='The Deflate com'
+                   'pression method used on a dataset.')
+        c.argument('dataset_zip_deflate_compression', action=AddDatasetZipDeflateCompression, nargs='+', help='The ZipD'
+                   'eflate compression method used on a dataset.')
 
     with self.argument_context('datafactory dataset azure-blob update') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
@@ -7380,7 +7204,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -7412,8 +7235,14 @@ def load_arguments(self, _):
                    'on with resultType string).'))
         c.argument('type_properties_format', arg_type=CLIArgumentType(options_list=['--type-properties-format'], help=
                    'The format of the Azure Blob storage.'))
-        c.argument('type_properties_compression', arg_type=CLIArgumentType(options_list=['--type-properties-compression'
-                   ''], help='The data compression method used for the blob storage.'))
+        c.argument('dataset_b_zip2_compression', action=AddDatasetBZip2Compression, nargs='+', help='The BZip2 compress'
+                   'ion method used on a dataset.')
+        c.argument('dataset_g_zip_compression', action=AddDatasetGZipCompression, nargs='+', help='The GZip compression'
+                   ' method used on a dataset.')
+        c.argument('dataset_deflate_compression', action=AddDatasetDeflateCompression, nargs='+', help='The Deflate com'
+                   'pression method used on a dataset.')
+        c.argument('dataset_zip_deflate_compression', action=AddDatasetZipDeflateCompression, nargs='+', help='The ZipD'
+                   'eflate compression method used on a dataset.')
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset azure-blob-f-s-file create') as c:
@@ -7422,7 +7251,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -7446,8 +7274,14 @@ def load_arguments(self, _):
                    'ng).'))
         c.argument('type_properties_format', arg_type=CLIArgumentType(options_list=['--type-properties-format'], help=
                    'The format of the Azure Data Lake Storage Gen2 storage.'))
-        c.argument('type_properties_compression', arg_type=CLIArgumentType(options_list=['--type-properties-compression'
-                   ''], help='The data compression method used for the blob storage.'))
+        c.argument('dataset_b_zip2_compression', action=AddDatasetBZip2Compression, nargs='+', help='The BZip2 compress'
+                   'ion method used on a dataset.')
+        c.argument('dataset_g_zip_compression', action=AddDatasetGZipCompression, nargs='+', help='The GZip compression'
+                   ' method used on a dataset.')
+        c.argument('dataset_deflate_compression', action=AddDatasetDeflateCompression, nargs='+', help='The Deflate com'
+                   'pression method used on a dataset.')
+        c.argument('dataset_zip_deflate_compression', action=AddDatasetZipDeflateCompression, nargs='+', help='The ZipD'
+                   'eflate compression method used on a dataset.')
 
     with self.argument_context('datafactory dataset azure-blob-f-s-file update') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
@@ -7455,7 +7289,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -7479,8 +7312,14 @@ def load_arguments(self, _):
                    'ng).'))
         c.argument('type_properties_format', arg_type=CLIArgumentType(options_list=['--type-properties-format'], help=
                    'The format of the Azure Data Lake Storage Gen2 storage.'))
-        c.argument('type_properties_compression', arg_type=CLIArgumentType(options_list=['--type-properties-compression'
-                   ''], help='The data compression method used for the blob storage.'))
+        c.argument('dataset_b_zip2_compression', action=AddDatasetBZip2Compression, nargs='+', help='The BZip2 compress'
+                   'ion method used on a dataset.')
+        c.argument('dataset_g_zip_compression', action=AddDatasetGZipCompression, nargs='+', help='The GZip compression'
+                   ' method used on a dataset.')
+        c.argument('dataset_deflate_compression', action=AddDatasetDeflateCompression, nargs='+', help='The Deflate com'
+                   'pression method used on a dataset.')
+        c.argument('dataset_zip_deflate_compression', action=AddDatasetZipDeflateCompression, nargs='+', help='The ZipD'
+                   'eflate compression method used on a dataset.')
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset azure-data-explorer-table create') as c:
@@ -7489,7 +7328,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -7515,7 +7353,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -7542,7 +7379,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -7566,8 +7402,14 @@ def load_arguments(self, _):
                    ' string).'))
         c.argument('type_properties_format', arg_type=CLIArgumentType(options_list=['--type-properties-format'], help=
                    'The format of the Data Lake Store.'))
-        c.argument('type_properties_compression', arg_type=CLIArgumentType(options_list=['--type-properties-compression'
-                   ''], help='The data compression method used for the item(s) in the Azure Data Lake Store.'))
+        c.argument('dataset_b_zip2_compression', action=AddDatasetBZip2Compression, nargs='+', help='The BZip2 compress'
+                   'ion method used on a dataset.')
+        c.argument('dataset_g_zip_compression', action=AddDatasetGZipCompression, nargs='+', help='The GZip compression'
+                   ' method used on a dataset.')
+        c.argument('dataset_deflate_compression', action=AddDatasetDeflateCompression, nargs='+', help='The Deflate com'
+                   'pression method used on a dataset.')
+        c.argument('dataset_zip_deflate_compression', action=AddDatasetZipDeflateCompression, nargs='+', help='The ZipD'
+                   'eflate compression method used on a dataset.')
 
     with self.argument_context('datafactory dataset azure-data-lake-store-file update') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
@@ -7575,7 +7417,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -7599,8 +7440,14 @@ def load_arguments(self, _):
                    ' string).'))
         c.argument('type_properties_format', arg_type=CLIArgumentType(options_list=['--type-properties-format'], help=
                    'The format of the Data Lake Store.'))
-        c.argument('type_properties_compression', arg_type=CLIArgumentType(options_list=['--type-properties-compression'
-                   ''], help='The data compression method used for the item(s) in the Azure Data Lake Store.'))
+        c.argument('dataset_b_zip2_compression', action=AddDatasetBZip2Compression, nargs='+', help='The BZip2 compress'
+                   'ion method used on a dataset.')
+        c.argument('dataset_g_zip_compression', action=AddDatasetGZipCompression, nargs='+', help='The GZip compression'
+                   ' method used on a dataset.')
+        c.argument('dataset_deflate_compression', action=AddDatasetDeflateCompression, nargs='+', help='The Deflate com'
+                   'pression method used on a dataset.')
+        c.argument('dataset_zip_deflate_compression', action=AddDatasetZipDeflateCompression, nargs='+', help='The ZipD'
+                   'eflate compression method used on a dataset.')
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset azure-maria-d-b-table create') as c:
@@ -7609,7 +7456,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -7635,7 +7481,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -7662,7 +7507,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -7690,7 +7534,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -7719,7 +7562,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -7752,7 +7594,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -7786,7 +7627,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -7812,7 +7652,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -7839,7 +7678,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -7870,7 +7708,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -7902,7 +7739,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -7934,7 +7770,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -7967,7 +7802,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -7997,7 +7831,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -8028,7 +7861,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -8054,7 +7886,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -8081,7 +7912,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -8099,8 +7929,14 @@ def load_arguments(self, _):
                    'ataset will appear at the root level.')
         c.argument('type_properties_location', arg_type=CLIArgumentType(options_list=['--type-properties-location'],
                    help='The location of the Binary storage.'))
-        c.argument('type_properties_compression', arg_type=CLIArgumentType(options_list=['--type-properties-compression'
-                   ''], help='The data compression method used for the binary dataset.'))
+        c.argument('dataset_b_zip2_compression', action=AddDatasetBZip2Compression, nargs='+', help='The BZip2 compress'
+                   'ion method used on a dataset.')
+        c.argument('dataset_g_zip_compression', action=AddDatasetGZipCompression, nargs='+', help='The GZip compression'
+                   ' method used on a dataset.')
+        c.argument('dataset_deflate_compression', action=AddDatasetDeflateCompression, nargs='+', help='The Deflate com'
+                   'pression method used on a dataset.')
+        c.argument('dataset_zip_deflate_compression', action=AddDatasetZipDeflateCompression, nargs='+', help='The ZipD'
+                   'eflate compression method used on a dataset.')
 
     with self.argument_context('datafactory dataset binary update') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
@@ -8108,7 +7944,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -8126,8 +7961,14 @@ def load_arguments(self, _):
                    'ataset will appear at the root level.')
         c.argument('type_properties_location', arg_type=CLIArgumentType(options_list=['--type-properties-location'],
                    help='The location of the Binary storage.'))
-        c.argument('type_properties_compression', arg_type=CLIArgumentType(options_list=['--type-properties-compression'
-                   ''], help='The data compression method used for the binary dataset.'))
+        c.argument('dataset_b_zip2_compression', action=AddDatasetBZip2Compression, nargs='+', help='The BZip2 compress'
+                   'ion method used on a dataset.')
+        c.argument('dataset_g_zip_compression', action=AddDatasetGZipCompression, nargs='+', help='The GZip compression'
+                   ' method used on a dataset.')
+        c.argument('dataset_deflate_compression', action=AddDatasetDeflateCompression, nargs='+', help='The Deflate com'
+                   'pression method used on a dataset.')
+        c.argument('dataset_zip_deflate_compression', action=AddDatasetZipDeflateCompression, nargs='+', help='The ZipD'
+                   'eflate compression method used on a dataset.')
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset cassandra-table create') as c:
@@ -8136,7 +7977,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -8164,7 +8004,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -8193,7 +8032,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -8218,7 +8056,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -8244,7 +8081,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -8270,7 +8106,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -8297,7 +8132,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -8323,7 +8157,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -8350,7 +8183,7 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('properties', action=AddProperties, nargs='+', help='Dataset properties.')
+        c.argument('properties', arg_type=CLIArgumentType(options_list=['--properties'], help='Dataset properties.'))
 
     with self.argument_context('datafactory dataset cosmos-db-sql-api-collection update') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
@@ -8358,7 +8191,7 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('properties', action=AddProperties, nargs='+', help='Dataset properties.')
+        c.argument('properties', arg_type=CLIArgumentType(options_list=['--properties'], help='Dataset properties.'))
 
     with self.argument_context('datafactory dataset couchbase-table create') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
@@ -8366,7 +8199,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -8392,7 +8224,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -8419,7 +8250,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -8444,7 +8274,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -8470,7 +8299,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -8500,7 +8328,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -8531,7 +8358,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -8581,7 +8407,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -8632,7 +8457,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -8658,7 +8482,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -8685,7 +8508,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -8715,7 +8537,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -8746,7 +8567,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -8771,7 +8591,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -8797,7 +8616,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -8822,7 +8640,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -8848,7 +8665,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -8873,7 +8689,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -8899,7 +8714,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -8925,7 +8739,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -8952,7 +8765,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -8984,8 +8796,14 @@ def load_arguments(self, _):
         c.argument('type_properties_file_filter', arg_type=CLIArgumentType(options_list=['--type-properties-file-filter'
                    ''], help='Specify a filter to be used to select a subset of files in the folderPath rather than all'
                    ' files. Type: string (or Expression with resultType string).'))
-        c.argument('type_properties_compression', arg_type=CLIArgumentType(options_list=['--type-properties-compression'
-                   ''], help='The data compression method used for the file system.'))
+        c.argument('dataset_b_zip2_compression', action=AddDatasetBZip2Compression, nargs='+', help='The BZip2 compress'
+                   'ion method used on a dataset.')
+        c.argument('dataset_g_zip_compression', action=AddDatasetGZipCompression, nargs='+', help='The GZip compression'
+                   ' method used on a dataset.')
+        c.argument('dataset_deflate_compression', action=AddDatasetDeflateCompression, nargs='+', help='The Deflate com'
+                   'pression method used on a dataset.')
+        c.argument('dataset_zip_deflate_compression', action=AddDatasetZipDeflateCompression, nargs='+', help='The ZipD'
+                   'eflate compression method used on a dataset.')
 
     with self.argument_context('datafactory dataset file-share update') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
@@ -8993,7 +8811,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -9025,8 +8842,14 @@ def load_arguments(self, _):
         c.argument('type_properties_file_filter', arg_type=CLIArgumentType(options_list=['--type-properties-file-filter'
                    ''], help='Specify a filter to be used to select a subset of files in the folderPath rather than all'
                    ' files. Type: string (or Expression with resultType string).'))
-        c.argument('type_properties_compression', arg_type=CLIArgumentType(options_list=['--type-properties-compression'
-                   ''], help='The data compression method used for the file system.'))
+        c.argument('dataset_b_zip2_compression', action=AddDatasetBZip2Compression, nargs='+', help='The BZip2 compress'
+                   'ion method used on a dataset.')
+        c.argument('dataset_g_zip_compression', action=AddDatasetGZipCompression, nargs='+', help='The GZip compression'
+                   ' method used on a dataset.')
+        c.argument('dataset_deflate_compression', action=AddDatasetDeflateCompression, nargs='+', help='The Deflate com'
+                   'pression method used on a dataset.')
+        c.argument('dataset_zip_deflate_compression', action=AddDatasetZipDeflateCompression, nargs='+', help='The ZipD'
+                   'eflate compression method used on a dataset.')
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset google-ad-words-object create') as c:
@@ -9035,7 +8858,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -9061,7 +8883,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -9088,7 +8909,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -9119,7 +8939,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -9151,7 +8970,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -9181,7 +8999,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -9212,7 +9029,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -9238,7 +9054,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -9265,7 +9080,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -9295,7 +9109,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -9326,7 +9139,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -9356,8 +9168,14 @@ def load_arguments(self, _):
                    'pe string).'))
         c.argument('type_properties_format', arg_type=CLIArgumentType(options_list=['--type-properties-format'], help=
                    'The format of files.'))
-        c.argument('type_properties_compression', arg_type=CLIArgumentType(options_list=['--type-properties-compression'
-                   ''], help='The data compression method used on files.'))
+        c.argument('dataset_b_zip2_compression', action=AddDatasetBZip2Compression, nargs='+', help='The BZip2 compress'
+                   'ion method used on a dataset.')
+        c.argument('dataset_g_zip_compression', action=AddDatasetGZipCompression, nargs='+', help='The GZip compression'
+                   ' method used on a dataset.')
+        c.argument('dataset_deflate_compression', action=AddDatasetDeflateCompression, nargs='+', help='The Deflate com'
+                   'pression method used on a dataset.')
+        c.argument('dataset_zip_deflate_compression', action=AddDatasetZipDeflateCompression, nargs='+', help='The ZipD'
+                   'eflate compression method used on a dataset.')
 
     with self.argument_context('datafactory dataset http-file update') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
@@ -9365,7 +9183,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -9395,8 +9212,14 @@ def load_arguments(self, _):
                    'pe string).'))
         c.argument('type_properties_format', arg_type=CLIArgumentType(options_list=['--type-properties-format'], help=
                    'The format of files.'))
-        c.argument('type_properties_compression', arg_type=CLIArgumentType(options_list=['--type-properties-compression'
-                   ''], help='The data compression method used on files.'))
+        c.argument('dataset_b_zip2_compression', action=AddDatasetBZip2Compression, nargs='+', help='The BZip2 compress'
+                   'ion method used on a dataset.')
+        c.argument('dataset_g_zip_compression', action=AddDatasetGZipCompression, nargs='+', help='The GZip compression'
+                   ' method used on a dataset.')
+        c.argument('dataset_deflate_compression', action=AddDatasetDeflateCompression, nargs='+', help='The Deflate com'
+                   'pression method used on a dataset.')
+        c.argument('dataset_zip_deflate_compression', action=AddDatasetZipDeflateCompression, nargs='+', help='The ZipD'
+                   'eflate compression method used on a dataset.')
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset hubspot-object create') as c:
@@ -9405,7 +9228,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -9431,7 +9253,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -9458,7 +9279,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -9488,7 +9308,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -9519,7 +9338,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -9545,7 +9363,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -9572,7 +9389,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -9598,7 +9414,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -9625,7 +9440,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -9648,8 +9462,14 @@ def load_arguments(self, _):
                    'UTF-8, unless BOM denotes another Unicode encoding. Refer to the name column of the table in the fo'
                    'llowing link to set supported values: https://msdn.microsoft.com/library/system.text.encoding.aspx.'
                    ' Type: string (or Expression with resultType string).'))
-        c.argument('type_properties_compression', arg_type=CLIArgumentType(options_list=['--type-properties-compression'
-                   ''], help='The data compression method used for the json dataset.'))
+        c.argument('dataset_b_zip2_compression', action=AddDatasetBZip2Compression, nargs='+', help='The BZip2 compress'
+                   'ion method used on a dataset.')
+        c.argument('dataset_g_zip_compression', action=AddDatasetGZipCompression, nargs='+', help='The GZip compression'
+                   ' method used on a dataset.')
+        c.argument('dataset_deflate_compression', action=AddDatasetDeflateCompression, nargs='+', help='The Deflate com'
+                   'pression method used on a dataset.')
+        c.argument('dataset_zip_deflate_compression', action=AddDatasetZipDeflateCompression, nargs='+', help='The ZipD'
+                   'eflate compression method used on a dataset.')
 
     with self.argument_context('datafactory dataset json update') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
@@ -9657,7 +9477,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -9680,8 +9499,14 @@ def load_arguments(self, _):
                    'UTF-8, unless BOM denotes another Unicode encoding. Refer to the name column of the table in the fo'
                    'llowing link to set supported values: https://msdn.microsoft.com/library/system.text.encoding.aspx.'
                    ' Type: string (or Expression with resultType string).'))
-        c.argument('type_properties_compression', arg_type=CLIArgumentType(options_list=['--type-properties-compression'
-                   ''], help='The data compression method used for the json dataset.'))
+        c.argument('dataset_b_zip2_compression', action=AddDatasetBZip2Compression, nargs='+', help='The BZip2 compress'
+                   'ion method used on a dataset.')
+        c.argument('dataset_g_zip_compression', action=AddDatasetGZipCompression, nargs='+', help='The GZip compression'
+                   ' method used on a dataset.')
+        c.argument('dataset_deflate_compression', action=AddDatasetDeflateCompression, nargs='+', help='The Deflate com'
+                   'pression method used on a dataset.')
+        c.argument('dataset_zip_deflate_compression', action=AddDatasetZipDeflateCompression, nargs='+', help='The ZipD'
+                   'eflate compression method used on a dataset.')
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset magento-object create') as c:
@@ -9690,7 +9515,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -9716,7 +9540,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -9743,7 +9566,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -9769,7 +9591,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -9796,7 +9617,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -9822,7 +9642,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -9849,7 +9668,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -9875,7 +9693,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -9902,7 +9719,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -9928,7 +9744,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -9955,7 +9770,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -9981,7 +9795,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -10008,7 +9821,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -10034,7 +9846,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -10061,7 +9872,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -10091,7 +9901,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -10122,7 +9931,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -10147,7 +9955,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -10173,7 +9980,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -10199,7 +10005,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -10226,7 +10031,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -10255,7 +10059,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -10285,7 +10088,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -10311,7 +10113,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -10338,7 +10139,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -10370,7 +10170,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -10403,7 +10202,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -10430,7 +10228,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -10458,7 +10255,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -10485,7 +10281,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -10513,7 +10308,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -10539,7 +10333,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -10566,7 +10359,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -10596,7 +10388,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -10627,7 +10418,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -10657,7 +10447,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -10688,7 +10477,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -10718,7 +10506,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -10749,7 +10536,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -10775,7 +10561,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -10802,7 +10587,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -10828,7 +10612,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -10855,7 +10638,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -10881,7 +10663,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -10908,7 +10689,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -10946,7 +10726,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -10985,7 +10764,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -11011,7 +10789,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -11038,7 +10815,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -11064,7 +10840,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -11091,7 +10866,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -11117,7 +10891,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -11144,7 +10917,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -11167,7 +10939,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -11191,7 +10962,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -11217,7 +10987,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -11244,7 +11013,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -11269,7 +11037,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -11295,7 +11062,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -11322,7 +11088,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -11350,7 +11115,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -11383,7 +11147,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -11417,7 +11180,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -11443,7 +11205,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -11470,7 +11231,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -11496,7 +11256,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -11523,7 +11282,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -11549,7 +11307,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -11576,7 +11333,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -11603,7 +11359,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -11631,7 +11386,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -11661,7 +11415,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -11692,7 +11445,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -11722,7 +11474,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -11753,7 +11504,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -11779,7 +11529,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -11806,7 +11555,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -11832,7 +11580,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -11859,7 +11606,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -11886,7 +11632,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -11914,7 +11659,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -11944,7 +11688,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -11975,7 +11718,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -12004,7 +11746,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -12034,7 +11775,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -12060,7 +11800,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -12087,7 +11826,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -12113,7 +11851,6 @@ def load_arguments(self, _):
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('type_', options_list=['--type'], help='Type of dataset.')
         c.argument('description', help='Dataset description.')
         c.argument('structure', arg_type=CLIArgumentType(options_list=['--structure'], help='Columns that define the st'
                    'ructure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataEle'
@@ -12187,8 +11924,8 @@ def load_arguments(self, _):
         c.argument('start_from_failure', arg_type=get_three_state_flag(), help='In recovery mode, if set to true, the r'
                    'erun will start from failed activities. The property will be used only if startActivityName is not '
                    'specified.')
-        c.argument('parameters', action=AddParameters, nargs='+', help='Parameters of the pipeline run. These parameter'
-                   's will be used only if the runId is not specified.')
+        c.argument('parameters', arg_type=CLIArgumentType(options_list=['--parameters'], help='Parameters of the pipeli'
+                   'ne run. These parameters will be used only if the runId is not specified.'))
 
     with self.argument_context('datafactory pipeline-run show') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')

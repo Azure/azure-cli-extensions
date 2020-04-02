@@ -126,7 +126,6 @@ amazon-m-w-s-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|amazonmwsobject_type|amazon_m_w_s_object_type|
 |**--linked-service-name**|object|Linked service reference.|amazonmwsobject_linked_service_name|amazon_m_w_s_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|amazonmwsobject_description|amazon_m_w_s_object_description|
@@ -145,7 +144,6 @@ amazon-m-w-s-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|amazonmwsobject_type|amazon_m_w_s_object_type|
 |**--linked-service-name**|object|Linked service reference.|amazonmwsobject_linked_service_name|amazon_m_w_s_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|amazonmwsobject_description|amazon_m_w_s_object_description|
@@ -164,7 +162,6 @@ amazon-redshift-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|amazonredshifttable_type|amazon_redshift_table_type|
 |**--linked-service-name**|object|Linked service reference.|amazonredshifttable_linked_service_name|amazon_redshift_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|amazonredshifttable_description|amazon_redshift_table_description|
@@ -185,7 +182,6 @@ amazon-redshift-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|amazonredshifttable_type|amazon_redshift_table_type|
 |**--linked-service-name**|object|Linked service reference.|amazonredshifttable_linked_service_name|amazon_redshift_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|amazonredshifttable_description|amazon_redshift_table_description|
@@ -206,7 +202,6 @@ amazon-s3-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|amazons3object_type|amazon_s3_object_type|
 |**--linked-service-name**|object|Linked service reference.|amazons3object_linked_service_name|amazon_s3_object_linked_service_name|
 |**--type-properties-bucket-name**|any|The name of the Amazon S3 bucket. Type: string (or Expression with resultType string).|amazons3object_bucket_name|amazon_s3_object_bucket_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -222,7 +217,10 @@ amazon-s3-object create a datafactory dataset.
 |**--type-properties-modified-datetime-start**|any|The start of S3 object's modified datetime. Type: string (or Expression with resultType string).|amazons3object_modified_datetime_start|amazon_s3_object_modified_datetime_start|
 |**--type-properties-modified-datetime-end**|any|The end of S3 object's modified datetime. Type: string (or Expression with resultType string).|amazons3object_modified_datetime_end|amazon_s3_object_modified_datetime_end|
 |**--type-properties-format**|object|The format of files.|amazons3object_format|amazon_s3_object_format|
-|**--type-properties-compression**|object|The data compression method used for the Amazon S3 object.|amazons3object_compression|amazon_s3_object_compression|
+|**--dataset-b-zip2-compression**|object|The BZip2 compression method used on a dataset.|DatasetBZip2Compression|dataset_b_zip2_compression|
+|**--dataset-g-zip-compression**|object|The GZip compression method used on a dataset.|DatasetGZipCompression|dataset_g_zip_compression|
+|**--dataset-deflate-compression**|object|The Deflate compression method used on a dataset.|DatasetDeflateCompression|dataset_deflate_compression|
+|**--dataset-zip-deflate-compression**|object|The ZipDeflate compression method used on a dataset.|DatasetZipDeflateCompression|dataset_zip_deflate_compression|
 ### datafactory dataset amazon-s3-object update
 
 amazon-s3-object create a datafactory dataset.
@@ -232,7 +230,6 @@ amazon-s3-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|amazons3object_type|amazon_s3_object_type|
 |**--linked-service-name**|object|Linked service reference.|amazons3object_linked_service_name|amazon_s3_object_linked_service_name|
 |**--type-properties-bucket-name**|any|The name of the Amazon S3 bucket. Type: string (or Expression with resultType string).|amazons3object_bucket_name|amazon_s3_object_bucket_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -248,7 +245,10 @@ amazon-s3-object create a datafactory dataset.
 |**--type-properties-modified-datetime-start**|any|The start of S3 object's modified datetime. Type: string (or Expression with resultType string).|amazons3object_modified_datetime_start|amazon_s3_object_modified_datetime_start|
 |**--type-properties-modified-datetime-end**|any|The end of S3 object's modified datetime. Type: string (or Expression with resultType string).|amazons3object_modified_datetime_end|amazon_s3_object_modified_datetime_end|
 |**--type-properties-format**|object|The format of files.|amazons3object_format|amazon_s3_object_format|
-|**--type-properties-compression**|object|The data compression method used for the Amazon S3 object.|amazons3object_compression|amazon_s3_object_compression|
+|**--dataset-b-zip2-compression**|object|The BZip2 compression method used on a dataset.|DatasetBZip2Compression|dataset_b_zip2_compression|
+|**--dataset-g-zip-compression**|object|The GZip compression method used on a dataset.|DatasetGZipCompression|dataset_g_zip_compression|
+|**--dataset-deflate-compression**|object|The Deflate compression method used on a dataset.|DatasetDeflateCompression|dataset_deflate_compression|
+|**--dataset-zip-deflate-compression**|object|The ZipDeflate compression method used on a dataset.|DatasetZipDeflateCompression|dataset_zip_deflate_compression|
 ### datafactory dataset avro create
 
 avro create a datafactory dataset.
@@ -258,7 +258,6 @@ avro create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|avro_type|avro_type|
 |**--linked-service-name**|object|Linked service reference.|avro_linked_service_name|avro_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|avro_description|avro_description|
@@ -279,7 +278,6 @@ avro create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|avro_type|avro_type|
 |**--linked-service-name**|object|Linked service reference.|avro_linked_service_name|avro_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|avro_description|avro_description|
@@ -300,7 +298,6 @@ azure-blob create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|azureblob_type|azure_blob_type|
 |**--linked-service-name**|object|Linked service reference.|azureblob_linked_service_name|azure_blob_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|azureblob_description|azure_blob_description|
@@ -315,7 +312,10 @@ azure-blob create a datafactory dataset.
 |**--type-properties-modified-datetime-start**|any|The start of Azure Blob's modified datetime. Type: string (or Expression with resultType string).|azureblob_modified_datetime_start|azure_blob_modified_datetime_start|
 |**--type-properties-modified-datetime-end**|any|The end of Azure Blob's modified datetime. Type: string (or Expression with resultType string).|azureblob_modified_datetime_end|azure_blob_modified_datetime_end|
 |**--type-properties-format**|object|The format of the Azure Blob storage.|azureblob_format|azure_blob_format|
-|**--type-properties-compression**|object|The data compression method used for the blob storage.|azureblob_compression|azure_blob_compression|
+|**--dataset-b-zip2-compression**|object|The BZip2 compression method used on a dataset.|DatasetBZip2Compression|dataset_b_zip2_compression|
+|**--dataset-g-zip-compression**|object|The GZip compression method used on a dataset.|DatasetGZipCompression|dataset_g_zip_compression|
+|**--dataset-deflate-compression**|object|The Deflate compression method used on a dataset.|DatasetDeflateCompression|dataset_deflate_compression|
+|**--dataset-zip-deflate-compression**|object|The ZipDeflate compression method used on a dataset.|DatasetZipDeflateCompression|dataset_zip_deflate_compression|
 ### datafactory dataset azure-blob update
 
 azure-blob create a datafactory dataset.
@@ -325,7 +325,6 @@ azure-blob create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|azureblob_type|azure_blob_type|
 |**--linked-service-name**|object|Linked service reference.|azureblob_linked_service_name|azure_blob_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|azureblob_description|azure_blob_description|
@@ -340,7 +339,10 @@ azure-blob create a datafactory dataset.
 |**--type-properties-modified-datetime-start**|any|The start of Azure Blob's modified datetime. Type: string (or Expression with resultType string).|azureblob_modified_datetime_start|azure_blob_modified_datetime_start|
 |**--type-properties-modified-datetime-end**|any|The end of Azure Blob's modified datetime. Type: string (or Expression with resultType string).|azureblob_modified_datetime_end|azure_blob_modified_datetime_end|
 |**--type-properties-format**|object|The format of the Azure Blob storage.|azureblob_format|azure_blob_format|
-|**--type-properties-compression**|object|The data compression method used for the blob storage.|azureblob_compression|azure_blob_compression|
+|**--dataset-b-zip2-compression**|object|The BZip2 compression method used on a dataset.|DatasetBZip2Compression|dataset_b_zip2_compression|
+|**--dataset-g-zip-compression**|object|The GZip compression method used on a dataset.|DatasetGZipCompression|dataset_g_zip_compression|
+|**--dataset-deflate-compression**|object|The Deflate compression method used on a dataset.|DatasetDeflateCompression|dataset_deflate_compression|
+|**--dataset-zip-deflate-compression**|object|The ZipDeflate compression method used on a dataset.|DatasetZipDeflateCompression|dataset_zip_deflate_compression|
 ### datafactory dataset azure-blob-f-s-file create
 
 azure-blob-f-s-file create a datafactory dataset.
@@ -350,7 +352,6 @@ azure-blob-f-s-file create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|azureblobfsfile_type|azure_blob_f_s_file_type|
 |**--linked-service-name**|object|Linked service reference.|azureblobfsfile_linked_service_name|azure_blob_f_s_file_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|azureblobfsfile_description|azure_blob_f_s_file_description|
@@ -362,7 +363,10 @@ azure-blob-f-s-file create a datafactory dataset.
 |**--type-properties-folder-path**|any|The path of the Azure Data Lake Storage Gen2 storage. Type: string (or Expression with resultType string).|azureblobfsfile_folder_path|azure_blob_f_s_file_folder_path|
 |**--type-properties-file-name**|any|The name of the Azure Data Lake Storage Gen2. Type: string (or Expression with resultType string).|azureblobfsfile_file_name|azure_blob_f_s_file_file_name|
 |**--type-properties-format**|object|The format of the Azure Data Lake Storage Gen2 storage.|azureblobfsfile_format|azure_blob_f_s_file_format|
-|**--type-properties-compression**|object|The data compression method used for the blob storage.|azureblobfsfile_compression|azure_blob_f_s_file_compression|
+|**--dataset-b-zip2-compression**|object|The BZip2 compression method used on a dataset.|DatasetBZip2Compression|dataset_b_zip2_compression|
+|**--dataset-g-zip-compression**|object|The GZip compression method used on a dataset.|DatasetGZipCompression|dataset_g_zip_compression|
+|**--dataset-deflate-compression**|object|The Deflate compression method used on a dataset.|DatasetDeflateCompression|dataset_deflate_compression|
+|**--dataset-zip-deflate-compression**|object|The ZipDeflate compression method used on a dataset.|DatasetZipDeflateCompression|dataset_zip_deflate_compression|
 ### datafactory dataset azure-blob-f-s-file update
 
 azure-blob-f-s-file create a datafactory dataset.
@@ -372,7 +376,6 @@ azure-blob-f-s-file create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|azureblobfsfile_type|azure_blob_f_s_file_type|
 |**--linked-service-name**|object|Linked service reference.|azureblobfsfile_linked_service_name|azure_blob_f_s_file_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|azureblobfsfile_description|azure_blob_f_s_file_description|
@@ -384,7 +387,10 @@ azure-blob-f-s-file create a datafactory dataset.
 |**--type-properties-folder-path**|any|The path of the Azure Data Lake Storage Gen2 storage. Type: string (or Expression with resultType string).|azureblobfsfile_folder_path|azure_blob_f_s_file_folder_path|
 |**--type-properties-file-name**|any|The name of the Azure Data Lake Storage Gen2. Type: string (or Expression with resultType string).|azureblobfsfile_file_name|azure_blob_f_s_file_file_name|
 |**--type-properties-format**|object|The format of the Azure Data Lake Storage Gen2 storage.|azureblobfsfile_format|azure_blob_f_s_file_format|
-|**--type-properties-compression**|object|The data compression method used for the blob storage.|azureblobfsfile_compression|azure_blob_f_s_file_compression|
+|**--dataset-b-zip2-compression**|object|The BZip2 compression method used on a dataset.|DatasetBZip2Compression|dataset_b_zip2_compression|
+|**--dataset-g-zip-compression**|object|The GZip compression method used on a dataset.|DatasetGZipCompression|dataset_g_zip_compression|
+|**--dataset-deflate-compression**|object|The Deflate compression method used on a dataset.|DatasetDeflateCompression|dataset_deflate_compression|
+|**--dataset-zip-deflate-compression**|object|The ZipDeflate compression method used on a dataset.|DatasetZipDeflateCompression|dataset_zip_deflate_compression|
 ### datafactory dataset azure-data-explorer-table create
 
 azure-data-explorer-table create a datafactory dataset.
@@ -394,7 +400,6 @@ azure-data-explorer-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|azuredataexplorertable_type|azure_data_explorer_table_type|
 |**--linked-service-name**|object|Linked service reference.|azuredataexplorertable_linked_service_name|azure_data_explorer_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|azuredataexplorertable_description|azure_data_explorer_table_description|
@@ -413,7 +418,6 @@ azure-data-explorer-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|azuredataexplorertable_type|azure_data_explorer_table_type|
 |**--linked-service-name**|object|Linked service reference.|azuredataexplorertable_linked_service_name|azure_data_explorer_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|azuredataexplorertable_description|azure_data_explorer_table_description|
@@ -432,7 +436,6 @@ azure-data-lake-store-file create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|azuredatalakestorefile_type|azure_data_lake_store_file_type|
 |**--linked-service-name**|object|Linked service reference.|azuredatalakestorefile_linked_service_name|azure_data_lake_store_file_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|azuredatalakestorefile_description|azure_data_lake_store_file_description|
@@ -444,7 +447,10 @@ azure-data-lake-store-file create a datafactory dataset.
 |**--type-properties-folder-path**|any|Path to the folder in the Azure Data Lake Store. Type: string (or Expression with resultType string).|azuredatalakestorefile_folder_path|azure_data_lake_store_file_folder_path|
 |**--type-properties-file-name**|any|The name of the file in the Azure Data Lake Store. Type: string (or Expression with resultType string).|azuredatalakestorefile_file_name|azure_data_lake_store_file_file_name|
 |**--type-properties-format**|object|The format of the Data Lake Store.|azuredatalakestorefile_format|azure_data_lake_store_file_format|
-|**--type-properties-compression**|object|The data compression method used for the item(s) in the Azure Data Lake Store.|azuredatalakestorefile_compression|azure_data_lake_store_file_compression|
+|**--dataset-b-zip2-compression**|object|The BZip2 compression method used on a dataset.|DatasetBZip2Compression|dataset_b_zip2_compression|
+|**--dataset-g-zip-compression**|object|The GZip compression method used on a dataset.|DatasetGZipCompression|dataset_g_zip_compression|
+|**--dataset-deflate-compression**|object|The Deflate compression method used on a dataset.|DatasetDeflateCompression|dataset_deflate_compression|
+|**--dataset-zip-deflate-compression**|object|The ZipDeflate compression method used on a dataset.|DatasetZipDeflateCompression|dataset_zip_deflate_compression|
 ### datafactory dataset azure-data-lake-store-file update
 
 azure-data-lake-store-file create a datafactory dataset.
@@ -454,7 +460,6 @@ azure-data-lake-store-file create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|azuredatalakestorefile_type|azure_data_lake_store_file_type|
 |**--linked-service-name**|object|Linked service reference.|azuredatalakestorefile_linked_service_name|azure_data_lake_store_file_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|azuredatalakestorefile_description|azure_data_lake_store_file_description|
@@ -466,7 +471,10 @@ azure-data-lake-store-file create a datafactory dataset.
 |**--type-properties-folder-path**|any|Path to the folder in the Azure Data Lake Store. Type: string (or Expression with resultType string).|azuredatalakestorefile_folder_path|azure_data_lake_store_file_folder_path|
 |**--type-properties-file-name**|any|The name of the file in the Azure Data Lake Store. Type: string (or Expression with resultType string).|azuredatalakestorefile_file_name|azure_data_lake_store_file_file_name|
 |**--type-properties-format**|object|The format of the Data Lake Store.|azuredatalakestorefile_format|azure_data_lake_store_file_format|
-|**--type-properties-compression**|object|The data compression method used for the item(s) in the Azure Data Lake Store.|azuredatalakestorefile_compression|azure_data_lake_store_file_compression|
+|**--dataset-b-zip2-compression**|object|The BZip2 compression method used on a dataset.|DatasetBZip2Compression|dataset_b_zip2_compression|
+|**--dataset-g-zip-compression**|object|The GZip compression method used on a dataset.|DatasetGZipCompression|dataset_g_zip_compression|
+|**--dataset-deflate-compression**|object|The Deflate compression method used on a dataset.|DatasetDeflateCompression|dataset_deflate_compression|
+|**--dataset-zip-deflate-compression**|object|The ZipDeflate compression method used on a dataset.|DatasetZipDeflateCompression|dataset_zip_deflate_compression|
 ### datafactory dataset azure-maria-d-b-table create
 
 azure-maria-d-b-table create a datafactory dataset.
@@ -476,7 +484,6 @@ azure-maria-d-b-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|azuremariadbtable_type|azure_maria_d_b_table_type|
 |**--linked-service-name**|object|Linked service reference.|azuremariadbtable_linked_service_name|azure_maria_d_b_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|azuremariadbtable_description|azure_maria_d_b_table_description|
@@ -495,7 +502,6 @@ azure-maria-d-b-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|azuremariadbtable_type|azure_maria_d_b_table_type|
 |**--linked-service-name**|object|Linked service reference.|azuremariadbtable_linked_service_name|azure_maria_d_b_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|azuremariadbtable_description|azure_maria_d_b_table_description|
@@ -514,7 +520,6 @@ azure-my-sql-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|azuremysqltable_type|azure_my_sql_table_type|
 |**--linked-service-name**|object|Linked service reference.|azuremysqltable_linked_service_name|azure_my_sql_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|azuremysqltable_description|azure_my_sql_table_description|
@@ -534,7 +539,6 @@ azure-my-sql-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|azuremysqltable_type|azure_my_sql_table_type|
 |**--linked-service-name**|object|Linked service reference.|azuremysqltable_linked_service_name|azure_my_sql_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|azuremysqltable_description|azure_my_sql_table_description|
@@ -554,7 +558,6 @@ azure-postgre-sql-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|azurepostgresqltable_type|azure_postgre_sql_table_type|
 |**--linked-service-name**|object|Linked service reference.|azurepostgresqltable_linked_service_name|azure_postgre_sql_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|azurepostgresqltable_description|azure_postgre_sql_table_description|
@@ -575,7 +578,6 @@ azure-postgre-sql-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|azurepostgresqltable_type|azure_postgre_sql_table_type|
 |**--linked-service-name**|object|Linked service reference.|azurepostgresqltable_linked_service_name|azure_postgre_sql_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|azurepostgresqltable_description|azure_postgre_sql_table_description|
@@ -596,7 +598,6 @@ azure-search-index create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|azuresearchindex_type|azure_search_index_type|
 |**--linked-service-name**|object|Linked service reference.|azuresearchindex_linked_service_name|azure_search_index_linked_service_name|
 |**--type-properties-index-name**|any|The name of the Azure Search Index. Type: string (or Expression with resultType string).|azuresearchindex_index_name|azure_search_index_index_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -615,7 +616,6 @@ azure-search-index create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|azuresearchindex_type|azure_search_index_type|
 |**--linked-service-name**|object|Linked service reference.|azuresearchindex_linked_service_name|azure_search_index_linked_service_name|
 |**--type-properties-index-name**|any|The name of the Azure Search Index. Type: string (or Expression with resultType string).|azuresearchindex_index_name|azure_search_index_index_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -634,7 +634,6 @@ azure-sql-d-w-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|azuresqldwtable_type|azure_sql_d_w_table_type|
 |**--linked-service-name**|object|Linked service reference.|azuresqldwtable_linked_service_name|azure_sql_d_w_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|azuresqldwtable_description|azure_sql_d_w_table_description|
@@ -655,7 +654,6 @@ azure-sql-d-w-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|azuresqldwtable_type|azure_sql_d_w_table_type|
 |**--linked-service-name**|object|Linked service reference.|azuresqldwtable_linked_service_name|azure_sql_d_w_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|azuresqldwtable_description|azure_sql_d_w_table_description|
@@ -676,7 +674,6 @@ azure-sql-m-i-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|azuresqlmitable_type|azure_sql_m_i_table_type|
 |**--linked-service-name**|object|Linked service reference.|azuresqlmitable_linked_service_name|azure_sql_m_i_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|azuresqlmitable_description|azure_sql_m_i_table_description|
@@ -697,7 +694,6 @@ azure-sql-m-i-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|azuresqlmitable_type|azure_sql_m_i_table_type|
 |**--linked-service-name**|object|Linked service reference.|azuresqlmitable_linked_service_name|azure_sql_m_i_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|azuresqlmitable_description|azure_sql_m_i_table_description|
@@ -718,7 +714,6 @@ azure-sql-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|azuresqltable_type|azure_sql_table_type|
 |**--linked-service-name**|object|Linked service reference.|azuresqltable_linked_service_name|azure_sql_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|azuresqltable_description|azure_sql_table_description|
@@ -739,7 +734,6 @@ azure-sql-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|azuresqltable_type|azure_sql_table_type|
 |**--linked-service-name**|object|Linked service reference.|azuresqltable_linked_service_name|azure_sql_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|azuresqltable_description|azure_sql_table_description|
@@ -760,7 +754,6 @@ azure-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|azuretable_type|azure_table_type|
 |**--linked-service-name**|object|Linked service reference.|azuretable_linked_service_name|azure_table_linked_service_name|
 |**--type-properties-table-name**|any|The table name of the Azure Table storage. Type: string (or Expression with resultType string).|azuretable_table_name|azure_table_table_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -779,7 +772,6 @@ azure-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|azuretable_type|azure_table_type|
 |**--linked-service-name**|object|Linked service reference.|azuretable_linked_service_name|azure_table_linked_service_name|
 |**--type-properties-table-name**|any|The table name of the Azure Table storage. Type: string (or Expression with resultType string).|azuretable_table_name|azure_table_table_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -798,7 +790,6 @@ binary create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|binary_type|binary_type|
 |**--linked-service-name**|object|Linked service reference.|binary_linked_service_name|binary_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|binary_description|binary_description|
@@ -808,7 +799,10 @@ binary create a datafactory dataset.
 |**--annotations**|array|List of tags that can be used for describing the Dataset.|binary_annotations|binary_annotations|
 |**--folder**|object|The folder that this Dataset is in. If not specified, Dataset will appear at the root level.|binary_folder|binary_folder|
 |**--type-properties-location**|object|The location of the Binary storage.|binary_location|binary_location|
-|**--type-properties-compression**|object|The data compression method used for the binary dataset.|binary_compression|binary_compression|
+|**--dataset-b-zip2-compression**|object|The BZip2 compression method used on a dataset.|DatasetBZip2Compression|dataset_b_zip2_compression|
+|**--dataset-g-zip-compression**|object|The GZip compression method used on a dataset.|DatasetGZipCompression|dataset_g_zip_compression|
+|**--dataset-deflate-compression**|object|The Deflate compression method used on a dataset.|DatasetDeflateCompression|dataset_deflate_compression|
+|**--dataset-zip-deflate-compression**|object|The ZipDeflate compression method used on a dataset.|DatasetZipDeflateCompression|dataset_zip_deflate_compression|
 ### datafactory dataset binary update
 
 binary create a datafactory dataset.
@@ -818,7 +812,6 @@ binary create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|binary_type|binary_type|
 |**--linked-service-name**|object|Linked service reference.|binary_linked_service_name|binary_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|binary_description|binary_description|
@@ -828,7 +821,10 @@ binary create a datafactory dataset.
 |**--annotations**|array|List of tags that can be used for describing the Dataset.|binary_annotations|binary_annotations|
 |**--folder**|object|The folder that this Dataset is in. If not specified, Dataset will appear at the root level.|binary_folder|binary_folder|
 |**--type-properties-location**|object|The location of the Binary storage.|binary_location|binary_location|
-|**--type-properties-compression**|object|The data compression method used for the binary dataset.|binary_compression|binary_compression|
+|**--dataset-b-zip2-compression**|object|The BZip2 compression method used on a dataset.|DatasetBZip2Compression|dataset_b_zip2_compression|
+|**--dataset-g-zip-compression**|object|The GZip compression method used on a dataset.|DatasetGZipCompression|dataset_g_zip_compression|
+|**--dataset-deflate-compression**|object|The Deflate compression method used on a dataset.|DatasetDeflateCompression|dataset_deflate_compression|
+|**--dataset-zip-deflate-compression**|object|The ZipDeflate compression method used on a dataset.|DatasetZipDeflateCompression|dataset_zip_deflate_compression|
 ### datafactory dataset cassandra-table create
 
 cassandra-table create a datafactory dataset.
@@ -838,7 +834,6 @@ cassandra-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|cassandratable_type|cassandra_table_type|
 |**--linked-service-name**|object|Linked service reference.|cassandratable_linked_service_name|cassandra_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|cassandratable_description|cassandra_table_description|
@@ -858,7 +853,6 @@ cassandra-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|cassandratable_type|cassandra_table_type|
 |**--linked-service-name**|object|Linked service reference.|cassandratable_linked_service_name|cassandra_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|cassandratable_description|cassandra_table_description|
@@ -878,7 +872,6 @@ common-data-service-for-apps-entity create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|commondataserviceforappsentity_type|common_data_service_for_apps_entity_type|
 |**--linked-service-name**|object|Linked service reference.|commondataserviceforappsentity_linked_service_name|common_data_service_for_apps_entity_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|commondataserviceforappsentity_description|common_data_service_for_apps_entity_description|
@@ -897,7 +890,6 @@ common-data-service-for-apps-entity create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|commondataserviceforappsentity_type|common_data_service_for_apps_entity_type|
 |**--linked-service-name**|object|Linked service reference.|commondataserviceforappsentity_linked_service_name|common_data_service_for_apps_entity_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|commondataserviceforappsentity_description|common_data_service_for_apps_entity_description|
@@ -916,7 +908,6 @@ concur-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|concurobject_type|concur_object_type|
 |**--linked-service-name**|object|Linked service reference.|concurobject_linked_service_name|concur_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|concurobject_description|concur_object_description|
@@ -935,7 +926,6 @@ concur-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|concurobject_type|concur_object_type|
 |**--linked-service-name**|object|Linked service reference.|concurobject_linked_service_name|concur_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|concurobject_description|concur_object_description|
@@ -954,7 +944,6 @@ cosmos-db-mongo-db-api-collection create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|cosmosdbmongodbapicollection_type|cosmos_db_mongo_db_api_collection_type|
 |**--linked-service-name**|object|Linked service reference.|cosmosdbmongodbapicollection_linked_service_name|cosmos_db_mongo_db_api_collection_linked_service_name|
 |**--type-properties-collection**|any|The collection name of the CosmosDB (MongoDB API) database. Type: string (or Expression with resultType string).|cosmosdbmongodbapicollection_collection|cosmos_db_mongo_db_api_collection_collection|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -973,7 +962,6 @@ cosmos-db-mongo-db-api-collection create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|cosmosdbmongodbapicollection_type|cosmos_db_mongo_db_api_collection_type|
 |**--linked-service-name**|object|Linked service reference.|cosmosdbmongodbapicollection_linked_service_name|cosmos_db_mongo_db_api_collection_linked_service_name|
 |**--type-properties-collection**|any|The collection name of the CosmosDB (MongoDB API) database. Type: string (or Expression with resultType string).|cosmosdbmongodbapicollection_collection|cosmos_db_mongo_db_api_collection_collection|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -1014,7 +1002,6 @@ couchbase-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|couchbasetable_type|couchbase_table_type|
 |**--linked-service-name**|object|Linked service reference.|couchbasetable_linked_service_name|couchbase_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|couchbasetable_description|couchbase_table_description|
@@ -1033,7 +1020,6 @@ couchbase-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|couchbasetable_type|couchbase_table_type|
 |**--linked-service-name**|object|Linked service reference.|couchbasetable_linked_service_name|couchbase_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|couchbasetable_description|couchbase_table_description|
@@ -1052,7 +1038,6 @@ custom-dataset create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|customdataset_type|custom_dataset_type|
 |**--linked-service-name**|object|Linked service reference.|customdataset_linked_service_name|custom_dataset_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|customdataset_description|custom_dataset_description|
@@ -1071,7 +1056,6 @@ custom-dataset create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|customdataset_type|custom_dataset_type|
 |**--linked-service-name**|object|Linked service reference.|customdataset_linked_service_name|custom_dataset_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|customdataset_description|custom_dataset_description|
@@ -1090,7 +1074,6 @@ db2-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|db2table_type|db2_table_type|
 |**--linked-service-name**|object|Linked service reference.|db2table_linked_service_name|db2_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|db2table_description|db2_table_description|
@@ -1111,7 +1094,6 @@ db2-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|db2table_type|db2_table_type|
 |**--linked-service-name**|object|Linked service reference.|db2table_linked_service_name|db2_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|db2table_description|db2_table_description|
@@ -1141,7 +1123,6 @@ delimited-text create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|delimitedtext_type|delimited_text_type|
 |**--linked-service-name**|object|Linked service reference.|delimitedtext_linked_service_name|delimited_text_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|delimitedtext_description|delimited_text_description|
@@ -1169,7 +1150,6 @@ delimited-text create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|delimitedtext_type|delimited_text_type|
 |**--linked-service-name**|object|Linked service reference.|delimitedtext_linked_service_name|delimited_text_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|delimitedtext_description|delimited_text_description|
@@ -1197,7 +1177,6 @@ document-db-collection create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|documentdbcollection_type|document_db_collection_type|
 |**--linked-service-name**|object|Linked service reference.|documentdbcollection_linked_service_name|document_db_collection_linked_service_name|
 |**--type-properties-collection-name**|any|Document Database collection name. Type: string (or Expression with resultType string).|documentdbcollection_collection_name|document_db_collection_collection_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -1216,7 +1195,6 @@ document-db-collection create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|documentdbcollection_type|document_db_collection_type|
 |**--linked-service-name**|object|Linked service reference.|documentdbcollection_linked_service_name|document_db_collection_linked_service_name|
 |**--type-properties-collection-name**|any|Document Database collection name. Type: string (or Expression with resultType string).|documentdbcollection_collection_name|document_db_collection_collection_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -1235,7 +1213,6 @@ drill-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|drilltable_type|drill_table_type|
 |**--linked-service-name**|object|Linked service reference.|drilltable_linked_service_name|drill_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|drilltable_description|drill_table_description|
@@ -1256,7 +1233,6 @@ drill-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|drilltable_type|drill_table_type|
 |**--linked-service-name**|object|Linked service reference.|drilltable_linked_service_name|drill_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|drilltable_description|drill_table_description|
@@ -1277,7 +1253,6 @@ dynamics-a-x-resource create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|dynamicsaxresource_type|dynamics_a_x_resource_type|
 |**--linked-service-name**|object|Linked service reference.|dynamicsaxresource_linked_service_name|dynamics_a_x_resource_linked_service_name|
 |**--type-properties-path**|any|The path of the Dynamics AX OData entity. Type: string (or Expression with resultType string).|dynamicsaxresource_path|dynamics_a_x_resource_path|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -1296,7 +1271,6 @@ dynamics-a-x-resource create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|dynamicsaxresource_type|dynamics_a_x_resource_type|
 |**--linked-service-name**|object|Linked service reference.|dynamicsaxresource_linked_service_name|dynamics_a_x_resource_linked_service_name|
 |**--type-properties-path**|any|The path of the Dynamics AX OData entity. Type: string (or Expression with resultType string).|dynamicsaxresource_path|dynamics_a_x_resource_path|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -1315,7 +1289,6 @@ dynamics-crm-entity create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|dynamicscrmentity_type|dynamics_crm_entity_type|
 |**--linked-service-name**|object|Linked service reference.|dynamicscrmentity_linked_service_name|dynamics_crm_entity_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|dynamicscrmentity_description|dynamics_crm_entity_description|
@@ -1334,7 +1307,6 @@ dynamics-crm-entity create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|dynamicscrmentity_type|dynamics_crm_entity_type|
 |**--linked-service-name**|object|Linked service reference.|dynamicscrmentity_linked_service_name|dynamics_crm_entity_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|dynamicscrmentity_description|dynamics_crm_entity_description|
@@ -1353,7 +1325,6 @@ dynamics-entity create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|dynamicsentity_type|dynamics_entity_type|
 |**--linked-service-name**|object|Linked service reference.|dynamicsentity_linked_service_name|dynamics_entity_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|dynamicsentity_description|dynamics_entity_description|
@@ -1372,7 +1343,6 @@ dynamics-entity create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|dynamicsentity_type|dynamics_entity_type|
 |**--linked-service-name**|object|Linked service reference.|dynamicsentity_linked_service_name|dynamics_entity_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|dynamicsentity_description|dynamics_entity_description|
@@ -1391,7 +1361,6 @@ eloqua-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|eloquaobject_type|eloqua_object_type|
 |**--linked-service-name**|object|Linked service reference.|eloquaobject_linked_service_name|eloqua_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|eloquaobject_description|eloqua_object_description|
@@ -1410,7 +1379,6 @@ eloqua-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|eloquaobject_type|eloqua_object_type|
 |**--linked-service-name**|object|Linked service reference.|eloquaobject_linked_service_name|eloqua_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|eloquaobject_description|eloqua_object_description|
@@ -1429,7 +1397,6 @@ file-share create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|fileshare_type|file_share_type|
 |**--linked-service-name**|object|Linked service reference.|fileshare_linked_service_name|file_share_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|fileshare_description|file_share_description|
@@ -1444,7 +1411,10 @@ file-share create a datafactory dataset.
 |**--type-properties-modified-datetime-end**|any|The end of file's modified datetime. Type: string (or Expression with resultType string).|fileshare_modified_datetime_end|file_share_modified_datetime_end|
 |**--type-properties-format**|object|The format of the files.|fileshare_format|file_share_format|
 |**--type-properties-file-filter**|any|Specify a filter to be used to select a subset of files in the folderPath rather than all files. Type: string (or Expression with resultType string).|fileshare_file_filter|file_share_file_filter|
-|**--type-properties-compression**|object|The data compression method used for the file system.|fileshare_compression|file_share_compression|
+|**--dataset-b-zip2-compression**|object|The BZip2 compression method used on a dataset.|DatasetBZip2Compression|dataset_b_zip2_compression|
+|**--dataset-g-zip-compression**|object|The GZip compression method used on a dataset.|DatasetGZipCompression|dataset_g_zip_compression|
+|**--dataset-deflate-compression**|object|The Deflate compression method used on a dataset.|DatasetDeflateCompression|dataset_deflate_compression|
+|**--dataset-zip-deflate-compression**|object|The ZipDeflate compression method used on a dataset.|DatasetZipDeflateCompression|dataset_zip_deflate_compression|
 ### datafactory dataset file-share update
 
 file-share create a datafactory dataset.
@@ -1454,7 +1424,6 @@ file-share create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|fileshare_type|file_share_type|
 |**--linked-service-name**|object|Linked service reference.|fileshare_linked_service_name|file_share_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|fileshare_description|file_share_description|
@@ -1469,7 +1438,10 @@ file-share create a datafactory dataset.
 |**--type-properties-modified-datetime-end**|any|The end of file's modified datetime. Type: string (or Expression with resultType string).|fileshare_modified_datetime_end|file_share_modified_datetime_end|
 |**--type-properties-format**|object|The format of the files.|fileshare_format|file_share_format|
 |**--type-properties-file-filter**|any|Specify a filter to be used to select a subset of files in the folderPath rather than all files. Type: string (or Expression with resultType string).|fileshare_file_filter|file_share_file_filter|
-|**--type-properties-compression**|object|The data compression method used for the file system.|fileshare_compression|file_share_compression|
+|**--dataset-b-zip2-compression**|object|The BZip2 compression method used on a dataset.|DatasetBZip2Compression|dataset_b_zip2_compression|
+|**--dataset-g-zip-compression**|object|The GZip compression method used on a dataset.|DatasetGZipCompression|dataset_g_zip_compression|
+|**--dataset-deflate-compression**|object|The Deflate compression method used on a dataset.|DatasetDeflateCompression|dataset_deflate_compression|
+|**--dataset-zip-deflate-compression**|object|The ZipDeflate compression method used on a dataset.|DatasetZipDeflateCompression|dataset_zip_deflate_compression|
 ### datafactory dataset google-ad-words-object create
 
 google-ad-words-object create a datafactory dataset.
@@ -1479,7 +1451,6 @@ google-ad-words-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|googleadwordsobject_type|google_ad_words_object_type|
 |**--linked-service-name**|object|Linked service reference.|googleadwordsobject_linked_service_name|google_ad_words_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|googleadwordsobject_description|google_ad_words_object_description|
@@ -1498,7 +1469,6 @@ google-ad-words-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|googleadwordsobject_type|google_ad_words_object_type|
 |**--linked-service-name**|object|Linked service reference.|googleadwordsobject_linked_service_name|google_ad_words_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|googleadwordsobject_description|google_ad_words_object_description|
@@ -1517,7 +1487,6 @@ google-big-query-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|googlebigqueryobject_type|google_big_query_object_type|
 |**--linked-service-name**|object|Linked service reference.|googlebigqueryobject_linked_service_name|google_big_query_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|googlebigqueryobject_description|google_big_query_object_description|
@@ -1538,7 +1507,6 @@ google-big-query-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|googlebigqueryobject_type|google_big_query_object_type|
 |**--linked-service-name**|object|Linked service reference.|googlebigqueryobject_linked_service_name|google_big_query_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|googlebigqueryobject_description|google_big_query_object_description|
@@ -1559,7 +1527,6 @@ greenplum-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|greenplumtable_type|greenplum_table_type|
 |**--linked-service-name**|object|Linked service reference.|greenplumtable_linked_service_name|greenplum_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|greenplumtable_description|greenplum_table_description|
@@ -1580,7 +1547,6 @@ greenplum-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|greenplumtable_type|greenplum_table_type|
 |**--linked-service-name**|object|Linked service reference.|greenplumtable_linked_service_name|greenplum_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|greenplumtable_description|greenplum_table_description|
@@ -1601,7 +1567,6 @@ h-base-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|hbaseobject_type|h_base_object_type|
 |**--linked-service-name**|object|Linked service reference.|hbaseobject_linked_service_name|h_base_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|hbaseobject_description|h_base_object_description|
@@ -1620,7 +1585,6 @@ h-base-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|hbaseobject_type|h_base_object_type|
 |**--linked-service-name**|object|Linked service reference.|hbaseobject_linked_service_name|h_base_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|hbaseobject_description|h_base_object_description|
@@ -1639,7 +1603,6 @@ hive-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|hiveobject_type|hive_object_type|
 |**--linked-service-name**|object|Linked service reference.|hiveobject_linked_service_name|hive_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|hiveobject_description|hive_object_description|
@@ -1660,7 +1623,6 @@ hive-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|hiveobject_type|hive_object_type|
 |**--linked-service-name**|object|Linked service reference.|hiveobject_linked_service_name|hive_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|hiveobject_description|hive_object_description|
@@ -1681,7 +1643,6 @@ http-file create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|httpfile_type|http_file_type|
 |**--linked-service-name**|object|Linked service reference.|httpfile_linked_service_name|http_file_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|httpfile_description|http_file_description|
@@ -1693,9 +1654,14 @@ http-file create a datafactory dataset.
 |**--type-properties-relative-url**|any|The relative URL based on the URL in the HttpLinkedService refers to an HTTP file Type: string (or Expression with resultType string).|httpfile_relative_url|http_file_relative_url|
 |**--type-properties-request-method**|any|The HTTP method for the HTTP request. Type: string (or Expression with resultType string).|httpfile_request_method|http_file_request_method|
 |**--type-properties-request-body**|any|The body for the HTTP request. Type: string (or Expression with resultType string).|httpfile_request_body|http_file_request_body|
-|**--type-properties-additional-headers**|any|The headers for the HTTP Request. e.g. request-header-name-1:request-header-value-1 ... request-header-name-n:request-header-value-n Type: string (or Expression with resultType string).|httpfile_additional_headers|http_file_additional_headers|
+|**--type-properties-additional-headers**|any|The headers for the HTTP Request. e.g. request-header-name-1:request-header-value-1
+...
+request-header-name-n:request-header-value-n Type: string (or Expression with resultType string).|httpfile_additional_headers|http_file_additional_headers|
 |**--type-properties-format**|object|The format of files.|httpfile_format|http_file_format|
-|**--type-properties-compression**|object|The data compression method used on files.|httpfile_compression|http_file_compression|
+|**--dataset-b-zip2-compression**|object|The BZip2 compression method used on a dataset.|DatasetBZip2Compression|dataset_b_zip2_compression|
+|**--dataset-g-zip-compression**|object|The GZip compression method used on a dataset.|DatasetGZipCompression|dataset_g_zip_compression|
+|**--dataset-deflate-compression**|object|The Deflate compression method used on a dataset.|DatasetDeflateCompression|dataset_deflate_compression|
+|**--dataset-zip-deflate-compression**|object|The ZipDeflate compression method used on a dataset.|DatasetZipDeflateCompression|dataset_zip_deflate_compression|
 ### datafactory dataset http-file update
 
 http-file create a datafactory dataset.
@@ -1705,7 +1671,6 @@ http-file create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|httpfile_type|http_file_type|
 |**--linked-service-name**|object|Linked service reference.|httpfile_linked_service_name|http_file_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|httpfile_description|http_file_description|
@@ -1717,9 +1682,14 @@ http-file create a datafactory dataset.
 |**--type-properties-relative-url**|any|The relative URL based on the URL in the HttpLinkedService refers to an HTTP file Type: string (or Expression with resultType string).|httpfile_relative_url|http_file_relative_url|
 |**--type-properties-request-method**|any|The HTTP method for the HTTP request. Type: string (or Expression with resultType string).|httpfile_request_method|http_file_request_method|
 |**--type-properties-request-body**|any|The body for the HTTP request. Type: string (or Expression with resultType string).|httpfile_request_body|http_file_request_body|
-|**--type-properties-additional-headers**|any|The headers for the HTTP Request. e.g. request-header-name-1:request-header-value-1 ... request-header-name-n:request-header-value-n Type: string (or Expression with resultType string).|httpfile_additional_headers|http_file_additional_headers|
+|**--type-properties-additional-headers**|any|The headers for the HTTP Request. e.g. request-header-name-1:request-header-value-1
+...
+request-header-name-n:request-header-value-n Type: string (or Expression with resultType string).|httpfile_additional_headers|http_file_additional_headers|
 |**--type-properties-format**|object|The format of files.|httpfile_format|http_file_format|
-|**--type-properties-compression**|object|The data compression method used on files.|httpfile_compression|http_file_compression|
+|**--dataset-b-zip2-compression**|object|The BZip2 compression method used on a dataset.|DatasetBZip2Compression|dataset_b_zip2_compression|
+|**--dataset-g-zip-compression**|object|The GZip compression method used on a dataset.|DatasetGZipCompression|dataset_g_zip_compression|
+|**--dataset-deflate-compression**|object|The Deflate compression method used on a dataset.|DatasetDeflateCompression|dataset_deflate_compression|
+|**--dataset-zip-deflate-compression**|object|The ZipDeflate compression method used on a dataset.|DatasetZipDeflateCompression|dataset_zip_deflate_compression|
 ### datafactory dataset hubspot-object create
 
 hubspot-object create a datafactory dataset.
@@ -1729,7 +1699,6 @@ hubspot-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|hubspotobject_type|hubspot_object_type|
 |**--linked-service-name**|object|Linked service reference.|hubspotobject_linked_service_name|hubspot_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|hubspotobject_description|hubspot_object_description|
@@ -1748,7 +1717,6 @@ hubspot-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|hubspotobject_type|hubspot_object_type|
 |**--linked-service-name**|object|Linked service reference.|hubspotobject_linked_service_name|hubspot_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|hubspotobject_description|hubspot_object_description|
@@ -1767,7 +1735,6 @@ impala-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|impalaobject_type|impala_object_type|
 |**--linked-service-name**|object|Linked service reference.|impalaobject_linked_service_name|impala_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|impalaobject_description|impala_object_description|
@@ -1788,7 +1755,6 @@ impala-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|impalaobject_type|impala_object_type|
 |**--linked-service-name**|object|Linked service reference.|impalaobject_linked_service_name|impala_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|impalaobject_description|impala_object_description|
@@ -1809,7 +1775,6 @@ informix-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|informixtable_type|informix_table_type|
 |**--linked-service-name**|object|Linked service reference.|informixtable_linked_service_name|informix_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|informixtable_description|informix_table_description|
@@ -1828,7 +1793,6 @@ informix-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|informixtable_type|informix_table_type|
 |**--linked-service-name**|object|Linked service reference.|informixtable_linked_service_name|informix_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|informixtable_description|informix_table_description|
@@ -1847,7 +1811,6 @@ jira-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|jiraobject_type|jira_object_type|
 |**--linked-service-name**|object|Linked service reference.|jiraobject_linked_service_name|jira_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|jiraobject_description|jira_object_description|
@@ -1866,7 +1829,6 @@ jira-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|jiraobject_type|jira_object_type|
 |**--linked-service-name**|object|Linked service reference.|jiraobject_linked_service_name|jira_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|jiraobject_description|jira_object_description|
@@ -1885,7 +1847,6 @@ json create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|json_type|json_type|
 |**--linked-service-name**|object|Linked service reference.|json_linked_service_name|json_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|json_description|json_description|
@@ -1896,7 +1857,10 @@ json create a datafactory dataset.
 |**--folder**|object|The folder that this Dataset is in. If not specified, Dataset will appear at the root level.|json_folder|json_folder|
 |**--type-properties-location**|object|The location of the json data storage.|json_location|json_location|
 |**--type-properties-encoding-name**|any|The code page name of the preferred encoding. If not specified, the default value is UTF-8, unless BOM denotes another Unicode encoding. Refer to the name column of the table in the following link to set supported values: https://msdn.microsoft.com/library/system.text.encoding.aspx. Type: string (or Expression with resultType string).|json_encoding_name|json_encoding_name|
-|**--type-properties-compression**|object|The data compression method used for the json dataset.|json_compression|json_compression|
+|**--dataset-b-zip2-compression**|object|The BZip2 compression method used on a dataset.|DatasetBZip2Compression|dataset_b_zip2_compression|
+|**--dataset-g-zip-compression**|object|The GZip compression method used on a dataset.|DatasetGZipCompression|dataset_g_zip_compression|
+|**--dataset-deflate-compression**|object|The Deflate compression method used on a dataset.|DatasetDeflateCompression|dataset_deflate_compression|
+|**--dataset-zip-deflate-compression**|object|The ZipDeflate compression method used on a dataset.|DatasetZipDeflateCompression|dataset_zip_deflate_compression|
 ### datafactory dataset json update
 
 json create a datafactory dataset.
@@ -1906,7 +1870,6 @@ json create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|json_type|json_type|
 |**--linked-service-name**|object|Linked service reference.|json_linked_service_name|json_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|json_description|json_description|
@@ -1917,7 +1880,10 @@ json create a datafactory dataset.
 |**--folder**|object|The folder that this Dataset is in. If not specified, Dataset will appear at the root level.|json_folder|json_folder|
 |**--type-properties-location**|object|The location of the json data storage.|json_location|json_location|
 |**--type-properties-encoding-name**|any|The code page name of the preferred encoding. If not specified, the default value is UTF-8, unless BOM denotes another Unicode encoding. Refer to the name column of the table in the following link to set supported values: https://msdn.microsoft.com/library/system.text.encoding.aspx. Type: string (or Expression with resultType string).|json_encoding_name|json_encoding_name|
-|**--type-properties-compression**|object|The data compression method used for the json dataset.|json_compression|json_compression|
+|**--dataset-b-zip2-compression**|object|The BZip2 compression method used on a dataset.|DatasetBZip2Compression|dataset_b_zip2_compression|
+|**--dataset-g-zip-compression**|object|The GZip compression method used on a dataset.|DatasetGZipCompression|dataset_g_zip_compression|
+|**--dataset-deflate-compression**|object|The Deflate compression method used on a dataset.|DatasetDeflateCompression|dataset_deflate_compression|
+|**--dataset-zip-deflate-compression**|object|The ZipDeflate compression method used on a dataset.|DatasetZipDeflateCompression|dataset_zip_deflate_compression|
 ### datafactory dataset list
 
 list a datafactory dataset.
@@ -1935,7 +1901,6 @@ magento-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|magentoobject_type|magento_object_type|
 |**--linked-service-name**|object|Linked service reference.|magentoobject_linked_service_name|magento_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|magentoobject_description|magento_object_description|
@@ -1954,7 +1919,6 @@ magento-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|magentoobject_type|magento_object_type|
 |**--linked-service-name**|object|Linked service reference.|magentoobject_linked_service_name|magento_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|magentoobject_description|magento_object_description|
@@ -1973,7 +1937,6 @@ maria-d-b-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|mariadbtable_type|maria_d_b_table_type|
 |**--linked-service-name**|object|Linked service reference.|mariadbtable_linked_service_name|maria_d_b_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|mariadbtable_description|maria_d_b_table_description|
@@ -1992,7 +1955,6 @@ maria-d-b-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|mariadbtable_type|maria_d_b_table_type|
 |**--linked-service-name**|object|Linked service reference.|mariadbtable_linked_service_name|maria_d_b_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|mariadbtable_description|maria_d_b_table_description|
@@ -2011,7 +1973,6 @@ marketo-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|marketoobject_type|marketo_object_type|
 |**--linked-service-name**|object|Linked service reference.|marketoobject_linked_service_name|marketo_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|marketoobject_description|marketo_object_description|
@@ -2030,7 +1991,6 @@ marketo-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|marketoobject_type|marketo_object_type|
 |**--linked-service-name**|object|Linked service reference.|marketoobject_linked_service_name|marketo_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|marketoobject_description|marketo_object_description|
@@ -2049,7 +2009,6 @@ microsoft-access-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|microsoftaccesstable_type|microsoft_access_table_type|
 |**--linked-service-name**|object|Linked service reference.|microsoftaccesstable_linked_service_name|microsoft_access_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|microsoftaccesstable_description|microsoft_access_table_description|
@@ -2068,7 +2027,6 @@ microsoft-access-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|microsoftaccesstable_type|microsoft_access_table_type|
 |**--linked-service-name**|object|Linked service reference.|microsoftaccesstable_linked_service_name|microsoft_access_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|microsoftaccesstable_description|microsoft_access_table_description|
@@ -2087,7 +2045,6 @@ mongo-db-collection create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|mongodbcollection_type|mongo_db_collection_type|
 |**--linked-service-name**|object|Linked service reference.|mongodbcollection_linked_service_name|mongo_db_collection_linked_service_name|
 |**--type-properties-collection-name**|any|The table name of the MongoDB database. Type: string (or Expression with resultType string).|mongodbcollection_collection_name|mongo_db_collection_collection_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -2106,7 +2063,6 @@ mongo-db-collection create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|mongodbcollection_type|mongo_db_collection_type|
 |**--linked-service-name**|object|Linked service reference.|mongodbcollection_linked_service_name|mongo_db_collection_linked_service_name|
 |**--type-properties-collection-name**|any|The table name of the MongoDB database. Type: string (or Expression with resultType string).|mongodbcollection_collection_name|mongo_db_collection_collection_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -2125,7 +2081,6 @@ mongo-db-v2-collection create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|mongodbv2collection_type|mongo_db_v2_collection_type|
 |**--linked-service-name**|object|Linked service reference.|mongodbv2collection_linked_service_name|mongo_db_v2_collection_linked_service_name|
 |**--type-properties-collection**|any|The collection name of the MongoDB database. Type: string (or Expression with resultType string).|mongodbv2collection_collection|mongo_db_v2_collection_collection|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -2144,7 +2099,6 @@ mongo-db-v2-collection create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|mongodbv2collection_type|mongo_db_v2_collection_type|
 |**--linked-service-name**|object|Linked service reference.|mongodbv2collection_linked_service_name|mongo_db_v2_collection_linked_service_name|
 |**--type-properties-collection**|any|The collection name of the MongoDB database. Type: string (or Expression with resultType string).|mongodbv2collection_collection|mongo_db_v2_collection_collection|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -2163,7 +2117,6 @@ my-sql-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|mysqltable_type|my_sql_table_type|
 |**--linked-service-name**|object|Linked service reference.|mysqltable_linked_service_name|my_sql_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|mysqltable_description|my_sql_table_description|
@@ -2182,7 +2135,6 @@ my-sql-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|mysqltable_type|my_sql_table_type|
 |**--linked-service-name**|object|Linked service reference.|mysqltable_linked_service_name|my_sql_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|mysqltable_description|my_sql_table_description|
@@ -2201,7 +2153,6 @@ netezza-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|netezzatable_type|netezza_table_type|
 |**--linked-service-name**|object|Linked service reference.|netezzatable_linked_service_name|netezza_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|netezzatable_description|netezza_table_description|
@@ -2222,7 +2173,6 @@ netezza-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|netezzatable_type|netezza_table_type|
 |**--linked-service-name**|object|Linked service reference.|netezzatable_linked_service_name|netezza_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|netezzatable_description|netezza_table_description|
@@ -2243,7 +2193,6 @@ o-data-resource create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|odataresource_type|o_data_resource_type|
 |**--linked-service-name**|object|Linked service reference.|odataresource_linked_service_name|o_data_resource_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|odataresource_description|o_data_resource_description|
@@ -2262,7 +2211,6 @@ o-data-resource create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|odataresource_type|o_data_resource_type|
 |**--linked-service-name**|object|Linked service reference.|odataresource_linked_service_name|o_data_resource_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|odataresource_description|o_data_resource_description|
@@ -2281,7 +2229,6 @@ odbc-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|odbctable_type|odbc_table_type|
 |**--linked-service-name**|object|Linked service reference.|odbctable_linked_service_name|odbc_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|odbctable_description|odbc_table_description|
@@ -2300,7 +2247,6 @@ odbc-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|odbctable_type|odbc_table_type|
 |**--linked-service-name**|object|Linked service reference.|odbctable_linked_service_name|odbc_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|odbctable_description|odbc_table_description|
@@ -2319,7 +2265,6 @@ office365-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|office365table_type|office365_table_type|
 |**--linked-service-name**|object|Linked service reference.|office365table_linked_service_name|office365_table_linked_service_name|
 |**--type-properties-table-name**|any|Name of the dataset to extract from Office 365. Type: string (or Expression with resultType string).|office365table_table_name|office365_table_table_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -2339,7 +2284,6 @@ office365-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|office365table_type|office365_table_type|
 |**--linked-service-name**|object|Linked service reference.|office365table_linked_service_name|office365_table_linked_service_name|
 |**--type-properties-table-name**|any|Name of the dataset to extract from Office 365. Type: string (or Expression with resultType string).|office365table_table_name|office365_table_table_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -2359,7 +2303,6 @@ oracle-service-cloud-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|oracleservicecloudobject_type|oracle_service_cloud_object_type|
 |**--linked-service-name**|object|Linked service reference.|oracleservicecloudobject_linked_service_name|oracle_service_cloud_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|oracleservicecloudobject_description|oracle_service_cloud_object_description|
@@ -2378,7 +2321,6 @@ oracle-service-cloud-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|oracleservicecloudobject_type|oracle_service_cloud_object_type|
 |**--linked-service-name**|object|Linked service reference.|oracleservicecloudobject_linked_service_name|oracle_service_cloud_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|oracleservicecloudobject_description|oracle_service_cloud_object_description|
@@ -2397,7 +2339,6 @@ oracle-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|oracletable_type|oracle_table_type|
 |**--linked-service-name**|object|Linked service reference.|oracletable_linked_service_name|oracle_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|oracletable_description|oracle_table_description|
@@ -2418,7 +2359,6 @@ oracle-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|oracletable_type|oracle_table_type|
 |**--linked-service-name**|object|Linked service reference.|oracletable_linked_service_name|oracle_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|oracletable_description|oracle_table_description|
@@ -2439,7 +2379,6 @@ orc create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|orc_type|orc_type|
 |**--linked-service-name**|object|Linked service reference.|orc_linked_service_name|orc_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|orc_description|orc_description|
@@ -2459,7 +2398,6 @@ orc create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|orc_type|orc_type|
 |**--linked-service-name**|object|Linked service reference.|orc_linked_service_name|orc_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|orc_description|orc_description|
@@ -2479,7 +2417,6 @@ parquet create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|parquet_type|parquet_type|
 |**--linked-service-name**|object|Linked service reference.|parquet_linked_service_name|parquet_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|parquet_description|parquet_description|
@@ -2499,7 +2436,6 @@ parquet create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|parquet_type|parquet_type|
 |**--linked-service-name**|object|Linked service reference.|parquet_linked_service_name|parquet_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|parquet_description|parquet_description|
@@ -2519,7 +2455,6 @@ paypal-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|paypalobject_type|paypal_object_type|
 |**--linked-service-name**|object|Linked service reference.|paypalobject_linked_service_name|paypal_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|paypalobject_description|paypal_object_description|
@@ -2538,7 +2473,6 @@ paypal-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|paypalobject_type|paypal_object_type|
 |**--linked-service-name**|object|Linked service reference.|paypalobject_linked_service_name|paypal_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|paypalobject_description|paypal_object_description|
@@ -2557,7 +2491,6 @@ phoenix-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|phoenixobject_type|phoenix_object_type|
 |**--linked-service-name**|object|Linked service reference.|phoenixobject_linked_service_name|phoenix_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|phoenixobject_description|phoenix_object_description|
@@ -2578,7 +2511,6 @@ phoenix-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|phoenixobject_type|phoenix_object_type|
 |**--linked-service-name**|object|Linked service reference.|phoenixobject_linked_service_name|phoenix_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|phoenixobject_description|phoenix_object_description|
@@ -2599,7 +2531,6 @@ postgre-sql-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|postgresqltable_type|postgre_sql_table_type|
 |**--linked-service-name**|object|Linked service reference.|postgresqltable_linked_service_name|postgre_sql_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|postgresqltable_description|postgre_sql_table_description|
@@ -2620,7 +2551,6 @@ postgre-sql-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|postgresqltable_type|postgre_sql_table_type|
 |**--linked-service-name**|object|Linked service reference.|postgresqltable_linked_service_name|postgre_sql_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|postgresqltable_description|postgre_sql_table_description|
@@ -2641,7 +2571,6 @@ presto-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|prestoobject_type|presto_object_type|
 |**--linked-service-name**|object|Linked service reference.|prestoobject_linked_service_name|presto_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|prestoobject_description|presto_object_description|
@@ -2662,7 +2591,6 @@ presto-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|prestoobject_type|presto_object_type|
 |**--linked-service-name**|object|Linked service reference.|prestoobject_linked_service_name|presto_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|prestoobject_description|presto_object_description|
@@ -2683,7 +2611,6 @@ quick-books-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|quickbooksobject_type|quick_books_object_type|
 |**--linked-service-name**|object|Linked service reference.|quickbooksobject_linked_service_name|quick_books_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|quickbooksobject_description|quick_books_object_description|
@@ -2702,7 +2629,6 @@ quick-books-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|quickbooksobject_type|quick_books_object_type|
 |**--linked-service-name**|object|Linked service reference.|quickbooksobject_linked_service_name|quick_books_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|quickbooksobject_description|quick_books_object_description|
@@ -2721,7 +2647,6 @@ relational-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|relationaltable_type|relational_table_type|
 |**--linked-service-name**|object|Linked service reference.|relationaltable_linked_service_name|relational_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|relationaltable_description|relational_table_description|
@@ -2740,7 +2665,6 @@ relational-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|relationaltable_type|relational_table_type|
 |**--linked-service-name**|object|Linked service reference.|relationaltable_linked_service_name|relational_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|relationaltable_description|relational_table_description|
@@ -2759,7 +2683,6 @@ responsys-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|responsysobject_type|responsys_object_type|
 |**--linked-service-name**|object|Linked service reference.|responsysobject_linked_service_name|responsys_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|responsysobject_description|responsys_object_description|
@@ -2778,7 +2701,6 @@ responsys-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|responsysobject_type|responsys_object_type|
 |**--linked-service-name**|object|Linked service reference.|responsysobject_linked_service_name|responsys_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|responsysobject_description|responsys_object_description|
@@ -2797,7 +2719,6 @@ rest-resource create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|restresource_type|rest_resource_type|
 |**--linked-service-name**|object|Linked service reference.|restresource_linked_service_name|rest_resource_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|restresource_description|rest_resource_description|
@@ -2820,7 +2741,6 @@ rest-resource create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|restresource_type|rest_resource_type|
 |**--linked-service-name**|object|Linked service reference.|restresource_linked_service_name|rest_resource_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|restresource_description|rest_resource_description|
@@ -2843,7 +2763,6 @@ salesforce-marketing-cloud-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|salesforcemarketingcloudobject_type|salesforce_marketing_cloud_object_type|
 |**--linked-service-name**|object|Linked service reference.|salesforcemarketingcloudobject_linked_service_name|salesforce_marketing_cloud_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|salesforcemarketingcloudobject_description|salesforce_marketing_cloud_object_description|
@@ -2862,7 +2781,6 @@ salesforce-marketing-cloud-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|salesforcemarketingcloudobject_type|salesforce_marketing_cloud_object_type|
 |**--linked-service-name**|object|Linked service reference.|salesforcemarketingcloudobject_linked_service_name|salesforce_marketing_cloud_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|salesforcemarketingcloudobject_description|salesforce_marketing_cloud_object_description|
@@ -2881,7 +2799,6 @@ salesforce-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|salesforceobject_type|salesforce_object_type|
 |**--linked-service-name**|object|Linked service reference.|salesforceobject_linked_service_name|salesforce_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|salesforceobject_description|salesforce_object_description|
@@ -2900,7 +2817,6 @@ salesforce-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|salesforceobject_type|salesforce_object_type|
 |**--linked-service-name**|object|Linked service reference.|salesforceobject_linked_service_name|salesforce_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|salesforceobject_description|salesforce_object_description|
@@ -2919,7 +2835,6 @@ salesforce-service-cloud-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|salesforceservicecloudobject_type|salesforce_service_cloud_object_type|
 |**--linked-service-name**|object|Linked service reference.|salesforceservicecloudobject_linked_service_name|salesforce_service_cloud_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|salesforceservicecloudobject_description|salesforce_service_cloud_object_description|
@@ -2938,7 +2853,6 @@ salesforce-service-cloud-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|salesforceservicecloudobject_type|salesforce_service_cloud_object_type|
 |**--linked-service-name**|object|Linked service reference.|salesforceservicecloudobject_linked_service_name|salesforce_service_cloud_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|salesforceservicecloudobject_description|salesforce_service_cloud_object_description|
@@ -2957,7 +2871,6 @@ sap-bw-cube create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|sapbwcube_type|sap_bw_cube_type|
 |**--linked-service-name**|object|Linked service reference.|sapbwcube_linked_service_name|sap_bw_cube_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|sapbwcube_description|sap_bw_cube_description|
@@ -2975,7 +2888,6 @@ sap-bw-cube create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|sapbwcube_type|sap_bw_cube_type|
 |**--linked-service-name**|object|Linked service reference.|sapbwcube_linked_service_name|sap_bw_cube_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|sapbwcube_description|sap_bw_cube_description|
@@ -2993,7 +2905,6 @@ sap-cloud-for-customer-resource create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|sapcloudforcustomerresource_type|sap_cloud_for_customer_resource_type|
 |**--linked-service-name**|object|Linked service reference.|sapcloudforcustomerresource_linked_service_name|sap_cloud_for_customer_resource_linked_service_name|
 |**--type-properties-path**|any|The path of the SAP Cloud for Customer OData entity. Type: string (or Expression with resultType string).|sapcloudforcustomerresource_path|sap_cloud_for_customer_resource_path|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -3012,7 +2923,6 @@ sap-cloud-for-customer-resource create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|sapcloudforcustomerresource_type|sap_cloud_for_customer_resource_type|
 |**--linked-service-name**|object|Linked service reference.|sapcloudforcustomerresource_linked_service_name|sap_cloud_for_customer_resource_linked_service_name|
 |**--type-properties-path**|any|The path of the SAP Cloud for Customer OData entity. Type: string (or Expression with resultType string).|sapcloudforcustomerresource_path|sap_cloud_for_customer_resource_path|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -3031,7 +2941,6 @@ sap-ecc-resource create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|sapeccresource_type|sap_ecc_resource_type|
 |**--linked-service-name**|object|Linked service reference.|sapeccresource_linked_service_name|sap_ecc_resource_linked_service_name|
 |**--type-properties-path**|any|The path of the SAP ECC OData entity. Type: string (or Expression with resultType string).|sapeccresource_path|sap_ecc_resource_path|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -3050,7 +2959,6 @@ sap-ecc-resource create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|sapeccresource_type|sap_ecc_resource_type|
 |**--linked-service-name**|object|Linked service reference.|sapeccresource_linked_service_name|sap_ecc_resource_linked_service_name|
 |**--type-properties-path**|any|The path of the SAP ECC OData entity. Type: string (or Expression with resultType string).|sapeccresource_path|sap_ecc_resource_path|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -3069,7 +2977,6 @@ sap-hana-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|saphanatable_type|sap_hana_table_type|
 |**--linked-service-name**|object|Linked service reference.|saphanatable_linked_service_name|sap_hana_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|saphanatable_description|sap_hana_table_description|
@@ -3089,7 +2996,6 @@ sap-hana-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|saphanatable_type|sap_hana_table_type|
 |**--linked-service-name**|object|Linked service reference.|saphanatable_linked_service_name|sap_hana_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|saphanatable_description|sap_hana_table_description|
@@ -3109,7 +3015,6 @@ sap-open-hub-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|sapopenhubtable_type|sap_open_hub_table_type|
 |**--linked-service-name**|object|Linked service reference.|sapopenhubtable_linked_service_name|sap_open_hub_table_linked_service_name|
 |**--type-properties-open-hub-destination-name**|any|The name of the Open Hub Destination with destination type as Database Table. Type: string (or Expression with resultType string).|sapopenhubtable_open_hub_destination_name|sap_open_hub_table_open_hub_destination_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -3130,7 +3035,6 @@ sap-open-hub-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|sapopenhubtable_type|sap_open_hub_table_type|
 |**--linked-service-name**|object|Linked service reference.|sapopenhubtable_linked_service_name|sap_open_hub_table_linked_service_name|
 |**--type-properties-open-hub-destination-name**|any|The name of the Open Hub Destination with destination type as Database Table. Type: string (or Expression with resultType string).|sapopenhubtable_open_hub_destination_name|sap_open_hub_table_open_hub_destination_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -3151,7 +3055,6 @@ sap-table-resource create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|saptableresource_type|sap_table_resource_type|
 |**--linked-service-name**|object|Linked service reference.|saptableresource_linked_service_name|sap_table_resource_linked_service_name|
 |**--type-properties-table-name**|any|The name of the SAP Table. Type: string (or Expression with resultType string).|saptableresource_table_name|sap_table_resource_table_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -3170,7 +3073,6 @@ sap-table-resource create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|saptableresource_type|sap_table_resource_type|
 |**--linked-service-name**|object|Linked service reference.|saptableresource_linked_service_name|sap_table_resource_linked_service_name|
 |**--type-properties-table-name**|any|The name of the SAP Table. Type: string (or Expression with resultType string).|saptableresource_table_name|sap_table_resource_table_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -3189,7 +3091,6 @@ service-now-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|servicenowobject_type|service_now_object_type|
 |**--linked-service-name**|object|Linked service reference.|servicenowobject_linked_service_name|service_now_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|servicenowobject_description|service_now_object_description|
@@ -3208,7 +3109,6 @@ service-now-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|servicenowobject_type|service_now_object_type|
 |**--linked-service-name**|object|Linked service reference.|servicenowobject_linked_service_name|service_now_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|servicenowobject_description|service_now_object_description|
@@ -3227,7 +3127,6 @@ shopify-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|shopifyobject_type|shopify_object_type|
 |**--linked-service-name**|object|Linked service reference.|shopifyobject_linked_service_name|shopify_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|shopifyobject_description|shopify_object_description|
@@ -3246,7 +3145,6 @@ shopify-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|shopifyobject_type|shopify_object_type|
 |**--linked-service-name**|object|Linked service reference.|shopifyobject_linked_service_name|shopify_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|shopifyobject_description|shopify_object_description|
@@ -3275,7 +3173,6 @@ snowflake-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|snowflaketable_type|snowflake_table_type|
 |**--linked-service-name**|object|Linked service reference.|snowflaketable_linked_service_name|snowflake_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|snowflaketable_description|snowflake_table_description|
@@ -3295,7 +3192,6 @@ snowflake-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|snowflaketable_type|snowflake_table_type|
 |**--linked-service-name**|object|Linked service reference.|snowflaketable_linked_service_name|snowflake_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|snowflaketable_description|snowflake_table_description|
@@ -3315,7 +3211,6 @@ spark-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|sparkobject_type|spark_object_type|
 |**--linked-service-name**|object|Linked service reference.|sparkobject_linked_service_name|spark_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|sparkobject_description|spark_object_description|
@@ -3336,7 +3231,6 @@ spark-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|sparkobject_type|spark_object_type|
 |**--linked-service-name**|object|Linked service reference.|sparkobject_linked_service_name|spark_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|sparkobject_description|spark_object_description|
@@ -3357,7 +3251,6 @@ sql-server-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|sqlservertable_type|sql_server_table_type|
 |**--linked-service-name**|object|Linked service reference.|sqlservertable_linked_service_name|sql_server_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|sqlservertable_description|sql_server_table_description|
@@ -3378,7 +3271,6 @@ sql-server-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|sqlservertable_type|sql_server_table_type|
 |**--linked-service-name**|object|Linked service reference.|sqlservertable_linked_service_name|sql_server_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|sqlservertable_description|sql_server_table_description|
@@ -3399,7 +3291,6 @@ square-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|squareobject_type|square_object_type|
 |**--linked-service-name**|object|Linked service reference.|squareobject_linked_service_name|square_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|squareobject_description|square_object_description|
@@ -3418,7 +3309,6 @@ square-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|squareobject_type|square_object_type|
 |**--linked-service-name**|object|Linked service reference.|squareobject_linked_service_name|square_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|squareobject_description|square_object_description|
@@ -3437,7 +3327,6 @@ sybase-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|sybasetable_type|sybase_table_type|
 |**--linked-service-name**|object|Linked service reference.|sybasetable_linked_service_name|sybase_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|sybasetable_description|sybase_table_description|
@@ -3456,7 +3345,6 @@ sybase-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|sybasetable_type|sybase_table_type|
 |**--linked-service-name**|object|Linked service reference.|sybasetable_linked_service_name|sybase_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|sybasetable_description|sybase_table_description|
@@ -3475,7 +3363,6 @@ teradata-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|teradatatable_type|teradata_table_type|
 |**--linked-service-name**|object|Linked service reference.|teradatatable_linked_service_name|teradata_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|teradatatable_description|teradata_table_description|
@@ -3495,7 +3382,6 @@ teradata-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|teradatatable_type|teradata_table_type|
 |**--linked-service-name**|object|Linked service reference.|teradatatable_linked_service_name|teradata_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|teradatatable_description|teradata_table_description|
@@ -3515,7 +3401,6 @@ vertica-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|verticatable_type|vertica_table_type|
 |**--linked-service-name**|object|Linked service reference.|verticatable_linked_service_name|vertica_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|verticatable_description|vertica_table_description|
@@ -3536,7 +3421,6 @@ vertica-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|verticatable_type|vertica_table_type|
 |**--linked-service-name**|object|Linked service reference.|verticatable_linked_service_name|vertica_table_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|verticatable_description|vertica_table_description|
@@ -3557,7 +3441,6 @@ web-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|webtable_type|web_table_type|
 |**--linked-service-name**|object|Linked service reference.|webtable_linked_service_name|web_table_linked_service_name|
 |**--type-properties-index**|any|The zero-based index of the table in the web page. Type: integer (or Expression with resultType integer), minimum: 0.|webtable_index|web_table_index|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -3577,7 +3460,6 @@ web-table create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|webtable_type|web_table_type|
 |**--linked-service-name**|object|Linked service reference.|webtable_linked_service_name|web_table_linked_service_name|
 |**--type-properties-index**|any|The zero-based index of the table in the web page. Type: integer (or Expression with resultType integer), minimum: 0.|webtable_index|web_table_index|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -3597,7 +3479,6 @@ xero-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|xeroobject_type|xero_object_type|
 |**--linked-service-name**|object|Linked service reference.|xeroobject_linked_service_name|xero_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|xeroobject_description|xero_object_description|
@@ -3616,7 +3497,6 @@ xero-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|xeroobject_type|xero_object_type|
 |**--linked-service-name**|object|Linked service reference.|xeroobject_linked_service_name|xero_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|xeroobject_description|xero_object_description|
@@ -3635,7 +3515,6 @@ zoho-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|zohoobject_type|zoho_object_type|
 |**--linked-service-name**|object|Linked service reference.|zohoobject_linked_service_name|zoho_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|zohoobject_description|zoho_object_description|
@@ -3654,7 +3533,6 @@ zoho-object create a datafactory dataset.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--dataset-name**|string|The dataset name.|dataset_name|dataset_name|
-|**--type**|string|Type of dataset.|zohoobject_type|zoho_object_type|
 |**--linked-service-name**|object|Linked service reference.|zohoobject_linked_service_name|zoho_object_linked_service_name|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Dataset description.|zohoobject_description|zoho_object_description|
@@ -3691,7 +3569,8 @@ configure-factory-repo a datafactory factory.
 |------|----|-----------|----------|--------------|
 |**--location-id**|string|The location identifier.|location_id|location_id|
 |**--factory-resource-id**|string|The factory resource id.|factory_resource_id|factory_resource_id|
-|**--repo-configuration**|object|Git repo information of the factory.|repo_configuration|repo_configuration|
+|**--factory-vsts-configuration**|object|Factory's VSTS repo information.|FactoryVstsConfiguration|factory_vsts_configuration|
+|**--factory-git-hub-configuration**|object|Factory's GitHub repo information.|FactoryGitHubConfiguration|factory_git_hub_configuration|
 ### datafactory factory create
 
 create a datafactory factory.
@@ -3704,7 +3583,8 @@ create a datafactory factory.
 |**--location**|string|The resource location.|location|location|
 |**--tags**|dictionary|The resource tags.|tags|tags|
 |**--identity**|object|Managed service identity of the factory.|identity|identity|
-|**--repo-configuration**|object|Git repo information of the factory.|repo_configuration|repo_configuration|
+|**--factory-vsts-configuration**|object|Factory's VSTS repo information.|FactoryVstsConfiguration|factory_vsts_configuration|
+|**--factory-git-hub-configuration**|object|Factory's GitHub repo information.|FactoryGitHubConfiguration|factory_git_hub_configuration|
 ### datafactory factory delete
 
 delete a datafactory factory.
@@ -3838,7 +3718,6 @@ managed create a datafactory integration-runtime.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--integration-runtime-name**|string|The integration runtime name.|integration_runtime_name|integration_runtime_name|
-|**--type**|choice|Type of integration runtime.|managed_type|managed_type|
 |**--if-match**|string|ETag of the integration runtime entity. Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Integration runtime description.|managed_description|managed_description|
 |**--type-properties-compute-properties**|object|The compute resource for managed integration runtime.|managed_compute_properties|managed_compute_properties|
@@ -3872,7 +3751,6 @@ self-hosted create a datafactory integration-runtime.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--integration-runtime-name**|string|The integration runtime name.|integration_runtime_name|integration_runtime_name|
-|**--type**|choice|Type of integration runtime.|selfhosted_type|self_hosted_type|
 |**--if-match**|string|ETag of the integration runtime entity. Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--description**|string|Integration runtime description.|selfhosted_description|self_hosted_description|
 |**--type-properties-linked-info**|object|The base definition of a linked integration runtime.|selfhosted_linked_info|self_hosted_linked_info|
@@ -4002,7 +3880,6 @@ amazon-m-w-s create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|amazonmws_type|amazon_m_w_s_type|
 |**--type-properties-endpoint**|any|The endpoint of the Amazon MWS server, (i.e. mws.amazonservices.com)|amazonmws_endpoint|amazon_m_w_s_endpoint|
 |**--type-properties-marketplace-id**|any|The Amazon Marketplace ID you want to retrieve data from. To retrieve data from multiple Marketplace IDs, separate them with a comma (,). (i.e. A2EUQ1WTGCTBG2)|amazonmws_marketplace_id|amazon_m_w_s_marketplace_id|
 |**--type-properties-seller-id**|any|The Amazon seller ID.|amazonmws_seller_id|amazon_m_w_s_seller_id|
@@ -4027,7 +3904,6 @@ amazon-m-w-s create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|amazonmws_type|amazon_m_w_s_type|
 |**--type-properties-endpoint**|any|The endpoint of the Amazon MWS server, (i.e. mws.amazonservices.com)|amazonmws_endpoint|amazon_m_w_s_endpoint|
 |**--type-properties-marketplace-id**|any|The Amazon Marketplace ID you want to retrieve data from. To retrieve data from multiple Marketplace IDs, separate them with a comma (,). (i.e. A2EUQ1WTGCTBG2)|amazonmws_marketplace_id|amazon_m_w_s_marketplace_id|
 |**--type-properties-seller-id**|any|The Amazon seller ID.|amazonmws_seller_id|amazon_m_w_s_seller_id|
@@ -4052,7 +3928,6 @@ amazon-redshift create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|amazonredshift_type|amazon_redshift_type|
 |**--type-properties-server**|any|The name of the Amazon Redshift server. Type: string (or Expression with resultType string).|amazonredshift_server|amazon_redshift_server|
 |**--type-properties-database**|any|The database name of the Amazon Redshift source. Type: string (or Expression with resultType string).|amazonredshift_database|amazon_redshift_database|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -4073,7 +3948,6 @@ amazon-redshift create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|amazonredshift_type|amazon_redshift_type|
 |**--type-properties-server**|any|The name of the Amazon Redshift server. Type: string (or Expression with resultType string).|amazonredshift_server|amazon_redshift_server|
 |**--type-properties-database**|any|The database name of the Amazon Redshift source. Type: string (or Expression with resultType string).|amazonredshift_database|amazon_redshift_database|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -4094,7 +3968,6 @@ amazon-s3 create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|amazons3_type|amazon_s3_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|amazons3_connect_via|amazon_s3_connect_via|
 |**--description**|string|Linked service description.|amazons3_description|amazon_s3_description|
@@ -4113,7 +3986,6 @@ amazon-s3 create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|amazons3_type|amazon_s3_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|amazons3_connect_via|amazon_s3_connect_via|
 |**--description**|string|Linked service description.|amazons3_description|amazon_s3_description|
@@ -4132,7 +4004,6 @@ azure-batch create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azurebatch_type|azure_batch_type|
 |**--type-properties-account-name**|any|The Azure Batch account name. Type: string (or Expression with resultType string).|azurebatch_account_name|azure_batch_account_name|
 |**--type-properties-batch-uri**|any|The Azure Batch URI. Type: string (or Expression with resultType string).|azurebatch_batch_uri|azure_batch_batch_uri|
 |**--type-properties-pool-name**|any|The Azure Batch pool name. Type: string (or Expression with resultType string).|azurebatch_pool_name|azure_batch_pool_name|
@@ -4153,7 +4024,6 @@ azure-batch create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azurebatch_type|azure_batch_type|
 |**--type-properties-account-name**|any|The Azure Batch account name. Type: string (or Expression with resultType string).|azurebatch_account_name|azure_batch_account_name|
 |**--type-properties-batch-uri**|any|The Azure Batch URI. Type: string (or Expression with resultType string).|azurebatch_batch_uri|azure_batch_batch_uri|
 |**--type-properties-pool-name**|any|The Azure Batch pool name. Type: string (or Expression with resultType string).|azurebatch_pool_name|azure_batch_pool_name|
@@ -4174,7 +4044,6 @@ azure-blob-f-s create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azureblobfs_type|azure_blob_f_s_type|
 |**--type-properties-url**|any|Endpoint for the Azure Data Lake Storage Gen2 service. Type: string (or Expression with resultType string).|azureblobfs_url|azure_blob_f_s_url|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|azureblobfs_connect_via|azure_blob_f_s_connect_via|
@@ -4195,7 +4064,6 @@ azure-blob-f-s create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azureblobfs_type|azure_blob_f_s_type|
 |**--type-properties-url**|any|Endpoint for the Azure Data Lake Storage Gen2 service. Type: string (or Expression with resultType string).|azureblobfs_url|azure_blob_f_s_url|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|azureblobfs_connect_via|azure_blob_f_s_connect_via|
@@ -4216,7 +4084,6 @@ azure-blob-storage create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azureblobstorage_type|azure_blob_storage_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|azureblobstorage_connect_via|azure_blob_storage_connect_via|
 |**--description**|string|Linked service description.|azureblobstorage_description|azure_blob_storage_description|
@@ -4240,7 +4107,6 @@ azure-blob-storage create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azureblobstorage_type|azure_blob_storage_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|azureblobstorage_connect_via|azure_blob_storage_connect_via|
 |**--description**|string|Linked service description.|azureblobstorage_description|azure_blob_storage_description|
@@ -4264,7 +4130,6 @@ azure-data-explorer create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azuredataexplorer_type|azure_data_explorer_type|
 |**--type-properties-endpoint**|any|The endpoint of Azure Data Explorer (the engine's endpoint). URL will be in the format https://:code:`<clusterName>`.:code:`<regionName>`.kusto.windows.net. Type: string (or Expression with resultType string)|azuredataexplorer_endpoint|azure_data_explorer_endpoint|
 |**--type-properties-service-principal-id**|any|The ID of the service principal used to authenticate against Azure Data Explorer. Type: string (or Expression with resultType string).|azuredataexplorer_service_principal_id|azure_data_explorer_service_principal_id|
 |**--type-properties-service-principal-key**|object|The key of the service principal used to authenticate against Kusto.|azuredataexplorer_service_principal_key|azure_data_explorer_service_principal_key|
@@ -4284,7 +4149,6 @@ azure-data-explorer create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azuredataexplorer_type|azure_data_explorer_type|
 |**--type-properties-endpoint**|any|The endpoint of Azure Data Explorer (the engine's endpoint). URL will be in the format https://:code:`<clusterName>`.:code:`<regionName>`.kusto.windows.net. Type: string (or Expression with resultType string)|azuredataexplorer_endpoint|azure_data_explorer_endpoint|
 |**--type-properties-service-principal-id**|any|The ID of the service principal used to authenticate against Azure Data Explorer. Type: string (or Expression with resultType string).|azuredataexplorer_service_principal_id|azure_data_explorer_service_principal_id|
 |**--type-properties-service-principal-key**|object|The key of the service principal used to authenticate against Kusto.|azuredataexplorer_service_principal_key|azure_data_explorer_service_principal_key|
@@ -4304,7 +4168,6 @@ azure-data-lake-analytics create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azuredatalakeanalytics_type|azure_data_lake_analytics_type|
 |**--type-properties-account-name**|any|The Azure Data Lake Analytics account name. Type: string (or Expression with resultType string).|azuredatalakeanalytics_account_name|azure_data_lake_analytics_account_name|
 |**--type-properties-tenant**|any|The name or ID of the tenant to which the service principal belongs. Type: string (or Expression with resultType string).|azuredatalakeanalytics_tenant|azure_data_lake_analytics_tenant|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -4327,7 +4190,6 @@ azure-data-lake-analytics create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azuredatalakeanalytics_type|azure_data_lake_analytics_type|
 |**--type-properties-account-name**|any|The Azure Data Lake Analytics account name. Type: string (or Expression with resultType string).|azuredatalakeanalytics_account_name|azure_data_lake_analytics_account_name|
 |**--type-properties-tenant**|any|The name or ID of the tenant to which the service principal belongs. Type: string (or Expression with resultType string).|azuredatalakeanalytics_tenant|azure_data_lake_analytics_tenant|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -4350,7 +4212,6 @@ azure-data-lake-store create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azuredatalakestore_type|azure_data_lake_store_type|
 |**--type-properties-data-lake-store-uri**|any|Data Lake Store service URI. Type: string (or Expression with resultType string).|azuredatalakestore_data_lake_store_uri|azure_data_lake_store_data_lake_store_uri|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|azuredatalakestore_connect_via|azure_data_lake_store_connect_via|
@@ -4373,7 +4234,6 @@ azure-data-lake-store create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azuredatalakestore_type|azure_data_lake_store_type|
 |**--type-properties-data-lake-store-uri**|any|Data Lake Store service URI. Type: string (or Expression with resultType string).|azuredatalakestore_data_lake_store_uri|azure_data_lake_store_data_lake_store_uri|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|azuredatalakestore_connect_via|azure_data_lake_store_connect_via|
@@ -4396,7 +4256,6 @@ azure-databricks create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azuredatabricks_type|azure_databricks_type|
 |**--type-properties-domain**|any|:code:`<REGION>`.azuredatabricks.net, domain name of your Databricks deployment. Type: string (or Expression with resultType string).|azuredatabricks_domain|azure_databricks_domain|
 |**--type-properties-access-token**|object|Access token for databricks REST API. Refer to https://docs.azuredatabricks.net/api/latest/authentication.html. Type: string (or Expression with resultType string).|azuredatabricks_access_token|azure_databricks_access_token|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -4425,7 +4284,6 @@ azure-databricks create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azuredatabricks_type|azure_databricks_type|
 |**--type-properties-domain**|any|:code:`<REGION>`.azuredatabricks.net, domain name of your Databricks deployment. Type: string (or Expression with resultType string).|azuredatabricks_domain|azure_databricks_domain|
 |**--type-properties-access-token**|object|Access token for databricks REST API. Refer to https://docs.azuredatabricks.net/api/latest/authentication.html. Type: string (or Expression with resultType string).|azuredatabricks_access_token|azure_databricks_access_token|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -4454,7 +4312,6 @@ azure-file-storage create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azurefilestorage_type|azure_file_storage_type|
 |**--type-properties-host**|any|Host name of the server. Type: string (or Expression with resultType string).|azurefilestorage_host|azure_file_storage_host|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|azurefilestorage_connect_via|azure_file_storage_connect_via|
@@ -4473,7 +4330,6 @@ azure-file-storage create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azurefilestorage_type|azure_file_storage_type|
 |**--type-properties-host**|any|Host name of the server. Type: string (or Expression with resultType string).|azurefilestorage_host|azure_file_storage_host|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|azurefilestorage_connect_via|azure_file_storage_connect_via|
@@ -4492,7 +4348,6 @@ azure-function create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azurefunction_type|azure_function_type|
 |**--type-properties-function-app-url**|any|The endpoint of the Azure Function App. URL will be in the format https://:code:`<accountName>`.azurewebsites.net.|azurefunction_function_app_url|azure_function_function_app_url|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|azurefunction_connect_via|azure_function_connect_via|
@@ -4510,7 +4365,6 @@ azure-function create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azurefunction_type|azure_function_type|
 |**--type-properties-function-app-url**|any|The endpoint of the Azure Function App. URL will be in the format https://:code:`<accountName>`.azurewebsites.net.|azurefunction_function_app_url|azure_function_function_app_url|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|azurefunction_connect_via|azure_function_connect_via|
@@ -4528,7 +4382,6 @@ azure-key-vault create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azurekeyvault_type|azure_key_vault_type|
 |**--type-properties-base-url**|any|The base URL of the Azure Key Vault. e.g. https://myakv.vault.azure.net Type: string (or Expression with resultType string).|azurekeyvault_base_url|azure_key_vault_base_url|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|azurekeyvault_connect_via|azure_key_vault_connect_via|
@@ -4544,7 +4397,6 @@ azure-key-vault create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azurekeyvault_type|azure_key_vault_type|
 |**--type-properties-base-url**|any|The base URL of the Azure Key Vault. e.g. https://myakv.vault.azure.net Type: string (or Expression with resultType string).|azurekeyvault_base_url|azure_key_vault_base_url|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|azurekeyvault_connect_via|azure_key_vault_connect_via|
@@ -4560,7 +4412,6 @@ azure-m-l create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azureml_type|azure_m_l_type|
 |**--type-properties-ml-endpoint**|any|The Batch Execution REST URL for an Azure ML Studio Web Service endpoint. Type: string (or Expression with resultType string).|azureml_ml_endpoint|azure_m_l_ml_endpoint|
 |**--type-properties-api-key**|object|The API key for accessing the Azure ML model endpoint.|azureml_api_key|azure_m_l_api_key|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -4582,7 +4433,6 @@ azure-m-l create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azureml_type|azure_m_l_type|
 |**--type-properties-ml-endpoint**|any|The Batch Execution REST URL for an Azure ML Studio Web Service endpoint. Type: string (or Expression with resultType string).|azureml_ml_endpoint|azure_m_l_ml_endpoint|
 |**--type-properties-api-key**|object|The API key for accessing the Azure ML model endpoint.|azureml_api_key|azure_m_l_api_key|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -4604,7 +4454,6 @@ azure-m-l-service create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azuremlservice_type|azure_m_l_service_type|
 |**--type-properties-subscription-id**|any|Azure ML Service workspace subscription ID. Type: string (or Expression with resultType string).|azuremlservice_subscription_id|azure_m_l_service_subscription_id|
 |**--type-properties-resource-group-name**|any|Azure ML Service workspace resource group name. Type: string (or Expression with resultType string).|azuremlservice_resource_group_name|azure_m_l_service_resource_group_name|
 |**--type-properties-ml-workspace-name**|any|Azure ML Service workspace name. Type: string (or Expression with resultType string).|azuremlservice_ml_workspace_name|azure_m_l_service_ml_workspace_name|
@@ -4626,7 +4475,6 @@ azure-m-l-service create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azuremlservice_type|azure_m_l_service_type|
 |**--type-properties-subscription-id**|any|Azure ML Service workspace subscription ID. Type: string (or Expression with resultType string).|azuremlservice_subscription_id|azure_m_l_service_subscription_id|
 |**--type-properties-resource-group-name**|any|Azure ML Service workspace resource group name. Type: string (or Expression with resultType string).|azuremlservice_resource_group_name|azure_m_l_service_resource_group_name|
 |**--type-properties-ml-workspace-name**|any|Azure ML Service workspace name. Type: string (or Expression with resultType string).|azuremlservice_ml_workspace_name|azure_m_l_service_ml_workspace_name|
@@ -4648,7 +4496,6 @@ azure-maria-d-b create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azuremariadb_type|azure_maria_d_b_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|azuremariadb_connect_via|azure_maria_d_b_connect_via|
 |**--description**|string|Linked service description.|azuremariadb_description|azure_maria_d_b_description|
@@ -4666,7 +4513,6 @@ azure-maria-d-b create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azuremariadb_type|azure_maria_d_b_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|azuremariadb_connect_via|azure_maria_d_b_connect_via|
 |**--description**|string|Linked service description.|azuremariadb_description|azure_maria_d_b_description|
@@ -4684,7 +4530,6 @@ azure-my-sql create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azuremysql_type|azure_my_sql_type|
 |**--type-properties-connection-string**|any|The connection string. Type: string, SecureString or AzureKeyVaultSecretReference.|azuremysql_connection_string|azure_my_sql_connection_string|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|azuremysql_connect_via|azure_my_sql_connect_via|
@@ -4702,7 +4547,6 @@ azure-my-sql create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azuremysql_type|azure_my_sql_type|
 |**--type-properties-connection-string**|any|The connection string. Type: string, SecureString or AzureKeyVaultSecretReference.|azuremysql_connection_string|azure_my_sql_connection_string|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|azuremysql_connect_via|azure_my_sql_connect_via|
@@ -4720,7 +4564,6 @@ azure-postgre-sql create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azurepostgresql_type|azure_postgre_sql_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|azurepostgresql_connect_via|azure_postgre_sql_connect_via|
 |**--description**|string|Linked service description.|azurepostgresql_description|azure_postgre_sql_description|
@@ -4738,7 +4581,6 @@ azure-postgre-sql create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azurepostgresql_type|azure_postgre_sql_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|azurepostgresql_connect_via|azure_postgre_sql_connect_via|
 |**--description**|string|Linked service description.|azurepostgresql_description|azure_postgre_sql_description|
@@ -4756,7 +4598,6 @@ azure-search create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azuresearch_type|azure_search_type|
 |**--type-properties-url**|any|URL for Azure Search service. Type: string (or Expression with resultType string).|azuresearch_url|azure_search_url|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|azuresearch_connect_via|azure_search_connect_via|
@@ -4774,7 +4615,6 @@ azure-search create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azuresearch_type|azure_search_type|
 |**--type-properties-url**|any|URL for Azure Search service. Type: string (or Expression with resultType string).|azuresearch_url|azure_search_url|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|azuresearch_connect_via|azure_search_connect_via|
@@ -4792,7 +4632,6 @@ azure-sql-d-w create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azuresqldw_type|azure_sql_d_w_type|
 |**--type-properties-connection-string**|any|The connection string. Type: string, SecureString or AzureKeyVaultSecretReference. Type: string, SecureString or AzureKeyVaultSecretReference.|azuresqldw_connection_string|azure_sql_d_w_connection_string|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|azuresqldw_connect_via|azure_sql_d_w_connect_via|
@@ -4813,7 +4652,6 @@ azure-sql-d-w create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azuresqldw_type|azure_sql_d_w_type|
 |**--type-properties-connection-string**|any|The connection string. Type: string, SecureString or AzureKeyVaultSecretReference. Type: string, SecureString or AzureKeyVaultSecretReference.|azuresqldw_connection_string|azure_sql_d_w_connection_string|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|azuresqldw_connect_via|azure_sql_d_w_connect_via|
@@ -4834,7 +4672,6 @@ azure-sql-database create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azuresqldatabase_type|azure_sql_database_type|
 |**--type-properties-connection-string**|any|The connection string. Type: string, SecureString or AzureKeyVaultSecretReference.|azuresqldatabase_connection_string|azure_sql_database_connection_string|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|azuresqldatabase_connect_via|azure_sql_database_connect_via|
@@ -4855,7 +4692,6 @@ azure-sql-database create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azuresqldatabase_type|azure_sql_database_type|
 |**--type-properties-connection-string**|any|The connection string. Type: string, SecureString or AzureKeyVaultSecretReference.|azuresqldatabase_connection_string|azure_sql_database_connection_string|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|azuresqldatabase_connect_via|azure_sql_database_connect_via|
@@ -4876,7 +4712,6 @@ azure-sql-m-i create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azuresqlmi_type|azure_sql_m_i_type|
 |**--type-properties-connection-string**|any|The connection string. Type: string, SecureString or AzureKeyVaultSecretReference.|azuresqlmi_connection_string|azure_sql_m_i_connection_string|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|azuresqlmi_connect_via|azure_sql_m_i_connect_via|
@@ -4897,7 +4732,6 @@ azure-sql-m-i create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azuresqlmi_type|azure_sql_m_i_type|
 |**--type-properties-connection-string**|any|The connection string. Type: string, SecureString or AzureKeyVaultSecretReference.|azuresqlmi_connection_string|azure_sql_m_i_connection_string|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|azuresqlmi_connect_via|azure_sql_m_i_connect_via|
@@ -4918,7 +4752,6 @@ azure-storage create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azurestorage_type|azure_storage_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|azurestorage_connect_via|azure_storage_connect_via|
 |**--description**|string|Linked service description.|azurestorage_description|azure_storage_description|
@@ -4938,7 +4771,6 @@ azure-storage create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azurestorage_type|azure_storage_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|azurestorage_connect_via|azure_storage_connect_via|
 |**--description**|string|Linked service description.|azurestorage_description|azure_storage_description|
@@ -4958,7 +4790,6 @@ azure-table-storage create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azuretablestorage_type|azure_table_storage_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|azuretablestorage_connect_via|azure_table_storage_connect_via|
 |**--description**|string|Linked service description.|azuretablestorage_description|azure_table_storage_description|
@@ -4978,7 +4809,6 @@ azure-table-storage create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|azuretablestorage_type|azure_table_storage_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|azuretablestorage_connect_via|azure_table_storage_connect_via|
 |**--description**|string|Linked service description.|azuretablestorage_description|azure_table_storage_description|
@@ -4998,7 +4828,6 @@ cassandra create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|cassandra_type|cassandra_type|
 |**--type-properties-host**|any|Host name for connection. Type: string (or Expression with resultType string).|cassandra_host|cassandra_host|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|cassandra_connect_via|cassandra_connect_via|
@@ -5019,7 +4848,6 @@ cassandra create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|cassandra_type|cassandra_type|
 |**--type-properties-host**|any|Host name for connection. Type: string (or Expression with resultType string).|cassandra_host|cassandra_host|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|cassandra_connect_via|cassandra_connect_via|
@@ -5040,7 +4868,6 @@ common-data-service-for-apps create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|commondataserviceforapps_type|common_data_service_for_apps_type|
 |**--type-properties-deployment-type**|choice|The deployment type of the Common Data Service for Apps instance. 'Online' for Common Data Service for Apps Online and 'OnPremisesWithIfd' for Common Data Service for Apps on-premises with Ifd. Type: string (or Expression with resultType string).|commondataserviceforapps_deployment_type|common_data_service_for_apps_deployment_type|
 |**--type-properties-authentication-type**|choice|The authentication type to connect to Common Data Service for Apps server. 'Office365' for online scenario, 'Ifd' for on-premises with Ifd scenario. 'AADServicePrincipal' for Server-To-Server authentication in online scenario. Type: string (or Expression with resultType string).|commondataserviceforapps_authentication_type|common_data_service_for_apps_authentication_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -5067,7 +4894,6 @@ common-data-service-for-apps create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|commondataserviceforapps_type|common_data_service_for_apps_type|
 |**--type-properties-deployment-type**|choice|The deployment type of the Common Data Service for Apps instance. 'Online' for Common Data Service for Apps Online and 'OnPremisesWithIfd' for Common Data Service for Apps on-premises with Ifd. Type: string (or Expression with resultType string).|commondataserviceforapps_deployment_type|common_data_service_for_apps_deployment_type|
 |**--type-properties-authentication-type**|choice|The authentication type to connect to Common Data Service for Apps server. 'Office365' for online scenario, 'Ifd' for on-premises with Ifd scenario. 'AADServicePrincipal' for Server-To-Server authentication in online scenario. Type: string (or Expression with resultType string).|commondataserviceforapps_authentication_type|common_data_service_for_apps_authentication_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -5094,7 +4920,6 @@ concur create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|concur_type|concur_type|
 |**--type-properties-client-id**|any|Application client_id supplied by Concur App Management.|concur_client_id|concur_client_id|
 |**--type-properties-username**|any|The user name that you use to access Concur Service.|concur_username|concur_username|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -5116,7 +4941,6 @@ concur create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|concur_type|concur_type|
 |**--type-properties-client-id**|any|Application client_id supplied by Concur App Management.|concur_client_id|concur_client_id|
 |**--type-properties-username**|any|The user name that you use to access Concur Service.|concur_username|concur_username|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -5138,7 +4962,6 @@ cosmos-db create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|cosmosdb_type|cosmos_db_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|cosmosdb_connect_via|cosmos_db_connect_via|
 |**--description**|string|Linked service description.|cosmosdb_description|cosmos_db_description|
@@ -5158,7 +4981,6 @@ cosmos-db create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|cosmosdb_type|cosmos_db_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|cosmosdb_connect_via|cosmos_db_connect_via|
 |**--description**|string|Linked service description.|cosmosdb_description|cosmos_db_description|
@@ -5178,7 +5000,6 @@ cosmos-db-mongo-db-api create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|cosmosdbmongodbapi_type|cosmos_db_mongo_db_api_type|
 |**--type-properties-connection-string**|any|The CosmosDB (MongoDB API) connection string. Type: string, SecureString or AzureKeyVaultSecretReference. Type: string, SecureString or AzureKeyVaultSecretReference.|cosmosdbmongodbapi_connection_string|cosmos_db_mongo_db_api_connection_string|
 |**--type-properties-database**|any|The name of the CosmosDB (MongoDB API) database that you want to access. Type: string (or Expression with resultType string).|cosmosdbmongodbapi_database|cosmos_db_mongo_db_api_database|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -5195,7 +5016,6 @@ cosmos-db-mongo-db-api create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|cosmosdbmongodbapi_type|cosmos_db_mongo_db_api_type|
 |**--type-properties-connection-string**|any|The CosmosDB (MongoDB API) connection string. Type: string, SecureString or AzureKeyVaultSecretReference. Type: string, SecureString or AzureKeyVaultSecretReference.|cosmosdbmongodbapi_connection_string|cosmos_db_mongo_db_api_connection_string|
 |**--type-properties-database**|any|The name of the CosmosDB (MongoDB API) database that you want to access. Type: string (or Expression with resultType string).|cosmosdbmongodbapi_database|cosmos_db_mongo_db_api_database|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -5212,7 +5032,6 @@ couchbase create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|couchbase_type|couchbase_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|couchbase_connect_via|couchbase_connect_via|
 |**--description**|string|Linked service description.|couchbase_description|couchbase_description|
@@ -5230,7 +5049,6 @@ couchbase create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|couchbase_type|couchbase_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|couchbase_connect_via|couchbase_connect_via|
 |**--description**|string|Linked service description.|couchbase_description|couchbase_description|
@@ -5248,7 +5066,6 @@ custom-data-source create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|customdatasource_type|custom_data_source_type|
 |**--type-properties**|any|Custom linked service properties.|customdatasource_type_properties|custom_data_source_type_properties|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|customdatasource_connect_via|custom_data_source_connect_via|
@@ -5264,7 +5081,6 @@ custom-data-source create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|customdatasource_type|custom_data_source_type|
 |**--type-properties**|any|Custom linked service properties.|customdatasource_type_properties|custom_data_source_type_properties|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|customdatasource_connect_via|custom_data_source_connect_via|
@@ -5280,7 +5096,6 @@ db2 create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|db2_type|db2_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|db2_connect_via|db2_connect_via|
 |**--description**|string|Linked service description.|db2_description|db2_description|
@@ -5303,7 +5118,6 @@ db2 create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|db2_type|db2_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|db2_connect_via|db2_connect_via|
 |**--description**|string|Linked service description.|db2_description|db2_description|
@@ -5335,7 +5149,6 @@ drill create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|drill_type|drill_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|drill_connect_via|drill_connect_via|
 |**--description**|string|Linked service description.|drill_description|drill_description|
@@ -5353,7 +5166,6 @@ drill create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|drill_type|drill_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|drill_connect_via|drill_connect_via|
 |**--description**|string|Linked service description.|drill_description|drill_description|
@@ -5371,7 +5183,6 @@ dynamics create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|dynamics_type|dynamics_type|
 |**--type-properties-deployment-type**|choice|The deployment type of the Dynamics instance. 'Online' for Dynamics Online and 'OnPremisesWithIfd' for Dynamics on-premises with Ifd. Type: string (or Expression with resultType string).|dynamics_deployment_type|dynamics_deployment_type|
 |**--type-properties-authentication-type**|choice|The authentication type to connect to Dynamics server. 'Office365' for online scenario, 'Ifd' for on-premises with Ifd scenario, 'AADServicePrincipal' for Server-To-Server authentication in online scenario. Type: string (or Expression with resultType string).|dynamics_authentication_type|dynamics_authentication_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -5398,7 +5209,6 @@ dynamics create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|dynamics_type|dynamics_type|
 |**--type-properties-deployment-type**|choice|The deployment type of the Dynamics instance. 'Online' for Dynamics Online and 'OnPremisesWithIfd' for Dynamics on-premises with Ifd. Type: string (or Expression with resultType string).|dynamics_deployment_type|dynamics_deployment_type|
 |**--type-properties-authentication-type**|choice|The authentication type to connect to Dynamics server. 'Office365' for online scenario, 'Ifd' for on-premises with Ifd scenario, 'AADServicePrincipal' for Server-To-Server authentication in online scenario. Type: string (or Expression with resultType string).|dynamics_authentication_type|dynamics_authentication_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -5425,7 +5235,6 @@ dynamics-a-x create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|dynamicsax_type|dynamics_a_x_type|
 |**--type-properties-url**|any|The Dynamics AX (or Dynamics 365 Finance and Operations) instance OData endpoint.|dynamicsax_url|dynamics_a_x_url|
 |**--type-properties-service-principal-id**|any|Specify the application's client ID. Type: string (or Expression with resultType string).|dynamicsax_service_principal_id|dynamics_a_x_service_principal_id|
 |**--type-properties-service-principal-key**|object|Specify the application's key. Mark this field as a SecureString to store it securely in Data Factory, or reference a secret stored in Azure Key Vault. Type: string (or Expression with resultType string).|dynamicsax_service_principal_key|dynamics_a_x_service_principal_key|
@@ -5446,7 +5255,6 @@ dynamics-a-x create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|dynamicsax_type|dynamics_a_x_type|
 |**--type-properties-url**|any|The Dynamics AX (or Dynamics 365 Finance and Operations) instance OData endpoint.|dynamicsax_url|dynamics_a_x_url|
 |**--type-properties-service-principal-id**|any|Specify the application's client ID. Type: string (or Expression with resultType string).|dynamicsax_service_principal_id|dynamics_a_x_service_principal_id|
 |**--type-properties-service-principal-key**|object|Specify the application's key. Mark this field as a SecureString to store it securely in Data Factory, or reference a secret stored in Azure Key Vault. Type: string (or Expression with resultType string).|dynamicsax_service_principal_key|dynamics_a_x_service_principal_key|
@@ -5467,7 +5275,6 @@ dynamics-crm create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|dynamicscrm_type|dynamics_crm_type|
 |**--type-properties-deployment-type**|choice|The deployment type of the Dynamics CRM instance. 'Online' for Dynamics CRM Online and 'OnPremisesWithIfd' for Dynamics CRM on-premises with Ifd. Type: string (or Expression with resultType string).|dynamicscrm_deployment_type|dynamics_crm_deployment_type|
 |**--type-properties-authentication-type**|choice|The authentication type to connect to Dynamics CRM server. 'Office365' for online scenario, 'Ifd' for on-premises with Ifd scenario, 'AADServicePrincipal' for Server-To-Server authentication in online scenario. Type: string (or Expression with resultType string).|dynamicscrm_authentication_type|dynamics_crm_authentication_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -5494,7 +5301,6 @@ dynamics-crm create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|dynamicscrm_type|dynamics_crm_type|
 |**--type-properties-deployment-type**|choice|The deployment type of the Dynamics CRM instance. 'Online' for Dynamics CRM Online and 'OnPremisesWithIfd' for Dynamics CRM on-premises with Ifd. Type: string (or Expression with resultType string).|dynamicscrm_deployment_type|dynamics_crm_deployment_type|
 |**--type-properties-authentication-type**|choice|The authentication type to connect to Dynamics CRM server. 'Office365' for online scenario, 'Ifd' for on-premises with Ifd scenario, 'AADServicePrincipal' for Server-To-Server authentication in online scenario. Type: string (or Expression with resultType string).|dynamicscrm_authentication_type|dynamics_crm_authentication_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -5521,7 +5327,6 @@ eloqua create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|eloqua_type|eloqua_type|
 |**--type-properties-endpoint**|any|The endpoint of the Eloqua server. (i.e. eloqua.example.com)|eloqua_endpoint|eloqua_endpoint|
 |**--type-properties-username**|any|The site name and user name of your Eloqua account in the form: sitename/username. (i.e. Eloqua/Alice)|eloqua_username|eloqua_username|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -5543,7 +5348,6 @@ eloqua create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|eloqua_type|eloqua_type|
 |**--type-properties-endpoint**|any|The endpoint of the Eloqua server. (i.e. eloqua.example.com)|eloqua_endpoint|eloqua_endpoint|
 |**--type-properties-username**|any|The site name and user name of your Eloqua account in the form: sitename/username. (i.e. Eloqua/Alice)|eloqua_username|eloqua_username|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -5565,7 +5369,6 @@ file-server create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|fileserver_type|file_server_type|
 |**--type-properties-host**|any|Host name of the server. Type: string (or Expression with resultType string).|fileserver_host|file_server_host|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|fileserver_connect_via|file_server_connect_via|
@@ -5584,7 +5387,6 @@ file-server create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|fileserver_type|file_server_type|
 |**--type-properties-host**|any|Host name of the server. Type: string (or Expression with resultType string).|fileserver_host|file_server_host|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|fileserver_connect_via|file_server_connect_via|
@@ -5603,7 +5405,6 @@ ftp-server create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|ftpserver_type|ftp_server_type|
 |**--type-properties-host**|any|Host name of the FTP server. Type: string (or Expression with resultType string).|ftpserver_host|ftp_server_host|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|ftpserver_connect_via|ftp_server_connect_via|
@@ -5626,7 +5427,6 @@ ftp-server create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|ftpserver_type|ftp_server_type|
 |**--type-properties-host**|any|Host name of the FTP server. Type: string (or Expression with resultType string).|ftpserver_host|ftp_server_host|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|ftpserver_connect_via|ftp_server_connect_via|
@@ -5649,7 +5449,6 @@ google-ad-words create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|googleadwords_type|google_ad_words_type|
 |**--type-properties-client-customer-id**|any|The Client customer ID of the AdWords account that you want to fetch report data for.|googleadwords_client_customer_id|google_ad_words_client_customer_id|
 |**--type-properties-developer-token**|object|The developer token associated with the manager account that you use to grant access to the AdWords API.|googleadwords_developer_token|google_ad_words_developer_token|
 |**--type-properties-authentication-type**|choice|The OAuth 2.0 authentication mechanism used for authentication. ServiceAuthentication can only be used on self-hosted IR.|googleadwords_authentication_type|google_ad_words_authentication_type|
@@ -5675,7 +5474,6 @@ google-ad-words create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|googleadwords_type|google_ad_words_type|
 |**--type-properties-client-customer-id**|any|The Client customer ID of the AdWords account that you want to fetch report data for.|googleadwords_client_customer_id|google_ad_words_client_customer_id|
 |**--type-properties-developer-token**|object|The developer token associated with the manager account that you use to grant access to the AdWords API.|googleadwords_developer_token|google_ad_words_developer_token|
 |**--type-properties-authentication-type**|choice|The OAuth 2.0 authentication mechanism used for authentication. ServiceAuthentication can only be used on self-hosted IR.|googleadwords_authentication_type|google_ad_words_authentication_type|
@@ -5701,7 +5499,6 @@ google-big-query create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|googlebigquery_type|google_big_query_type|
 |**--type-properties-project**|any|The default BigQuery project to query against.|googlebigquery_project|google_big_query_project|
 |**--type-properties-authentication-type**|choice|The OAuth 2.0 authentication mechanism used for authentication. ServiceAuthentication can only be used on self-hosted IR.|googlebigquery_authentication_type|google_big_query_authentication_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -5728,7 +5525,6 @@ google-big-query create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|googlebigquery_type|google_big_query_type|
 |**--type-properties-project**|any|The default BigQuery project to query against.|googlebigquery_project|google_big_query_project|
 |**--type-properties-authentication-type**|choice|The OAuth 2.0 authentication mechanism used for authentication. ServiceAuthentication can only be used on self-hosted IR.|googlebigquery_authentication_type|google_big_query_authentication_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -5755,7 +5551,6 @@ google-cloud-storage create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|googlecloudstorage_type|google_cloud_storage_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|googlecloudstorage_connect_via|google_cloud_storage_connect_via|
 |**--description**|string|Linked service description.|googlecloudstorage_description|google_cloud_storage_description|
@@ -5774,7 +5569,6 @@ google-cloud-storage create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|googlecloudstorage_type|google_cloud_storage_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|googlecloudstorage_connect_via|google_cloud_storage_connect_via|
 |**--description**|string|Linked service description.|googlecloudstorage_description|google_cloud_storage_description|
@@ -5793,7 +5587,6 @@ greenplum create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|greenplum_type|greenplum_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|greenplum_connect_via|greenplum_connect_via|
 |**--description**|string|Linked service description.|greenplum_description|greenplum_description|
@@ -5811,7 +5604,6 @@ greenplum create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|greenplum_type|greenplum_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|greenplum_connect_via|greenplum_connect_via|
 |**--description**|string|Linked service description.|greenplum_description|greenplum_description|
@@ -5829,7 +5621,6 @@ h-base create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|hbase_type|h_base_type|
 |**--type-properties-host**|any|The IP address or host name of the HBase server. (i.e. 192.168.222.160)|hbase_host|h_base_host|
 |**--type-properties-authentication-type**|choice|The authentication mechanism to use to connect to the HBase server.|hbase_authentication_type|h_base_authentication_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -5855,7 +5646,6 @@ h-base create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|hbase_type|h_base_type|
 |**--type-properties-host**|any|The IP address or host name of the HBase server. (i.e. 192.168.222.160)|hbase_host|h_base_host|
 |**--type-properties-authentication-type**|choice|The authentication mechanism to use to connect to the HBase server.|hbase_authentication_type|h_base_authentication_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -5881,7 +5671,6 @@ h-d-insight create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|hdinsight_type|h_d_insight_type|
 |**--type-properties-cluster-uri**|any|HDInsight cluster URI. Type: string (or Expression with resultType string).|hdinsight_cluster_uri|h_d_insight_cluster_uri|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|hdinsight_connect_via|h_d_insight_connect_via|
@@ -5904,7 +5693,6 @@ h-d-insight create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|hdinsight_type|h_d_insight_type|
 |**--type-properties-cluster-uri**|any|HDInsight cluster URI. Type: string (or Expression with resultType string).|hdinsight_cluster_uri|h_d_insight_cluster_uri|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|hdinsight_connect_via|h_d_insight_connect_via|
@@ -5927,12 +5715,11 @@ h-d-insight-on-demand create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|hdinsightondemand_type|h_d_insight_on_demand_type|
 |**--type-properties-cluster-size**|any|Number of worker/data nodes in the cluster. Suggestion value: 4. Type: string (or Expression with resultType string).|hdinsightondemand_cluster_size|h_d_insight_on_demand_cluster_size|
 |**--type-properties-time-to-live**|any|The allowed idle time for the on-demand HDInsight cluster. Specifies how long the on-demand HDInsight cluster stays alive after completion of an activity run if there are no other active jobs in the cluster. The minimum value is 5 mins. Type: string (or Expression with resultType string).|hdinsightondemand_time_to_live|h_d_insight_on_demand_time_to_live|
 |**--type-properties-version**|any|Version of the HDInsight cluster.  Type: string (or Expression with resultType string).|hdinsightondemand_version|h_d_insight_on_demand_version|
 |**--type-properties-linked-service-name**|object|Azure Storage linked service to be used by the on-demand cluster for storing and processing data.|hdinsightondemand_linked_service_name|h_d_insight_on_demand_linked_service_name|
-|**--type-properties-host-subscription-id**|any|The customer’s subscription to host the cluster. Type: string (or Expression with resultType string).|hdinsightondemand_host_subscription_id|h_d_insight_on_demand_host_subscription_id|
+|**--type-properties-host-subscription-id**|any|The customer's subscription to host the cluster. Type: string (or Expression with resultType string).|hdinsightondemand_host_subscription_id|h_d_insight_on_demand_host_subscription_id|
 |**--type-properties-tenant**|any|The Tenant id/name to which the service principal belongs. Type: string (or Expression with resultType string).|hdinsightondemand_tenant|h_d_insight_on_demand_tenant|
 |**--type-properties-cluster-resource-group**|any|The resource group where the cluster belongs. Type: string (or Expression with resultType string).|hdinsightondemand_cluster_resource_group|h_d_insight_on_demand_cluster_resource_group|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -5945,8 +5732,8 @@ h-d-insight-on-demand create a datafactory linked-service.
 |**--type-properties-cluster-name-prefix**|any|The prefix of cluster name, postfix will be distinct with timestamp. Type: string (or Expression with resultType string).|hdinsightondemand_cluster_name_prefix|h_d_insight_on_demand_cluster_name_prefix|
 |**--type-properties-cluster-user-name**|any|The username to access the cluster. Type: string (or Expression with resultType string).|hdinsightondemand_cluster_user_name|h_d_insight_on_demand_cluster_user_name|
 |**--type-properties-cluster-password**|object|The password to access the cluster.|hdinsightondemand_cluster_password|h_d_insight_on_demand_cluster_password|
-|**--type-properties-cluster-ssh-user-name**|any|The username to SSH remotely connect to cluster’s node (for Linux). Type: string (or Expression with resultType string).|hdinsightondemand_cluster_ssh_user_name|h_d_insight_on_demand_cluster_ssh_user_name|
-|**--type-properties-cluster-ssh-password**|object|The password to SSH remotely connect cluster’s node (for Linux).|hdinsightondemand_cluster_ssh_password|h_d_insight_on_demand_cluster_ssh_password|
+|**--type-properties-cluster-ssh-user-name**|any|The username to SSH remotely connect to cluster's node (for Linux). Type: string (or Expression with resultType string).|hdinsightondemand_cluster_ssh_user_name|h_d_insight_on_demand_cluster_ssh_user_name|
+|**--type-properties-cluster-ssh-password**|object|The password to SSH remotely connect cluster's node (for Linux).|hdinsightondemand_cluster_ssh_password|h_d_insight_on_demand_cluster_ssh_password|
 |**--type-properties-additional-linked-service-names**|array|Specifies additional storage accounts for the HDInsight linked service so that the Data Factory service can register them on your behalf.|hdinsightondemand_additional_linked_service_names|h_d_insight_on_demand_additional_linked_service_names|
 |**--type-properties-hcatalog-linked-service-name**|object|The name of Azure SQL linked service that point to the HCatalog database. The on-demand HDInsight cluster is created by using the Azure SQL database as the metastore.|hdinsightondemand_hcatalog_linked_service_name|h_d_insight_on_demand_hcatalog_linked_service_name|
 |**--type-properties-cluster-type**|any|The cluster type. Type: string (or Expression with resultType string).|hdinsightondemand_cluster_type|h_d_insight_on_demand_cluster_type|
@@ -5975,12 +5762,11 @@ h-d-insight-on-demand create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|hdinsightondemand_type|h_d_insight_on_demand_type|
 |**--type-properties-cluster-size**|any|Number of worker/data nodes in the cluster. Suggestion value: 4. Type: string (or Expression with resultType string).|hdinsightondemand_cluster_size|h_d_insight_on_demand_cluster_size|
 |**--type-properties-time-to-live**|any|The allowed idle time for the on-demand HDInsight cluster. Specifies how long the on-demand HDInsight cluster stays alive after completion of an activity run if there are no other active jobs in the cluster. The minimum value is 5 mins. Type: string (or Expression with resultType string).|hdinsightondemand_time_to_live|h_d_insight_on_demand_time_to_live|
 |**--type-properties-version**|any|Version of the HDInsight cluster.  Type: string (or Expression with resultType string).|hdinsightondemand_version|h_d_insight_on_demand_version|
 |**--type-properties-linked-service-name**|object|Azure Storage linked service to be used by the on-demand cluster for storing and processing data.|hdinsightondemand_linked_service_name|h_d_insight_on_demand_linked_service_name|
-|**--type-properties-host-subscription-id**|any|The customer’s subscription to host the cluster. Type: string (or Expression with resultType string).|hdinsightondemand_host_subscription_id|h_d_insight_on_demand_host_subscription_id|
+|**--type-properties-host-subscription-id**|any|The customer's subscription to host the cluster. Type: string (or Expression with resultType string).|hdinsightondemand_host_subscription_id|h_d_insight_on_demand_host_subscription_id|
 |**--type-properties-tenant**|any|The Tenant id/name to which the service principal belongs. Type: string (or Expression with resultType string).|hdinsightondemand_tenant|h_d_insight_on_demand_tenant|
 |**--type-properties-cluster-resource-group**|any|The resource group where the cluster belongs. Type: string (or Expression with resultType string).|hdinsightondemand_cluster_resource_group|h_d_insight_on_demand_cluster_resource_group|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -5993,8 +5779,8 @@ h-d-insight-on-demand create a datafactory linked-service.
 |**--type-properties-cluster-name-prefix**|any|The prefix of cluster name, postfix will be distinct with timestamp. Type: string (or Expression with resultType string).|hdinsightondemand_cluster_name_prefix|h_d_insight_on_demand_cluster_name_prefix|
 |**--type-properties-cluster-user-name**|any|The username to access the cluster. Type: string (or Expression with resultType string).|hdinsightondemand_cluster_user_name|h_d_insight_on_demand_cluster_user_name|
 |**--type-properties-cluster-password**|object|The password to access the cluster.|hdinsightondemand_cluster_password|h_d_insight_on_demand_cluster_password|
-|**--type-properties-cluster-ssh-user-name**|any|The username to SSH remotely connect to cluster’s node (for Linux). Type: string (or Expression with resultType string).|hdinsightondemand_cluster_ssh_user_name|h_d_insight_on_demand_cluster_ssh_user_name|
-|**--type-properties-cluster-ssh-password**|object|The password to SSH remotely connect cluster’s node (for Linux).|hdinsightondemand_cluster_ssh_password|h_d_insight_on_demand_cluster_ssh_password|
+|**--type-properties-cluster-ssh-user-name**|any|The username to SSH remotely connect to cluster's node (for Linux). Type: string (or Expression with resultType string).|hdinsightondemand_cluster_ssh_user_name|h_d_insight_on_demand_cluster_ssh_user_name|
+|**--type-properties-cluster-ssh-password**|object|The password to SSH remotely connect cluster's node (for Linux).|hdinsightondemand_cluster_ssh_password|h_d_insight_on_demand_cluster_ssh_password|
 |**--type-properties-additional-linked-service-names**|array|Specifies additional storage accounts for the HDInsight linked service so that the Data Factory service can register them on your behalf.|hdinsightondemand_additional_linked_service_names|h_d_insight_on_demand_additional_linked_service_names|
 |**--type-properties-hcatalog-linked-service-name**|object|The name of Azure SQL linked service that point to the HCatalog database. The on-demand HDInsight cluster is created by using the Azure SQL database as the metastore.|hdinsightondemand_hcatalog_linked_service_name|h_d_insight_on_demand_hcatalog_linked_service_name|
 |**--type-properties-cluster-type**|any|The cluster type. Type: string (or Expression with resultType string).|hdinsightondemand_cluster_type|h_d_insight_on_demand_cluster_type|
@@ -6023,7 +5809,6 @@ hdfs create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|hdfs_type|hdfs_type|
 |**--type-properties-url**|any|The URL of the HDFS service endpoint, e.g. http://myhostname:50070/webhdfs/v1 . Type: string (or Expression with resultType string).|hdfs_url|hdfs_url|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|hdfs_connect_via|hdfs_connect_via|
@@ -6043,7 +5828,6 @@ hdfs create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|hdfs_type|hdfs_type|
 |**--type-properties-url**|any|The URL of the HDFS service endpoint, e.g. http://myhostname:50070/webhdfs/v1 . Type: string (or Expression with resultType string).|hdfs_url|hdfs_url|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|hdfs_connect_via|hdfs_connect_via|
@@ -6063,7 +5847,6 @@ hive create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|hive_type|hive_type|
 |**--type-properties-host**|any|IP address or host name of the Hive server, separated by ';' for multiple hosts (only when serviceDiscoveryMode is enable).|hive_host|hive_host|
 |**--type-properties-authentication-type**|choice|The authentication method used to access the Hive server.|hive_authentication_type|hive_authentication_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -6095,7 +5878,6 @@ hive create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|hive_type|hive_type|
 |**--type-properties-host**|any|IP address or host name of the Hive server, separated by ';' for multiple hosts (only when serviceDiscoveryMode is enable).|hive_host|hive_host|
 |**--type-properties-authentication-type**|choice|The authentication method used to access the Hive server.|hive_authentication_type|hive_authentication_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -6127,7 +5909,6 @@ http-server create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|httpserver_type|http_server_type|
 |**--type-properties-url**|any|The base URL of the HTTP endpoint, e.g. http://www.microsoft.com. Type: string (or Expression with resultType string).|httpserver_url|http_server_url|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|httpserver_connect_via|http_server_connect_via|
@@ -6150,7 +5931,6 @@ http-server create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|httpserver_type|http_server_type|
 |**--type-properties-url**|any|The base URL of the HTTP endpoint, e.g. http://www.microsoft.com. Type: string (or Expression with resultType string).|httpserver_url|http_server_url|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|httpserver_connect_via|http_server_connect_via|
@@ -6173,7 +5953,6 @@ hubspot create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|hubspot_type|hubspot_type|
 |**--type-properties-client-id**|any|The client ID associated with your Hubspot application.|hubspot_client_id|hubspot_client_id|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|hubspot_connect_via|hubspot_connect_via|
@@ -6196,7 +5975,6 @@ hubspot create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|hubspot_type|hubspot_type|
 |**--type-properties-client-id**|any|The client ID associated with your Hubspot application.|hubspot_client_id|hubspot_client_id|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|hubspot_connect_via|hubspot_connect_via|
@@ -6219,7 +5997,6 @@ impala create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|impala_type|impala_type|
 |**--type-properties-host**|any|The IP address or host name of the Impala server. (i.e. 192.168.222.160)|impala_host|impala_host|
 |**--type-properties-authentication-type**|choice|The authentication type to use.|impala_authentication_type|impala_authentication_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -6245,7 +6022,6 @@ impala create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|impala_type|impala_type|
 |**--type-properties-host**|any|The IP address or host name of the Impala server. (i.e. 192.168.222.160)|impala_host|impala_host|
 |**--type-properties-authentication-type**|choice|The authentication type to use.|impala_authentication_type|impala_authentication_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -6271,7 +6047,6 @@ informix create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|informix_type|informix_type|
 |**--type-properties-connection-string**|any|The non-access credential portion of the connection string as well as an optional encrypted credential. Type: string, SecureString or AzureKeyVaultSecretReference.|informix_connection_string|informix_connection_string|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|informix_connect_via|informix_connect_via|
@@ -6292,7 +6067,6 @@ informix create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|informix_type|informix_type|
 |**--type-properties-connection-string**|any|The non-access credential portion of the connection string as well as an optional encrypted credential. Type: string, SecureString or AzureKeyVaultSecretReference.|informix_connection_string|informix_connection_string|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|informix_connect_via|informix_connect_via|
@@ -6313,7 +6087,6 @@ jira create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|jira_type|jira_type|
 |**--type-properties-host**|any|The IP address or host name of the Jira service. (e.g. jira.example.com)|jira_host|jira_host|
 |**--type-properties-username**|any|The user name that you use to access Jira Service.|jira_username|jira_username|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -6336,7 +6109,6 @@ jira create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|jira_type|jira_type|
 |**--type-properties-host**|any|The IP address or host name of the Jira service. (e.g. jira.example.com)|jira_host|jira_host|
 |**--type-properties-username**|any|The user name that you use to access Jira Service.|jira_username|jira_username|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -6367,7 +6139,6 @@ magento create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|magento_type|magento_type|
 |**--type-properties-host**|any|The URL of the Magento instance. (i.e. 192.168.222.110/magento3)|magento_host|magento_host|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|magento_connect_via|magento_connect_via|
@@ -6388,7 +6159,6 @@ magento create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|magento_type|magento_type|
 |**--type-properties-host**|any|The URL of the Magento instance. (i.e. 192.168.222.110/magento3)|magento_host|magento_host|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|magento_connect_via|magento_connect_via|
@@ -6409,7 +6179,6 @@ maria-d-b create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|mariadb_type|maria_d_b_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|mariadb_connect_via|maria_d_b_connect_via|
 |**--description**|string|Linked service description.|mariadb_description|maria_d_b_description|
@@ -6427,7 +6196,6 @@ maria-d-b create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|mariadb_type|maria_d_b_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|mariadb_connect_via|maria_d_b_connect_via|
 |**--description**|string|Linked service description.|mariadb_description|maria_d_b_description|
@@ -6445,7 +6213,6 @@ marketo create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|marketo_type|marketo_type|
 |**--type-properties-endpoint**|any|The endpoint of the Marketo server. (i.e. 123-ABC-321.mktorest.com)|marketo_endpoint|marketo_endpoint|
 |**--type-properties-client-id**|any|The client Id of your Marketo service.|marketo_client_id|marketo_client_id|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -6467,7 +6234,6 @@ marketo create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|marketo_type|marketo_type|
 |**--type-properties-endpoint**|any|The endpoint of the Marketo server. (i.e. 123-ABC-321.mktorest.com)|marketo_endpoint|marketo_endpoint|
 |**--type-properties-client-id**|any|The client Id of your Marketo service.|marketo_client_id|marketo_client_id|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -6489,7 +6255,6 @@ microsoft-access create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|microsoftaccess_type|microsoft_access_type|
 |**--type-properties-connection-string**|any|The non-access credential portion of the connection string as well as an optional encrypted credential. Type: string, SecureString or AzureKeyVaultSecretReference.|microsoftaccess_connection_string|microsoft_access_connection_string|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|microsoftaccess_connect_via|microsoft_access_connect_via|
@@ -6510,7 +6275,6 @@ microsoft-access create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|microsoftaccess_type|microsoft_access_type|
 |**--type-properties-connection-string**|any|The non-access credential portion of the connection string as well as an optional encrypted credential. Type: string, SecureString or AzureKeyVaultSecretReference.|microsoftaccess_connection_string|microsoft_access_connection_string|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|microsoftaccess_connect_via|microsoft_access_connect_via|
@@ -6531,7 +6295,6 @@ mongo-db create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|mongodb_type|mongo_db_type|
 |**--type-properties-server**|any|The IP address or server name of the MongoDB server. Type: string (or Expression with resultType string).|mongodb_server|mongo_db_server|
 |**--type-properties-database-name**|any|The name of the MongoDB database that you want to access. Type: string (or Expression with resultType string).|mongodb_database_name|mongo_db_database_name|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -6556,7 +6319,6 @@ mongo-db create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|mongodb_type|mongo_db_type|
 |**--type-properties-server**|any|The IP address or server name of the MongoDB server. Type: string (or Expression with resultType string).|mongodb_server|mongo_db_server|
 |**--type-properties-database-name**|any|The name of the MongoDB database that you want to access. Type: string (or Expression with resultType string).|mongodb_database_name|mongo_db_database_name|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -6581,7 +6343,6 @@ mongo-db-v2 create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|mongodbv2_type|mongo_db_v2_type|
 |**--type-properties-connection-string**|any|The MongoDB connection string. Type: string, SecureString or AzureKeyVaultSecretReference. Type: string, SecureString or AzureKeyVaultSecretReference.|mongodbv2_connection_string|mongo_db_v2_connection_string|
 |**--type-properties-database**|any|The name of the MongoDB database that you want to access. Type: string (or Expression with resultType string).|mongodbv2_database|mongo_db_v2_database|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -6598,7 +6359,6 @@ mongo-db-v2 create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|mongodbv2_type|mongo_db_v2_type|
 |**--type-properties-connection-string**|any|The MongoDB connection string. Type: string, SecureString or AzureKeyVaultSecretReference. Type: string, SecureString or AzureKeyVaultSecretReference.|mongodbv2_connection_string|mongo_db_v2_connection_string|
 |**--type-properties-database**|any|The name of the MongoDB database that you want to access. Type: string (or Expression with resultType string).|mongodbv2_database|mongo_db_v2_database|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -6615,7 +6375,6 @@ my-sql create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|mysql_type|my_sql_type|
 |**--type-properties-connection-string**|any|The connection string.|mysql_connection_string|my_sql_connection_string|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|mysql_connect_via|my_sql_connect_via|
@@ -6633,7 +6392,6 @@ my-sql create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|mysql_type|my_sql_type|
 |**--type-properties-connection-string**|any|The connection string.|mysql_connection_string|my_sql_connection_string|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|mysql_connect_via|my_sql_connect_via|
@@ -6651,7 +6409,6 @@ netezza create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|netezza_type|netezza_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|netezza_connect_via|netezza_connect_via|
 |**--description**|string|Linked service description.|netezza_description|netezza_description|
@@ -6669,7 +6426,6 @@ netezza create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|netezza_type|netezza_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|netezza_connect_via|netezza_connect_via|
 |**--description**|string|Linked service description.|netezza_description|netezza_description|
@@ -6687,7 +6443,6 @@ o-data create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|odata_type|o_data_type|
 |**--type-properties-url**|any|The URL of the OData service endpoint. Type: string (or Expression with resultType string).|odata_url|o_data_url|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|odata_connect_via|o_data_connect_via|
@@ -6714,7 +6469,6 @@ o-data create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|odata_type|o_data_type|
 |**--type-properties-url**|any|The URL of the OData service endpoint. Type: string (or Expression with resultType string).|odata_url|o_data_url|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|odata_connect_via|o_data_connect_via|
@@ -6741,7 +6495,6 @@ odbc create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|odbc_type|odbc_type|
 |**--type-properties-connection-string**|any|The non-access credential portion of the connection string as well as an optional encrypted credential. Type: string, SecureString or AzureKeyVaultSecretReference.|odbc_connection_string|odbc_connection_string|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|odbc_connect_via|odbc_connect_via|
@@ -6762,7 +6515,6 @@ odbc create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|odbc_type|odbc_type|
 |**--type-properties-connection-string**|any|The non-access credential portion of the connection string as well as an optional encrypted credential. Type: string, SecureString or AzureKeyVaultSecretReference.|odbc_connection_string|odbc_connection_string|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|odbc_connect_via|odbc_connect_via|
@@ -6783,7 +6535,6 @@ office365 create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|office365_type|office365_type|
 |**--type-properties-office365tenant-id**|any|Azure tenant ID to which the Office 365 account belongs. Type: string (or Expression with resultType string).|office365_office365_tenant_id|office365_office365_tenant_id|
 |**--type-properties-service-principal-tenant-id**|any|Specify the tenant information under which your Azure AD web application resides. Type: string (or Expression with resultType string).|office365_service_principal_tenant_id|office365_service_principal_tenant_id|
 |**--type-properties-service-principal-id**|any|Specify the application's client ID. Type: string (or Expression with resultType string).|office365_service_principal_id|office365_service_principal_id|
@@ -6803,7 +6554,6 @@ office365 create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|office365_type|office365_type|
 |**--type-properties-office365tenant-id**|any|Azure tenant ID to which the Office 365 account belongs. Type: string (or Expression with resultType string).|office365_office365_tenant_id|office365_office365_tenant_id|
 |**--type-properties-service-principal-tenant-id**|any|Specify the tenant information under which your Azure AD web application resides. Type: string (or Expression with resultType string).|office365_service_principal_tenant_id|office365_service_principal_tenant_id|
 |**--type-properties-service-principal-id**|any|Specify the application's client ID. Type: string (or Expression with resultType string).|office365_service_principal_id|office365_service_principal_id|
@@ -6823,7 +6573,6 @@ oracle create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|oracle_type|oracle_type|
 |**--type-properties-connection-string**|any|The connection string. Type: string, SecureString or AzureKeyVaultSecretReference.|oracle_connection_string|oracle_connection_string|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|oracle_connect_via|oracle_connect_via|
@@ -6841,7 +6590,6 @@ oracle create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|oracle_type|oracle_type|
 |**--type-properties-connection-string**|any|The connection string. Type: string, SecureString or AzureKeyVaultSecretReference.|oracle_connection_string|oracle_connection_string|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|oracle_connect_via|oracle_connect_via|
@@ -6859,7 +6607,6 @@ oracle-service-cloud create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|oracleservicecloud_type|oracle_service_cloud_type|
 |**--type-properties-host**|any|The URL of the Oracle Service Cloud instance.|oracleservicecloud_host|oracle_service_cloud_host|
 |**--type-properties-username**|any|The user name that you use to access Oracle Service Cloud server.|oracleservicecloud_username|oracle_service_cloud_username|
 |**--type-properties-password**|object|The password corresponding to the user name that you provided in the username key.|oracleservicecloud_password|oracle_service_cloud_password|
@@ -6881,7 +6628,6 @@ oracle-service-cloud create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|oracleservicecloud_type|oracle_service_cloud_type|
 |**--type-properties-host**|any|The URL of the Oracle Service Cloud instance.|oracleservicecloud_host|oracle_service_cloud_host|
 |**--type-properties-username**|any|The user name that you use to access Oracle Service Cloud server.|oracleservicecloud_username|oracle_service_cloud_username|
 |**--type-properties-password**|object|The password corresponding to the user name that you provided in the username key.|oracleservicecloud_password|oracle_service_cloud_password|
@@ -6903,7 +6649,6 @@ paypal create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|paypal_type|paypal_type|
 |**--type-properties-host**|any|The URL of the PayPal instance. (i.e. api.sandbox.paypal.com)|paypal_host|paypal_host|
 |**--type-properties-client-id**|any|The client ID associated with your PayPal application.|paypal_client_id|paypal_client_id|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -6925,7 +6670,6 @@ paypal create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|paypal_type|paypal_type|
 |**--type-properties-host**|any|The URL of the PayPal instance. (i.e. api.sandbox.paypal.com)|paypal_host|paypal_host|
 |**--type-properties-client-id**|any|The client ID associated with your PayPal application.|paypal_client_id|paypal_client_id|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -6947,7 +6691,6 @@ phoenix create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|phoenix_type|phoenix_type|
 |**--type-properties-host**|any|The IP address or host name of the Phoenix server. (i.e. 192.168.222.160)|phoenix_host|phoenix_host|
 |**--type-properties-authentication-type**|choice|The authentication mechanism used to connect to the Phoenix server.|phoenix_authentication_type|phoenix_authentication_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -6974,7 +6717,6 @@ phoenix create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|phoenix_type|phoenix_type|
 |**--type-properties-host**|any|The IP address or host name of the Phoenix server. (i.e. 192.168.222.160)|phoenix_host|phoenix_host|
 |**--type-properties-authentication-type**|choice|The authentication mechanism used to connect to the Phoenix server.|phoenix_authentication_type|phoenix_authentication_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -7001,7 +6743,6 @@ postgre-sql create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|postgresql_type|postgre_sql_type|
 |**--type-properties-connection-string**|any|The connection string.|postgresql_connection_string|postgre_sql_connection_string|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|postgresql_connect_via|postgre_sql_connect_via|
@@ -7019,7 +6760,6 @@ postgre-sql create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|postgresql_type|postgre_sql_type|
 |**--type-properties-connection-string**|any|The connection string.|postgresql_connection_string|postgre_sql_connection_string|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|postgresql_connect_via|postgre_sql_connect_via|
@@ -7037,7 +6777,6 @@ presto create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|presto_type|presto_type|
 |**--type-properties-host**|any|The IP address or host name of the Presto server. (i.e. 192.168.222.160)|presto_host|presto_host|
 |**--type-properties-server-version**|any|The version of the Presto server. (i.e. 0.148-t)|presto_server_version|presto_server_version|
 |**--type-properties-catalog**|any|The catalog context for all request against the server.|presto_catalog|presto_catalog|
@@ -7066,7 +6805,6 @@ presto create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|presto_type|presto_type|
 |**--type-properties-host**|any|The IP address or host name of the Presto server. (i.e. 192.168.222.160)|presto_host|presto_host|
 |**--type-properties-server-version**|any|The version of the Presto server. (i.e. 0.148-t)|presto_server_version|presto_server_version|
 |**--type-properties-catalog**|any|The catalog context for all request against the server.|presto_catalog|presto_catalog|
@@ -7095,7 +6833,6 @@ quick-books create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|quickbooks_type|quick_books_type|
 |**--type-properties-endpoint**|any|The endpoint of the QuickBooks server. (i.e. quickbooks.api.intuit.com)|quickbooks_endpoint|quick_books_endpoint|
 |**--type-properties-company-id**|any|The company ID of the QuickBooks company to authorize.|quickbooks_company_id|quick_books_company_id|
 |**--type-properties-consumer-key**|any|The consumer key for OAuth 1.0 authentication.|quickbooks_consumer_key|quick_books_consumer_key|
@@ -7118,7 +6855,6 @@ quick-books create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|quickbooks_type|quick_books_type|
 |**--type-properties-endpoint**|any|The endpoint of the QuickBooks server. (i.e. quickbooks.api.intuit.com)|quickbooks_endpoint|quick_books_endpoint|
 |**--type-properties-company-id**|any|The company ID of the QuickBooks company to authorize.|quickbooks_company_id|quick_books_company_id|
 |**--type-properties-consumer-key**|any|The consumer key for OAuth 1.0 authentication.|quickbooks_consumer_key|quick_books_consumer_key|
@@ -7141,7 +6877,6 @@ responsys create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|responsys_type|responsys_type|
 |**--type-properties-endpoint**|any|The endpoint of the Responsys server.|responsys_endpoint|responsys_endpoint|
 |**--type-properties-client-id**|any|The client ID associated with the Responsys application. Type: string (or Expression with resultType string).|responsys_client_id|responsys_client_id|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -7163,7 +6898,6 @@ responsys create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|responsys_type|responsys_type|
 |**--type-properties-endpoint**|any|The endpoint of the Responsys server.|responsys_endpoint|responsys_endpoint|
 |**--type-properties-client-id**|any|The client ID associated with the Responsys application. Type: string (or Expression with resultType string).|responsys_client_id|responsys_client_id|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -7185,7 +6919,6 @@ rest-service create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|restservice_type|rest_service_type|
 |**--type-properties-url**|any|The base URL of the REST service.|restservice_url|rest_service_url|
 |**--type-properties-authentication-type**|choice|Type of authentication used to connect to the REST service.|restservice_authentication_type|rest_service_authentication_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -7210,7 +6943,6 @@ rest-service create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|restservice_type|rest_service_type|
 |**--type-properties-url**|any|The base URL of the REST service.|restservice_url|rest_service_url|
 |**--type-properties-authentication-type**|choice|Type of authentication used to connect to the REST service.|restservice_authentication_type|rest_service_authentication_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -7235,7 +6967,6 @@ salesforce create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|salesforce_type|salesforce_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|salesforce_connect_via|salesforce_connect_via|
 |**--description**|string|Linked service description.|salesforce_description|salesforce_description|
@@ -7256,7 +6987,6 @@ salesforce create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|salesforce_type|salesforce_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|salesforce_connect_via|salesforce_connect_via|
 |**--description**|string|Linked service description.|salesforce_description|salesforce_description|
@@ -7277,7 +7007,6 @@ salesforce-marketing-cloud create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|salesforcemarketingcloud_type|salesforce_marketing_cloud_type|
 |**--type-properties-client-id**|any|The client ID associated with the Salesforce Marketing Cloud application. Type: string (or Expression with resultType string).|salesforcemarketingcloud_client_id|salesforce_marketing_cloud_client_id|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|salesforcemarketingcloud_connect_via|salesforce_marketing_cloud_connect_via|
@@ -7298,7 +7027,6 @@ salesforce-marketing-cloud create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|salesforcemarketingcloud_type|salesforce_marketing_cloud_type|
 |**--type-properties-client-id**|any|The client ID associated with the Salesforce Marketing Cloud application. Type: string (or Expression with resultType string).|salesforcemarketingcloud_client_id|salesforce_marketing_cloud_client_id|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|salesforcemarketingcloud_connect_via|salesforce_marketing_cloud_connect_via|
@@ -7319,7 +7047,6 @@ salesforce-service-cloud create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|salesforceservicecloud_type|salesforce_service_cloud_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|salesforceservicecloud_connect_via|salesforce_service_cloud_connect_via|
 |**--description**|string|Linked service description.|salesforceservicecloud_description|salesforce_service_cloud_description|
@@ -7341,7 +7068,6 @@ salesforce-service-cloud create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|salesforceservicecloud_type|salesforce_service_cloud_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|salesforceservicecloud_connect_via|salesforce_service_cloud_connect_via|
 |**--description**|string|Linked service description.|salesforceservicecloud_description|salesforce_service_cloud_description|
@@ -7363,7 +7089,6 @@ sap-b-w create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|sapbw_type|sap_b_w_type|
 |**--type-properties-server**|any|Host name of the SAP BW instance. Type: string (or Expression with resultType string).|sapbw_server|sap_b_w_server|
 |**--type-properties-system-number**|any|System number of the BW system. (Usually a two-digit decimal number represented as a string.) Type: string (or Expression with resultType string).|sapbw_system_number|sap_b_w_system_number|
 |**--type-properties-client-id**|any|Client ID of the client on the BW system. (Usually a three-digit decimal number represented as a string) Type: string (or Expression with resultType string).|sapbw_client_id|sap_b_w_client_id|
@@ -7384,7 +7109,6 @@ sap-b-w create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|sapbw_type|sap_b_w_type|
 |**--type-properties-server**|any|Host name of the SAP BW instance. Type: string (or Expression with resultType string).|sapbw_server|sap_b_w_server|
 |**--type-properties-system-number**|any|System number of the BW system. (Usually a two-digit decimal number represented as a string.) Type: string (or Expression with resultType string).|sapbw_system_number|sap_b_w_system_number|
 |**--type-properties-client-id**|any|Client ID of the client on the BW system. (Usually a three-digit decimal number represented as a string) Type: string (or Expression with resultType string).|sapbw_client_id|sap_b_w_client_id|
@@ -7405,7 +7129,6 @@ sap-cloud-for-customer create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|sapcloudforcustomer_type|sap_cloud_for_customer_type|
 |**--type-properties-url**|any|The URL of SAP Cloud for Customer OData API. For example, '[https://[tenantname].crm.ondemand.com/sap/c4c/odata/v1]'. Type: string (or Expression with resultType string).|sapcloudforcustomer_url|sap_cloud_for_customer_url|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|sapcloudforcustomer_connect_via|sap_cloud_for_customer_connect_via|
@@ -7424,7 +7147,6 @@ sap-cloud-for-customer create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|sapcloudforcustomer_type|sap_cloud_for_customer_type|
 |**--type-properties-url**|any|The URL of SAP Cloud for Customer OData API. For example, '[https://[tenantname].crm.ondemand.com/sap/c4c/odata/v1]'. Type: string (or Expression with resultType string).|sapcloudforcustomer_url|sap_cloud_for_customer_url|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|sapcloudforcustomer_connect_via|sap_cloud_for_customer_connect_via|
@@ -7443,7 +7165,6 @@ sap-ecc create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|sapecc_type|sap_ecc_type|
 |**--type-properties-url**|string|The URL of SAP ECC OData API. For example, '[https://hostname:port/sap/opu/odata/sap/servicename/]'. Type: string (or Expression with resultType string).|sapecc_url|sap_ecc_url|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|sapecc_connect_via|sap_ecc_connect_via|
@@ -7462,7 +7183,6 @@ sap-ecc create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|sapecc_type|sap_ecc_type|
 |**--type-properties-url**|string|The URL of SAP ECC OData API. For example, '[https://hostname:port/sap/opu/odata/sap/servicename/]'. Type: string (or Expression with resultType string).|sapecc_url|sap_ecc_url|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|sapecc_connect_via|sap_ecc_connect_via|
@@ -7481,7 +7201,6 @@ sap-hana create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|saphana_type|sap_hana_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|saphana_connect_via|sap_hana_connect_via|
 |**--description**|string|Linked service description.|saphana_description|sap_hana_description|
@@ -7502,7 +7221,6 @@ sap-hana create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|saphana_type|sap_hana_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|saphana_connect_via|sap_hana_connect_via|
 |**--description**|string|Linked service description.|saphana_description|sap_hana_description|
@@ -7523,7 +7241,6 @@ sap-open-hub create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|sapopenhub_type|sap_open_hub_type|
 |**--type-properties-server**|any|Host name of the SAP BW instance where the open hub destination is located. Type: string (or Expression with resultType string).|sapopenhub_server|sap_open_hub_server|
 |**--type-properties-system-number**|any|System number of the BW system where the open hub destination is located. (Usually a two-digit decimal number represented as a string.) Type: string (or Expression with resultType string).|sapopenhub_system_number|sap_open_hub_system_number|
 |**--type-properties-client-id**|any|Client ID of the client on the BW system where the open hub destination is located. (Usually a three-digit decimal number represented as a string) Type: string (or Expression with resultType string).|sapopenhub_client_id|sap_open_hub_client_id|
@@ -7545,7 +7262,6 @@ sap-open-hub create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|sapopenhub_type|sap_open_hub_type|
 |**--type-properties-server**|any|Host name of the SAP BW instance where the open hub destination is located. Type: string (or Expression with resultType string).|sapopenhub_server|sap_open_hub_server|
 |**--type-properties-system-number**|any|System number of the BW system where the open hub destination is located. (Usually a two-digit decimal number represented as a string.) Type: string (or Expression with resultType string).|sapopenhub_system_number|sap_open_hub_system_number|
 |**--type-properties-client-id**|any|Client ID of the client on the BW system where the open hub destination is located. (Usually a three-digit decimal number represented as a string) Type: string (or Expression with resultType string).|sapopenhub_client_id|sap_open_hub_client_id|
@@ -7567,7 +7283,6 @@ sap-table create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|saptable_type|sap_table_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|saptable_connect_via|sap_table_connect_via|
 |**--description**|string|Linked service description.|saptable_description|sap_table_description|
@@ -7598,7 +7313,6 @@ sap-table create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|saptable_type|sap_table_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|saptable_connect_via|sap_table_connect_via|
 |**--description**|string|Linked service description.|saptable_description|sap_table_description|
@@ -7629,7 +7343,6 @@ service-now create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|servicenow_type|service_now_type|
 |**--type-properties-endpoint**|any|The endpoint of the ServiceNow server. (i.e. :code:`<instance>`.service-now.com)|servicenow_endpoint|service_now_endpoint|
 |**--type-properties-authentication-type**|choice|The authentication type to use.|servicenow_authentication_type|service_now_authentication_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -7654,7 +7367,6 @@ service-now create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|servicenow_type|service_now_type|
 |**--type-properties-endpoint**|any|The endpoint of the ServiceNow server. (i.e. :code:`<instance>`.service-now.com)|servicenow_endpoint|service_now_endpoint|
 |**--type-properties-authentication-type**|choice|The authentication type to use.|servicenow_authentication_type|service_now_authentication_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -7679,7 +7391,6 @@ sftp create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|sftp_type|sftp_type|
 |**--type-properties-host**|any|The SFTP server host name. Type: string (or Expression with resultType string).|sftp_host|sftp_host|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|sftp_connect_via|sftp_connect_via|
@@ -7705,7 +7416,6 @@ sftp create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|sftp_type|sftp_type|
 |**--type-properties-host**|any|The SFTP server host name. Type: string (or Expression with resultType string).|sftp_host|sftp_host|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|sftp_connect_via|sftp_connect_via|
@@ -7731,14 +7441,13 @@ shopify create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|shopify_type|shopify_type|
 |**--type-properties-host**|any|The endpoint of the Shopify server. (i.e. mystore.myshopify.com)|shopify_host|shopify_host|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|shopify_connect_via|shopify_connect_via|
 |**--description**|string|Linked service description.|shopify_description|shopify_description|
 |**--parameters**|dictionary|Parameters for linked service.|shopify_parameters|shopify_parameters|
 |**--annotations**|array|List of tags that can be used for describing the linked service.|shopify_annotations|shopify_annotations|
-|**--type-properties-access-token**|object|The API access token that can be used to access Shopify’s data. The token won't expire if it is offline mode.|shopify_access_token|shopify_access_token|
+|**--type-properties-access-token**|object|The API access token that can be used to access Shopify's data. The token won't expire if it is offline mode.|shopify_access_token|shopify_access_token|
 |**--type-properties-use-encrypted-endpoints**|any|Specifies whether the data source endpoints are encrypted using HTTPS. The default value is true.|shopify_use_encrypted_endpoints|shopify_use_encrypted_endpoints|
 |**--type-properties-use-host-verification**|any|Specifies whether to require the host name in the server's certificate to match the host name of the server when connecting over SSL. The default value is true.|shopify_use_host_verification|shopify_use_host_verification|
 |**--type-properties-use-peer-verification**|any|Specifies whether to verify the identity of the server when connecting over SSL. The default value is true.|shopify_use_peer_verification|shopify_use_peer_verification|
@@ -7752,14 +7461,13 @@ shopify create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|shopify_type|shopify_type|
 |**--type-properties-host**|any|The endpoint of the Shopify server. (i.e. mystore.myshopify.com)|shopify_host|shopify_host|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|shopify_connect_via|shopify_connect_via|
 |**--description**|string|Linked service description.|shopify_description|shopify_description|
 |**--parameters**|dictionary|Parameters for linked service.|shopify_parameters|shopify_parameters|
 |**--annotations**|array|List of tags that can be used for describing the linked service.|shopify_annotations|shopify_annotations|
-|**--type-properties-access-token**|object|The API access token that can be used to access Shopify’s data. The token won't expire if it is offline mode.|shopify_access_token|shopify_access_token|
+|**--type-properties-access-token**|object|The API access token that can be used to access Shopify's data. The token won't expire if it is offline mode.|shopify_access_token|shopify_access_token|
 |**--type-properties-use-encrypted-endpoints**|any|Specifies whether the data source endpoints are encrypted using HTTPS. The default value is true.|shopify_use_encrypted_endpoints|shopify_use_encrypted_endpoints|
 |**--type-properties-use-host-verification**|any|Specifies whether to require the host name in the server's certificate to match the host name of the server when connecting over SSL. The default value is true.|shopify_use_host_verification|shopify_use_host_verification|
 |**--type-properties-use-peer-verification**|any|Specifies whether to verify the identity of the server when connecting over SSL. The default value is true.|shopify_use_peer_verification|shopify_use_peer_verification|
@@ -7783,7 +7491,6 @@ snowflake create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|snowflake_type|snowflake_type|
 |**--type-properties-connection-string**|any|The connection string of snowflake. Type: string, SecureString.|snowflake_connection_string|snowflake_connection_string|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|snowflake_connect_via|snowflake_connect_via|
@@ -7801,7 +7508,6 @@ snowflake create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|snowflake_type|snowflake_type|
 |**--type-properties-connection-string**|any|The connection string of snowflake. Type: string, SecureString.|snowflake_connection_string|snowflake_connection_string|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|snowflake_connect_via|snowflake_connect_via|
@@ -7819,7 +7525,6 @@ spark create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|spark_type|spark_type|
 |**--type-properties-host**|any|IP address or host name of the Spark server|spark_host|spark_host|
 |**--type-properties-port**|any|The TCP port that the Spark server uses to listen for client connections.|spark_port|spark_port|
 |**--type-properties-authentication-type**|choice|The authentication method used to access the Spark server.|spark_authentication_type|spark_authentication_type|
@@ -7848,7 +7553,6 @@ spark create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|spark_type|spark_type|
 |**--type-properties-host**|any|IP address or host name of the Spark server|spark_host|spark_host|
 |**--type-properties-port**|any|The TCP port that the Spark server uses to listen for client connections.|spark_port|spark_port|
 |**--type-properties-authentication-type**|choice|The authentication method used to access the Spark server.|spark_authentication_type|spark_authentication_type|
@@ -7877,7 +7581,6 @@ sql-server create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|sqlserver_type|sql_server_type|
 |**--type-properties-connection-string**|any|The connection string. Type: string, SecureString or AzureKeyVaultSecretReference.|sqlserver_connection_string|sql_server_connection_string|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|sqlserver_connect_via|sql_server_connect_via|
@@ -7896,7 +7599,6 @@ sql-server create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|sqlserver_type|sql_server_type|
 |**--type-properties-connection-string**|any|The connection string. Type: string, SecureString or AzureKeyVaultSecretReference.|sqlserver_connection_string|sql_server_connection_string|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|sqlserver_connect_via|sql_server_connect_via|
@@ -7915,7 +7617,6 @@ square create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|square_type|square_type|
 |**--type-properties-host**|any|The URL of the Square instance. (i.e. mystore.mysquare.com)|square_host|square_host|
 |**--type-properties-client-id**|any|The client ID associated with your Square application.|square_client_id|square_client_id|
 |**--type-properties-redirect-uri**|any|The redirect URL assigned in the Square application dashboard. (i.e. http://localhost:2500)|square_redirect_uri|square_redirect_uri|
@@ -7938,7 +7639,6 @@ square create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|square_type|square_type|
 |**--type-properties-host**|any|The URL of the Square instance. (i.e. mystore.mysquare.com)|square_host|square_host|
 |**--type-properties-client-id**|any|The client ID associated with your Square application.|square_client_id|square_client_id|
 |**--type-properties-redirect-uri**|any|The redirect URL assigned in the Square application dashboard. (i.e. http://localhost:2500)|square_redirect_uri|square_redirect_uri|
@@ -7961,7 +7661,6 @@ sybase create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|sybase_type|sybase_type|
 |**--type-properties-server**|any|Server name for connection. Type: string (or Expression with resultType string).|sybase_server|sybase_server|
 |**--type-properties-database**|any|Database name for connection. Type: string (or Expression with resultType string).|sybase_database|sybase_database|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -7983,7 +7682,6 @@ sybase create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|sybase_type|sybase_type|
 |**--type-properties-server**|any|Server name for connection. Type: string (or Expression with resultType string).|sybase_server|sybase_server|
 |**--type-properties-database**|any|Database name for connection. Type: string (or Expression with resultType string).|sybase_database|sybase_database|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
@@ -8005,7 +7703,6 @@ teradata create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|teradata_type|teradata_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|teradata_connect_via|teradata_connect_via|
 |**--description**|string|Linked service description.|teradata_description|teradata_description|
@@ -8026,7 +7723,6 @@ teradata create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|teradata_type|teradata_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|teradata_connect_via|teradata_connect_via|
 |**--description**|string|Linked service description.|teradata_description|teradata_description|
@@ -8047,7 +7743,6 @@ vertica create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|vertica_type|vertica_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|vertica_connect_via|vertica_connect_via|
 |**--description**|string|Linked service description.|vertica_description|vertica_description|
@@ -8065,7 +7760,6 @@ vertica create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|vertica_type|vertica_type|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|vertica_connect_via|vertica_connect_via|
 |**--description**|string|Linked service description.|vertica_description|vertica_description|
@@ -8083,7 +7777,6 @@ web create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|web_type|web_type|
 |**--type-properties**|object|Web linked service properties.|web_type_properties|web_type_properties|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|web_connect_via|web_connect_via|
@@ -8099,7 +7792,6 @@ web create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|web_type|web_type|
 |**--type-properties**|object|Web linked service properties.|web_type_properties|web_type_properties|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|web_connect_via|web_connect_via|
@@ -8115,7 +7807,6 @@ xero create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|xero_type|xero_type|
 |**--type-properties-host**|any|The endpoint of the Xero server. (i.e. api.xero.com)|xero_host|xero_host|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|xero_connect_via|xero_connect_via|
@@ -8123,7 +7814,8 @@ xero create a datafactory linked-service.
 |**--parameters**|dictionary|Parameters for linked service.|xero_parameters|xero_parameters|
 |**--annotations**|array|List of tags that can be used for describing the linked service.|xero_annotations|xero_annotations|
 |**--type-properties-consumer-key**|object|The consumer key associated with the Xero application.|xero_consumer_key|xero_consumer_key|
-|**--type-properties-private-key**|object|The private key from the .pem file that was generated for your Xero private application. You must include all the text from the .pem file, including the Unix line endings( ).|xero_private_key|xero_private_key|
+|**--type-properties-private-key**|object|The private key from the .pem file that was generated for your Xero private application. You must include all the text from the .pem file, including the Unix line endings(
+).|xero_private_key|xero_private_key|
 |**--type-properties-use-encrypted-endpoints**|any|Specifies whether the data source endpoints are encrypted using HTTPS. The default value is true.|xero_use_encrypted_endpoints|xero_use_encrypted_endpoints|
 |**--type-properties-use-host-verification**|any|Specifies whether to require the host name in the server's certificate to match the host name of the server when connecting over SSL. The default value is true.|xero_use_host_verification|xero_use_host_verification|
 |**--type-properties-use-peer-verification**|any|Specifies whether to verify the identity of the server when connecting over SSL. The default value is true.|xero_use_peer_verification|xero_use_peer_verification|
@@ -8137,7 +7829,6 @@ xero create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|xero_type|xero_type|
 |**--type-properties-host**|any|The endpoint of the Xero server. (i.e. api.xero.com)|xero_host|xero_host|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|xero_connect_via|xero_connect_via|
@@ -8145,7 +7836,8 @@ xero create a datafactory linked-service.
 |**--parameters**|dictionary|Parameters for linked service.|xero_parameters|xero_parameters|
 |**--annotations**|array|List of tags that can be used for describing the linked service.|xero_annotations|xero_annotations|
 |**--type-properties-consumer-key**|object|The consumer key associated with the Xero application.|xero_consumer_key|xero_consumer_key|
-|**--type-properties-private-key**|object|The private key from the .pem file that was generated for your Xero private application. You must include all the text from the .pem file, including the Unix line endings( ).|xero_private_key|xero_private_key|
+|**--type-properties-private-key**|object|The private key from the .pem file that was generated for your Xero private application. You must include all the text from the .pem file, including the Unix line endings(
+).|xero_private_key|xero_private_key|
 |**--type-properties-use-encrypted-endpoints**|any|Specifies whether the data source endpoints are encrypted using HTTPS. The default value is true.|xero_use_encrypted_endpoints|xero_use_encrypted_endpoints|
 |**--type-properties-use-host-verification**|any|Specifies whether to require the host name in the server's certificate to match the host name of the server when connecting over SSL. The default value is true.|xero_use_host_verification|xero_use_host_verification|
 |**--type-properties-use-peer-verification**|any|Specifies whether to verify the identity of the server when connecting over SSL. The default value is true.|xero_use_peer_verification|xero_use_peer_verification|
@@ -8159,7 +7851,6 @@ zoho create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|zoho_type|zoho_type|
 |**--type-properties-endpoint**|any|The endpoint of the Zoho server. (i.e. crm.zoho.com/crm/private)|zoho_endpoint|zoho_endpoint|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|zoho_connect_via|zoho_connect_via|
@@ -8180,7 +7871,6 @@ zoho create a datafactory linked-service.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resource_group_name|
 |**--factory-name**|string|The factory name.|factory_name|factory_name|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linked_service_name|
-|**--type**|string|Type of linked service.|zoho_type|zoho_type|
 |**--type-properties-endpoint**|any|The endpoint of the Zoho server. (i.e. crm.zoho.com/crm/private)|zoho_endpoint|zoho_endpoint|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|if_match|
 |**--connect-via**|object|The integration runtime reference.|zoho_connect_via|zoho_connect_via|

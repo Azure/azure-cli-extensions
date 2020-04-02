@@ -6,6 +6,7 @@
 
 import argparse
 from knack.util import CLIError
+from collections import defaultdict
 
 
 class AddIdentity(argparse.Action):
@@ -13,9 +14,13 @@ class AddIdentity(argparse.Action):
         action = self.get_action(values, option_string)
         namespace.identity = action
 
+
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
-            properties = dict(x.split('=', 1) for x in values)
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
         except ValueError:
             raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
@@ -25,57 +30,73 @@ class AddIdentity(argparse.Action):
         return d
 
 
-class AddTypePropertiesNewClusterSparkConf(argparse.Action):
+class AddFactoryVstsConfiguration(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        namespace.type_properties_new_cluster_spark_conf = action
+        namespace.factory_vsts_configuration = action
+
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
-            properties = dict(x.split('=', 1) for x in values)
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
         except ValueError:
             raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
             v = properties[k]
-            d[k] = v
+            if kl == 'project-name':
+                d['project_name'] = v[0]
+            elif kl == 'tenant-id':
+                d['tenant_id'] = v[0]
+            elif kl == 'account-name':
+                d['account_name'] = v[0]
+            elif kl == 'repository-name':
+                d['repository_name'] = v[0]
+            elif kl == 'collaboration-branch':
+                d['collaboration_branch'] = v[0]
+            elif kl == 'root-folder':
+                d['root_folder'] = v[0]
+            elif kl == 'last-commit-id':
+                d['last_commit_id'] = v[0]
+        d['type'] = 'FactoryVSTSConfiguration'
         return d
 
 
-class AddTypePropertiesNewClusterSparkEnvVars(argparse.Action):
+class AddFactoryGitHubConfiguration(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        namespace.type_properties_new_cluster_spark_env_vars = action
+        namespace.factory_git_hub_configuration = action
+
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
-            properties = dict(x.split('=', 1) for x in values)
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
         except ValueError:
             raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
             v = properties[k]
-            d[k] = v
-        return d
-
-
-class AddTypePropertiesNewClusterCustomTags(argparse.Action):
-    def __call__(self, parser, namespace, values, option_string=None):
-        action = self.get_action(values, option_string)
-        namespace.type_properties_new_cluster_custom_tags = action
-
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
-        try:
-            properties = dict(x.split('=', 1) for x in values)
-        except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
-        d = {}
-        for k in properties:
-            kl = k.lower()
-            v = properties[k]
-            d[k] = v
+            if kl == 'host-name':
+                d['host_name'] = v[0]
+            elif kl == 'account-name':
+                d['account_name'] = v[0]
+            elif kl == 'repository-name':
+                d['repository_name'] = v[0]
+            elif kl == 'collaboration-branch':
+                d['collaboration_branch'] = v[0]
+            elif kl == 'root-folder':
+                d['root_folder'] = v[0]
+            elif kl == 'last-commit-id':
+                d['last_commit_id'] = v[0]
+        d['type'] = 'FactoryGitHubConfiguration'
         return d
 
 
@@ -84,9 +105,13 @@ class AddTypePropertiesScriptActions(argparse._AppendAction):
         action = self.get_action(values, option_string)
         super(AddTypePropertiesScriptActions, self).__call__(parser, namespace, action, option_string)
 
+
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
-            properties = dict(x.split('=', 1) for x in values)
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
         except ValueError:
             raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
@@ -94,13 +119,13 @@ class AddTypePropertiesScriptActions(argparse._AppendAction):
             kl = k.lower()
             v = properties[k]
             if kl == 'name':
-                d['name'] = v
+                d['name'] = v[0]
             elif kl == 'uri':
-                d['uri'] = v
+                d['uri'] = v[0]
             elif kl == 'roles':
-                d['roles'] = v
+                d['roles'] = v[0]
             elif kl == 'parameters':
-                d['parameters'] = v
+                d['parameters'] = v[0]
         return d
 
 
@@ -109,9 +134,13 @@ class AddFolder(argparse.Action):
         action = self.get_action(values, option_string)
         namespace.folder = action
 
+
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
-            properties = dict(x.split('=', 1) for x in values)
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
         except ValueError:
             raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
@@ -119,60 +148,101 @@ class AddFolder(argparse.Action):
             kl = k.lower()
             v = properties[k]
             if kl == 'name':
-                d['name'] = v
+                d['name'] = v[0]
         return d
 
 
-class AddProperties(argparse.Action):
+class AddDatasetBZip2Compression(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        namespace.properties = action
+        namespace.dataset_b_zip2_compression = action
+
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
-            properties = dict(x.split('=', 1) for x in values)
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
         except ValueError:
             raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
             v = properties[k]
-            if kl == 'collection-name':
-                d['collection_name'] = v
-            elif kl == 'type':
-                d['type'] = v
-            elif kl == 'description':
-                d['description'] = v
-            elif kl == 'structure':
-                d['structure'] = v
-            elif kl == 'schema':
-                d['schema'] = v
-            elif kl == 'linked-service-name':
-                d['linked_service_name'] = v
-            elif kl == 'parameters':
-                d['parameters'] = v
-            elif kl == 'annotations':
-                d['annotations'] = v
-            elif kl == 'folder':
-                d['folder'] = v
+        d['type'] = 'BZip2'
         return d
 
 
-class AddParameters(argparse.Action):
+class AddDatasetGZipCompression(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        namespace.parameters = action
+        namespace.dataset_g_zip_compression = action
+
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
-            properties = dict(x.split('=', 1) for x in values)
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
         except ValueError:
             raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
             v = properties[k]
-            d[k] = v
+            if kl == 'level':
+                d['level'] = v[0]
+        d['type'] = 'GZip'
+        return d
+
+
+class AddDatasetDeflateCompression(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        namespace.dataset_deflate_compression = action
+
+
+    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+            if kl == 'level':
+                d['level'] = v[0]
+        d['type'] = 'Deflate'
+        return d
+
+
+class AddDatasetZipDeflateCompression(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        namespace.dataset_zip_deflate_compression = action
+
+
+    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+            if kl == 'level':
+                d['level'] = v[0]
+        d['type'] = 'ZipDeflate'
         return d
 
 
@@ -181,9 +251,13 @@ class AddFilters(argparse._AppendAction):
         action = self.get_action(values, option_string)
         super(AddFilters, self).__call__(parser, namespace, action, option_string)
 
+
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
-            properties = dict(x.split('=', 1) for x in values)
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
         except ValueError:
             raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
@@ -191,9 +265,9 @@ class AddFilters(argparse._AppendAction):
             kl = k.lower()
             v = properties[k]
             if kl == 'operand':
-                d['operand'] = v
+                d['operand'] = v[0]
             elif kl == 'operator':
-                d['operator'] = v
+                d['operator'] = v[0]
             elif kl == 'values':
                 d['values'] = v
         return d
@@ -204,9 +278,13 @@ class AddOrderBy(argparse._AppendAction):
         action = self.get_action(values, option_string)
         super(AddOrderBy, self).__call__(parser, namespace, action, option_string)
 
+
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
-            properties = dict(x.split('=', 1) for x in values)
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
         except ValueError:
             raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
@@ -214,9 +292,9 @@ class AddOrderBy(argparse._AppendAction):
             kl = k.lower()
             v = properties[k]
             if kl == 'order-by':
-                d['order_by'] = v
+                d['order_by'] = v[0]
             elif kl == 'order':
-                d['order'] = v
+                d['order'] = v[0]
         return d
 
 
@@ -225,9 +303,13 @@ class AddCommandPayload(argparse.Action):
         action = self.get_action(values, option_string)
         namespace.command_payload = action
 
+
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
-            properties = dict(x.split('=', 1) for x in values)
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
         except ValueError:
             raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
@@ -235,11 +317,11 @@ class AddCommandPayload(argparse.Action):
             kl = k.lower()
             v = properties[k]
             if kl == 'stream-name':
-                d['stream_name'] = v
+                d['stream_name'] = v[0]
             elif kl == 'row-limits':
-                d['row_limits'] = v
+                d['row_limits'] = v[0]
             elif kl == 'columns':
                 d['columns'] = v
             elif kl == 'expression':
-                d['expression'] = v
+                d['expression'] = v[0]
         return d

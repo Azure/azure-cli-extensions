@@ -173,7 +173,7 @@ class LinkedServiceOperations(object):
         body_content = self._serialize.body(_linked_service, 'LinkedServiceResource')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
-        
+
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
