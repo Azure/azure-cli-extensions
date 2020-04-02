@@ -67,9 +67,11 @@ def load_tickets_argument(self, _):
 
     with self.argument_context('support tickets update') as c:
         c.argument('ticket_name', help='Support ticket name', required=True)
-        c.argument('severity', arg_type=get_enum_type(['minimal', 'moderate', 'critical']),
+        c.argument('severity', arg_type=get_enum_type(['minimal', 'moderate', 'critical', 'highestcriticalimpact']),
                    help='A value that indicates the urgency of the case, which in turn determines the response ' +
                    'time according to the service level agreement of the technical support plan you have with Azure.')
+        c.argument('status', arg_type=get_enum_type(['open', 'closed']),
+                   help='Status to be updated on the ticket.')
 
     with self.argument_context('support tickets update', arg_group="Contact") as c:
         c.argument('contact_first_name', help='First Name')
@@ -90,7 +92,7 @@ def load_tickets_argument(self, _):
                    'This parameter is the resource id of ProblemClassification resource.', required=True)
         c.argument('title', help="Title of the support ticket.", required=True)
         c.argument('description', help="Detailed description of the question or issue.", required=True)
-        c.argument('severity', arg_type=get_enum_type(['minimal', 'moderate', 'critical']),
+        c.argument('severity', arg_type=get_enum_type(['minimal', 'moderate', 'critical', 'highestcriticalimpact']),
                    help='A value that indicates the urgency of the case, which in turn determines the response time ' +
                    'according to the service level agreement of the technical support plan you have with Azure.',
                    required=True)
