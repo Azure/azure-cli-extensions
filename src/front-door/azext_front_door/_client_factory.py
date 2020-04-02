@@ -22,6 +22,10 @@ def cf_fd_frontend_endpoints(cli_ctx, _):
     return frontdoor_client_factory(cli_ctx).frontend_endpoints
 
 
+def cf_fd_rules_engines(cli_ctx, _):
+    return frontdoor_client_factory(cli_ctx).rules_engines
+
+
 def cf_fd_policies(cli_ctx, _):
     return frontdoor_client_factory(cli_ctx).policies
 
