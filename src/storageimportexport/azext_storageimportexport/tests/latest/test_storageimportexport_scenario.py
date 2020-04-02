@@ -46,6 +46,7 @@ def step__jobs_put_create_job(test):
              '--resource-group "{rg}"',
              checks=[])
 
+
 # EXAMPLE: /Jobs/get/Get job
 @try_manual
 def step__jobs_get_get_job(test):
@@ -124,7 +125,6 @@ class StorageImportExportScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_storageimportexport_myResourceGroup'[:9], key='rg')
     @StorageAccountPreparer(location="eastus")
-
     def test_storageimportexport(self, resource_group, storage_account):
 
         self.kwargs.update({
