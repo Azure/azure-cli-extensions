@@ -7,32 +7,17 @@
 from knack.help_files import helps  # pylint: disable=unused-import
 
 
-helps['compute-preview'] = """
+helps['vm extension'] = """
     type: group
-    short-summary: Commands to manage Compute-previews.
+    short-summary: asdf
 """
 
-helps['compute-preview create'] = """
+helps['vm extension publish'] = """
     type: command
-    short-summary: Create a Compute-preview.
+    short-summary: Publish a VM extension.
 """
 
-helps['compute-preview list'] = """
+helps['vm extension publish-version'] = """
     type: command
-    short-summary: List Compute-previews.
+    short-summary: Publish a VM extension version.
 """
-
-# helps['compute-preview delete'] = """
-#     type: command
-#     short-summary: Delete a Compute-preview.
-# """
-
-# helps['compute-preview show'] = """
-#     type: command
-#     short-summary: Show details of a Compute-preview.
-# """
-
-# helps['compute-preview update'] = """
-#     type: command
-#     short-summary: Update a Compute-preview.
-# """
