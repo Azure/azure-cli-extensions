@@ -98,7 +98,10 @@ class AzInteractiveShell(object):
             self.completer = AzCompleter(self, None)
             self.lexer = None
         self.history = history or FileHistory(os.path.join(self.config.get_config_dir(), self.config.get_history()))
-        os.environ[_ENV_ADDITIONAL_USER_AGENT] = 'AZURECLISHELL/' + VERSION
+        if os.environ.get(_ENV_ADDITIONAL_USER_AGENT):
+            os.environ[_ENV_ADDITIONAL_USER_AGENT] += ' AZURECLISHELL/' + VERSION
+        else:
+            os.environ[_ENV_ADDITIONAL_USER_AGENT] = 'AZURECLISHELL/' + VERSION
 
         # OH WHAT FUN TO FIGURE OUT WHAT THESE ARE!
         self._cli = None
