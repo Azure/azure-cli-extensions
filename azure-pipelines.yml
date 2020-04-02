@@ -128,9 +128,14 @@ jobs:
       inputs:
         versionSpec: 3.6
     - bash: |
+        set -ev
+
         echo "${AZURE_CONFIG_DIR}"
 
         ls -al /opt/az/azcliextensions
+
+        ls -al /opt/az/azcliextensions/azure-devops
+
     - bash: |
         set -ev
 
