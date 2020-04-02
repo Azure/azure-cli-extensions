@@ -11,7 +11,7 @@ Currently you can install use source wheel:
 az extension add -s https://storageextension.blob.core.windows.net/cliextension/storage_ors_preview-0.3.0-py2.py3-none-any.whl
 ```
 
-For release history, please refer to 
+For release history, please refer to https://github.com/Juliehzl/azure-cli-extensions/blob/ors/src/storage-ors-preview/HISTORY.rst.
 
 ### Prepare
 1. Prepare general purpose v2 storage account 
