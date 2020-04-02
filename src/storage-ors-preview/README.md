@@ -8,7 +8,7 @@ az extension add -n storage-ors-preview
 ```
 Currently you can install use source wheel:
 ```
-az extension add -s https://storageextension.blob.core.windows.net/cliextension/storage_ors_preview-0.2.0-py2.py3-none-any.whl
+az extension add -s https://storageextension.blob.core.windows.net/cliextension/storage_ors_preview-0.3.0-py2.py3-none-any.whl
 ```
 
 ### Prepare
