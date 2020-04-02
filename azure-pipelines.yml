@@ -172,6 +172,8 @@ jobs:
 
         ls -al ~/.azure/
 
+        cat ~/.azure/config
+
       env:
         ADO_PULL_REQUEST_LATEST_COMMIT: $(System.PullRequest.SourceCommitId)
         ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
