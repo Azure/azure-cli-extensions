@@ -166,7 +166,7 @@ jobs:
 
         azdev --version
 
-        azdev setup -c ../azure-cli -r ./
+        AZURE_EXTENSION_DIR=~/.azure/cliextensions azdev setup -c ../azure-cli -r ./
 
         az --version
 
