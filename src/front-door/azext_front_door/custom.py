@@ -13,8 +13,8 @@ from azure.cli.core.util import sdk_no_wait
 
 from knack.log import get_logger
 
-from ._client_factory import cf_frontdoor, cf_waf_policies, cf_waf_managed_rules, cf_fd_frontend_endpoints
-
+from ._client_factory import (cf_frontdoor, cf_waf_policies, cf_waf_managed_rules,
+                              cf_fd_frontend_endpoints, cf_fd_rules_engines)
 
 logger = get_logger(__name__)
 
@@ -498,15 +498,11 @@ def update_fd_load_balancing_settings(instance, sample_size=None, successful_sam
     return instance
 
 
-def create_fd_routing_rules(cmd, resource_group_name, front_door_name, item_name, frontend_endpoints, route_type,
-                            backend_pool=None, accepted_protocols=None, patterns_to_match=None,
-                            custom_forwarding_path=None, forwarding_protocol=None, disabled=None,
-                            caching=None, dynamic_compression=None, query_parameter_strip_directive=None,
-                            redirect_type='Moved', redirect_protocol='MatchRequest', custom_host=None, custom_path=None,
-                            custom_fragment=None, custom_query_string=None):
-    from azext_front_door.vendored_sdks.models import (CacheConfiguration, RoutingRule, SubResource,
-                                                       ForwardingConfiguration, RedirectConfiguration)
-
+def routing_rule_usage_helper(route_type, backend_pool=None, custom_forwarding_path=None,
+                              forwarding_protocol=None, dynamic_compression=None,
+                              query_parameter_strip_directive=None, redirect_type=None,
+                              redirect_protocol=None, custom_host=None, custom_path=None,
+                              custom_fragment=None, custom_query_string=None):
     forwarding_usage = ('usage error: [--backend-pool BACKEND_POOL] '
                         '[--custom-forwarding-path CUSTOM_FORWARDING_PATH] '
                         '[--forwarding-protocol FORWARDING_PROTOCOL] '
@@ -519,13 +515,29 @@ def create_fd_routing_rules(cmd, resource_group_name, front_door_name, item_name
                       '[--custom-fragment CUSTOM_FRAGMENT] [--custom-query-string CUSTOM_QUERY_STRING]')
 
     # pylint: disable=line-too-long
-    if (route_type == 'Forward' and any([custom_host, custom_path, custom_fragment, custom_query_string]) and getattr(redirect_type, 'is_default', None) and getattr(redirect_protocol, 'is_default', None)):
+    if 'Forward' in route_type and any([custom_host, custom_path, custom_fragment, custom_query_string]) and getattr(redirect_type, 'is_default', None) and getattr(redirect_protocol, 'is_default', None):
         from knack.util import CLIError
         raise CLIError(forwarding_usage)
-    if route_type == 'Redirect' and any([custom_forwarding_path, forwarding_protocol, backend_pool,
+    if 'Redirect' in route_type and any([custom_forwarding_path, forwarding_protocol, backend_pool,
                                          query_parameter_strip_directive, dynamic_compression]):
         from knack.util import CLIError
         raise CLIError(redirect_usage)
+
+
+def create_fd_routing_rules(cmd, resource_group_name, front_door_name, item_name, frontend_endpoints, route_type,
+                            backend_pool=None, accepted_protocols=None, patterns_to_match=None,
+                            rules_engine=None, custom_forwarding_path=None, forwarding_protocol=None, disabled=None,
+                            caching=None, dynamic_compression=None, query_parameter_strip_directive=None,
+                            redirect_type='Moved', redirect_protocol='MatchRequest', custom_host=None, custom_path=None,
+                            custom_fragment=None, custom_query_string=None):
+    from azext_front_door.vendored_sdks.models import (CacheConfiguration, RoutingRule, SubResource,
+                                                       ForwardingConfiguration, RedirectConfiguration)
+
+    routing_rule_usage_helper(route_type, backend_pool, custom_forwarding_path,
+                              forwarding_protocol, dynamic_compression,
+                              query_parameter_strip_directive, redirect_type,
+                              redirect_protocol, custom_host, custom_path,
+                              custom_fragment, custom_query_string)
 
     if route_type == 'Forward':
         rule = RoutingRule(
@@ -534,6 +546,7 @@ def create_fd_routing_rules(cmd, resource_group_name, front_door_name, item_name
             frontend_endpoints=[SubResource(id=x) for x in frontend_endpoints] if frontend_endpoints else None,
             accepted_protocols=accepted_protocols or ['Http'],
             patterns_to_match=patterns_to_match or ['/*'],
+            rules_engine=SubResource(id=rules_engine) if rules_engine else None,
             route_configuration=ForwardingConfiguration(
                 custom_forwarding_path=custom_forwarding_path,
                 forwarding_protocol=forwarding_protocol,
@@ -551,6 +564,7 @@ def create_fd_routing_rules(cmd, resource_group_name, front_door_name, item_name
             frontend_endpoints=[SubResource(id=x) for x in frontend_endpoints] if frontend_endpoints else None,
             accepted_protocols=accepted_protocols or ['Http'],
             patterns_to_match=patterns_to_match or ['/*'],
+            rules_engine=SubResource(id=rules_engine) if rules_engine else None,
             route_configuration=RedirectConfiguration(
                 redirect_type=redirect_type,
                 redirect_protocol=redirect_protocol,
@@ -565,7 +579,7 @@ def create_fd_routing_rules(cmd, resource_group_name, front_door_name, item_name
 
 def update_fd_routing_rule(parent, instance, item_name, frontend_endpoints=None, accepted_protocols=None,  # pylint: disable=unused-argument
                            patterns_to_match=None, custom_forwarding_path=None, forwarding_protocol=None,
-                           backend_pool=None, enabled=None, dynamic_compression=None,
+                           backend_pool=None, rules_engine=None, enabled=None, dynamic_compression=None,
                            caching=None, query_parameter_strip_directive=None, redirect_type=None,
                            redirect_protocol=None, custom_host=None, custom_path=None,
                            custom_fragment=None, custom_query_string=None):
@@ -577,6 +591,7 @@ def update_fd_routing_rule(parent, instance, item_name, frontend_endpoints=None,
                                if frontend_endpoints else None, False)
                 c.update_param('accepted_protocols', accepted_protocols, False)
                 c.update_param('patterns_to_match', patterns_to_match, False)
+                c.update_param('rules_engine', SubResource(id=rules_engine) if rules_engine else None, False)
                 c.update_param('enabled_state', enabled, False)
             with UpdateContext(instance.route_configuration) as c:
                 c.update_param('custom_forwarding_path', custom_forwarding_path, False)
@@ -595,6 +610,7 @@ def update_fd_routing_rule(parent, instance, item_name, frontend_endpoints=None,
                                if frontend_endpoints else None, False)
                 c.update_param('accepted_protocols', accepted_protocols, False)
                 c.update_param('patterns_to_match', patterns_to_match, False)
+                c.update_param('rules_engine', SubResource(id=rules_engine) if rules_engine else None, False)
                 c.update_param('enabled_state', enabled, False)
             with UpdateContext(instance.route_configuration) as c:
                 c.update_param('redirect_type', redirect_type, False)
@@ -1097,4 +1113,302 @@ def list_custom_rule_match_conditions(cmd, resource_group_name, policy_name, rul
 
     from knack.util import CLIError
     raise CLIError("rule '{}' not found".format(rule_name))
+# endregion
+
+
+# region Front Door Rules Engine
+
+
+# pylint: disable=too-many-locals
+def create_rules_engine_rule(cmd, resource_group_name, front_door_name, rules_engine_name,
+                             priority, rule_name, action_type, header_action=None, header_name=None,
+                             header_value=None, match_variable=None, operator=None, match_values=None,
+                             selector=None, negate_condition=None, transforms=None,
+                             match_processing_behavior=None):
+    from azext_front_door.vendored_sdks.models import (ErrorResponseException, RulesEngineRule,
+                                                       RulesEngineAction, HeaderAction,
+                                                       RulesEngineMatchCondition)
+    client = cf_fd_rules_engines(cmd.cli_ctx, None)
+
+    match_conditions = []
+    condition = RulesEngineMatchCondition(rules_engine_match_variable=match_variable,
+                                          rules_engine_operator=operator,
+                                          rules_engine_match_value=match_values,
+                                          selector=selector,
+                                          negate_condition=negate_condition, transforms=transforms)
+    if condition is not None:
+        match_conditions.append(condition)
+
+    request_header_actions = []
+    if action_type.lower() == 'requestheader':
+        request_header_actions.append(HeaderAction(
+            header_action_type=header_action,
+            header_name=header_name,
+            value=header_value))
+
+    response_header_actions = []
+    if action_type.lower() == 'responseheader':
+        response_header_actions.append(HeaderAction(
+            header_action_type=header_action,
+            header_name=header_name,
+            value=header_value))
+
+    action = RulesEngineAction(request_header_actions=request_header_actions,
+                               response_header_actions=response_header_actions)
+
+    rule = RulesEngineRule(name=rule_name, priority=priority,
+                           action=action, match_conditions=match_conditions,
+                           match_processing_behavior=match_processing_behavior)
+
+    rules_list = []
+    try:
+        rules_engine = client.get(resource_group_name, front_door_name, rules_engine_name)
+        rules_engine.rules.append(rule)
+        rules_list = rules_engine.rules
+    except ErrorResponseException as e:
+        if e.response.status_code == 404:
+            rules_list = [rule]
+        else:
+            # If the error isn't a 404, rethrow it.
+            raise e
+
+    return client.create_or_update(resource_group_name, front_door_name, rules_engine_name, rules_list)
+
+
+def delete_rules_engine_rule(cmd, resource_group_name, front_door_name, rules_engine_name, rule_name):
+    client = cf_fd_rules_engines(cmd.cli_ctx, None)
+    rules_engine = client.get(resource_group_name, front_door_name, rules_engine_name)
+    rules_engine.rules = [x for x in rules_engine.rules if x.name.lower() != rule_name.lower()]
+    if not rules_engine.rules:
+        from knack.util import CLIError
+        raise CLIError("Rules Engine must at least contain one rule")
+
+    return client.create_or_update(resource_group_name, front_door_name, rules_engine_name, rules=rules_engine.rules)
+
+
+def show_rules_engine_rule(cmd, resource_group_name, front_door_name, rules_engine_name, rule_name):
+    client = cf_fd_rules_engines(cmd.cli_ctx, None)
+    rules_engine = client.get(resource_group_name, front_door_name, rules_engine_name)
+    try:
+        return next(x for x in rules_engine.rules if x.name.lower() == rule_name.lower())
+    except StopIteration:
+        from knack.util import CLIError
+        raise CLIError("rule '{}' not found".format(rule_name))
+
+
+def list_rules_engine_rule(cmd, resource_group_name, front_door_name, rules_engine_name):
+    client = cf_fd_rules_engines(cmd.cli_ctx, None)
+    rules_engine = client.get(resource_group_name, front_door_name, rules_engine_name)
+    return rules_engine.rules
+
+
+def update_rules_engine_rule(cmd, resource_group_name, front_door_name,
+                             rules_engine_name, rule_name, priority=None,
+                             match_processing_behavior=None):
+    client = cf_fd_rules_engines(cmd.cli_ctx, None)
+    rules_engine = client.get(resource_group_name, front_door_name, rules_engine_name)
+
+    found_rule = False
+    for rule in rules_engine.rules:
+        if rule.name.lower() == rule_name.lower():
+            found_rule = True
+            with UpdateContext(rule) as c:
+                c.update_param('priority', priority, None)
+                c.update_param('match_processing_behavior', match_processing_behavior, None)
+            break
+
+    if not found_rule:
+        from knack.util import CLIError
+        raise CLIError("rule '{}' not found".format(rule_name))
+
+    return client.create_or_update(resource_group_name, front_door_name, rules_engine_name, rules=rules_engine.rules)
+
+
+def add_rules_engine_condition(cmd, resource_group_name, front_door_name, rules_engine_name,
+                               rule_name, match_variable=None, operator=None, match_values=None,
+                               selector=None, negate_condition=None, transforms=None):
+    from azext_front_door.vendored_sdks.models import RulesEngineMatchCondition
+    client = cf_fd_rules_engines(cmd.cli_ctx, None)
+    rules_engine = client.get(resource_group_name, front_door_name, rules_engine_name)
+
+    found_rule = False
+    for rule in rules_engine.rules:
+        if rule.name.upper() == rule_name.upper():
+            found_rule = True
+            condition = RulesEngineMatchCondition(rules_engine_match_variable=match_variable,
+                                                  rules_engine_operator=operator,
+                                                  rules_engine_match_value=match_values,
+                                                  selector=selector, negate_condition=negate_condition,
+                                                  transforms=transforms)
+            if condition is not None:
+                rule.match_conditions.append(condition)
+
+    if not found_rule:
+        from knack.util import CLIError
+        raise CLIError("rule '{}' not found".format(rule_name))
+
+    return client.create_or_update(resource_group_name, front_door_name, rules_engine_name, rules=rules_engine.rules)
+
+
+def remove_rules_engine_condition(cmd, resource_group_name,
+                                  front_door_name, rules_engine_name,
+                                  rule_name, index):
+    client = cf_fd_rules_engines(cmd.cli_ctx, None)
+    rules_engine = client.get(resource_group_name, front_door_name, rules_engine_name)
+
+    found_rule = False
+    for rule in rules_engine.rules:
+        if rule.name.upper() == rule_name.upper():
+            found_rule = True
+
+            if index >= len(rule.match_conditions):
+                from knack.util import CLIError
+                raise CLIError("Index out of bounds")
+
+            rule.match_conditions = [v for (i, v) in enumerate(rule.match_conditions) if i != index]
+
+    if not found_rule:
+        from knack.util import CLIError
+        raise CLIError("rule '{}' not found".format(rule_name))
+
+    return client.create_or_update(resource_group_name, front_door_name, rules_engine_name, rules=rules_engine.rules)
+
+
+def list_rules_engine_condition(cmd, resource_group_name,
+                                front_door_name, rules_engine_name,
+                                rule_name):
+    client = cf_fd_rules_engines(cmd.cli_ctx, None)
+    rules_engine = client.get(resource_group_name, front_door_name, rules_engine_name)
+
+    for rule in rules_engine.rules:
+        if rule.name.upper() == rule_name.upper():
+            return rule.match_conditions
+
+    from knack.util import CLIError
+    raise CLIError("rule '{}' not found".format(rule_name))
+
+
+# pylint: disable=unused-argument
+def add_rules_engine_action(cmd, resource_group_name, front_door_name, rules_engine_name, rule_name,
+                            action_type, header_action=None, header_name=None, header_value=None,
+                            custom_forwarding_path=None, forwarding_protocol=None, backend_pool=None,
+                            caching=None, dynamic_compression=None, cache_duration=None,
+                            query_parameter_strip_directive=None, query_parameters=None, redirect_type='Moved',
+                            redirect_protocol='MatchRequest', custom_host=None, custom_path=None,
+                            custom_fragment=None, custom_query_string=None):
+
+    def add_action_helper(rule):
+        from azext_front_door.vendored_sdks.models import (HeaderAction, CacheConfiguration, SubResource,
+                                                           ForwardingConfiguration, RedirectConfiguration)
+        if action_type.lower() == 'requestheader':
+            rule.action.request_header_actions.append(HeaderAction(
+                header_action_type=header_action,
+                header_name=header_name,
+                value=header_value))
+
+        if action_type.lower() == 'responseheader':
+            rule.action.response_header_actions.append(HeaderAction(
+                header_action_type=header_action,
+                header_name=header_name,
+                value=header_value))
+
+        if action_type.lower() == 'forwardrouteoverride' or 'redirectrouteoverride':
+            routing_rule_usage_helper(action_type, backend_pool, custom_forwarding_path,
+                                      forwarding_protocol, dynamic_compression,
+                                      query_parameter_strip_directive, redirect_type,
+                                      redirect_protocol, custom_host, custom_path,
+                                      custom_fragment, custom_query_string)
+            if 'forward' in action_type.lower():
+                rule.action.route_configuration_override = ForwardingConfiguration(
+                    custom_forwarding_path=custom_forwarding_path,
+                    forwarding_protocol=forwarding_protocol,
+                    backend_pool=SubResource(
+                        id=backend_pool) if backend_pool else None,
+                    cache_configuration=CacheConfiguration(
+                        query_parameter_strip_directive=query_parameter_strip_directive,
+                        dynamic_compression=dynamic_compression
+                    ) if caching else None
+                )
+            elif 'redirect' in action_type.lower():
+                rule.action.route_configuration_override = RedirectConfiguration(
+                    redirect_type=redirect_type,
+                    redirect_protocol=redirect_protocol,
+                    custom_host=custom_host,
+                    custom_path=custom_path,
+                    custom_fragment=custom_fragment,
+                    custom_query_string=custom_query_string
+                )
+
+    client = cf_fd_rules_engines(cmd.cli_ctx, None)
+    rules_engine = client.get(resource_group_name, front_door_name, rules_engine_name)
+
+    found_rule = False
+    for rule in rules_engine.rules:
+        if rule.name.upper() == rule_name.upper():
+            found_rule = True
+            add_action_helper(rule)
+
+    if not found_rule:
+        from knack.util import CLIError
+        raise CLIError("rule '{}' not found".format(rule_name))
+
+    return client.create_or_update(resource_group_name, front_door_name, rules_engine_name, rules=rules_engine.rules)
+
+
+def remove_rules_engine_action(cmd, resource_group_name, front_door_name, rules_engine_name,
+                               rule_name, action_type, index=None):
+    def check_index(arr):
+        if index is None or index >= len(arr):
+            from knack.util import CLIError
+            raise CLIError("Index out of bounds")
+
+    def remove_action_helper(rule):
+        if action_type.lower() == 'requestheader':
+            check_index(rule.action.request_header_actions)
+            rule.action.request_header_actions = [v for (i, v) in
+                                                  enumerate(rule.action.request_header_actions) if i != index]
+
+        if action_type.lower() == 'responseheader':
+            check_index(rule.action.response_header_actions)
+            rule.action.response_header_actions = [v for (i, v) in
+                                                   enumerate(rule.action.response_header_actions) if i != index]
+
+        if 'routeoverride' in action_type.lower():
+            rule.action.route_configuration_override = None
+
+    client = cf_fd_rules_engines(cmd.cli_ctx, None)
+    rules_engine = client.get(resource_group_name, front_door_name, rules_engine_name)
+
+    found_rule = False
+    for rule in rules_engine.rules:
+        if rule.name.upper() == rule_name.upper():
+            found_rule = True
+            remove_action_helper(rule)
+            # pylint: disable=len-as-condition
+            if len(rule.action.request_header_actions) <= 0 and \
+               len(rule.action.response_header_actions) <= 0 and \
+               rule.action.route_configuration_override is None:
+                from knack.util import CLIError
+                raise CLIError("Cannot remove all actions from rule '{}'".format(rule_name))
+
+    if not found_rule:
+        from knack.util import CLIError
+        raise CLIError("rule '{}' not found".format(rule_name))
+
+    return client.create_or_update(resource_group_name, front_door_name, rules_engine_name, rules=rules_engine.rules)
+
+
+def list_rules_engine_action(cmd, resource_group_name,
+                             front_door_name, rules_engine_name,
+                             rule_name):
+    client = cf_fd_rules_engines(cmd.cli_ctx, None)
+    rules_engine = client.get(resource_group_name, front_door_name, rules_engine_name)
+
+    for rule in rules_engine.rules:
+        if rule.name.upper() == rule_name.upper():
+            return rule.action
+
+    from knack.util import CLIError
+    raise CLIError("rule '{}' not found".format(rule_name))
+
 # endregion
