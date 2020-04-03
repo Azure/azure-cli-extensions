@@ -81,14 +81,14 @@ def load_arguments(self, _):
         c.argument('notification_hub_name', options_list=['--name', '-n'], help='The notification hub name.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
-        c.argument('sku_name', arg_type=get_enum_type(['Free', 'Basic', 'Standard']), help='Name of the notification hub sku')
+        c.ignore('sku_name')
         c.argument('registration_ttl', help='The RegistrationTtl of the created NotificationHub')
 
     with self.argument_context('notification-hub update') as c:
         c.argument('namespace_name', help='The namespace name.')
         c.argument('notification_hub_name', options_list=['--name', '-n'], help='The notification hub name.')
         c.argument('tags', tags_type)
-        c.argument('sku_name', arg_type=get_enum_type(['Free', 'Basic', 'Standard']), help='Name of the notification hub sku')
+        c.ignore('sku_name')
 
     with self.argument_context('notification-hub delete') as c:
         c.argument('namespace_name', id_part="name", help='The namespace name.')
@@ -142,7 +142,7 @@ def load_arguments(self, _):
         c.argument('namespace_name', help='The namespace name.')
         c.argument('notification_hub_name', help='The notification hub name.')
         c.argument('rule_name', options_list=['--name', '-n'], help='The authorization rule name.')
-        c.argument('rights', nargs='+', help='The rights associated with the rule. Separated by comma.')
+        c.argument('rights', nargs='+', help='The rights associated with the rule.')
 
     with self.argument_context('notification-hub authorization-rule delete') as c:
         c.argument('namespace_name', id_part="name", help='The namespace name.')
