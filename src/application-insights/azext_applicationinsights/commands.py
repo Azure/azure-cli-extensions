@@ -100,4 +100,3 @@ def load_command_table(self, _):
         g.custom_command('link', 'create_component_linked_storage_account')
         g.custom_command('update', 'update_component_linked_storage_account')
         g.custom_command('unlink', 'delete_component_linked_storage_account')
-

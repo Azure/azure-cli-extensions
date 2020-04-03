@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=line-too-long
+# pylint: disable=line-too-long, too-many-statements
 from azure.cli.core.commands.parameters import get_datetime_type, get_location_type, tags_type, get_three_state_flag, get_enum_type
 from azure.cli.command_modules.monitor.actions import get_period_type
 from ._validators import validate_applications, validate_storage_account_name_or_id, validate_log_analytic_workspace_name_or_id

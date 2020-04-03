@@ -66,6 +66,7 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
             'name': 'demoApp',
             'apiKey': 'demoKey',
             'apiKeyB': 'otherKey',
+            'apiKeyC': 'emptyKey',
             'kind': 'web',
             'application_type': 'web'
         })
@@ -83,8 +84,12 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         api_key = self.cmd('az monitor app-insights api-key create --app {name} -g {resource_group} --api-key {apiKeyB}').get_output_in_json()
         assert (api_key['apiKey'] is not None)
 
+        api_key = self.cmd('az monitor app-insights api-key create --app {name} -g {resource_group} --api-key {apiKeyC} --write-properties ""').get_output_in_json()
+        assert len(api_key['linkedReadProperties']) >= 2  # Some are not user configurable but will be added automatically
+        assert len(api_key['linkedWriteProperties']) == 0
+
         api_keys = self.cmd('az monitor app-insights api-key show --app {name} -g {resource_group}').get_output_in_json()
-        assert len(api_keys) == 2
+        assert len(api_keys) == 3
 
         self.cmd('az monitor app-insights api-key delete --app {name} -g {resource_group} --api-key {apiKeyB}', checks=[
             self.check('name', '{apiKeyB}')
@@ -116,16 +121,15 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
                 self.check('provisioningState', 'Succeeded'),
             ])
 
-        self.cmd('monitor app-insights component linked-storage link --app {name_a} -g {resource_group} -s {storage_account}')
-
-        self.cmd('monitor app-insights component linked-storage show --app {name_a} -g {resource_group}')
-
-        self.cmd('monitor app-insights component linked-storage update --app {name_a} -g {resource_group} -s {storage_account_2}')
-
-        self.cmd('monitor app-insights component linked-storage show --app {name_a} -g {resource_group}')
-
+        output_json = self.cmd('monitor app-insights component linked-storage link --app {name_a} -g {resource_group} -s {storage_account}').get_output_in_json()
+        assert self.kwargs['storage_account'] in output_json['linkedStorageAccount']
+        output_json = self.cmd('monitor app-insights component linked-storage show --app {name_a} -g {resource_group}').get_output_in_json()
+        assert self.kwargs['storage_account'] in output_json['linkedStorageAccount']
+        output_json = self.cmd('monitor app-insights component linked-storage update --app {name_a} -g {resource_group} -s {storage_account_2}').get_output_in_json()
+        assert self.kwargs['storage_account_2'] in output_json['linkedStorageAccount']
         self.cmd('monitor app-insights component linked-storage unlink --app {name_a} -g {resource_group}')
-
+        with self.assertRaisesRegexp(SystemExit, '3'):
+            self.cmd('monitor app-insights component linked-storage show --app {name_a} -g {resource_group}')
 
     @ResourceGroupPreparer(parameter_name_for_location='location')
     def test_component_with_linked_workspace(self, resource_group, location):
@@ -157,23 +161,19 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
             'kind': 'ios'
         })
 
-        self.cmd('az monitor app-insights component update --app {name_a} --workspace {ws_1} -g {resource_group}', checks=[
-        ])
+        output_json = self.cmd('az monitor app-insights component update --app {name_a} --workspace {ws_1} -g {resource_group}').get_output_in_json()
+        assert self.kwargs['ws_1'] in output_json['workspaceResourceId']
+        output_json = self.cmd('az monitor app-insights component update --app {name_a} --workspace {ws_2} -g {resource_group}').get_output_in_json()
+        assert self.kwargs['ws_2'] in output_json['workspaceResourceId']
 
-        self.cmd('az monitor app-insights component update --app {name_a} --workspace {ws_2} -g {resource_group}', checks=[
-        ])
-
-        self.cmd('az monitor app-insights component update --app {name_a} --workspace "" -g {resource_group}', checks=[
-        ])
-
-        self.cmd('az monitor app-insights component update --app {name_a} --workspace {ws_1} --kind {kind} -g {resource_group}', checks=[
-        ])
-
-        self.cmd('az monitor app-insights component create --app {name_b} --workspace {ws_2} --location {loc} --kind {kind} -g {resource_group} --application-type {application_type}', checks=[
-        ])
-
-        self.cmd('az monitor app-insights component update --app {name_b} --kind {kind} -g {resource_group}', checks=[
-        ])
+        output_json = self.cmd('az monitor app-insights component update --app {name_a} --workspace {ws_1} --kind {kind} -g {resource_group}').get_output_in_json()
+        assert self.kwargs['ws_1'] in output_json['workspaceResourceId']
+        assert output_json['kind'] == self.kwargs['kind']
+        output_json = self.cmd('az monitor app-insights component create --app {name_b} --workspace {ws_2} --location {loc} --kind {kind} -g {resource_group} --application-type {application_type}').get_output_in_json()
+        assert self.kwargs['ws_2'] in output_json['workspaceResourceId']
+        assert output_json['kind'] == self.kwargs['kind']
+        output_json = self.cmd('az monitor app-insights component update --app {name_b} --kind {kind} -g {resource_group}').get_output_in_json()
+        assert output_json['kind'] == self.kwargs['kind']
 
     @ResourceGroupPreparer(parameter_name_for_location='location')
     def test_component_with_public_network_access(self, resource_group, location):
@@ -201,28 +201,22 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
                 self.check('provisioningState', 'Succeeded'),
             ])
 
-        self.cmd('az monitor app-insights component update --app {name_a} --workspace {ws_2} -g {resource_group}',
-                 checks=[
-                 ])
-
-        self.cmd(
-            'az monitor app-insights component update --app {name_a} --workspace {ws_1} --query-access Enabled --ingestion-access Enabled -g {resource_group}',
-            checks=[
-            ])
-
-        self.cmd(
-            'az monitor app-insights component update --app {name_a} --query-access Disabled --ingestion-access Disabled -g {resource_group}',
-            checks=[
-            ])
-
-        self.cmd(
-            'az monitor app-insights component create --app {name_b} --workspace {ws_2} --location {loc} --query-access Disabled --ingestion-access Disabled -g {resource_group} --application-type {application_type}',
-            checks=[
-            ])
+        output_json = self.cmd('az monitor app-insights component update --app {name_a} --workspace {ws_1} --query-access Enabled --ingestion-access Enabled -g {resource_group}').get_output_in_json()
+        assert self.kwargs['ws_1'] in output_json['workspaceResourceId']
+        assert output_json['publicNetworkAccessForIngestion'] == 'Enabled'
+        assert output_json['publicNetworkAccessForQuery'] == 'Enabled'
+        output_json = self.cmd('az monitor app-insights component update --app {name_a} --query-access Disabled --ingestion-access Disabled -g {resource_group}').get_output_in_json()
+        assert output_json['publicNetworkAccessForIngestion'] == 'Disabled'
+        assert output_json['publicNetworkAccessForQuery'] == 'Disabled'
+        output_json = self.cmd('az monitor app-insights component create --app {name_b} --workspace {ws_2} --location {loc} --query-access Enabled --ingestion-access Disabled -g {resource_group} --application-type {application_type}').get_output_in_json()
+        assert self.kwargs['ws_2'] in output_json['workspaceResourceId']
+        assert output_json['publicNetworkAccessForIngestion'] == 'Disabled'
+        assert output_json['publicNetworkAccessForQuery'] == 'Enabled'
 
         self.kwargs.update({
             'kind': 'ios'
         })
 
         self.cmd('az monitor app-insights component update --app {name_b} --kind {kind} -g {resource_group}', checks=[
+            self.check('kind', '{kind}')
         ])
