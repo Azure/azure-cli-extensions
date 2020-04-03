@@ -3,16 +3,14 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import traceback
 import uuid
 from datetime import datetime
 
-from azext_support._client_factory import cf_resource, cf_support_tickets, cf_communications
+from azext_support._client_factory import cf_support_tickets, cf_communications
 from azext_support._utils import is_technical_ticket, parse_support_area_path
 from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger
 from knack.util import CLIError
-from msrestazure.azure_exceptions import CloudError
 from msrestazure.tools import is_valid_resource_id, parse_resource_id
 
 logger = get_logger(__name__)
@@ -68,7 +66,7 @@ def _validate_problem_classification_name(problem_classification_id):
 def _validate_resource_name(cmd, resource_id):
     if resource_id is None:
         return
-    client = cf_resource(cmd.cli_ctx)
+
     base_error_msg = "Technical resource argument {0} is invalid.".format(resource_id)
     if not is_valid_resource_id(resource_id):
         raise CLIError(base_error_msg)
@@ -81,17 +79,6 @@ def _validate_resource_name(cmd, resource_id):
     session_subid = get_subscription_id(cmd.cli_ctx)
     if subid != session_subid:
         raise CLIError("{0} {1} does not match with {2}".format(base_error_msg, subid, session_subid))
-
-    try:
-        client.resources.get(resource_group_name=parsed_resource['resource_group'],
-                             resource_provider_namespace=parsed_resource["namespace"],
-                             parent_resource_path=parsed_resource["resource_parent"],
-                             resource_type=parsed_resource["type"],
-                             resource_name=parsed_resource["name"],
-                             api_version="2019-08-01")
-    except CloudError as e:
-        logger.debug(traceback.format_exc())
-        raise CLIError("{0} {1}".format(base_error_msg, e.error.message))
 
 
 def _is_guid(guid):
