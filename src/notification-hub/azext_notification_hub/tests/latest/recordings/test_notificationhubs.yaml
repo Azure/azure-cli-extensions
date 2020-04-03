@@ -17,8 +17,8 @@ interactions:
       ParameterSetName:
       - --name
       User-Agent:
-      - python/3.7.3 (Darwin-19.0.0-x86_64-i386-64bit) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.3.1 (MSI)
       accept-language:
       - en-US
     method: POST
@@ -34,7 +34,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 20 Jan 2020 09:28:36 GMT
+      - Wed, 01 Apr 2020 14:16:55 GMT
       expires:
       - '-1'
       pragma:
@@ -53,7 +53,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -71,12 +71,12 @@ interactions:
       ParameterSetName:
       - --name
       User-Agent:
-      - python/3.7.3 (Darwin-19.0.0-x86_64-i386-64bit) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-resource/6.0.0 Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-resource/8.0.1 Azure-SDK-For-Python AZURECLI/2.3.1 (MSI)
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/locations?api-version=2016-06-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/locations?api-version=2019-06-01
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/eastasia","name":"eastasia","displayName":"East
@@ -128,7 +128,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 20 Jan 2020 09:28:36 GMT
+      - Wed, 01 Apr 2020 14:16:56 GMT
       expires:
       - '-1'
       pragma:
@@ -139,6 +139,64 @@ interactions:
       - Accept-Encoding
       x-content-type-options:
       - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"name": "my-test-space"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - notification-hub namespace create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '25'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --location --sku
+      User-Agent:
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.3.1 (MSI)
+      accept-language:
+      - en-US
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NotificationHubs/checkNamespaceAvailability?api-version=2017-04-01
+  response:
+    body:
+      string: '{"isAvailiable":true,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NotificationHubs/checkNamespaceAvailability","name":"my-test-space","type":"Microsoft.NotificationHubs/namespaces/checkNamespaceAvailability","location":null,"tags":null,"properties":true}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '287'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 01 Apr 2020 14:16:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Service-Bus-Resource-Provider/CH3
+      - Microsoft-HTTPAPI/2.0
+      server-sb:
+      - Service-Bus-Resource-Provider/CH3
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
     status:
       code: 200
       message: OK
@@ -160,8 +218,8 @@ interactions:
       ParameterSetName:
       - --resource-group --name --location --sku
       User-Agent:
-      - python/3.7.3 (Darwin-19.0.0-x86_64-i386-64bit) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.3.1 (MSI)
       accept-language:
       - en-US
     method: PUT
@@ -178,7 +236,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 20 Jan 2020 09:28:45 GMT
+      - Wed, 01 Apr 2020 14:17:09 GMT
       expires:
       - '-1'
       pragma:
@@ -215,8 +273,8 @@ interactions:
       ParameterSetName:
       - --resource-group --name --created
       User-Agent:
-      - python/3.7.3 (Darwin-19.0.0-x86_64-i386-64bit) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.3.1 (MSI)
       accept-language:
       - en-US
     method: GET
@@ -224,7 +282,7 @@ interactions:
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_notificationhubs000001/providers/Microsoft.NotificationHubs/namespaces/my-test-space","name":"my-test-space","type":"Microsoft.NotificationHubs/namespaces","location":"South
-        Central US","kind":"NotificationHub","sku":{"name":"Free"},"tags":{},"properties":{"provisioningState":"Activating","metricId":null,"status":"Created","createdAt":"2020-01-20T09:28:43.857Z","serviceBusEndpoint":"https://my-test-space.servicebus.windows.net:443/","enabled":true,"critical":false,"updatedAt":"2020-01-20T09:28:43.857Z","namespaceType":"NotificationHub"}}'
+        Central US","kind":"NotificationHub","sku":{"name":"Free"},"tags":{},"properties":{"provisioningState":"Activating","metricId":null,"status":"Created","createdAt":"2020-04-01T14:17:07.507Z","serviceBusEndpoint":"https://my-test-space.servicebus.windows.net:443/","enabled":true,"critical":false,"updatedAt":"2020-04-01T14:17:07.507Z","namespaceType":"NotificationHub"}}'
     headers:
       cache-control:
       - no-cache
@@ -233,7 +291,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 20 Jan 2020 09:28:47 GMT
+      - Wed, 01 Apr 2020 14:17:14 GMT
       expires:
       - '-1'
       pragma:
@@ -268,8 +326,8 @@ interactions:
       ParameterSetName:
       - --resource-group --name --created
       User-Agent:
-      - python/3.7.3 (Darwin-19.0.0-x86_64-i386-64bit) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.3.1 (MSI)
       accept-language:
       - en-US
     method: GET
@@ -277,16 +335,16 @@ interactions:
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_notificationhubs000001/providers/Microsoft.NotificationHubs/namespaces/my-test-space","name":"my-test-space","type":"Microsoft.NotificationHubs/namespaces","location":"South
-        Central US","kind":"NotificationHub","sku":{"name":"Free"},"tags":{},"properties":{"provisioningState":"Succeeded","metricId":null,"status":"Active","createdAt":"2020-01-20T09:28:43.857Z","serviceBusEndpoint":"https://my-test-space.servicebus.windows.net:443/","enabled":true,"critical":false,"updatedAt":"2020-01-20T09:29:09.507Z","namespaceType":"NotificationHub"}}'
+        Central US","kind":"NotificationHub","sku":{"name":"Free"},"tags":{},"properties":{"provisioningState":"Succeeded","metricId":null,"status":"Active","createdAt":"2020-04-01T14:17:07.507Z","serviceBusEndpoint":"https://my-test-space.servicebus.windows.net:443/","enabled":true,"critical":false,"updatedAt":"2020-04-01T14:17:31.16Z","namespaceType":"NotificationHub"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '668'
+      - '667'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 20 Jan 2020 09:29:19 GMT
+      - Wed, 01 Apr 2020 14:17:49 GMT
       expires:
       - '-1'
       pragma:
@@ -325,8 +383,8 @@ interactions:
       ParameterSetName:
       - --resource-group --namespace-name --name
       User-Agent:
-      - python/3.7.3 (Darwin-19.0.0-x86_64-i386-64bit) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.3.1 (MSI)
       accept-language:
       - en-US
     method: POST
@@ -342,7 +400,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 20 Jan 2020 09:29:22 GMT
+      - Wed, 01 Apr 2020 14:17:53 GMT
       expires:
       - '-1'
       pragma:
@@ -361,7 +419,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1197'
     status:
       code: 200
       message: OK
@@ -379,12 +437,12 @@ interactions:
       ParameterSetName:
       - --resource-group --namespace-name --name
       User-Agent:
-      - python/3.7.3 (Darwin-19.0.0-x86_64-i386-64bit) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-resource/6.0.0 Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-resource/8.0.1 Azure-SDK-For-Python AZURECLI/2.3.1 (MSI)
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/locations?api-version=2016-06-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/locations?api-version=2019-06-01
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/eastasia","name":"eastasia","displayName":"East
@@ -436,13 +494,124 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 20 Jan 2020 09:29:23 GMT
+      - Wed, 01 Apr 2020 14:17:54 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"name": "my-test-hub"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - notification-hub create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '23'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --namespace-name --name --location
+      User-Agent:
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.3.1 (MSI)
+      accept-language:
+      - en-US
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_notificationhubs000001/providers/Microsoft.NotificationHubs/namespaces/my-test-space/checkNotificationHubAvailability?api-version=2017-04-01
+  response:
+    body:
+      string: '{"isAvailiable":true,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_notificationhubs000001/providers/Microsoft.NotificationHubs/namespaces/my-test-space/checkNotificationHubAvailability","name":"my-test-hub","type":"Microsoft.NotificationHubs/namespaces/notificationHubs/checkNotificationHubAvailability","location":null,"tags":null,"properties":true}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '430'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 01 Apr 2020 14:17:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Service-Bus-Resource-Provider/CH3
+      - Microsoft-HTTPAPI/2.0
+      server-sb:
+      - Service-Bus-Resource-Provider/CH3
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - notification-hub create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --namespace-name --name --location
+      User-Agent:
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.3.1 (MSI)
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_notificationhubs000001/providers/Microsoft.NotificationHubs/namespaces/my-test-space?api-version=2017-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_notificationhubs000001/providers/Microsoft.NotificationHubs/namespaces/my-test-space","name":"my-test-space","type":"Microsoft.NotificationHubs/namespaces","location":"South
+        Central US","kind":"NotificationHub","sku":{"name":"Free"},"tags":{},"properties":{"provisioningState":"Succeeded","metricId":null,"status":"Active","createdAt":"2020-04-01T14:17:07.507Z","serviceBusEndpoint":"https://my-test-space.servicebus.windows.net:443/","enabled":true,"critical":false,"updatedAt":"2020-04-01T14:17:31.16Z","namespaceType":"NotificationHub"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '667'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 01 Apr 2020 14:17:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Service-Bus-Resource-Provider/CH3
+      - Microsoft-HTTPAPI/2.0
+      server-sb:
+      - Service-Bus-Resource-Provider/CH3
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
       vary:
       - Accept-Encoding
       x-content-type-options:
@@ -466,10 +635,10 @@ interactions:
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
-      - --resource-group --namespace-name --name --location --sku
+      - --resource-group --namespace-name --name --location
       User-Agent:
-      - python/3.7.3 (Darwin-19.0.0-x86_64-i386-64bit) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.3.1 (MSI)
       accept-language:
       - en-US
     method: PUT
@@ -486,7 +655,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 20 Jan 2020 09:29:32 GMT
+      - Wed, 01 Apr 2020 14:18:08 GMT
       expires:
       - '-1'
       pragma:
@@ -523,8 +692,8 @@ interactions:
       ParameterSetName:
       - --resource-group --namespace-name --name --rights
       User-Agent:
-      - python/3.7.3 (Darwin-19.0.0-x86_64-i386-64bit) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.3.1 (MSI)
       accept-language:
       - en-US
     method: PUT
@@ -540,7 +709,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 20 Jan 2020 09:29:35 GMT
+      - Wed, 01 Apr 2020 14:18:11 GMT
       expires:
       - '-1'
       pragma:
@@ -559,7 +728,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
     status:
       code: 200
       message: OK
@@ -577,8 +746,8 @@ interactions:
       ParameterSetName:
       - --resource-group --namespace-name --name
       User-Agent:
-      - python/3.7.3 (Darwin-19.0.0-x86_64-i386-64bit) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.3.1 (MSI)
       accept-language:
       - en-US
     method: GET
@@ -594,7 +763,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 20 Jan 2020 09:29:36 GMT
+      - Wed, 01 Apr 2020 14:18:14 GMT
       expires:
       - '-1'
       pragma:
@@ -629,8 +798,8 @@ interactions:
       ParameterSetName:
       - --resource-group --namespace-name
       User-Agent:
-      - python/3.7.3 (Darwin-19.0.0-x86_64-i386-64bit) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.3.1 (MSI)
       accept-language:
       - en-US
     method: GET
@@ -646,7 +815,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 20 Jan 2020 09:29:39 GMT
+      - Wed, 01 Apr 2020 14:18:17 GMT
       expires:
       - '-1'
       pragma:
@@ -683,15 +852,15 @@ interactions:
       ParameterSetName:
       - --resource-group --namespace-name --name
       User-Agent:
-      - python/3.7.3 (Darwin-19.0.0-x86_64-i386-64bit) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.3.1 (MSI)
       accept-language:
       - en-US
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_notificationhubs000001/providers/Microsoft.NotificationHubs/namespaces/my-test-space/AuthorizationRules/my-space-rule/listKeys?api-version=2017-04-01
   response:
     body:
-      string: '{"primaryConnectionString":"Endpoint=sb://my-test-space.servicebus.windows.net/;SharedAccessKeyName=my-space-rule;SharedAccessKey=Sf6KfAR8KHjgeqWUuivX514Zrs77lS38Dv1/UVPyW5c=","secondaryConnectionString":"Endpoint=sb://my-test-space.servicebus.windows.net/;SharedAccessKeyName=my-space-rule;SharedAccessKey=YLIMQj2nht7cuLb0aLtbgYgl+4mXVbTkspCFNpbD3EU=","primaryKey":"Sf6KfAR8KHjgeqWUuivX514Zrs77lS38Dv1/UVPyW5c=","secondaryKey":"YLIMQj2nht7cuLb0aLtbgYgl+4mXVbTkspCFNpbD3EU=","keyName":"my-space-rule"}'
+      string: '{"primaryConnectionString":"Endpoint=sb://my-test-space.servicebus.windows.net/;SharedAccessKeyName=my-space-rule;SharedAccessKey=zpPpUHBblEeOJ1qHWUcInapxF6ZJS0n5wbUeY1RsKg8=","secondaryConnectionString":"Endpoint=sb://my-test-space.servicebus.windows.net/;SharedAccessKeyName=my-space-rule;SharedAccessKey=nbJ4hhmMHElZFhFesKsiVsIeMSCsATnmLflQmZ5nV70=","primaryKey":"zpPpUHBblEeOJ1qHWUcInapxF6ZJS0n5wbUeY1RsKg8=","secondaryKey":"nbJ4hhmMHElZFhFesKsiVsIeMSCsATnmLflQmZ5nV70=","keyName":"my-space-rule"}'
     headers:
       cache-control:
       - no-cache
@@ -700,7 +869,65 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 20 Jan 2020 09:29:41 GMT
+      - Wed, 01 Apr 2020 14:18:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Service-Bus-Resource-Provider/CH3
+      - Microsoft-HTTPAPI/2.0
+      server-sb:
+      - Service-Bus-Resource-Provider/CH3
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"rights": ["Listen"]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - notification-hub authorization-rule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '38'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --namespace-name --notification-hub-name --name --rights
+      User-Agent:
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.3.1 (MSI)
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_notificationhubs000001/providers/Microsoft.NotificationHubs/namespaces/my-test-space/notificationHubs/my-test-hub/AuthorizationRules/my-hub-listen-key?api-version=2017-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_notificationhubs000001/providers/Microsoft.NotificationHubs/namespaces/my-test-space/notificationHubs/my-test-hub/AuthorizationRules/my-hub-listen-key","name":"my-hub-listen-key","type":"Microsoft.NotificationHubs/namespaces/notificationHubs/authorizationRules","location":null,"tags":null,"properties":{"rights":["Listen"]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '452'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 01 Apr 2020 14:18:22 GMT
       expires:
       - '-1'
       pragma:
@@ -724,64 +951,6 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"properties": {"rights": ["Listen"]}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - notification-hub authorization-rule create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '38'
-      Content-Type:
-      - application/json; charset=utf-8
-      ParameterSetName:
-      - --resource-group --namespace-name --notification-hub-name --name --rights
-      User-Agent:
-      - python/3.7.3 (Darwin-19.0.0-x86_64-i386-64bit) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.0.80
-      accept-language:
-      - en-US
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_notificationhubs000001/providers/Microsoft.NotificationHubs/namespaces/my-test-space/notificationHubs/my-test-hub/AuthorizationRules/my-hub-listen-key?api-version=2017-04-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_notificationhubs000001/providers/Microsoft.NotificationHubs/namespaces/my-test-space/notificationHubs/my-test-hub/AuthorizationRules/my-hub-listen-key","name":"my-hub-listen-key","type":"Microsoft.NotificationHubs/namespaces/notificationHubs/authorizationRules","location":null,"tags":null,"properties":{"rights":["Listen"]}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '452'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 20 Jan 2020 09:29:43 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Service-Bus-Resource-Provider/CH3
-      - Microsoft-HTTPAPI/2.0
-      server-sb:
-      - Service-Bus-Resource-Provider/CH3
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
-    status:
-      code: 200
-      message: OK
-- request:
     body: null
     headers:
       Accept:
@@ -795,8 +964,8 @@ interactions:
       ParameterSetName:
       - --resource-group --namespace-name --notification-hub-name --name
       User-Agent:
-      - python/3.7.3 (Darwin-19.0.0-x86_64-i386-64bit) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.3.1 (MSI)
       accept-language:
       - en-US
     method: GET
@@ -812,7 +981,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 20 Jan 2020 09:29:45 GMT
+      - Wed, 01 Apr 2020 14:18:34 GMT
       expires:
       - '-1'
       pragma:
@@ -847,8 +1016,8 @@ interactions:
       ParameterSetName:
       - --resource-group --namespace-name --notification-hub-name
       User-Agent:
-      - python/3.7.3 (Darwin-19.0.0-x86_64-i386-64bit) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.3.1 (MSI)
       accept-language:
       - en-US
     method: GET
@@ -864,7 +1033,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 20 Jan 2020 09:29:46 GMT
+      - Wed, 01 Apr 2020 14:18:37 GMT
       expires:
       - '-1'
       pragma:
@@ -901,15 +1070,15 @@ interactions:
       ParameterSetName:
       - --resource-group --namespace-name --notification-hub-name --name
       User-Agent:
-      - python/3.7.3 (Darwin-19.0.0-x86_64-i386-64bit) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.3.1 (MSI)
       accept-language:
       - en-US
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_notificationhubs000001/providers/Microsoft.NotificationHubs/namespaces/my-test-space/notificationHubs/my-test-hub/AuthorizationRules/my-hub-listen-key/listKeys?api-version=2017-04-01
   response:
     body:
-      string: '{"primaryConnectionString":"Endpoint=sb://my-test-space.servicebus.windows.net/;SharedAccessKeyName=my-hub-listen-key;SharedAccessKey=l+qEVCZy2u1oA+AeikT8yOuvtAa8cpQ/ZmZI5AyN9zs=","secondaryConnectionString":"Endpoint=sb://my-test-space.servicebus.windows.net/;SharedAccessKeyName=my-hub-listen-key;SharedAccessKey=dDmUgdnP4nL00rKueAh2Pm98+AYN1SlBUcVbiabI/yI=","primaryKey":"l+qEVCZy2u1oA+AeikT8yOuvtAa8cpQ/ZmZI5AyN9zs=","secondaryKey":"dDmUgdnP4nL00rKueAh2Pm98+AYN1SlBUcVbiabI/yI=","keyName":"my-hub-listen-key"}'
+      string: '{"primaryConnectionString":"Endpoint=sb://my-test-space.servicebus.windows.net/;SharedAccessKeyName=my-hub-listen-key;SharedAccessKey=cRI/qRnfXTMxdfkEEnydEW+54r/I05ZASdcWZK1EmCo=","secondaryConnectionString":"Endpoint=sb://my-test-space.servicebus.windows.net/;SharedAccessKeyName=my-hub-listen-key;SharedAccessKey=E69PJR96yawTqdIgWrcrKagkujOlf9mrguHbS6PgW/I=","primaryKey":"cRI/qRnfXTMxdfkEEnydEW+54r/I05ZASdcWZK1EmCo=","secondaryKey":"E69PJR96yawTqdIgWrcrKagkujOlf9mrguHbS6PgW/I=","keyName":"my-hub-listen-key"}'
     headers:
       cache-control:
       - no-cache
@@ -918,7 +1087,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 20 Jan 2020 09:29:48 GMT
+      - Wed, 01 Apr 2020 14:18:38 GMT
       expires:
       - '-1'
       pragma:
@@ -937,67 +1106,12 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1197'
     status:
       code: 200
       message: OK
 - request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - notification-hub credential gcm update
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --namespace-name --notification-hub-name --google-api-key
-      User-Agent:
-      - python/3.7.3 (Darwin-19.0.0-x86_64-i386-64bit) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.0.80
-      accept-language:
-      - en-US
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_notificationhubs000001/providers/Microsoft.NotificationHubs/namespaces/my-test-space/notificationHubs/my-test-hub?api-version=2017-04-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_notificationhubs000001/providers/Microsoft.NotificationHubs/namespaces/my-test-space/notificationHubs/my-test-hub","name":"my-test-hub","type":"Microsoft.NotificationHubs/namespaces/notificationHubs","location":"South
-        Central US","tags":null,"properties":{"registrationTtl":"10675199.02:48:05.4775807","authorizationRules":[]}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '454'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 20 Jan 2020 09:29:49 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Service-Bus-Resource-Provider/CH3
-      - Microsoft-HTTPAPI/2.0
-      server-sb:
-      - Service-Bus-Resource-Provider/CH3
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"location": "South Central US", "properties": {"name": "my-test-hub",
-      "registrationTtl": "10675199.02:48:05.4775807", "authorizationRules": [], "gcmCredential":
-      {"properties": {"googleApiKey": "XXXXX"}}}}'
+    body: '{"properties": {"gcmCredential": {"properties": {"googleApiKey": "XXXXX"}}}}'
     headers:
       Accept:
       - application/json
@@ -1008,14 +1122,14 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '352'
+      - '223'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
       - --resource-group --namespace-name --notification-hub-name --google-api-key
       User-Agent:
-      - python/3.7.3 (Darwin-19.0.0-x86_64-i386-64bit) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.3.1 (MSI)
       accept-language:
       - en-US
     method: PATCH
@@ -1023,16 +1137,16 @@ interactions:
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_notificationhubs000001/providers/Microsoft.NotificationHubs/namespaces/my-test-space/notificationHubs/my-test-hub","name":"my-test-hub","type":"Microsoft.NotificationHubs/namespaces/notificationHubs","location":"South
-        Central US","tags":null,"properties":{"registrationTtl":"10675199.02:48:05.4775807","authorizationRules":[],"gcmCredential":{"properties":{"googleApiKey":"XXXXX"}}}}'
+        Central US","tags":null,"properties":{"registrationTtl":"10675199.02:48:05.4775807","authorizationRules":[{"keyName":"DefaultListenSharedAccessSignature","primaryKey":"1036t3Lsv+Pt+yEMMjX99NUittJ1JeOmQBcppHkmSSU=","secondaryKey":"I28Hi1oQi9PNyLR7BXiNAuHn54bwFIMR2SG7zLcdHz8=","claimType":"SharedAccessKey","claimValue":"None","rights":["Listen"],"createdTime":"2020-04-01T14:18:07.2541923Z","modifiedTime":"2020-04-01T14:18:07.2541923Z"},{"keyName":"DefaultFullSharedAccessSignature","primaryKey":"PFOlf2U7KJWGuunmGHI9jpMuQ96v+fCVdYLOUYNGbKo=","secondaryKey":"O6xEksyW0eCMd3WRo0q5Cjm2hTZqqzA8uCd4JIKwe5A=","claimType":"SharedAccessKey","claimValue":"None","rights":["Listen","Manage","Send"],"createdTime":"2020-04-01T14:18:07.2541923Z","modifiedTime":"2020-04-01T14:18:07.2541923Z"},{"keyName":"my-hub-listen-key","primaryKey":"cRI/qRnfXTMxdfkEEnydEW+54r/I05ZASdcWZK1EmCo=","secondaryKey":"E69PJR96yawTqdIgWrcrKagkujOlf9mrguHbS6PgW/I=","claimType":"SharedAccessKey","claimValue":"None","rights":["Listen"],"createdTime":"2020-04-01T14:18:23.1101762Z","modifiedTime":"2020-04-01T14:18:23.1101762Z"}],"gcmCredential":{"properties":{"googleApiKey":"XXXXX"}}}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '657'
+      - '1649'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 20 Jan 2020 09:29:51 GMT
+      - Wed, 01 Apr 2020 14:18:41 GMT
       expires:
       - '-1'
       pragma:
@@ -1051,7 +1165,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1197'
     status:
       code: 200
       message: OK
@@ -1071,8 +1185,8 @@ interactions:
       ParameterSetName:
       - --resource-group --namespace-name --notification-hub-name
       User-Agent:
-      - python/3.7.3 (Darwin-19.0.0-x86_64-i386-64bit) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.3.1 (MSI)
       accept-language:
       - en-US
     method: POST
@@ -1088,7 +1202,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 20 Jan 2020 09:29:53 GMT
+      - Wed, 01 Apr 2020 14:18:44 GMT
       expires:
       - '-1'
       pragma:
@@ -1107,7 +1221,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1196'
     status:
       code: 200
       message: OK
@@ -1125,8 +1239,8 @@ interactions:
       ParameterSetName:
       - --resource-group --namespace-name --name
       User-Agent:
-      - python/3.7.3 (Darwin-19.0.0-x86_64-i386-64bit) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.3.1 (MSI)
       accept-language:
       - en-US
     method: GET
@@ -1143,7 +1257,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 20 Jan 2020 09:29:54 GMT
+      - Wed, 01 Apr 2020 14:18:48 GMT
       expires:
       - '-1'
       pragma:
@@ -1178,8 +1292,8 @@ interactions:
       ParameterSetName:
       - --resource-group --namespace-name
       User-Agent:
-      - python/3.7.3 (Darwin-19.0.0-x86_64-i386-64bit) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.3.1 (MSI)
       accept-language:
       - en-US
     method: GET
@@ -1196,7 +1310,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 20 Jan 2020 09:29:55 GMT
+      - Wed, 01 Apr 2020 14:18:50 GMT
       expires:
       - '-1'
       pragma:
@@ -1231,8 +1345,8 @@ interactions:
       ParameterSetName:
       - --resource-group --name
       User-Agent:
-      - python/3.7.3 (Darwin-19.0.0-x86_64-i386-64bit) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.3.1 (MSI)
       accept-language:
       - en-US
     method: GET
@@ -1240,16 +1354,16 @@ interactions:
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_notificationhubs000001/providers/Microsoft.NotificationHubs/namespaces/my-test-space","name":"my-test-space","type":"Microsoft.NotificationHubs/namespaces","location":"South
-        Central US","kind":"NotificationHub","sku":{"name":"Free"},"tags":{},"properties":{"provisioningState":"Succeeded","metricId":null,"status":"Active","createdAt":"2020-01-20T09:28:43.857Z","serviceBusEndpoint":"https://my-test-space.servicebus.windows.net:443/","enabled":true,"critical":false,"updatedAt":"2020-01-20T09:29:09.507Z","namespaceType":"NotificationHub"}}'
+        Central US","kind":"NotificationHub","sku":{"name":"Free"},"tags":{},"properties":{"provisioningState":"Succeeded","metricId":null,"status":"Active","createdAt":"2020-04-01T14:17:07.507Z","serviceBusEndpoint":"https://my-test-space.servicebus.windows.net:443/","enabled":true,"critical":false,"updatedAt":"2020-04-01T14:17:31.16Z","namespaceType":"NotificationHub"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '668'
+      - '667'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 20 Jan 2020 09:29:57 GMT
+      - Wed, 01 Apr 2020 14:18:51 GMT
       expires:
       - '-1'
       pragma:
@@ -1284,8 +1398,8 @@ interactions:
       ParameterSetName:
       - --resource-group
       User-Agent:
-      - python/3.7.3 (Darwin-19.0.0-x86_64-i386-64bit) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.3.1 (MSI)
       accept-language:
       - en-US
     method: GET
@@ -1293,16 +1407,16 @@ interactions:
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_notificationhubs000001/providers/Microsoft.NotificationHubs/namespaces/my-test-space","name":"my-test-space","type":"Microsoft.NotificationHubs/namespaces","location":"South
-        Central US","kind":"NotificationHub","sku":{"name":"Free"},"tags":{},"properties":{"provisioningState":"Succeeded","metricId":null,"status":"Active","createdAt":"2020-01-20T09:28:43.857Z","serviceBusEndpoint":"https://my-test-space.servicebus.windows.net:443/","enabled":true,"critical":false,"updatedAt":"2020-01-20T09:29:09.507Z","namespaceType":"NotificationHub"}}],"nextLink":null}'
+        Central US","kind":"NotificationHub","sku":{"name":"Free"},"tags":{},"properties":{"provisioningState":"Succeeded","metricId":null,"status":"Active","createdAt":"2020-04-01T14:17:07.507Z","serviceBusEndpoint":"https://my-test-space.servicebus.windows.net:443/","enabled":true,"critical":false,"updatedAt":"2020-04-01T14:17:31.16Z","namespaceType":"NotificationHub"}}],"nextLink":null}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '696'
+      - '695'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 20 Jan 2020 09:29:58 GMT
+      - Wed, 01 Apr 2020 14:18:53 GMT
       expires:
       - '-1'
       pragma:
@@ -1339,8 +1453,8 @@ interactions:
       ParameterSetName:
       - --resource-group --namespace-name --name -y
       User-Agent:
-      - python/3.7.3 (Darwin-19.0.0-x86_64-i386-64bit) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.3.1 (MSI)
       accept-language:
       - en-US
     method: DELETE
@@ -1354,7 +1468,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 20 Jan 2020 09:30:04 GMT
+      - Wed, 01 Apr 2020 14:18:59 GMT
       expires:
       - '-1'
       pragma:
@@ -1389,8 +1503,8 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.7.3 (Darwin-19.0.0-x86_64-i386-64bit) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.3.1 (MSI)
       accept-language:
       - en-US
     method: DELETE
@@ -1404,7 +1518,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 20 Jan 2020 09:30:08 GMT
+      - Wed, 01 Apr 2020 14:19:02 GMT
       expires:
       - '-1'
       location:
@@ -1421,7 +1535,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14998'
+      - '14999'
     status:
       code: 202
       message: Accepted
@@ -1439,8 +1553,8 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.7.3 (Darwin-19.0.0-x86_64-i386-64bit) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.3.1 (MSI)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NotificationHubs/operationresults/my-test-space?api-version=2017-04-01
   response:
@@ -1454,7 +1568,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 20 Jan 2020 09:30:39 GMT
+      - Wed, 01 Apr 2020 14:19:33 GMT
       expires:
       - '-1'
       pragma:

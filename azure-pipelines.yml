@@ -144,9 +144,10 @@ jobs:
 
         azdev setup -c ../azure-cli -r ./
 
-        az --version
+        # overwrite the default AZURE_EXTENSION_DIR set by ADO
+        AZURE_EXTENSION_DIR=~/.azure/cliextensions az --version
 
-        python scripts/ci/verify_linter.py
+        AZURE_EXTENSION_DIR=~/.azure/cliextensions python scripts/ci/verify_linter.py
       displayName: "CLI Linter on Modified Extension"
       env:
         ADO_PULL_REQUEST_LATEST_COMMIT: $(System.PullRequest.SourceCommitId)
