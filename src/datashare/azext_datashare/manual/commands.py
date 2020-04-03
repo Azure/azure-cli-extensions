@@ -65,7 +65,7 @@ def load_command_table(self, _):
     datashare_share = CliCommandType(
         operations_tmpl='azext_datashare.vendored_sdks.datashare.operations._share_operations#ShareOperations.{}',
         client_factory=cf_share)
-    with self.command_group('datashare', datashare_share, client_factory=cf_share) as g:  # modified
+    with self.command_group('datashare', datashare_share, client_factory=cf_share, is_experimental=True) as g:  # modified
         g.custom_command('list', 'datashare_share_list')
         g.custom_show_command('show', 'datashare_share_show')
         g.custom_command('create', 'datashare_share_create')

@@ -271,70 +271,70 @@ helps['datashare invitation delete'] = """
                --resource-group MyResourceGroup --share-name "Share1"
 """
 
-helps['datashare share'] = """
+helps['datashare'] = """
     type: group
     short-summary: datashare share
 """
 
-helps['datashare share list'] = """
+helps['datashare list'] = """
     type: command
     short-summary: List shares in an account
     examples:
       - name: Shares_ListByAccount
         text: |-
-               az datashare share list --account-name MyAccount --resource-group MyResourceGroup
+               az datashare list --account-name MyAccount --resource-group MyResourceGroup
 """
 
-helps['datashare share show'] = """
+helps['datashare show'] = """
     type: command
     short-summary: Get a share
     examples:
       - name: Shares_Get
         text: |-
-               az datashare share show --account-name MyAccount --resource-group MyResourceGroup
+               az datashare show --account-name MyAccount --resource-group MyResourceGroup
                --share-name "Share1"
 """
 
-helps['datashare share create'] = """
+helps['datashare create'] = """
     type: command
     short-summary: Create a share
     examples:
       - name: Shares_Create
         text: |-
-               az datashare share create --account-name MyAccount --resource-group
+               az datashare create --account-name MyAccount --resource-group
                MyResourceGroup --properties-description "share description"
                --properties-share-kind "CopyBased" --properties-terms "Confidential" --share-name
                "Share1"
 """
 
-helps['datashare share delete'] = """
+helps['datashare delete'] = """
     type: command
     short-summary: Delete a share
     examples:
       - name: Shares_Delete
         text: |-
-               az datashare share delete --account-name MyAccount --resource-group
+               az datashare delete --account-name MyAccount --resource-group
                MyResourceGroup --share-name "Share1"
 """
 
-helps['datashare share list-synchronization-detail'] = """
+helps['datashare list-synchronization-detail'] = """
     type: command
     short-summary: List synchronization details
     examples:
       - name: Shares_ListSynchronizationDetails
         text: |-
-               az datashare share list-synchronization-detail --account-name MyAccount --resource-group
+               az datashare list-synchronization-detail --account-name MyAccount --resource-group
                MyResourceGroup --share-name "Share1" --synchronization-id
                "7d0536a6-3fa5-43de-b152-3d07c4f6b2bb"
 """
 
-helps['datashare share list-synchronization'] = """
+helps['datashare list-synchronization'] = """
     type: command
     short-summary: List synchronizations of a share
     examples:
       - name: Shares_ListSynchronizations
         text: |-
-               az datashare share list-synchronization --account-name MyAccount --resource-group
+               az datashare list-synchronization --account-name MyAccount --resource-group
                MyResourceGroup --share-name "Share1"
 """
 
