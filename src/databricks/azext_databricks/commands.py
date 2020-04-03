@@ -17,7 +17,7 @@ def load_command_table(self, _):
     databricks_workspaces = CliCommandType(
         operations_tmpl='azext_databricks.vendored_sdks.databricks.operations._workspaces_operations#WorkspacesOperations.{}',
         client_factory=cf_workspaces)
-    with self.command_group('databricks workspace', databricks_workspaces, client_factory=cf_workspaces, is_preview=True) as g:
+    with self.command_group('databricks workspace', databricks_workspaces, client_factory=cf_workspaces, is_experimental=True) as g:
         g.custom_command('create', 'create_databricks_workspace', validator=validate_workspace_values, supports_no_wait=True)
         g.custom_command('update', 'update_databricks_workspace', supports_no_wait=True)
         g.custom_command('delete', 'delete_databricks_workspace', supports_no_wait=True, confirmation=True)
