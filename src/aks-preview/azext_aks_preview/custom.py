@@ -74,7 +74,8 @@ from ._client_factory import cf_storage
 
 
 from ._helpers import (_populate_api_server_access_profile, _set_vm_set_type,
-                       _set_outbound_type, _parse_comma_separated_list)
+                       _set_outbound_type, _parse_comma_separated_list,
+                       _trim_fqdn_name_containing_hcp)
 from ._loadbalancer import (set_load_balancer_sku, is_load_balancer_profile_provided,
                             update_load_balancer_profile, create_load_balancer_profile)
 from ._consts import CONST_INGRESS_APPGW_ADDON_NAME
@@ -834,9 +835,6 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             if no_wait:
                 raise CLIError('When --attach-acr and --enable-managed-identity are both specified, '
                                '--no-wait is not allowed, please wait until the whole operation succeeds.')
-            else:
-                # Attach acr operation will be handled after the cluster is created
-                pass
         else:
             _ensure_aks_acr(cmd.cli_ctx,
                             client_id=service_principal_profile.client_id,
@@ -1483,7 +1481,7 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
     normalized_fqdn = mc.fqdn.replace('.', '-')
     token_in_storage_account_url = readonly_sas_token if readonly_sas_token is not None else sas_token
     log_storage_account_url = f"https://{storage_account_name}.blob.core.windows.net/" \
-                              f"{normalized_fqdn}?{token_in_storage_account_url}"
+                              f"{_trim_fqdn_name_containing_hcp(normalized_fqdn)}?{token_in_storage_account_url}"
 
     print(f'{colorama.Fore.GREEN}Your logs are being uploaded to storage account {format_bright(storage_account_name)}')
 
@@ -1499,8 +1497,6 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
               f"anytime to check the analysis results.")
     else:
         display_diagnostics_report(temp_kubeconfig_path)
-
-    return
 
 
 def aks_kanalyze(cmd, client, resource_group_name, name):
