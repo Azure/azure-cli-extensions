@@ -58,9 +58,9 @@ def validate_create(cmd, namespace):
         namespace.repair_group_name = 'repair-' + namespace.vm_name + '-' + timestamp
 
     # Check encrypted disk
-    if _uses_encrypted_disk(source_vm):
+#    if _uses_encrypted_disk(source_vm):
         # TODO, validate this with encrypted VMs
-        logger.warning('The source VM\'s OS disk is encrypted.')
+#        logger.warning('The source VM\'s OS disk is encrypted.')
 
     # Validate Auth Params
     # Prompt vm username

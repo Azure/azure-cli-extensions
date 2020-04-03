@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import json
 import subprocess
 import shlex
 import os
@@ -178,7 +179,34 @@ def _list_resource_ids_in_rg(resource_group_name):
 
 
 def _uses_encrypted_disk(vm):
-    return vm.storage_profile.os_disk.encryption_settings
+    try:
+        if not vm.storage_profile.os_disk.encryption_settings is None:
+            logger.message('The source VM\'s OS disk is encrypted using Dual Pass method.')
+            encryption_type = "Dual"
+            return (encryption_type)
+        else:
+            disk_id = vm.storage_profile.os_disk.managed_disk.id
+            disk_settings_command = 'az disk show --ids {ids} -o json' \
+                                .format(ids=disk_id)
+            settings = _call_az_command(disk_settings_command)
+            settings1 =  json.loads(settings)
+            is_single = (settings1["encryptionSettingsCollection"])
+            if not is_single:
+                logger.message('The source VM\'s OS disk is not encrypted.')
+                encryption_type = "not encrypted"
+                return (encryption_type)
+            else:
+                is_single = (settings1["encryptionSettingsCollection"]["enabled"])
+                settings2 = (settings1["encryptionSettingsCollection"]["encryptionSettings"])
+#           key_vault = (settings2[0]['keyEncryptionKey']['sourceVault']['id'])
+                key_vault = (settings2[0]['diskEncryptionKey']['sourceVault']['id'])
+                key_encryption_url = (settings2[0]['keyEncryptionKey']['keyUrl'])
+                encryption_type = "single"
+                logger.message('The source VM\'s OS disk is encrypted using Single Pass method.')
+                return (encryption_type, key_vault, key_encryption_url)
+    except:
+        return ( "single_without_kek" )
+        pass  
 
 
 def _fetch_compatible_windows_os_urn(source_vm):
