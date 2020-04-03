@@ -50,9 +50,9 @@ def load_arguments(self, _):
         c.argument('tags', tags_type, help='The resource tags.')
         c.argument('identity', action=AddIdentity, nargs='+', help='Managed service identity of the factory.')
         c.argument('factory_vsts_configuration', action=AddFactoryVstsConfiguration, nargs='+', help='Factory\'s VSTS r'
-                   'epo information.')
+                   'epo information.', arg_group='RepoConfiguration')
         c.argument('factory_git_hub_configuration', action=AddFactoryGitHubConfiguration, nargs='+', help='Factory\'s G'
-                   'itHub repo information.')
+                   'itHub repo information.', arg_group='RepoConfiguration')
 
     with self.argument_context('datafactory factory update') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
@@ -68,9 +68,9 @@ def load_arguments(self, _):
         c.argument('location_id', help='The location identifier.')
         c.argument('factory_resource_id', help='The factory resource id.')
         c.argument('factory_vsts_configuration', action=AddFactoryVstsConfiguration, nargs='+', help='Factory\'s VSTS r'
-                   'epo information.')
+                   'epo information.', arg_group='RepoConfiguration')
         c.argument('factory_git_hub_configuration', action=AddFactoryGitHubConfiguration, nargs='+', help='Factory\'s G'
-                   'itHub repo information.')
+                   'itHub repo information.', arg_group='RepoConfiguration')
 
     with self.argument_context('datafactory factory get-data-plane-access') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
@@ -7041,13 +7041,13 @@ def load_arguments(self, _):
         c.argument('type_properties_format', arg_type=CLIArgumentType(options_list=['--type-properties-format'], help=
                    'The format of files.'))
         c.argument('dataset_b_zip2_compression', action=AddDatasetBZip2Compression, nargs='+', help='The BZip2 compress'
-                   'ion method used on a dataset.')
+                   'ion method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_g_zip_compression', action=AddDatasetGZipCompression, nargs='+', help='The GZip compression'
-                   ' method used on a dataset.')
+                   ' method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_deflate_compression', action=AddDatasetDeflateCompression, nargs='+', help='The Deflate com'
-                   'pression method used on a dataset.')
+                   'pression method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_zip_deflate_compression', action=AddDatasetZipDeflateCompression, nargs='+', help='The ZipD'
-                   'eflate compression method used on a dataset.')
+                   'eflate compression method used on a dataset.', arg_group='TypePropertiesCompression')
 
     with self.argument_context('datafactory dataset amazon-s3-object update') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
@@ -7088,13 +7088,13 @@ def load_arguments(self, _):
         c.argument('type_properties_format', arg_type=CLIArgumentType(options_list=['--type-properties-format'], help=
                    'The format of files.'))
         c.argument('dataset_b_zip2_compression', action=AddDatasetBZip2Compression, nargs='+', help='The BZip2 compress'
-                   'ion method used on a dataset.')
+                   'ion method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_g_zip_compression', action=AddDatasetGZipCompression, nargs='+', help='The GZip compression'
-                   ' method used on a dataset.')
+                   ' method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_deflate_compression', action=AddDatasetDeflateCompression, nargs='+', help='The Deflate com'
-                   'pression method used on a dataset.')
+                   'pression method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_zip_deflate_compression', action=AddDatasetZipDeflateCompression, nargs='+', help='The ZipD'
-                   'eflate compression method used on a dataset.')
+                   'eflate compression method used on a dataset.', arg_group='TypePropertiesCompression')
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset avro create') as c:
@@ -7190,13 +7190,13 @@ def load_arguments(self, _):
         c.argument('type_properties_format', arg_type=CLIArgumentType(options_list=['--type-properties-format'], help=
                    'The format of the Azure Blob storage.'))
         c.argument('dataset_b_zip2_compression', action=AddDatasetBZip2Compression, nargs='+', help='The BZip2 compress'
-                   'ion method used on a dataset.')
+                   'ion method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_g_zip_compression', action=AddDatasetGZipCompression, nargs='+', help='The GZip compression'
-                   ' method used on a dataset.')
+                   ' method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_deflate_compression', action=AddDatasetDeflateCompression, nargs='+', help='The Deflate com'
-                   'pression method used on a dataset.')
+                   'pression method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_zip_deflate_compression', action=AddDatasetZipDeflateCompression, nargs='+', help='The ZipD'
-                   'eflate compression method used on a dataset.')
+                   'eflate compression method used on a dataset.', arg_group='TypePropertiesCompression')
 
     with self.argument_context('datafactory dataset azure-blob update') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
@@ -7236,13 +7236,13 @@ def load_arguments(self, _):
         c.argument('type_properties_format', arg_type=CLIArgumentType(options_list=['--type-properties-format'], help=
                    'The format of the Azure Blob storage.'))
         c.argument('dataset_b_zip2_compression', action=AddDatasetBZip2Compression, nargs='+', help='The BZip2 compress'
-                   'ion method used on a dataset.')
+                   'ion method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_g_zip_compression', action=AddDatasetGZipCompression, nargs='+', help='The GZip compression'
-                   ' method used on a dataset.')
+                   ' method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_deflate_compression', action=AddDatasetDeflateCompression, nargs='+', help='The Deflate com'
-                   'pression method used on a dataset.')
+                   'pression method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_zip_deflate_compression', action=AddDatasetZipDeflateCompression, nargs='+', help='The ZipD'
-                   'eflate compression method used on a dataset.')
+                   'eflate compression method used on a dataset.', arg_group='TypePropertiesCompression')
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset azure-blob-f-s-file create') as c:
@@ -7275,13 +7275,13 @@ def load_arguments(self, _):
         c.argument('type_properties_format', arg_type=CLIArgumentType(options_list=['--type-properties-format'], help=
                    'The format of the Azure Data Lake Storage Gen2 storage.'))
         c.argument('dataset_b_zip2_compression', action=AddDatasetBZip2Compression, nargs='+', help='The BZip2 compress'
-                   'ion method used on a dataset.')
+                   'ion method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_g_zip_compression', action=AddDatasetGZipCompression, nargs='+', help='The GZip compression'
-                   ' method used on a dataset.')
+                   ' method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_deflate_compression', action=AddDatasetDeflateCompression, nargs='+', help='The Deflate com'
-                   'pression method used on a dataset.')
+                   'pression method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_zip_deflate_compression', action=AddDatasetZipDeflateCompression, nargs='+', help='The ZipD'
-                   'eflate compression method used on a dataset.')
+                   'eflate compression method used on a dataset.', arg_group='TypePropertiesCompression')
 
     with self.argument_context('datafactory dataset azure-blob-f-s-file update') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
@@ -7313,13 +7313,13 @@ def load_arguments(self, _):
         c.argument('type_properties_format', arg_type=CLIArgumentType(options_list=['--type-properties-format'], help=
                    'The format of the Azure Data Lake Storage Gen2 storage.'))
         c.argument('dataset_b_zip2_compression', action=AddDatasetBZip2Compression, nargs='+', help='The BZip2 compress'
-                   'ion method used on a dataset.')
+                   'ion method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_g_zip_compression', action=AddDatasetGZipCompression, nargs='+', help='The GZip compression'
-                   ' method used on a dataset.')
+                   ' method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_deflate_compression', action=AddDatasetDeflateCompression, nargs='+', help='The Deflate com'
-                   'pression method used on a dataset.')
+                   'pression method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_zip_deflate_compression', action=AddDatasetZipDeflateCompression, nargs='+', help='The ZipD'
-                   'eflate compression method used on a dataset.')
+                   'eflate compression method used on a dataset.', arg_group='TypePropertiesCompression')
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset azure-data-explorer-table create') as c:
@@ -7403,13 +7403,13 @@ def load_arguments(self, _):
         c.argument('type_properties_format', arg_type=CLIArgumentType(options_list=['--type-properties-format'], help=
                    'The format of the Data Lake Store.'))
         c.argument('dataset_b_zip2_compression', action=AddDatasetBZip2Compression, nargs='+', help='The BZip2 compress'
-                   'ion method used on a dataset.')
+                   'ion method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_g_zip_compression', action=AddDatasetGZipCompression, nargs='+', help='The GZip compression'
-                   ' method used on a dataset.')
+                   ' method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_deflate_compression', action=AddDatasetDeflateCompression, nargs='+', help='The Deflate com'
-                   'pression method used on a dataset.')
+                   'pression method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_zip_deflate_compression', action=AddDatasetZipDeflateCompression, nargs='+', help='The ZipD'
-                   'eflate compression method used on a dataset.')
+                   'eflate compression method used on a dataset.', arg_group='TypePropertiesCompression')
 
     with self.argument_context('datafactory dataset azure-data-lake-store-file update') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
@@ -7441,13 +7441,13 @@ def load_arguments(self, _):
         c.argument('type_properties_format', arg_type=CLIArgumentType(options_list=['--type-properties-format'], help=
                    'The format of the Data Lake Store.'))
         c.argument('dataset_b_zip2_compression', action=AddDatasetBZip2Compression, nargs='+', help='The BZip2 compress'
-                   'ion method used on a dataset.')
+                   'ion method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_g_zip_compression', action=AddDatasetGZipCompression, nargs='+', help='The GZip compression'
-                   ' method used on a dataset.')
+                   ' method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_deflate_compression', action=AddDatasetDeflateCompression, nargs='+', help='The Deflate com'
-                   'pression method used on a dataset.')
+                   'pression method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_zip_deflate_compression', action=AddDatasetZipDeflateCompression, nargs='+', help='The ZipD'
-                   'eflate compression method used on a dataset.')
+                   'eflate compression method used on a dataset.', arg_group='TypePropertiesCompression')
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset azure-maria-d-b-table create') as c:
@@ -7930,13 +7930,13 @@ def load_arguments(self, _):
         c.argument('type_properties_location', arg_type=CLIArgumentType(options_list=['--type-properties-location'],
                    help='The location of the Binary storage.'))
         c.argument('dataset_b_zip2_compression', action=AddDatasetBZip2Compression, nargs='+', help='The BZip2 compress'
-                   'ion method used on a dataset.')
+                   'ion method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_g_zip_compression', action=AddDatasetGZipCompression, nargs='+', help='The GZip compression'
-                   ' method used on a dataset.')
+                   ' method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_deflate_compression', action=AddDatasetDeflateCompression, nargs='+', help='The Deflate com'
-                   'pression method used on a dataset.')
+                   'pression method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_zip_deflate_compression', action=AddDatasetZipDeflateCompression, nargs='+', help='The ZipD'
-                   'eflate compression method used on a dataset.')
+                   'eflate compression method used on a dataset.', arg_group='TypePropertiesCompression')
 
     with self.argument_context('datafactory dataset binary update') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
@@ -7962,13 +7962,13 @@ def load_arguments(self, _):
         c.argument('type_properties_location', arg_type=CLIArgumentType(options_list=['--type-properties-location'],
                    help='The location of the Binary storage.'))
         c.argument('dataset_b_zip2_compression', action=AddDatasetBZip2Compression, nargs='+', help='The BZip2 compress'
-                   'ion method used on a dataset.')
+                   'ion method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_g_zip_compression', action=AddDatasetGZipCompression, nargs='+', help='The GZip compression'
-                   ' method used on a dataset.')
+                   ' method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_deflate_compression', action=AddDatasetDeflateCompression, nargs='+', help='The Deflate com'
-                   'pression method used on a dataset.')
+                   'pression method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_zip_deflate_compression', action=AddDatasetZipDeflateCompression, nargs='+', help='The ZipD'
-                   'eflate compression method used on a dataset.')
+                   'eflate compression method used on a dataset.', arg_group='TypePropertiesCompression')
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset cassandra-table create') as c:
@@ -8797,13 +8797,13 @@ def load_arguments(self, _):
                    ''], help='Specify a filter to be used to select a subset of files in the folderPath rather than all'
                    ' files. Type: string (or Expression with resultType string).'))
         c.argument('dataset_b_zip2_compression', action=AddDatasetBZip2Compression, nargs='+', help='The BZip2 compress'
-                   'ion method used on a dataset.')
+                   'ion method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_g_zip_compression', action=AddDatasetGZipCompression, nargs='+', help='The GZip compression'
-                   ' method used on a dataset.')
+                   ' method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_deflate_compression', action=AddDatasetDeflateCompression, nargs='+', help='The Deflate com'
-                   'pression method used on a dataset.')
+                   'pression method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_zip_deflate_compression', action=AddDatasetZipDeflateCompression, nargs='+', help='The ZipD'
-                   'eflate compression method used on a dataset.')
+                   'eflate compression method used on a dataset.', arg_group='TypePropertiesCompression')
 
     with self.argument_context('datafactory dataset file-share update') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
@@ -8843,13 +8843,13 @@ def load_arguments(self, _):
                    ''], help='Specify a filter to be used to select a subset of files in the folderPath rather than all'
                    ' files. Type: string (or Expression with resultType string).'))
         c.argument('dataset_b_zip2_compression', action=AddDatasetBZip2Compression, nargs='+', help='The BZip2 compress'
-                   'ion method used on a dataset.')
+                   'ion method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_g_zip_compression', action=AddDatasetGZipCompression, nargs='+', help='The GZip compression'
-                   ' method used on a dataset.')
+                   ' method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_deflate_compression', action=AddDatasetDeflateCompression, nargs='+', help='The Deflate com'
-                   'pression method used on a dataset.')
+                   'pression method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_zip_deflate_compression', action=AddDatasetZipDeflateCompression, nargs='+', help='The ZipD'
-                   'eflate compression method used on a dataset.')
+                   'eflate compression method used on a dataset.', arg_group='TypePropertiesCompression')
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset google-ad-words-object create') as c:
@@ -9169,13 +9169,13 @@ def load_arguments(self, _):
         c.argument('type_properties_format', arg_type=CLIArgumentType(options_list=['--type-properties-format'], help=
                    'The format of files.'))
         c.argument('dataset_b_zip2_compression', action=AddDatasetBZip2Compression, nargs='+', help='The BZip2 compress'
-                   'ion method used on a dataset.')
+                   'ion method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_g_zip_compression', action=AddDatasetGZipCompression, nargs='+', help='The GZip compression'
-                   ' method used on a dataset.')
+                   ' method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_deflate_compression', action=AddDatasetDeflateCompression, nargs='+', help='The Deflate com'
-                   'pression method used on a dataset.')
+                   'pression method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_zip_deflate_compression', action=AddDatasetZipDeflateCompression, nargs='+', help='The ZipD'
-                   'eflate compression method used on a dataset.')
+                   'eflate compression method used on a dataset.', arg_group='TypePropertiesCompression')
 
     with self.argument_context('datafactory dataset http-file update') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
@@ -9213,13 +9213,13 @@ def load_arguments(self, _):
         c.argument('type_properties_format', arg_type=CLIArgumentType(options_list=['--type-properties-format'], help=
                    'The format of files.'))
         c.argument('dataset_b_zip2_compression', action=AddDatasetBZip2Compression, nargs='+', help='The BZip2 compress'
-                   'ion method used on a dataset.')
+                   'ion method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_g_zip_compression', action=AddDatasetGZipCompression, nargs='+', help='The GZip compression'
-                   ' method used on a dataset.')
+                   ' method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_deflate_compression', action=AddDatasetDeflateCompression, nargs='+', help='The Deflate com'
-                   'pression method used on a dataset.')
+                   'pression method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_zip_deflate_compression', action=AddDatasetZipDeflateCompression, nargs='+', help='The ZipD'
-                   'eflate compression method used on a dataset.')
+                   'eflate compression method used on a dataset.', arg_group='TypePropertiesCompression')
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset hubspot-object create') as c:
@@ -9463,13 +9463,13 @@ def load_arguments(self, _):
                    'llowing link to set supported values: https://msdn.microsoft.com/library/system.text.encoding.aspx.'
                    ' Type: string (or Expression with resultType string).'))
         c.argument('dataset_b_zip2_compression', action=AddDatasetBZip2Compression, nargs='+', help='The BZip2 compress'
-                   'ion method used on a dataset.')
+                   'ion method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_g_zip_compression', action=AddDatasetGZipCompression, nargs='+', help='The GZip compression'
-                   ' method used on a dataset.')
+                   ' method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_deflate_compression', action=AddDatasetDeflateCompression, nargs='+', help='The Deflate com'
-                   'pression method used on a dataset.')
+                   'pression method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_zip_deflate_compression', action=AddDatasetZipDeflateCompression, nargs='+', help='The ZipD'
-                   'eflate compression method used on a dataset.')
+                   'eflate compression method used on a dataset.', arg_group='TypePropertiesCompression')
 
     with self.argument_context('datafactory dataset json update') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
@@ -9500,13 +9500,13 @@ def load_arguments(self, _):
                    'llowing link to set supported values: https://msdn.microsoft.com/library/system.text.encoding.aspx.'
                    ' Type: string (or Expression with resultType string).'))
         c.argument('dataset_b_zip2_compression', action=AddDatasetBZip2Compression, nargs='+', help='The BZip2 compress'
-                   'ion method used on a dataset.')
+                   'ion method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_g_zip_compression', action=AddDatasetGZipCompression, nargs='+', help='The GZip compression'
-                   ' method used on a dataset.')
+                   ' method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_deflate_compression', action=AddDatasetDeflateCompression, nargs='+', help='The Deflate com'
-                   'pression method used on a dataset.')
+                   'pression method used on a dataset.', arg_group='TypePropertiesCompression')
         c.argument('dataset_zip_deflate_compression', action=AddDatasetZipDeflateCompression, nargs='+', help='The ZipD'
-                   'eflate compression method used on a dataset.')
+                   'eflate compression method used on a dataset.', arg_group='TypePropertiesCompression')
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset magento-object create') as c:
