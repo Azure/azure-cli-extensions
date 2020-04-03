@@ -23,7 +23,7 @@ def try_manual(func):
         if not decorated_path.startswith(module_path):
             raise Exception("Decorator can only be used in submodules!")
         manual_path = os.path.join(
-            decorated_path[module_path.rfind(os.path.sep)+1:])
+            decorated_path[module_path.rfind(os.path.sep) + 1:])
         manual_file_path, manual_file_name = os.path.split(manual_path)
         module_name, _ = os.path.splitext(manual_file_name)
         manual_module = "..manual." + \
