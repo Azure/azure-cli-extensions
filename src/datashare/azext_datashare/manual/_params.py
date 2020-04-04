@@ -17,10 +17,10 @@ from azure.cli.core.commands.validators import get_default_location_from_resourc
 from azext_datashare.action import AddIdentity
 from ..vendored_sdks.datashare.models._data_share_management_client_enums import ShareKind, Kind, SynchronizationMode
 
-parameter_type = CLIArgumentType(
+dataset_type = CLIArgumentType(
     type=validate_file_or_dict,
-    options_list=['--parameters', '-p'],
-    help='Parameters in JSON string or path to JSON file.'
+    options_list=['--dataset'],
+    help='Dataset parameters in JSON string or path to JSON file.'
 )
 
 def load_arguments(self, _):
@@ -81,7 +81,7 @@ def load_arguments(self, _):
         c.argument('share_name', help='The name of the share.')
         c.argument('data_set_name', options_list=['--name', '-n'], help='The name of the dataSet.')  # modified
         c.argument('kind', arg_type=get_enum_type(Kind), help='Kind of data set.')  # modified
-        c.argument('parameter', arg_type=parameter_type)
+        c.argument('dataset', arg_type=dataset_type)  # modified
 
     with self.argument_context('datashare dataset delete') as c:  # modified
         c.argument('resource_group_name', resource_group_name_type)  # modified

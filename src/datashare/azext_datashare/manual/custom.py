@@ -83,9 +83,8 @@ def datashare_data_set_create(cmd, client,
                               account_name,
                               share_name,
                               data_set_name,
-                              kind,
-                              parameter):
-    return client.create(resource_group_name=resource_group_name, account_name=account_name, share_name=share_name, data_set_name=data_set_name, kind=kind, **parameter)
+                              dataset):
+    return client.create(resource_group_name=resource_group_name, account_name=account_name, share_name=share_name, data_set_name=data_set_name, dataset=dataset)
 
 
 def datashare_data_set_delete(cmd, client,

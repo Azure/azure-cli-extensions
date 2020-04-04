@@ -30,133 +30,133 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
             'Trigger1': self.create_random_name(prefix='cli_test_triggers'[:9], length=24),
         })
 
-        # datashareAccount = self.cmd('az datashare account create '
-        #                             '--identity type=SystemAssigned '
-        #                             '--location "West US 2" '
-        #                             '--tags tag1=Red tag2=White '
-        #                             '--name "{Account1}" '
-        #                             '--resource-group "{rg}"',
-        #                             checks=[self.check('name', self.kwargs.get('Account1', '')),
-        #                                     self.check('location', 'westus2'),
-        #                                     self.check('resourceGroup', self.kwargs.get('rg', '')),
-        #                                     self.check('tags', '{\'tag1\': \'Red\', \'tag2\': \'White\'}'),
-        #                                     ]).get_output_in_json()
+        datashareAccount = self.cmd('az datashare account create '
+                                    '--identity type=SystemAssigned '
+                                    '--location "West US 2" '
+                                    '--tags tag1=Red tag2=White '
+                                    '--name "{Account1}" '
+                                    '--resource-group "{rg}"',
+                                    checks=[self.check('name', self.kwargs.get('Account1', '')),
+                                            self.check('location', 'westus2'),
+                                            self.check('resourceGroup', self.kwargs.get('rg', '')),
+                                            self.check('tags', '{\'tag1\': \'Red\', \'tag2\': \'White\'}'),
+                                            ]).get_output_in_json()
         
-        # self.cmd('az datashare account wait '
-        #          '--name "{Account1}" '
-        #          '--resource-group "{rg}" '
-        #          '--created',
-        #          checks=[])
+        self.cmd('az datashare account wait '
+                 '--name "{Account1}" '
+                 '--resource-group "{rg}" '
+                 '--created',
+                 checks=[])
 
-        # accountId = datashareAccount['id']
-        # self.cmd('az datashare account show '
-        #          '-n "{Account1}" '
-        #          '--resource-group "{rg}"',
-        #          checks=[self.check('name', self.kwargs.get('Account1', '')),
-        #                  self.check('location', 'westus2'),
-        #                  self.check('provisioningState', 'Succeeded'),
-        #                  self.check('resourceGroup', self.kwargs.get('rg', '')),
-        #                  self.check('tags', '{\'tag1\': \'Red\', \'tag2\': \'White\'}'),
-        #                  ])
+        accountId = datashareAccount['id']
+        self.cmd('az datashare account show '
+                 '-n "{Account1}" '
+                 '--resource-group "{rg}"',
+                 checks=[self.check('name', self.kwargs.get('Account1', '')),
+                         self.check('location', 'westus2'),
+                         self.check('provisioningState', 'Succeeded'),
+                         self.check('resourceGroup', self.kwargs.get('rg', '')),
+                         self.check('tags', '{\'tag1\': \'Red\', \'tag2\': \'White\'}'),
+                         ])
 
-        # self.cmd('az datashare account show '
-        #          '--ids {}'.format(accountId),
-        #          checks=[self.check('name', self.kwargs.get('Account1', '')),
-        #                  self.check('location', 'westus2'),
-        #                  self.check('provisioningState', 'Succeeded'),
-        #                  self.check('resourceGroup', self.kwargs.get('rg', '')),
-        #                  self.check('tags', '{\'tag1\': \'Red\', \'tag2\': \'White\'}'),
-        #                  ])
+        self.cmd('az datashare account show '
+                 '--ids {}'.format(accountId),
+                 checks=[self.check('name', self.kwargs.get('Account1', '')),
+                         self.check('location', 'westus2'),
+                         self.check('provisioningState', 'Succeeded'),
+                         self.check('resourceGroup', self.kwargs.get('rg', '')),
+                         self.check('tags', '{\'tag1\': \'Red\', \'tag2\': \'White\'}'),
+                         ])
 
-        # self.cmd('az datashare account list '
-        #          '--resource-group "{rg}"',
-        #          checks=[self.check("[?id=='{}'].name | [0]".format(accountId), self.kwargs.get('Account1', '')),
-        #                  self.check("[?id=='{}'].location | [0]".format(accountId), 'westus2'),
-        #                  self.check("[?id=='{}'].resourceGroup | [0]".format(accountId), self.kwargs.get('rg', '')),
-        #                  self.check("[?id=='{}'].tags | [0]".format(accountId), '{\'tag1\': \'Red\', \'tag2\': \'White\'}'),
-        #                  ])
+        self.cmd('az datashare account list '
+                 '--resource-group "{rg}"',
+                 checks=[self.check("[?id=='{}'].name | [0]".format(accountId), self.kwargs.get('Account1', '')),
+                         self.check("[?id=='{}'].location | [0]".format(accountId), 'westus2'),
+                         self.check("[?id=='{}'].resourceGroup | [0]".format(accountId), self.kwargs.get('rg', '')),
+                         self.check("[?id=='{}'].tags | [0]".format(accountId), '{\'tag1\': \'Red\', \'tag2\': \'White\'}'),
+                         ])
 
-        # self.cmd('az datashare account list'
-        #          '--resource-group=',
-        #          checks=[self.check("[?id=='{}'].name | [0]".format(accountId), self.kwargs.get('Account1', '')),
-        #                  self.check("[?id=='{}'].location | [0]".format(accountId), 'westus2'),
-        #                  self.check("[?id=='{}'].resourceGroup | [0]".format(accountId), self.kwargs.get('rg', '')),
-        #                  self.check("[?id=='{}'].tags | [0]".format(accountId), '{\'tag1\': \'Red\', \'tag2\': \'White\'}'),
-        #                  ])
+        self.cmd('az datashare account list'
+                 '--resource-group=',
+                 checks=[self.check("[?id=='{}'].name | [0]".format(accountId), self.kwargs.get('Account1', '')),
+                         self.check("[?id=='{}'].location | [0]".format(accountId), 'westus2'),
+                         self.check("[?id=='{}'].resourceGroup | [0]".format(accountId), self.kwargs.get('rg', '')),
+                         self.check("[?id=='{}'].tags | [0]".format(accountId), '{\'tag1\': \'Red\', \'tag2\': \'White\'}'),
+                         ])
 
-        # self.cmd('az datashare account update '
-        #          '--name "{Account1}" '
-        #          '--tags tag1=Green'
-        #          '--resource-group "{rg}"',
-        #          checks=[self.check('name', self.kwargs.get('Account1', '')),
-        #                  self.check('location', 'westus2'),
-        #                  self.check('provisioningState', 'Succeeded'),
-        #                  self.check('resourceGroup', self.kwargs.get('rg', '')),
-        #                  self.check('tags', '{\'tag1\': \'Green\'}')])
+        self.cmd('az datashare account update '
+                 '--name "{Account1}" '
+                 '--tags tag1=Green'
+                 '--resource-group "{rg}"',
+                 checks=[self.check('name', self.kwargs.get('Account1', '')),
+                         self.check('location', 'westus2'),
+                         self.check('provisioningState', 'Succeeded'),
+                         self.check('resourceGroup', self.kwargs.get('rg', '')),
+                         self.check('tags', '{\'tag1\': \'Green\'}')])
 
-        # datashare = self.cmd('az datashare create '
-        #          '--account-name "{Account1}" '
-        #          '--resource-group "{rg}" '
-        #          '--description "share description" '
-        #          '--share-kind "CopyBased" '
-        #          '--terms "Confidential" '
-        #          '--name "{Share1}"',
-        #          checks=[self.check('name', self.kwargs.get('Share1', '')),
-        #                  self.check('description', 'share description'),
-        #                  self.check('shareKind', 'CopyBased'),
-        #                  self.check('terms', 'Confidential')
-        #          ]).get_output_in_json()
+        datashare = self.cmd('az datashare create '
+                 '--account-name "{Account1}" '
+                 '--resource-group "{rg}" '
+                 '--description "share description" '
+                 '--share-kind "CopyBased" '
+                 '--terms "Confidential" '
+                 '--name "{Share1}"',
+                 checks=[self.check('name', self.kwargs.get('Share1', '')),
+                         self.check('description', 'share description'),
+                         self.check('shareKind', 'CopyBased'),
+                         self.check('terms', 'Confidential')
+                 ]).get_output_in_json()
 
-        # datashareId = datashare['id']
-        # self.cmd('az datashare show '
-        #          '--account-name "{Account1}" '
-        #          '--resource-group "{rg}" '
-        #          '--name "{Share1}"',
-        #          checks=[self.check('name', self.kwargs.get('Share1', '')),
-        #                  self.check('description', 'share description'),
-        #                  self.check('shareKind', 'CopyBased'),
-        #                  self.check('terms', 'Confidential')])
+        datashareId = datashare['id']
+        self.cmd('az datashare show '
+                 '--account-name "{Account1}" '
+                 '--resource-group "{rg}" '
+                 '--name "{Share1}"',
+                 checks=[self.check('name', self.kwargs.get('Share1', '')),
+                         self.check('description', 'share description'),
+                         self.check('shareKind', 'CopyBased'),
+                         self.check('terms', 'Confidential')])
         
-        # self.cmd('az datashare list '
-        #          '--account-name "{Account1}" '
-        #          '--resource-group "{rg}"',
-        #          checks=[self.check("[?id=='{}'].name | [0]".format(datashareId), self.kwargs.get('Share1', '')),
-        #                  self.check("[?id=='{}'].description | [0]".format(datashareId), 'share description'),
-        #                  self.check("[?id=='{}'].shareKind | [0]".format(datashareId), 'CopyBased'),
-        #                  self.check("[?id=='{}'].terms | [0]".format(datashareId), 'Confidential'])
+        self.cmd('az datashare list '
+                 '--account-name "{Account1}" '
+                 '--resource-group "{rg}"',
+                 checks=[self.check("[?id=='{}'].name | [0]".format(datashareId), self.kwargs.get('Share1', '')),
+                         self.check("[?id=='{}'].description | [0]".format(datashareId), 'share description'),
+                         self.check("[?id=='{}'].shareKind | [0]".format(datashareId), 'CopyBased'),
+                         self.check("[?id=='{}'].terms | [0]".format(datashareId), 'Confidential'])
 
 
-        # self.cmd('az datashare dataset create '
-        #          '--account-name "{Account1}" '
-        #          '--kind "SqlDWTable" '
-        #          '--name "{Dataset1}" '
-        #          '--resource-group "{rg}" '
-        #          '--share-name "{Share1}"',
-        #          checks=[])
+        self.cmd('az datashare dataset create '
+                 '--account-name "{Account1}" '
+                 '--kind "SqlDWTable" '
+                 '--name "{Dataset1}" '
+                 '--resource-group "{rg}" '
+                 '--share-name "{Share1}"',
+                 checks=[])
 
-        # self.cmd('az datashare dataset create '
-        #          '--account-name "{Account1}" '
-        #          '--kind "SqlDBTable" '
-        #          '--name "{Dataset1}" '
-        #          '--resource-group "{rg}" '
-        #          '--share-name "{Share1}"',
-        #          checks=[])
+        self.cmd('az datashare dataset create '
+                 '--account-name "{Account1}" '
+                 '--kind "SqlDBTable" '
+                 '--name "{Dataset1}" '
+                 '--resource-group "{rg}" '
+                 '--share-name "{Share1}"',
+                 checks=[])
 
-        # self.cmd('az datashare dataset create '
-        #          '--account-name "{Account1}" '
-        #          '--kind "KustoDatabase" '
-        #          '--name "{Dataset1}" '
-        #          '--resource-group "{rg}" '
-        #          '--share-name "{Share1}"',
-        #          checks=[])
+        self.cmd('az datashare dataset create '
+                 '--account-name "{Account1}" '
+                 '--kind "KustoDatabase" '
+                 '--name "{Dataset1}" '
+                 '--resource-group "{rg}" '
+                 '--share-name "{Share1}"',
+                 checks=[])
 
-        # self.cmd('az datashare dataset create '
-        #          '--account-name "{Account1}" '
-        #          '--kind "KustoCluster" '
-        #          '--name "{Dataset1}" '
-        #          '--resource-group "{rg}" '
-        #          '--share-name "{Share1}"',
-        #          checks=[])
+        self.cmd('az datashare dataset create '
+                 '--account-name "{Account1}" '
+                 '--kind "KustoCluster" '
+                 '--name "{Dataset1}" '
+                 '--resource-group "{rg}" '
+                 '--share-name "{Share1}"',
+                 checks=[])
 
         self.cmd('az datashare dataset create '
                  '--account-name "{Account1}" '
@@ -212,8 +212,6 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
                  '--share-name "{Share1}" '
                  '--synchronization-id "7d0536a6-3fa5-43de-b152-3d07c4f6b2bb"',
                  checks=[])
-
-    
 
         self.cmd('az datashare invitation create '
                  '--account-name "{Account1}" '
