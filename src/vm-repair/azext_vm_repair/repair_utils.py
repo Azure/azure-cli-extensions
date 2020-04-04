@@ -178,21 +178,22 @@ def _list_resource_ids_in_rg(resource_group_name):
     return ids
 
 
-def _uses_encrypted_disk(vm):
+def _uses_encrypted_disk(source_vm):
     try:
-        if not vm.storage_profile.os_disk.encryption_settings is None:
-            logger.message('The source VM\'s OS disk is encrypted using Dual Pass method.')
+        if not source_vm.storage_profile.os_disk.encryption_settings is None:
+            logger.info('The source VM\'s OS disk is encrypted using Dual Pass method.')
             encryption_type = "Dual"
+            print (encryption_type)
             return (encryption_type)
         else:
-            disk_id = vm.storage_profile.os_disk.managed_disk.id
+            disk_id = source_vm.storage_profile.os_disk.managed_disk.id
             disk_settings_command = 'az disk show --ids {ids} -o json' \
-                                .format(ids=disk_id)
+                                    .format(ids=disk_id)
             settings = _call_az_command(disk_settings_command)
             settings1 =  json.loads(settings)
             is_single = (settings1["encryptionSettingsCollection"])
             if not is_single:
-                logger.message('The source VM\'s OS disk is not encrypted.')
+                logger.info('The source VM\'s OS disk is not encrypted.')
                 encryption_type = "not encrypted"
                 return (encryption_type)
             else:
@@ -201,12 +202,23 @@ def _uses_encrypted_disk(vm):
 #           key_vault = (settings2[0]['keyEncryptionKey']['sourceVault']['id'])
                 key_vault = (settings2[0]['diskEncryptionKey']['sourceVault']['id'])
                 key_encryption_url = (settings2[0]['keyEncryptionKey']['keyUrl'])
-                encryption_type = "single"
-                logger.message('The source VM\'s OS disk is encrypted using Single Pass method.')
+                encryption_type = "single_with_kek"
+                logger.info('The source VM\'s OS disk is encrypted using Single Pass method.')
                 return (encryption_type, key_vault, key_encryption_url)
     except:
         return ( "single_without_kek" )
+        print ( "error" )
         pass  
+
+
+#def _uses_encrypted_disk(source_vm):
+#
+#    if not source_vm.storage_profile.os_disk.encryption_settings is "None":
+#           logger.info('The source VM\'s OS disk is encrypted using Dual Pass method.')
+#           encryption_type = "Dual"
+#           print (encryption_type)
+#           return (encryption_type)
+
 
 
 def _fetch_compatible_windows_os_urn(source_vm):

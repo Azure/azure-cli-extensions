@@ -53,14 +53,17 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         target_disk_name = source_vm.storage_profile.os_disk.name
         is_managed = _uses_managed_disk(source_vm)
         check_encryption =  _uses_encrypted_disk(source_vm)
-        print ( check_encryption )
         copy_disk_id = None
         resource_tag = _get_repair_resource_tag(resource_group_name, vm_name)
         # Validating check_encryption value to check the type of encryption
         if not check_encryption in ("Dual", "not encrypted"):
-            encryption_type = "single_with_kek"
+            if not check_encryption is "single_without_kek":
+               encryption_type = "single_with_kek"
+            else:   
+               encryption_type = check_encryption
+               print (encryption_type)
             def ask_user():
-                check = str(input("VM is encrypted using single pass, are we ok to unlock the dika dn mount on repair VM ? (Y/N): ")).lower().strip()
+                check = str(input("VM is encrypted using single pass, are we ok to unlock the disk and mount on repair VM ? (Y/N): ")).lower().strip()
                 try:
                     if check[0] == 'y':
                        return True
@@ -112,8 +115,8 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
             # Copy OS disk command
             disk_sku, location, os_type, hyperV_generation = _fetch_disk_info(resource_group_name, target_disk_name)
-            copy_disk_command = 'az disk create -g {g} -n {n} --source {s} --sku {sku} --location {loc} --os-type {os_type} --hyper-v-generation {hyperV} --query id -o tsv' \
-                                .format(g=resource_group_name, n=copy_disk_name, s=target_disk_name, sku=disk_sku, loc=location, os_type=os_type, hyperV=hyperV_generation)
+            copy_disk_command = 'az disk create -g {g} -n {n} --source {s} --sku {sku} --location {loc} --os-type {os_type} --query id -o tsv' \
+                                  .format(g=resource_group_name, n=copy_disk_name, s=target_disk_name, sku=disk_sku, loc=location, os_type=os_type)
 #                                .format(g=resource_group_name, n=copy_disk_name, s=target_disk_name, sku=disk_sku, loc=location, os_type=os_type, hyperV=hyperV_generation)
             # Validate create vm create command to validate parameters before runnning copy disk command
             validate_create_vm_command = create_repair_vm_command + ' --validate'
@@ -137,14 +140,15 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             try:
                if encryption_type is "single_with_kek":
                     # Install extension in case of single pass encrypted VM
-                    logger.info('Installing extension on repair VM \n')
+                    logger.info('Installing extension on repair VM with KEK\n')
                     encryption_type, key_vault, key_encryption_url = _uses_encrypted_disk(source_vm)
 
                     install_ade_extension_command = 'az vm encryption enable --disk-encryption-keyvault {vault} --name {repair} --resource-group {g} --key-encryption-key {kek_url} --volume-type {volume}' \
                                      .format(g=repair_group_name, repair=repair_vm_name, vault=key_vault, kek_url=key_encryption_url, volume=volume_type)
                     _call_az_command(install_ade_extension_command)
                elif encryption_type is "single_without_kek":  
-                    disk_id = vm.storage_profile.os_disk.managed_disk.id
+                    logger.info('Installing extension on repair VM without KEK \n')
+                    disk_id = source_vm.storage_profile.os_disk.managed_disk.id
                     disk_settings_command = 'az disk show --ids {ids} -o json' \
                                 .format(ids=disk_id)
                     settings = _call_az_command(disk_settings_command)
@@ -155,23 +159,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
                                      .format(g=repair_group_name, repair=repair_vm_name, vault=key_vault, volume=volume_type)
                     _call_az_command(install_ade_extension_command)                 
             except:
-                    pass 
-       
-                    # Execute commands on repair VM through run command option to unlock the copy of encrypted disk and mount.
-                    logger.info('unlocking and mounting the disk on repair VM...')
-                    REPAIR_DIR_NAME = 'azext_vm_repair'
-                    SCRIPTS_DIR_NAME = 'scripts'
-                    LINUX_RUN_SCRIPT_NAME = 'script.sh'
-                    RUN_COMMAND_RUN_SHELL_ID = 'RunShellScript'
-                    command_id = 'RunShellScript'
-                    loader = pkgutil.get_loader(REPAIR_DIR_NAME)
-                    mod = loader.load_module(REPAIR_DIR_NAME)
-                    rootpath = os.path.dirname(mod.__file__)
-                    run_script = os.path.join(rootpath, SCRIPTS_DIR_NAME, LINUX_RUN_SCRIPT_NAME)
-                    repair_run_command = 'az vm run-command invoke -g {rg} -n {vm} --command-id {command_id} ' \
-                             '--scripts "@{run_script}" -o json' \
-                             .format(rg=repair_group_name, vm=repair_vm_name, command_id=command_id, run_script=run_script)
-                    _call_az_command(repair_run_command)
+               pass
 
         # UNMANAGED DISK
         else:
@@ -254,21 +242,23 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         command.message = 'An unexpected error occurred. Try running again with the --debug flag to debug.'
         
     finally:
-        # Execute commands on repair VM through run command option to unlock the copy of encrypted disk and mount.
-#        logger.info('unlocking and mounting the disk on repair VM...')
-#        REPAIR_DIR_NAME = 'azext_vm_repair'
-#        SCRIPTS_DIR_NAME = 'scripts'
-#        LINUX_RUN_SCRIPT_NAME = 'script.sh'
-#        RUN_COMMAND_RUN_SHELL_ID = 'RunShellScript'
-#        command_id = 'RunShellScript'
-#        loader = pkgutil.get_loader(REPAIR_DIR_NAME)
-#        mod = loader.load_module(REPAIR_DIR_NAME)
-#        rootpath = os.path.dirname(mod.__file__)
-#        run_script = os.path.join(rootpath, SCRIPTS_DIR_NAME, LINUX_RUN_SCRIPT_NAME)
-#        repair_run_command = 'az vm run-command invoke -g {rg} -n {vm} --command-id {command_id} ' \
-#                             '--scripts "@{run_script}" -o json' \
-#                             .format(rg=repair_group_name, vm=repair_vm_name, command_id=command_id, run_script=run_script)
-#        _call_az_command(repair_run_command)
+# Execute commands on repair VM through run command option to unlock the copy of encrypted disk and mount.
+        if encryption_type in ("single_with_kek", "single_without_kek"):
+            if is_linux:
+                logger.info('unlocking and mounting the disk on repair VM...')
+                REPAIR_DIR_NAME = 'azext_vm_repair'
+                SCRIPTS_DIR_NAME = 'scripts'
+                LINUX_RUN_SCRIPT_NAME = 'script.sh'
+                RUN_COMMAND_RUN_SHELL_ID = 'RunShellScript'
+                command_id = 'RunShellScript'
+                loader = pkgutil.get_loader(REPAIR_DIR_NAME)
+                mod = loader.load_module(REPAIR_DIR_NAME)
+                rootpath = os.path.dirname(mod.__file__)
+                run_script = os.path.join(rootpath, SCRIPTS_DIR_NAME, LINUX_RUN_SCRIPT_NAME)
+                repair_run_command = 'az vm run-command invoke -g {rg} -n {vm} --command-id {command_id} ' \
+                                     '--scripts "@{run_script}" -o json' \
+                                             .format(rg=repair_group_name, vm=repair_vm_name, command_id=command_id, run_script=run_script)
+                _call_az_command(repair_run_command)
         if command.error_stack_trace:
             logger.debug(command.error_stack_trace)
 
