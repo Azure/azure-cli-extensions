@@ -40,15 +40,15 @@ class ConnectedCluster(Model):
     :param aad_profile: Required.
     :type aad_profile:
      ~azure.mgmt.hybridkubernetes.models.ConnectedClusterAADProfile
-    :param kubernetes_version: The Kubernetes version of the connected cluster
+    :ivar kubernetes_version: The Kubernetes version of the connected cluster
      resource
-    :type kubernetes_version: str
-    :param total_node_count: Number of nodes present in the connected cluster
+    :vartype kubernetes_version: str
+    :ivar total_node_count: Number of nodes present in the connected cluster
      resource
-    :type total_node_count: int
-    :param agent_version: Version of the agent running on the connected
-     cluster resource
-    :type agent_version: str
+    :vartype total_node_count: int
+    :ivar agent_version: Version of the agent running on the connected cluster
+     resource
+    :vartype agent_version: str
     :param location_data: Metadata pertaining to the geographic location of
      the resource.
     :type location_data: ~azure.mgmt.hybridkubernetes.models.LocationData
@@ -66,6 +66,9 @@ class ConnectedCluster(Model):
         'identity': {'required': True},
         'agent_public_key_certificate': {'required': True},
         'aad_profile': {'required': True},
+        'kubernetes_version': {'readonly': True},
+        'total_node_count': {'readonly': True},
+        'agent_version': {'readonly': True},
     }
 
     _attribute_map = {
@@ -94,8 +97,8 @@ class ConnectedCluster(Model):
         self.identity = kwargs.get('identity', None)
         self.agent_public_key_certificate = kwargs.get('agent_public_key_certificate', None)
         self.aad_profile = kwargs.get('aad_profile', None)
-        self.kubernetes_version = kwargs.get('kubernetes_version', None)
-        self.total_node_count = kwargs.get('total_node_count', None)
-        self.agent_version = kwargs.get('agent_version', None)
+        self.kubernetes_version = None
+        self.total_node_count = None
+        self.agent_version = None
         self.location_data = kwargs.get('location_data', None)
         self.provisioning_state = kwargs.get('provisioning_state', None)

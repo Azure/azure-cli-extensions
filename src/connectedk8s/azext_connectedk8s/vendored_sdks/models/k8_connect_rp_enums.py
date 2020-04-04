@@ -12,6 +12,12 @@
 from enum import Enum
 
 
+class ResourceIdentityType(str, Enum):
+
+    system_assigned = "SystemAssigned"
+    none = "None"
+
+
 class ProvisioningState(str, Enum):
 
     succeeded = "Succeeded"
@@ -21,8 +27,3 @@ class ProvisioningState(str, Enum):
     updating = "Updating"
     deleting = "Deleting"
     accepted = "Accepted"
-
-
-class ResourceIdentityType(str, Enum):
-
-    system_assigned = "SystemAssigned"

@@ -40,15 +40,15 @@ class ConnectedCluster(Model):
     :param aad_profile: Required.
     :type aad_profile:
      ~azure.mgmt.hybridkubernetes.models.ConnectedClusterAADProfile
-    :param kubernetes_version: The Kubernetes version of the connected cluster
+    :ivar kubernetes_version: The Kubernetes version of the connected cluster
      resource
-    :type kubernetes_version: str
-    :param total_node_count: Number of nodes present in the connected cluster
+    :vartype kubernetes_version: str
+    :ivar total_node_count: Number of nodes present in the connected cluster
      resource
-    :type total_node_count: int
-    :param agent_version: Version of the agent running on the connected
-     cluster resource
-    :type agent_version: str
+    :vartype total_node_count: int
+    :ivar agent_version: Version of the agent running on the connected cluster
+     resource
+    :vartype agent_version: str
     :param location_data: Metadata pertaining to the geographic location of
      the resource.
     :type location_data: ~azure.mgmt.hybridkubernetes.models.LocationData
@@ -66,6 +66,9 @@ class ConnectedCluster(Model):
         'identity': {'required': True},
         'agent_public_key_certificate': {'required': True},
         'aad_profile': {'required': True},
+        'kubernetes_version': {'readonly': True},
+        'total_node_count': {'readonly': True},
+        'agent_version': {'readonly': True},
     }
 
     _attribute_map = {
@@ -84,7 +87,7 @@ class ConnectedCluster(Model):
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
     }
 
-    def __init__(self, *, location: str, identity, agent_public_key_certificate: str, aad_profile, tags=None, kubernetes_version: str=None, total_node_count: int=None, agent_version: str=None, location_data=None, provisioning_state=None, **kwargs) -> None:
+    def __init__(self, *, location: str, identity, agent_public_key_certificate: str, aad_profile, tags=None, location_data=None, provisioning_state=None, **kwargs) -> None:
         super(ConnectedCluster, self).__init__(**kwargs)
         self.id = None
         self.name = None
@@ -94,8 +97,8 @@ class ConnectedCluster(Model):
         self.identity = identity
         self.agent_public_key_certificate = agent_public_key_certificate
         self.aad_profile = aad_profile
-        self.kubernetes_version = kubernetes_version
-        self.total_node_count = total_node_count
-        self.agent_version = agent_version
+        self.kubernetes_version = None
+        self.total_node_count = None
+        self.agent_version = None
         self.location_data = location_data
         self.provisioning_state = provisioning_state

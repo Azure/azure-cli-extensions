@@ -12,18 +12,25 @@
 from msrest.serialization import Model
 
 
-class ConnectedClusterProxyProfile(Model):
-    """ConnectedClusterProxyProfile.
+class CredentialResults(Model):
+    """The list of credential result response.
 
-    :param proxy_connection: Endpoint and authentication details to connect to
-     proxy
-    :type proxy_connection: str
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    :ivar kubeconfigs: Base64-encoded Kubernetes configuration file.
+    :vartype kubeconfigs:
+     list[~azure.mgmt.hybridkubernetes.models.CredentialResult]
     """
 
+    _validation = {
+        'kubeconfigs': {'readonly': True},
+    }
+
     _attribute_map = {
-        'proxy_connection': {'key': 'proxyConnection', 'type': 'str'},
+        'kubeconfigs': {'key': 'kubeconfigs', 'type': '[CredentialResult]'},
     }
 
     def __init__(self, **kwargs):
-        super(ConnectedClusterProxyProfile, self).__init__(**kwargs)
-        self.proxy_connection = kwargs.get('proxy_connection', None)
+        super(CredentialResults, self).__init__(**kwargs)
+        self.kubeconfigs = None

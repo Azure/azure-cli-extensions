@@ -20,21 +20,21 @@ class CredentialResult(Model):
 
     :ivar name: The name of the credential.
     :vartype name: str
-    :ivar kubeconfig: Base64-encoded Kubernetes configuration file.
-    :vartype kubeconfig: bytearray
+    :ivar value: Base64-encoded Kubernetes configuration file.
+    :vartype value: bytearray
     """
 
     _validation = {
         'name': {'readonly': True},
-        'kubeconfig': {'readonly': True},
+        'value': {'readonly': True},
     }
 
     _attribute_map = {
         'name': {'key': 'name', 'type': 'str'},
-        'kubeconfig': {'key': 'kubeconfig', 'type': 'bytearray'},
+        'value': {'key': 'value', 'type': 'bytearray'},
     }
 
     def __init__(self, **kwargs):
         super(CredentialResult, self).__init__(**kwargs)
         self.name = None
-        self.kubeconfig = None
+        self.value = None

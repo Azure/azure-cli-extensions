@@ -12,29 +12,25 @@
 from msrest.serialization import Model
 
 
-class CredentialResult(Model):
-    """The credential result response.
+class CredentialResults(Model):
+    """The list of credential result response.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    :ivar name: The name of the credential.
-    :vartype name: str
-    :ivar value: Base64-encoded Kubernetes configuration file.
-    :vartype value: bytearray
+    :ivar kubeconfigs: Base64-encoded Kubernetes configuration file.
+    :vartype kubeconfigs:
+     list[~azure.mgmt.hybridkubernetes.models.CredentialResult]
     """
 
     _validation = {
-        'name': {'readonly': True},
-        'value': {'readonly': True},
+        'kubeconfigs': {'readonly': True},
     }
 
     _attribute_map = {
-        'name': {'key': 'name', 'type': 'str'},
-        'value': {'key': 'value', 'type': 'bytearray'},
+        'kubeconfigs': {'key': 'kubeconfigs', 'type': '[CredentialResult]'},
     }
 
     def __init__(self, **kwargs) -> None:
-        super(CredentialResult, self).__init__(**kwargs)
-        self.name = None
-        self.value = None
+        super(CredentialResults, self).__init__(**kwargs)
+        self.kubeconfigs = None
