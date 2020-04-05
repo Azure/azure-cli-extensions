@@ -67,14 +67,14 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
                     if check[0] == 'y':
                         return True
                     elif check[0] == 'n':
-                        print("stopping execution")
+                        print('Stopping the execution upon user input')
+                        exit(0)
                         return False
                     else:
-                        print('Invalid Input')
+                        print('Invalid Input.valid inputs are "y" or "n"')
                         return ask_user()
                 except Exception as error:
-                    print("Please enter valid inputs")
-                    print(error)
+                    print('Invalid Input.valid inputs are "y" or "n"')
                     return ask_user()
             ask_user()
         else:
@@ -135,14 +135,13 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             # Install extension in case of single pass encrypted VM
             try:
                 if encryption_type == "single_with_kek":
-                    logger.info('Installing extension on repair VM with KEK\n')
                     encryption_type, key_vault, key_encryption_url = _uses_encrypted_disk(source_vm)
 
                     install_ade_extension_command = 'az vm encryption enable --disk-encryption-keyvault {vault} --name {repair} --resource-group {g} --key-encryption-key {kek_url} --volume-type {volume}' \
                                                     .format(g=repair_group_name, repair=repair_vm_name, vault=key_vault, kek_url=key_encryption_url, volume=volume_type)
+                    logger.info('Installing extension on repair VM with KEK\n')
                     _call_az_command(install_ade_extension_command)
                 elif encryption_type == "single_without_kek":
-                    logger.info('Installing extension on repair VM without KEK \n')
                     disk_id = source_vm.storage_profile.os_disk.managed_disk.id
                     disk_settings_command = 'az disk show --ids {ids} -o json' \
                                             .format(ids=disk_id)
@@ -152,10 +151,29 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
                     key_vault = (settings2[0]['diskEncryptionKey']['sourceVault']['id'])
                     install_ade_extension_command = 'az vm encryption enable --disk-encryption-keyvault {vault} --name {repair} --resource-group {g} --volume-type {volume}' \
                                                     .format(g=repair_group_name, repair=repair_vm_name, vault=key_vault, volume=volume_type)
+                    logger.info('Installing extension on repair VM without KEK \n')
                     _call_az_command(install_ade_extension_command)
             except AzCommandError as azCommandError:
                 command.error_stack_trace = traceback.format_exc()
                 command.error_message = str(azCommandError)
+                command.message = "'Failed to encrypt data volumes' exception can be ignored"
+                # Execute commands on repair VM through run command option to unlock the copy of encrypted disk and mount.
+            finally:
+                if encryption_type in ("single_with_kek", "single_without_kek"):
+                    if is_linux:
+                        logger.info('unlocking and mounting the disk on repair VM...')
+                        REPAIR_DIR_NAME = 'azext_vm_repair'
+                        SCRIPTS_DIR_NAME = 'scripts'
+                        LINUX_RUN_SCRIPT_NAME = 'script.sh'
+                        command_id = 'RunShellScript'
+                        loader = pkgutil.get_loader(REPAIR_DIR_NAME)
+                        mod = loader.load_module(REPAIR_DIR_NAME)
+                        rootpath = os.path.dirname(mod.__file__)
+                        run_script = os.path.join(rootpath, SCRIPTS_DIR_NAME, LINUX_RUN_SCRIPT_NAME)
+                        repair_run_command = 'az vm run-command invoke -g {rg} -n {vm} --command-id {command_id} ' \
+                                             '--scripts "@{run_script}" -o json' \
+                                             .format(rg=repair_group_name, vm=repair_vm_name, command_id=command_id, run_script=run_script)
+                        _call_az_command(repair_run_command)
 
         # UNMANAGED DISK
         else:
@@ -237,23 +255,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         command.error_message = str(exception)
         command.message = 'An unexpected error occurred. Try running again with the --debug flag to debug.'
 
-# Execute commands on repair VM through run command option to unlock the copy of encrypted disk and mount.
     finally:
-        if encryption_type in ("single_with_kek", "single_without_kek"):
-            if is_linux:
-                logger.info('unlocking and mounting the disk on repair VM...')
-                REPAIR_DIR_NAME = 'azext_vm_repair'
-                SCRIPTS_DIR_NAME = 'scripts'
-                LINUX_RUN_SCRIPT_NAME = 'script.sh'
-                command_id = 'RunShellScript'
-                loader = pkgutil.get_loader(REPAIR_DIR_NAME)
-                mod = loader.load_module(REPAIR_DIR_NAME)
-                rootpath = os.path.dirname(mod.__file__)
-                run_script = os.path.join(rootpath, SCRIPTS_DIR_NAME, LINUX_RUN_SCRIPT_NAME)
-                repair_run_command = 'az vm run-command invoke -g {rg} -n {vm} --command-id {command_id} ' \
-                                     '--scripts "@{run_script}" -o json' \
-                                     .format(rg=repair_group_name, vm=repair_vm_name, command_id=command_id, run_script=run_script)
-                _call_az_command(repair_run_command)
         if command.error_stack_trace:
             logger.debug(command.error_stack_trace)
 

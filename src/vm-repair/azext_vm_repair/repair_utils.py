@@ -192,15 +192,13 @@ def _uses_encrypted_disk(source_vm):
             settings1 = json.loads(settings)
             is_single = (settings1["encryptionSettingsCollection"])
             if not is_single:
-                logger.info('The source VM\'s OS disk is not encrypted.')
-                return "encrypted"
+                return "not encrypted"
             else:
                 is_single = (settings1["encryptionSettingsCollection"]["enabled"])
                 settings2 = (settings1["encryptionSettingsCollection"]["encryptionSettings"])
                 key_vault = (settings2[0]['diskEncryptionKey']['sourceVault']['id'])
                 key_encryption_url = (settings2[0]['keyEncryptionKey']['keyUrl'])
                 encryption_type = "single_with_kek"
-                logger.info('The source VM\'s OS disk is encrypted using Single Pass method.')
                 return (encryption_type, key_vault, key_encryption_url)
     except:
         return "single_without_kek"
