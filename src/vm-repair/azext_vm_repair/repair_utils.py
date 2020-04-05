@@ -4,11 +4,12 @@
 # --------------------------------------------------------------------------------------------
 
 import json
+from json import loads
+import traceback
 import subprocess
 import shlex
 import os
 import re
-from json import loads
 import requests
 
 from knack.log import get_logger
@@ -180,49 +181,32 @@ def _list_resource_ids_in_rg(resource_group_name):
 
 def _uses_encrypted_disk(source_vm):
     try:
-        if not source_vm.storage_profile.os_disk.encryption_settings is None:
+        if source_vm.storage_profile.os_disk.encryption_settings is not None:
             logger.info('The source VM\'s OS disk is encrypted using Dual Pass method.')
-            encryption_type = "Dual"
-            print (encryption_type)
-            return (encryption_type)
+            return "Dual"
         else:
             disk_id = source_vm.storage_profile.os_disk.managed_disk.id
             disk_settings_command = 'az disk show --ids {ids} -o json' \
                                     .format(ids=disk_id)
             settings = _call_az_command(disk_settings_command)
-            settings1 =  json.loads(settings)
+            settings1 = json.loads(settings)
             is_single = (settings1["encryptionSettingsCollection"])
             if not is_single:
                 logger.info('The source VM\'s OS disk is not encrypted.')
-                encryption_type = "not encrypted"
-                return (encryption_type)
+                return "encrypted"
             else:
                 is_single = (settings1["encryptionSettingsCollection"]["enabled"])
                 settings2 = (settings1["encryptionSettingsCollection"]["encryptionSettings"])
-#           key_vault = (settings2[0]['keyEncryptionKey']['sourceVault']['id'])
                 key_vault = (settings2[0]['diskEncryptionKey']['sourceVault']['id'])
                 key_encryption_url = (settings2[0]['keyEncryptionKey']['keyUrl'])
                 encryption_type = "single_with_kek"
                 logger.info('The source VM\'s OS disk is encrypted using Single Pass method.')
                 return (encryption_type, key_vault, key_encryption_url)
     except:
-        return ( "single_without_kek" )
-        print ( "error" )
-        pass  
-
-
-#def _uses_encrypted_disk(source_vm):
-#
-#    if not source_vm.storage_profile.os_disk.encryption_settings is "None":
-#           logger.info('The source VM\'s OS disk is encrypted using Dual Pass method.')
-#           encryption_type = "Dual"
-#           print (encryption_type)
-#           return (encryption_type)
-
+        return "single_without_kek"
 
 
 def _fetch_compatible_windows_os_urn(source_vm):
-
     location = source_vm.location
     fetch_urn_command = 'az vm image list -s "2016-Datacenter" -f WindowsServer -p MicrosoftWindowsServer -l {loc} --verbose --all --query "[?sku==\'2016-Datacenter\'].urn | reverse(sort(@))" -o json'.format(loc=location)
     logger.info('Fetching compatible Windows OS images from gallery...')
