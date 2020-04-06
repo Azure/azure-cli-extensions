@@ -62,7 +62,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
                 encryption_type = check_encryption
 
             def ask_user():
-                check = str(input("VM is encrypted using single pass, are we ok to unlock the disk and mount on repair VM ? (Y/N): ")).lower().strip()
+                check = str(input("VM is encrypted using single pass method, are we ok to unlock the disk and mount on repair VM ? (Y/N): ")).lower().strip()
                 try:
                     if check[0] == 'y':
                         return True
