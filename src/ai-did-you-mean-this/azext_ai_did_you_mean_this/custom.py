@@ -52,25 +52,26 @@ def parse_recommendation(recommendation):
     return success_command, succces_command_parameter_buffer, success_command_placeholder_arguments
 
 def recommend_recovery_options(version, command, parameters, extension):
-    if version in RECOMMENDATIONS:
-        command_recommendations = RECOMMENDATIONS[version]
+    if extension is None:
+        if version in RECOMMENDATIONS:
+            command_recommendations = RECOMMENDATIONS[version]
 
-        if command in command_recommendations and len(command_recommendations[command]) > 0:
-            print(f'\nHere are the most common ways users succeeded after [{command}] failed:')
+            if command in command_recommendations and command_recommendations[command]:
+                print(f'\nHere are the most common ways users succeeded after [{command}] failed:')
 
-            recommendations = command_recommendations[command]
-            
-            for recommendation in recommendations:
-                command, parameters, placeholders = parse_recommendation(recommendation)
-                parameter_and_argument_buffer = []
+                recommendations = command_recommendations[command]
 
-                for pair in zip(parameters, placeholders):
-                    parameter_and_argument_buffer.append(' '.join(pair))
+                for recommendation in recommendations:
+                    command, parameters, placeholders = parse_recommendation(recommendation)
+                    parameter_and_argument_buffer = []
 
-                print(f"\taz {command} {' '.join(parameter_and_argument_buffer)}")
+                    for pair in zip(parameters, placeholders):
+                        parameter_and_argument_buffer.append(' '.join(pair))
+
+                    print(f"\taz {command} {' '.join(parameter_and_argument_buffer)}")
+            else:
+                print(f'\nSorry I am not able to help with [{command}]'
+                    f'\nTry running [az find "{command}"] to see examples of [{command}] from other users.')
         else:
-            print(f'\nSorry I am not able to help with [{command}]'
-                  f'\nTry running [az find "{command}"] to see examples of [{command}] from other users.')
-    else:
-        print(style_message("Better failure recovery recommendations are available from the latest version of the CLI. "
-                             "Please update for the best experience.\n"))
+            print(style_message("Better failure recovery recommendations are available from the latest version of the CLI. "
+                                "Please update for the best experience.\n"))
