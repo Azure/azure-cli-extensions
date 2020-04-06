@@ -8,7 +8,7 @@ from distutils.version import StrictVersion  # pylint: disable=no-name-in-module
 from knack.util import CLIError
 
 # pylint: disable=no-name-in-module,import-error
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_02_01.models import ManagedClusterAPIServerAccessProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterAPIServerAccessProfile
 from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING
 
 
@@ -47,9 +47,13 @@ def _set_vm_set_type(vm_set_type, kubernetes_version):
     return vm_set_type
 
 
-def _set_outbound_type(outbound_type, network_plugin, load_balancer_sku, load_balancer_profile):
+def _set_outbound_type(outbound_type, vnet_subnet_id, load_balancer_sku, load_balancer_profile):
     if outbound_type != CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING:
         return CONST_OUTBOUND_TYPE_LOAD_BALANCER
+
+    if vnet_subnet_id in ["", None]:
+        raise CLIError("--vnet-subnet-id must be specified for userDefinedRouting and it must \
+        be pre-configured with a route table with egress rules")
 
     if load_balancer_sku == "basic":
         raise CLIError("userDefinedRouting doesn't support basic load balancer sku")
@@ -60,7 +64,28 @@ def _set_outbound_type(outbound_type, network_plugin, load_balancer_sku, load_ba
                 load_balancer_profile.outbound_ip_prefixes):
             raise CLIError("userDefinedRouting doesn't support customizing a standard load balancer with IP addresses")
 
-    if network_plugin != "azure":
-        raise CLIError("userDefinedRouting requires --network-plugin to be azure")
-
     return CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING
+
+
+def _parse_comma_separated_list(text):
+    if text is None:
+        return None
+    if text == "":
+        return []
+    return text.split(",")
+
+
+def _trim_fqdn_name_containing_hcp(normalized_fqdn: str) -> str:
+    """
+    Trims the storage blob name and takes everything prior to "-hcp-".
+    Currently it is displayed wrong: i.e. at time of creation cli has
+    following limitation:
+    https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/
+    error-storage-account-name
+
+    :param normalized_fqdn: storage blob name
+    :return: storage_name_without_hcp: Storage name without the hcp value
+    attached
+    """
+    storage_name_without_hcp, _, _ = normalized_fqdn.partition('-hcp-')
+    return storage_name_without_hcp

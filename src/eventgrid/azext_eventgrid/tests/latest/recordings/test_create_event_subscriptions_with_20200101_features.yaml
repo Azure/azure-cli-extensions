@@ -1,6 +1,6 @@
 interactions:
 - request:
-    body: '{"sku": {"name": "Standard_LRS"}, "kind": "Storage", "location": "centraluseuap"}'
+    body: '{"sku": {"name": "Standard_LRS"}, "kind": "StorageV2", "location": "centraluseuap"}'
     headers:
       Accept:
       - application/json
@@ -11,30 +11,30 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '81'
+      - '83'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
       - -g -n --sku -l
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-storage/7.1.0 Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-storage/7.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002?api-version=2019-06-01
   response:
     body:
-      string: '{"sku":{"name":"Standard_LRS","tier":"Standard"},"kind":"Storage","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002","name":"clieventgrid000002","type":"Microsoft.Storage/storageAccounts","location":"centraluseuap","tags":{},"properties":{"privateEndpointConnections":[],"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2020-01-21T12:13:21.9119217Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2020-01-21T12:13:21.9119217Z"}},"keySource":"Microsoft.Storage"},"provisioningState":"Succeeded","creationTime":"2020-01-21T12:13:21.8650879Z","primaryEndpoints":{"blob":"https://clieventgrid000002.blob.core.windows.net/","queue":"https://clieventgrid000002.queue.core.windows.net/","table":"https://clieventgrid000002.table.core.windows.net/","file":"https://clieventgrid000002.file.core.windows.net/"},"primaryLocation":"centraluseuap","statusOfPrimary":"available"}}'
+      string: '{"sku":{"name":"Standard_LRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002","name":"clieventgrid000002","type":"Microsoft.Storage/storageAccounts","location":"centraluseuap","tags":{},"properties":{"privateEndpointConnections":[],"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2020-03-19T06:14:27.0072604Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2020-03-19T06:14:27.0072604Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2020-03-19T06:14:26.9447860Z","primaryEndpoints":{"dfs":"https://clieventgrid000002.dfs.core.windows.net/","web":"https://clieventgrid000002.z2.web.core.windows.net/","blob":"https://clieventgrid000002.blob.core.windows.net/","queue":"https://clieventgrid000002.queue.core.windows.net/","table":"https://clieventgrid000002.table.core.windows.net/","file":"https://clieventgrid000002.file.core.windows.net/"},"primaryLocation":"centraluseuap","statusOfPrimary":"available"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1254'
+      - '1404'
       content-type:
       - application/json
       date:
-      - Tue, 21 Jan 2020 12:13:42 GMT
+      - Thu, 19 Mar 2020 06:14:49 GMT
       expires:
       - '-1'
       pragma:
@@ -50,7 +50,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1195'
+      - '1198'
     status:
       code: 200
       message: OK
@@ -68,24 +68,24 @@ interactions:
       ParameterSetName:
       - -g -n --set
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-storage/7.1.0 Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-storage/7.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002?api-version=2019-06-01
   response:
     body:
-      string: '{"sku":{"name":"Standard_LRS","tier":"Standard"},"kind":"Storage","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002","name":"clieventgrid000002","type":"Microsoft.Storage/storageAccounts","location":"centraluseuap","tags":{},"properties":{"privateEndpointConnections":[],"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2020-01-21T12:13:21.9119217Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2020-01-21T12:13:21.9119217Z"}},"keySource":"Microsoft.Storage"},"provisioningState":"Succeeded","creationTime":"2020-01-21T12:13:21.8650879Z","primaryEndpoints":{"blob":"https://clieventgrid000002.blob.core.windows.net/","queue":"https://clieventgrid000002.queue.core.windows.net/","table":"https://clieventgrid000002.table.core.windows.net/","file":"https://clieventgrid000002.file.core.windows.net/"},"primaryLocation":"centraluseuap","statusOfPrimary":"available"}}'
+      string: '{"sku":{"name":"Standard_LRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002","name":"clieventgrid000002","type":"Microsoft.Storage/storageAccounts","location":"centraluseuap","tags":{},"properties":{"privateEndpointConnections":[],"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2020-03-19T06:14:27.0072604Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2020-03-19T06:14:27.0072604Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2020-03-19T06:14:26.9447860Z","primaryEndpoints":{"dfs":"https://clieventgrid000002.dfs.core.windows.net/","web":"https://clieventgrid000002.z2.web.core.windows.net/","blob":"https://clieventgrid000002.blob.core.windows.net/","queue":"https://clieventgrid000002.queue.core.windows.net/","table":"https://clieventgrid000002.table.core.windows.net/","file":"https://clieventgrid000002.file.core.windows.net/"},"primaryLocation":"centraluseuap","statusOfPrimary":"available"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1254'
+      - '1404'
       content-type:
       - application/json
       date:
-      - Tue, 21 Jan 2020 12:13:43 GMT
+      - Thu, 19 Mar 2020 06:14:50 GMT
       expires:
       - '-1'
       pragma:
@@ -107,9 +107,9 @@ interactions:
     body: '{"sku": {"name": "Standard_LRS", "tier": "Standard"}, "tags": {}, "properties":
       {"encryption": {"services": {"blob": {"enabled": true, "keyType": "Account"},
       "file": {"enabled": true, "keyType": "Account"}}, "keySource": "Microsoft.Storage"},
-      "supportsHttpsTrafficOnly": true, "networkAcls": {"bypass": "AzureServices",
-      "virtualNetworkRules": [], "ipRules": [], "defaultAction": "Allow"}}, "kind":
-      "StorageV2"}'
+      "accessTier": "Hot", "supportsHttpsTrafficOnly": true, "networkAcls": {"bypass":
+      "AzureServices", "virtualNetworkRules": [], "ipRules": [], "defaultAction":
+      "Allow"}}, "kind": "StorageV2"}'
     headers:
       Accept:
       - application/json
@@ -120,21 +120,21 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '410'
+      - '431'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
       - -g -n --set
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-storage/7.1.0 Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-storage/7.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: PATCH
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002?api-version=2019-06-01
   response:
     body:
-      string: '{"sku":{"name":"Standard_LRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002","name":"clieventgrid000002","type":"Microsoft.Storage/storageAccounts","location":"centraluseuap","tags":{},"properties":{"privateEndpointConnections":[],"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2020-01-21T12:13:21.9119217Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2020-01-21T12:13:21.9119217Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2020-01-21T12:13:21.8650879Z","primaryEndpoints":{"dfs":"https://clieventgrid000002.dfs.core.windows.net/","web":"https://clieventgrid000002.z2.web.core.windows.net/","blob":"https://clieventgrid000002.blob.core.windows.net/","queue":"https://clieventgrid000002.queue.core.windows.net/","table":"https://clieventgrid000002.table.core.windows.net/","file":"https://clieventgrid000002.file.core.windows.net/"},"primaryLocation":"centraluseuap","statusOfPrimary":"available"}}'
+      string: '{"sku":{"name":"Standard_LRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002","name":"clieventgrid000002","type":"Microsoft.Storage/storageAccounts","location":"centraluseuap","tags":{},"properties":{"privateEndpointConnections":[],"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2020-03-19T06:14:27.0072604Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2020-03-19T06:14:27.0072604Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2020-03-19T06:14:26.9447860Z","primaryEndpoints":{"dfs":"https://clieventgrid000002.dfs.core.windows.net/","web":"https://clieventgrid000002.z2.web.core.windows.net/","blob":"https://clieventgrid000002.blob.core.windows.net/","queue":"https://clieventgrid000002.queue.core.windows.net/","table":"https://clieventgrid000002.table.core.windows.net/","file":"https://clieventgrid000002.file.core.windows.net/"},"primaryLocation":"centraluseuap","statusOfPrimary":"available"}}'
     headers:
       cache-control:
       - no-cache
@@ -143,7 +143,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 21 Jan 2020 12:13:46 GMT
+      - Thu, 19 Mar 2020 06:14:52 GMT
       expires:
       - '-1'
       pragma:
@@ -159,7 +159,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -186,26 +186,26 @@ interactions:
       - --source-resource-id --name --endpoint-type --endpoint --subject-begins-with
         --event-delivery-schema
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        eventgridmanagementclient/2020-04-01-preview Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription1?api-version=2020-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription1?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Creating","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.ServiceBus/namespaces/devexpservicebus/topics/devexptopic1"},"endpointType":"ServiceBusTopic"},"filter":{"subjectBeginsWith":"SomeRandomText1","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"eventDeliverySchema":"CloudEventSchemaV1_0","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription1","name":"CliTestEventsubscription1","type":"Microsoft.EventGrid/eventSubscriptions"}'
+      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Creating","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.ServiceBus/namespaces/devexpservicebus/topics/devexptopic1"},"endpointType":"ServiceBusTopic"},"filter":{"subjectBeginsWith":"SomeRandomText1","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"eventDeliverySchema":"CloudEventSchemaV1_0","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription1","name":"CliTestEventGridEventsubscription1","type":"Microsoft.EventGrid/eventSubscriptions"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/90B57C57-B722-494F-8553-646982D69D03?api-version=2020-04-01-preview
+      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/6A5F9AB4-0C0B-4060-BDE7-3200CD15E4CD?api-version=2020-04-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '1148'
+      - '1166'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 21 Jan 2020 12:13:47 GMT
+      - Thu, 19 Mar 2020 06:14:53 GMT
       expires:
       - '-1'
       pragma:
@@ -216,8 +216,8 @@ interactions:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '899'
     status:
       code: 201
       message: Created
@@ -236,13 +236,13 @@ interactions:
       - --source-resource-id --name --endpoint-type --endpoint --subject-begins-with
         --event-delivery-schema
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        eventgridmanagementclient/2020-04-01-preview Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/90B57C57-B722-494F-8553-646982D69D03?api-version=2020-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/6A5F9AB4-0C0B-4060-BDE7-3200CD15E4CD?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/90B57C57-B722-494F-8553-646982D69D03?api-version=2020-04-01-preview","name":"90b57c57-b722-494f-8553-646982d69d03","status":"Succeeded"}'
+      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/6A5F9AB4-0C0B-4060-BDE7-3200CD15E4CD?api-version=2020-04-01-preview","name":"6a5f9ab4-0c0b-4060-bde7-3200cd15e4cd","status":"Succeeded"}'
     headers:
       cache-control:
       - no-cache
@@ -251,7 +251,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 21 Jan 2020 12:13:57 GMT
+      - Thu, 19 Mar 2020 06:15:03 GMT
       expires:
       - '-1'
       pragma:
@@ -284,22 +284,22 @@ interactions:
       - --source-resource-id --name --endpoint-type --endpoint --subject-begins-with
         --event-delivery-schema
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        eventgridmanagementclient/2020-04-01-preview Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription1?api-version=2020-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription1?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.ServiceBus/namespaces/devexpservicebus/topics/devexptopic1"},"endpointType":"ServiceBusTopic"},"filter":{"subjectBeginsWith":"SomeRandomText1","subjectEndsWith":"","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"eventDeliverySchema":"CloudEventSchemaV1_0","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription1","name":"CliTestEventsubscription1","type":"Microsoft.EventGrid/eventSubscriptions"}'
+      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.ServiceBus/namespaces/devexpservicebus/topics/devexptopic1"},"endpointType":"ServiceBusTopic"},"filter":{"subjectBeginsWith":"SomeRandomText1","subjectEndsWith":"","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"eventDeliverySchema":"CloudEventSchemaV1_0","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription1","name":"CliTestEventGridEventsubscription1","type":"Microsoft.EventGrid/eventSubscriptions"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1170'
+      - '1188'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 21 Jan 2020 12:13:58 GMT
+      - Thu, 19 Mar 2020 06:15:03 GMT
       expires:
       - '-1'
       pragma:
@@ -340,26 +340,26 @@ interactions:
       - --source-resource-id --name --endpoint-type --endpoint --subject-begins-with
         --max-events-per-batch --preferred-batch-size-in-kilobytes
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        eventgridmanagementclient/2020-04-01-preview Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription2?api-version=2020-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription2?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Creating","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Web/sites/eventgridclitestapp/functions/EventGridTrigger1","maxEventsPerBatch":10,"preferredBatchSizeInKilobytes":128},"endpointType":"AzureFunction"},"filter":{"subjectBeginsWith":"SomeRandomText1","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription2","name":"CliTestEventsubscription2","type":"Microsoft.EventGrid/eventSubscriptions"}'
+      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Creating","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Web/sites/eventgridclitestapp/functions/EventGridTrigger1","maxEventsPerBatch":10,"preferredBatchSizeInKilobytes":128},"endpointType":"AzureFunction"},"filter":{"subjectBeginsWith":"SomeRandomText1","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription2","name":"CliTestEventGridEventsubscription2","type":"Microsoft.EventGrid/eventSubscriptions"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/F34B460E-72D3-4645-8E0B-84F446833603?api-version=2020-04-01-preview
+      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/6AC3F868-D724-4453-A70B-4459DCF3B17D?api-version=2020-04-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '1159'
+      - '1177'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 21 Jan 2020 12:13:59 GMT
+      - Thu, 19 Mar 2020 06:15:05 GMT
       expires:
       - '-1'
       pragma:
@@ -370,8 +370,8 @@ interactions:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '899'
     status:
       code: 201
       message: Created
@@ -390,13 +390,13 @@ interactions:
       - --source-resource-id --name --endpoint-type --endpoint --subject-begins-with
         --max-events-per-batch --preferred-batch-size-in-kilobytes
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        eventgridmanagementclient/2020-04-01-preview Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/F34B460E-72D3-4645-8E0B-84F446833603?api-version=2020-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/6AC3F868-D724-4453-A70B-4459DCF3B17D?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/F34B460E-72D3-4645-8E0B-84F446833603?api-version=2020-04-01-preview","name":"f34b460e-72d3-4645-8e0b-84f446833603","status":"Succeeded"}'
+      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/6AC3F868-D724-4453-A70B-4459DCF3B17D?api-version=2020-04-01-preview","name":"6ac3f868-d724-4453-a70b-4459dcf3b17d","status":"Succeeded"}'
     headers:
       cache-control:
       - no-cache
@@ -405,7 +405,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 21 Jan 2020 12:14:10 GMT
+      - Thu, 19 Mar 2020 06:15:16 GMT
       expires:
       - '-1'
       pragma:
@@ -438,22 +438,22 @@ interactions:
       - --source-resource-id --name --endpoint-type --endpoint --subject-begins-with
         --max-events-per-batch --preferred-batch-size-in-kilobytes
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        eventgridmanagementclient/2020-04-01-preview Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription2?api-version=2020-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription2?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Web/sites/eventgridclitestapp/functions/EventGridTrigger1","maxEventsPerBatch":10,"preferredBatchSizeInKilobytes":128},"endpointType":"AzureFunction"},"filter":{"subjectBeginsWith":"SomeRandomText1","subjectEndsWith":"","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription2","name":"CliTestEventsubscription2","type":"Microsoft.EventGrid/eventSubscriptions"}'
+      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Web/sites/eventgridclitestapp/functions/EventGridTrigger1","maxEventsPerBatch":10,"preferredBatchSizeInKilobytes":128},"endpointType":"AzureFunction"},"filter":{"subjectBeginsWith":"SomeRandomText1","subjectEndsWith":"","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription2","name":"CliTestEventGridEventsubscription2","type":"Microsoft.EventGrid/eventSubscriptions"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1221'
+      - '1239'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 21 Jan 2020 12:14:10 GMT
+      - Thu, 19 Mar 2020 06:15:16 GMT
       expires:
       - '-1'
       pragma:
@@ -473,10 +473,164 @@ interactions:
       message: OK
 - request:
     body: '{"properties": {"destination": {"endpointType": "WebHook", "properties":
-      {"endpointUrl": "https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid?functionName=EventGridTrigger1&code=<HIDDEN>",
+      {"endpointUrl": "https://devexpfuncappdestination.azurewebsites.net/api/DevExpFunc?code=<HIDDEN>",
+      "maxEventsPerBatch": 10, "preferredBatchSizeInKilobytes": 128}}, "filter": {"subjectBeginsWith":
+      "SomeRandomText1", "isSubjectCaseSensitive": false}, "retryPolicy": {"maxDeliveryAttempts":
+      30, "eventTimeToLiveInMinutes": 1440}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '448'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --source-resource-id --name --endpoint-type --endpoint --subject-begins-with
+        --max-events-per-batch --preferred-batch-size-in-kilobytes
+      User-Agent:
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription4?api-version=2020-04-01-preview
+  response:
+    body:
+      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Creating","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://devexpfuncappdestination.azurewebsites.net/api/DevExpFunc","maxEventsPerBatch":10,"preferredBatchSizeInKilobytes":128},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"SomeRandomText1","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription4","name":"CliTestEventGridEventsubscription4","type":"Microsoft.EventGrid/eventSubscriptions"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/8A6787E5-345D-4B8F-B857-BFBA33E15945?api-version=2020-04-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1107'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 19 Mar 2020 06:15:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '899'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --source-resource-id --name --endpoint-type --endpoint --subject-begins-with
+        --max-events-per-batch --preferred-batch-size-in-kilobytes
+      User-Agent:
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/8A6787E5-345D-4B8F-B857-BFBA33E15945?api-version=2020-04-01-preview
+  response:
+    body:
+      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/8A6787E5-345D-4B8F-B857-BFBA33E15945?api-version=2020-04-01-preview","name":"8a6787e5-345d-4b8f-b857-bfba33e15945","status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '294'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 19 Mar 2020 06:15:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --source-resource-id --name --endpoint-type --endpoint --subject-begins-with
+        --max-events-per-batch --preferred-batch-size-in-kilobytes
+      User-Agent:
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription4?api-version=2020-04-01-preview
+  response:
+    body:
+      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Succeeded","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://devexpfuncappdestination.azurewebsites.net/api/DevExpFunc","maxEventsPerBatch":10,"preferredBatchSizeInKilobytes":128},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"SomeRandomText1","subjectEndsWith":"","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription4","name":"CliTestEventGridEventsubscription4","type":"Microsoft.EventGrid/eventSubscriptions"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1169'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 19 Mar 2020 06:15:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"destination": {"endpointType": "WebHook", "properties":
+      {"endpointUrl": "https://devexpfuncappdestination.azurewebsites.net/api/DevExpFunc?code=<HIDDEN>",
       "maxEventsPerBatch": 10, "preferredBatchSizeInKilobytes": 128, "azureActiveDirectoryTenantId":
-      "00000000-0000-0000-0000-000000000000", "azureActiveDirectoryApplicationIdOrUri":
-      "00000000-0000-0000-0000-000000000000"}}, "filter": {"subjectBeginsWith": "SomeRandomText1",
+      "72f988bf-86f1-41af-91ab-2d7cd011db47", "azureActiveDirectoryApplicationIdOrUri":
+      "03d47d4a-7c50-43e0-ba90-89d090cc4582"}}, "filter": {"subjectBeginsWith": "SomeRandomText1",
       "isSubjectCaseSensitive": false}, "retryPolicy": {"maxDeliveryAttempts": 30,
       "eventTimeToLiveInMinutes": 1440}}}'
     headers:
@@ -489,7 +643,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '645'
+      - '602'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
@@ -497,26 +651,26 @@ interactions:
         --max-events-per-batch --preferred-batch-size-in-kilobytes --azure-active-directory-tenant-id
         --azure-active-directory-application-id-or-uri
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        eventgridmanagementclient/2020-04-01-preview Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription3?api-version=2020-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription3?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Creating","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid","maxEventsPerBatch":10,"preferredBatchSizeInKilobytes":128,"azureActiveDirectoryTenantId":"00000000-0000-0000-0000-000000000000","azureActiveDirectoryApplicationIdOrUri":"00000000-0000-0000-0000-000000000000"},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"SomeRandomText1","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription3","name":"CliTestEventsubscription3","type":"Microsoft.EventGrid/eventSubscriptions"}'
+      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Creating","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://devexpfuncappdestination.azurewebsites.net/api/DevExpFunc","maxEventsPerBatch":10,"preferredBatchSizeInKilobytes":128,"azureActiveDirectoryTenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","azureActiveDirectoryApplicationIdOrUri":"03d47d4a-7c50-43e0-ba90-89d090cc4582"},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"SomeRandomText1","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription3","name":"CliTestEventGridEventsubscription3","type":"Microsoft.EventGrid/eventSubscriptions"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/5FABD041-7B0F-4E4A-A484-B850FD05E49D?api-version=2020-04-01-preview
+      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/411BD89E-8217-4B1B-A04A-D49649A43F59?api-version=2020-04-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '1251'
+      - '1257'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 21 Jan 2020 12:14:12 GMT
+      - Thu, 19 Mar 2020 06:15:29 GMT
       expires:
       - '-1'
       pragma:
@@ -527,8 +681,8 @@ interactions:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '899'
     status:
       code: 201
       message: Created
@@ -548,13 +702,13 @@ interactions:
         --max-events-per-batch --preferred-batch-size-in-kilobytes --azure-active-directory-tenant-id
         --azure-active-directory-application-id-or-uri
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        eventgridmanagementclient/2020-04-01-preview Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/5FABD041-7B0F-4E4A-A484-B850FD05E49D?api-version=2020-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/411BD89E-8217-4B1B-A04A-D49649A43F59?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/5FABD041-7B0F-4E4A-A484-B850FD05E49D?api-version=2020-04-01-preview","name":"5fabd041-7b0f-4e4a-a484-b850fd05e49d","status":"Succeeded"}'
+      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/411BD89E-8217-4B1B-A04A-D49649A43F59?api-version=2020-04-01-preview","name":"411bd89e-8217-4b1b-a04a-d49649a43f59","status":"Succeeded"}'
     headers:
       cache-control:
       - no-cache
@@ -563,7 +717,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 21 Jan 2020 12:14:22 GMT
+      - Thu, 19 Mar 2020 06:15:40 GMT
       expires:
       - '-1'
       pragma:
@@ -597,22 +751,828 @@ interactions:
         --max-events-per-batch --preferred-batch-size-in-kilobytes --azure-active-directory-tenant-id
         --azure-active-directory-application-id-or-uri
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        eventgridmanagementclient/2020-04-01-preview Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription3?api-version=2020-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription3?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Succeeded","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid","maxEventsPerBatch":10,"preferredBatchSizeInKilobytes":128,"azureActiveDirectoryTenantId":"00000000-0000-0000-0000-000000000000","azureActiveDirectoryApplicationIdOrUri":"00000000-0000-0000-0000-000000000000"},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"SomeRandomText1","subjectEndsWith":"","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription3","name":"CliTestEventsubscription3","type":"Microsoft.EventGrid/eventSubscriptions"}'
+      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Succeeded","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://devexpfuncappdestination.azurewebsites.net/api/DevExpFunc","maxEventsPerBatch":10,"preferredBatchSizeInKilobytes":128,"azureActiveDirectoryTenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","azureActiveDirectoryApplicationIdOrUri":"03d47d4a-7c50-43e0-ba90-89d090cc4582"},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"SomeRandomText1","subjectEndsWith":"","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription3","name":"CliTestEventGridEventsubscription3","type":"Microsoft.EventGrid/eventSubscriptions"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1313'
+      - '1319'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 21 Jan 2020 12:14:22 GMT
+      - Thu, 19 Mar 2020 06:15:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --source-resource-id --name --subject-begins-with
+      User-Agent:
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription1?api-version=2020-04-01-preview
+  response:
+    body:
+      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.ServiceBus/namespaces/devexpservicebus/topics/devexptopic1"},"endpointType":"ServiceBusTopic"},"filter":{"subjectBeginsWith":"SomeRandomText1","subjectEndsWith":"","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"eventDeliverySchema":"CloudEventSchemaV1_0","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription1","name":"CliTestEventGridEventsubscription1","type":"Microsoft.EventGrid/eventSubscriptions"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1188'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 19 Mar 2020 06:15:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"destination": {"endpointType": "ServiceBusTopic", "properties": {"resourceId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.ServiceBus/namespaces/devexpservicebus/topics/devexptopic1"}},
+      "filter": {"subjectBeginsWith": "SomeRandomText1234", "subjectEndsWith": "",
+      "includedEventTypes": ["Microsoft.Storage.BlobCreated", "Microsoft.Storage.BlobDeleted"]},
+      "eventDeliverySchema": "CloudEventSchemaV1_0", "retryPolicy": {"maxDeliveryAttempts":
+      30, "eventTimeToLiveInMinutes": 1440}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '533'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --source-resource-id --name --subject-begins-with
+      User-Agent:
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
+      accept-language:
+      - en-US
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription1?api-version=2020-04-01-preview
+  response:
+    body:
+      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Updating","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.ServiceBus/namespaces/devexpservicebus/topics/devexptopic1"},"endpointType":"ServiceBusTopic"},"filter":{"subjectBeginsWith":"SomeRandomText1234","subjectEndsWith":"","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"eventDeliverySchema":"CloudEventSchemaV1_0","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription1","name":"CliTestEventGridEventsubscription1","type":"Microsoft.EventGrid/eventSubscriptions"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/68F88269-1390-40A1-A68F-2F2FF3168700?api-version=2020-04-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1190'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 19 Mar 2020 06:15:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '899'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --source-resource-id --name --subject-begins-with
+      User-Agent:
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/68F88269-1390-40A1-A68F-2F2FF3168700?api-version=2020-04-01-preview
+  response:
+    body:
+      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/68F88269-1390-40A1-A68F-2F2FF3168700?api-version=2020-04-01-preview","name":"68f88269-1390-40a1-a68f-2f2ff3168700","status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '294'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 19 Mar 2020 06:15:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --source-resource-id --name --subject-begins-with
+      User-Agent:
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription1?api-version=2020-04-01-preview
+  response:
+    body:
+      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.ServiceBus/namespaces/devexpservicebus/topics/devexptopic1"},"endpointType":"ServiceBusTopic"},"filter":{"subjectBeginsWith":"SomeRandomText1234","subjectEndsWith":"","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"eventDeliverySchema":"CloudEventSchemaV1_0","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription1","name":"CliTestEventGridEventsubscription1","type":"Microsoft.EventGrid/eventSubscriptions"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1191'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 19 Mar 2020 06:15:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --source-resource-id --name --endpoint-type --endpoint --subject-begins-with
+      User-Agent:
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription2?api-version=2020-04-01-preview
+  response:
+    body:
+      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Web/sites/eventgridclitestapp/functions/EventGridTrigger1","maxEventsPerBatch":10,"preferredBatchSizeInKilobytes":128},"endpointType":"AzureFunction"},"filter":{"subjectBeginsWith":"SomeRandomText1","subjectEndsWith":"","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription2","name":"CliTestEventGridEventsubscription2","type":"Microsoft.EventGrid/eventSubscriptions"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1239'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 19 Mar 2020 06:15:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"destination": {"endpointType": "AzureFunction", "properties": {"resourceId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Web/sites/eventgridclitestapp/functions/EventGridTrigger1",
+      "maxEventsPerBatch": 10, "preferredBatchSizeInKilobytes": 128}}, "filter": {"subjectBeginsWith":
+      "SomeRandomText2234431", "subjectEndsWith": "", "includedEventTypes": ["Microsoft.Storage.BlobCreated",
+      "Microsoft.Storage.BlobDeleted"]}, "eventDeliverySchema": "EventGridSchema",
+      "retryPolicy": {"maxDeliveryAttempts": 30, "eventTimeToLiveInMinutes": 1440}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '591'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --source-resource-id --name --endpoint-type --endpoint --subject-begins-with
+      User-Agent:
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
+      accept-language:
+      - en-US
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription2?api-version=2020-04-01-preview
+  response:
+    body:
+      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Updating","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Web/sites/eventgridclitestapp/functions/EventGridTrigger1","maxEventsPerBatch":10,"preferredBatchSizeInKilobytes":128},"endpointType":"AzureFunction"},"filter":{"subjectBeginsWith":"SomeRandomText2234431","subjectEndsWith":"","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription2","name":"CliTestEventGridEventsubscription2","type":"Microsoft.EventGrid/eventSubscriptions"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/B513A9FE-D0CA-4459-9829-BEC7512496D7?api-version=2020-04-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1244'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 19 Mar 2020 06:15:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '899'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --source-resource-id --name --endpoint-type --endpoint --subject-begins-with
+      User-Agent:
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/B513A9FE-D0CA-4459-9829-BEC7512496D7?api-version=2020-04-01-preview
+  response:
+    body:
+      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/B513A9FE-D0CA-4459-9829-BEC7512496D7?api-version=2020-04-01-preview","name":"b513a9fe-d0ca-4459-9829-bec7512496d7","status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '294'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 19 Mar 2020 06:16:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --source-resource-id --name --endpoint-type --endpoint --subject-begins-with
+      User-Agent:
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription2?api-version=2020-04-01-preview
+  response:
+    body:
+      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Web/sites/eventgridclitestapp/functions/EventGridTrigger1","maxEventsPerBatch":10,"preferredBatchSizeInKilobytes":128},"endpointType":"AzureFunction"},"filter":{"subjectBeginsWith":"SomeRandomText2234431","subjectEndsWith":"","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription2","name":"CliTestEventGridEventsubscription2","type":"Microsoft.EventGrid/eventSubscriptions"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1245'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 19 Mar 2020 06:16:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --source-resource-id --name --endpoint-type --endpoint --subject-begins-with
+      User-Agent:
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription4?api-version=2020-04-01-preview
+  response:
+    body:
+      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Succeeded","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://devexpfuncappdestination.azurewebsites.net/api/DevExpFunc","maxEventsPerBatch":10,"preferredBatchSizeInKilobytes":128},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"SomeRandomText1","subjectEndsWith":"","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription4","name":"CliTestEventGridEventsubscription4","type":"Microsoft.EventGrid/eventSubscriptions"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1169'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 19 Mar 2020 06:16:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"destination": {"endpointType": "WebHook", "properties": {"endpointUrl":
+      "https://devexpfuncappdestination.azurewebsites.net/api/DevExpFunc?code=<HIDDEN>",
+      "maxEventsPerBatch": 10, "preferredBatchSizeInKilobytes": 128}}, "filter": {"subjectBeginsWith":
+      "SomeRandomText112341", "subjectEndsWith": "", "includedEventTypes": ["Microsoft.Storage.BlobCreated",
+      "Microsoft.Storage.BlobDeleted"]}, "eventDeliverySchema": "EventGridSchema",
+      "retryPolicy": {"maxDeliveryAttempts": 30, "eventTimeToLiveInMinutes": 1440}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '559'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --source-resource-id --name --endpoint-type --endpoint --subject-begins-with
+      User-Agent:
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
+      accept-language:
+      - en-US
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription4?api-version=2020-04-01-preview
+  response:
+    body:
+      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Updating","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://devexpfuncappdestination.azurewebsites.net/api/DevExpFunc","maxEventsPerBatch":10,"preferredBatchSizeInKilobytes":128},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"SomeRandomText112341","subjectEndsWith":"","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription4","name":"CliTestEventGridEventsubscription4","type":"Microsoft.EventGrid/eventSubscriptions"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/49A8B629-2983-45FC-8159-024BB981CBE8?api-version=2020-04-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1173'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 19 Mar 2020 06:16:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '899'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --source-resource-id --name --endpoint-type --endpoint --subject-begins-with
+      User-Agent:
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/49A8B629-2983-45FC-8159-024BB981CBE8?api-version=2020-04-01-preview
+  response:
+    body:
+      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/49A8B629-2983-45FC-8159-024BB981CBE8?api-version=2020-04-01-preview","name":"49a8b629-2983-45fc-8159-024bb981cbe8","status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '294'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 19 Mar 2020 06:16:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --source-resource-id --name --endpoint-type --endpoint --subject-begins-with
+      User-Agent:
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription4?api-version=2020-04-01-preview
+  response:
+    body:
+      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Succeeded","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://devexpfuncappdestination.azurewebsites.net/api/DevExpFunc","maxEventsPerBatch":10,"preferredBatchSizeInKilobytes":128},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"SomeRandomText112341","subjectEndsWith":"","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription4","name":"CliTestEventGridEventsubscription4","type":"Microsoft.EventGrid/eventSubscriptions"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1174'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 19 Mar 2020 06:16:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --source-resource-id --name --endpoint --subject-begins-with
+      User-Agent:
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription3?api-version=2020-04-01-preview
+  response:
+    body:
+      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Succeeded","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://devexpfuncappdestination.azurewebsites.net/api/DevExpFunc","maxEventsPerBatch":10,"preferredBatchSizeInKilobytes":128,"azureActiveDirectoryTenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","azureActiveDirectoryApplicationIdOrUri":"03d47d4a-7c50-43e0-ba90-89d090cc4582"},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"SomeRandomText1","subjectEndsWith":"","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription3","name":"CliTestEventGridEventsubscription3","type":"Microsoft.EventGrid/eventSubscriptions"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1319'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 19 Mar 2020 06:16:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"destination": {"endpointType": "WebHook", "properties": {"endpointUrl":
+      "https://devexpfuncappdestination.azurewebsites.net/api/DevExpFunc?code=<HIDDEN>",
+      "maxEventsPerBatch": 10, "preferredBatchSizeInKilobytes": 128, "azureActiveDirectoryTenantId":
+      "72f988bf-86f1-41af-91ab-2d7cd011db47", "azureActiveDirectoryApplicationIdOrUri":
+      "03d47d4a-7c50-43e0-ba90-89d090cc4582"}}, "filter": {"subjectBeginsWith": "SomeRandomText123412",
+      "subjectEndsWith": "", "includedEventTypes": ["Microsoft.Storage.BlobCreated",
+      "Microsoft.Storage.BlobDeleted"]}, "eventDeliverySchema": "EventGridSchema",
+      "retryPolicy": {"maxDeliveryAttempts": 30, "eventTimeToLiveInMinutes": 1440}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '713'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --source-resource-id --name --endpoint --subject-begins-with
+      User-Agent:
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
+      accept-language:
+      - en-US
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription3?api-version=2020-04-01-preview
+  response:
+    body:
+      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Updating","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://devexpfuncappdestination.azurewebsites.net/api/DevExpFunc","maxEventsPerBatch":10,"preferredBatchSizeInKilobytes":128,"azureActiveDirectoryTenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","azureActiveDirectoryApplicationIdOrUri":"03d47d4a-7c50-43e0-ba90-89d090cc4582"},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"SomeRandomText123412","subjectEndsWith":"","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription3","name":"CliTestEventGridEventsubscription3","type":"Microsoft.EventGrid/eventSubscriptions"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/FD981D67-7D58-45EC-9873-236A4070473B?api-version=2020-04-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1323'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 19 Mar 2020 06:16:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '898'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --source-resource-id --name --endpoint --subject-begins-with
+      User-Agent:
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/FD981D67-7D58-45EC-9873-236A4070473B?api-version=2020-04-01-preview
+  response:
+    body:
+      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/FD981D67-7D58-45EC-9873-236A4070473B?api-version=2020-04-01-preview","name":"fd981d67-7d58-45ec-9873-236a4070473b","status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '294'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 19 Mar 2020 06:16:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --source-resource-id --name --endpoint --subject-begins-with
+      User-Agent:
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription3?api-version=2020-04-01-preview
+  response:
+    body:
+      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Succeeded","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://devexpfuncappdestination.azurewebsites.net/api/DevExpFunc","maxEventsPerBatch":10,"preferredBatchSizeInKilobytes":128,"azureActiveDirectoryTenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","azureActiveDirectoryApplicationIdOrUri":"03d47d4a-7c50-43e0-ba90-89d090cc4582"},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"SomeRandomText123412","subjectEndsWith":"","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription3","name":"CliTestEventGridEventsubscription3","type":"Microsoft.EventGrid/eventSubscriptions"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1324'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 19 Mar 2020 06:16:28 GMT
       expires:
       - '-1'
       pragma:
@@ -644,24 +1604,24 @@ interactions:
       ParameterSetName:
       - --source-resource-id --name
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        eventgridmanagementclient/2020-04-01-preview Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription1?api-version=2020-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription1?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.ServiceBus/namespaces/devexpservicebus/topics/devexptopic1"},"endpointType":"ServiceBusTopic"},"filter":{"subjectBeginsWith":"SomeRandomText1","subjectEndsWith":"","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"eventDeliverySchema":"CloudEventSchemaV1_0","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription1","name":"CliTestEventsubscription1","type":"Microsoft.EventGrid/eventSubscriptions"}'
+      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.ServiceBus/namespaces/devexpservicebus/topics/devexptopic1"},"endpointType":"ServiceBusTopic"},"filter":{"subjectBeginsWith":"SomeRandomText1234","subjectEndsWith":"","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"eventDeliverySchema":"CloudEventSchemaV1_0","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription1","name":"CliTestEventGridEventsubscription1","type":"Microsoft.EventGrid/eventSubscriptions"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1170'
+      - '1191'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 21 Jan 2020 12:14:24 GMT
+      - Thu, 19 Mar 2020 06:16:30 GMT
       expires:
       - '-1'
       pragma:
@@ -693,24 +1653,24 @@ interactions:
       ParameterSetName:
       - --source-resource-id --name
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        eventgridmanagementclient/2020-04-01-preview Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription2?api-version=2020-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription2?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Web/sites/eventgridclitestapp/functions/EventGridTrigger1","maxEventsPerBatch":10,"preferredBatchSizeInKilobytes":128},"endpointType":"AzureFunction"},"filter":{"subjectBeginsWith":"SomeRandomText1","subjectEndsWith":"","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription2","name":"CliTestEventsubscription2","type":"Microsoft.EventGrid/eventSubscriptions"}'
+      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Web/sites/eventgridclitestapp/functions/EventGridTrigger1","maxEventsPerBatch":10,"preferredBatchSizeInKilobytes":128},"endpointType":"AzureFunction"},"filter":{"subjectBeginsWith":"SomeRandomText2234431","subjectEndsWith":"","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription2","name":"CliTestEventGridEventsubscription2","type":"Microsoft.EventGrid/eventSubscriptions"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1221'
+      - '1245'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 21 Jan 2020 12:14:25 GMT
+      - Thu, 19 Mar 2020 06:16:30 GMT
       expires:
       - '-1'
       pragma:
@@ -742,24 +1702,24 @@ interactions:
       ParameterSetName:
       - --source-resource-id --name
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        eventgridmanagementclient/2020-04-01-preview Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription3?api-version=2020-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription3?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Succeeded","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid","maxEventsPerBatch":10,"preferredBatchSizeInKilobytes":128,"azureActiveDirectoryTenantId":"00000000-0000-0000-0000-000000000000","azureActiveDirectoryApplicationIdOrUri":"00000000-0000-0000-0000-000000000000"},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"SomeRandomText1","subjectEndsWith":"","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription3","name":"CliTestEventsubscription3","type":"Microsoft.EventGrid/eventSubscriptions"}'
+      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Succeeded","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://devexpfuncappdestination.azurewebsites.net/api/DevExpFunc","maxEventsPerBatch":10,"preferredBatchSizeInKilobytes":128,"azureActiveDirectoryTenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","azureActiveDirectoryApplicationIdOrUri":"03d47d4a-7c50-43e0-ba90-89d090cc4582"},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"SomeRandomText123412","subjectEndsWith":"","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription3","name":"CliTestEventGridEventsubscription3","type":"Microsoft.EventGrid/eventSubscriptions"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1313'
+      - '1324'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 21 Jan 2020 12:14:25 GMT
+      - Thu, 19 Mar 2020 06:16:30 GMT
       expires:
       - '-1'
       pragma:
@@ -793,26 +1753,126 @@ interactions:
       ParameterSetName:
       - --source-resource-id --name
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        eventgridmanagementclient/2020-04-01-preview Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription1?api-version=2020-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription1?api-version=2020-04-01-preview
   response:
     body:
       string: ''
     headers:
+      azure-asyncoperation:
+      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/FE951820-9E63-4897-BFE2-8F9B7B0FE978?api-version=2020-04-01-preview
       cache-control:
       - no-cache
       content-length:
       - '0'
       date:
-      - Tue, 21 Jan 2020 12:14:26 GMT
+      - Thu, 19 Mar 2020 06:16:31 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationResults/621C733F-E4F1-45F4-A9FA-060CEBCACB79?api-version=2020-04-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationResults/FE951820-9E63-4897-BFE2-8F9B7B0FE978?api-version=2020-04-01-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14998'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --source-resource-id --name
+      User-Agent:
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/FE951820-9E63-4897-BFE2-8F9B7B0FE978?api-version=2020-04-01-preview
+  response:
+    body:
+      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/FE951820-9E63-4897-BFE2-8F9B7B0FE978?api-version=2020-04-01-preview","name":"fe951820-9e63-4897-bfe2-8f9b7b0fe978","status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '294'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 19 Mar 2020 06:16:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --source-resource-id --name
+      User-Agent:
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
+      accept-language:
+      - en-US
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription2?api-version=2020-04-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/6790B503-38D5-4288-AA43-046369C62B70?api-version=2020-04-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Thu, 19 Mar 2020 06:16:44 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationResults/6790B503-38D5-4288-AA43-046369C62B70?api-version=2020-04-01-preview
       pragma:
       - no-cache
       server:
@@ -840,20 +1900,22 @@ interactions:
       ParameterSetName:
       - --source-resource-id --name
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        eventgridmanagementclient/2020-04-01-preview Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationResults/621C733F-E4F1-45F4-A9FA-060CEBCACB79?api-version=2020-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/6790B503-38D5-4288-AA43-046369C62B70?api-version=2020-04-01-preview
   response:
     body:
-      string: ''
+      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/6790B503-38D5-4288-AA43-046369C62B70?api-version=2020-04-01-preview","name":"6790b503-38d5-4288-aa43-046369c62b70","status":"Succeeded"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '0'
+      - '294'
+      content-type:
+      - application/json; charset=utf-8
       date:
-      - Tue, 21 Jan 2020 12:14:36 GMT
+      - Thu, 19 Mar 2020 06:16:54 GMT
       expires:
       - '-1'
       pragma:
@@ -862,6 +1924,10 @@ interactions:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
     status:
@@ -883,26 +1949,28 @@ interactions:
       ParameterSetName:
       - --source-resource-id --name
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        eventgridmanagementclient/2020-04-01-preview Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription2?api-version=2020-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription3?api-version=2020-04-01-preview
   response:
     body:
       string: ''
     headers:
+      azure-asyncoperation:
+      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/2EBF2947-EB8C-4FBB-9361-C22E69894FE9?api-version=2020-04-01-preview
       cache-control:
       - no-cache
       content-length:
       - '0'
       date:
-      - Tue, 21 Jan 2020 12:14:38 GMT
+      - Thu, 19 Mar 2020 06:16:55 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationResults/21A44146-238C-443B-AF84-D84E60E04BAE?api-version=2020-04-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationResults/2EBF2947-EB8C-4FBB-9361-C22E69894FE9?api-version=2020-04-01-preview
       pragma:
       - no-cache
       server:
@@ -912,7 +1980,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14995'
+      - '14999'
     status:
       code: 202
       message: Accepted
@@ -930,20 +1998,22 @@ interactions:
       ParameterSetName:
       - --source-resource-id --name
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        eventgridmanagementclient/2020-04-01-preview Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationResults/21A44146-238C-443B-AF84-D84E60E04BAE?api-version=2020-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/2EBF2947-EB8C-4FBB-9361-C22E69894FE9?api-version=2020-04-01-preview
   response:
     body:
-      string: ''
+      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/2EBF2947-EB8C-4FBB-9361-C22E69894FE9?api-version=2020-04-01-preview","name":"2ebf2947-eb8c-4fbb-9361-c22e69894fe9","status":"Succeeded"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '0'
+      - '294'
+      content-type:
+      - application/json; charset=utf-8
       date:
-      - Tue, 21 Jan 2020 12:14:48 GMT
+      - Thu, 19 Mar 2020 06:17:06 GMT
       expires:
       - '-1'
       pragma:
@@ -952,6 +2022,10 @@ interactions:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
     status:
@@ -973,26 +2047,28 @@ interactions:
       ParameterSetName:
       - --source-resource-id --name
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        eventgridmanagementclient/2020-04-01-preview Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription3?api-version=2020-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clieventgridrg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventGridEventsubscription4?api-version=2020-04-01-preview
   response:
     body:
       string: ''
     headers:
+      azure-asyncoperation:
+      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/C79AB007-DE33-4F6E-9AD4-113736176CB8?api-version=2020-04-01-preview
       cache-control:
       - no-cache
       content-length:
       - '0'
       date:
-      - Tue, 21 Jan 2020 12:14:50 GMT
+      - Thu, 19 Mar 2020 06:17:07 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationResults/0263E8F0-B5B5-4058-9F25-0869F448CBAE?api-version=2020-04-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationResults/C79AB007-DE33-4F6E-9AD4-113736176CB8?api-version=2020-04-01-preview
       pragma:
       - no-cache
       server:
@@ -1002,7 +2078,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14998'
+      - '14997'
     status:
       code: 202
       message: Accepted
@@ -1020,20 +2096,22 @@ interactions:
       ParameterSetName:
       - --source-resource-id --name
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        eventgridmanagementclient/2020-04-01-preview Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc4 Azure-SDK-For-Python AZURECLI/2.1.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationResults/0263E8F0-B5B5-4058-9F25-0869F448CBAE?api-version=2020-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/C79AB007-DE33-4F6E-9AD4-113736176CB8?api-version=2020-04-01-preview
   response:
     body:
-      string: ''
+      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/C79AB007-DE33-4F6E-9AD4-113736176CB8?api-version=2020-04-01-preview","name":"c79ab007-de33-4f6e-9ad4-113736176cb8","status":"Succeeded"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '0'
+      - '294'
+      content-type:
+      - application/json; charset=utf-8
       date:
-      - Tue, 21 Jan 2020 12:15:01 GMT
+      - Thu, 19 Mar 2020 06:17:18 GMT
       expires:
       - '-1'
       pragma:
@@ -1042,6 +2120,10 @@ interactions:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
     status:
@@ -1063,8 +2145,8 @@ interactions:
       ParameterSetName:
       - -y -g -n
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-storage/7.1.0 Azure-SDK-For-Python AZURECLI/2.0.80
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-storage/7.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: DELETE
@@ -1080,7 +2162,7 @@ interactions:
       content-type:
       - text/plain; charset=utf-8
       date:
-      - Tue, 21 Jan 2020 12:15:06 GMT
+      - Thu, 19 Mar 2020 06:17:22 GMT
       expires:
       - '-1'
       pragma:
@@ -1092,7 +2174,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14998'
+      - '14999'
     status:
       code: 200
       message: OK

@@ -44,3 +44,11 @@ class TestSetVmSetType(unittest.TestCase):
         version = "1.15.0"
         vm_type = helpers._set_vm_set_type("Availabilityset", version)
         self.assertEqual(vm_type, "AvailabilitySet")
+
+
+class TestTrimContainerName(unittest.TestCase):
+    def test_trim_fqdn_name_containing_hcp(self):
+        container_name = 'abcdef-dns-ed55ba6d-hcp-centralus-azmk8s-io'
+        expected_container_name = 'abcdef-dns-ed55ba6d'
+        trim_container_name = helpers._trim_fqdn_name_containing_hcp(container_name)
+        self.assertEqual(expected_container_name, trim_container_name)

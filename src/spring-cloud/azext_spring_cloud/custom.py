@@ -116,8 +116,11 @@ def app_create(cmd, client, resource_group, service, name,
     properties.temporary_disk = models.TemporaryDisk(
         size_in_gb=5, mount_path="/tmp")
 
+    resource = client.services.get(resource_group, service)
+    location = resource.location
+
     poller = client.apps.create_or_update(
-        resource_group, service, name, properties)
+        resource_group, service, name, properties, location)
     while poller.done() is False:
         sleep(APP_CREATE_OR_UPDATE_SLEEP_INTERVAL)
 
@@ -144,7 +147,7 @@ def app_create(cmd, client, resource_group, service, name,
     properties = models.AppResourceProperties(
         active_deployment_name=DEFAULT_DEPLOYMENT_NAME, public=is_public)
 
-    app_poller = client.apps.update(resource_group, service, name, properties)
+    app_poller = client.apps.update(resource_group, service, name, properties, location)
     logger.warning(
         "[4/4] Updating app '{}' (this operation can take a while to complete)".format(name))
     while not poller.done() or not app_poller.done():
@@ -172,9 +175,12 @@ def app_update(cmd, client, resource_group, service, name,
     if enable_persistent_storage is False:
         properties.persistent_disk = models.PersistentDisk(size_in_gb=0)
 
+    resource = client.services.get(resource_group, service)
+    location = resource.location
+
     logger.warning("[1/2] updating app '{}'".format(name))
     poller = client.apps.update(
-        resource_group, service, name, properties)
+        resource_group, service, name, properties, location)
     while poller.done() is False:
         sleep(APP_CREATE_OR_UPDATE_SLEEP_INTERVAL)
 
@@ -431,7 +437,11 @@ def app_set_deployment(cmd, client, resource_group, service, name, deployment):
                        "' not found, please use 'az spring-cloud app deployment create' to create the new deployment")
     properties = models.AppResourceProperties(
         active_deployment_name=deployment)
-    return client.apps.update(resource_group, service, name, properties)
+
+    resource = client.services.get(resource_group, service)
+    location = resource.location
+
+    return client.apps.update(resource_group, service, name, properties, location)
 
 
 def deployment_create(cmd, client, resource_group, service, app, name,
