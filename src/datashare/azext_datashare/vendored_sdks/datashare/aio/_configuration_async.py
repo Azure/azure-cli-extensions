@@ -14,7 +14,8 @@ from azure.core.pipeline import policies
 VERSION = "unknown"
 
 class DataShareManagementClientConfiguration(Configuration):
-    """Configuration for DataShareManagementClient
+    """Configuration for DataShareManagementClient.
+
     Note that all parameters used to create this instance are saved as instance
     attributes.
 
@@ -39,8 +40,8 @@ class DataShareManagementClientConfiguration(Configuration):
         self.credential = credential
         self.subscription_id = subscription_id
         self.api_version = "2019-11-01"
+        kwargs.setdefault('sdk_moniker', 'datasharemanagementclient/{}'.format(VERSION))
         self._configure(**kwargs)
-        self.user_agent_policy.add_user_agent('azsdk-python-datasharemanagementclient/{}'.format(VERSION))
 
     def _configure(
         self,

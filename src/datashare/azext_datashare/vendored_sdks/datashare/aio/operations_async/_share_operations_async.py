@@ -10,11 +10,10 @@ from typing import Any, Callable, Dict, Generic, Optional, TypeVar, Union
 import warnings
 
 from azure.core.async_paging import AsyncItemPaged, AsyncList
-from azure.core.exceptions import map_error
+from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
 from azure.core.polling import AsyncNoPolling, AsyncPollingMethod, async_poller
-from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
 
 from ... import models
 
@@ -24,7 +23,8 @@ ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T
 class ShareOperations:
     """ShareOperations async operations.
 
-    You should not instantiate directly this class, but create a Client instance that will create it for you and attach it as attribute.
+    You should not instantiate this class directly. Instead, you should create a Client instance that
+    instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
     :type models: ~data_share_management_client.models
@@ -57,15 +57,15 @@ class ShareOperations:
         :type resource_group_name: str
         :param account_name: The name of the share account.
         :type account_name: str
-        :param share_name: The name of the share.
+        :param share_name: The name of the share to retrieve.
         :type share_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Share or the result of cls(response)
         :rtype: ~data_share_management_client.models.Share
-        :raises: ~data_share_management_client.models.DataShareErrorException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls: ClsType["models.Share"] = kwargs.pop('cls', None )
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.Share"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2019-11-01"
 
         # Construct URL
@@ -79,11 +79,11 @@ class ShareOperations:
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters: Dict[str, Any] = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters: Dict[str, Any] = {}
+        header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
         # Construct and send request
@@ -93,7 +93,8 @@ class ShareOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.DataShareErrorException.from_response(response, self._deserialize)
+            error = self._deserialize(models.DataShareError, response)
+            raise HttpResponseError(response=response, model=error)
 
         deserialized = self._deserialize('Share', pipeline_response)
 
@@ -130,15 +131,16 @@ class ShareOperations:
         :param terms: Share terms.
         :type terms: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: Share or Share or the result of cls(response)
+        :return: Share or the result of cls(response)
         :rtype: ~data_share_management_client.models.Share or ~data_share_management_client.models.Share
-        :raises: ~data_share_management_client.models.DataShareErrorException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls: ClsType["models.Share"] = kwargs.pop('cls', None )
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.Share"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        share = models.Share(description=description, share_kind=share_kind, terms=terms)
+        _share = models.Share(description=description, share_kind=share_kind, terms=terms)
         api_version = "2019-11-01"
+        content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
         url = self.create.metadata['url']
@@ -151,25 +153,27 @@ class ShareOperations:
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters: Dict[str, Any] = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters: Dict[str, Any] = {}
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'application/json'
-
-        # Construct body
-        body_content = self._serialize.body(share, 'Share')
 
         # Construct and send request
-        request = self._client.put(url, query_parameters, header_parameters, body_content)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(_share, 'Share')
+        body_content_kwargs['content'] = body_content
+        request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
+
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.DataShareErrorException.from_response(response, self._deserialize)
+            error = self._deserialize(models.DataShareError, response)
+            raise HttpResponseError(response=response, model=error)
 
         deserialized = None
         if response.status_code == 200:
@@ -191,8 +195,8 @@ class ShareOperations:
         share_name: str,
         **kwargs
     ) -> "models.OperationResponse":
-        cls: ClsType["models.OperationResponse"] = kwargs.pop('cls', None )
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.OperationResponse"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2019-11-01"
 
         # Construct URL
@@ -206,11 +210,11 @@ class ShareOperations:
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters: Dict[str, Any] = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters: Dict[str, Any] = {}
+        header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
         # Construct and send request
@@ -220,7 +224,8 @@ class ShareOperations:
 
         if response.status_code not in [200, 202, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.DataShareErrorException.from_response(response, self._deserialize)
+            error = self._deserialize(models.DataShareError, response)
+            raise HttpResponseError(response=response, model=error)
 
         deserialized = None
         if response.status_code == 200:
@@ -256,10 +261,10 @@ class ShareOperations:
         :return: An instance of LROPoller that returns OperationResponse
         :rtype: ~azure.core.polling.LROPoller[~data_share_management_client.models.OperationResponse]
 
-        :raises ~data_share_management_client.models.DataShareErrorException:
+        :raises ~azure.core.exceptions.HttpResponseError:
         """
-        polling: Union[bool, AsyncPollingMethod] = kwargs.pop('polling', True)
-        cls: ClsType["models.OperationResponse"] = kwargs.pop('cls', None )
+        polling = kwargs.pop('polling', False)  # type: Union[bool, AsyncPollingMethod]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.OperationResponse"]
         raw_result = await self._delete_initial(
             resource_group_name=resource_group_name,
             account_name=account_name,
@@ -279,7 +284,7 @@ class ShareOperations:
             'polling_interval',
             self._config.polling_interval
         )
-        if polling is True: polling_method = AsyncARMPolling(lro_delay,  **kwargs)
+        if polling is True: raise ValueError("polling being True is not valid because no default polling implemetation has been defined.")
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         return await async_poller(self._client, raw_result, get_long_running_output, polling_method)
@@ -300,15 +305,15 @@ class ShareOperations:
         :type resource_group_name: str
         :param account_name: The name of the share account.
         :type account_name: str
-        :param skip_token: Continuation token.
+        :param skip_token: Continuation Token.
         :type skip_token: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ShareList or the result of cls(response)
         :rtype: ~data_share_management_client.models.ShareList
-        :raises: ~data_share_management_client.models.DataShareErrorException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls: ClsType["models.ShareList"] = kwargs.pop('cls', None )
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ShareList"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2019-11-01"
 
         def prepare_request(next_link=None):
@@ -325,13 +330,13 @@ class ShareOperations:
                 url = next_link
 
             # Construct parameters
-            query_parameters: Dict[str, Any] = {}
+            query_parameters = {}  # type: Dict[str, Any]
             query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
             if skip_token is not None:
                 query_parameters['$skipToken'] = self._serialize.query("skip_token", skip_token, 'str')
 
             # Construct headers
-            header_parameters: Dict[str, Any] = {}
+            header_parameters = {}  # type: Dict[str, Any]
             header_parameters['Accept'] = 'application/json'
 
             # Construct and send request
@@ -343,7 +348,7 @@ class ShareOperations:
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
-            return deserialized.next_link, AsyncList(list_of_elem)
+            return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
             request = prepare_request(next_link)
@@ -352,8 +357,9 @@ class ShareOperations:
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
+                error = self._deserialize(models.DataShareError, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise models.DataShareErrorException.from_response(response, self._deserialize)
+                raise HttpResponseError(response=response, model=error)
 
             return pipeline_response
 
@@ -385,10 +391,10 @@ class ShareOperations:
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ShareSynchronizationList or the result of cls(response)
         :rtype: ~data_share_management_client.models.ShareSynchronizationList
-        :raises: ~data_share_management_client.models.DataShareErrorException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls: ClsType["models.ShareSynchronizationList"] = kwargs.pop('cls', None )
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ShareSynchronizationList"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2019-11-01"
 
         def prepare_request(next_link=None):
@@ -406,13 +412,13 @@ class ShareOperations:
                 url = next_link
 
             # Construct parameters
-            query_parameters: Dict[str, Any] = {}
+            query_parameters = {}  # type: Dict[str, Any]
             query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
             if skip_token is not None:
                 query_parameters['$skipToken'] = self._serialize.query("skip_token", skip_token, 'str')
 
             # Construct headers
-            header_parameters: Dict[str, Any] = {}
+            header_parameters = {}  # type: Dict[str, Any]
             header_parameters['Accept'] = 'application/json'
 
             # Construct and send request
@@ -424,7 +430,7 @@ class ShareOperations:
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
-            return deserialized.next_link, AsyncList(list_of_elem)
+            return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
             request = prepare_request(next_link)
@@ -433,8 +439,9 @@ class ShareOperations:
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
+                error = self._deserialize(models.DataShareError, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise models.DataShareErrorException.from_response(response, self._deserialize)
+                raise HttpResponseError(response=response, model=error)
 
             return pipeline_response
 
@@ -493,12 +500,13 @@ class ShareOperations:
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: SynchronizationDetailsList or the result of cls(response)
         :rtype: ~data_share_management_client.models.SynchronizationDetailsList
-        :raises: ~data_share_management_client.models.DataShareErrorException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls: ClsType["models.SynchronizationDetailsList"] = kwargs.pop('cls', None )
-        error_map = kwargs.pop('error_map', {})
-        share_synchronization = models.ShareSynchronization(consumer_email=consumer_email, consumer_name=consumer_name, consumer_tenant_name=consumer_tenant_name, duration_ms=duration_ms, end_time=end_time, message=message, start_time=start_time, status=status, synchronization_id=synchronization_id)
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.SynchronizationDetailsList"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        _share_synchronization = models.ShareSynchronization(consumer_email=consumer_email, consumer_name=consumer_name, consumer_tenant_name=consumer_tenant_name, duration_ms=duration_ms, end_time=end_time, message=message, start_time=start_time, status=status, synchronization_id=synchronization_id)
         api_version = "2019-11-01"
+        content_type = "application/json"
 
         def prepare_request(next_link=None):
             if not next_link:
@@ -515,21 +523,22 @@ class ShareOperations:
                 url = next_link
 
             # Construct parameters
-            query_parameters: Dict[str, Any] = {}
+            query_parameters = {}  # type: Dict[str, Any]
             query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
             if skip_token is not None:
                 query_parameters['$skipToken'] = self._serialize.query("skip_token", skip_token, 'str')
 
             # Construct headers
-            header_parameters: Dict[str, Any] = {}
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
             header_parameters['Accept'] = 'application/json'
-            header_parameters['Content-Type'] = 'application/json'
-
-            # Construct body
-            body_content = self._serialize.body(share_synchronization, 'ShareSynchronization')
 
             # Construct and send request
-            request = self._client.post(url, query_parameters, header_parameters, body_content)
+            body_content_kwargs = {}  # type: Dict[str, Any]
+            body_content = self._serialize.body(_share_synchronization, 'ShareSynchronization')
+            body_content_kwargs['content'] = body_content
+            request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+
             return request
 
         async def extract_data(pipeline_response):
@@ -537,7 +546,7 @@ class ShareOperations:
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
-            return deserialized.next_link, AsyncList(list_of_elem)
+            return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
             request = prepare_request(next_link)
@@ -546,8 +555,9 @@ class ShareOperations:
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
+                error = self._deserialize(models.DataShareError, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise models.DataShareErrorException.from_response(response, self._deserialize)
+                raise HttpResponseError(response=response, model=error)
 
             return pipeline_response
 

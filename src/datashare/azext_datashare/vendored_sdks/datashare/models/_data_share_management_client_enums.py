@@ -9,6 +9,8 @@
 from enum import Enum
 
 class ProvisioningState(str, Enum):
+    """Provisioning state of the Account
+    """
 
     succeeded = "Succeeded"
     creating = "Creating"
@@ -17,6 +19,8 @@ class ProvisioningState(str, Enum):
     failed = "Failed"
 
 class InvitationStatus(str, Enum):
+    """The status of the invitation.
+    """
 
     pending = "Pending"
     accepted = "Accepted"
@@ -24,6 +28,8 @@ class InvitationStatus(str, Enum):
     withdrawn = "Withdrawn"
 
 class Kind(str, Enum):
+    """Kind of data set.
+    """
 
     blob = "Blob"
     container = "Container"
@@ -40,16 +46,22 @@ class Kind(str, Enum):
     schedule_based = "ScheduleBased"
 
 class ShareKind(str, Enum):
+    """Share kind.
+    """
 
     copy_based = "CopyBased"
     in_place = "InPlace"
 
 class SynchronizationMode(str, Enum):
+    """Synchronization mode
+    """
 
     incremental = "Incremental"
     full_sync = "FullSync"
 
 class DataSetType(str, Enum):
+    """Type of the data set
+    """
 
     blob = "Blob"
     container = "Container"
@@ -65,6 +77,8 @@ class DataSetType(str, Enum):
     sql_dw_table = "SqlDWTable"
 
 class ShareSubscriptionStatus(str, Enum):
+    """Gets the status of share subscription
+    """
 
     active = "Active"
     revoked = "Revoked"
@@ -72,6 +86,8 @@ class ShareSubscriptionStatus(str, Enum):
     revoking = "Revoking"
 
 class Status(str, Enum):
+    """Operation state of the long running operation.
+    """
 
     accepted = "Accepted"
     in_progress = "InProgress"
@@ -81,22 +97,30 @@ class Status(str, Enum):
     canceled = "Canceled"
 
 class RecurrenceInterval(str, Enum):
+    """Recurrence Interval
+    """
 
     hour = "Hour"
     day = "Day"
 
 class TriggerStatus(str, Enum):
+    """Gets the trigger state
+    """
 
     active = "Active"
     inactive = "Inactive"
     source_synchronization_setting_deleted = "SourceSynchronizationSettingDeleted"
 
 class DataSetMappingStatus(str, Enum):
+    """Gets the status of the data set mapping.
+    """
 
     ok = "Ok"
     broken = "Broken"
 
 class OutputType(str, Enum):
+    """File output type
+    """
 
     csv = "Csv"
     parquet = "Parquet"

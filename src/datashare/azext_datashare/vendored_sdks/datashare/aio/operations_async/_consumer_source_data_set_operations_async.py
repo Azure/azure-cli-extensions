@@ -9,7 +9,7 @@ from typing import Any, Callable, Dict, Generic, Optional, TypeVar
 import warnings
 
 from azure.core.async_paging import AsyncItemPaged, AsyncList
-from azure.core.exceptions import map_error
+from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
 
@@ -21,7 +21,8 @@ ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T
 class ConsumerSourceDataSetOperations:
     """ConsumerSourceDataSetOperations async operations.
 
-    You should not instantiate directly this class, but create a Client instance that will create it for you and attach it as attribute.
+    You should not instantiate this class directly. Instead, you should create a Client instance that
+    instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
     :type models: ~data_share_management_client.models
@@ -62,10 +63,10 @@ class ConsumerSourceDataSetOperations:
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ConsumerSourceDataSetList or the result of cls(response)
         :rtype: ~data_share_management_client.models.ConsumerSourceDataSetList
-        :raises: ~data_share_management_client.models.DataShareErrorException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls: ClsType["models.ConsumerSourceDataSetList"] = kwargs.pop('cls', None )
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ConsumerSourceDataSetList"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2019-11-01"
 
         def prepare_request(next_link=None):
@@ -83,13 +84,13 @@ class ConsumerSourceDataSetOperations:
                 url = next_link
 
             # Construct parameters
-            query_parameters: Dict[str, Any] = {}
+            query_parameters = {}  # type: Dict[str, Any]
             query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
             if skip_token is not None:
                 query_parameters['$skipToken'] = self._serialize.query("skip_token", skip_token, 'str')
 
             # Construct headers
-            header_parameters: Dict[str, Any] = {}
+            header_parameters = {}  # type: Dict[str, Any]
             header_parameters['Accept'] = 'application/json'
 
             # Construct and send request
@@ -101,7 +102,7 @@ class ConsumerSourceDataSetOperations:
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
-            return deserialized.next_link, AsyncList(list_of_elem)
+            return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
             request = prepare_request(next_link)
@@ -110,8 +111,9 @@ class ConsumerSourceDataSetOperations:
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
+                error = self._deserialize(models.DataShareError, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise models.DataShareErrorException.from_response(response, self._deserialize)
+                raise HttpResponseError(response=response, model=error)
 
             return pipeline_response
 

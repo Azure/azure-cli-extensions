@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
-
+# pylint: disable=unused-argument
 from azure.cli.core.util import sdk_no_wait
 
 
@@ -29,7 +29,13 @@ def datashare_account_create(cmd, client,
                              location=None,
                              tags=None,
                              no_wait=False):
-    return sdk_no_wait(no_wait, client.begin_create,resource_group_name=resource_group_name, account_name=account_name, location=location, tags=tags, identity=identity)
+    return sdk_no_wait(no_wait,
+                       client.begin_create,
+                       resource_group_name=resource_group_name,
+                       account_name=account_name,
+                       location=location,
+                       tags=tags,
+                       identity=identity)
 
 
 def datashare_account_update(cmd, client,
@@ -41,8 +47,12 @@ def datashare_account_update(cmd, client,
 
 def datashare_account_delete(cmd, client,
                              resource_group_name,
-                             account_name):
-    return client.begin_delete(resource_group_name=resource_group_name, account_name=account_name)
+                             account_name,
+                             no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_delete,
+                       resource_group_name=resource_group_name,
+                       account_name=account_name)
 
 
 def datashare_consumer_invitation_list(cmd, client,
@@ -78,13 +88,31 @@ def datashare_data_set_show(cmd, client,
     return client.get(resource_group_name=resource_group_name, account_name=account_name, share_name=share_name, data_set_name=data_set_name)
 
 
+def _assign_owner_role_in_target_scope(cmd, role_scope, spn_object_id):
+    from azure.cli.command_modules.role.custom import list_role_assignments, create_role_assignment
+    role_assignments = list_role_assignments(cmd, assignee=spn_object_id, role='Owner', scope=role_scope)
+    if not role_assignments:
+        create_role_assignment(cmd, role='Owner', assignee_object_id=spn_object_id, scope=role_scope,
+                               assignee_principal_type='ServicePrincipal')
+
+
 def datashare_data_set_create(cmd, client,
                               resource_group_name,
                               account_name,
                               share_name,
                               data_set_name,
-                              dataset):
-    return client.create(resource_group_name=resource_group_name, account_name=account_name, share_name=share_name, data_set_name=data_set_name, dataset=dataset)
+                              data_set):
+    from azure.cli.core.commands.client_factory import get_subscription_id
+    if 'resource_group' not in data_set:
+        data_set['resource_group'] = resource_group_name
+    if 'subscription_id' not in data_set:
+        data_set['subscription_id'] = get_subscription_id(cmd.cli_ctx)
+    # assign role
+    return client.create(resource_group_name=resource_group_name,
+                         account_name=account_name,
+                         share_name=share_name,
+                         data_set_name=data_set_name,
+                         data_set=data_set)
 
 
 def datashare_data_set_delete(cmd, client,
@@ -116,8 +144,17 @@ def datashare_data_set_mapping_create(cmd, client,
                                       account_name,
                                       share_subscription_name,
                                       data_set_mapping_name,
-                                      kind):
-    return client.create(resource_group_name=resource_group_name, account_name=account_name, share_subscription_name=share_subscription_name, data_set_mapping_name=data_set_mapping_name, kind=kind)
+                                      data_set_mapping):
+    from azure.cli.core.commands.client_factory import get_subscription_id
+    if 'resource_group' not in data_set_mapping:
+        data_set_mapping['resource_group'] = resource_group_name
+    if 'subscription_id' not in data_set_mapping:
+        data_set_mapping['subscription_id'] = get_subscription_id(cmd.cli_ctx)
+    return client.create(resource_group_name=resource_group_name,
+                         account_name=account_name,
+                         share_subscription_name=share_subscription_name,
+                         data_set_mapping_name=data_set_mapping_name,
+                         data_set_mapping=data_set_mapping)
 
 
 def datashare_data_set_mapping_delete(cmd, client,
@@ -346,13 +383,27 @@ def datashare_synchronization_setting_show(cmd, client,
     return client.get(resource_group_name=resource_group_name, account_name=account_name, share_name=share_name, synchronization_setting_name=synchronization_setting_name)
 
 
+def _format_datetime(date_string):
+    from dateutil.parser import parse
+    try:
+        return parse(date_string).strftime("%Y-%m-%dT%H:%M:%SZ")
+    except ValueError:
+        # logger.debug("Unable to parse date_string '%s'", date_string)
+        return date_string or ' '
+
+
 def datashare_synchronization_setting_create(cmd, client,
                                              resource_group_name,
                                              account_name,
                                              share_name,
                                              synchronization_setting_name,
-                                             kind):
-    return client.create(resource_group_name=resource_group_name, account_name=account_name, share_name=share_name, synchronization_setting_name=synchronization_setting_name, kind=kind)
+                                             synchronization_setting):
+    synchronization_setting['synchronizationTime'] = _format_datetime(synchronization_setting['synchronizationTime'])
+    return client.create(resource_group_name=resource_group_name,
+                         account_name=account_name,
+                         share_name=share_name,
+                         synchronization_setting_name=synchronization_setting_name,
+                         synchronization_setting=synchronization_setting)
 
 
 def datashare_synchronization_setting_delete(cmd, client,
@@ -384,8 +435,12 @@ def datashare_trigger_create(cmd, client,
                              account_name,
                              share_subscription_name,
                              trigger_name,
-                             kind):
-    return client.begin_create(resource_group_name=resource_group_name, account_name=account_name, share_subscription_name=share_subscription_name, trigger_name=trigger_name, kind=kind)
+                             trigger):
+    return client.begin_create(resource_group_name=resource_group_name,
+                               account_name=account_name,
+                               share_subscription_name=share_subscription_name,
+                               trigger_name=trigger_name,
+                               trigger=trigger)
 
 
 def datashare_trigger_delete(cmd, client,

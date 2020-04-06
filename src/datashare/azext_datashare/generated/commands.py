@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
+# pylint: disable=too-many-statements
 
 from azure.cli.core.commands import CliCommandType
 
@@ -30,26 +31,26 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'datashare_consumer_invitation_show')
         g.custom_command('reject-invitation', 'datashare_consumer_invitation_reject_invitation')
 
-    from azext_datashare.generated._client_factory import cf_data_set
-    datashare_data_set = CliCommandType(
-        operations_tmpl='azext_datashare.vendored_sdks.datashare.operations._data_set_operations#DataSetOperations.{}',
-        client_factory=cf_data_set)
-    with self.command_group('datashare data-set', datashare_data_set, client_factory=cf_data_set) as g:
-        g.custom_command('list', 'datashare_data_set_list')
-        g.custom_show_command('show', 'datashare_data_set_show')
-        g.custom_command('create', 'datashare_data_set_create')
-        g.custom_command('delete', 'datashare_data_set_delete', supports_no_wait=True)
-        g.wait_command('wait')
+    # from azext_datashare.generated._client_factory import cf_data_set
+    # datashare_data_set = CliCommandType(
+    #     operations_tmpl='azext_datashare.vendored_sdks.datashare.operations._data_set_operations#DataSetOperations.{}',
+    #     client_factory=cf_data_set)
+    # with self.command_group('datashare data-set', datashare_data_set, client_factory=cf_data_set) as g:
+    #     g.custom_command('list', 'datashare_data_set_list')
+    #     g.custom_show_command('show', 'datashare_data_set_show')
+    #     g.custom_command('create', 'datashare_data_set_create')
+    #     g.custom_command('delete', 'datashare_data_set_delete', supports_no_wait=True)
+    #     g.wait_command('wait')
 
-    from azext_datashare.generated._client_factory import cf_data_set_mapping
-    datashare_data_set_mapping = CliCommandType(
-        operations_tmpl='azext_datashare.vendored_sdks.datashare.operations._data_set_mapping_operations#DataSetMappingOperations.{}',
-        client_factory=cf_data_set_mapping)
-    with self.command_group('datashare data-set-mapping', datashare_data_set_mapping, client_factory=cf_data_set_mapping) as g:
-        g.custom_command('list', 'datashare_data_set_mapping_list')
-        g.custom_show_command('show', 'datashare_data_set_mapping_show')
-        g.custom_command('create', 'datashare_data_set_mapping_create')
-        g.custom_command('delete', 'datashare_data_set_mapping_delete')
+    # from azext_datashare.generated._client_factory import cf_data_set_mapping
+    # datashare_data_set_mapping = CliCommandType(
+    #     operations_tmpl='azext_datashare.vendored_sdks.datashare.operations._data_set_mapping_operations#DataSetMappingOperations.{}',
+    #     client_factory=cf_data_set_mapping)
+    # with self.command_group('datashare data-set-mapping', datashare_data_set_mapping, client_factory=cf_data_set_mapping) as g:
+    #     g.custom_command('list', 'datashare_data_set_mapping_list')
+    #     g.custom_show_command('show', 'datashare_data_set_mapping_show')
+    #     g.custom_command('create', 'datashare_data_set_mapping_create')
+    #     g.custom_command('delete', 'datashare_data_set_mapping_delete')
 
     from azext_datashare.generated._client_factory import cf_invitation
     datashare_invitation = CliCommandType(
@@ -101,12 +102,12 @@ def load_command_table(self, _):
         g.custom_command('list-synchronization', 'datashare_share_subscription_list_synchronization')
         g.wait_command('wait')
 
-    from azext_datashare.generated._client_factory import cf_consumer_source_data_set
-    datashare_consumer_source_data_set = CliCommandType(
-        operations_tmpl='azext_datashare.vendored_sdks.datashare.operations._consumer_source_data_set_operations#ConsumerSourceDataSetOperations.{}',
-        client_factory=cf_consumer_source_data_set)
-    with self.command_group('datashare consumer-source-data-set', datashare_consumer_source_data_set, client_factory=cf_consumer_source_data_set) as g:
-        g.custom_command('list', 'datashare_consumer_source_data_set_list')
+    # from azext_datashare.generated._client_factory import cf_consumer_source_data_set
+    # datashare_consumer_source_data_set = CliCommandType(
+    #     operations_tmpl='azext_datashare.vendored_sdks.datashare.operations._consumer_source_data_set_operations#ConsumerSourceDataSetOperations.{}',
+    #     client_factory=cf_consumer_source_data_set)
+    # with self.command_group('datashare consumer-source-data-set', datashare_consumer_source_data_set, client_factory=cf_consumer_source_data_set) as g:
+    #     g.custom_command('list', 'datashare_consumer_source_data_set_list')
 
     from azext_datashare.generated._client_factory import cf_synchronization_setting
     datashare_synchronization_setting = CliCommandType(

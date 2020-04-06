@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
+# pylint: disable=unused-argument
 
 
 def datashare_account_list(cmd, client,

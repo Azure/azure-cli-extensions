@@ -22,4 +22,5 @@ class AddIdentity(argparse.Action):
         for k in properties:
             kl = k.lower()
             v = properties[k]
+            d[kl] = v
         return d

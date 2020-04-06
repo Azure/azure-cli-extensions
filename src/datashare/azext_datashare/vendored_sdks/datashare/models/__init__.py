@@ -9,100 +9,67 @@
 try:
     from ._models_py3 import Account
     from ._models_py3 import AccountList
-    from ._models_py3 import AccountProperties
     from ._models_py3 import AccountUpdateParameters
     from ._models_py3 import AdlsGen1FileDataSet
-    from ._models_py3 import AdlsGen1FileProperties
     from ._models_py3 import AdlsGen1FolderDataSet
-    from ._models_py3 import AdlsGen1FolderProperties
     from ._models_py3 import AdlsGen2FileDataSet
     from ._models_py3 import AdlsGen2FileDataSetMapping
-    from ._models_py3 import AdlsGen2FileDataSetMappingProperties
-    from ._models_py3 import AdlsGen2FileProperties
     from ._models_py3 import AdlsGen2FileSystemDataSet
     from ._models_py3 import AdlsGen2FileSystemDataSetMapping
-    from ._models_py3 import AdlsGen2FileSystemDataSetMappingProperties
-    from ._models_py3 import AdlsGen2FileSystemProperties
     from ._models_py3 import AdlsGen2FolderDataSet
     from ._models_py3 import AdlsGen2FolderDataSetMapping
-    from ._models_py3 import AdlsGen2FolderDataSetMappingProperties
-    from ._models_py3 import AdlsGen2FolderProperties
     from ._models_py3 import BlobContainerDataSet
     from ._models_py3 import BlobContainerDataSetMapping
-    from ._models_py3 import BlobContainerMappingProperties
-    from ._models_py3 import BlobContainerProperties
     from ._models_py3 import BlobDataSet
     from ._models_py3 import BlobDataSetMapping
     from ._models_py3 import BlobFolderDataSet
     from ._models_py3 import BlobFolderDataSetMapping
-    from ._models_py3 import BlobFolderMappingProperties
-    from ._models_py3 import BlobFolderProperties
-    from ._models_py3 import BlobMappingProperties
-    from ._models_py3 import BlobProperties
     from ._models_py3 import ConsumerInvitation
     from ._models_py3 import ConsumerInvitationList
-    from ._models_py3 import ConsumerInvitationProperties
     from ._models_py3 import ConsumerSourceDataSet
     from ._models_py3 import ConsumerSourceDataSetList
-    from ._models_py3 import ConsumerSourceDataSetProperties
     from ._models_py3 import DataSet
     from ._models_py3 import DataSetList
     from ._models_py3 import DataSetMapping
     from ._models_py3 import DataSetMappingList
-    from ._models_py3 import DataShareError, DataShareErrorException
+    from ._models_py3 import DataShareError
     from ._models_py3 import DataShareErrorInfo
     from ._models_py3 import DefaultDto
     from ._models_py3 import DimensionProperties
     from ._models_py3 import Identity
     from ._models_py3 import Invitation
     from ._models_py3 import InvitationList
-    from ._models_py3 import InvitationProperties
     from ._models_py3 import KustoClusterDataSet
     from ._models_py3 import KustoClusterDataSetMapping
-    from ._models_py3 import KustoClusterDataSetMappingProperties
-    from ._models_py3 import KustoClusterDataSetProperties
     from ._models_py3 import KustoDatabaseDataSet
     from ._models_py3 import KustoDatabaseDataSetMapping
-    from ._models_py3 import KustoDatabaseDataSetMappingProperties
-    from ._models_py3 import KustoDatabaseDataSetProperties
     from ._models_py3 import OperationList
     from ._models_py3 import OperationMetaLogSpecification
     from ._models_py3 import OperationMetaMetricSpecification
-    from ._models_py3 import OperationMetaPropertyInfo
     from ._models_py3 import OperationMetaServiceSpecification
     from ._models_py3 import OperationModel
     from ._models_py3 import OperationModelProperties
     from ._models_py3 import OperationResponse
     from ._models_py3 import ProviderShareSubscription
     from ._models_py3 import ProviderShareSubscriptionList
-    from ._models_py3 import ProviderShareSubscriptionProperties
     from ._models_py3 import ProxyDto
-    from ._models_py3 import ScheduledSourceShareSynchronizationSettingProperties
     from ._models_py3 import ScheduledSourceSynchronizationSetting
     from ._models_py3 import ScheduledSynchronizationSetting
-    from ._models_py3 import ScheduledSynchronizationSettingProperties
     from ._models_py3 import ScheduledTrigger
-    from ._models_py3 import ScheduledTriggerProperties
     from ._models_py3 import Share
     from ._models_py3 import ShareList
-    from ._models_py3 import ShareProperties
     from ._models_py3 import ShareSubscription
     from ._models_py3 import ShareSubscriptionList
-    from ._models_py3 import ShareSubscriptionProperties
     from ._models_py3 import ShareSubscriptionSynchronization
     from ._models_py3 import ShareSubscriptionSynchronizationList
     from ._models_py3 import ShareSynchronization
     from ._models_py3 import ShareSynchronizationList
     from ._models_py3 import SourceShareSynchronizationSetting
     from ._models_py3 import SourceShareSynchronizationSettingList
-    from ._models_py3 import SqlDbTableDataSet
-    from ._models_py3 import SqlDbTableDataSetMapping
-    from ._models_py3 import SqlDbTableDataSetMappingProperties
-    from ._models_py3 import SqlDbTableProperties
+    from ._models_py3 import SqlDBTableDataSet
+    from ._models_py3 import SqlDBTableDataSetMapping
     from ._models_py3 import SqlDwTableDataSet
     from ._models_py3 import SqlDwTableDataSetMapping
-    from ._models_py3 import SqlDwTableDataSetMappingProperties
-    from ._models_py3 import SqlDwTableProperties
     from ._models_py3 import SynchronizationDetails
     from ._models_py3 import SynchronizationDetailsList
     from ._models_py3 import SynchronizationSetting
@@ -113,100 +80,67 @@ try:
 except (SyntaxError, ImportError):
     from ._models import Account  # type: ignore
     from ._models import AccountList  # type: ignore
-    from ._models import AccountProperties  # type: ignore
     from ._models import AccountUpdateParameters  # type: ignore
     from ._models import AdlsGen1FileDataSet  # type: ignore
-    from ._models import AdlsGen1FileProperties  # type: ignore
     from ._models import AdlsGen1FolderDataSet  # type: ignore
-    from ._models import AdlsGen1FolderProperties  # type: ignore
     from ._models import AdlsGen2FileDataSet  # type: ignore
     from ._models import AdlsGen2FileDataSetMapping  # type: ignore
-    from ._models import AdlsGen2FileDataSetMappingProperties  # type: ignore
-    from ._models import AdlsGen2FileProperties  # type: ignore
     from ._models import AdlsGen2FileSystemDataSet  # type: ignore
     from ._models import AdlsGen2FileSystemDataSetMapping  # type: ignore
-    from ._models import AdlsGen2FileSystemDataSetMappingProperties  # type: ignore
-    from ._models import AdlsGen2FileSystemProperties  # type: ignore
     from ._models import AdlsGen2FolderDataSet  # type: ignore
     from ._models import AdlsGen2FolderDataSetMapping  # type: ignore
-    from ._models import AdlsGen2FolderDataSetMappingProperties  # type: ignore
-    from ._models import AdlsGen2FolderProperties  # type: ignore
     from ._models import BlobContainerDataSet  # type: ignore
     from ._models import BlobContainerDataSetMapping  # type: ignore
-    from ._models import BlobContainerMappingProperties  # type: ignore
-    from ._models import BlobContainerProperties  # type: ignore
     from ._models import BlobDataSet  # type: ignore
     from ._models import BlobDataSetMapping  # type: ignore
     from ._models import BlobFolderDataSet  # type: ignore
     from ._models import BlobFolderDataSetMapping  # type: ignore
-    from ._models import BlobFolderMappingProperties  # type: ignore
-    from ._models import BlobFolderProperties  # type: ignore
-    from ._models import BlobMappingProperties  # type: ignore
-    from ._models import BlobProperties  # type: ignore
     from ._models import ConsumerInvitation  # type: ignore
     from ._models import ConsumerInvitationList  # type: ignore
-    from ._models import ConsumerInvitationProperties  # type: ignore
     from ._models import ConsumerSourceDataSet  # type: ignore
     from ._models import ConsumerSourceDataSetList  # type: ignore
-    from ._models import ConsumerSourceDataSetProperties  # type: ignore
     from ._models import DataSet  # type: ignore
     from ._models import DataSetList  # type: ignore
     from ._models import DataSetMapping  # type: ignore
     from ._models import DataSetMappingList  # type: ignore
-    from ._models import DataShareError, DataShareErrorException  # type: ignore
+    from ._models import DataShareError  # type: ignore
     from ._models import DataShareErrorInfo  # type: ignore
     from ._models import DefaultDto  # type: ignore
     from ._models import DimensionProperties  # type: ignore
     from ._models import Identity  # type: ignore
     from ._models import Invitation  # type: ignore
     from ._models import InvitationList  # type: ignore
-    from ._models import InvitationProperties  # type: ignore
     from ._models import KustoClusterDataSet  # type: ignore
     from ._models import KustoClusterDataSetMapping  # type: ignore
-    from ._models import KustoClusterDataSetMappingProperties  # type: ignore
-    from ._models import KustoClusterDataSetProperties  # type: ignore
     from ._models import KustoDatabaseDataSet  # type: ignore
     from ._models import KustoDatabaseDataSetMapping  # type: ignore
-    from ._models import KustoDatabaseDataSetMappingProperties  # type: ignore
-    from ._models import KustoDatabaseDataSetProperties  # type: ignore
     from ._models import OperationList  # type: ignore
     from ._models import OperationMetaLogSpecification  # type: ignore
     from ._models import OperationMetaMetricSpecification  # type: ignore
-    from ._models import OperationMetaPropertyInfo  # type: ignore
     from ._models import OperationMetaServiceSpecification  # type: ignore
     from ._models import OperationModel  # type: ignore
     from ._models import OperationModelProperties  # type: ignore
     from ._models import OperationResponse  # type: ignore
     from ._models import ProviderShareSubscription  # type: ignore
     from ._models import ProviderShareSubscriptionList  # type: ignore
-    from ._models import ProviderShareSubscriptionProperties  # type: ignore
     from ._models import ProxyDto  # type: ignore
-    from ._models import ScheduledSourceShareSynchronizationSettingProperties  # type: ignore
     from ._models import ScheduledSourceSynchronizationSetting  # type: ignore
     from ._models import ScheduledSynchronizationSetting  # type: ignore
-    from ._models import ScheduledSynchronizationSettingProperties  # type: ignore
     from ._models import ScheduledTrigger  # type: ignore
-    from ._models import ScheduledTriggerProperties  # type: ignore
     from ._models import Share  # type: ignore
     from ._models import ShareList  # type: ignore
-    from ._models import ShareProperties  # type: ignore
     from ._models import ShareSubscription  # type: ignore
     from ._models import ShareSubscriptionList  # type: ignore
-    from ._models import ShareSubscriptionProperties  # type: ignore
     from ._models import ShareSubscriptionSynchronization  # type: ignore
     from ._models import ShareSubscriptionSynchronizationList  # type: ignore
     from ._models import ShareSynchronization  # type: ignore
     from ._models import ShareSynchronizationList  # type: ignore
     from ._models import SourceShareSynchronizationSetting  # type: ignore
     from ._models import SourceShareSynchronizationSettingList  # type: ignore
-    from ._models import SqlDbTableDataSet  # type: ignore
-    from ._models import SqlDbTableDataSetMapping  # type: ignore
-    from ._models import SqlDbTableDataSetMappingProperties  # type: ignore
-    from ._models import SqlDbTableProperties  # type: ignore
+    from ._models import SqlDBTableDataSet  # type: ignore
+    from ._models import SqlDBTableDataSetMapping  # type: ignore
     from ._models import SqlDwTableDataSet  # type: ignore
     from ._models import SqlDwTableDataSetMapping  # type: ignore
-    from ._models import SqlDwTableDataSetMappingProperties  # type: ignore
-    from ._models import SqlDwTableProperties  # type: ignore
     from ._models import SynchronizationDetails  # type: ignore
     from ._models import SynchronizationDetailsList  # type: ignore
     from ._models import SynchronizationSetting  # type: ignore
@@ -214,6 +148,7 @@ except (SyntaxError, ImportError):
     from ._models import Synchronize  # type: ignore
     from ._models import Trigger  # type: ignore
     from ._models import TriggerList  # type: ignore
+
 from ._data_share_management_client_enums import (
     DataSetMappingStatus,
     DataSetType,
@@ -232,100 +167,67 @@ from ._data_share_management_client_enums import (
 __all__ = [
     'Account',
     'AccountList',
-    'AccountProperties',
     'AccountUpdateParameters',
     'AdlsGen1FileDataSet',
-    'AdlsGen1FileProperties',
     'AdlsGen1FolderDataSet',
-    'AdlsGen1FolderProperties',
     'AdlsGen2FileDataSet',
     'AdlsGen2FileDataSetMapping',
-    'AdlsGen2FileDataSetMappingProperties',
-    'AdlsGen2FileProperties',
     'AdlsGen2FileSystemDataSet',
     'AdlsGen2FileSystemDataSetMapping',
-    'AdlsGen2FileSystemDataSetMappingProperties',
-    'AdlsGen2FileSystemProperties',
     'AdlsGen2FolderDataSet',
     'AdlsGen2FolderDataSetMapping',
-    'AdlsGen2FolderDataSetMappingProperties',
-    'AdlsGen2FolderProperties',
     'BlobContainerDataSet',
     'BlobContainerDataSetMapping',
-    'BlobContainerMappingProperties',
-    'BlobContainerProperties',
     'BlobDataSet',
     'BlobDataSetMapping',
     'BlobFolderDataSet',
     'BlobFolderDataSetMapping',
-    'BlobFolderMappingProperties',
-    'BlobFolderProperties',
-    'BlobMappingProperties',
-    'BlobProperties',
     'ConsumerInvitation',
     'ConsumerInvitationList',
-    'ConsumerInvitationProperties',
     'ConsumerSourceDataSet',
     'ConsumerSourceDataSetList',
-    'ConsumerSourceDataSetProperties',
     'DataSet',
     'DataSetList',
     'DataSetMapping',
     'DataSetMappingList',
-    'DataShareError', 'DataShareErrorException',
+    'DataShareError',
     'DataShareErrorInfo',
     'DefaultDto',
     'DimensionProperties',
     'Identity',
     'Invitation',
     'InvitationList',
-    'InvitationProperties',
     'KustoClusterDataSet',
     'KustoClusterDataSetMapping',
-    'KustoClusterDataSetMappingProperties',
-    'KustoClusterDataSetProperties',
     'KustoDatabaseDataSet',
     'KustoDatabaseDataSetMapping',
-    'KustoDatabaseDataSetMappingProperties',
-    'KustoDatabaseDataSetProperties',
     'OperationList',
     'OperationMetaLogSpecification',
     'OperationMetaMetricSpecification',
-    'OperationMetaPropertyInfo',
     'OperationMetaServiceSpecification',
     'OperationModel',
     'OperationModelProperties',
     'OperationResponse',
     'ProviderShareSubscription',
     'ProviderShareSubscriptionList',
-    'ProviderShareSubscriptionProperties',
     'ProxyDto',
-    'ScheduledSourceShareSynchronizationSettingProperties',
     'ScheduledSourceSynchronizationSetting',
     'ScheduledSynchronizationSetting',
-    'ScheduledSynchronizationSettingProperties',
     'ScheduledTrigger',
-    'ScheduledTriggerProperties',
     'Share',
     'ShareList',
-    'ShareProperties',
     'ShareSubscription',
     'ShareSubscriptionList',
-    'ShareSubscriptionProperties',
     'ShareSubscriptionSynchronization',
     'ShareSubscriptionSynchronizationList',
     'ShareSynchronization',
     'ShareSynchronizationList',
     'SourceShareSynchronizationSetting',
     'SourceShareSynchronizationSettingList',
-    'SqlDbTableDataSet',
-    'SqlDbTableDataSetMapping',
-    'SqlDbTableDataSetMappingProperties',
-    'SqlDbTableProperties',
+    'SqlDBTableDataSet',
+    'SqlDBTableDataSetMapping',
     'SqlDwTableDataSet',
     'SqlDwTableDataSetMapping',
-    'SqlDwTableDataSetMappingProperties',
-    'SqlDwTableProperties',
     'SynchronizationDetails',
     'SynchronizationDetailsList',
     'SynchronizationSetting',

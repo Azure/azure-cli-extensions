@@ -8,12 +8,11 @@
 from typing import Any, Callable, Dict, Generic, Optional, TypeVar, Union
 import warnings
 
-from azure.core.exceptions import map_error
+from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.paging import ItemPaged
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpRequest, HttpResponse
 from azure.core.polling import LROPoller, NoPolling, PollingMethod
-from azure.mgmt.core.polling.arm_polling import ARMPolling
 
 from .. import models
 
@@ -23,7 +22,8 @@ ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dic
 class ShareSubscriptionOperations(object):
     """ShareSubscriptionOperations operations.
 
-    You should not instantiate directly this class, but create a Client instance that will create it for you and attach it as attribute.
+    You should not instantiate this class directly. Instead, you should create a Client instance that
+    instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
     :type models: ~data_share_management_client.models
@@ -62,10 +62,10 @@ class ShareSubscriptionOperations(object):
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ShareSubscription or the result of cls(response)
         :rtype: ~data_share_management_client.models.ShareSubscription
-        :raises: ~data_share_management_client.models.DataShareErrorException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.ShareSubscription"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ShareSubscription"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2019-11-01"
 
         # Construct URL
@@ -79,11 +79,11 @@ class ShareSubscriptionOperations(object):
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
         # Construct and send request
@@ -93,7 +93,8 @@ class ShareSubscriptionOperations(object):
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.DataShareErrorException.from_response(response, self._deserialize)
+            error = self._deserialize(models.DataShareError, response)
+            raise HttpResponseError(response=response, model=error)
 
         deserialized = self._deserialize('ShareSubscription', pipeline_response)
 
@@ -128,15 +129,16 @@ class ShareSubscriptionOperations(object):
         :param source_share_location: Source share location.
         :type source_share_location: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: ShareSubscription or ShareSubscription or the result of cls(response)
+        :return: ShareSubscription or the result of cls(response)
         :rtype: ~data_share_management_client.models.ShareSubscription or ~data_share_management_client.models.ShareSubscription
-        :raises: ~data_share_management_client.models.DataShareErrorException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.ShareSubscription"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ShareSubscription"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        share_subscription = models.ShareSubscription(invitation_id=invitation_id, source_share_location=source_share_location)
+        _share_subscription = models.ShareSubscription(invitation_id=invitation_id, source_share_location=source_share_location)
         api_version = "2019-11-01"
+        content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
         url = self.create.metadata['url']
@@ -149,25 +151,27 @@ class ShareSubscriptionOperations(object):
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'application/json'
-
-        # Construct body
-        body_content = self._serialize.body(share_subscription, 'ShareSubscription')
 
         # Construct and send request
-        request = self._client.put(url, query_parameters, header_parameters, body_content)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(_share_subscription, 'ShareSubscription')
+        body_content_kwargs['content'] = body_content
+        request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
+
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.DataShareErrorException.from_response(response, self._deserialize)
+            error = self._deserialize(models.DataShareError, response)
+            raise HttpResponseError(response=response, model=error)
 
         deserialized = None
         if response.status_code == 200:
@@ -190,8 +194,8 @@ class ShareSubscriptionOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.OperationResponse"
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.OperationResponse"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.OperationResponse"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2019-11-01"
 
         # Construct URL
@@ -205,11 +209,11 @@ class ShareSubscriptionOperations(object):
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
         # Construct and send request
@@ -219,7 +223,8 @@ class ShareSubscriptionOperations(object):
 
         if response.status_code not in [200, 202, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.DataShareErrorException.from_response(response, self._deserialize)
+            error = self._deserialize(models.DataShareError, response)
+            raise HttpResponseError(response=response, model=error)
 
         deserialized = None
         if response.status_code == 200:
@@ -256,10 +261,10 @@ class ShareSubscriptionOperations(object):
         :return: An instance of LROPoller that returns OperationResponse
         :rtype: ~azure.core.polling.LROPoller[~data_share_management_client.models.OperationResponse]
 
-        :raises ~data_share_management_client.models.DataShareErrorException:
+        :raises ~azure.core.exceptions.HttpResponseError:
         """
-        polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.OperationResponse"]
+        polling = kwargs.pop('polling', False)  # type: Union[bool, PollingMethod]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.OperationResponse"]
         raw_result = self._delete_initial(
             resource_group_name=resource_group_name,
             account_name=account_name,
@@ -279,7 +284,7 @@ class ShareSubscriptionOperations(object):
             'polling_interval',
             self._config.polling_interval
         )
-        if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
+        if polling is True: raise ValueError("polling being True is not valid because no default polling implemetation has been defined.")
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
@@ -301,15 +306,15 @@ class ShareSubscriptionOperations(object):
         :type resource_group_name: str
         :param account_name: The name of the share account.
         :type account_name: str
-        :param skip_token: Continuation token.
+        :param skip_token: Continuation Token.
         :type skip_token: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ShareSubscriptionList or the result of cls(response)
         :rtype: ~data_share_management_client.models.ShareSubscriptionList
-        :raises: ~data_share_management_client.models.DataShareErrorException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.ShareSubscriptionList"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ShareSubscriptionList"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2019-11-01"
 
         def prepare_request(next_link=None):
@@ -326,13 +331,13 @@ class ShareSubscriptionOperations(object):
                 url = next_link
 
             # Construct parameters
-            query_parameters = {}
+            query_parameters = {}  # type: Dict[str, Any]
             query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
             if skip_token is not None:
                 query_parameters['$skipToken'] = self._serialize.query("skip_token", skip_token, 'str')
 
             # Construct headers
-            header_parameters = {}
+            header_parameters = {}  # type: Dict[str, Any]
             header_parameters['Accept'] = 'application/json'
 
             # Construct and send request
@@ -344,7 +349,7 @@ class ShareSubscriptionOperations(object):
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
-            return deserialized.next_link, iter(list_of_elem)
+            return deserialized.next_link or None, iter(list_of_elem)
 
         def get_next(next_link=None):
             request = prepare_request(next_link)
@@ -353,8 +358,9 @@ class ShareSubscriptionOperations(object):
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
+                error = self._deserialize(models.DataShareError, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise models.DataShareErrorException.from_response(response, self._deserialize)
+                raise HttpResponseError(response=response, model=error)
 
             return pipeline_response
 
@@ -387,10 +393,10 @@ class ShareSubscriptionOperations(object):
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: SourceShareSynchronizationSettingList or the result of cls(response)
         :rtype: ~data_share_management_client.models.SourceShareSynchronizationSettingList
-        :raises: ~data_share_management_client.models.DataShareErrorException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.SourceShareSynchronizationSettingList"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.SourceShareSynchronizationSettingList"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2019-11-01"
 
         def prepare_request(next_link=None):
@@ -408,13 +414,13 @@ class ShareSubscriptionOperations(object):
                 url = next_link
 
             # Construct parameters
-            query_parameters = {}
+            query_parameters = {}  # type: Dict[str, Any]
             query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
             if skip_token is not None:
                 query_parameters['$skipToken'] = self._serialize.query("skip_token", skip_token, 'str')
 
             # Construct headers
-            header_parameters = {}
+            header_parameters = {}  # type: Dict[str, Any]
             header_parameters['Accept'] = 'application/json'
 
             # Construct and send request
@@ -426,7 +432,7 @@ class ShareSubscriptionOperations(object):
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
-            return deserialized.next_link, iter(list_of_elem)
+            return deserialized.next_link or None, iter(list_of_elem)
 
         def get_next(next_link=None):
             request = prepare_request(next_link)
@@ -435,8 +441,9 @@ class ShareSubscriptionOperations(object):
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
+                error = self._deserialize(models.DataShareError, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise models.DataShareErrorException.from_response(response, self._deserialize)
+                raise HttpResponseError(response=response, model=error)
 
             return pipeline_response
 
@@ -462,17 +469,17 @@ class ShareSubscriptionOperations(object):
         :type resource_group_name: str
         :param account_name: The name of the share account.
         :type account_name: str
-        :param share_subscription_name: The name of the shareSubscription.
+        :param share_subscription_name: The name of the share subscription.
         :type share_subscription_name: str
         :param skip_token: Continuation token.
         :type skip_token: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ShareSubscriptionSynchronizationList or the result of cls(response)
         :rtype: ~data_share_management_client.models.ShareSubscriptionSynchronizationList
-        :raises: ~data_share_management_client.models.DataShareErrorException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.ShareSubscriptionSynchronizationList"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ShareSubscriptionSynchronizationList"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
         api_version = "2019-11-01"
 
         def prepare_request(next_link=None):
@@ -490,13 +497,13 @@ class ShareSubscriptionOperations(object):
                 url = next_link
 
             # Construct parameters
-            query_parameters = {}
+            query_parameters = {}  # type: Dict[str, Any]
             query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
             if skip_token is not None:
                 query_parameters['$skipToken'] = self._serialize.query("skip_token", skip_token, 'str')
 
             # Construct headers
-            header_parameters = {}
+            header_parameters = {}  # type: Dict[str, Any]
             header_parameters['Accept'] = 'application/json'
 
             # Construct and send request
@@ -508,7 +515,7 @@ class ShareSubscriptionOperations(object):
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
-            return deserialized.next_link, iter(list_of_elem)
+            return deserialized.next_link or None, iter(list_of_elem)
 
         def get_next(next_link=None):
             request = prepare_request(next_link)
@@ -517,8 +524,9 @@ class ShareSubscriptionOperations(object):
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
+                error = self._deserialize(models.DataShareError, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise models.DataShareErrorException.from_response(response, self._deserialize)
+                raise HttpResponseError(response=response, model=error)
 
             return pipeline_response
 
@@ -545,7 +553,7 @@ class ShareSubscriptionOperations(object):
         :type resource_group_name: str
         :param account_name: The name of the share account.
         :type account_name: str
-        :param share_subscription_name: The name of the shareSubscription.
+        :param share_subscription_name: The name of the share subscription.
         :type share_subscription_name: str
         :param synchronization_id: Synchronization id.
         :type synchronization_id: str
@@ -554,12 +562,13 @@ class ShareSubscriptionOperations(object):
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: SynchronizationDetailsList or the result of cls(response)
         :rtype: ~data_share_management_client.models.SynchronizationDetailsList
-        :raises: ~data_share_management_client.models.DataShareErrorException:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.SynchronizationDetailsList"]
-        error_map = kwargs.pop('error_map', {})
-        share_subscription_synchronization = models.ShareSubscriptionSynchronization(synchronization_id=synchronization_id)
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.SynchronizationDetailsList"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        _share_subscription_synchronization = models.ShareSubscriptionSynchronization(synchronization_id=synchronization_id)
         api_version = "2019-11-01"
+        content_type = "application/json"
 
         def prepare_request(next_link=None):
             if not next_link:
@@ -576,21 +585,22 @@ class ShareSubscriptionOperations(object):
                 url = next_link
 
             # Construct parameters
-            query_parameters = {}
+            query_parameters = {}  # type: Dict[str, Any]
             query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
             if skip_token is not None:
                 query_parameters['$skipToken'] = self._serialize.query("skip_token", skip_token, 'str')
 
             # Construct headers
-            header_parameters = {}
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
             header_parameters['Accept'] = 'application/json'
-            header_parameters['Content-Type'] = 'application/json'
-
-            # Construct body
-            body_content = self._serialize.body(share_subscription_synchronization, 'ShareSubscriptionSynchronization')
 
             # Construct and send request
-            request = self._client.post(url, query_parameters, header_parameters, body_content)
+            body_content_kwargs = {}  # type: Dict[str, Any]
+            body_content = self._serialize.body(_share_subscription_synchronization, 'ShareSubscriptionSynchronization')
+            body_content_kwargs['content'] = body_content
+            request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+
             return request
 
         def extract_data(pipeline_response):
@@ -598,7 +608,7 @@ class ShareSubscriptionOperations(object):
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
-            return deserialized.next_link, iter(list_of_elem)
+            return deserialized.next_link or None, iter(list_of_elem)
 
         def get_next(next_link=None):
             request = prepare_request(next_link)
@@ -607,8 +617,9 @@ class ShareSubscriptionOperations(object):
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
+                error = self._deserialize(models.DataShareError, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise models.DataShareErrorException.from_response(response, self._deserialize)
+                raise HttpResponseError(response=response, model=error)
 
             return pipeline_response
 
@@ -626,11 +637,12 @@ class ShareSubscriptionOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.ShareSubscriptionSynchronization"
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.ShareSubscriptionSynchronization"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ShareSubscriptionSynchronization"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        synchronize = models.Synchronize(synchronization_mode=synchronization_mode)
+        _synchronize = models.Synchronize(synchronization_mode=synchronization_mode)
         api_version = "2019-11-01"
+        content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
         url = self._synchronize_initial.metadata['url']
@@ -643,25 +655,27 @@ class ShareSubscriptionOperations(object):
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'application/json'
-
-        # Construct body
-        body_content = self._serialize.body(synchronize, 'Synchronize')
 
         # Construct and send request
-        request = self._client.post(url, query_parameters, header_parameters, body_content)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(_synchronize, 'Synchronize')
+        body_content_kwargs['content'] = body_content
+        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.DataShareErrorException.from_response(response, self._deserialize)
+            error = self._deserialize(models.DataShareError, response)
+            raise HttpResponseError(response=response, model=error)
 
         deserialized = None
         if response.status_code == 200:
@@ -693,9 +707,10 @@ class ShareSubscriptionOperations(object):
         :type resource_group_name: str
         :param account_name: The name of the share account.
         :type account_name: str
-        :param share_subscription_name: The name of the shareSubscription.
+        :param share_subscription_name: The name of share subscription.
         :type share_subscription_name: str
-        :param synchronization_mode: Synchronization mode.
+        :param synchronization_mode: Mode of synchronization used in triggers and snapshot sync.
+     Incremental by default.
         :type synchronization_mode: str or ~data_share_management_client.models.SynchronizationMode
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -704,10 +719,10 @@ class ShareSubscriptionOperations(object):
         :return: An instance of LROPoller that returns ShareSubscriptionSynchronization
         :rtype: ~azure.core.polling.LROPoller[~data_share_management_client.models.ShareSubscriptionSynchronization]
 
-        :raises ~data_share_management_client.models.DataShareErrorException:
+        :raises ~azure.core.exceptions.HttpResponseError:
         """
-        polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.ShareSubscriptionSynchronization"]
+        polling = kwargs.pop('polling', False)  # type: Union[bool, PollingMethod]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ShareSubscriptionSynchronization"]
         raw_result = self._synchronize_initial(
             resource_group_name=resource_group_name,
             account_name=account_name,
@@ -728,7 +743,7 @@ class ShareSubscriptionOperations(object):
             'polling_interval',
             self._config.polling_interval
         )
-        if polling is True: polling_method = ARMPolling(lro_delay, lro_options={'final-state-via': 'azure-async-operation'},  **kwargs)
+        if polling is True: raise ValueError("polling being True is not valid because no default polling implemetation has been defined.")
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
@@ -743,11 +758,12 @@ class ShareSubscriptionOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.ShareSubscriptionSynchronization"
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.ShareSubscriptionSynchronization"]
-        error_map = kwargs.pop('error_map', {})
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ShareSubscriptionSynchronization"]
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        share_subscription_synchronization = models.ShareSubscriptionSynchronization(synchronization_id=synchronization_id)
+        _share_subscription_synchronization = models.ShareSubscriptionSynchronization(synchronization_id=synchronization_id)
         api_version = "2019-11-01"
+        content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
         url = self._cancel_synchronization_initial.metadata['url']
@@ -760,25 +776,27 @@ class ShareSubscriptionOperations(object):
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
-        query_parameters = {}
+        query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'application/json'
-
-        # Construct body
-        body_content = self._serialize.body(share_subscription_synchronization, 'ShareSubscriptionSynchronization')
 
         # Construct and send request
-        request = self._client.post(url, query_parameters, header_parameters, body_content)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(_share_subscription_synchronization, 'ShareSubscriptionSynchronization')
+        body_content_kwargs['content'] = body_content
+        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.DataShareErrorException.from_response(response, self._deserialize)
+            error = self._deserialize(models.DataShareError, response)
+            raise HttpResponseError(response=response, model=error)
 
         deserialized = None
         if response.status_code == 200:
@@ -821,10 +839,10 @@ class ShareSubscriptionOperations(object):
         :return: An instance of LROPoller that returns ShareSubscriptionSynchronization
         :rtype: ~azure.core.polling.LROPoller[~data_share_management_client.models.ShareSubscriptionSynchronization]
 
-        :raises ~data_share_management_client.models.DataShareErrorException:
+        :raises ~azure.core.exceptions.HttpResponseError:
         """
-        polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.ShareSubscriptionSynchronization"]
+        polling = kwargs.pop('polling', False)  # type: Union[bool, PollingMethod]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ShareSubscriptionSynchronization"]
         raw_result = self._cancel_synchronization_initial(
             resource_group_name=resource_group_name,
             account_name=account_name,
@@ -845,7 +863,7 @@ class ShareSubscriptionOperations(object):
             'polling_interval',
             self._config.polling_interval
         )
-        if polling is True: polling_method = ARMPolling(lro_delay, lro_options={'final-state-via': 'azure-async-operation'},  **kwargs)
+        if polling is True: raise ValueError("polling being True is not valid because no default polling implemetation has been defined.")
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
