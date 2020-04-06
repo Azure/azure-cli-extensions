@@ -6,11 +6,12 @@
 import json
 import os
 import sys
-import colorama 
+import colorama
 
-from knack.util import CLIError
+from knack.util import CLIError # pylint: disable=unused-import
 
-RECOMMENDATION_FILE_PATH = 'src/ai-did-you-mean-this/azext_ai_did_you_mean_this/data/top_3_recommendations.json'
+EXTENSION_DIR = os.path.dirname(os.path.realpath(__file__))
+RECOMMENDATION_FILE_PATH = os.path.join(EXTENSION_DIR, 'data/top_3_recommendations.json')
 RECOMMENDATIONS = None
 
 with open(RECOMMENDATION_FILE_PATH) as recommendation_file:
