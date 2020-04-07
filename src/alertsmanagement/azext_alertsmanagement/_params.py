@@ -5,7 +5,7 @@
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
-from azext_alertsmanagement.vendored_sdks.alertsmanagement.models import ActionRuleStatus, SuppressionType
+from .vendored_sdks.alertsmanagement.models import ActionRuleStatus, SuppressionType
 from azure.cli.core.commands.parameters import (
     tags_type,
     get_enum_type,
