@@ -46,3 +46,40 @@ helps['graph query'] = """
           text: >
             az graph query -q "where type =~ "Microsoft.Compute" | project name, tags" --subscriptions 11111111-1111-1111-1111-111111111111, 22222222-2222-2222-2222-222222222222
 """
+
+helps['graph shared-query'] = """
+    type: group
+    short-summary: Manage shared query of Azure resource graph.
+"""
+
+
+helps['graph shared-query create'] = """
+    type: command
+    short-summary: Create a shared query.
+    examples:
+        - name: Create a shared query requesting a subset of resource fields.
+          text: >
+            az graph shared-query create -g MyResourceGroup -n MySharedQuery -q "project id, name, type, location, tags" -d "requesting a subset of resource fields." --tags key=value
+"""
+
+
+helps['graph shared-query delete'] = """
+    type: command
+    short-summary: Delete a shared query.
+"""
+
+
+helps['graph shared-query show'] = """
+    type: command
+    short-summary: Show the properties of a shared query.
+"""
+
+
+helps['graph shared-query list'] = """
+    type: command
+    short-summary: List all shared query in a resource group.
+    examples:
+        - name: List all shared query in a resource group.
+          text: >
+            az graph shared-query list -g MyResourceGroup
+"""
