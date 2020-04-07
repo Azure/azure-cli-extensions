@@ -22,12 +22,6 @@ helps['connectedk8s connect'] = """
     - name: --kube-context
       type: string
       short-summary: Kubconfig context from current machine
-    - name: --onboarding-spn-id
-      type: string
-      short-summary: Azure Active Directory application id with access to connected cluster resource creation 
-    - name: --onboarding-spn-secret
-      type: string
-      short-summary: Secret for Azure Active Directory application id with access to connected cluster resource creation
     - name: --location-data-name
       type: string
       short-summary: A canonical name for the geographic or physical location of the on-prem kubernetes cluster
@@ -46,8 +40,6 @@ helps['connectedk8s connect'] = """
       text: az connectedk8s connect -g resourceGroupName -n connectedClusterName
     - name: Onboard a connected kubernetes cluster by specifying the kubeconfig and kubecontext.
       text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --kube-config /path/to/kubeconfig --kube-context kubeContextName
-    - name: Onboard a connected kubernetes cluster by specifying the onboarding spn details.
-      text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --onboarding-spn-id spnClientId --onboarding-spn-secret spnClientSecret
     - name: Onboard a connected kubernetes cluster specifying location data info.
       text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --location-data-name locationDataName
 """

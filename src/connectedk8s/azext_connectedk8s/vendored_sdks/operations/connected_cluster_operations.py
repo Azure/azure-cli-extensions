@@ -36,6 +36,7 @@ class ConnectedClusterOperations(object):
         self._serialize = serializer
         self._deserialize = deserializer
         self.api_version = "2020-01-01-preview"
+        #self.api_version = "2019-09-01-privatepreview"
         self.config = config
 
 
