@@ -7,6 +7,7 @@
 
 
 from azure.cli.core.commands.parameters import get_generic_completion_list
+from azure.cli.core.commands.parameters import tags_type
 
 from azext_resourcegraph.resource_graph_enums import IncludeOptionsEnum
 
@@ -37,3 +38,11 @@ def load_arguments(self, _):
                    help='List of subscriptions to run query against. By default all accessible subscriptions are queried.')
         c.argument('include', options_list=['--include'], required=False,
                    help='Indicates if result should be extended with subscription and tenants names. Possible values: none, displayNames')
+
+    with self.argument_context('graph shared-query') as c:
+        c.argument('graph_query', options_list=['--graph-query', '--q', '-q'],
+                   completer=get_generic_completion_list(_QUERY_EXAMPLES), help='Resource Graph query to execute.')
+        c.argument('resource_name', options_list=['--name', '-n'], help='Name of the graph shared query.')
+        c.argument('tags', tags_type)
+        c.argument('description', options_list=['-d', '--description'], help='Description of the graph shared query.')
+        c.ignore('location')

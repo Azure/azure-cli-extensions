@@ -87,6 +87,19 @@ def execute_query(client, graph_query, first, skip, subscriptions, include):
     return results
 
 
+def create_shared_query(client, resource_group_name,
+                        resource_name, description,
+                        graph_query, location='global', tags=None):
+    from azext_resourcegraph.vendored_sdks.resourcegraph.models import GraphQueryResource
+    graph_shared_query = GraphQueryResource(description=description,
+                                            query=graph_query,
+                                            tags=tags,
+                                            location=location)
+    return client.graph_query.create_or_update(resource_group_name=resource_group_name,
+                                               resource_name=resource_name,
+                                               properties=graph_shared_query)
+
+
 def _get_cached_subscriptions():
     # type: () -> list[str]
 
@@ -95,14 +108,14 @@ def _get_cached_subscriptions():
 
 
 def _get_cached_detailed_subscriptions():
-    # type: () -> List[Tuple[Any, Any]]
+    # type: () -> list[tuple[any, any]]
 
     cached_subs = Profile().load_cached_subscriptions()
     return [(sub['id'], sub["name"]) for sub in cached_subs]
 
 
 def _get_cached_detailed_tenant():
-    # type: () -> List[Tuple[Any, Any]]
+    # type: () -> list[tuple[any, any]]
 
     token = Profile().get_raw_token()
     bearer_token = token[0][0] + " " + token[0][1]
