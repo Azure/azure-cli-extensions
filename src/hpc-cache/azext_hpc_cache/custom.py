@@ -76,6 +76,18 @@ def list_hpc_cache(cmd, client,
     return client.list_by_resource_group(resource_group_name=resource_group_name)
 
 
+def flush_hpc_cache(cmd, client,
+                    resource_group_name,
+                    name):
+    return client.flush(resource_group_name=resource_group_name, cache_name=name)
+
+
+def upgrade_firmware_hpc_cache(cmd, client,
+                               resource_group_name,
+                               name):
+    return client.upgrade_firmware(resource_group_name=resource_group_name, cache_name=name)
+
+
 def start_hpc_cache(cmd, client,
                     resource_group_name,
                     name):

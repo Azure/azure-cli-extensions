@@ -56,11 +56,19 @@ def load_arguments(self, _):
     with self.argument_context('hpc-cache list') as c:
         c.argument('resource_group_name', resource_group_name_type, required=False)
 
+    with self.argument_context('hpc-cache flush') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('name', help='Name of Cache.')
+
     with self.argument_context('hpc-cache start') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('name', help='Name of Cache.')
 
     with self.argument_context('hpc-cache stop') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('name', help='Name of Cache.')
+
+    with self.argument_context('hpc-cache upgrade-firmware') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('name', help='Name of Cache.')
 
