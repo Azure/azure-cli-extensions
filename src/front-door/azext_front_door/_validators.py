@@ -77,6 +77,10 @@ def validate_backend_pool(cmd, namespace):
     get_name_or_id_validator('backend_pool', 'backendPools')(cmd, namespace)
 
 
+def validate_rules_engine(cmd, namespace):
+    get_name_or_id_validator('rules_engine', 'rulesEngines')(cmd, namespace)
+
+
 # pylint: disable=protected-access
 class MatchConditionAction(argparse._AppendAction):
 

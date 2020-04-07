@@ -28,9 +28,9 @@ class VirtualWanCommandsLoader(AzCommandsLoader):
         load_command_table(self, args)
         return self.command_table
 
-    def load_arguments(self, args):
+    def load_arguments(self, command):
         from ._params import load_arguments
-        load_arguments(self, args)
+        load_arguments(self, command)
 
 
 COMMAND_LOADER_CLS = VirtualWanCommandsLoader
