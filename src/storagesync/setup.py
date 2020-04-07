@@ -36,7 +36,6 @@ CLASSIFIERS = [
 
 # TODO: Add any additional SDK dependencies here
 DEPENDENCIES = [
-    'pywin32==227'
 ]
 
 with open('README.md', 'r', encoding='utf-8') as f:
