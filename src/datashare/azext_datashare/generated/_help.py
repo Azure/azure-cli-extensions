@@ -290,11 +290,6 @@ helps['datashare share-subscription list-synchronization'] = """
                --resource-group "SampleResourceGroup" --share-subscription-name "ShareSub1"
 """
 
-helps['datashare consumer-source-data-set'] = """
-    type: group
-    short-summary: datashare consumer-source-data-set
-"""
-
 helps['datashare synchronization-setting'] = """
     type: group
     short-summary: datashare synchronization-setting

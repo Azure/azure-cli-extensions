@@ -86,6 +86,9 @@ def load_arguments(self, _):
         c.argument('share_name', id_part='child_name_1', help='The name of the share.')  # modified
         c.argument('data_set_name', options_list=['--name', '-n'], id_part='child_name_2', help='The name of the dataSet.')  # modified
 
+    with self.argument_context('datashare dataset wait') as c:
+        c.argument('data_set_name', options_list=['--name', '-n'], id_part='child_name_2', help='The name of the dataSet.')  # modified
+
     with self.argument_context('datashare dataset-mapping list') as c:  # modified
         c.argument('resource_group_name', resource_group_name_type)  # modified
         c.argument('account_name', help='The name of the share account.')
@@ -109,6 +112,9 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)  # modified
         c.argument('account_name', help='The name of the share account.')
         c.argument('share_subscription_name', help='The name of the shareSubscription.')
+        c.argument('data_set_mapping_name', options_list=['--name', '-n'], help='The name of the dataSetMapping.')  # modified
+
+    with self.argument_context('datashare dataset-mapping wait') as c:
         c.argument('data_set_mapping_name', options_list=['--name', '-n'], help='The name of the dataSetMapping.')  # modified
 
     with self.argument_context('datashare invitation list') as c:
@@ -182,6 +188,9 @@ def load_arguments(self, _):
         c.argument('share_name', id_part='child_name_1', help='The name of the share.')  # modified
         c.argument('skip_token', help='Continuation token')
 
+    with self.argument_context('datashare wait') as c:
+        c.argument('share_name', options_list=['--name', '-n'], help='The name of the share.')  # modified
+
     with self.argument_context('datashare provider-share-subscription list') as c:
         c.argument('resource_group_name', resource_group_name_type)  # modified
         c.argument('account_name', help='The name of the share account.')
@@ -204,6 +213,9 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)  # modified
         c.argument('account_name', id_part='name', help='The name of the share account.')  # modified
         c.argument('share_name', id_part='child_name_1', help='The name of the share.')  # modified
+        c.argument('provider_share_subscription_id', options_list=['--share-subscription'], id_part='child_name_2', help='To locate shareSubscription')  # modified
+
+    with self.argument_context('datashare provider-share-subscription wait') as c:
         c.argument('provider_share_subscription_id', options_list=['--share-subscription'], id_part='child_name_2', help='To locate shareSubscription')  # modified
 
     with self.argument_context('datashare share-subscription list') as c:
@@ -259,6 +271,9 @@ def load_arguments(self, _):
         c.argument('share_subscription_name', help='The name of the shareSubscription.')
         c.argument('skip_token', help='Continuation token')
 
+    with self.argument_context('datashare share-subscription wait') as c:
+        c.argument('share_subscription_name', options_list=['--name', '-n'], id_part='child_name_1', help='The name of the shareSubscription.')  # modified
+
     with self.argument_context('datashare consumer-source-dataset list') as c:
         c.argument('resource_group_name', resource_group_name_type)  # modified
         c.argument('account_name', help='The name of the share account.')
@@ -290,6 +305,9 @@ def load_arguments(self, _):
         c.argument('share_name', id_part='child_name_1', help='The name of the share.')  # modified
         c.argument('synchronization_setting_name', options_list=['--name', '-n'], id_part='child_name_2', help='The name of the synchronizationSetting.')  # modified
 
+    with self.argument_context('datashare synchronization-setting wait') as c:
+        c.argument('synchronization_setting_name', options_list=['--name', '-n'], help='The name of the synchronizationSetting.')  # modified
+
     with self.argument_context('datashare trigger list') as c:
         c.argument('resource_group_name', resource_group_name_type)  # modified
         c.argument('account_name', help='The name of the share account.')
@@ -313,4 +331,7 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)  # modified
         c.argument('account_name', id_part='name', help='The name of the share account.')  # modified
         c.argument('share_subscription_name', id_part='child_name_1', help='The name of the shareSubscription.')  # modified
+        c.argument('trigger_name', options_list=['--name', '-n'], id_part='child_name_2', help='The name of the trigger.')  # modified
+
+    with self.argument_context('datashare trigger wait') as c:
         c.argument('trigger_name', options_list=['--name', '-n'], id_part='child_name_2', help='The name of the trigger.')  # modified

@@ -62,18 +62,18 @@ def load_command_table(self, _):
         g.custom_command('create', 'datashare_invitation_create')
         g.custom_command('delete', 'datashare_invitation_delete')
 
-    from azext_datashare.generated._client_factory import cf_share
-    datashare_share = CliCommandType(
-        operations_tmpl='azext_datashare.vendored_sdks.datashare.operations._share_operations#ShareOperations.{}',
-        client_factory=cf_share)
-    with self.command_group('datashare share', datashare_share, client_factory=cf_share) as g:
-        g.custom_command('list', 'datashare_share_list')
-        g.custom_show_command('show', 'datashare_share_show')
-        g.custom_command('create', 'datashare_share_create')
-        g.custom_command('delete', 'datashare_share_delete', supports_no_wait=True)
-        g.custom_command('list-synchronization-detail', 'datashare_share_list_synchronization_detail')
-        g.custom_command('list-synchronization', 'datashare_share_list_synchronization')
-        g.wait_command('wait')
+    # from azext_datashare.generated._client_factory import cf_share
+    # datashare_share = CliCommandType(
+    #     operations_tmpl='azext_datashare.vendored_sdks.datashare.operations._share_operations#ShareOperations.{}',
+    #     client_factory=cf_share)
+    # with self.command_group('datashare share', datashare_share, client_factory=cf_share) as g:
+    #     g.custom_command('list', 'datashare_share_list')
+    #     g.custom_show_command('show', 'datashare_share_show')
+    #     g.custom_command('create', 'datashare_share_create')
+    #     g.custom_command('delete', 'datashare_share_delete', supports_no_wait=True)
+    #     g.custom_command('list-synchronization-detail', 'datashare_share_list_synchronization_detail')
+    #     g.custom_command('list-synchronization', 'datashare_share_list_synchronization')
+    #     g.wait_command('wait')
 
     from azext_datashare.generated._client_factory import cf_provider_share_subscription
     datashare_provider_share_subscription = CliCommandType(
