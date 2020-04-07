@@ -17,7 +17,7 @@ def load_command_table(self, _):
     databox_jobs = CliCommandType(
         operations_tmpl='azext_databox.vendored_sdks.databox.operations._jobs_operations#JobsOperations.{}',
         client_factory=cf_jobs)
-    with self.command_group('databox job', databox_jobs, client_factory=cf_jobs) as g:
+    with self.command_group('databox job', databox_jobs, client_factory=cf_jobs, is_experimental=True) as g:
         g.custom_command('create', 'create_databox_job', validator=validate_create_input_parameters)
         g.custom_command('update', 'update_databox_job')
         g.custom_command('delete', 'delete_databox_job', confirmation=True)
