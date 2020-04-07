@@ -65,7 +65,7 @@ def get_linked_properties(cli_ctx, app, resource_group, read_properties=None, wr
 
     if isinstance(read_properties, list):
         propLen = len(read_properties)
-        linked_read_properties = ['{}/{}'.format(tmpl, roles[read_properties[i]]) for i in range(propLen) if read_properties[i]]
+        linked_read_properties = ['{}/{}'.format(tmpl, roles[read_properties[i]]) for i in range(propLen) if read_properties[i]]  # pylint: disable=line-too-long
     else:
         linked_read_properties = ['{}/{}'.format(tmpl, roles[read_properties])]
     if isinstance(write_properties, list):
