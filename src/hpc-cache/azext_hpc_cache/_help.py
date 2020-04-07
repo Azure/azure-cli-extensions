@@ -114,6 +114,24 @@ helps['hpc-cache stop'] = """
                az hpc-cache stop --resource-group "scgroup" --name "sc"
 """
 
+helps['hpc-cache flush'] = """
+    type: command
+    short-summary: Tells a Cache to write all dirty data to the Storage Target(s). During the flush, clients will see errors returned until the flush is complete.
+    examples:
+      - name: Caches_Flush
+        text: |-
+               az hpc-cache flush --resource-group "scgroup" --name "sc"
+"""
+
+helps['hpc-cache upgrade-firmware'] = """
+    type: command
+    short-summary: Upgrade a Cache's firmware if a new version is available. Otherwise, this operation has no effect.
+    examples:
+      - name: Caches_UpgradeFirmware
+        text: |-
+               az hpc-cache upgrade-firmware --resource-group "scgroup" --name "sc"
+"""
+
 helps['hpc-cache wait'] = """
     type: command
     short-summary: Waits a hpc Cache to specified state.
