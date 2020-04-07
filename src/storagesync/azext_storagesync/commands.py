@@ -64,3 +64,6 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'get_storagesync_registered_server')
         g.custom_command('list', 'list_storagesync_registered_server')
         g.wait_command('wait')
+
+    with self.command_group('storagesync', is_experimental=True) as g:
+        pass
