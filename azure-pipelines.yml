@@ -65,6 +65,8 @@ jobs:
 
       ls -al ./env/bin
 
+      python ./scripts/ci/test_license.py
+
       azdev verify license
 
 - job: StaticAnalysis
