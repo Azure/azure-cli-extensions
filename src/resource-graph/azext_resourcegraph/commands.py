@@ -18,7 +18,7 @@ def load_command_table(self, _):
     with self.command_group('graph', client_factory=cf_resource_graph) as g:
         g.custom_command('query', 'execute_query', validator=validate_query_args)
 
-    with self.command_group('graph shared-query', graph_shared_query_sdk) as g:
+    with self.command_group('graph shared-query', graph_shared_query_sdk, is_experimental=True) as g:
         g.custom_command('create', 'create_shared_query')
         g.command('list', 'list')
         g.command('delete', 'delete')
