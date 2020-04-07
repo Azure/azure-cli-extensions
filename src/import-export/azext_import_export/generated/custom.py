@@ -5,8 +5,6 @@
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
 
-import json
-
 
 def import_export_job_list(cmd, client, top=None, filter=None, resource_group_name=None):
     # pylint: disable=redefined-builtin
@@ -26,9 +24,6 @@ def import_export_job_create(cmd, client, name, resource_group_name, client_tena
                              state=None, cancel_requested=None, percent_complete=None, incomplete_blob_list_uri=None,
                              drive_list=None, export=None, provisioning_state=None):
     # pylint: disable=redefined-builtin
-    if isinstance(tags, str):
-        tags = json.loads(tags)
-
     return client.create(job_name=name, resource_group_name=resource_group_name, client_tenant_id=client_tenant_id,
                          location=location, tags=tags, storage_account_id=storage_account_id, job_type=type,
                          return_address=return_address, return_shipping=return_shipping,
@@ -42,8 +37,6 @@ def import_export_job_create(cmd, client, name, resource_group_name, client_tena
 def import_export_job_update(cmd, client, name, resource_group_name, tags=None, cancel_requested=None, state=None,
                              return_address=None, return_shipping=None, delivery_package=None, log_level=None,
                              backup_drive_manifest=None, drive_list=None):
-    if isinstance(tags, str):
-        tags = json.loads(tags)
     return client.update(job_name=name, resource_group_name=resource_group_name, tags=tags,
                          cancel_requested=cancel_requested, state=state, return_address=return_address,
                          return_shipping=return_shipping, delivery_package=delivery_package, log_level=log_level,
