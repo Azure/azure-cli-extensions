@@ -10,137 +10,150 @@
 # --------------------------------------------------------------------------
 
 try:
-    from .error_details_py3 import ErrorDetails
-    from .error_py3 import Error
-    from .azure_async_operation_result_py3 import AzureAsyncOperationResult
-    from .resource_py3 import Resource
-    from .sub_resource_py3 import SubResource
-    from .tags_object_py3 import TagsObject
-    from .profile_py3 import Profile
-    from .endpoint_py3 import Endpoint
-    from .profile_update_model_py3 import ProfileUpdateModel
-    from .experiment_update_model_py3 import ExperimentUpdateModel
-    from .experiment_py3 import Experiment
-    from .latency_metric_py3 import LatencyMetric
-    from .latency_scorecard_py3 import LatencyScorecard
-    from .timeseries_data_point_py3 import TimeseriesDataPoint
-    from .timeseries_py3 import Timeseries
-    from .preconfigured_endpoint_py3 import PreconfiguredEndpoint
-    from .error_response_py3 import ErrorResponse, ErrorResponseException
-    from .front_door_py3 import FrontDoor
-    from .routing_rule_py3 import RoutingRule
-    from .load_balancing_settings_model_py3 import LoadBalancingSettingsModel
-    from .health_probe_settings_model_py3 import HealthProbeSettingsModel
-    from .backend_pool_py3 import BackendPool
-    from .key_vault_certificate_source_parameters_vault_py3 import KeyVaultCertificateSourceParametersVault
-    from .custom_https_configuration_py3 import CustomHttpsConfiguration
-    from .frontend_endpoint_py3 import FrontendEndpoint
-    from .backend_pools_settings_py3 import BackendPoolsSettings
-    from .front_door_update_parameters_py3 import FrontDoorUpdateParameters
-    from .purge_parameters_py3 import PurgeParameters
-    from .routing_rule_list_result_py3 import RoutingRuleListResult
-    from .route_configuration_py3 import RouteConfiguration
-    from .routing_rule_update_parameters_py3 import RoutingRuleUpdateParameters
-    from .cache_configuration_py3 import CacheConfiguration
-    from .forwarding_configuration_py3 import ForwardingConfiguration
-    from .redirect_configuration_py3 import RedirectConfiguration
-    from .backend_py3 import Backend
-    from .load_balancing_settings_list_result_py3 import LoadBalancingSettingsListResult
-    from .load_balancing_settings_update_parameters_py3 import LoadBalancingSettingsUpdateParameters
-    from .health_probe_settings_list_result_py3 import HealthProbeSettingsListResult
-    from .health_probe_settings_update_parameters_py3 import HealthProbeSettingsUpdateParameters
-    from .backend_pool_update_parameters_py3 import BackendPoolUpdateParameters
-    from .backend_pool_list_result_py3 import BackendPoolListResult
-    from .frontend_endpoint_update_parameters_web_application_firewall_policy_link_py3 import FrontendEndpointUpdateParametersWebApplicationFirewallPolicyLink
-    from .frontend_endpoint_update_parameters_py3 import FrontendEndpointUpdateParameters
-    from .validate_custom_domain_input_py3 import ValidateCustomDomainInput
-    from .validate_custom_domain_output_py3 import ValidateCustomDomainOutput
-    from .check_name_availability_input_py3 import CheckNameAvailabilityInput
-    from .check_name_availability_output_py3 import CheckNameAvailabilityOutput
-    from .policy_settings_py3 import PolicySettings
-    from .match_condition_py3 import MatchCondition
-    from .custom_rule_py3 import CustomRule
-    from .custom_rule_list_py3 import CustomRuleList
-    from .managed_rule_exclusion_py3 import ManagedRuleExclusion
-    from .managed_rule_override_py3 import ManagedRuleOverride
-    from .managed_rule_group_override_py3 import ManagedRuleGroupOverride
-    from .managed_rule_set_py3 import ManagedRuleSet
-    from .managed_rule_set_list_py3 import ManagedRuleSetList
-    from .frontend_endpoint_link_py3 import FrontendEndpointLink
-    from .web_application_firewall_policy_py3 import WebApplicationFirewallPolicy
-    from .managed_rule_definition_py3 import ManagedRuleDefinition
-    from .managed_rule_group_definition_py3 import ManagedRuleGroupDefinition
-    from .managed_rule_set_definition_py3 import ManagedRuleSetDefinition
+    from ._models_py3 import AzureAsyncOperationResult
+    from ._models_py3 import Backend
+    from ._models_py3 import BackendPool
+    from ._models_py3 import BackendPoolListResult
+    from ._models_py3 import BackendPoolsSettings
+    from ._models_py3 import BackendPoolUpdateParameters
+    from ._models_py3 import CacheConfiguration
+    from ._models_py3 import CheckNameAvailabilityInput
+    from ._models_py3 import CheckNameAvailabilityOutput
+    from ._models_py3 import CustomHttpsConfiguration
+    from ._models_py3 import CustomRule
+    from ._models_py3 import CustomRuleList
+    from ._models_py3 import Endpoint
+    from ._models_py3 import Error
+    from ._models_py3 import ErrorDetails
+    from ._models_py3 import ErrorResponse, ErrorResponseException
+    from ._models_py3 import Experiment
+    from ._models_py3 import ExperimentUpdateModel
+    from ._models_py3 import ForwardingConfiguration
+    from ._models_py3 import FrontDoor
+    from ._models_py3 import FrontDoorUpdateParameters
+    from ._models_py3 import FrontendEndpoint
+    from ._models_py3 import FrontendEndpointLink
+    from ._models_py3 import FrontendEndpointUpdateParameters
+    from ._models_py3 import FrontendEndpointUpdateParametersWebApplicationFirewallPolicyLink
+    from ._models_py3 import HeaderAction
+    from ._models_py3 import HealthProbeSettingsListResult
+    from ._models_py3 import HealthProbeSettingsModel
+    from ._models_py3 import HealthProbeSettingsUpdateParameters
+    from ._models_py3 import KeyVaultCertificateSourceParametersVault
+    from ._models_py3 import LatencyMetric
+    from ._models_py3 import LatencyScorecard
+    from ._models_py3 import LoadBalancingSettingsListResult
+    from ._models_py3 import LoadBalancingSettingsModel
+    from ._models_py3 import LoadBalancingSettingsUpdateParameters
+    from ._models_py3 import ManagedRuleDefinition
+    from ._models_py3 import ManagedRuleExclusion
+    from ._models_py3 import ManagedRuleGroupDefinition
+    from ._models_py3 import ManagedRuleGroupOverride
+    from ._models_py3 import ManagedRuleOverride
+    from ._models_py3 import ManagedRuleSet
+    from ._models_py3 import ManagedRuleSetDefinition
+    from ._models_py3 import ManagedRuleSetList
+    from ._models_py3 import MatchCondition
+    from ._models_py3 import PolicySettings
+    from ._models_py3 import PreconfiguredEndpoint
+    from ._models_py3 import Profile
+    from ._models_py3 import ProfileUpdateModel
+    from ._models_py3 import PurgeParameters
+    from ._models_py3 import RedirectConfiguration
+    from ._models_py3 import Resource
+    from ._models_py3 import RouteConfiguration
+    from ._models_py3 import RoutingRule
+    from ._models_py3 import RoutingRuleListResult
+    from ._models_py3 import RoutingRuleUpdateParameters
+    from ._models_py3 import RulesEngine
+    from ._models_py3 import RulesEngineAction
+    from ._models_py3 import RulesEngineMatchCondition
+    from ._models_py3 import RulesEngineRule
+    from ._models_py3 import RulesEngineUpdateParameters
+    from ._models_py3 import SubResource
+    from ._models_py3 import TagsObject
+    from ._models_py3 import Timeseries
+    from ._models_py3 import TimeseriesDataPoint
+    from ._models_py3 import ValidateCustomDomainInput
+    from ._models_py3 import ValidateCustomDomainOutput
+    from ._models_py3 import WebApplicationFirewallPolicy
 except (SyntaxError, ImportError):
-    from .error_details import ErrorDetails
-    from .error import Error
-    from .azure_async_operation_result import AzureAsyncOperationResult
-    from .resource import Resource
-    from .sub_resource import SubResource
-    from .tags_object import TagsObject
-    from .profile import Profile
-    from .endpoint import Endpoint
-    from .profile_update_model import ProfileUpdateModel
-    from .experiment_update_model import ExperimentUpdateModel
-    from .experiment import Experiment
-    from .latency_metric import LatencyMetric
-    from .latency_scorecard import LatencyScorecard
-    from .timeseries_data_point import TimeseriesDataPoint
-    from .timeseries import Timeseries
-    from .preconfigured_endpoint import PreconfiguredEndpoint
-    from .error_response import ErrorResponse, ErrorResponseException
-    from .front_door import FrontDoor
-    from .routing_rule import RoutingRule
-    from .load_balancing_settings_model import LoadBalancingSettingsModel
-    from .health_probe_settings_model import HealthProbeSettingsModel
-    from .backend_pool import BackendPool
-    from .key_vault_certificate_source_parameters_vault import KeyVaultCertificateSourceParametersVault
-    from .custom_https_configuration import CustomHttpsConfiguration
-    from .frontend_endpoint import FrontendEndpoint
-    from .backend_pools_settings import BackendPoolsSettings
-    from .front_door_update_parameters import FrontDoorUpdateParameters
-    from .purge_parameters import PurgeParameters
-    from .routing_rule_list_result import RoutingRuleListResult
-    from .route_configuration import RouteConfiguration
-    from .routing_rule_update_parameters import RoutingRuleUpdateParameters
-    from .cache_configuration import CacheConfiguration
-    from .forwarding_configuration import ForwardingConfiguration
-    from .redirect_configuration import RedirectConfiguration
-    from .backend import Backend
-    from .load_balancing_settings_list_result import LoadBalancingSettingsListResult
-    from .load_balancing_settings_update_parameters import LoadBalancingSettingsUpdateParameters
-    from .health_probe_settings_list_result import HealthProbeSettingsListResult
-    from .health_probe_settings_update_parameters import HealthProbeSettingsUpdateParameters
-    from .backend_pool_update_parameters import BackendPoolUpdateParameters
-    from .backend_pool_list_result import BackendPoolListResult
-    from .frontend_endpoint_update_parameters_web_application_firewall_policy_link import FrontendEndpointUpdateParametersWebApplicationFirewallPolicyLink
-    from .frontend_endpoint_update_parameters import FrontendEndpointUpdateParameters
-    from .validate_custom_domain_input import ValidateCustomDomainInput
-    from .validate_custom_domain_output import ValidateCustomDomainOutput
-    from .check_name_availability_input import CheckNameAvailabilityInput
-    from .check_name_availability_output import CheckNameAvailabilityOutput
-    from .policy_settings import PolicySettings
-    from .match_condition import MatchCondition
-    from .custom_rule import CustomRule
-    from .custom_rule_list import CustomRuleList
-    from .managed_rule_exclusion import ManagedRuleExclusion
-    from .managed_rule_override import ManagedRuleOverride
-    from .managed_rule_group_override import ManagedRuleGroupOverride
-    from .managed_rule_set import ManagedRuleSet
-    from .managed_rule_set_list import ManagedRuleSetList
-    from .frontend_endpoint_link import FrontendEndpointLink
-    from .web_application_firewall_policy import WebApplicationFirewallPolicy
-    from .managed_rule_definition import ManagedRuleDefinition
-    from .managed_rule_group_definition import ManagedRuleGroupDefinition
-    from .managed_rule_set_definition import ManagedRuleSetDefinition
-from .profile_paged import ProfilePaged
-from .preconfigured_endpoint_paged import PreconfiguredEndpointPaged
-from .experiment_paged import ExperimentPaged
-from .front_door_paged import FrontDoorPaged
-from .frontend_endpoint_paged import FrontendEndpointPaged
-from .web_application_firewall_policy_paged import WebApplicationFirewallPolicyPaged
-from .managed_rule_set_definition_paged import ManagedRuleSetDefinitionPaged
-from .front_door_management_client_enums import (
+    from ._models import AzureAsyncOperationResult
+    from ._models import Backend
+    from ._models import BackendPool
+    from ._models import BackendPoolListResult
+    from ._models import BackendPoolsSettings
+    from ._models import BackendPoolUpdateParameters
+    from ._models import CacheConfiguration
+    from ._models import CheckNameAvailabilityInput
+    from ._models import CheckNameAvailabilityOutput
+    from ._models import CustomHttpsConfiguration
+    from ._models import CustomRule
+    from ._models import CustomRuleList
+    from ._models import Endpoint
+    from ._models import Error
+    from ._models import ErrorDetails
+    from ._models import ErrorResponse, ErrorResponseException
+    from ._models import Experiment
+    from ._models import ExperimentUpdateModel
+    from ._models import ForwardingConfiguration
+    from ._models import FrontDoor
+    from ._models import FrontDoorUpdateParameters
+    from ._models import FrontendEndpoint
+    from ._models import FrontendEndpointLink
+    from ._models import FrontendEndpointUpdateParameters
+    from ._models import FrontendEndpointUpdateParametersWebApplicationFirewallPolicyLink
+    from ._models import HeaderAction
+    from ._models import HealthProbeSettingsListResult
+    from ._models import HealthProbeSettingsModel
+    from ._models import HealthProbeSettingsUpdateParameters
+    from ._models import KeyVaultCertificateSourceParametersVault
+    from ._models import LatencyMetric
+    from ._models import LatencyScorecard
+    from ._models import LoadBalancingSettingsListResult
+    from ._models import LoadBalancingSettingsModel
+    from ._models import LoadBalancingSettingsUpdateParameters
+    from ._models import ManagedRuleDefinition
+    from ._models import ManagedRuleExclusion
+    from ._models import ManagedRuleGroupDefinition
+    from ._models import ManagedRuleGroupOverride
+    from ._models import ManagedRuleOverride
+    from ._models import ManagedRuleSet
+    from ._models import ManagedRuleSetDefinition
+    from ._models import ManagedRuleSetList
+    from ._models import MatchCondition
+    from ._models import PolicySettings
+    from ._models import PreconfiguredEndpoint
+    from ._models import Profile
+    from ._models import ProfileUpdateModel
+    from ._models import PurgeParameters
+    from ._models import RedirectConfiguration
+    from ._models import Resource
+    from ._models import RouteConfiguration
+    from ._models import RoutingRule
+    from ._models import RoutingRuleListResult
+    from ._models import RoutingRuleUpdateParameters
+    from ._models import RulesEngine
+    from ._models import RulesEngineAction
+    from ._models import RulesEngineMatchCondition
+    from ._models import RulesEngineRule
+    from ._models import RulesEngineUpdateParameters
+    from ._models import SubResource
+    from ._models import TagsObject
+    from ._models import Timeseries
+    from ._models import TimeseriesDataPoint
+    from ._models import ValidateCustomDomainInput
+    from ._models import ValidateCustomDomainOutput
+    from ._models import WebApplicationFirewallPolicy
+from ._paged_models import ExperimentPaged
+from ._paged_models import FrontDoorPaged
+from ._paged_models import FrontendEndpointPaged
+from ._paged_models import ManagedRuleSetDefinitionPaged
+from ._paged_models import PreconfiguredEndpointPaged
+from ._paged_models import ProfilePaged
+from ._paged_models import RulesEnginePaged
+from ._paged_models import WebApplicationFirewallPolicyPaged
+from ._front_door_management_client_enums import (
     NetworkOperationStatus,
     NetworkExperimentResourceState,
     State,
@@ -162,10 +175,16 @@ from .front_door_management_client_enums import (
     DynamicCompressionEnabled,
     FrontDoorRedirectType,
     FrontDoorRedirectProtocol,
+    PrivateEndpointStatus,
     BackendEnabledState,
     FrontDoorHealthProbeMethod,
     HealthProbeEnabled,
     SessionAffinityEnabledState,
+    HeaderActionType,
+    RulesEngineMatchVariable,
+    RulesEngineOperator,
+    Transform,
+    MatchProcessingBehavior,
     ResourceType,
     Availability,
     PolicyEnabledState,
@@ -185,72 +204,79 @@ from .front_door_management_client_enums import (
 )
 
 __all__ = [
-    'ErrorDetails',
-    'Error',
     'AzureAsyncOperationResult',
-    'Resource',
-    'SubResource',
-    'TagsObject',
-    'Profile',
-    'Endpoint',
-    'ProfileUpdateModel',
-    'ExperimentUpdateModel',
-    'Experiment',
-    'LatencyMetric',
-    'LatencyScorecard',
-    'TimeseriesDataPoint',
-    'Timeseries',
-    'PreconfiguredEndpoint',
-    'ErrorResponse', 'ErrorResponseException',
-    'FrontDoor',
-    'RoutingRule',
-    'LoadBalancingSettingsModel',
-    'HealthProbeSettingsModel',
-    'BackendPool',
-    'KeyVaultCertificateSourceParametersVault',
-    'CustomHttpsConfiguration',
-    'FrontendEndpoint',
-    'BackendPoolsSettings',
-    'FrontDoorUpdateParameters',
-    'PurgeParameters',
-    'RoutingRuleListResult',
-    'RouteConfiguration',
-    'RoutingRuleUpdateParameters',
-    'CacheConfiguration',
-    'ForwardingConfiguration',
-    'RedirectConfiguration',
     'Backend',
-    'LoadBalancingSettingsListResult',
-    'LoadBalancingSettingsUpdateParameters',
-    'HealthProbeSettingsListResult',
-    'HealthProbeSettingsUpdateParameters',
-    'BackendPoolUpdateParameters',
+    'BackendPool',
     'BackendPoolListResult',
-    'FrontendEndpointUpdateParametersWebApplicationFirewallPolicyLink',
-    'FrontendEndpointUpdateParameters',
-    'ValidateCustomDomainInput',
-    'ValidateCustomDomainOutput',
+    'BackendPoolsSettings',
+    'BackendPoolUpdateParameters',
+    'CacheConfiguration',
     'CheckNameAvailabilityInput',
     'CheckNameAvailabilityOutput',
-    'PolicySettings',
-    'MatchCondition',
+    'CustomHttpsConfiguration',
     'CustomRule',
     'CustomRuleList',
-    'ManagedRuleExclusion',
-    'ManagedRuleOverride',
-    'ManagedRuleGroupOverride',
-    'ManagedRuleSet',
-    'ManagedRuleSetList',
+    'Endpoint',
+    'Error',
+    'ErrorDetails',
+    'ErrorResponse', 'ErrorResponseException',
+    'Experiment',
+    'ExperimentUpdateModel',
+    'ForwardingConfiguration',
+    'FrontDoor',
+    'FrontDoorUpdateParameters',
+    'FrontendEndpoint',
     'FrontendEndpointLink',
-    'WebApplicationFirewallPolicy',
+    'FrontendEndpointUpdateParameters',
+    'FrontendEndpointUpdateParametersWebApplicationFirewallPolicyLink',
+    'HeaderAction',
+    'HealthProbeSettingsListResult',
+    'HealthProbeSettingsModel',
+    'HealthProbeSettingsUpdateParameters',
+    'KeyVaultCertificateSourceParametersVault',
+    'LatencyMetric',
+    'LatencyScorecard',
+    'LoadBalancingSettingsListResult',
+    'LoadBalancingSettingsModel',
+    'LoadBalancingSettingsUpdateParameters',
     'ManagedRuleDefinition',
+    'ManagedRuleExclusion',
     'ManagedRuleGroupDefinition',
+    'ManagedRuleGroupOverride',
+    'ManagedRuleOverride',
+    'ManagedRuleSet',
     'ManagedRuleSetDefinition',
+    'ManagedRuleSetList',
+    'MatchCondition',
+    'PolicySettings',
+    'PreconfiguredEndpoint',
+    'Profile',
+    'ProfileUpdateModel',
+    'PurgeParameters',
+    'RedirectConfiguration',
+    'Resource',
+    'RouteConfiguration',
+    'RoutingRule',
+    'RoutingRuleListResult',
+    'RoutingRuleUpdateParameters',
+    'RulesEngine',
+    'RulesEngineAction',
+    'RulesEngineMatchCondition',
+    'RulesEngineRule',
+    'RulesEngineUpdateParameters',
+    'SubResource',
+    'TagsObject',
+    'Timeseries',
+    'TimeseriesDataPoint',
+    'ValidateCustomDomainInput',
+    'ValidateCustomDomainOutput',
+    'WebApplicationFirewallPolicy',
     'ProfilePaged',
     'PreconfiguredEndpointPaged',
     'ExperimentPaged',
     'FrontDoorPaged',
     'FrontendEndpointPaged',
+    'RulesEnginePaged',
     'WebApplicationFirewallPolicyPaged',
     'ManagedRuleSetDefinitionPaged',
     'NetworkOperationStatus',
@@ -274,10 +300,16 @@ __all__ = [
     'DynamicCompressionEnabled',
     'FrontDoorRedirectType',
     'FrontDoorRedirectProtocol',
+    'PrivateEndpointStatus',
     'BackendEnabledState',
     'FrontDoorHealthProbeMethod',
     'HealthProbeEnabled',
     'SessionAffinityEnabledState',
+    'HeaderActionType',
+    'RulesEngineMatchVariable',
+    'RulesEngineOperator',
+    'Transform',
+    'MatchProcessingBehavior',
     'ResourceType',
     'Availability',
     'PolicyEnabledState',

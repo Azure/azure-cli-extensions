@@ -16,15 +16,15 @@ class WindowsManagedDiskCreateRestoreTest(LiveScenarioTest):
 
         # Create test VM
         self.cmd('vm create -g {rg} -n {vm} --admin-username azureadmin --image Win2016Datacenter --admin-password !Passw0rd2018')
-        vms = self.cmd('vm list -g {rg}').get_output_in_json()
+        vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
         # Something wrong with vm create command if it fails here
         assert len(vms) == 1
 
         # Test create
-        result = self.cmd('vm repair create -g {rg} -n {vm} --repair-username azureadmin --repair-password !Passw0rd2018').get_output_in_json()
+        result = self.cmd('vm repair create -g {rg} -n {vm} --repair-username azureadmin --repair-password !Passw0rd2018 -o json').get_output_in_json()
 
         # Check repair VM
-        repair_vms = self.cmd('vm list -g {}'.format(result['repair_resource_group'])).get_output_in_json()
+        repair_vms = self.cmd('vm list -g {} -o json'.format(result['repair_resource_group'])).get_output_in_json()
         assert len(repair_vms) == 1
         repair_vm = repair_vms[0]
         # Check attached data disk
@@ -34,7 +34,7 @@ class WindowsManagedDiskCreateRestoreTest(LiveScenarioTest):
         self.cmd('vm repair restore -g {rg} -n {vm} --yes')
 
         # Check swapped OS disk
-        vms = self.cmd('vm list -g {rg}').get_output_in_json()
+        vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
 
@@ -49,15 +49,15 @@ class WindowsUnmanagedDiskCreateRestoreTest(LiveScenarioTest):
 
         # Create test VM
         self.cmd('vm create -g {rg} -n {vm} --admin-username azureadmin --image Win2016Datacenter --admin-password !Passw0rd2018 --use-unmanaged-disk')
-        vms = self.cmd('vm list -g {rg}').get_output_in_json()
+        vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
         # Something wrong with vm create command if it fails here
         assert len(vms) == 1
 
         # Test create
-        result = self.cmd('vm repair create -g {rg} -n {vm} --repair-username azureadmin --repair-password !Passw0rd2018').get_output_in_json()
+        result = self.cmd('vm repair create -g {rg} -n {vm} --repair-username azureadmin --repair-password !Passw0rd2018 -o json').get_output_in_json()
 
         # Check repair VM
-        repair_vms = self.cmd('vm list -g {}'.format(result['repair_resource_group'])).get_output_in_json()
+        repair_vms = self.cmd('vm list -g {} -o json'.format(result['repair_resource_group'])).get_output_in_json()
         assert len(repair_vms) == 1
         repair_vm = repair_vms[0]
         # Check attached data disk
@@ -67,7 +67,7 @@ class WindowsUnmanagedDiskCreateRestoreTest(LiveScenarioTest):
         self.cmd('vm repair restore -g {rg} -n {vm} --yes')
 
         # Check swapped OS disk
-        vms = self.cmd('vm list -g {rg}').get_output_in_json()
+        vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['vhd']['uri'] == result['copied_disk_uri']
 
@@ -82,15 +82,15 @@ class LinuxManagedDiskCreateRestoreTest(LiveScenarioTest):
 
         # Create test VM
         self.cmd('vm create -g {rg} -n {vm} --image UbuntuLTS --admin-username azureadmin --admin-password !Passw0rd2018')
-        vms = self.cmd('vm list -g {rg}').get_output_in_json()
+        vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
         # Something wrong with vm create command if it fails here
         assert len(vms) == 1
 
         # Test create
-        result = self.cmd('vm repair create -g {rg} -n {vm} --repair-username azureadmin --repair-password !Passw0rd2018').get_output_in_json()
+        result = self.cmd('vm repair create -g {rg} -n {vm} --repair-username azureadmin --repair-password !Passw0rd2018 -o json').get_output_in_json()
 
         # Check repair VM
-        repair_vms = self.cmd('vm list -g {}'.format(result['repair_resource_group'])).get_output_in_json()
+        repair_vms = self.cmd('vm list -g {} -o json'.format(result['repair_resource_group'])).get_output_in_json()
         assert len(repair_vms) == 1
         repair_vm = repair_vms[0]
         # Check attached data disk
@@ -100,7 +100,7 @@ class LinuxManagedDiskCreateRestoreTest(LiveScenarioTest):
         self.cmd('vm repair restore -g {rg} -n {vm} --yes')
 
         # Check swapped OS disk
-        vms = self.cmd('vm list -g {rg}').get_output_in_json()
+        vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
 
@@ -115,15 +115,15 @@ class LinuxUnmanagedDiskCreateRestoreTest(LiveScenarioTest):
 
         # Create test VM
         self.cmd('vm create -g {rg} -n {vm} --image UbuntuLTS --admin-username azureadmin --admin-password !Passw0rd2018 --use-unmanaged-disk')
-        vms = self.cmd('vm list -g {rg}').get_output_in_json()
+        vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
         # Something wrong with vm create command if it fails here
         assert len(vms) == 1
 
         # Test create
-        result = self.cmd('vm repair create -g {rg} -n {vm} --repair-username azureadmin --repair-password !Passw0rd2018').get_output_in_json()
+        result = self.cmd('vm repair create -g {rg} -n {vm} --repair-username azureadmin --repair-password !Passw0rd2018 -o json').get_output_in_json()
 
         # Check repair VM
-        repair_vms = self.cmd('vm list -g {}'.format(result['repair_resource_group'])).get_output_in_json()
+        repair_vms = self.cmd('vm list -g {} -o json'.format(result['repair_resource_group'])).get_output_in_json()
         assert len(repair_vms) == 1
         repair_vm = repair_vms[0]
         # Check attached data disk
@@ -133,7 +133,7 @@ class LinuxUnmanagedDiskCreateRestoreTest(LiveScenarioTest):
         self.cmd('vm repair restore -g {rg} -n {vm} --yes')
 
         # Check swapped OS disk
-        vms = self.cmd('vm list -g {rg}').get_output_in_json()
+        vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['vhd']['uri'] == result['copied_disk_uri']
 
@@ -148,12 +148,12 @@ class WindowsRunHelloWorldTest(LiveScenarioTest):
 
         # Create test VM
         self.cmd('vm create -g {rg} -n {vm} --admin-username azureadmin --image Win2016Datacenter --admin-password !Passw0rd2018')
-        vms = self.cmd('vm list -g {rg}').get_output_in_json()
+        vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
         # Something wrong with vm create command if it fails here
         assert len(vms) == 1
 
         # Test create
-        result = self.cmd('vm repair run -g {rg} -n {vm} --run-id win-hello-world').get_output_in_json()
+        result = self.cmd('vm repair run -g {rg} -n {vm} --run-id win-hello-world -o json').get_output_in_json()
 
         # Check Output
         assert 'Hello World!' in result['output']
@@ -169,12 +169,12 @@ class LinuxRunHelloWorldTest(LiveScenarioTest):
 
         # Create test VM
         self.cmd('vm create -g {rg} -n {vm} --admin-username azureadmin --image UbuntuLTS --admin-password !Passw0rd2018')
-        vms = self.cmd('vm list -g {rg}').get_output_in_json()
+        vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
         # Something wrong with vm create command if it fails here
         assert len(vms) == 1
 
         # Test create
-        result = self.cmd('vm repair run -g {rg} -n {vm} --run-id linux-hello-world').get_output_in_json()
+        result = self.cmd('vm repair run -g {rg} -n {vm} --run-id linux-hello-world -o json').get_output_in_json()
 
         # Check Output
         assert 'Hello World!' in result['output']

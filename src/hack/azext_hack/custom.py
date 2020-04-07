@@ -1,7 +1,7 @@
 # --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
-# # --------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------
 from uuid import uuid4
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
@@ -21,7 +21,7 @@ logger = get_logger(__name__)
 
 def create_hack(cmd, name, runtime, location, database=None, ai=None):
     # TODO: Update this to use a default location, or prompt??
-    name = name + str(uuid4())[:5]
+    name = f'{name}-{str(uuid4())[:5]}'
     # # Create RG
     logger.warning("Creating resource group...")
     _create_resource_group(cmd, name, location)
@@ -67,38 +67,15 @@ def create_hack(cmd, name, runtime, location, database=None, ai=None):
     website.update_settings(app_settings)
     website.finalize_resource_group()
 
-    output = {
-        'Application name': name
-    }
+    output = website.show()
 
-    deployment_info = {
-        'Deployment url': website.deployment_url,
-        'Git login': website.deployment_user_name,
-    }
-
-    if website.deployment_user_password:
-        deployment_info.update(
-            {'Git password': website.deployment_user_password})
-    else:
-        password_info = 'Cannot retrieve password. To change, use `az webapp deployment user set --user-name {}`'
-        deployment_info.update(
-            {'Git password info': password_info.format(website.deployment_user_name)})
-
-    deployment_steps = {
+    output.update({'Deployment steps': {
         '1- Create git repository': 'git init',
         '2- Add all code': 'git add .',
         '3- Commit code': 'git commit -m \'Initial commit\'',
-        '4- Add remote to git': 'git remote add azure ' + website.deployment_url,
+        '4- Add remote to git': 'git remote add azure ' + website.deployment_info.git_url,
         '5- Deploy to Azure': 'git push -u azure master'
-    }
-
-    output.update({'Settings and keys': {
-        'Note': 'All values are stored as environmental variables on website',
-        'Values': app_settings
     }})
-    output.update({'Deployment info': deployment_info})
-    output.update({'Deployment steps': deployment_steps})
-    output.update({'Website url': website.host_name})
 
     return output
 

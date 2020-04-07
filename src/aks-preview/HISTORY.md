@@ -2,13 +2,75 @@
 
 Release History
 ===============
+0.4.38
++++++
+* Add support for AAD V2.
+
+0.4.37
++++++
+* Added slb outbound ip fix
+
+0.4.36
++++++
+* Added --uptime-sla for paid service
+
+0.4.35
++++++
+* Added support for creation time node labels
+
+0.4.34
++++++
+* Remove preview flag for private cluster feature.
+
+0.4.33
++++++
+* Adding az aks get-credentials --context argument
+
+0.4.32
++++++
+* Adding support for user assigned msi for monitoring addon.
+
+0.4.31
++++++
+* Fixed a regular agent pool creation bug.
+
+0.4.30
++++++
+* Remove "Low" option from --priority
+* Add "Spot" option to --priority
+* Add float value option "--spot-max-price" for Spot Pool
+* Add "--cluster-autoscaler-profile" for configuring autoscaler settings
+
+0.4.29
++++++
+* Add option '--nodepool-tags for create cluster'
+* Add option '--tags' for add or update node pool
+
+0.4.28
++++++
+* Add option '--outbound-type' for create
+* Add options '--load-balancer-outbound-ports' and '--load-balancer-idle-timeout' for create and update
+
+0.4.27
++++++
+* Fixed aks cluster creation error
+
+0.4.26
++++++
+* Update to use 2020-01-01 api-version
+* Support cluster creation with server side encryption using customer managed key
+
+0.4.25
++++++
+* List credentials for different users via parameter `--user`
+
 0.4.24
 +++++
 * added custom header support
 
 0.4.23
 +++++
-* Enable GA support of apiserver authorized IP ranges via paramater `--api-server-authorized-ip-ranges` in `az aks create` and `az aks update`
+* Enable GA support of apiserver authorized IP ranges via parameter `--api-server-authorized-ip-ranges` in `az aks create` and `az aks update`
 
 0.4.21
 +++++

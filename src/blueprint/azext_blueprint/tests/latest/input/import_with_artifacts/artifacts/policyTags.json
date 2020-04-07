@@ -1,0 +1,16 @@
+{
+    "kind": "policyAssignment",
+    "properties": {
+        "displayName": "Apply tag and its default value to resource groups",
+        "description": "Apply tag and its default value to resource groups",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/49c88fc8-6fd1-46fd-a676-f12d1d3a4c71",
+        "parameters": {
+            "tagName": {
+                "value": "[parameters('tagName')]"
+            },
+            "tagValue": {
+                "value": "[parameters('tagValue')]"
+            }
+        }
+    }
+}
