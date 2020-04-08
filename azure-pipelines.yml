@@ -45,6 +45,10 @@ jobs:
   - bash: |
       set -ev
 
+      cat /proc/cpuinfo
+  - bash: |
+      set -ev
+
       # prepare and activate virtualenv
       python -m venv env/
 
