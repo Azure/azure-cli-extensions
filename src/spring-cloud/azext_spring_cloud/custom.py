@@ -100,7 +100,8 @@ def app_create(cmd, client, resource_group, service, name,
                runtime_version=None,
                jvm_options=None,
                env=None,
-               enable_persistent_storage=None):
+               enable_persistent_storage=None,
+               assign_identity=None):
     apps = _get_all_apps(client, resource_group, service)
     if name in apps:
         raise CLIError("App '{}' already exists.".format(name))
@@ -119,8 +120,14 @@ def app_create(cmd, client, resource_group, service, name,
     resource = client.services.get(resource_group, service)
     location = resource.location
 
+    app_resource = models.AppResource()
+    app_resource.properties = properties
+    app_resource.location = location
+    if assign_identity is True:
+        app_resource.identity = models.ManagedIdentityProperties(type="systemassigned")
+
     poller = client.apps.create_or_update(
-        resource_group, service, name, properties, location)
+        resource_group, service, name, app_resource)
     while poller.done() is False:
         sleep(APP_CREATE_OR_UPDATE_SLEEP_INTERVAL)
 
@@ -147,7 +154,10 @@ def app_create(cmd, client, resource_group, service, name,
     properties = models.AppResourceProperties(
         active_deployment_name=DEFAULT_DEPLOYMENT_NAME, public=is_public)
 
-    app_poller = client.apps.update(resource_group, service, name, properties, location)
+    app_resource.properties = properties
+    app_resource.location = location
+
+    app_poller = client.apps.update(resource_group, service, name, app_resource)
     logger.warning(
         "[4/4] Updating app '{}' (this operation can take a while to complete)".format(name))
     while not poller.done() or not app_poller.done():
@@ -178,9 +188,13 @@ def app_update(cmd, client, resource_group, service, name,
     resource = client.services.get(resource_group, service)
     location = resource.location
 
+    app_resource = models.AppResource()
+    app_resource.properties = properties
+    app_resource.location = location
+
     logger.warning("[1/2] updating app '{}'".format(name))
     poller = client.apps.update(
-        resource_group, service, name, properties, location)
+        resource_group, service, name, app_resource)
     while poller.done() is False:
         sleep(APP_CREATE_OR_UPDATE_SLEEP_INTERVAL)
 
@@ -425,6 +439,37 @@ def app_tail_log(cmd, client, resource_group, service, name, instance=None, foll
         raise exceptions[0]
 
 
+def app_identity_assign(cmd, client, resource_group, service, name):
+    app_resource = models.AppResource()
+    identity = models.ManagedIdentityProperties(type="systemassigned")
+    properties = models.AppResourceProperties()
+    resource = client.services.get(resource_group, service)
+    location = resource.location
+
+    app_resource.identity = identity
+    app_resource.properties = properties
+    app_resource.location = location
+    return client.apps.update(resource_group, service, name, app_resource)
+
+
+def app_identity_remove(cmd, client, resource_group, service, name):
+    app_resource = models.AppResource()
+    identity = models.ManagedIdentityProperties(type="none")
+    properties = models.AppResourceProperties()
+    resource = client.services.get(resource_group, service)
+    location = resource.location
+
+    app_resource.identity = identity
+    app_resource.properties = properties
+    app_resource.location = location
+    return client.apps.update(resource_group, service, name, app_resource)
+
+
+def app_identity_show(cmd, client, resource_group, service, name):
+    app = client.apps.get(resource_group, service, name)
+    return app.identity
+
+
 def app_set_deployment(cmd, client, resource_group, service, name, deployment):
     deployments = _get_all_deployments(client, resource_group, service, name)
     active_deployment = client.apps.get(
@@ -441,7 +486,11 @@ def app_set_deployment(cmd, client, resource_group, service, name, deployment):
     resource = client.services.get(resource_group, service)
     location = resource.location
 
-    return client.apps.update(resource_group, service, name, properties, location)
+    app_resource = models.AppResource()
+    app_resource.properties = properties
+    app_resource.location = location
+
+    return client.apps.update(resource_group, service, name, app_resource)
 
 
 def deployment_create(cmd, client, resource_group, service, app, name,

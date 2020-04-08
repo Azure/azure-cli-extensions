@@ -57,6 +57,9 @@ def load_command_table(self, _):
         g.custom_command('stop', 'app_stop', supports_no_wait=True)
         g.custom_command('restart', 'app_restart', supports_no_wait=True)
         g.custom_command('logs', 'app_tail_log')
+        g.custom_command('identity assign', 'app_identity_assign')
+        g.custom_command('identity remove', 'app_identity_remove')
+        g.custom_command('identity show', 'app_identity_show')
 
     with self.command_group('spring-cloud app log', client_factory=cf_spring_cloud,
                             deprecate_info=g.deprecate(redirect='az spring-cloud app logs', hide=True)) as g:

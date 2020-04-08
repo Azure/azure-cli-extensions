@@ -147,6 +147,26 @@ helps['spring-cloud app log tail'] = """
     short-summary: Show logs of an app instance, logs will be streamed when setting '-f/--follow'.
 """
 
+helps['spring-cloud app identity'] = """
+    type: group
+    short-summary: Operate on assign an Azure Active Directory Identity for this app for use with key management services like Azure KeyVault identity.
+"""
+
+helps['spring-cloud app identity assign'] = """
+    type: command
+    short-summary: Assign an Azure Active Directory Identity for this app.
+"""
+
+helps['spring-cloud app identity remove'] = """
+    type: command
+    short-summary: Remove an Azure Active Directory Identity for this app.
+"""
+
+helps['spring-cloud app identity show'] = """
+    type: command
+    short-summary: Show the Azure Active Directory Identity for this app.
+"""
+
 helps['spring-cloud app set-deployment'] = """
     type: command
     short-summary: Set production deployment of an app.
