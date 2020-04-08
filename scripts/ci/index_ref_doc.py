@@ -10,10 +10,9 @@ from __future__ import print_function
 import os
 import sys
 import tempfile
-import traceback
 import unittest
 import shutil
-from subprocess import check_call, CalledProcessError
+from subprocess import check_call
 from pkg_resources import parse_version, get_distribution
 
 from six import with_metaclass
@@ -58,11 +57,7 @@ class TestIndexRefDocsMeta(type):
                     os.mkdir(ref_doc_out_dir)
                 script_args = [sys.executable, REF_GEN_SCRIPT, '--extension-file', ext_file, '--output-dir',
                                ref_doc_out_dir]
-                try:
-                    check_call(script_args)
-                except CalledProcessError as e:
-                    traceback.print_exc(e)
-                    raise e
+                check_call(script_args)
             return test
 
         for ext_name, ext_url, filename in ALL_TESTS:
