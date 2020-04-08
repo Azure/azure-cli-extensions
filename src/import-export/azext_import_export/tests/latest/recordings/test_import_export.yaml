@@ -14,14 +14,14 @@ interactions:
       - -g -n
       User-Agent:
       - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-storage/8.0.0 Azure-SDK-For-Python AZURECLI/2.2.0
+        azure-mgmt-storage/9.0.0 Azure-SDK-For-Python AZURECLI/2.3.1
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_import_export_000001/providers/Microsoft.Storage/storageAccounts/clitest000002?api-version=2019-06-01
   response:
     body:
-      string: '{"sku":{"name":"Standard_LRS","tier":"Standard"},"kind":"Storage","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_import_export_000001/providers/Microsoft.Storage/storageAccounts/clitest000002","name":"clitest000002","type":"Microsoft.Storage/storageAccounts","location":"westus","tags":{},"properties":{"privateEndpointConnections":[],"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2020-04-07T09:55:33.1430823Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2020-04-07T09:55:33.1430823Z"}},"keySource":"Microsoft.Storage"},"provisioningState":"Succeeded","creationTime":"2020-04-07T09:55:33.0650001Z","primaryEndpoints":{"blob":"https://clitest000002.blob.core.windows.net/","queue":"https://clitest000002.queue.core.windows.net/","table":"https://clitest000002.table.core.windows.net/","file":"https://clitest000002.file.core.windows.net/"},"primaryLocation":"westus","statusOfPrimary":"available"}}'
+      string: '{"sku":{"name":"Standard_LRS","tier":"Standard"},"kind":"Storage","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_import_export_000001/providers/Microsoft.Storage/storageAccounts/clitest000002","name":"clitest000002","type":"Microsoft.Storage/storageAccounts","location":"westus","tags":{},"properties":{"privateEndpointConnections":[],"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2020-04-08T01:50:11.6835850Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2020-04-08T01:50:11.6835850Z"}},"keySource":"Microsoft.Storage"},"provisioningState":"Succeeded","creationTime":"2020-04-08T01:50:11.6054455Z","primaryEndpoints":{"blob":"https://clitest000002.blob.core.windows.net/","queue":"https://clitest000002.queue.core.windows.net/","table":"https://clitest000002.table.core.windows.net/","file":"https://clitest000002.file.core.windows.net/"},"primaryLocation":"westus","statusOfPrimary":"available"}}'
     headers:
       cache-control:
       - no-cache
@@ -30,7 +30,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 07 Apr 2020 09:55:54 GMT
+      - Wed, 08 Apr 2020 01:50:31 GMT
       expires:
       - '-1'
       pragma:
@@ -63,7 +63,7 @@ interactions:
       - -g -n
       User-Agent:
       - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-resource/8.0.1 Azure-SDK-For-Python AZURECLI/2.2.0
+        azure-mgmt-resource/8.0.1 Azure-SDK-For-Python AZURECLI/2.3.1
       accept-language:
       - en-US
     method: GET
@@ -119,7 +119,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 07 Apr 2020 09:55:54 GMT
+      - Wed, 08 Apr 2020 01:50:32 GMT
       expires:
       - '-1'
       pragma:
@@ -157,10 +157,10 @@ interactions:
       Content-Type:
       - application/json
       ParameterSetName:
-      - -g -n --location --backup-drive-manifest --diagnostics-path --drive-list --type
-        --log-level --return-address --storage-account-id
+      - -g -n --location --type --log-level --storage-account-id --backup-drive-manifest
+        --diagnostics-path --drive-list --return-address
       User-Agent:
-      - AZURECLI/2.2.0 azsdk-python-core/1.3.0 Python/3.8.2 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.3.1 azsdk-python-core/1.3.0 Python/3.8.2 (Windows-10-10.0.18362-SP0)
         azsdk-python-storageimportexport/unknown
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_import_export_000001/providers/Microsoft.ImportExport/jobs/test-import-export-000003?api-version=2016-11-01
@@ -178,7 +178,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 07 Apr 2020 09:56:04 GMT
+      - Wed, 08 Apr 2020 01:50:45 GMT
       expires:
       - '-1'
       pragma:
@@ -208,7 +208,7 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - AZURECLI/2.2.0 azsdk-python-core/1.3.0 Python/3.8.2 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.3.1 azsdk-python-core/1.3.0 Python/3.8.2 (Windows-10-10.0.18362-SP0)
         azsdk-python-storageimportexport/unknown
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_import_export_000001/providers/Microsoft.ImportExport/jobs?api-version=2016-11-01
@@ -227,7 +227,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 07 Apr 2020 09:56:05 GMT
+      - Wed, 08 Apr 2020 01:50:46 GMT
       expires:
       - '-1'
       pragma:
@@ -259,7 +259,7 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.2.0 azsdk-python-core/1.3.0 Python/3.8.2 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.3.1 azsdk-python-core/1.3.0 Python/3.8.2 (Windows-10-10.0.18362-SP0)
         azsdk-python-storageimportexport/unknown
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_import_export_000001/providers/Microsoft.ImportExport/jobs/test-import-export-000003?api-version=2016-11-01
@@ -278,7 +278,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 07 Apr 2020 09:56:07 GMT
+      - Wed, 08 Apr 2020 01:50:48 GMT
       expires:
       - '-1'
       pragma:
@@ -314,7 +314,7 @@ interactions:
       ParameterSetName:
       - -g -n --cancel-requested
       User-Agent:
-      - AZURECLI/2.2.0 azsdk-python-core/1.3.0 Python/3.8.2 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.3.1 azsdk-python-core/1.3.0 Python/3.8.2 (Windows-10-10.0.18362-SP0)
         azsdk-python-storageimportexport/unknown
     method: PATCH
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_import_export_000001/providers/Microsoft.ImportExport/jobs/test-import-export-000003?api-version=2016-11-01
@@ -333,7 +333,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 07 Apr 2020 09:56:09 GMT
+      - Wed, 08 Apr 2020 01:50:50 GMT
       expires:
       - '-1'
       pragma:
@@ -349,7 +349,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -369,7 +369,7 @@ interactions:
       ParameterSetName:
       - -g --job-name
       User-Agent:
-      - AZURECLI/2.2.0 azsdk-python-core/1.3.0 Python/3.8.2 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.3.1 azsdk-python-core/1.3.0 Python/3.8.2 (Windows-10-10.0.18362-SP0)
         azsdk-python-storageimportexport/unknown
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_import_export_000001/providers/Microsoft.ImportExport/jobs/test-import-export-000003/listBitLockerKeys?api-version=2016-11-01
@@ -384,7 +384,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 07 Apr 2020 09:56:11 GMT
+      - Wed, 08 Apr 2020 01:50:52 GMT
       expires:
       - '-1'
       pragma:
@@ -401,6 +401,51 @@ interactions:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - import-export delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.3.1 azsdk-python-core/1.3.0 Python/3.8.2 (Windows-10-10.0.18362-SP0)
+        azsdk-python-storageimportexport/unknown
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_import_export_000001/providers/Microsoft.ImportExport/jobs/test-import-export-000003?api-version=2016-11-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 08 Apr 2020 01:50:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
     status:
       code: 200
       message: OK

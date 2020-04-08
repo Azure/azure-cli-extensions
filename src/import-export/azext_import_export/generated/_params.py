@@ -27,8 +27,7 @@ from azext_import_export.action import (
 def load_arguments(self, _):
 
     with self.argument_context('import-export list') as c:
-        c.argument('top', help='An integer value that specifies how many jobs at most should be returned. The value cannot exceed 100.')
-        c.argument('filter', help='Can be used to restrict the results to certain conditions.')
+        pass
 
     with self.argument_context('import-export show') as c:
         c.argument('name', options_list=['--name', '-n'], help='The name of the import/export job.')

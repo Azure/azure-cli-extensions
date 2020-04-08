@@ -13,7 +13,7 @@ def load_command_table(self, _):
     import_export_job = CliCommandType(
         operations_tmpl='azext_import_export.vendored_sdks.storageimportexport.operations._job_operations#JobOperations.{}',
         client_factory=cf_job)
-    with self.command_group('import-export', import_export_job, client_factory=cf_job) as g:
+    with self.command_group('import-export', import_export_job, client_factory=cf_job, is_experimental=True) as g:
         g.custom_command('list', 'import_export_job_list')
         g.custom_show_command('show', 'import_export_job_show')
         g.custom_command('create', 'import_export_job_create')

@@ -536,6 +536,7 @@ class JobOperations(object):
         header_parameters = {}
         if self._config.acceptlanguage is not None:
             header_parameters['Accept-Language'] = self._serialize.header("self._config.acceptlanguage", self._config.acceptlanguage, 'str')
+        header_parameters['Accept'] = 'application/json'
 
         # Construct and send request
         request = self._client.delete(url, query_parameters, header_parameters)

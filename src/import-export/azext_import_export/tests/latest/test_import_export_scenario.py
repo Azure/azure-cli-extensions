@@ -27,13 +27,13 @@ class ImportExportScenarioTest(ScenarioTest):
             'storage_account_id': storage_account_id
         })
 
-        self.cmd('import-export create -g {rg} -n {job_name} --location "West US" --backup-drive-manifest true '
-                 '--diagnostics-path "waimportexport" --drive-list drive-id={driver_id} '
-                 'bit-locker-key={bit_locker_key} drive-header-hash=""  manifest-file=\\\\DriveManifest.xml '
-                 'manifest-hash=109B21108597EF36D5785F08303F3638 --type "Import" --log-level "Verbose" '
-                 '--return-address city=Redmond country-or-region=USA email=Test@contoso.com phone=4250000000 '
-                 'postal-code=98007 recipient-name=Tests state-or-province=wa street-address1=Street1 '
-                 'street-address2=street2 --storage-account-id {storage_account_id}',
+        self.cmd('import-export create -g {rg} -n {job_name} --location "West US" --type Import --log-level Verbose '
+                 '--storage-account-id {storage_account_id} --backup-drive-manifest true '
+                 '--diagnostics-path waimportexport --drive-list drive-id={driver_id} bit-locker-key={bit_locker_key} '
+                 'drive-header-hash=""  manifest-file=\\\\DriveManifest.xml '
+                 'manifest-hash=109B21108597EF36D5785F08303F3638 --return-address city=Redmond country-or-region=USA '
+                 'email=Test@contoso.com phone=4250000000 postal-code=98007 recipient-name=Tests state-or-province=wa '
+                 'street-address1=Street1 street-address2=street2',
                  checks=[self.check('name', '{job_name}')])
         self.cmd('import-export list -g {rg}', checks=[self.check('length(@)', 1)])
         self.cmd('import-export show -g {rg} -n {job_name}', checks=[self.check('name', '{job_name}')])
@@ -46,3 +46,4 @@ class ImportExportScenarioTest(ScenarioTest):
             self.check('[0].driveId', '{driver_id}'),
             self.check('[0].bitLockerKey', '{bit_locker_key}')
         ])
+        self.cmd('import-export delete -g {rg} -n {job_name}')

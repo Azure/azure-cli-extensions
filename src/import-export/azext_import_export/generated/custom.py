@@ -6,11 +6,10 @@
 # pylint: disable=too-many-lines
 
 
-def import_export_job_list(cmd, client, top=None, filter=None, resource_group_name=None):
-    # pylint: disable=redefined-builtin
+def import_export_job_list(cmd, client, resource_group_name=None):
     if resource_group_name is not None:
-        return client.list_by_resource_group(top=top, filter=filter, resource_group_name=resource_group_name)
-    return client.list_by_subscription(top=top, filter=filter)
+        return client.list_by_resource_group(resource_group_name=resource_group_name)
+    return client.list_by_subscription()
 
 
 def import_export_job_show(cmd, client, name, resource_group_name):
