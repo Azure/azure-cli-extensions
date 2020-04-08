@@ -10,184 +10,311 @@
 # --------------------------------------------------------------------------
 
 try:
-    from .input_schema_mapping_py3 import InputSchemaMapping
-    from .inbound_ip_rule_py3 import InboundIpRule
-    from .resource_py3 import Resource
-    from .json_field_py3 import JsonField
-    from .json_field_with_default_py3 import JsonFieldWithDefault
-    from .json_input_schema_mapping_py3 import JsonInputSchemaMapping
-    from .tracked_resource_py3 import TrackedResource
-    from .domain_py3 import Domain
-    from .domain_update_parameters_py3 import DomainUpdateParameters
-    from .domain_shared_access_keys_py3 import DomainSharedAccessKeys
-    from .domain_regenerate_key_request_py3 import DomainRegenerateKeyRequest
-    from .domain_topic_py3 import DomainTopic
-    from .event_subscription_destination_py3 import EventSubscriptionDestination
-    from .advanced_filter_py3 import AdvancedFilter
-    from .event_subscription_filter_py3 import EventSubscriptionFilter
-    from .retry_policy_py3 import RetryPolicy
-    from .dead_letter_destination_py3 import DeadLetterDestination
-    from .number_in_advanced_filter_py3 import NumberInAdvancedFilter
-    from .storage_blob_dead_letter_destination_py3 import StorageBlobDeadLetterDestination
-    from .number_not_in_advanced_filter_py3 import NumberNotInAdvancedFilter
-    from .number_less_than_advanced_filter_py3 import NumberLessThanAdvancedFilter
-    from .number_greater_than_advanced_filter_py3 import NumberGreaterThanAdvancedFilter
-    from .number_less_than_or_equals_advanced_filter_py3 import NumberLessThanOrEqualsAdvancedFilter
-    from .number_greater_than_or_equals_advanced_filter_py3 import NumberGreaterThanOrEqualsAdvancedFilter
-    from .bool_equals_advanced_filter_py3 import BoolEqualsAdvancedFilter
-    from .string_in_advanced_filter_py3 import StringInAdvancedFilter
-    from .string_not_in_advanced_filter_py3 import StringNotInAdvancedFilter
-    from .string_begins_with_advanced_filter_py3 import StringBeginsWithAdvancedFilter
-    from .string_ends_with_advanced_filter_py3 import StringEndsWithAdvancedFilter
-    from .string_contains_advanced_filter_py3 import StringContainsAdvancedFilter
-    from .web_hook_event_subscription_destination_py3 import WebHookEventSubscriptionDestination
-    from .event_hub_event_subscription_destination_py3 import EventHubEventSubscriptionDestination
-    from .storage_queue_event_subscription_destination_py3 import StorageQueueEventSubscriptionDestination
-    from .hybrid_connection_event_subscription_destination_py3 import HybridConnectionEventSubscriptionDestination
-    from .service_bus_queue_event_subscription_destination_py3 import ServiceBusQueueEventSubscriptionDestination
-    from .service_bus_topic_event_subscription_destination_py3 import ServiceBusTopicEventSubscriptionDestination
-    from .azure_function_event_subscription_destination_py3 import AzureFunctionEventSubscriptionDestination
-    from .event_subscription_py3 import EventSubscription
-    from .event_subscription_update_parameters_py3 import EventSubscriptionUpdateParameters
-    from .event_subscription_full_url_py3 import EventSubscriptionFullUrl
-    from .operation_info_py3 import OperationInfo
-    from .operation_py3 import Operation
-    from .topic_py3 import Topic
-    from .topic_update_parameters_py3 import TopicUpdateParameters
-    from .topic_shared_access_keys_py3 import TopicSharedAccessKeys
-    from .topic_regenerate_key_request_py3 import TopicRegenerateKeyRequest
-    from .event_type_py3 import EventType
-    from .topic_type_info_py3 import TopicTypeInfo
+    from ._models_py3 import AdvancedFilter
+    from ._models_py3 import AzureFunctionEventSubscriptionDestination
+    from ._models_py3 import BoolEqualsAdvancedFilter
+    from ._models_py3 import ConnectionState
+    from ._models_py3 import DeadLetterDestination
+    from ._models_py3 import DeadLetterWithResourceIdentity
+    from ._models_py3 import DeliveryWithResourceIdentity
+    from ._models_py3 import Domain
+    from ._models_py3 import DomainRegenerateKeyRequest
+    from ._models_py3 import DomainSharedAccessKeys
+    from ._models_py3 import DomainTopic
+    from ._models_py3 import DomainUpdateParameters
+    from ._models_py3 import EventChannel
+    from ._models_py3 import EventChannelDestination
+    from ._models_py3 import EventChannelSource
+    from ._models_py3 import EventHubEventSubscriptionDestination
+    from ._models_py3 import EventSubscription
+    from ._models_py3 import EventSubscriptionDestination
+    from ._models_py3 import EventSubscriptionFilter
+    from ._models_py3 import EventSubscriptionFullUrl
+    from ._models_py3 import EventSubscriptionIdentity
+    from ._models_py3 import EventSubscriptionUpdateParameters
+    from ._models_py3 import EventType
+    from ._models_py3 import ExtensionTopic
+    from ._models_py3 import HybridConnectionEventSubscriptionDestination
+    from ._models_py3 import IdentityInfo
+    from ._models_py3 import InboundIpRule
+    from ._models_py3 import InputSchemaMapping
+    from ._models_py3 import JsonField
+    from ._models_py3 import JsonFieldWithDefault
+    from ._models_py3 import JsonInputSchemaMapping
+    from ._models_py3 import NumberGreaterThanAdvancedFilter
+    from ._models_py3 import NumberGreaterThanOrEqualsAdvancedFilter
+    from ._models_py3 import NumberInAdvancedFilter
+    from ._models_py3 import NumberLessThanAdvancedFilter
+    from ._models_py3 import NumberLessThanOrEqualsAdvancedFilter
+    from ._models_py3 import NumberNotInAdvancedFilter
+    from ._models_py3 import Operation
+    from ._models_py3 import OperationInfo
+    from ._models_py3 import PartnerNamespace
+    from ._models_py3 import PartnerNamespaceRegenerateKeyRequest
+    from ._models_py3 import PartnerNamespaceSharedAccessKeys
+    from ._models_py3 import PartnerNamespaceUpdateParameters
+    from ._models_py3 import PartnerRegistration
+    from ._models_py3 import PartnerRegistrationEventTypesListResult
+    from ._models_py3 import PartnerRegistrationUpdateParameters
+    from ._models_py3 import PartnerTopic
+    from ._models_py3 import PartnerTopicType
+    from ._models_py3 import PartnerTopicTypesListResult
+    from ._models_py3 import PartnerTopicUpdateParameters
+    from ._models_py3 import PrivateEndpoint
+    from ._models_py3 import PrivateEndpointConnection
+    from ._models_py3 import PrivateLinkResource
+    from ._models_py3 import Resource
+    from ._models_py3 import ResourceSku
+    from ._models_py3 import RetryPolicy
+    from ._models_py3 import ServiceBusQueueEventSubscriptionDestination
+    from ._models_py3 import ServiceBusTopicEventSubscriptionDestination
+    from ._models_py3 import SkuDefinitionsForResourceType
+    from ._models_py3 import SkuDefinitionsForResourceTypeListResult
+    from ._models_py3 import StorageBlobDeadLetterDestination
+    from ._models_py3 import StorageQueueEventSubscriptionDestination
+    from ._models_py3 import StringBeginsWithAdvancedFilter
+    from ._models_py3 import StringContainsAdvancedFilter
+    from ._models_py3 import StringEndsWithAdvancedFilter
+    from ._models_py3 import StringInAdvancedFilter
+    from ._models_py3 import StringNotInAdvancedFilter
+    from ._models_py3 import SystemTopic
+    from ._models_py3 import SystemTopicUpdateParameters
+    from ._models_py3 import Topic
+    from ._models_py3 import TopicRegenerateKeyRequest
+    from ._models_py3 import TopicSharedAccessKeys
+    from ._models_py3 import TopicTypeInfo
+    from ._models_py3 import TopicUpdateParameters
+    from ._models_py3 import TrackedResource
+    from ._models_py3 import UserIdentityProperties
+    from ._models_py3 import WebHookEventSubscriptionDestination
 except (SyntaxError, ImportError):
-    from .input_schema_mapping import InputSchemaMapping
-    from .inbound_ip_rule import InboundIpRule
-    from .resource import Resource
-    from .json_field import JsonField
-    from .json_field_with_default import JsonFieldWithDefault
-    from .json_input_schema_mapping import JsonInputSchemaMapping
-    from .tracked_resource import TrackedResource
-    from .domain import Domain
-    from .domain_update_parameters import DomainUpdateParameters
-    from .domain_shared_access_keys import DomainSharedAccessKeys
-    from .domain_regenerate_key_request import DomainRegenerateKeyRequest
-    from .domain_topic import DomainTopic
-    from .event_subscription_destination import EventSubscriptionDestination
-    from .advanced_filter import AdvancedFilter
-    from .event_subscription_filter import EventSubscriptionFilter
-    from .retry_policy import RetryPolicy
-    from .dead_letter_destination import DeadLetterDestination
-    from .number_in_advanced_filter import NumberInAdvancedFilter
-    from .storage_blob_dead_letter_destination import StorageBlobDeadLetterDestination
-    from .number_not_in_advanced_filter import NumberNotInAdvancedFilter
-    from .number_less_than_advanced_filter import NumberLessThanAdvancedFilter
-    from .number_greater_than_advanced_filter import NumberGreaterThanAdvancedFilter
-    from .number_less_than_or_equals_advanced_filter import NumberLessThanOrEqualsAdvancedFilter
-    from .number_greater_than_or_equals_advanced_filter import NumberGreaterThanOrEqualsAdvancedFilter
-    from .bool_equals_advanced_filter import BoolEqualsAdvancedFilter
-    from .string_in_advanced_filter import StringInAdvancedFilter
-    from .string_not_in_advanced_filter import StringNotInAdvancedFilter
-    from .string_begins_with_advanced_filter import StringBeginsWithAdvancedFilter
-    from .string_ends_with_advanced_filter import StringEndsWithAdvancedFilter
-    from .string_contains_advanced_filter import StringContainsAdvancedFilter
-    from .web_hook_event_subscription_destination import WebHookEventSubscriptionDestination
-    from .event_hub_event_subscription_destination import EventHubEventSubscriptionDestination
-    from .storage_queue_event_subscription_destination import StorageQueueEventSubscriptionDestination
-    from .hybrid_connection_event_subscription_destination import HybridConnectionEventSubscriptionDestination
-    from .service_bus_queue_event_subscription_destination import ServiceBusQueueEventSubscriptionDestination
-    from .service_bus_topic_event_subscription_destination import ServiceBusTopicEventSubscriptionDestination
-    from .azure_function_event_subscription_destination import AzureFunctionEventSubscriptionDestination
-    from .event_subscription import EventSubscription
-    from .event_subscription_update_parameters import EventSubscriptionUpdateParameters
-    from .event_subscription_full_url import EventSubscriptionFullUrl
-    from .operation_info import OperationInfo
-    from .operation import Operation
-    from .topic import Topic
-    from .topic_update_parameters import TopicUpdateParameters
-    from .topic_shared_access_keys import TopicSharedAccessKeys
-    from .topic_regenerate_key_request import TopicRegenerateKeyRequest
-    from .event_type import EventType
-    from .topic_type_info import TopicTypeInfo
-from .domain_paged import DomainPaged
-from .domain_topic_paged import DomainTopicPaged
-from .event_subscription_paged import EventSubscriptionPaged
-from .operation_paged import OperationPaged
-from .topic_paged import TopicPaged
-from .event_type_paged import EventTypePaged
-from .topic_type_info_paged import TopicTypeInfoPaged
-from .event_grid_management_client_enums import (
+    from ._models import AdvancedFilter
+    from ._models import AzureFunctionEventSubscriptionDestination
+    from ._models import BoolEqualsAdvancedFilter
+    from ._models import ConnectionState
+    from ._models import DeadLetterDestination
+    from ._models import DeadLetterWithResourceIdentity
+    from ._models import DeliveryWithResourceIdentity
+    from ._models import Domain
+    from ._models import DomainRegenerateKeyRequest
+    from ._models import DomainSharedAccessKeys
+    from ._models import DomainTopic
+    from ._models import DomainUpdateParameters
+    from ._models import EventChannel
+    from ._models import EventChannelDestination
+    from ._models import EventChannelSource
+    from ._models import EventHubEventSubscriptionDestination
+    from ._models import EventSubscription
+    from ._models import EventSubscriptionDestination
+    from ._models import EventSubscriptionFilter
+    from ._models import EventSubscriptionFullUrl
+    from ._models import EventSubscriptionIdentity
+    from ._models import EventSubscriptionUpdateParameters
+    from ._models import EventType
+    from ._models import ExtensionTopic
+    from ._models import HybridConnectionEventSubscriptionDestination
+    from ._models import IdentityInfo
+    from ._models import InboundIpRule
+    from ._models import InputSchemaMapping
+    from ._models import JsonField
+    from ._models import JsonFieldWithDefault
+    from ._models import JsonInputSchemaMapping
+    from ._models import NumberGreaterThanAdvancedFilter
+    from ._models import NumberGreaterThanOrEqualsAdvancedFilter
+    from ._models import NumberInAdvancedFilter
+    from ._models import NumberLessThanAdvancedFilter
+    from ._models import NumberLessThanOrEqualsAdvancedFilter
+    from ._models import NumberNotInAdvancedFilter
+    from ._models import Operation
+    from ._models import OperationInfo
+    from ._models import PartnerNamespace
+    from ._models import PartnerNamespaceRegenerateKeyRequest
+    from ._models import PartnerNamespaceSharedAccessKeys
+    from ._models import PartnerNamespaceUpdateParameters
+    from ._models import PartnerRegistration
+    from ._models import PartnerRegistrationEventTypesListResult
+    from ._models import PartnerRegistrationUpdateParameters
+    from ._models import PartnerTopic
+    from ._models import PartnerTopicType
+    from ._models import PartnerTopicTypesListResult
+    from ._models import PartnerTopicUpdateParameters
+    from ._models import PrivateEndpoint
+    from ._models import PrivateEndpointConnection
+    from ._models import PrivateLinkResource
+    from ._models import Resource
+    from ._models import ResourceSku
+    from ._models import RetryPolicy
+    from ._models import ServiceBusQueueEventSubscriptionDestination
+    from ._models import ServiceBusTopicEventSubscriptionDestination
+    from ._models import SkuDefinitionsForResourceType
+    from ._models import SkuDefinitionsForResourceTypeListResult
+    from ._models import StorageBlobDeadLetterDestination
+    from ._models import StorageQueueEventSubscriptionDestination
+    from ._models import StringBeginsWithAdvancedFilter
+    from ._models import StringContainsAdvancedFilter
+    from ._models import StringEndsWithAdvancedFilter
+    from ._models import StringInAdvancedFilter
+    from ._models import StringNotInAdvancedFilter
+    from ._models import SystemTopic
+    from ._models import SystemTopicUpdateParameters
+    from ._models import Topic
+    from ._models import TopicRegenerateKeyRequest
+    from ._models import TopicSharedAccessKeys
+    from ._models import TopicTypeInfo
+    from ._models import TopicUpdateParameters
+    from ._models import TrackedResource
+    from ._models import UserIdentityProperties
+    from ._models import WebHookEventSubscriptionDestination
+from ._paged_models import DomainPaged
+from ._paged_models import DomainTopicPaged
+from ._paged_models import EventChannelPaged
+from ._paged_models import EventSubscriptionPaged
+from ._paged_models import EventTypePaged
+from ._paged_models import OperationPaged
+from ._paged_models import PartnerNamespacePaged
+from ._paged_models import PartnerRegistrationPaged
+from ._paged_models import PartnerTopicPaged
+from ._paged_models import PrivateEndpointConnectionPaged
+from ._paged_models import PrivateLinkResourcePaged
+from ._paged_models import SystemTopicPaged
+from ._paged_models import TopicPaged
+from ._paged_models import TopicTypeInfoPaged
+from ._event_grid_management_client_enums import (
+    PersistedConnectionStatus,
+    ResourceProvisioningState,
     DomainProvisioningState,
     InputSchema,
+    PublicNetworkAccess,
     IpActionType,
+    Sku,
+    IdentityType,
     DomainTopicProvisioningState,
+    EventChannelProvisioningState,
     EventSubscriptionProvisioningState,
+    EventSubscriptionIdentityType,
     EventDeliverySchema,
+    PartnerNamespaceProvisioningState,
+    PartnerRegistrationProvisioningState,
+    PartnerRegistrationVisibilityState,
+    PartnerTopicProvisioningState,
+    PartnerTopicActivationState,
+    PartnerTopicTypeAuthorizationState,
     TopicProvisioningState,
     ResourceRegionType,
     TopicTypeProvisioningState,
 )
 
 __all__ = [
-    'InputSchemaMapping',
+    'AdvancedFilter',
+    'AzureFunctionEventSubscriptionDestination',
+    'BoolEqualsAdvancedFilter',
+    'ConnectionState',
+    'DeadLetterDestination',
+    'DeadLetterWithResourceIdentity',
+    'DeliveryWithResourceIdentity',
+    'Domain',
+    'DomainRegenerateKeyRequest',
+    'DomainSharedAccessKeys',
+    'DomainTopic',
+    'DomainUpdateParameters',
+    'EventChannel',
+    'EventChannelDestination',
+    'EventChannelSource',
+    'EventHubEventSubscriptionDestination',
+    'EventSubscription',
+    'EventSubscriptionDestination',
+    'EventSubscriptionFilter',
+    'EventSubscriptionFullUrl',
+    'EventSubscriptionIdentity',
+    'EventSubscriptionUpdateParameters',
+    'EventType',
+    'ExtensionTopic',
+    'HybridConnectionEventSubscriptionDestination',
+    'IdentityInfo',
     'InboundIpRule',
-    'Resource',
+    'InputSchemaMapping',
     'JsonField',
     'JsonFieldWithDefault',
     'JsonInputSchemaMapping',
-    'TrackedResource',
-    'Domain',
-    'DomainUpdateParameters',
-    'DomainSharedAccessKeys',
-    'DomainRegenerateKeyRequest',
-    'DomainTopic',
-    'EventSubscriptionDestination',
-    'AdvancedFilter',
-    'EventSubscriptionFilter',
-    'RetryPolicy',
-    'DeadLetterDestination',
-    'NumberInAdvancedFilter',
-    'StorageBlobDeadLetterDestination',
-    'NumberNotInAdvancedFilter',
-    'NumberLessThanAdvancedFilter',
     'NumberGreaterThanAdvancedFilter',
-    'NumberLessThanOrEqualsAdvancedFilter',
     'NumberGreaterThanOrEqualsAdvancedFilter',
-    'BoolEqualsAdvancedFilter',
-    'StringInAdvancedFilter',
-    'StringNotInAdvancedFilter',
-    'StringBeginsWithAdvancedFilter',
-    'StringEndsWithAdvancedFilter',
-    'StringContainsAdvancedFilter',
-    'WebHookEventSubscriptionDestination',
-    'EventHubEventSubscriptionDestination',
-    'StorageQueueEventSubscriptionDestination',
-    'HybridConnectionEventSubscriptionDestination',
+    'NumberInAdvancedFilter',
+    'NumberLessThanAdvancedFilter',
+    'NumberLessThanOrEqualsAdvancedFilter',
+    'NumberNotInAdvancedFilter',
+    'Operation',
+    'OperationInfo',
+    'PartnerNamespace',
+    'PartnerNamespaceRegenerateKeyRequest',
+    'PartnerNamespaceSharedAccessKeys',
+    'PartnerNamespaceUpdateParameters',
+    'PartnerRegistration',
+    'PartnerRegistrationEventTypesListResult',
+    'PartnerRegistrationUpdateParameters',
+    'PartnerTopic',
+    'PartnerTopicType',
+    'PartnerTopicTypesListResult',
+    'PartnerTopicUpdateParameters',
+    'PrivateEndpoint',
+    'PrivateEndpointConnection',
+    'PrivateLinkResource',
+    'Resource',
+    'ResourceSku',
+    'RetryPolicy',
     'ServiceBusQueueEventSubscriptionDestination',
     'ServiceBusTopicEventSubscriptionDestination',
-    'AzureFunctionEventSubscriptionDestination',
-    'EventSubscription',
-    'EventSubscriptionUpdateParameters',
-    'EventSubscriptionFullUrl',
-    'OperationInfo',
-    'Operation',
+    'SkuDefinitionsForResourceType',
+    'SkuDefinitionsForResourceTypeListResult',
+    'StorageBlobDeadLetterDestination',
+    'StorageQueueEventSubscriptionDestination',
+    'StringBeginsWithAdvancedFilter',
+    'StringContainsAdvancedFilter',
+    'StringEndsWithAdvancedFilter',
+    'StringInAdvancedFilter',
+    'StringNotInAdvancedFilter',
+    'SystemTopic',
+    'SystemTopicUpdateParameters',
     'Topic',
-    'TopicUpdateParameters',
-    'TopicSharedAccessKeys',
     'TopicRegenerateKeyRequest',
-    'EventType',
+    'TopicSharedAccessKeys',
     'TopicTypeInfo',
+    'TopicUpdateParameters',
+    'TrackedResource',
+    'UserIdentityProperties',
+    'WebHookEventSubscriptionDestination',
     'DomainPaged',
     'DomainTopicPaged',
+    'EventChannelPaged',
     'EventSubscriptionPaged',
     'OperationPaged',
+    'PartnerNamespacePaged',
+    'PartnerRegistrationPaged',
+    'PartnerTopicPaged',
+    'PrivateEndpointConnectionPaged',
+    'PrivateLinkResourcePaged',
+    'SystemTopicPaged',
     'TopicPaged',
     'EventTypePaged',
     'TopicTypeInfoPaged',
+    'PersistedConnectionStatus',
+    'ResourceProvisioningState',
     'DomainProvisioningState',
     'InputSchema',
+    'PublicNetworkAccess',
     'IpActionType',
+    'Sku',
+    'IdentityType',
     'DomainTopicProvisioningState',
+    'EventChannelProvisioningState',
     'EventSubscriptionProvisioningState',
+    'EventSubscriptionIdentityType',
     'EventDeliverySchema',
+    'PartnerNamespaceProvisioningState',
+    'PartnerRegistrationProvisioningState',
+    'PartnerRegistrationVisibilityState',
+    'PartnerTopicProvisioningState',
+    'PartnerTopicActivationState',
+    'PartnerTopicTypeAuthorizationState',
     'TopicProvisioningState',
     'ResourceRegionType',
     'TopicTypeProvisioningState',
