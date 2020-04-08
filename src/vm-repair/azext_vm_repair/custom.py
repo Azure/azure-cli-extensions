@@ -58,7 +58,6 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         resource_tag = _get_repair_resource_tag(resource_group_name, vm_name)
         encryption_type = _encryption_type(source_vm)
         created_resources = []
-        print (encryption_type)
         if encryption_type in ("single_with_kek", "single_without_kek"):
             ask_user()
 

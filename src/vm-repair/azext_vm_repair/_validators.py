@@ -57,26 +57,6 @@ def validate_create(cmd, namespace):
     else:
         namespace.repair_group_name = 'repair-' + namespace.vm_name + '-' + timestamp
 
-    # Check encrypted disk
-#    if _uses_encrypted_disk(source_vm) not in ("Dual", "not encrypted"):
-#        def ask_user():
-#            check = str(input("VM is encrypted using single pass method, are we ok to unlock the disk and mount on repair VM ? (Y/N): ")).lower().strip()
-#            try:
-#                if check[0] == 'y':
-#                    return True
-#                elif check[0] == 'n':
-#                    print('Stopping the execution upon user input')
-#                    exit(0)
-#                    return False
-#                else:
-#                   print('Invalid Input.valid inputs are "y" or "n"')
-#                    return ask_user()
-#            except Exception as error:
-#                print('Invalid Input.valid inputs are "y" or "n"')
-#                return ask_user()
-#    ask_user()      
-        # TODO, validate this with encrypted VMs
-#        logger.warning('The source VM\'s OS disk is encrypted.')
 
 # Validating check_encryption value to check the type of encryption
 
