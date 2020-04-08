@@ -32,8 +32,11 @@ from .repair_utils import (
     _parse_run_script_raw_logs,
     _check_script_succeeded,
     _fetch_disk_info,
-    _uses_encrypted_disk
+    _uses_encrypted_disk,
 )
+
+from ._validators import ask_user, _encryption_type
+
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError
 
 logger = get_logger(__name__)
@@ -51,36 +54,13 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         is_linux = _is_linux_os(source_vm)
         target_disk_name = source_vm.storage_profile.os_disk.name
         is_managed = _uses_managed_disk(source_vm)
-        check_encryption = _uses_encrypted_disk(source_vm)
         copy_disk_id = None
         resource_tag = _get_repair_resource_tag(resource_group_name, vm_name)
-        # Validating check_encryption value to check the type of encryption
-        if check_encryption not in ("Dual", "not encrypted"):
-            if check_encryption != "single_without_kek":
-                encryption_type = "single_with_kek"
-            else:
-                encryption_type = check_encryption
-
-            def ask_user():
-                check = str(input("VM is encrypted using single pass method, are we ok to unlock the disk and mount on repair VM ? (Y/N): ")).lower().strip()
-                try:
-                    if check[0] == 'y':
-                        return True
-                    elif check[0] == 'n':
-                        print('Stopping the execution upon user input')
-                        exit(0)
-                        return False
-                    else:
-                        print('Invalid Input.valid inputs are "y" or "n"')
-                        return ask_user()
-                except Exception as error:
-                    print('Invalid Input.valid inputs are "y" or "n"')
-                    return ask_user()
-            ask_user()
-        else:
-            encryption_type = "Dual / encrypted"
-        # List of created resouces
+        encryption_type = _encryption_type(source_vm)
         created_resources = []
+        print (encryption_type)
+        if encryption_type in ("single_with_kek", "single_without_kek"):
+            ask_user()
 
         # Fetch OS image urn and set OS type for disk create
         if is_linux:
@@ -135,20 +115,14 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             # Install extension in case of single pass encrypted VM
             try:
                 if encryption_type == "single_with_kek":
-                    encryption_type, key_vault, key_encryption_url = _uses_encrypted_disk(source_vm)
+                    key_vault, kekurl = _uses_encrypted_disk(source_vm)
 
                     install_ade_extension_command = 'az vm encryption enable --disk-encryption-keyvault {vault} --name {repair} --resource-group {g} --key-encryption-key {kek_url} --volume-type {volume}' \
-                                                    .format(g=repair_group_name, repair=repair_vm_name, vault=key_vault, kek_url=key_encryption_url, volume=volume_type)
+                                                    .format(g=repair_group_name, repair=repair_vm_name, vault=key_vault, kek_url=kekurl, volume=volume_type)
                     logger.info('Installing extension on repair VM with KEK\n')
                     _call_az_command(install_ade_extension_command)
                 elif encryption_type == "single_without_kek":
-                    disk_id = source_vm.storage_profile.os_disk.managed_disk.id
-                    disk_settings_command = 'az disk show --ids {ids} -o json' \
-                                            .format(ids=disk_id)
-                    settings = _call_az_command(disk_settings_command)
-                    settings1 = json.loads(settings)
-                    settings2 = (settings1["encryptionSettingsCollection"]["encryptionSettings"])
-                    key_vault = (settings2[0]['diskEncryptionKey']['sourceVault']['id'])
+                    key_vault = _uses_encrypted_disk(source_vm)
                     install_ade_extension_command = 'az vm encryption enable --disk-encryption-keyvault {vault} --name {repair} --resource-group {g} --volume-type {volume}' \
                                                     .format(g=repair_group_name, repair=repair_vm_name, vault=key_vault, volume=volume_type)
                     logger.info('Installing extension on repair VM without KEK \n')

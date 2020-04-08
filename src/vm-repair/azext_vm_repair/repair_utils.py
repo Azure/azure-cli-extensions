@@ -178,30 +178,21 @@ def _list_resource_ids_in_rg(resource_group_name):
     ids = loads(_call_az_command(get_resources_command))
     return ids
 
-
 def _uses_encrypted_disk(source_vm):
-    try:
-        if source_vm.storage_profile.os_disk.encryption_settings is not None:
-            logger.info('The source VM\'s OS disk is encrypted using Dual Pass method.')
-            return "Dual"
+    if source_vm.storage_profile.os_disk.encryption_settings is not None:
+        return "Dual"
+    else:
+        disk_id = source_vm.storage_profile.os_disk.managed_disk.id
+        show_disk_command = 'az disk show --id {i} --query [encryptionSettingsCollection,encryptionSettingsCollection.encryptionSettings[].diskEncryptionKey.sourceVault.id,encryptionSettingsCollection.encryptionSettings[].keyEncryptionKey.keyUrl] -o json'.format(i=disk_id)
+        disk_info = loads(_call_az_command(show_disk_command))
+        if disk_info == [None, None, None]:
+            return "not encrypted"
+        elif disk_info[2] == []:
+            key_vault = disk_info[1][0]
+            return (key_vault)
         else:
-            disk_id = source_vm.storage_profile.os_disk.managed_disk.id
-            disk_settings_command = 'az disk show --ids {ids} -o json' \
-                                    .format(ids=disk_id)
-            settings = _call_az_command(disk_settings_command)
-            settings1 = json.loads(settings)
-            is_single = (settings1["encryptionSettingsCollection"])
-            if not is_single:
-                return "not encrypted"
-            else:
-                is_single = (settings1["encryptionSettingsCollection"]["enabled"])
-                settings2 = (settings1["encryptionSettingsCollection"]["encryptionSettings"])
-                key_vault = (settings2[0]['diskEncryptionKey']['sourceVault']['id'])
-                key_encryption_url = (settings2[0]['keyEncryptionKey']['keyUrl'])
-                encryption_type = "single_with_kek"
-                return (encryption_type, key_vault, key_encryption_url)
-    except:
-        return "single_without_kek"
+            key_vault, kekurl = disk_info[1][0], disk_info[2][0]
+            return (key_vault, kekurl)
 
 
 def _fetch_compatible_windows_os_urn(source_vm):
