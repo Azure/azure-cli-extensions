@@ -149,22 +149,22 @@ helps['spring-cloud app log tail'] = """
 
 helps['spring-cloud app identity'] = """
     type: group
-    short-summary: Operate on assign an Azure Active Directory Identity for this app for use with key management services like Azure KeyVault identity.
+    short-summary: manage an app's managed service identity
 """
 
 helps['spring-cloud app identity assign'] = """
     type: command
-    short-summary: Assign an Azure Active Directory Identity for this app.
+    short-summary: Enable managed service identity on an app.
 """
 
 helps['spring-cloud app identity remove'] = """
     type: command
-    short-summary: Remove an Azure Active Directory Identity for this app.
+    short-summary: Remove managed service identity from a app.
 """
 
 helps['spring-cloud app identity show'] = """
     type: command
-    short-summary: Show the Azure Active Directory Identity for this app.
+    short-summary: Display app's managed identity info.
 """
 
 helps['spring-cloud app set-deployment'] = """
