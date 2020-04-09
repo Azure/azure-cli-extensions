@@ -149,22 +149,31 @@ helps['spring-cloud app log tail'] = """
 
 helps['spring-cloud app identity'] = """
     type: group
-    short-summary: manage an app's managed service identity
+    short-summary: Manage an app's managed service identity.
 """
 
 helps['spring-cloud app identity assign'] = """
     type: command
     short-summary: Enable managed service identity on an app.
+    examples:
+    - name: Enable managed service identity on an app.
+      text: az spring-cloud app identity assign -n MyApp -s MyCluster -g MyResourceGroup
 """
 
 helps['spring-cloud app identity remove'] = """
     type: command
-    short-summary: Remove managed service identity from a app.
+    short-summary: Remove managed service identity from an app.
+    examples:
+    - name: Enable managed service identity on an app.
+      text: az spring-cloud app identity remove -n MyApp -s MyCluster -g MyResourceGroup
 """
 
 helps['spring-cloud app identity show'] = """
     type: command
     short-summary: Display app's managed identity info.
+    examples:
+    - name: Enable managed service identity on an app.
+      text: az spring-cloud app identity show -n MyApp -s MyCluster -g MyResourceGroup
 """
 
 helps['spring-cloud app set-deployment'] = """

@@ -46,7 +46,7 @@ def load_arguments(self, _):
         c.argument(
             'is_public', arg_type=get_three_state_flag(), help='If true, assign public domain', default=False)
         c.argument('assign_identity', arg_type=get_three_state_flag(),
-                   help='Generate and assign an Azure Active Directory Identity for this app for use with key management services like Azure KeyVault.')
+                   help='Manage an app\'s managed service identity.')
 
     with self.argument_context('spring-cloud app update') as c:
         c.argument('is_public', arg_type=get_three_state_flag(),
