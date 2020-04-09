@@ -164,7 +164,7 @@ helps['spring-cloud app identity remove'] = """
     type: command
     short-summary: Remove managed service identity from an app.
     examples:
-    - name: Enable managed service identity on an app.
+    - name: Remove managed service identity from an app.
       text: az spring-cloud app identity remove -n MyApp -s MyCluster -g MyResourceGroup
 """
 
@@ -172,7 +172,7 @@ helps['spring-cloud app identity show'] = """
     type: command
     short-summary: Display app's managed identity info.
     examples:
-    - name: Enable managed service identity on an app.
+    - name: Display app's managed identity info.
       text: az spring-cloud app identity show -n MyApp -s MyCluster -g MyResourceGroup
 """
 
