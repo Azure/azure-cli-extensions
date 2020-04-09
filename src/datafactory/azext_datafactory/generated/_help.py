@@ -72,10 +72,9 @@ helps['datafactory factory configure-factory-repo'] = """
       - name: Factories_ConfigureFactoryRepo
         text: |-
                az datafactory factory configure-factory-repo --factory-resource-id "/subscriptions/12345678-1234-1234-1\
-234-12345678abc/resourceGroups/exampleResourceGroup/providers/Microsoft.DataFactory/factories/exampleFactoryName" --rep\
-o-configuration "{\\"type\\":\\"FactoryVSTSConfiguration\\",\\"accountName\\":\\"ADF\\",\\"collaborationBranch\\":\\"ma\
-ster\\",\\"lastCommitId\\":\\"\\",\\"projectName\\":\\"project\\",\\"repositoryName\\":\\"repo\\",\\"rootFolder\\":\\"/\
-\\",\\"tenantId\\":\\"\\"}" --location-id "East US"
+234-12345678abc/resourceGroups/exampleResourceGroup/providers/Microsoft.DataFactory/factories/exampleFactoryName" --fac\
+tory-vsts-configuration account-name="ADF" collaboration-branch="master" last-commit-id="" project-name="project" repos\
+itory-name="repo" root-folder="/" tenant-id="" --location-id "East US"
 """
 
 helps['datafactory factory get-data-plane-access'] = """
@@ -157,12 +156,6 @@ helps['datafactory integration-runtime managed'] = """
 helps['datafactory integration-runtime managed create'] = """
     type: command
     short-summary: Creates or updates an integration runtime.
-    examples:
-      - name: IntegrationRuntimes_Create
-        text: |-
-               az datafactory integration-runtime managed create --factory-name "exampleFactoryName" --type "SelfHosted\
-" --description "A selfhosted integration runtime" --integration-runtime-name "exampleIntegrationRuntime" --resource-gr\
-oup "exampleResourceGroup"
 """
 
 helps['datafactory integration-runtime self-hosted'] = """
@@ -176,9 +169,9 @@ helps['datafactory integration-runtime self-hosted create'] = """
     examples:
       - name: IntegrationRuntimes_Create
         text: |-
-               az datafactory integration-runtime self-hosted create --factory-name "exampleFactoryName" --type "SelfHo\
-sted" --description "A selfhosted integration runtime" --integration-runtime-name "exampleIntegrationRuntime" --resourc\
-e-group "exampleResourceGroup"
+               az datafactory integration-runtime self-hosted create --factory-name "exampleFactoryName" --description \
+"A selfhosted integration runtime" --integration-runtime-name "exampleIntegrationRuntime" --resource-group "exampleReso\
+urceGroup"
 """
 
 helps['datafactory integration-runtime update'] = """
@@ -417,39 +410,19 @@ helps['datafactory linked-service show'] = """
 kedService" --resource-group "exampleResourceGroup"
 """
 
-helps['datafactory linked-service amazon-m-w-s'] = """
+helps['datafactory linked-service amazon-mws'] = """
     type: group
-    short-summary: datafactory linked-service sub group amazon-m-w-s
+    short-summary: datafactory linked-service sub group amazon-mws
 """
 
-helps['datafactory linked-service amazon-m-w-s create'] = """
+helps['datafactory linked-service amazon-mws create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service amazon-m-w-s create --factory-name "exampleFactoryName" --type "AzureStora\
-ge" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service amazon-m-w-s create --factory-name "exampleFactoryName" --type "AzureStora\
-ge" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceG\
-roup"
 """
 
-helps['datafactory linked-service amazon-m-w-s update'] = """
+helps['datafactory linked-service amazon-mws update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service amazon-m-w-s create --factory-name "exampleFactoryName" --type "AzureStora\
-ge" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service amazon-m-w-s create --factory-name "exampleFactoryName" --type "AzureStora\
-ge" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceG\
-roup"
 """
 
 helps['datafactory linked-service amazon-redshift'] = """
@@ -460,31 +433,11 @@ helps['datafactory linked-service amazon-redshift'] = """
 helps['datafactory linked-service amazon-redshift create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service amazon-redshift create --factory-name "exampleFactoryName" --type "AzureSt\
-orage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service amazon-redshift create --factory-name "exampleFactoryName" --type "AzureSt\
-orage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResour\
-ceGroup"
 """
 
 helps['datafactory linked-service amazon-redshift update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service amazon-redshift create --factory-name "exampleFactoryName" --type "AzureSt\
-orage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service amazon-redshift create --factory-name "exampleFactoryName" --type "AzureSt\
-orage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResour\
-ceGroup"
 """
 
 helps['datafactory linked-service amazon-s3'] = """
@@ -495,31 +448,11 @@ helps['datafactory linked-service amazon-s3'] = """
 helps['datafactory linked-service amazon-s3 create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service amazon-s3 create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service amazon-s3 create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGrou\
-p"
 """
 
 helps['datafactory linked-service amazon-s3 update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service amazon-s3 create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service amazon-s3 create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGrou\
-p"
 """
 
 helps['datafactory linked-service azure-batch'] = """
@@ -530,66 +463,26 @@ helps['datafactory linked-service azure-batch'] = """
 helps['datafactory linked-service azure-batch create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-batch create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --type-properties-linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-batch create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --description "Example description" --type-properties-linked-service-name "exampleLinkedService" --resource-group "e\
-xampleResourceGroup"
 """
 
 helps['datafactory linked-service azure-batch update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-batch create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --type-properties-linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-batch create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --description "Example description" --type-properties-linked-service-name "exampleLinkedService" --resource-group "e\
-xampleResourceGroup"
 """
 
-helps['datafactory linked-service azure-blob-f-s'] = """
+helps['datafactory linked-service azure-blob-fs'] = """
     type: group
-    short-summary: datafactory linked-service sub group azure-blob-f-s
+    short-summary: datafactory linked-service sub group azure-blob-fs
 """
 
-helps['datafactory linked-service azure-blob-f-s create'] = """
+helps['datafactory linked-service azure-blob-fs create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-blob-f-s create --factory-name "exampleFactoryName" --type "AzureSto\
-rage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-blob-f-s create --factory-name "exampleFactoryName" --type "AzureSto\
-rage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourc\
-eGroup"
 """
 
-helps['datafactory linked-service azure-blob-f-s update'] = """
+helps['datafactory linked-service azure-blob-fs update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-blob-f-s create --factory-name "exampleFactoryName" --type "AzureSto\
-rage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-blob-f-s create --factory-name "exampleFactoryName" --type "AzureSto\
-rage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourc\
-eGroup"
 """
 
 helps['datafactory linked-service azure-blob-storage'] = """
@@ -600,31 +493,11 @@ helps['datafactory linked-service azure-blob-storage'] = """
 helps['datafactory linked-service azure-blob-storage create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-blob-storage create --factory-name "exampleFactoryName" --type "Azur\
-eStorage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-blob-storage create --factory-name "exampleFactoryName" --type "Azur\
-eStorage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleRes\
-ourceGroup"
 """
 
 helps['datafactory linked-service azure-blob-storage update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-blob-storage create --factory-name "exampleFactoryName" --type "Azur\
-eStorage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-blob-storage create --factory-name "exampleFactoryName" --type "Azur\
-eStorage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleRes\
-ourceGroup"
 """
 
 helps['datafactory linked-service azure-data-explorer'] = """
@@ -635,31 +508,11 @@ helps['datafactory linked-service azure-data-explorer'] = """
 helps['datafactory linked-service azure-data-explorer create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-data-explorer create --factory-name "exampleFactoryName" --type "Azu\
-reStorage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-data-explorer create --factory-name "exampleFactoryName" --type "Azu\
-reStorage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleRe\
-sourceGroup"
 """
 
 helps['datafactory linked-service azure-data-explorer update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-data-explorer create --factory-name "exampleFactoryName" --type "Azu\
-reStorage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-data-explorer create --factory-name "exampleFactoryName" --type "Azu\
-reStorage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleRe\
-sourceGroup"
 """
 
 helps['datafactory linked-service azure-data-lake-analytics'] = """
@@ -670,33 +523,11 @@ helps['datafactory linked-service azure-data-lake-analytics'] = """
 helps['datafactory linked-service azure-data-lake-analytics create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-data-lake-analytics create --factory-name "exampleFactoryName" --typ\
-e "AzureStorage" --linked-service-name "exampleLinkedService" --type-properties-resource-group-name "exampleResourceGro\
-up" --type-properties-subscription-id "12345678-1234-1234-1234-12345678abc"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-data-lake-analytics create --factory-name "exampleFactoryName" --typ\
-e "AzureStorage" --description "Example description" --linked-service-name "exampleLinkedService" --type-properties-res\
-ource-group-name "exampleResourceGroup" --type-properties-subscription-id "12345678-1234-1234-1234-12345678abc"
 """
 
 helps['datafactory linked-service azure-data-lake-analytics update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-data-lake-analytics create --factory-name "exampleFactoryName" --typ\
-e "AzureStorage" --linked-service-name "exampleLinkedService" --type-properties-resource-group-name "exampleResourceGro\
-up" --type-properties-subscription-id "12345678-1234-1234-1234-12345678abc"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-data-lake-analytics create --factory-name "exampleFactoryName" --typ\
-e "AzureStorage" --description "Example description" --linked-service-name "exampleLinkedService" --type-properties-res\
-ource-group-name "exampleResourceGroup" --type-properties-subscription-id "12345678-1234-1234-1234-12345678abc"
 """
 
 helps['datafactory linked-service azure-data-lake-store'] = """
@@ -707,33 +538,11 @@ helps['datafactory linked-service azure-data-lake-store'] = """
 helps['datafactory linked-service azure-data-lake-store create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-data-lake-store create --factory-name "exampleFactoryName" --type "A\
-zureStorage" --linked-service-name "exampleLinkedService" --type-properties-resource-group-name "exampleResourceGroup" \
---type-properties-subscription-id "12345678-1234-1234-1234-12345678abc"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-data-lake-store create --factory-name "exampleFactoryName" --type "A\
-zureStorage" --description "Example description" --linked-service-name "exampleLinkedService" --type-properties-resourc\
-e-group-name "exampleResourceGroup" --type-properties-subscription-id "12345678-1234-1234-1234-12345678abc"
 """
 
 helps['datafactory linked-service azure-data-lake-store update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-data-lake-store create --factory-name "exampleFactoryName" --type "A\
-zureStorage" --linked-service-name "exampleLinkedService" --type-properties-resource-group-name "exampleResourceGroup" \
---type-properties-subscription-id "12345678-1234-1234-1234-12345678abc"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-data-lake-store create --factory-name "exampleFactoryName" --type "A\
-zureStorage" --description "Example description" --linked-service-name "exampleLinkedService" --type-properties-resourc\
-e-group-name "exampleResourceGroup" --type-properties-subscription-id "12345678-1234-1234-1234-12345678abc"
 """
 
 helps['datafactory linked-service azure-databricks'] = """
@@ -744,31 +553,11 @@ helps['datafactory linked-service azure-databricks'] = """
 helps['datafactory linked-service azure-databricks create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-databricks create --factory-name "exampleFactoryName" --type "AzureS\
-torage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-databricks create --factory-name "exampleFactoryName" --type "AzureS\
-torage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResou\
-rceGroup"
 """
 
 helps['datafactory linked-service azure-databricks update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-databricks create --factory-name "exampleFactoryName" --type "AzureS\
-torage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-databricks create --factory-name "exampleFactoryName" --type "AzureS\
-torage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResou\
-rceGroup"
 """
 
 helps['datafactory linked-service azure-file-storage'] = """
@@ -779,31 +568,11 @@ helps['datafactory linked-service azure-file-storage'] = """
 helps['datafactory linked-service azure-file-storage create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-file-storage create --factory-name "exampleFactoryName" --type "Azur\
-eStorage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-file-storage create --factory-name "exampleFactoryName" --type "Azur\
-eStorage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleRes\
-ourceGroup"
 """
 
 helps['datafactory linked-service azure-file-storage update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-file-storage create --factory-name "exampleFactoryName" --type "Azur\
-eStorage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-file-storage create --factory-name "exampleFactoryName" --type "Azur\
-eStorage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleRes\
-ourceGroup"
 """
 
 helps['datafactory linked-service azure-function'] = """
@@ -814,31 +583,11 @@ helps['datafactory linked-service azure-function'] = """
 helps['datafactory linked-service azure-function create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-function create --factory-name "exampleFactoryName" --type "AzureSto\
-rage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-function create --factory-name "exampleFactoryName" --type "AzureSto\
-rage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourc\
-eGroup"
 """
 
 helps['datafactory linked-service azure-function update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-function create --factory-name "exampleFactoryName" --type "AzureSto\
-rage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-function create --factory-name "exampleFactoryName" --type "AzureSto\
-rage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourc\
-eGroup"
 """
 
 helps['datafactory linked-service azure-key-vault'] = """
@@ -849,103 +598,11 @@ helps['datafactory linked-service azure-key-vault'] = """
 helps['datafactory linked-service azure-key-vault create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-key-vault create --factory-name "exampleFactoryName" --type "AzureSt\
-orage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-key-vault create --factory-name "exampleFactoryName" --type "AzureSt\
-orage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResour\
-ceGroup"
 """
 
 helps['datafactory linked-service azure-key-vault update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-key-vault create --factory-name "exampleFactoryName" --type "AzureSt\
-orage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-key-vault create --factory-name "exampleFactoryName" --type "AzureSt\
-orage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResour\
-ceGroup"
-"""
-
-helps['datafactory linked-service azure-m-l'] = """
-    type: group
-    short-summary: datafactory linked-service sub group azure-m-l
-"""
-
-helps['datafactory linked-service azure-m-l create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-m-l create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-m-l create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGrou\
-p"
-"""
-
-helps['datafactory linked-service azure-m-l update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-m-l create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-m-l create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGrou\
-p"
-"""
-
-helps['datafactory linked-service azure-m-l-service'] = """
-    type: group
-    short-summary: datafactory linked-service sub group azure-m-l-service
-"""
-
-helps['datafactory linked-service azure-m-l-service create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-m-l-service create --factory-name "exampleFactoryName" --type "Azure\
-Storage" --linked-service-name "exampleLinkedService" --type-properties-resource-group-name "exampleResourceGroup" --ty\
-pe-properties-subscription-id "12345678-1234-1234-1234-12345678abc"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-m-l-service create --factory-name "exampleFactoryName" --type "Azure\
-Storage" --description "Example description" --linked-service-name "exampleLinkedService" --type-properties-resource-gr\
-oup-name "exampleResourceGroup" --type-properties-subscription-id "12345678-1234-1234-1234-12345678abc"
-"""
-
-helps['datafactory linked-service azure-m-l-service update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-m-l-service create --factory-name "exampleFactoryName" --type "Azure\
-Storage" --linked-service-name "exampleLinkedService" --type-properties-resource-group-name "exampleResourceGroup" --ty\
-pe-properties-subscription-id "12345678-1234-1234-1234-12345678abc"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-m-l-service create --factory-name "exampleFactoryName" --type "Azure\
-Storage" --description "Example description" --linked-service-name "exampleLinkedService" --type-properties-resource-gr\
-oup-name "exampleResourceGroup" --type-properties-subscription-id "12345678-1234-1234-1234-12345678abc"
 """
 
 helps['datafactory linked-service azure-maria-d-b'] = """
@@ -956,31 +613,41 @@ helps['datafactory linked-service azure-maria-d-b'] = """
 helps['datafactory linked-service azure-maria-d-b create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-maria-d-b create --factory-name "exampleFactoryName" --type "AzureSt\
-orage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-maria-d-b create --factory-name "exampleFactoryName" --type "AzureSt\
-orage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResour\
-ceGroup"
 """
 
 helps['datafactory linked-service azure-maria-d-b update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-maria-d-b create --factory-name "exampleFactoryName" --type "AzureSt\
-orage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-maria-d-b create --factory-name "exampleFactoryName" --type "AzureSt\
-orage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResour\
-ceGroup"
+"""
+
+helps['datafactory linked-service azure-ml'] = """
+    type: group
+    short-summary: datafactory linked-service sub group azure-ml
+"""
+
+helps['datafactory linked-service azure-ml create'] = """
+    type: command
+    short-summary: Creates or updates a linked service.
+"""
+
+helps['datafactory linked-service azure-ml update'] = """
+    type: command
+    short-summary: Creates or updates a linked service.
+"""
+
+helps['datafactory linked-service azure-ml-service'] = """
+    type: group
+    short-summary: datafactory linked-service sub group azure-ml-service
+"""
+
+helps['datafactory linked-service azure-ml-service create'] = """
+    type: command
+    short-summary: Creates or updates a linked service.
+"""
+
+helps['datafactory linked-service azure-ml-service update'] = """
+    type: command
+    short-summary: Creates or updates a linked service.
 """
 
 helps['datafactory linked-service azure-my-sql'] = """
@@ -991,31 +658,11 @@ helps['datafactory linked-service azure-my-sql'] = """
 helps['datafactory linked-service azure-my-sql create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-my-sql create --factory-name "exampleFactoryName" --type "AzureStora\
-ge" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-my-sql create --factory-name "exampleFactoryName" --type "AzureStora\
-ge" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceG\
-roup"
 """
 
 helps['datafactory linked-service azure-my-sql update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-my-sql create --factory-name "exampleFactoryName" --type "AzureStora\
-ge" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-my-sql create --factory-name "exampleFactoryName" --type "AzureStora\
-ge" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceG\
-roup"
 """
 
 helps['datafactory linked-service azure-postgre-sql'] = """
@@ -1026,31 +673,11 @@ helps['datafactory linked-service azure-postgre-sql'] = """
 helps['datafactory linked-service azure-postgre-sql create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-postgre-sql create --factory-name "exampleFactoryName" --type "Azure\
-Storage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-postgre-sql create --factory-name "exampleFactoryName" --type "Azure\
-Storage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleReso\
-urceGroup"
 """
 
 helps['datafactory linked-service azure-postgre-sql update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-postgre-sql create --factory-name "exampleFactoryName" --type "Azure\
-Storage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-postgre-sql create --factory-name "exampleFactoryName" --type "Azure\
-Storage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleReso\
-urceGroup"
 """
 
 helps['datafactory linked-service azure-search'] = """
@@ -1061,66 +688,11 @@ helps['datafactory linked-service azure-search'] = """
 helps['datafactory linked-service azure-search create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-search create --factory-name "exampleFactoryName" --type "AzureStora\
-ge" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-search create --factory-name "exampleFactoryName" --type "AzureStora\
-ge" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceG\
-roup"
 """
 
 helps['datafactory linked-service azure-search update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-search create --factory-name "exampleFactoryName" --type "AzureStora\
-ge" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-search create --factory-name "exampleFactoryName" --type "AzureStora\
-ge" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceG\
-roup"
-"""
-
-helps['datafactory linked-service azure-sql-d-w'] = """
-    type: group
-    short-summary: datafactory linked-service sub group azure-sql-d-w
-"""
-
-helps['datafactory linked-service azure-sql-d-w create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-sql-d-w create --factory-name "exampleFactoryName" --type "AzureStor\
-age" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-sql-d-w create --factory-name "exampleFactoryName" --type "AzureStor\
-age" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResource\
-Group"
-"""
-
-helps['datafactory linked-service azure-sql-d-w update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-sql-d-w create --factory-name "exampleFactoryName" --type "AzureStor\
-age" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-sql-d-w create --factory-name "exampleFactoryName" --type "AzureStor\
-age" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResource\
-Group"
 """
 
 helps['datafactory linked-service azure-sql-database'] = """
@@ -1131,66 +703,41 @@ helps['datafactory linked-service azure-sql-database'] = """
 helps['datafactory linked-service azure-sql-database create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-sql-database create --factory-name "exampleFactoryName" --type "Azur\
-eStorage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-sql-database create --factory-name "exampleFactoryName" --type "Azur\
-eStorage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleRes\
-ourceGroup"
 """
 
 helps['datafactory linked-service azure-sql-database update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-sql-database create --factory-name "exampleFactoryName" --type "Azur\
-eStorage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-sql-database create --factory-name "exampleFactoryName" --type "Azur\
-eStorage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleRes\
-ourceGroup"
 """
 
-helps['datafactory linked-service azure-sql-m-i'] = """
+helps['datafactory linked-service azure-sql-dw'] = """
     type: group
-    short-summary: datafactory linked-service sub group azure-sql-m-i
+    short-summary: datafactory linked-service sub group azure-sql-dw
 """
 
-helps['datafactory linked-service azure-sql-m-i create'] = """
+helps['datafactory linked-service azure-sql-dw create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-sql-m-i create --factory-name "exampleFactoryName" --type "AzureStor\
-age" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-sql-m-i create --factory-name "exampleFactoryName" --type "AzureStor\
-age" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResource\
-Group"
 """
 
-helps['datafactory linked-service azure-sql-m-i update'] = """
+helps['datafactory linked-service azure-sql-dw update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-sql-m-i create --factory-name "exampleFactoryName" --type "AzureStor\
-age" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-sql-m-i create --factory-name "exampleFactoryName" --type "AzureStor\
-age" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResource\
-Group"
+"""
+
+helps['datafactory linked-service azure-sql-mi'] = """
+    type: group
+    short-summary: datafactory linked-service sub group azure-sql-mi
+"""
+
+helps['datafactory linked-service azure-sql-mi create'] = """
+    type: command
+    short-summary: Creates or updates a linked service.
+"""
+
+helps['datafactory linked-service azure-sql-mi update'] = """
+    type: command
+    short-summary: Creates or updates a linked service.
 """
 
 helps['datafactory linked-service azure-storage'] = """
@@ -1204,13 +751,12 @@ helps['datafactory linked-service azure-storage create'] = """
     examples:
       - name: LinkedServices_Create
         text: |-
-               az datafactory linked-service azure-storage create --factory-name "exampleFactoryName" --type "AzureStor\
-age" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
+               az datafactory linked-service azure-storage create --factory-name "exampleFactoryName" --linked-service-\
+name "exampleLinkedService" --resource-group "exampleResourceGroup"
       - name: LinkedServices_Update
         text: |-
-               az datafactory linked-service azure-storage create --factory-name "exampleFactoryName" --type "AzureStor\
-age" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResource\
-Group"
+               az datafactory linked-service azure-storage create --factory-name "exampleFactoryName" --description "Ex\
+ample description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service azure-storage update'] = """
@@ -1219,13 +765,12 @@ helps['datafactory linked-service azure-storage update'] = """
     examples:
       - name: LinkedServices_Create
         text: |-
-               az datafactory linked-service azure-storage create --factory-name "exampleFactoryName" --type "AzureStor\
-age" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
+               az datafactory linked-service azure-storage update --factory-name "exampleFactoryName" --linked-service-\
+name "exampleLinkedService" --resource-group "exampleResourceGroup"
       - name: LinkedServices_Update
         text: |-
-               az datafactory linked-service azure-storage create --factory-name "exampleFactoryName" --type "AzureStor\
-age" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResource\
-Group"
+               az datafactory linked-service azure-storage update --factory-name "exampleFactoryName" --description "Ex\
+ample description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service azure-table-storage'] = """
@@ -1236,31 +781,11 @@ helps['datafactory linked-service azure-table-storage'] = """
 helps['datafactory linked-service azure-table-storage create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-table-storage create --factory-name "exampleFactoryName" --type "Azu\
-reStorage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-table-storage create --factory-name "exampleFactoryName" --type "Azu\
-reStorage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleRe\
-sourceGroup"
 """
 
 helps['datafactory linked-service azure-table-storage update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service azure-table-storage create --factory-name "exampleFactoryName" --type "Azu\
-reStorage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service azure-table-storage create --factory-name "exampleFactoryName" --type "Azu\
-reStorage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleRe\
-sourceGroup"
 """
 
 helps['datafactory linked-service cassandra'] = """
@@ -1271,31 +796,11 @@ helps['datafactory linked-service cassandra'] = """
 helps['datafactory linked-service cassandra create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service cassandra create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service cassandra create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGrou\
-p"
 """
 
 helps['datafactory linked-service cassandra update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service cassandra create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service cassandra create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGrou\
-p"
 """
 
 helps['datafactory linked-service common-data-service-for-apps'] = """
@@ -1306,31 +811,11 @@ helps['datafactory linked-service common-data-service-for-apps'] = """
 helps['datafactory linked-service common-data-service-for-apps create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service common-data-service-for-apps create --factory-name "exampleFactoryName" --\
-type "AzureStorage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service common-data-service-for-apps create --factory-name "exampleFactoryName" --\
-type "AzureStorage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "\
-exampleResourceGroup"
 """
 
 helps['datafactory linked-service common-data-service-for-apps update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service common-data-service-for-apps create --factory-name "exampleFactoryName" --\
-type "AzureStorage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service common-data-service-for-apps create --factory-name "exampleFactoryName" --\
-type "AzureStorage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "\
-exampleResourceGroup"
 """
 
 helps['datafactory linked-service concur'] = """
@@ -1341,99 +826,41 @@ helps['datafactory linked-service concur'] = """
 helps['datafactory linked-service concur create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service concur create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service concur create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service concur update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service concur create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service concur create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
-helps['datafactory linked-service cosmos-db'] = """
+helps['datafactory linked-service cosmos-d-b'] = """
     type: group
-    short-summary: datafactory linked-service sub group cosmos-db
+    short-summary: datafactory linked-service sub group cosmos-d-b
 """
 
-helps['datafactory linked-service cosmos-db create'] = """
+helps['datafactory linked-service cosmos-d-b create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service cosmos-db create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service cosmos-db create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGrou\
-p"
 """
 
-helps['datafactory linked-service cosmos-db update'] = """
+helps['datafactory linked-service cosmos-d-b update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service cosmos-db create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service cosmos-db create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGrou\
-p"
 """
 
-helps['datafactory linked-service cosmos-db-mongo-db-api'] = """
+helps['datafactory linked-service cosmos-d-b-mongo-d-b-api'] = """
     type: group
-    short-summary: datafactory linked-service sub group cosmos-db-mongo-db-api
+    short-summary: datafactory linked-service sub group cosmos-d-b-mongo-d-b-api
 """
 
-helps['datafactory linked-service cosmos-db-mongo-db-api create'] = """
+helps['datafactory linked-service cosmos-d-b-mongo-d-b-api create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service cosmos-db-mongo-db-api create --factory-name "exampleFactoryName" --type "\
-AzureStorage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service cosmos-db-mongo-db-api create --factory-name "exampleFactoryName" --type "\
-AzureStorage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampl\
-eResourceGroup"
 """
 
-helps['datafactory linked-service cosmos-db-mongo-db-api update'] = """
+helps['datafactory linked-service cosmos-d-b-mongo-d-b-api update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service cosmos-db-mongo-db-api create --factory-name "exampleFactoryName" --type "\
-AzureStorage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service cosmos-db-mongo-db-api create --factory-name "exampleFactoryName" --type "\
-AzureStorage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampl\
-eResourceGroup"
 """
 
 helps['datafactory linked-service couchbase'] = """
@@ -1444,31 +871,11 @@ helps['datafactory linked-service couchbase'] = """
 helps['datafactory linked-service couchbase create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service couchbase create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service couchbase create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGrou\
-p"
 """
 
 helps['datafactory linked-service couchbase update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service couchbase create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service couchbase create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGrou\
-p"
 """
 
 helps['datafactory linked-service custom-data-source'] = """
@@ -1479,37 +886,11 @@ helps['datafactory linked-service custom-data-source'] = """
 helps['datafactory linked-service custom-data-source create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service custom-data-source create --factory-name "exampleFactoryName" --type "Azur\
-eStorage" --type-properties "{\\"connectionString\\":{\\"type\\":\\"SecureString\\",\\"value\\":\\"DefaultEndpointsProt\
-ocol=https;AccountName=examplestorageaccount;AccountKey=<storage key>\\"}}" --linked-service-name "exampleLinkedService\
-" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service custom-data-source create --factory-name "exampleFactoryName" --type "Azur\
-eStorage" --description "Example description" --type-properties "{\\"connectionString\\":{\\"type\\":\\"SecureString\\"\
-,\\"value\\":\\"DefaultEndpointsProtocol=https;AccountName=examplestorageaccount;AccountKey=<storage key>\\"}}" --linke\
-d-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service custom-data-source update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service custom-data-source create --factory-name "exampleFactoryName" --type "Azur\
-eStorage" --type-properties "{\\"connectionString\\":{\\"type\\":\\"SecureString\\",\\"value\\":\\"DefaultEndpointsProt\
-ocol=https;AccountName=examplestorageaccount;AccountKey=<storage key>\\"}}" --linked-service-name "exampleLinkedService\
-" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service custom-data-source create --factory-name "exampleFactoryName" --type "Azur\
-eStorage" --description "Example description" --type-properties "{\\"connectionString\\":{\\"type\\":\\"SecureString\\"\
-,\\"value\\":\\"DefaultEndpointsProtocol=https;AccountName=examplestorageaccount;AccountKey=<storage key>\\"}}" --linke\
-d-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service db2'] = """
@@ -1520,29 +901,11 @@ helps['datafactory linked-service db2'] = """
 helps['datafactory linked-service db2 create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service db2 create --factory-name "exampleFactoryName" --type "AzureStorage" --lin\
-ked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service db2 create --factory-name "exampleFactoryName" --type "AzureStorage" --des\
-cription "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service db2 update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service db2 create --factory-name "exampleFactoryName" --type "AzureStorage" --lin\
-ked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service db2 create --factory-name "exampleFactoryName" --type "AzureStorage" --des\
-cription "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service drill'] = """
@@ -1553,29 +916,11 @@ helps['datafactory linked-service drill'] = """
 helps['datafactory linked-service drill create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service drill create --factory-name "exampleFactoryName" --type "AzureStorage" --l\
-inked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service drill create --factory-name "exampleFactoryName" --type "AzureStorage" --d\
-escription "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service drill update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service drill create --factory-name "exampleFactoryName" --type "AzureStorage" --l\
-inked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service drill create --factory-name "exampleFactoryName" --type "AzureStorage" --d\
-escription "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service dynamics'] = """
@@ -1586,66 +931,26 @@ helps['datafactory linked-service dynamics'] = """
 helps['datafactory linked-service dynamics create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service dynamics create --factory-name "exampleFactoryName" --type "AzureStorage" \
---linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service dynamics create --factory-name "exampleFactoryName" --type "AzureStorage" \
---description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup\
-"
 """
 
 helps['datafactory linked-service dynamics update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service dynamics create --factory-name "exampleFactoryName" --type "AzureStorage" \
---linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service dynamics create --factory-name "exampleFactoryName" --type "AzureStorage" \
---description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup\
-"
 """
 
-helps['datafactory linked-service dynamics-a-x'] = """
+helps['datafactory linked-service dynamics-ax'] = """
     type: group
-    short-summary: datafactory linked-service sub group dynamics-a-x
+    short-summary: datafactory linked-service sub group dynamics-ax
 """
 
-helps['datafactory linked-service dynamics-a-x create'] = """
+helps['datafactory linked-service dynamics-ax create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service dynamics-a-x create --factory-name "exampleFactoryName" --type "AzureStora\
-ge" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service dynamics-a-x create --factory-name "exampleFactoryName" --type "AzureStora\
-ge" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceG\
-roup"
 """
 
-helps['datafactory linked-service dynamics-a-x update'] = """
+helps['datafactory linked-service dynamics-ax update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service dynamics-a-x create --factory-name "exampleFactoryName" --type "AzureStora\
-ge" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service dynamics-a-x create --factory-name "exampleFactoryName" --type "AzureStora\
-ge" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceG\
-roup"
 """
 
 helps['datafactory linked-service dynamics-crm'] = """
@@ -1656,31 +961,11 @@ helps['datafactory linked-service dynamics-crm'] = """
 helps['datafactory linked-service dynamics-crm create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service dynamics-crm create --factory-name "exampleFactoryName" --type "AzureStora\
-ge" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service dynamics-crm create --factory-name "exampleFactoryName" --type "AzureStora\
-ge" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceG\
-roup"
 """
 
 helps['datafactory linked-service dynamics-crm update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service dynamics-crm create --factory-name "exampleFactoryName" --type "AzureStora\
-ge" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service dynamics-crm create --factory-name "exampleFactoryName" --type "AzureStora\
-ge" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceG\
-roup"
 """
 
 helps['datafactory linked-service eloqua'] = """
@@ -1691,29 +976,11 @@ helps['datafactory linked-service eloqua'] = """
 helps['datafactory linked-service eloqua create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service eloqua create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service eloqua create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service eloqua update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service eloqua create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service eloqua create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service file-server'] = """
@@ -1724,31 +991,11 @@ helps['datafactory linked-service file-server'] = """
 helps['datafactory linked-service file-server create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service file-server create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service file-server create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGr\
-oup"
 """
 
 helps['datafactory linked-service file-server update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service file-server create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service file-server create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGr\
-oup"
 """
 
 helps['datafactory linked-service ftp-server'] = """
@@ -1759,31 +1006,11 @@ helps['datafactory linked-service ftp-server'] = """
 helps['datafactory linked-service ftp-server create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service ftp-server create --factory-name "exampleFactoryName" --type "AzureStorage\
-" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service ftp-server create --factory-name "exampleFactoryName" --type "AzureStorage\
-" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGro\
-up"
 """
 
 helps['datafactory linked-service ftp-server update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service ftp-server create --factory-name "exampleFactoryName" --type "AzureStorage\
-" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service ftp-server create --factory-name "exampleFactoryName" --type "AzureStorage\
-" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGro\
-up"
 """
 
 helps['datafactory linked-service google-ad-words'] = """
@@ -1794,31 +1021,11 @@ helps['datafactory linked-service google-ad-words'] = """
 helps['datafactory linked-service google-ad-words create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service google-ad-words create --factory-name "exampleFactoryName" --type "AzureSt\
-orage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service google-ad-words create --factory-name "exampleFactoryName" --type "AzureSt\
-orage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResour\
-ceGroup"
 """
 
 helps['datafactory linked-service google-ad-words update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service google-ad-words create --factory-name "exampleFactoryName" --type "AzureSt\
-orage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service google-ad-words create --factory-name "exampleFactoryName" --type "AzureSt\
-orage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResour\
-ceGroup"
 """
 
 helps['datafactory linked-service google-big-query'] = """
@@ -1829,31 +1036,11 @@ helps['datafactory linked-service google-big-query'] = """
 helps['datafactory linked-service google-big-query create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service google-big-query create --factory-name "exampleFactoryName" --type "AzureS\
-torage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service google-big-query create --factory-name "exampleFactoryName" --type "AzureS\
-torage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResou\
-rceGroup"
 """
 
 helps['datafactory linked-service google-big-query update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service google-big-query create --factory-name "exampleFactoryName" --type "AzureS\
-torage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service google-big-query create --factory-name "exampleFactoryName" --type "AzureS\
-torage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResou\
-rceGroup"
 """
 
 helps['datafactory linked-service google-cloud-storage'] = """
@@ -1864,31 +1051,11 @@ helps['datafactory linked-service google-cloud-storage'] = """
 helps['datafactory linked-service google-cloud-storage create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service google-cloud-storage create --factory-name "exampleFactoryName" --type "Az\
-ureStorage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service google-cloud-storage create --factory-name "exampleFactoryName" --type "Az\
-ureStorage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleR\
-esourceGroup"
 """
 
 helps['datafactory linked-service google-cloud-storage update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service google-cloud-storage create --factory-name "exampleFactoryName" --type "Az\
-ureStorage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service google-cloud-storage create --factory-name "exampleFactoryName" --type "Az\
-ureStorage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleR\
-esourceGroup"
 """
 
 helps['datafactory linked-service greenplum'] = """
@@ -1899,31 +1066,11 @@ helps['datafactory linked-service greenplum'] = """
 helps['datafactory linked-service greenplum create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service greenplum create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service greenplum create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGrou\
-p"
 """
 
 helps['datafactory linked-service greenplum update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service greenplum create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service greenplum create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGrou\
-p"
 """
 
 helps['datafactory linked-service h-base'] = """
@@ -1934,99 +1081,41 @@ helps['datafactory linked-service h-base'] = """
 helps['datafactory linked-service h-base create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service h-base create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service h-base create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service h-base update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service h-base create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service h-base create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
-helps['datafactory linked-service h-d-insight'] = """
+helps['datafactory linked-service hd-insight'] = """
     type: group
-    short-summary: datafactory linked-service sub group h-d-insight
+    short-summary: datafactory linked-service sub group hd-insight
 """
 
-helps['datafactory linked-service h-d-insight create'] = """
+helps['datafactory linked-service hd-insight create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service h-d-insight create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --type-properties-linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service h-d-insight create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --description "Example description" --type-properties-linked-service-name "exampleLinkedService" --resource-group "e\
-xampleResourceGroup"
 """
 
-helps['datafactory linked-service h-d-insight update'] = """
+helps['datafactory linked-service hd-insight update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service h-d-insight create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --type-properties-linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service h-d-insight create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --description "Example description" --type-properties-linked-service-name "exampleLinkedService" --resource-group "e\
-xampleResourceGroup"
 """
 
-helps['datafactory linked-service h-d-insight-on-demand'] = """
+helps['datafactory linked-service hd-insight-on-demand'] = """
     type: group
-    short-summary: datafactory linked-service sub group h-d-insight-on-demand
+    short-summary: datafactory linked-service sub group hd-insight-on-demand
 """
 
-helps['datafactory linked-service h-d-insight-on-demand create'] = """
+helps['datafactory linked-service hd-insight-on-demand create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service h-d-insight-on-demand create --factory-name "exampleFactoryName" --type "A\
-zureStorage" --type-properties-linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service h-d-insight-on-demand create --factory-name "exampleFactoryName" --type "A\
-zureStorage" --description "Example description" --type-properties-linked-service-name "exampleLinkedService" --resourc\
-e-group "exampleResourceGroup"
 """
 
-helps['datafactory linked-service h-d-insight-on-demand update'] = """
+helps['datafactory linked-service hd-insight-on-demand update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service h-d-insight-on-demand create --factory-name "exampleFactoryName" --type "A\
-zureStorage" --type-properties-linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service h-d-insight-on-demand create --factory-name "exampleFactoryName" --type "A\
-zureStorage" --description "Example description" --type-properties-linked-service-name "exampleLinkedService" --resourc\
-e-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service hdfs'] = """
@@ -2037,29 +1126,11 @@ helps['datafactory linked-service hdfs'] = """
 helps['datafactory linked-service hdfs create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service hdfs create --factory-name "exampleFactoryName" --type "AzureStorage" --li\
-nked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service hdfs create --factory-name "exampleFactoryName" --type "AzureStorage" --de\
-scription "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service hdfs update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service hdfs create --factory-name "exampleFactoryName" --type "AzureStorage" --li\
-nked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service hdfs create --factory-name "exampleFactoryName" --type "AzureStorage" --de\
-scription "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service hive'] = """
@@ -2070,29 +1141,11 @@ helps['datafactory linked-service hive'] = """
 helps['datafactory linked-service hive create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service hive create --factory-name "exampleFactoryName" --type "AzureStorage" --li\
-nked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service hive create --factory-name "exampleFactoryName" --type "AzureStorage" --de\
-scription "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service hive update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service hive create --factory-name "exampleFactoryName" --type "AzureStorage" --li\
-nked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service hive create --factory-name "exampleFactoryName" --type "AzureStorage" --de\
-scription "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service http-server'] = """
@@ -2103,31 +1156,11 @@ helps['datafactory linked-service http-server'] = """
 helps['datafactory linked-service http-server create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service http-server create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service http-server create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGr\
-oup"
 """
 
 helps['datafactory linked-service http-server update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service http-server create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service http-server create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGr\
-oup"
 """
 
 helps['datafactory linked-service hubspot'] = """
@@ -2138,29 +1171,11 @@ helps['datafactory linked-service hubspot'] = """
 helps['datafactory linked-service hubspot create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service hubspot create --factory-name "exampleFactoryName" --type "AzureStorage" -\
--linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service hubspot create --factory-name "exampleFactoryName" --type "AzureStorage" -\
--description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service hubspot update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service hubspot create --factory-name "exampleFactoryName" --type "AzureStorage" -\
--linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service hubspot create --factory-name "exampleFactoryName" --type "AzureStorage" -\
--description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service impala'] = """
@@ -2171,29 +1186,11 @@ helps['datafactory linked-service impala'] = """
 helps['datafactory linked-service impala create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service impala create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service impala create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service impala update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service impala create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service impala create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service informix'] = """
@@ -2204,31 +1201,11 @@ helps['datafactory linked-service informix'] = """
 helps['datafactory linked-service informix create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service informix create --factory-name "exampleFactoryName" --type "AzureStorage" \
---linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service informix create --factory-name "exampleFactoryName" --type "AzureStorage" \
---description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup\
-"
 """
 
 helps['datafactory linked-service informix update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service informix create --factory-name "exampleFactoryName" --type "AzureStorage" \
---linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service informix create --factory-name "exampleFactoryName" --type "AzureStorage" \
---description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup\
-"
 """
 
 helps['datafactory linked-service jira'] = """
@@ -2239,29 +1216,11 @@ helps['datafactory linked-service jira'] = """
 helps['datafactory linked-service jira create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service jira create --factory-name "exampleFactoryName" --type "AzureStorage" --li\
-nked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service jira create --factory-name "exampleFactoryName" --type "AzureStorage" --de\
-scription "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service jira update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service jira create --factory-name "exampleFactoryName" --type "AzureStorage" --li\
-nked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service jira create --factory-name "exampleFactoryName" --type "AzureStorage" --de\
-scription "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service magento'] = """
@@ -2272,29 +1231,11 @@ helps['datafactory linked-service magento'] = """
 helps['datafactory linked-service magento create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service magento create --factory-name "exampleFactoryName" --type "AzureStorage" -\
--linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service magento create --factory-name "exampleFactoryName" --type "AzureStorage" -\
--description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service magento update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service magento create --factory-name "exampleFactoryName" --type "AzureStorage" -\
--linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service magento create --factory-name "exampleFactoryName" --type "AzureStorage" -\
--description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service maria-d-b'] = """
@@ -2305,31 +1246,11 @@ helps['datafactory linked-service maria-d-b'] = """
 helps['datafactory linked-service maria-d-b create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service maria-d-b create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service maria-d-b create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGrou\
-p"
 """
 
 helps['datafactory linked-service maria-d-b update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service maria-d-b create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service maria-d-b create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGrou\
-p"
 """
 
 helps['datafactory linked-service marketo'] = """
@@ -2340,29 +1261,11 @@ helps['datafactory linked-service marketo'] = """
 helps['datafactory linked-service marketo create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service marketo create --factory-name "exampleFactoryName" --type "AzureStorage" -\
--linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service marketo create --factory-name "exampleFactoryName" --type "AzureStorage" -\
--description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service marketo update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service marketo create --factory-name "exampleFactoryName" --type "AzureStorage" -\
--linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service marketo create --factory-name "exampleFactoryName" --type "AzureStorage" -\
--description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service microsoft-access'] = """
@@ -2373,101 +1276,41 @@ helps['datafactory linked-service microsoft-access'] = """
 helps['datafactory linked-service microsoft-access create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service microsoft-access create --factory-name "exampleFactoryName" --type "AzureS\
-torage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service microsoft-access create --factory-name "exampleFactoryName" --type "AzureS\
-torage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResou\
-rceGroup"
 """
 
 helps['datafactory linked-service microsoft-access update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service microsoft-access create --factory-name "exampleFactoryName" --type "AzureS\
-torage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service microsoft-access create --factory-name "exampleFactoryName" --type "AzureS\
-torage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResou\
-rceGroup"
 """
 
-helps['datafactory linked-service mongo-db'] = """
+helps['datafactory linked-service mongo-d-b'] = """
     type: group
-    short-summary: datafactory linked-service sub group mongo-db
+    short-summary: datafactory linked-service sub group mongo-d-b
 """
 
-helps['datafactory linked-service mongo-db create'] = """
+helps['datafactory linked-service mongo-d-b create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service mongo-db create --factory-name "exampleFactoryName" --type "AzureStorage" \
---linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service mongo-db create --factory-name "exampleFactoryName" --type "AzureStorage" \
---description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup\
-"
 """
 
-helps['datafactory linked-service mongo-db update'] = """
+helps['datafactory linked-service mongo-d-b update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service mongo-db create --factory-name "exampleFactoryName" --type "AzureStorage" \
---linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service mongo-db create --factory-name "exampleFactoryName" --type "AzureStorage" \
---description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup\
-"
 """
 
-helps['datafactory linked-service mongo-db-v2'] = """
+helps['datafactory linked-service mongo-d-b-v2'] = """
     type: group
-    short-summary: datafactory linked-service sub group mongo-db-v2
+    short-summary: datafactory linked-service sub group mongo-d-b-v2
 """
 
-helps['datafactory linked-service mongo-db-v2 create'] = """
+helps['datafactory linked-service mongo-d-b-v2 create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service mongo-db-v2 create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service mongo-db-v2 create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGr\
-oup"
 """
 
-helps['datafactory linked-service mongo-db-v2 update'] = """
+helps['datafactory linked-service mongo-d-b-v2 update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service mongo-db-v2 create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service mongo-db-v2 create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGr\
-oup"
 """
 
 helps['datafactory linked-service my-sql'] = """
@@ -2478,29 +1321,11 @@ helps['datafactory linked-service my-sql'] = """
 helps['datafactory linked-service my-sql create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service my-sql create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service my-sql create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service my-sql update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service my-sql create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service my-sql create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service netezza'] = """
@@ -2511,29 +1336,11 @@ helps['datafactory linked-service netezza'] = """
 helps['datafactory linked-service netezza create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service netezza create --factory-name "exampleFactoryName" --type "AzureStorage" -\
--linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service netezza create --factory-name "exampleFactoryName" --type "AzureStorage" -\
--description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service netezza update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service netezza create --factory-name "exampleFactoryName" --type "AzureStorage" -\
--linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service netezza create --factory-name "exampleFactoryName" --type "AzureStorage" -\
--description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service o-data'] = """
@@ -2544,29 +1351,11 @@ helps['datafactory linked-service o-data'] = """
 helps['datafactory linked-service o-data create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service o-data create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service o-data create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service o-data update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service o-data create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service o-data create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service odbc'] = """
@@ -2577,29 +1366,11 @@ helps['datafactory linked-service odbc'] = """
 helps['datafactory linked-service odbc create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service odbc create --factory-name "exampleFactoryName" --type "AzureStorage" --li\
-nked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service odbc create --factory-name "exampleFactoryName" --type "AzureStorage" --de\
-scription "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service odbc update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service odbc create --factory-name "exampleFactoryName" --type "AzureStorage" --li\
-nked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service odbc create --factory-name "exampleFactoryName" --type "AzureStorage" --de\
-scription "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service office365'] = """
@@ -2610,31 +1381,11 @@ helps['datafactory linked-service office365'] = """
 helps['datafactory linked-service office365 create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service office365 create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service office365 create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGrou\
-p"
 """
 
 helps['datafactory linked-service office365 update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service office365 create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service office365 create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGrou\
-p"
 """
 
 helps['datafactory linked-service oracle'] = """
@@ -2645,29 +1396,11 @@ helps['datafactory linked-service oracle'] = """
 helps['datafactory linked-service oracle create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service oracle create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service oracle create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service oracle update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service oracle create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service oracle create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service oracle-service-cloud'] = """
@@ -2678,31 +1411,11 @@ helps['datafactory linked-service oracle-service-cloud'] = """
 helps['datafactory linked-service oracle-service-cloud create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service oracle-service-cloud create --factory-name "exampleFactoryName" --type "Az\
-ureStorage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service oracle-service-cloud create --factory-name "exampleFactoryName" --type "Az\
-ureStorage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleR\
-esourceGroup"
 """
 
 helps['datafactory linked-service oracle-service-cloud update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service oracle-service-cloud create --factory-name "exampleFactoryName" --type "Az\
-ureStorage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service oracle-service-cloud create --factory-name "exampleFactoryName" --type "Az\
-ureStorage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleR\
-esourceGroup"
 """
 
 helps['datafactory linked-service paypal'] = """
@@ -2713,29 +1426,11 @@ helps['datafactory linked-service paypal'] = """
 helps['datafactory linked-service paypal create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service paypal create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service paypal create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service paypal update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service paypal create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service paypal create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service phoenix'] = """
@@ -2746,29 +1441,11 @@ helps['datafactory linked-service phoenix'] = """
 helps['datafactory linked-service phoenix create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service phoenix create --factory-name "exampleFactoryName" --type "AzureStorage" -\
--linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service phoenix create --factory-name "exampleFactoryName" --type "AzureStorage" -\
--description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service phoenix update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service phoenix create --factory-name "exampleFactoryName" --type "AzureStorage" -\
--linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service phoenix create --factory-name "exampleFactoryName" --type "AzureStorage" -\
--description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service postgre-sql'] = """
@@ -2779,31 +1456,11 @@ helps['datafactory linked-service postgre-sql'] = """
 helps['datafactory linked-service postgre-sql create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service postgre-sql create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service postgre-sql create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGr\
-oup"
 """
 
 helps['datafactory linked-service postgre-sql update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service postgre-sql create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service postgre-sql create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGr\
-oup"
 """
 
 helps['datafactory linked-service presto'] = """
@@ -2814,29 +1471,11 @@ helps['datafactory linked-service presto'] = """
 helps['datafactory linked-service presto create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service presto create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service presto create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service presto update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service presto create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service presto create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service quick-books'] = """
@@ -2847,31 +1486,11 @@ helps['datafactory linked-service quick-books'] = """
 helps['datafactory linked-service quick-books create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service quick-books create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service quick-books create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGr\
-oup"
 """
 
 helps['datafactory linked-service quick-books update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service quick-books create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service quick-books create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGr\
-oup"
 """
 
 helps['datafactory linked-service responsys'] = """
@@ -2882,31 +1501,11 @@ helps['datafactory linked-service responsys'] = """
 helps['datafactory linked-service responsys create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service responsys create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service responsys create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGrou\
-p"
 """
 
 helps['datafactory linked-service responsys update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service responsys create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service responsys create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGrou\
-p"
 """
 
 helps['datafactory linked-service rest-service'] = """
@@ -2917,31 +1516,11 @@ helps['datafactory linked-service rest-service'] = """
 helps['datafactory linked-service rest-service create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service rest-service create --factory-name "exampleFactoryName" --type "AzureStora\
-ge" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service rest-service create --factory-name "exampleFactoryName" --type "AzureStora\
-ge" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceG\
-roup"
 """
 
 helps['datafactory linked-service rest-service update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service rest-service create --factory-name "exampleFactoryName" --type "AzureStora\
-ge" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service rest-service create --factory-name "exampleFactoryName" --type "AzureStora\
-ge" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceG\
-roup"
 """
 
 helps['datafactory linked-service salesforce'] = """
@@ -2952,31 +1531,11 @@ helps['datafactory linked-service salesforce'] = """
 helps['datafactory linked-service salesforce create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service salesforce create --factory-name "exampleFactoryName" --type "AzureStorage\
-" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service salesforce create --factory-name "exampleFactoryName" --type "AzureStorage\
-" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGro\
-up"
 """
 
 helps['datafactory linked-service salesforce update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service salesforce create --factory-name "exampleFactoryName" --type "AzureStorage\
-" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service salesforce create --factory-name "exampleFactoryName" --type "AzureStorage\
-" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGro\
-up"
 """
 
 helps['datafactory linked-service salesforce-marketing-cloud'] = """
@@ -2987,31 +1546,11 @@ helps['datafactory linked-service salesforce-marketing-cloud'] = """
 helps['datafactory linked-service salesforce-marketing-cloud create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service salesforce-marketing-cloud create --factory-name "exampleFactoryName" --ty\
-pe "AzureStorage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service salesforce-marketing-cloud create --factory-name "exampleFactoryName" --ty\
-pe "AzureStorage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "ex\
-ampleResourceGroup"
 """
 
 helps['datafactory linked-service salesforce-marketing-cloud update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service salesforce-marketing-cloud create --factory-name "exampleFactoryName" --ty\
-pe "AzureStorage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service salesforce-marketing-cloud create --factory-name "exampleFactoryName" --ty\
-pe "AzureStorage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "ex\
-ampleResourceGroup"
 """
 
 helps['datafactory linked-service salesforce-service-cloud'] = """
@@ -3022,64 +1561,26 @@ helps['datafactory linked-service salesforce-service-cloud'] = """
 helps['datafactory linked-service salesforce-service-cloud create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service salesforce-service-cloud create --factory-name "exampleFactoryName" --type\
- "AzureStorage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service salesforce-service-cloud create --factory-name "exampleFactoryName" --type\
- "AzureStorage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exam\
-pleResourceGroup"
 """
 
 helps['datafactory linked-service salesforce-service-cloud update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service salesforce-service-cloud create --factory-name "exampleFactoryName" --type\
- "AzureStorage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service salesforce-service-cloud create --factory-name "exampleFactoryName" --type\
- "AzureStorage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exam\
-pleResourceGroup"
 """
 
-helps['datafactory linked-service sap-b-w'] = """
+helps['datafactory linked-service sap-bw'] = """
     type: group
-    short-summary: datafactory linked-service sub group sap-b-w
+    short-summary: datafactory linked-service sub group sap-bw
 """
 
-helps['datafactory linked-service sap-b-w create'] = """
+helps['datafactory linked-service sap-bw create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service sap-b-w create --factory-name "exampleFactoryName" --type "AzureStorage" -\
--linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service sap-b-w create --factory-name "exampleFactoryName" --type "AzureStorage" -\
--description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
-helps['datafactory linked-service sap-b-w update'] = """
+helps['datafactory linked-service sap-bw update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service sap-b-w create --factory-name "exampleFactoryName" --type "AzureStorage" -\
--linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service sap-b-w create --factory-name "exampleFactoryName" --type "AzureStorage" -\
--description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service sap-cloud-for-customer'] = """
@@ -3090,31 +1591,11 @@ helps['datafactory linked-service sap-cloud-for-customer'] = """
 helps['datafactory linked-service sap-cloud-for-customer create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service sap-cloud-for-customer create --factory-name "exampleFactoryName" --type "\
-AzureStorage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service sap-cloud-for-customer create --factory-name "exampleFactoryName" --type "\
-AzureStorage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampl\
-eResourceGroup"
 """
 
 helps['datafactory linked-service sap-cloud-for-customer update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service sap-cloud-for-customer create --factory-name "exampleFactoryName" --type "\
-AzureStorage" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service sap-cloud-for-customer create --factory-name "exampleFactoryName" --type "\
-AzureStorage" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampl\
-eResourceGroup"
 """
 
 helps['datafactory linked-service sap-ecc'] = """
@@ -3125,29 +1606,11 @@ helps['datafactory linked-service sap-ecc'] = """
 helps['datafactory linked-service sap-ecc create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service sap-ecc create --factory-name "exampleFactoryName" --type "AzureStorage" -\
--linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service sap-ecc create --factory-name "exampleFactoryName" --type "AzureStorage" -\
--description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service sap-ecc update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service sap-ecc create --factory-name "exampleFactoryName" --type "AzureStorage" -\
--linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service sap-ecc create --factory-name "exampleFactoryName" --type "AzureStorage" -\
--description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service sap-hana'] = """
@@ -3158,31 +1621,11 @@ helps['datafactory linked-service sap-hana'] = """
 helps['datafactory linked-service sap-hana create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service sap-hana create --factory-name "exampleFactoryName" --type "AzureStorage" \
---linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service sap-hana create --factory-name "exampleFactoryName" --type "AzureStorage" \
---description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup\
-"
 """
 
 helps['datafactory linked-service sap-hana update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service sap-hana create --factory-name "exampleFactoryName" --type "AzureStorage" \
---linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service sap-hana create --factory-name "exampleFactoryName" --type "AzureStorage" \
---description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup\
-"
 """
 
 helps['datafactory linked-service sap-open-hub'] = """
@@ -3193,31 +1636,11 @@ helps['datafactory linked-service sap-open-hub'] = """
 helps['datafactory linked-service sap-open-hub create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service sap-open-hub create --factory-name "exampleFactoryName" --type "AzureStora\
-ge" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service sap-open-hub create --factory-name "exampleFactoryName" --type "AzureStora\
-ge" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceG\
-roup"
 """
 
 helps['datafactory linked-service sap-open-hub update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service sap-open-hub create --factory-name "exampleFactoryName" --type "AzureStora\
-ge" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service sap-open-hub create --factory-name "exampleFactoryName" --type "AzureStora\
-ge" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceG\
-roup"
 """
 
 helps['datafactory linked-service sap-table'] = """
@@ -3228,31 +1651,11 @@ helps['datafactory linked-service sap-table'] = """
 helps['datafactory linked-service sap-table create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service sap-table create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service sap-table create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGrou\
-p"
 """
 
 helps['datafactory linked-service sap-table update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service sap-table create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service sap-table create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGrou\
-p"
 """
 
 helps['datafactory linked-service service-now'] = """
@@ -3263,31 +1666,11 @@ helps['datafactory linked-service service-now'] = """
 helps['datafactory linked-service service-now create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service service-now create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service service-now create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGr\
-oup"
 """
 
 helps['datafactory linked-service service-now update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service service-now create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service service-now create --factory-name "exampleFactoryName" --type "AzureStorag\
-e" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGr\
-oup"
 """
 
 helps['datafactory linked-service sftp'] = """
@@ -3298,29 +1681,11 @@ helps['datafactory linked-service sftp'] = """
 helps['datafactory linked-service sftp create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service sftp create --factory-name "exampleFactoryName" --type "AzureStorage" --li\
-nked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service sftp create --factory-name "exampleFactoryName" --type "AzureStorage" --de\
-scription "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service sftp update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service sftp create --factory-name "exampleFactoryName" --type "AzureStorage" --li\
-nked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service sftp create --factory-name "exampleFactoryName" --type "AzureStorage" --de\
-scription "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service shopify'] = """
@@ -3331,29 +1696,11 @@ helps['datafactory linked-service shopify'] = """
 helps['datafactory linked-service shopify create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service shopify create --factory-name "exampleFactoryName" --type "AzureStorage" -\
--linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service shopify create --factory-name "exampleFactoryName" --type "AzureStorage" -\
--description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service shopify update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service shopify create --factory-name "exampleFactoryName" --type "AzureStorage" -\
--linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service shopify create --factory-name "exampleFactoryName" --type "AzureStorage" -\
--description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service snowflake'] = """
@@ -3364,31 +1711,11 @@ helps['datafactory linked-service snowflake'] = """
 helps['datafactory linked-service snowflake create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service snowflake create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service snowflake create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGrou\
-p"
 """
 
 helps['datafactory linked-service snowflake update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service snowflake create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service snowflake create --factory-name "exampleFactoryName" --type "AzureStorage"\
- --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGrou\
-p"
 """
 
 helps['datafactory linked-service spark'] = """
@@ -3399,29 +1726,11 @@ helps['datafactory linked-service spark'] = """
 helps['datafactory linked-service spark create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service spark create --factory-name "exampleFactoryName" --type "AzureStorage" --l\
-inked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service spark create --factory-name "exampleFactoryName" --type "AzureStorage" --d\
-escription "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service spark update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service spark create --factory-name "exampleFactoryName" --type "AzureStorage" --l\
-inked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service spark create --factory-name "exampleFactoryName" --type "AzureStorage" --d\
-escription "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service sql-server'] = """
@@ -3432,31 +1741,11 @@ helps['datafactory linked-service sql-server'] = """
 helps['datafactory linked-service sql-server create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service sql-server create --factory-name "exampleFactoryName" --type "AzureStorage\
-" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service sql-server create --factory-name "exampleFactoryName" --type "AzureStorage\
-" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGro\
-up"
 """
 
 helps['datafactory linked-service sql-server update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service sql-server create --factory-name "exampleFactoryName" --type "AzureStorage\
-" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service sql-server create --factory-name "exampleFactoryName" --type "AzureStorage\
-" --description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGro\
-up"
 """
 
 helps['datafactory linked-service square'] = """
@@ -3467,29 +1756,11 @@ helps['datafactory linked-service square'] = """
 helps['datafactory linked-service square create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service square create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service square create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service square update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service square create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service square create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service sybase'] = """
@@ -3500,29 +1771,11 @@ helps['datafactory linked-service sybase'] = """
 helps['datafactory linked-service sybase create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service sybase create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service sybase create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service sybase update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service sybase create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service sybase create --factory-name "exampleFactoryName" --type "AzureStorage" --\
-description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service teradata'] = """
@@ -3533,31 +1786,11 @@ helps['datafactory linked-service teradata'] = """
 helps['datafactory linked-service teradata create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service teradata create --factory-name "exampleFactoryName" --type "AzureStorage" \
---linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service teradata create --factory-name "exampleFactoryName" --type "AzureStorage" \
---description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup\
-"
 """
 
 helps['datafactory linked-service teradata update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service teradata create --factory-name "exampleFactoryName" --type "AzureStorage" \
---linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service teradata create --factory-name "exampleFactoryName" --type "AzureStorage" \
---description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup\
-"
 """
 
 helps['datafactory linked-service vertica'] = """
@@ -3568,29 +1801,11 @@ helps['datafactory linked-service vertica'] = """
 helps['datafactory linked-service vertica create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service vertica create --factory-name "exampleFactoryName" --type "AzureStorage" -\
--linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service vertica create --factory-name "exampleFactoryName" --type "AzureStorage" -\
--description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service vertica update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service vertica create --factory-name "exampleFactoryName" --type "AzureStorage" -\
--linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service vertica create --factory-name "exampleFactoryName" --type "AzureStorage" -\
--description "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service web'] = """
@@ -3601,37 +1816,11 @@ helps['datafactory linked-service web'] = """
 helps['datafactory linked-service web create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service web create --factory-name "exampleFactoryName" --type "AzureStorage" --typ\
-e-properties "{\\"connectionString\\":{\\"type\\":\\"SecureString\\",\\"value\\":\\"DefaultEndpointsProtocol=https;Acco\
-untName=examplestorageaccount;AccountKey=<storage key>\\"}}" --linked-service-name "exampleLinkedService" --resource-gr\
-oup "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service web create --factory-name "exampleFactoryName" --type "AzureStorage" --des\
-cription "Example description" --type-properties "{\\"connectionString\\":{\\"type\\":\\"SecureString\\",\\"value\\":\\\
-"DefaultEndpointsProtocol=https;AccountName=examplestorageaccount;AccountKey=<storage key>\\"}}" --linked-service-name \
-"exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service web update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service web create --factory-name "exampleFactoryName" --type "AzureStorage" --typ\
-e-properties "{\\"connectionString\\":{\\"type\\":\\"SecureString\\",\\"value\\":\\"DefaultEndpointsProtocol=https;Acco\
-untName=examplestorageaccount;AccountKey=<storage key>\\"}}" --linked-service-name "exampleLinkedService" --resource-gr\
-oup "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service web create --factory-name "exampleFactoryName" --type "AzureStorage" --des\
-cription "Example description" --type-properties "{\\"connectionString\\":{\\"type\\":\\"SecureString\\",\\"value\\":\\\
-"DefaultEndpointsProtocol=https;AccountName=examplestorageaccount;AccountKey=<storage key>\\"}}" --linked-service-name \
-"exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service xero'] = """
@@ -3642,29 +1831,11 @@ helps['datafactory linked-service xero'] = """
 helps['datafactory linked-service xero create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service xero create --factory-name "exampleFactoryName" --type "AzureStorage" --li\
-nked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service xero create --factory-name "exampleFactoryName" --type "AzureStorage" --de\
-scription "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service xero update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service xero create --factory-name "exampleFactoryName" --type "AzureStorage" --li\
-nked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service xero create --factory-name "exampleFactoryName" --type "AzureStorage" --de\
-scription "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service zoho'] = """
@@ -3675,29 +1846,11 @@ helps['datafactory linked-service zoho'] = """
 helps['datafactory linked-service zoho create'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service zoho create --factory-name "exampleFactoryName" --type "AzureStorage" --li\
-nked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service zoho create --factory-name "exampleFactoryName" --type "AzureStorage" --de\
-scription "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service zoho update'] = """
     type: command
     short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service zoho create --factory-name "exampleFactoryName" --type "AzureStorage" --li\
-nked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service zoho create --factory-name "exampleFactoryName" --type "AzureStorage" --de\
-scription "Example description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service delete'] = """
@@ -3734,45 +1887,19 @@ helps['datafactory dataset show'] = """
 ce-group "exampleResourceGroup"
 """
 
-helps['datafactory dataset amazon-m-w-s-object'] = """
+helps['datafactory dataset amazon-mws-object'] = """
     type: group
-    short-summary: datafactory dataset sub group amazon-m-w-s-object
+    short-summary: datafactory dataset sub group amazon-mws-object
 """
 
-helps['datafactory dataset amazon-m-w-s-object create'] = """
+helps['datafactory dataset amazon-mws-object create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset amazon-m-w-s-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\
-\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\
-\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampl\
-eFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset amazon-m-w-s-object create --type "AzureBlob" --description "Example description"\
- --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --par\
-ameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exa\
-mpleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
-helps['datafactory dataset amazon-m-w-s-object update'] = """
+helps['datafactory dataset amazon-mws-object update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset amazon-m-w-s-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\
-\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\
-\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampl\
-eFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset amazon-m-w-s-object create --type "AzureBlob" --description "Example description"\
- --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --par\
-ameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exa\
-mpleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset amazon-redshift-table'] = """
@@ -3783,37 +1910,11 @@ helps['datafactory dataset amazon-redshift-table'] = """
 helps['datafactory dataset amazon-redshift-table create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset amazon-redshift-table create --type "AzureBlob" --linked-service-name "{\\"type\\\
-":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"typ\
-e\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "examp\
-leFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset amazon-redshift-table create --type "AzureBlob" --description "Example descriptio\
-n" --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --p\
-arameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "e\
-xampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset amazon-redshift-table update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset amazon-redshift-table create --type "AzureBlob" --linked-service-name "{\\"type\\\
-":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"typ\
-e\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "examp\
-leFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset amazon-redshift-table create --type "AzureBlob" --description "Example descriptio\
-n" --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --p\
-arameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "e\
-xampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset amazon-s3-object'] = """
@@ -3824,37 +1925,11 @@ helps['datafactory dataset amazon-s3-object'] = """
 helps['datafactory dataset amazon-s3-object create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset amazon-s3-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"\
-LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\
-\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFac\
-toryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset amazon-s3-object create --type "AzureBlob" --description "Example description" --\
-linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parame\
-ters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampl\
-eDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset amazon-s3-object update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset amazon-s3-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"\
-LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\
-\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFac\
-toryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset amazon-s3-object create --type "AzureBlob" --description "Example description" --\
-linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parame\
-ters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampl\
-eDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset avro'] = """
@@ -3865,37 +1940,11 @@ helps['datafactory dataset avro'] = """
 helps['datafactory dataset avro create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset avro create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"LinkedServic\
-eReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"\
-},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryName" --\
-resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset avro create --type "AzureBlob" --description "Example description" --linked-servi\
-ce-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"My\
-FileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --\
-factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset avro update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset avro create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"LinkedServic\
-eReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"\
-},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryName" --\
-resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset avro create --type "AzureBlob" --description "Example description" --linked-servi\
-ce-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"My\
-FileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --\
-factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset azure-blob'] = """
@@ -3909,16 +1958,16 @@ helps['datafactory dataset azure-blob create'] = """
     examples:
       - name: Datasets_Create
         text: |-
-               az datafactory dataset azure-blob create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Linked\
-ServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"Str\
-ing\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryNa\
-me" --resource-group "exampleResourceGroup"
+               az datafactory dataset azure-blob create --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\"\
+,\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolder\
+Path\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryName" --resource-grou\
+p "exampleResourceGroup"
       - name: Datasets_Update
         text: |-
-               az datafactory dataset azure-blob create --type "AzureBlob" --description "Example description" --linked\
--service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "\
-{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDatas\
-et" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
+               az datafactory dataset azure-blob create --description "Example description" --linked-service-name "{\\"\
+type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\
+\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name \
+"exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset azure-blob update'] = """
@@ -3927,57 +1976,31 @@ helps['datafactory dataset azure-blob update'] = """
     examples:
       - name: Datasets_Create
         text: |-
-               az datafactory dataset azure-blob create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Linked\
-ServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"Str\
-ing\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryNa\
-me" --resource-group "exampleResourceGroup"
+               az datafactory dataset azure-blob update --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\"\
+,\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolder\
+Path\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryName" --resource-grou\
+p "exampleResourceGroup"
       - name: Datasets_Update
         text: |-
-               az datafactory dataset azure-blob create --type "AzureBlob" --description "Example description" --linked\
--service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "\
-{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDatas\
-et" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
+               az datafactory dataset azure-blob update --description "Example description" --linked-service-name "{\\"\
+type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\
+\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name \
+"exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
-helps['datafactory dataset azure-blob-f-s-file'] = """
+helps['datafactory dataset azure-blob-fs-file'] = """
     type: group
-    short-summary: datafactory dataset sub group azure-blob-f-s-file
+    short-summary: datafactory dataset sub group azure-blob-fs-file
 """
 
-helps['datafactory dataset azure-blob-f-s-file create'] = """
+helps['datafactory dataset azure-blob-fs-file create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset azure-blob-f-s-file create --type "AzureBlob" --linked-service-name "{\\"type\\":\
-\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\
-\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampl\
-eFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset azure-blob-f-s-file create --type "AzureBlob" --description "Example description"\
- --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --par\
-ameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exa\
-mpleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
-helps['datafactory dataset azure-blob-f-s-file update'] = """
+helps['datafactory dataset azure-blob-fs-file update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset azure-blob-f-s-file create --type "AzureBlob" --linked-service-name "{\\"type\\":\
-\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\
-\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampl\
-eFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset azure-blob-f-s-file create --type "AzureBlob" --description "Example description"\
- --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --par\
-ameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exa\
-mpleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset azure-data-explorer-table'] = """
@@ -3988,37 +2011,11 @@ helps['datafactory dataset azure-data-explorer-table'] = """
 helps['datafactory dataset azure-data-explorer-table create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset azure-data-explorer-table create --type "AzureBlob" --linked-service-name "{\\"ty\
-pe\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\\
-"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "e\
-xampleFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset azure-data-explorer-table create --type "AzureBlob" --description "Example descri\
-ption" --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}"\
- --parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-nam\
-e "exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset azure-data-explorer-table update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset azure-data-explorer-table create --type "AzureBlob" --linked-service-name "{\\"ty\
-pe\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\\
-"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "e\
-xampleFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset azure-data-explorer-table create --type "AzureBlob" --description "Example descri\
-ption" --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}"\
- --parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-nam\
-e "exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset azure-data-lake-store-file'] = """
@@ -4029,37 +2026,11 @@ helps['datafactory dataset azure-data-lake-store-file'] = """
 helps['datafactory dataset azure-data-lake-store-file create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset azure-data-lake-store-file create --type "AzureBlob" --linked-service-name "{\\"t\
-ype\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\
-\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name \
-"exampleFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset azure-data-lake-store-file create --type "AzureBlob" --description "Example descr\
-iption" --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}\
-" --parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-na\
-me "exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset azure-data-lake-store-file update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset azure-data-lake-store-file create --type "AzureBlob" --linked-service-name "{\\"t\
-ype\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\
-\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name \
-"exampleFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset azure-data-lake-store-file create --type "AzureBlob" --description "Example descr\
-iption" --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}\
-" --parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-na\
-me "exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset azure-maria-d-b-table'] = """
@@ -4070,37 +2041,11 @@ helps['datafactory dataset azure-maria-d-b-table'] = """
 helps['datafactory dataset azure-maria-d-b-table create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset azure-maria-d-b-table create --type "AzureBlob" --linked-service-name "{\\"type\\\
-":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"typ\
-e\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "examp\
-leFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset azure-maria-d-b-table create --type "AzureBlob" --description "Example descriptio\
-n" --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --p\
-arameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "e\
-xampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset azure-maria-d-b-table update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset azure-maria-d-b-table create --type "AzureBlob" --linked-service-name "{\\"type\\\
-":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"typ\
-e\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "examp\
-leFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset azure-maria-d-b-table create --type "AzureBlob" --description "Example descriptio\
-n" --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --p\
-arameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "e\
-xampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset azure-my-sql-table'] = """
@@ -4111,37 +2056,11 @@ helps['datafactory dataset azure-my-sql-table'] = """
 helps['datafactory dataset azure-my-sql-table create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset azure-my-sql-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\
-\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\
-\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampl\
-eFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset azure-my-sql-table create --type "AzureBlob" --description "Example description" \
---linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --para\
-meters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exam\
-pleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset azure-my-sql-table update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset azure-my-sql-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\
-\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\
-\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampl\
-eFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset azure-my-sql-table create --type "AzureBlob" --description "Example description" \
---linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --para\
-meters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exam\
-pleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset azure-postgre-sql-table'] = """
@@ -4152,37 +2071,11 @@ helps['datafactory dataset azure-postgre-sql-table'] = """
 helps['datafactory dataset azure-postgre-sql-table create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset azure-postgre-sql-table create --type "AzureBlob" --linked-service-name "{\\"type\
-\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"t\
-ype\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exa\
-mpleFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset azure-postgre-sql-table create --type "AzureBlob" --description "Example descript\
-ion" --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" -\
--parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name \
-"exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset azure-postgre-sql-table update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset azure-postgre-sql-table create --type "AzureBlob" --linked-service-name "{\\"type\
-\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"t\
-ype\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exa\
-mpleFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset azure-postgre-sql-table create --type "AzureBlob" --description "Example descript\
-ion" --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" -\
--parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name \
-"exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset azure-search-index'] = """
@@ -4193,119 +2086,41 @@ helps['datafactory dataset azure-search-index'] = """
 helps['datafactory dataset azure-search-index create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset azure-search-index create --type "AzureBlob" --linked-service-name "{\\"type\\":\
-\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\
-\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampl\
-eFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset azure-search-index create --type "AzureBlob" --description "Example description" \
---linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --para\
-meters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exam\
-pleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset azure-search-index update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset azure-search-index create --type "AzureBlob" --linked-service-name "{\\"type\\":\
-\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\
-\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampl\
-eFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset azure-search-index create --type "AzureBlob" --description "Example description" \
---linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --para\
-meters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exam\
-pleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
-helps['datafactory dataset azure-sql-d-w-table'] = """
+helps['datafactory dataset azure-sql-dw-table'] = """
     type: group
-    short-summary: datafactory dataset sub group azure-sql-d-w-table
+    short-summary: datafactory dataset sub group azure-sql-dw-table
 """
 
-helps['datafactory dataset azure-sql-d-w-table create'] = """
+helps['datafactory dataset azure-sql-dw-table create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset azure-sql-d-w-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\
-\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\
-\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampl\
-eFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset azure-sql-d-w-table create --type "AzureBlob" --description "Example description"\
- --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --par\
-ameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exa\
-mpleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
-helps['datafactory dataset azure-sql-d-w-table update'] = """
+helps['datafactory dataset azure-sql-dw-table update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset azure-sql-d-w-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\
-\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\
-\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampl\
-eFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset azure-sql-d-w-table create --type "AzureBlob" --description "Example description"\
- --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --par\
-ameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exa\
-mpleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
-helps['datafactory dataset azure-sql-m-i-table'] = """
+helps['datafactory dataset azure-sql-mi-table'] = """
     type: group
-    short-summary: datafactory dataset sub group azure-sql-m-i-table
+    short-summary: datafactory dataset sub group azure-sql-mi-table
 """
 
-helps['datafactory dataset azure-sql-m-i-table create'] = """
+helps['datafactory dataset azure-sql-mi-table create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset azure-sql-m-i-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\
-\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\
-\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampl\
-eFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset azure-sql-m-i-table create --type "AzureBlob" --description "Example description"\
- --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --par\
-ameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exa\
-mpleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
-helps['datafactory dataset azure-sql-m-i-table update'] = """
+helps['datafactory dataset azure-sql-mi-table update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset azure-sql-m-i-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\
-\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\
-\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampl\
-eFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset azure-sql-m-i-table create --type "AzureBlob" --description "Example description"\
- --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --par\
-ameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exa\
-mpleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset azure-sql-table'] = """
@@ -4316,37 +2131,11 @@ helps['datafactory dataset azure-sql-table'] = """
 helps['datafactory dataset azure-sql-table create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset azure-sql-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"L\
-inkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\
-\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFac\
-toryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset azure-sql-table create --type "AzureBlob" --description "Example description" --l\
-inked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramet\
-ers "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "example\
-Dataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset azure-sql-table update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset azure-sql-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"L\
-inkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\
-\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFac\
-toryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset azure-sql-table create --type "AzureBlob" --description "Example description" --l\
-inked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramet\
-ers "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "example\
-Dataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset azure-table'] = """
@@ -4357,37 +2146,11 @@ helps['datafactory dataset azure-table'] = """
 helps['datafactory dataset azure-table create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset azure-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Linke\
-dServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"St\
-ring\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryN\
-ame" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset azure-table create --type "AzureBlob" --description "Example description" --linke\
-d-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters \
-"{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleData\
-set" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset azure-table update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset azure-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Linke\
-dServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"St\
-ring\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryN\
-ame" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset azure-table create --type "AzureBlob" --description "Example description" --linke\
-d-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters \
-"{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleData\
-set" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset binary'] = """
@@ -4398,37 +2161,11 @@ helps['datafactory dataset binary'] = """
 helps['datafactory dataset binary create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset binary create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"LinkedServ\
-iceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"String\
-\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryName"\
- --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset binary create --type "AzureBlob" --description "Example description" --linked-ser\
-vice-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"\
-MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" \
---factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset binary update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset binary create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"LinkedServ\
-iceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"String\
-\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryName"\
- --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset binary create --type "AzureBlob" --description "Example description" --linked-ser\
-vice-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"\
-MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" \
---factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset cassandra-table'] = """
@@ -4439,37 +2176,11 @@ helps['datafactory dataset cassandra-table'] = """
 helps['datafactory dataset cassandra-table create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset cassandra-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"L\
-inkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\
-\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFac\
-toryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset cassandra-table create --type "AzureBlob" --description "Example description" --l\
-inked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramet\
-ers "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "example\
-Dataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset cassandra-table update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset cassandra-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"L\
-inkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\
-\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFac\
-toryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset cassandra-table create --type "AzureBlob" --description "Example description" --l\
-inked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramet\
-ers "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "example\
-Dataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset common-data-service-for-apps-entity'] = """
@@ -4480,37 +2191,11 @@ helps['datafactory dataset common-data-service-for-apps-entity'] = """
 helps['datafactory dataset common-data-service-for-apps-entity create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset common-data-service-for-apps-entity create --type "AzureBlob" --linked-service-na\
-me "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileN\
-ame\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --facto\
-ry-name "exampleFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset common-data-service-for-apps-entity create --type "AzureBlob" --description "Exam\
-ple description" --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedSe\
-rvice\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --d\
-ataset-name "exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset common-data-service-for-apps-entity update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset common-data-service-for-apps-entity create --type "AzureBlob" --linked-service-na\
-me "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileN\
-ame\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --facto\
-ry-name "exampleFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset common-data-service-for-apps-entity create --type "AzureBlob" --description "Exam\
-ple description" --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedSe\
-rvice\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --d\
-ataset-name "exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset concur-object'] = """
@@ -4521,129 +2206,77 @@ helps['datafactory dataset concur-object'] = """
 helps['datafactory dataset concur-object create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset concur-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Lin\
-kedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"\
-String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactor\
-yName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset concur-object create --type "AzureBlob" --description "Example description" --lin\
-ked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameter\
-s "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDa\
-taset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset concur-object update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset concur-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Lin\
-kedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"\
-String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactor\
-yName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset concur-object create --type "AzureBlob" --description "Example description" --lin\
-ked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameter\
-s "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDa\
-taset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
-helps['datafactory dataset cosmos-db-mongo-db-api-collection'] = """
+helps['datafactory dataset cosmos-d-b-mongo-d-b-api-collection'] = """
     type: group
-    short-summary: datafactory dataset sub group cosmos-db-mongo-db-api-collection
+    short-summary: datafactory dataset sub group cosmos-d-b-mongo-d-b-api-collection
 """
 
-helps['datafactory dataset cosmos-db-mongo-db-api-collection create'] = """
+helps['datafactory dataset cosmos-d-b-mongo-d-b-api-collection create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset cosmos-db-mongo-db-api-collection create --type "AzureBlob" --linked-service-name\
- "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileNam\
-e\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory\
--name "exampleFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset cosmos-db-mongo-db-api-collection create --type "AzureBlob" --description "Exampl\
-e description" --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ\
-ice\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dat\
-aset-name "exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
-helps['datafactory dataset cosmos-db-mongo-db-api-collection update'] = """
+helps['datafactory dataset cosmos-d-b-mongo-d-b-api-collection update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset cosmos-db-mongo-db-api-collection create --type "AzureBlob" --linked-service-name\
- "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileNam\
-e\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory\
--name "exampleFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset cosmos-db-mongo-db-api-collection create --type "AzureBlob" --description "Exampl\
-e description" --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ\
-ice\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dat\
-aset-name "exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
-helps['datafactory dataset cosmos-db-sql-api-collection'] = """
+helps['datafactory dataset cosmos-d-b-sql-api-collection'] = """
     type: group
-    short-summary: datafactory dataset sub group cosmos-db-sql-api-collection
+    short-summary: datafactory dataset sub group cosmos-d-b-sql-api-collection
 """
 
-helps['datafactory dataset cosmos-db-sql-api-collection create'] = """
+helps['datafactory dataset cosmos-d-b-sql-api-collection create'] = """
     type: command
     short-summary: Creates or updates a dataset.
     examples:
       - name: Datasets_Create
         text: |-
-               az datafactory dataset cosmos-db-sql-api-collection create --properties "{\\"type\\":\\"AzureBlob\\",\\"\
-linkedServiceName\\":{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"},\\"parame\
-ters\\":{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}},\\"typeProperties\\":\
-{\\"format\\":{\\"type\\":\\"TextFormat\\"},\\"fileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFil\
-eName\\"},\\"folderPath\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}" --dataset-name "e\
-xampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
+               az datafactory dataset cosmos-d-b-sql-api-collection create --properties "{\\"type\\":\\"AzureBlob\\",\\\
+"linkedServiceName\\":{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"},\\"param\
+eters\\":{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}},\\"typeProperties\\"\
+:{\\"format\\":{\\"type\\":\\"TextFormat\\"},\\"fileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFi\
+leName\\"},\\"folderPath\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}" --dataset-name "\
+exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
       - name: Datasets_Update
         text: |-
-               az datafactory dataset cosmos-db-sql-api-collection create --properties "{\\"type\\":\\"AzureBlob\\",\\"\
-description\\":\\"Example description\\",\\"linkedServiceName\\":{\\"type\\":\\"LinkedServiceReference\\",\\"referenceN\
-ame\\":\\"exampleLinkedService\\"},\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"\
-type\\":\\"String\\"}},\\"typeProperties\\":{\\"format\\":{\\"type\\":\\"TextFormat\\"},\\"fileName\\":{\\"type\\":\\"E\
-xpression\\",\\"value\\":\\"@dataset().MyFileName\\"},\\"folderPath\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dat\
-aset().MyFolderPath\\"}}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampl\
-eResourceGroup"
+               az datafactory dataset cosmos-d-b-sql-api-collection create --properties "{\\"type\\":\\"AzureBlob\\",\\\
+"description\\":\\"Example description\\",\\"linkedServiceName\\":{\\"type\\":\\"LinkedServiceReference\\",\\"reference\
+Name\\":\\"exampleLinkedService\\"},\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\\
+"type\\":\\"String\\"}},\\"typeProperties\\":{\\"format\\":{\\"type\\":\\"TextFormat\\"},\\"fileName\\":{\\"type\\":\\"\
+Expression\\",\\"value\\":\\"@dataset().MyFileName\\"},\\"folderPath\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@da\
+taset().MyFolderPath\\"}}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryName" --resource-group "examp\
+leResourceGroup"
 """
 
-helps['datafactory dataset cosmos-db-sql-api-collection update'] = """
+helps['datafactory dataset cosmos-d-b-sql-api-collection update'] = """
     type: command
     short-summary: Creates or updates a dataset.
     examples:
       - name: Datasets_Create
         text: |-
-               az datafactory dataset cosmos-db-sql-api-collection create --properties "{\\"type\\":\\"AzureBlob\\",\\"\
-linkedServiceName\\":{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"},\\"parame\
-ters\\":{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}},\\"typeProperties\\":\
-{\\"format\\":{\\"type\\":\\"TextFormat\\"},\\"fileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFil\
-eName\\"},\\"folderPath\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}" --dataset-name "e\
-xampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
+               az datafactory dataset cosmos-d-b-sql-api-collection update --properties "{\\"type\\":\\"AzureBlob\\",\\\
+"linkedServiceName\\":{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"},\\"param\
+eters\\":{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}},\\"typeProperties\\"\
+:{\\"format\\":{\\"type\\":\\"TextFormat\\"},\\"fileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFi\
+leName\\"},\\"folderPath\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}" --dataset-name "\
+exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
       - name: Datasets_Update
         text: |-
-               az datafactory dataset cosmos-db-sql-api-collection create --properties "{\\"type\\":\\"AzureBlob\\",\\"\
-description\\":\\"Example description\\",\\"linkedServiceName\\":{\\"type\\":\\"LinkedServiceReference\\",\\"referenceN\
-ame\\":\\"exampleLinkedService\\"},\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"\
-type\\":\\"String\\"}},\\"typeProperties\\":{\\"format\\":{\\"type\\":\\"TextFormat\\"},\\"fileName\\":{\\"type\\":\\"E\
-xpression\\",\\"value\\":\\"@dataset().MyFileName\\"},\\"folderPath\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dat\
-aset().MyFolderPath\\"}}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampl\
-eResourceGroup"
+               az datafactory dataset cosmos-d-b-sql-api-collection update --properties "{\\"type\\":\\"AzureBlob\\",\\\
+"description\\":\\"Example description\\",\\"linkedServiceName\\":{\\"type\\":\\"LinkedServiceReference\\",\\"reference\
+Name\\":\\"exampleLinkedService\\"},\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\\
+"type\\":\\"String\\"}},\\"typeProperties\\":{\\"format\\":{\\"type\\":\\"TextFormat\\"},\\"fileName\\":{\\"type\\":\\"\
+Expression\\",\\"value\\":\\"@dataset().MyFileName\\"},\\"folderPath\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@da\
+taset().MyFolderPath\\"}}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryName" --resource-group "examp\
+leResourceGroup"
 """
 
 helps['datafactory dataset couchbase-table'] = """
@@ -4654,37 +2287,11 @@ helps['datafactory dataset couchbase-table'] = """
 helps['datafactory dataset couchbase-table create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset couchbase-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"L\
-inkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\
-\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFac\
-toryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset couchbase-table create --type "AzureBlob" --description "Example description" --l\
-inked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramet\
-ers "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "example\
-Dataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset couchbase-table update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset couchbase-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"L\
-inkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\
-\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFac\
-toryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset couchbase-table create --type "AzureBlob" --description "Example description" --l\
-inked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramet\
-ers "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "example\
-Dataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset custom-dataset'] = """
@@ -4695,45 +2302,11 @@ helps['datafactory dataset custom-dataset'] = """
 helps['datafactory dataset custom-dataset create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset custom-dataset create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Li\
-nkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\\
-"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --type-properties "{\\"format\\":{\\"type\\":\\"TextFormat\\\
-"},\\"fileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFileName\\"},\\"folderPath\\":{\\"type\\":\\\
-"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFact\
-oryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset custom-dataset create --type "AzureBlob" --description "Example description" --li\
-nked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramete\
-rs "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --type-properties "{\\"f\
-ormat\\":{\\"type\\":\\"TextFormat\\"},\\"fileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFileName\
-\\"},\\"folderPath\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}" --dataset-name "example\
-Dataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset custom-dataset update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset custom-dataset create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Li\
-nkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\\
-"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --type-properties "{\\"format\\":{\\"type\\":\\"TextFormat\\\
-"},\\"fileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFileName\\"},\\"folderPath\\":{\\"type\\":\\\
-"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFact\
-oryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset custom-dataset create --type "AzureBlob" --description "Example description" --li\
-nked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramete\
-rs "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --type-properties "{\\"f\
-ormat\\":{\\"type\\":\\"TextFormat\\"},\\"fileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFileName\
-\\"},\\"folderPath\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}" --dataset-name "example\
-Dataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset db2-table'] = """
@@ -4744,37 +2317,11 @@ helps['datafactory dataset db2-table'] = """
 helps['datafactory dataset db2-table create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset db2-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"LinkedS\
-erviceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"Stri\
-ng\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryNam\
-e" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset db2-table create --type "AzureBlob" --description "Example description" --linked-\
-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\
-\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDatase\
-t" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset db2-table update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset db2-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"LinkedS\
-erviceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"Stri\
-ng\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryNam\
-e" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset db2-table create --type "AzureBlob" --description "Example description" --linked-\
-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\
-\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDatase\
-t" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset delimited-text'] = """
@@ -4785,78 +2332,26 @@ helps['datafactory dataset delimited-text'] = """
 helps['datafactory dataset delimited-text create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset delimited-text create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Li\
-nkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\\
-"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFacto\
-ryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset delimited-text create --type "AzureBlob" --description "Example description" --li\
-nked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramete\
-rs "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleD\
-ataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset delimited-text update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset delimited-text create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Li\
-nkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\\
-"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFacto\
-ryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset delimited-text create --type "AzureBlob" --description "Example description" --li\
-nked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramete\
-rs "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleD\
-ataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
-helps['datafactory dataset document-db-collection'] = """
+helps['datafactory dataset document-d-b-collection'] = """
     type: group
-    short-summary: datafactory dataset sub group document-db-collection
+    short-summary: datafactory dataset sub group document-d-b-collection
 """
 
-helps['datafactory dataset document-db-collection create'] = """
+helps['datafactory dataset document-d-b-collection create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset document-db-collection create --type "AzureBlob" --linked-service-name "{\\"type\
-\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"t\
-ype\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exa\
-mpleFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset document-db-collection create --type "AzureBlob" --description "Example descripti\
-on" --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --\
-parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "\
-exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
-helps['datafactory dataset document-db-collection update'] = """
+helps['datafactory dataset document-d-b-collection update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset document-db-collection create --type "AzureBlob" --linked-service-name "{\\"type\
-\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"t\
-ype\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exa\
-mpleFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset document-db-collection create --type "AzureBlob" --description "Example descripti\
-on" --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --\
-parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "\
-exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset drill-table'] = """
@@ -4867,78 +2362,26 @@ helps['datafactory dataset drill-table'] = """
 helps['datafactory dataset drill-table create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset drill-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Linke\
-dServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"St\
-ring\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryN\
-ame" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset drill-table create --type "AzureBlob" --description "Example description" --linke\
-d-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters \
-"{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleData\
-set" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset drill-table update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset drill-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Linke\
-dServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"St\
-ring\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryN\
-ame" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset drill-table create --type "AzureBlob" --description "Example description" --linke\
-d-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters \
-"{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleData\
-set" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
-helps['datafactory dataset dynamics-a-x-resource'] = """
+helps['datafactory dataset dynamics-ax-resource'] = """
     type: group
-    short-summary: datafactory dataset sub group dynamics-a-x-resource
+    short-summary: datafactory dataset sub group dynamics-ax-resource
 """
 
-helps['datafactory dataset dynamics-a-x-resource create'] = """
+helps['datafactory dataset dynamics-ax-resource create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset dynamics-a-x-resource create --type "AzureBlob" --linked-service-name "{\\"type\\\
-":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"typ\
-e\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "examp\
-leFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset dynamics-a-x-resource create --type "AzureBlob" --description "Example descriptio\
-n" --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --p\
-arameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "e\
-xampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
-helps['datafactory dataset dynamics-a-x-resource update'] = """
+helps['datafactory dataset dynamics-ax-resource update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset dynamics-a-x-resource create --type "AzureBlob" --linked-service-name "{\\"type\\\
-":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"typ\
-e\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "examp\
-leFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset dynamics-a-x-resource create --type "AzureBlob" --description "Example descriptio\
-n" --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --p\
-arameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "e\
-xampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset dynamics-crm-entity'] = """
@@ -4949,37 +2392,11 @@ helps['datafactory dataset dynamics-crm-entity'] = """
 helps['datafactory dataset dynamics-crm-entity create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset dynamics-crm-entity create --type "AzureBlob" --linked-service-name "{\\"type\\":\
-\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\
-\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampl\
-eFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset dynamics-crm-entity create --type "AzureBlob" --description "Example description"\
- --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --par\
-ameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exa\
-mpleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset dynamics-crm-entity update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset dynamics-crm-entity create --type "AzureBlob" --linked-service-name "{\\"type\\":\
-\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\
-\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampl\
-eFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset dynamics-crm-entity create --type "AzureBlob" --description "Example description"\
- --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --par\
-ameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exa\
-mpleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset dynamics-entity'] = """
@@ -4990,37 +2407,11 @@ helps['datafactory dataset dynamics-entity'] = """
 helps['datafactory dataset dynamics-entity create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset dynamics-entity create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"L\
-inkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\
-\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFac\
-toryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset dynamics-entity create --type "AzureBlob" --description "Example description" --l\
-inked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramet\
-ers "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "example\
-Dataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset dynamics-entity update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset dynamics-entity create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"L\
-inkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\
-\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFac\
-toryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset dynamics-entity create --type "AzureBlob" --description "Example description" --l\
-inked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramet\
-ers "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "example\
-Dataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset eloqua-object'] = """
@@ -5031,37 +2422,11 @@ helps['datafactory dataset eloqua-object'] = """
 helps['datafactory dataset eloqua-object create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset eloqua-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Lin\
-kedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"\
-String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactor\
-yName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset eloqua-object create --type "AzureBlob" --description "Example description" --lin\
-ked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameter\
-s "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDa\
-taset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset eloqua-object update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset eloqua-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Lin\
-kedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"\
-String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactor\
-yName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset eloqua-object create --type "AzureBlob" --description "Example description" --lin\
-ked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameter\
-s "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDa\
-taset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset file-share'] = """
@@ -5072,37 +2437,11 @@ helps['datafactory dataset file-share'] = """
 helps['datafactory dataset file-share create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset file-share create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Linked\
-ServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"Str\
-ing\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryNa\
-me" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset file-share create --type "AzureBlob" --description "Example description" --linked\
--service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "\
-{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDatas\
-et" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset file-share update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset file-share create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Linked\
-ServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"Str\
-ing\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryNa\
-me" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset file-share create --type "AzureBlob" --description "Example description" --linked\
--service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "\
-{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDatas\
-et" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset google-ad-words-object'] = """
@@ -5113,37 +2452,11 @@ helps['datafactory dataset google-ad-words-object'] = """
 helps['datafactory dataset google-ad-words-object create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset google-ad-words-object create --type "AzureBlob" --linked-service-name "{\\"type\
-\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"t\
-ype\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exa\
-mpleFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset google-ad-words-object create --type "AzureBlob" --description "Example descripti\
-on" --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --\
-parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "\
-exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset google-ad-words-object update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset google-ad-words-object create --type "AzureBlob" --linked-service-name "{\\"type\
-\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"t\
-ype\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exa\
-mpleFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset google-ad-words-object create --type "AzureBlob" --description "Example descripti\
-on" --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --\
-parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "\
-exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset google-big-query-object'] = """
@@ -5180,7 +2493,7 @@ helps['datafactory dataset google-big-query-object update'] = """
     examples:
       - name: Datasets_Create
         text: |-
-               az datafactory dataset google-big-query-object create --type-properties-dataset "{\\"properties\\":{\\"t\
+               az datafactory dataset google-big-query-object update --type-properties-dataset "{\\"properties\\":{\\"t\
 ype\\":\\"AzureBlob\\",\\"linkedServiceName\\":{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleL\
 inkedService\\"},\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\
 \\"}},\\"typeProperties\\":{\\"format\\":{\\"type\\":\\"TextFormat\\"},\\"fileName\\":{\\"type\\":\\"Expression\\",\\"v\
@@ -5188,7 +2501,7 @@ alue\\":\\"@dataset().MyFileName\\"},\\"folderPath\\":{\\"type\\":\\"Expression\
 th\\"}}}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
       - name: Datasets_Update
         text: |-
-               az datafactory dataset google-big-query-object create --type-properties-dataset "{\\"properties\\":{\\"t\
+               az datafactory dataset google-big-query-object update --type-properties-dataset "{\\"properties\\":{\\"t\
 ype\\":\\"AzureBlob\\",\\"description\\":\\"Example description\\",\\"linkedServiceName\\":{\\"type\\":\\"LinkedService\
 Reference\\",\\"referenceName\\":\\"exampleLinkedService\\"},\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\"String\\\
 "},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}},\\"typeProperties\\":{\\"format\\":{\\"type\\":\\"TextFormat\\"},\\"fi\
@@ -5205,37 +2518,11 @@ helps['datafactory dataset greenplum-table'] = """
 helps['datafactory dataset greenplum-table create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset greenplum-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"L\
-inkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\
-\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFac\
-toryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset greenplum-table create --type "AzureBlob" --description "Example description" --l\
-inked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramet\
-ers "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "example\
-Dataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset greenplum-table update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset greenplum-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"L\
-inkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\
-\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFac\
-toryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset greenplum-table create --type "AzureBlob" --description "Example description" --l\
-inked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramet\
-ers "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "example\
-Dataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset h-base-object'] = """
@@ -5246,37 +2533,11 @@ helps['datafactory dataset h-base-object'] = """
 helps['datafactory dataset h-base-object create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset h-base-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Lin\
-kedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"\
-String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactor\
-yName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset h-base-object create --type "AzureBlob" --description "Example description" --lin\
-ked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameter\
-s "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDa\
-taset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset h-base-object update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset h-base-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Lin\
-kedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"\
-String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactor\
-yName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset h-base-object create --type "AzureBlob" --description "Example description" --lin\
-ked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameter\
-s "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDa\
-taset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset hive-object'] = """
@@ -5287,37 +2548,11 @@ helps['datafactory dataset hive-object'] = """
 helps['datafactory dataset hive-object create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset hive-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Linke\
-dServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"St\
-ring\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryN\
-ame" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset hive-object create --type "AzureBlob" --description "Example description" --linke\
-d-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters \
-"{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleData\
-set" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset hive-object update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset hive-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Linke\
-dServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"St\
-ring\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryN\
-ame" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset hive-object create --type "AzureBlob" --description "Example description" --linke\
-d-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters \
-"{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleData\
-set" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset http-file'] = """
@@ -5328,37 +2563,11 @@ helps['datafactory dataset http-file'] = """
 helps['datafactory dataset http-file create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset http-file create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"LinkedS\
-erviceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"Stri\
-ng\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryNam\
-e" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset http-file create --type "AzureBlob" --description "Example description" --linked-\
-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\
-\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDatase\
-t" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset http-file update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset http-file create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"LinkedS\
-erviceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"Stri\
-ng\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryNam\
-e" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset http-file create --type "AzureBlob" --description "Example description" --linked-\
-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\
-\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDatase\
-t" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset hubspot-object'] = """
@@ -5369,37 +2578,11 @@ helps['datafactory dataset hubspot-object'] = """
 helps['datafactory dataset hubspot-object create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset hubspot-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Li\
-nkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\\
-"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFacto\
-ryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset hubspot-object create --type "AzureBlob" --description "Example description" --li\
-nked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramete\
-rs "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleD\
-ataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset hubspot-object update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset hubspot-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Li\
-nkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\\
-"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFacto\
-ryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset hubspot-object create --type "AzureBlob" --description "Example description" --li\
-nked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramete\
-rs "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleD\
-ataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset impala-object'] = """
@@ -5410,37 +2593,11 @@ helps['datafactory dataset impala-object'] = """
 helps['datafactory dataset impala-object create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset impala-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Lin\
-kedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"\
-String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactor\
-yName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset impala-object create --type "AzureBlob" --description "Example description" --lin\
-ked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameter\
-s "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDa\
-taset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset impala-object update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset impala-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Lin\
-kedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"\
-String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactor\
-yName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset impala-object create --type "AzureBlob" --description "Example description" --lin\
-ked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameter\
-s "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDa\
-taset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset informix-table'] = """
@@ -5451,37 +2608,11 @@ helps['datafactory dataset informix-table'] = """
 helps['datafactory dataset informix-table create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset informix-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Li\
-nkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\\
-"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFacto\
-ryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset informix-table create --type "AzureBlob" --description "Example description" --li\
-nked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramete\
-rs "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleD\
-ataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset informix-table update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset informix-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Li\
-nkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\\
-"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFacto\
-ryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset informix-table create --type "AzureBlob" --description "Example description" --li\
-nked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramete\
-rs "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleD\
-ataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset jira-object'] = """
@@ -5492,37 +2623,11 @@ helps['datafactory dataset jira-object'] = """
 helps['datafactory dataset jira-object create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset jira-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Linke\
-dServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"St\
-ring\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryN\
-ame" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset jira-object create --type "AzureBlob" --description "Example description" --linke\
-d-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters \
-"{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleData\
-set" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset jira-object update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset jira-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Linke\
-dServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"St\
-ring\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryN\
-ame" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset jira-object create --type "AzureBlob" --description "Example description" --linke\
-d-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters \
-"{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleData\
-set" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset json'] = """
@@ -5533,37 +2638,11 @@ helps['datafactory dataset json'] = """
 helps['datafactory dataset json create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset json create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"LinkedServic\
-eReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"\
-},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryName" --\
-resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset json create --type "AzureBlob" --description "Example description" --linked-servi\
-ce-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"My\
-FileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --\
-factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset json update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset json create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"LinkedServic\
-eReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"\
-},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryName" --\
-resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset json create --type "AzureBlob" --description "Example description" --linked-servi\
-ce-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"My\
-FileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --\
-factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset magento-object'] = """
@@ -5574,37 +2653,11 @@ helps['datafactory dataset magento-object'] = """
 helps['datafactory dataset magento-object create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset magento-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Li\
-nkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\\
-"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFacto\
-ryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset magento-object create --type "AzureBlob" --description "Example description" --li\
-nked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramete\
-rs "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleD\
-ataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset magento-object update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset magento-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Li\
-nkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\\
-"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFacto\
-ryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset magento-object create --type "AzureBlob" --description "Example description" --li\
-nked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramete\
-rs "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleD\
-ataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset maria-d-b-table'] = """
@@ -5615,37 +2668,11 @@ helps['datafactory dataset maria-d-b-table'] = """
 helps['datafactory dataset maria-d-b-table create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset maria-d-b-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"L\
-inkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\
-\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFac\
-toryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset maria-d-b-table create --type "AzureBlob" --description "Example description" --l\
-inked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramet\
-ers "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "example\
-Dataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset maria-d-b-table update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset maria-d-b-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"L\
-inkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\
-\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFac\
-toryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset maria-d-b-table create --type "AzureBlob" --description "Example description" --l\
-inked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramet\
-ers "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "example\
-Dataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset marketo-object'] = """
@@ -5656,37 +2683,11 @@ helps['datafactory dataset marketo-object'] = """
 helps['datafactory dataset marketo-object create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset marketo-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Li\
-nkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\\
-"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFacto\
-ryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset marketo-object create --type "AzureBlob" --description "Example description" --li\
-nked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramete\
-rs "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleD\
-ataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset marketo-object update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset marketo-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Li\
-nkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\\
-"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFacto\
-ryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset marketo-object create --type "AzureBlob" --description "Example description" --li\
-nked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramete\
-rs "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleD\
-ataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset microsoft-access-table'] = """
@@ -5697,119 +2698,41 @@ helps['datafactory dataset microsoft-access-table'] = """
 helps['datafactory dataset microsoft-access-table create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset microsoft-access-table create --type "AzureBlob" --linked-service-name "{\\"type\
-\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"t\
-ype\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exa\
-mpleFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset microsoft-access-table create --type "AzureBlob" --description "Example descripti\
-on" --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --\
-parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "\
-exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset microsoft-access-table update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset microsoft-access-table create --type "AzureBlob" --linked-service-name "{\\"type\
-\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"t\
-ype\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exa\
-mpleFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset microsoft-access-table create --type "AzureBlob" --description "Example descripti\
-on" --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --\
-parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "\
-exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
-helps['datafactory dataset mongo-db-collection'] = """
+helps['datafactory dataset mongo-d-b-collection'] = """
     type: group
-    short-summary: datafactory dataset sub group mongo-db-collection
+    short-summary: datafactory dataset sub group mongo-d-b-collection
 """
 
-helps['datafactory dataset mongo-db-collection create'] = """
+helps['datafactory dataset mongo-d-b-collection create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset mongo-db-collection create --type "AzureBlob" --linked-service-name "{\\"type\\":\
-\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\
-\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampl\
-eFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset mongo-db-collection create --type "AzureBlob" --description "Example description"\
- --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --par\
-ameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exa\
-mpleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
-helps['datafactory dataset mongo-db-collection update'] = """
+helps['datafactory dataset mongo-d-b-collection update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset mongo-db-collection create --type "AzureBlob" --linked-service-name "{\\"type\\":\
-\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\
-\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampl\
-eFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset mongo-db-collection create --type "AzureBlob" --description "Example description"\
- --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --par\
-ameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exa\
-mpleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
-helps['datafactory dataset mongo-db-v2-collection'] = """
+helps['datafactory dataset mongo-d-b-v2-collection'] = """
     type: group
-    short-summary: datafactory dataset sub group mongo-db-v2-collection
+    short-summary: datafactory dataset sub group mongo-d-b-v2-collection
 """
 
-helps['datafactory dataset mongo-db-v2-collection create'] = """
+helps['datafactory dataset mongo-d-b-v2-collection create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset mongo-db-v2-collection create --type "AzureBlob" --linked-service-name "{\\"type\
-\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"t\
-ype\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exa\
-mpleFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset mongo-db-v2-collection create --type "AzureBlob" --description "Example descripti\
-on" --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --\
-parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "\
-exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
-helps['datafactory dataset mongo-db-v2-collection update'] = """
+helps['datafactory dataset mongo-d-b-v2-collection update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset mongo-db-v2-collection create --type "AzureBlob" --linked-service-name "{\\"type\
-\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"t\
-ype\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exa\
-mpleFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset mongo-db-v2-collection create --type "AzureBlob" --description "Example descripti\
-on" --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --\
-parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "\
-exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset my-sql-table'] = """
@@ -5820,37 +2743,11 @@ helps['datafactory dataset my-sql-table'] = """
 helps['datafactory dataset my-sql-table create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset my-sql-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Link\
-edServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"S\
-tring\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactory\
-Name" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset my-sql-table create --type "AzureBlob" --description "Example description" --link\
-ed-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters\
- "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDat\
-aset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset my-sql-table update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset my-sql-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Link\
-edServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"S\
-tring\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactory\
-Name" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset my-sql-table create --type "AzureBlob" --description "Example description" --link\
-ed-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters\
- "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDat\
-aset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset netezza-table'] = """
@@ -5861,37 +2758,11 @@ helps['datafactory dataset netezza-table'] = """
 helps['datafactory dataset netezza-table create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset netezza-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Lin\
-kedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"\
-String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactor\
-yName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset netezza-table create --type "AzureBlob" --description "Example description" --lin\
-ked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameter\
-s "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDa\
-taset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset netezza-table update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset netezza-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Lin\
-kedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"\
-String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactor\
-yName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset netezza-table create --type "AzureBlob" --description "Example description" --lin\
-ked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameter\
-s "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDa\
-taset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset o-data-resource'] = """
@@ -5902,37 +2773,11 @@ helps['datafactory dataset o-data-resource'] = """
 helps['datafactory dataset o-data-resource create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset o-data-resource create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"L\
-inkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\
-\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFac\
-toryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset o-data-resource create --type "AzureBlob" --description "Example description" --l\
-inked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramet\
-ers "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "example\
-Dataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset o-data-resource update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset o-data-resource create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"L\
-inkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\
-\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFac\
-toryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset o-data-resource create --type "AzureBlob" --description "Example description" --l\
-inked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramet\
-ers "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "example\
-Dataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset odbc-table'] = """
@@ -5943,37 +2788,11 @@ helps['datafactory dataset odbc-table'] = """
 helps['datafactory dataset odbc-table create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset odbc-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Linked\
-ServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"Str\
-ing\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryNa\
-me" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset odbc-table create --type "AzureBlob" --description "Example description" --linked\
--service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "\
-{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDatas\
-et" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset odbc-table update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset odbc-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Linked\
-ServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"Str\
-ing\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryNa\
-me" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset odbc-table create --type "AzureBlob" --description "Example description" --linked\
--service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "\
-{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDatas\
-et" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset office365-table'] = """
@@ -5984,37 +2803,11 @@ helps['datafactory dataset office365-table'] = """
 helps['datafactory dataset office365-table create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset office365-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"L\
-inkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\
-\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFac\
-toryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset office365-table create --type "AzureBlob" --description "Example description" --l\
-inked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramet\
-ers "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "example\
-Dataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset office365-table update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset office365-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"L\
-inkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\
-\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFac\
-toryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset office365-table create --type "AzureBlob" --description "Example description" --l\
-inked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramet\
-ers "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "example\
-Dataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset oracle-service-cloud-object'] = """
@@ -6025,37 +2818,11 @@ helps['datafactory dataset oracle-service-cloud-object'] = """
 helps['datafactory dataset oracle-service-cloud-object create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset oracle-service-cloud-object create --type "AzureBlob" --linked-service-name "{\\"\
-type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\
-\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name \
-"exampleFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset oracle-service-cloud-object create --type "AzureBlob" --description "Example desc\
-ription" --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"\
-}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-n\
-ame "exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset oracle-service-cloud-object update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset oracle-service-cloud-object create --type "AzureBlob" --linked-service-name "{\\"\
-type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\
-\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name \
-"exampleFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset oracle-service-cloud-object create --type "AzureBlob" --description "Example desc\
-ription" --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"\
-}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-n\
-ame "exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset oracle-table'] = """
@@ -6066,37 +2833,11 @@ helps['datafactory dataset oracle-table'] = """
 helps['datafactory dataset oracle-table create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset oracle-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Link\
-edServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"S\
-tring\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactory\
-Name" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset oracle-table create --type "AzureBlob" --description "Example description" --link\
-ed-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters\
- "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDat\
-aset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset oracle-table update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset oracle-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Link\
-edServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"S\
-tring\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactory\
-Name" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset oracle-table create --type "AzureBlob" --description "Example description" --link\
-ed-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters\
- "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDat\
-aset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset orc'] = """
@@ -6107,37 +2848,11 @@ helps['datafactory dataset orc'] = """
 helps['datafactory dataset orc create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset orc create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"LinkedService\
-Reference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"}\
-,\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryName" --r\
-esource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset orc create --type "AzureBlob" --description "Example description" --linked-servic\
-e-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyF\
-ileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --f\
-actory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset orc update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset orc create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"LinkedService\
-Reference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"}\
-,\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryName" --r\
-esource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset orc create --type "AzureBlob" --description "Example description" --linked-servic\
-e-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyF\
-ileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --f\
-actory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset parquet'] = """
@@ -6148,37 +2863,11 @@ helps['datafactory dataset parquet'] = """
 helps['datafactory dataset parquet create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset parquet create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"LinkedSer\
-viceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"String\
-\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryName"\
- --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset parquet create --type "AzureBlob" --description "Example description" --linked-se\
-rvice-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\\
-"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset"\
- --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset parquet update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset parquet create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"LinkedSer\
-viceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"String\
-\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryName"\
- --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset parquet create --type "AzureBlob" --description "Example description" --linked-se\
-rvice-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\\
-"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset"\
- --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset paypal-object'] = """
@@ -6189,37 +2878,11 @@ helps['datafactory dataset paypal-object'] = """
 helps['datafactory dataset paypal-object create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset paypal-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Lin\
-kedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"\
-String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactor\
-yName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset paypal-object create --type "AzureBlob" --description "Example description" --lin\
-ked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameter\
-s "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDa\
-taset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset paypal-object update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset paypal-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Lin\
-kedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"\
-String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactor\
-yName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset paypal-object create --type "AzureBlob" --description "Example description" --lin\
-ked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameter\
-s "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDa\
-taset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset phoenix-object'] = """
@@ -6230,37 +2893,11 @@ helps['datafactory dataset phoenix-object'] = """
 helps['datafactory dataset phoenix-object create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset phoenix-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Li\
-nkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\\
-"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFacto\
-ryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset phoenix-object create --type "AzureBlob" --description "Example description" --li\
-nked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramete\
-rs "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleD\
-ataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset phoenix-object update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset phoenix-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Li\
-nkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\\
-"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFacto\
-ryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset phoenix-object create --type "AzureBlob" --description "Example description" --li\
-nked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramete\
-rs "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleD\
-ataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset postgre-sql-table'] = """
@@ -6271,37 +2908,11 @@ helps['datafactory dataset postgre-sql-table'] = """
 helps['datafactory dataset postgre-sql-table create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset postgre-sql-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\\
-"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\"\
-:\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFa\
-ctoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset postgre-sql-table create --type "AzureBlob" --description "Example description" -\
--linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --param\
-eters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "examp\
-leDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset postgre-sql-table update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset postgre-sql-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\\
-"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\"\
-:\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFa\
-ctoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset postgre-sql-table create --type "AzureBlob" --description "Example description" -\
--linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --param\
-eters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "examp\
-leDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset presto-object'] = """
@@ -6312,37 +2923,11 @@ helps['datafactory dataset presto-object'] = """
 helps['datafactory dataset presto-object create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset presto-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Lin\
-kedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"\
-String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactor\
-yName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset presto-object create --type "AzureBlob" --description "Example description" --lin\
-ked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameter\
-s "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDa\
-taset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset presto-object update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset presto-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Lin\
-kedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"\
-String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactor\
-yName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset presto-object create --type "AzureBlob" --description "Example description" --lin\
-ked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameter\
-s "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDa\
-taset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset quick-books-object'] = """
@@ -6353,37 +2938,11 @@ helps['datafactory dataset quick-books-object'] = """
 helps['datafactory dataset quick-books-object create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset quick-books-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\
-\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\
-\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampl\
-eFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset quick-books-object create --type "AzureBlob" --description "Example description" \
---linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --para\
-meters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exam\
-pleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset quick-books-object update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset quick-books-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\
-\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\
-\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampl\
-eFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset quick-books-object create --type "AzureBlob" --description "Example description" \
---linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --para\
-meters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exam\
-pleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset relational-table'] = """
@@ -6394,37 +2953,11 @@ helps['datafactory dataset relational-table'] = """
 helps['datafactory dataset relational-table create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset relational-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"\
-LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\
-\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFac\
-toryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset relational-table create --type "AzureBlob" --description "Example description" --\
-linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parame\
-ters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampl\
-eDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset relational-table update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset relational-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"\
-LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\
-\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFac\
-toryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset relational-table create --type "AzureBlob" --description "Example description" --\
-linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parame\
-ters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampl\
-eDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset responsys-object'] = """
@@ -6435,37 +2968,11 @@ helps['datafactory dataset responsys-object'] = """
 helps['datafactory dataset responsys-object create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset responsys-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"\
-LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\
-\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFac\
-toryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset responsys-object create --type "AzureBlob" --description "Example description" --\
-linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parame\
-ters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampl\
-eDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset responsys-object update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset responsys-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"\
-LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\
-\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFac\
-toryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset responsys-object create --type "AzureBlob" --description "Example description" --\
-linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parame\
-ters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampl\
-eDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset rest-resource'] = """
@@ -6476,37 +2983,11 @@ helps['datafactory dataset rest-resource'] = """
 helps['datafactory dataset rest-resource create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset rest-resource create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Lin\
-kedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"\
-String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactor\
-yName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset rest-resource create --type "AzureBlob" --description "Example description" --lin\
-ked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameter\
-s "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDa\
-taset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset rest-resource update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset rest-resource create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Lin\
-kedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"\
-String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactor\
-yName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset rest-resource create --type "AzureBlob" --description "Example description" --lin\
-ked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameter\
-s "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDa\
-taset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset salesforce-marketing-cloud-object'] = """
@@ -6517,37 +2998,11 @@ helps['datafactory dataset salesforce-marketing-cloud-object'] = """
 helps['datafactory dataset salesforce-marketing-cloud-object create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset salesforce-marketing-cloud-object create --type "AzureBlob" --linked-service-name\
- "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileNam\
-e\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory\
--name "exampleFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset salesforce-marketing-cloud-object create --type "AzureBlob" --description "Exampl\
-e description" --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ\
-ice\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dat\
-aset-name "exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset salesforce-marketing-cloud-object update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset salesforce-marketing-cloud-object create --type "AzureBlob" --linked-service-name\
- "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileNam\
-e\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory\
--name "exampleFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset salesforce-marketing-cloud-object create --type "AzureBlob" --description "Exampl\
-e description" --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ\
-ice\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dat\
-aset-name "exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset salesforce-object'] = """
@@ -6558,37 +3013,11 @@ helps['datafactory dataset salesforce-object'] = """
 helps['datafactory dataset salesforce-object create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset salesforce-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\\
-"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\"\
-:\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFa\
-ctoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset salesforce-object create --type "AzureBlob" --description "Example description" -\
--linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --param\
-eters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "examp\
-leDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset salesforce-object update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset salesforce-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\\
-"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\"\
-:\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFa\
-ctoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset salesforce-object create --type "AzureBlob" --description "Example description" -\
--linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --param\
-eters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "examp\
-leDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset salesforce-service-cloud-object'] = """
@@ -6599,37 +3028,11 @@ helps['datafactory dataset salesforce-service-cloud-object'] = """
 helps['datafactory dataset salesforce-service-cloud-object create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset salesforce-service-cloud-object create --type "AzureBlob" --linked-service-name "\
-{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\
-\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-\
-name "exampleFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset salesforce-service-cloud-object create --type "AzureBlob" --description "Example \
-description" --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServic\
-e\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --datas\
-et-name "exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset salesforce-service-cloud-object update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset salesforce-service-cloud-object create --type "AzureBlob" --linked-service-name "\
-{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\
-\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-\
-name "exampleFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset salesforce-service-cloud-object create --type "AzureBlob" --description "Example \
-description" --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServic\
-e\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --datas\
-et-name "exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset sap-bw-cube'] = """
@@ -6640,37 +3043,11 @@ helps['datafactory dataset sap-bw-cube'] = """
 helps['datafactory dataset sap-bw-cube create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset sap-bw-cube create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Linke\
-dServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"St\
-ring\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryN\
-ame" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset sap-bw-cube create --type "AzureBlob" --description "Example description" --linke\
-d-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters \
-"{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleData\
-set" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset sap-bw-cube update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset sap-bw-cube create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Linke\
-dServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"St\
-ring\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryN\
-ame" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset sap-bw-cube create --type "AzureBlob" --description "Example description" --linke\
-d-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters \
-"{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleData\
-set" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset sap-cloud-for-customer-resource'] = """
@@ -6681,37 +3058,11 @@ helps['datafactory dataset sap-cloud-for-customer-resource'] = """
 helps['datafactory dataset sap-cloud-for-customer-resource create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset sap-cloud-for-customer-resource create --type "AzureBlob" --linked-service-name "\
-{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\
-\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-\
-name "exampleFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset sap-cloud-for-customer-resource create --type "AzureBlob" --description "Example \
-description" --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServic\
-e\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --datas\
-et-name "exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset sap-cloud-for-customer-resource update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset sap-cloud-for-customer-resource create --type "AzureBlob" --linked-service-name "\
-{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\
-\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-\
-name "exampleFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset sap-cloud-for-customer-resource create --type "AzureBlob" --description "Example \
-description" --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServic\
-e\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --datas\
-et-name "exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset sap-ecc-resource'] = """
@@ -6722,37 +3073,11 @@ helps['datafactory dataset sap-ecc-resource'] = """
 helps['datafactory dataset sap-ecc-resource create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset sap-ecc-resource create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"\
-LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\
-\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFac\
-toryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset sap-ecc-resource create --type "AzureBlob" --description "Example description" --\
-linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parame\
-ters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampl\
-eDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset sap-ecc-resource update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset sap-ecc-resource create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"\
-LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\
-\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFac\
-toryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset sap-ecc-resource create --type "AzureBlob" --description "Example description" --\
-linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parame\
-ters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampl\
-eDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset sap-hana-table'] = """
@@ -6763,37 +3088,11 @@ helps['datafactory dataset sap-hana-table'] = """
 helps['datafactory dataset sap-hana-table create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset sap-hana-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Li\
-nkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\\
-"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFacto\
-ryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset sap-hana-table create --type "AzureBlob" --description "Example description" --li\
-nked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramete\
-rs "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleD\
-ataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset sap-hana-table update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset sap-hana-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Li\
-nkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\\
-"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFacto\
-ryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset sap-hana-table create --type "AzureBlob" --description "Example description" --li\
-nked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramete\
-rs "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleD\
-ataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset sap-open-hub-table'] = """
@@ -6804,37 +3103,11 @@ helps['datafactory dataset sap-open-hub-table'] = """
 helps['datafactory dataset sap-open-hub-table create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset sap-open-hub-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\
-\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\
-\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampl\
-eFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset sap-open-hub-table create --type "AzureBlob" --description "Example description" \
---linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --para\
-meters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exam\
-pleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset sap-open-hub-table update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset sap-open-hub-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\
-\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\
-\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampl\
-eFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset sap-open-hub-table create --type "AzureBlob" --description "Example description" \
---linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --para\
-meters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exam\
-pleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset sap-table-resource'] = """
@@ -6845,37 +3118,11 @@ helps['datafactory dataset sap-table-resource'] = """
 helps['datafactory dataset sap-table-resource create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset sap-table-resource create --type "AzureBlob" --linked-service-name "{\\"type\\":\
-\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\
-\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampl\
-eFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset sap-table-resource create --type "AzureBlob" --description "Example description" \
---linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --para\
-meters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exam\
-pleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset sap-table-resource update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset sap-table-resource create --type "AzureBlob" --linked-service-name "{\\"type\\":\
-\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\
-\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampl\
-eFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset sap-table-resource create --type "AzureBlob" --description "Example description" \
---linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --para\
-meters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exam\
-pleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset service-now-object'] = """
@@ -6886,37 +3133,11 @@ helps['datafactory dataset service-now-object'] = """
 helps['datafactory dataset service-now-object create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset service-now-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\
-\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\
-\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampl\
-eFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset service-now-object create --type "AzureBlob" --description "Example description" \
---linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --para\
-meters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exam\
-pleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset service-now-object update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset service-now-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\
-\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\
-\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampl\
-eFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset service-now-object create --type "AzureBlob" --description "Example description" \
---linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --para\
-meters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exam\
-pleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset shopify-object'] = """
@@ -6927,37 +3148,11 @@ helps['datafactory dataset shopify-object'] = """
 helps['datafactory dataset shopify-object create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset shopify-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Li\
-nkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\\
-"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFacto\
-ryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset shopify-object create --type "AzureBlob" --description "Example description" --li\
-nked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramete\
-rs "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleD\
-ataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset shopify-object update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset shopify-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Li\
-nkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\\
-"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFacto\
-ryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset shopify-object create --type "AzureBlob" --description "Example description" --li\
-nked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramete\
-rs "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleD\
-ataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset snowflake-table'] = """
@@ -6968,37 +3163,11 @@ helps['datafactory dataset snowflake-table'] = """
 helps['datafactory dataset snowflake-table create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset snowflake-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"L\
-inkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\
-\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFac\
-toryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset snowflake-table create --type "AzureBlob" --description "Example description" --l\
-inked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramet\
-ers "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "example\
-Dataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset snowflake-table update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset snowflake-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"L\
-inkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\
-\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFac\
-toryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset snowflake-table create --type "AzureBlob" --description "Example description" --l\
-inked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramet\
-ers "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "example\
-Dataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset spark-object'] = """
@@ -7009,37 +3178,11 @@ helps['datafactory dataset spark-object'] = """
 helps['datafactory dataset spark-object create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset spark-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Link\
-edServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"S\
-tring\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactory\
-Name" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset spark-object create --type "AzureBlob" --description "Example description" --link\
-ed-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters\
- "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDat\
-aset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset spark-object update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset spark-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Link\
-edServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"S\
-tring\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactory\
-Name" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset spark-object create --type "AzureBlob" --description "Example description" --link\
-ed-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters\
- "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDat\
-aset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset sql-server-table'] = """
@@ -7050,37 +3193,11 @@ helps['datafactory dataset sql-server-table'] = """
 helps['datafactory dataset sql-server-table create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset sql-server-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"\
-LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\
-\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFac\
-toryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset sql-server-table create --type "AzureBlob" --description "Example description" --\
-linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parame\
-ters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampl\
-eDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset sql-server-table update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset sql-server-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"\
-LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\
-\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFac\
-toryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset sql-server-table create --type "AzureBlob" --description "Example description" --\
-linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parame\
-ters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampl\
-eDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset square-object'] = """
@@ -7091,37 +3208,11 @@ helps['datafactory dataset square-object'] = """
 helps['datafactory dataset square-object create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset square-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Lin\
-kedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"\
-String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactor\
-yName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset square-object create --type "AzureBlob" --description "Example description" --lin\
-ked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameter\
-s "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDa\
-taset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset square-object update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset square-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Lin\
-kedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"\
-String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactor\
-yName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset square-object create --type "AzureBlob" --description "Example description" --lin\
-ked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameter\
-s "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDa\
-taset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset sybase-table'] = """
@@ -7132,37 +3223,11 @@ helps['datafactory dataset sybase-table'] = """
 helps['datafactory dataset sybase-table create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset sybase-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Link\
-edServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"S\
-tring\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactory\
-Name" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset sybase-table create --type "AzureBlob" --description "Example description" --link\
-ed-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters\
- "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDat\
-aset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset sybase-table update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset sybase-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Link\
-edServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"S\
-tring\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactory\
-Name" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset sybase-table create --type "AzureBlob" --description "Example description" --link\
-ed-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters\
- "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDat\
-aset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset teradata-table'] = """
@@ -7173,37 +3238,11 @@ helps['datafactory dataset teradata-table'] = """
 helps['datafactory dataset teradata-table create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset teradata-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Li\
-nkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\\
-"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFacto\
-ryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset teradata-table create --type "AzureBlob" --description "Example description" --li\
-nked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramete\
-rs "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleD\
-ataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset teradata-table update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset teradata-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Li\
-nkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\\
-"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFacto\
-ryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset teradata-table create --type "AzureBlob" --description "Example description" --li\
-nked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --paramete\
-rs "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleD\
-ataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset vertica-table'] = """
@@ -7214,37 +3253,11 @@ helps['datafactory dataset vertica-table'] = """
 helps['datafactory dataset vertica-table create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset vertica-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Lin\
-kedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"\
-String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactor\
-yName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset vertica-table create --type "AzureBlob" --description "Example description" --lin\
-ked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameter\
-s "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDa\
-taset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset vertica-table update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset vertica-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Lin\
-kedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"\
-String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactor\
-yName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset vertica-table create --type "AzureBlob" --description "Example description" --lin\
-ked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameter\
-s "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDa\
-taset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset web-table'] = """
@@ -7255,37 +3268,11 @@ helps['datafactory dataset web-table'] = """
 helps['datafactory dataset web-table create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset web-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"LinkedS\
-erviceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"Stri\
-ng\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryNam\
-e" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset web-table create --type "AzureBlob" --description "Example description" --linked-\
-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\
-\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDatase\
-t" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset web-table update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset web-table create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"LinkedS\
-erviceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"Stri\
-ng\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryNam\
-e" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset web-table create --type "AzureBlob" --description "Example description" --linked-\
-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\
-\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDatase\
-t" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset xero-object'] = """
@@ -7296,37 +3283,11 @@ helps['datafactory dataset xero-object'] = """
 helps['datafactory dataset xero-object create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset xero-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Linke\
-dServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"St\
-ring\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryN\
-ame" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset xero-object create --type "AzureBlob" --description "Example description" --linke\
-d-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters \
-"{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleData\
-set" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset xero-object update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset xero-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Linke\
-dServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"St\
-ring\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryN\
-ame" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset xero-object create --type "AzureBlob" --description "Example description" --linke\
-d-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters \
-"{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleData\
-set" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset zoho-object'] = """
@@ -7337,37 +3298,11 @@ helps['datafactory dataset zoho-object'] = """
 helps['datafactory dataset zoho-object create'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset zoho-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Linke\
-dServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"St\
-ring\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryN\
-ame" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset zoho-object create --type "AzureBlob" --description "Example description" --linke\
-d-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters \
-"{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleData\
-set" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset zoho-object update'] = """
     type: command
     short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset zoho-object create --type "AzureBlob" --linked-service-name "{\\"type\\":\\"Linke\
-dServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"St\
-ring\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryN\
-ame" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset zoho-object create --type "AzureBlob" --description "Example description" --linke\
-d-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters \
-"{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleData\
-set" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset delete'] = """
@@ -7442,7 +3377,7 @@ helps['datafactory pipeline update'] = """
     examples:
       - name: Pipelines_Create
         text: |-
-               az datafactory pipeline create --factory-name "exampleFactoryName" --pipeline "{\\"properties\\":{\\"act\
+               az datafactory pipeline update --factory-name "exampleFactoryName" --pipeline "{\\"properties\\":{\\"act\
 ivities\\":[{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperties\\":{\\"activities\\":[{\
 \\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{\\"type\\":\\"DatasetReference\\",\\"paramete\
 rs\\":{\\"MyFileName\\":\\"examplecontainer.csv\\",\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referenceName\\":\\"ex\
@@ -7456,7 +3391,7 @@ ers.JobId\\"}},\\"variables\\":{\\"TestVariableArray\\":{\\"type\\":\\"Array\\"}
 --resource-group "exampleResourceGroup"
       - name: Pipelines_Update
         text: |-
-               az datafactory pipeline create --factory-name "exampleFactoryName" --pipeline "{\\"properties\\":{\\"des\
+               az datafactory pipeline update --factory-name "exampleFactoryName" --pipeline "{\\"properties\\":{\\"des\
 cription\\":\\"Example description\\",\\"activities\\":[{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\
 \\",\\"typeProperties\\":{\\"activities\\":[{\\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{\
 \\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFileName\\":\\"examplecontainer.csv\\",\\"MyFolderPath\\":\\"e\
@@ -7592,7 +3527,7 @@ helps['datafactory trigger update'] = """
     examples:
       - name: Triggers_Create
         text: |-
-               az datafactory trigger create --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup\
+               az datafactory trigger update --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup\
 " --properties "{\\"type\\":\\"ScheduleTrigger\\",\\"pipelines\\":[{\\"parameters\\":{\\"OutputBlobNameList\\":[\\"exam\
 pleoutput.csv\\"]},\\"pipelineReference\\":{\\"type\\":\\"PipelineReference\\",\\"referenceName\\":\\"examplePipeline\\\
 "}}],\\"typeProperties\\":{\\"recurrence\\":{\\"endTime\\":\\"2018-06-16T00:55:13.8441801Z\\",\\"frequency\\":\\"Minute\
@@ -7600,7 +3535,7 @@ pleoutput.csv\\"]},\\"pipelineReference\\":{\\"type\\":\\"PipelineReference\\",\
 ampleTrigger"
       - name: Triggers_Update
         text: |-
-               az datafactory trigger create --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup\
+               az datafactory trigger update --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup\
 " --properties "{\\"type\\":\\"ScheduleTrigger\\",\\"description\\":\\"Example description\\",\\"pipelines\\":[{\\"para\
 meters\\":{\\"OutputBlobNameList\\":[\\"exampleoutput.csv\\"]},\\"pipelineReference\\":{\\"type\\":\\"PipelineReference\
 \\",\\"referenceName\\":\\"examplePipeline\\"}}],\\"typeProperties\\":{\\"recurrence\\":{\\"endTime\\":\\"2018-06-16T00\
@@ -7773,7 +3708,7 @@ helps['datafactory data-flow update'] = """
     examples:
       - name: DataFlows_Create
         text: |-
-               az datafactory data-flow create --properties "{\\"type\\":\\"MappingDataFlow\\",\\"description\\":\\"Sam\
+               az datafactory data-flow update --properties "{\\"type\\":\\"MappingDataFlow\\",\\"description\\":\\"Sam\
 ple demo data flow to convert currencies showing usage of union, derive and conditional split transformation.\\",\\"typ\
 eProperties\\":{\\"script\\":\\"source(output(PreviousConversionRate as double,Country as string,DateTime1 as string,Cu\
 rrentConversionRate as double),allowSchemaDrift: false,validateSchema: false) ~> USDCurrency\\\\nsource(output(Previous\
@@ -7789,7 +3724,7 @@ Source\\",\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\
 ow-name "exampleDataFlow" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
       - name: DataFlows_Update
         text: |-
-               az datafactory data-flow create --properties "{\\"type\\":\\"MappingDataFlow\\",\\"description\\":\\"Sam\
+               az datafactory data-flow update --properties "{\\"type\\":\\"MappingDataFlow\\",\\"description\\":\\"Sam\
 ple demo data flow to convert currencies showing usage of union, derive and conditional split transformation.\\",\\"typ\
 eProperties\\":{\\"script\\":\\"source(output(PreviousConversionRate as double,Country as string,DateTime1 as string,Cu\
 rrentConversionRate as double),allowSchemaDrift: false,validateSchema: false) ~> USDCurrency\\\\nsource(output(Previous\
@@ -7827,9 +3762,9 @@ helps['datafactory data-flow-debug-session create'] = """
       - name: DataFlowDebugSession_Create
         text: |-
                az datafactory data-flow-debug-session create --factory-name "exampleFactoryName" --resource-group "exam\
-pleResourceGroup" --integration-runtime "{\\"name\\":\\"ir1\\",\\"properties\\":{\\"type\\":\\"Managed\\",\\"typeProper\
-ties\\":{\\"computeProperties\\":{\\"dataFlowProperties\\":{\\"computeType\\":\\"General\\",\\"coreCount\\":48,\\"timeT\
-oLive\\":10},\\"location\\":\\"AutoResolve\\"}}}}" --time-to-live 60
+pleResourceGroup" --integration-runtime-name "ir1" --integration-runtime-properties "{\\"type\\":\\"Managed\\",\\"typeP\
+roperties\\":{\\"computeProperties\\":{\\"dataFlowProperties\\":{\\"computeType\\":\\"General\\",\\"coreCount\\":48,\\"\
+timeToLive\\":10},\\"location\\":\\"AutoResolve\\"}}}" --time-to-live 60
 """
 
 helps['datafactory data-flow-debug-session delete'] = """
@@ -7849,21 +3784,20 @@ helps['datafactory data-flow-debug-session add-data-flow'] = """
       - name: DataFlowDebugSession_AddDataFlow
         text: |-
                az datafactory data-flow-debug-session add-data-flow --factory-name "exampleFactoryName" --resource-grou\
-p "exampleResourceGroup" --data-flow "{\\"name\\":\\"dataflow1\\",\\"properties\\":{\\"type\\":\\"MappingDataFlow\\",\\\
-"typeProperties\\":{\\"script\\":\\"\\\\n\\\\nsource(output(\\\\n\\\\t\\\\tColumn_1 as string\\\\n\\\\t),\\\\n\\\\tallo\
-wSchemaDrift: true,\\\\n\\\\tvalidateSchema: false) ~> source1\\",\\"sinks\\":[],\\"sources\\":[{\\"name\\":\\"source1\
-\\",\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"DelimitedText2\\"}}],\\"transformations\\":\
-[]}}}" --datasets "[{\\"name\\":\\"dataset1\\",\\"properties\\":{\\"type\\":\\"DelimitedText\\",\\"schema\\":[{\\"type\
-\\":\\"String\\"}],\\"annotations\\":[],\\"linkedServiceName\\":{\\"type\\":\\"LinkedServiceReference\\",\\"referenceNa\
-me\\":\\"linkedService5\\"},\\"typeProperties\\":{\\"columnDelimiter\\":\\",\\",\\"escapeChar\\":\\"\\\\\\\\\\",\\"firs\
-tRowAsHeader\\":true,\\"location\\":{\\"type\\":\\"AzureBlobStorageLocation\\",\\"container\\":\\"dataflow-sample-data\
-\\",\\"fileName\\":\\"Ansiencoding.csv\\"},\\"quoteChar\\":\\"\\\\\\"\\"}}}]" --debug-settings "{\\"datasetParameters\\\
-":{\\"Movies\\":{\\"path\\":\\"abc\\"},\\"Output\\":{\\"time\\":\\"def\\"}},\\"parameters\\":{\\"sourcePath\\":\\"Toy\\\
-"},\\"sourceSettings\\":[{\\"rowLimit\\":1000,\\"sourceName\\":\\"source1\\"},{\\"rowLimit\\":222,\\"sourceName\\":\\"s\
-ource2\\"}]}" --linked-services "[{\\"name\\":\\"linkedService1\\",\\"properties\\":{\\"type\\":\\"AzureBlobStorage\\",\
-\\"annotations\\":[],\\"typeProperties\\":{\\"connectionString\\":\\"DefaultEndpointsProtocol=https;AccountName=<storag\
-eName>;EndpointSuffix=core.windows.net;\\",\\"encryptedCredential\\":\\"<credential>\\"}}}]" --session-id "f06ed247-9d0\
-7-49b2-b05e-2cb4a2fc871e"
+p "exampleResourceGroup" --data-flow-name "dataflow1" --data-flow-properties "{\\"type\\":\\"MappingDataFlow\\",\\"type\
+Properties\\":{\\"script\\":\\"\\\\n\\\\nsource(output(\\\\n\\\\t\\\\tColumn_1 as string\\\\n\\\\t),\\\\n\\\\tallowSche\
+maDrift: true,\\\\n\\\\tvalidateSchema: false) ~> source1\\",\\"sinks\\":[],\\"sources\\":[{\\"name\\":\\"source1\\",\\\
+"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"DelimitedText2\\"}}],\\"transformations\\":[]}}" \
+--datasets "[{\\"name\\":\\"dataset1\\",\\"properties\\":{\\"type\\":\\"DelimitedText\\",\\"schema\\":[{\\"type\\":\\"S\
+tring\\"}],\\"annotations\\":[],\\"linkedServiceName\\":{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\\
+"linkedService5\\"},\\"typeProperties\\":{\\"columnDelimiter\\":\\",\\",\\"escapeChar\\":\\"\\\\\\\\\\",\\"firstRowAsHe\
+ader\\":true,\\"location\\":{\\"type\\":\\"AzureBlobStorageLocation\\",\\"container\\":\\"dataflow-sample-data\\",\\"fi\
+leName\\":\\"Ansiencoding.csv\\"},\\"quoteChar\\":\\"\\\\\\"\\"}}}]" --debug-settings-dataset-parameters "{\\"Movies\\"\
+:{\\"path\\":\\"abc\\"},\\"Output\\":{\\"time\\":\\"def\\"}}" --debug-settings-source-settings row-limit=1000 source-na\
+me="source1" --debug-settings-source-settings row-limit=222 source-name="source2" --linked-services "[{\\"name\\":\\"li\
+nkedService1\\",\\"properties\\":{\\"type\\":\\"AzureBlobStorage\\",\\"annotations\\":[],\\"typeProperties\\":{\\"conne\
+ctionString\\":\\"DefaultEndpointsProtocol=https;AccountName=<storageName>;EndpointSuffix=core.windows.net;\\",\\"encry\
+ptedCredential\\":\\"<credential>\\"}}}]" --session-id "f06ed247-9d07-49b2-b05e-2cb4a2fc871e"
 """
 
 helps['datafactory data-flow-debug-session execute-command'] = """

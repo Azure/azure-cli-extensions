@@ -50,14 +50,15 @@ class DataFlowDebugSessionOperations(object):
         compute_type=None,  # type: Optional[str]
         core_count=None,  # type: Optional[int]
         time_to_live=None,  # type: Optional[int]
-        integration_runtime=None,  # type: Optional["models.IntegrationRuntimeDebugResource"]
+        name=None,  # type: Optional[str]
+        properties=None,  # type: Optional["models.IntegrationRuntime"]
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.CreateDataFlowDebugSessionResponse"
         cls = kwargs.pop('cls', None)  # type: ClsType["models.CreateDataFlowDebugSessionResponse"]
         error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        _request = models.CreateDataFlowDebugSessionRequest(compute_type=compute_type, core_count=core_count, time_to_live=time_to_live, integration_runtime=integration_runtime)
+        _request = models.CreateDataFlowDebugSessionRequest(compute_type=compute_type, core_count=core_count, time_to_live=time_to_live, name=name, properties=properties)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -113,7 +114,8 @@ class DataFlowDebugSessionOperations(object):
         compute_type=None,  # type: Optional[str]
         core_count=None,  # type: Optional[int]
         time_to_live=None,  # type: Optional[int]
-        integration_runtime=None,  # type: Optional["models.IntegrationRuntimeDebugResource"]
+        name=None,  # type: Optional[str]
+        properties=None,  # type: Optional["models.IntegrationRuntime"]
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.CreateDataFlowDebugSessionResponse"
@@ -131,8 +133,10 @@ class DataFlowDebugSessionOperations(object):
         :type core_count: int
         :param time_to_live: Time to live setting of the cluster in minutes.
         :type time_to_live: int
-        :param integration_runtime: Set to use integration runtime setting for data flow debug session.
-        :type integration_runtime: ~azure.mgmt.datafactory.models.IntegrationRuntimeDebugResource
+        :param name: The resource name.
+        :type name: str
+        :param properties: Integration runtime properties.
+        :type properties: ~azure.mgmt.datafactory.models.IntegrationRuntime
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
@@ -150,7 +154,8 @@ class DataFlowDebugSessionOperations(object):
             compute_type=compute_type,
             core_count=core_count,
             time_to_live=time_to_live,
-            integration_runtime=integration_runtime,
+            name=name,
+            properties=properties,
             cls=lambda x,y,z: x,
             **kwargs
         )
@@ -248,11 +253,16 @@ class DataFlowDebugSessionOperations(object):
         resource_group_name,  # type: str
         factory_name,  # type: str
         session_id=None,  # type: Optional[str]
-        data_flow=None,  # type: Optional["models.DataFlowDebugResource"]
         datasets=None,  # type: Optional[List["DatasetDebugResource"]]
         linked_services=None,  # type: Optional[List["LinkedServiceDebugResource"]]
-        staging=None,  # type: Optional["models.DataFlowStagingInfo"]
-        debug_settings=None,  # type: Optional["models.DataFlowDebugPackageDebugSettings"]
+        source_settings=None,  # type: Optional[List["DataFlowSourceSetting"]]
+        parameters=None,  # type: Optional[Dict[str, object]]
+        dataset_parameters=None,  # type: Optional[object]
+        folder_path=None,  # type: Optional[str]
+        reference_name=None,  # type: Optional[str]
+        parameter_value_specification_parameters=None,  # type: Optional[Dict[str, object]]
+        name=None,  # type: Optional[str]
+        properties=None,  # type: Optional["models.DataFlow"]
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.AddDataFlowToDebugSessionResponse"
@@ -264,16 +274,26 @@ class DataFlowDebugSessionOperations(object):
         :type factory_name: str
         :param session_id: The ID of data flow debug session.
         :type session_id: str
-        :param data_flow: Data flow instance.
-        :type data_flow: ~azure.mgmt.datafactory.models.DataFlowDebugResource
         :param datasets: List of datasets.
         :type datasets: list[~azure.mgmt.datafactory.models.DatasetDebugResource]
         :param linked_services: List of linked services.
         :type linked_services: list[~azure.mgmt.datafactory.models.LinkedServiceDebugResource]
-        :param staging: Staging info for debug session.
-        :type staging: ~azure.mgmt.datafactory.models.DataFlowStagingInfo
-        :param debug_settings: Data flow debug settings.
-        :type debug_settings: ~azure.mgmt.datafactory.models.DataFlowDebugPackageDebugSettings
+        :param source_settings: Source setting for data flow debug.
+        :type source_settings: list[~azure.mgmt.datafactory.models.DataFlowSourceSetting]
+        :param parameters: Data flow parameters.
+        :type parameters: dict[str, object]
+        :param dataset_parameters: Parameters for dataset.
+        :type dataset_parameters: object
+        :param folder_path: Folder path for staging blob.
+        :type folder_path: str
+        :param reference_name: Reference LinkedService name.
+        :type reference_name: str
+        :param parameter_value_specification_parameters: Arguments for LinkedService.
+        :type parameter_value_specification_parameters: dict[str, object]
+        :param name: The resource name.
+        :type name: str
+        :param properties: Data flow properties.
+        :type properties: ~azure.mgmt.datafactory.models.DataFlow
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: AddDataFlowToDebugSessionResponse or the result of cls(response)
         :rtype: ~azure.mgmt.datafactory.models.AddDataFlowToDebugSessionResponse
@@ -282,7 +302,7 @@ class DataFlowDebugSessionOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType["models.AddDataFlowToDebugSessionResponse"]
         error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        _request = models.DataFlowDebugPackage(session_id=session_id, data_flow=data_flow, datasets=datasets, linked_services=linked_services, staging=staging, debug_settings=debug_settings)
+        _request = models.DataFlowDebugPackage(session_id=session_id, datasets=datasets, linked_services=linked_services, source_settings=source_settings, parameters_debug_settings_parameters=parameters, dataset_parameters=dataset_parameters, folder_path=folder_path, reference_name=reference_name, parameters_staging_linked_service_parameters=parameter_value_specification_parameters, name=name, properties=properties)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
 

@@ -423,25 +423,25 @@ def datafactory_linked_service_show(cmd, client,
                       if_none_match=if_none_match)
 
 
-def datafactory_linked_service_amazon_m_w_s_create(cmd, client,
-                                                   resource_group_name,
-                                                   factory_name,
-                                                   linked_service_name,
-                                                   type_properties_endpoint,
-                                                   type_properties_marketplace_id,
-                                                   type_properties_seller_id,
-                                                   type_properties_access_key_id,
-                                                   if_match=None,
-                                                   connect_via=None,
-                                                   description=None,
-                                                   parameters=None,
-                                                   annotations=None,
-                                                   type_properties_mws_auth_token=None,
-                                                   type_properties_secret_key=None,
-                                                   type_properties_use_encrypted_endpoints=None,
-                                                   type_properties_use_host_verification=None,
-                                                   type_properties_use_peer_verification=None,
-                                                   type_properties_encrypted_credential=None):
+def datafactory_linked_service_amazon_mws_create(cmd, client,
+                                                 resource_group_name,
+                                                 factory_name,
+                                                 linked_service_name,
+                                                 type_properties_endpoint,
+                                                 type_properties_marketplace_id,
+                                                 type_properties_seller_id,
+                                                 type_properties_access_key_id,
+                                                 if_match=None,
+                                                 connect_via=None,
+                                                 description=None,
+                                                 parameters=None,
+                                                 annotations=None,
+                                                 type_properties_mws_auth_token=None,
+                                                 type_properties_secret_key=None,
+                                                 type_properties_use_encrypted_endpoints=None,
+                                                 type_properties_use_host_verification=None,
+                                                 type_properties_use_peer_verification=None,
+                                                 type_properties_encrypted_credential=None):
     if isinstance(connect_via, str):
         connect_via = json.loads(connect_via)
     if isinstance(parameters, str):
@@ -469,7 +469,7 @@ def datafactory_linked_service_amazon_m_w_s_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = 'AmazonMWS'
+    properties['type'] = 'AmazonMws'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -491,25 +491,25 @@ def datafactory_linked_service_amazon_m_w_s_create(cmd, client,
                                    properties=properties)
 
 
-def datafactory_linked_service_amazon_m_w_s_update(instance, cmd,
-                                                   resource_group_name,
-                                                   factory_name,
-                                                   linked_service_name,
-                                                   type_properties_endpoint,
-                                                   type_properties_marketplace_id,
-                                                   type_properties_seller_id,
-                                                   type_properties_access_key_id,
-                                                   if_match=None,
-                                                   connect_via=None,
-                                                   description=None,
-                                                   parameters=None,
-                                                   annotations=None,
-                                                   type_properties_mws_auth_token=None,
-                                                   type_properties_secret_key=None,
-                                                   type_properties_use_encrypted_endpoints=None,
-                                                   type_properties_use_host_verification=None,
-                                                   type_properties_use_peer_verification=None,
-                                                   type_properties_encrypted_credential=None):
+def datafactory_linked_service_amazon_mws_update(instance, cmd,
+                                                 resource_group_name,
+                                                 factory_name,
+                                                 linked_service_name,
+                                                 type_properties_endpoint,
+                                                 type_properties_marketplace_id,
+                                                 type_properties_seller_id,
+                                                 type_properties_access_key_id,
+                                                 if_match=None,
+                                                 connect_via=None,
+                                                 description=None,
+                                                 parameters=None,
+                                                 annotations=None,
+                                                 type_properties_mws_auth_token=None,
+                                                 type_properties_secret_key=None,
+                                                 type_properties_use_encrypted_endpoints=None,
+                                                 type_properties_use_host_verification=None,
+                                                 type_properties_use_peer_verification=None,
+                                                 type_properties_encrypted_credential=None):
     if isinstance(connect_via, str):
         connect_via = json.loads(connect_via)
     if isinstance(parameters, str):
@@ -536,7 +536,7 @@ def datafactory_linked_service_amazon_m_w_s_update(instance, cmd,
         type_properties_use_peer_verification = json.loads(type_properties_use_peer_verification)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = 'AmazonMWS'
+    instance.type = 'AmazonMws'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -835,21 +835,21 @@ def datafactory_linked_service_azure_batch_update(instance, cmd,
     return instance
 
 
-def datafactory_linked_service_azure_blob_f_s_create(cmd, client,
-                                                     resource_group_name,
-                                                     factory_name,
-                                                     linked_service_name,
-                                                     type_properties_url,
-                                                     if_match=None,
-                                                     connect_via=None,
-                                                     description=None,
-                                                     parameters=None,
-                                                     annotations=None,
-                                                     type_properties_account_key=None,
-                                                     type_properties_service_principal_id=None,
-                                                     type_properties_service_principal_key=None,
-                                                     type_properties_tenant=None,
-                                                     type_properties_encrypted_credential=None):
+def datafactory_linked_service_azure_blob_fs_create(cmd, client,
+                                                    resource_group_name,
+                                                    factory_name,
+                                                    linked_service_name,
+                                                    type_properties_url,
+                                                    if_match=None,
+                                                    connect_via=None,
+                                                    description=None,
+                                                    parameters=None,
+                                                    annotations=None,
+                                                    type_properties_account_key=None,
+                                                    type_properties_service_principal_id=None,
+                                                    type_properties_service_principal_key=None,
+                                                    type_properties_tenant=None,
+                                                    type_properties_encrypted_credential=None):
     if isinstance(connect_via, str):
         connect_via = json.loads(connect_via)
     if isinstance(parameters, str):
@@ -869,7 +869,7 @@ def datafactory_linked_service_azure_blob_f_s_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = 'AzureBlobFS'
+    properties['type'] = 'AzureBlobFs'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -887,21 +887,21 @@ def datafactory_linked_service_azure_blob_f_s_create(cmd, client,
                                    properties=properties)
 
 
-def datafactory_linked_service_azure_blob_f_s_update(instance, cmd,
-                                                     resource_group_name,
-                                                     factory_name,
-                                                     linked_service_name,
-                                                     type_properties_url,
-                                                     if_match=None,
-                                                     connect_via=None,
-                                                     description=None,
-                                                     parameters=None,
-                                                     annotations=None,
-                                                     type_properties_account_key=None,
-                                                     type_properties_service_principal_id=None,
-                                                     type_properties_service_principal_key=None,
-                                                     type_properties_tenant=None,
-                                                     type_properties_encrypted_credential=None):
+def datafactory_linked_service_azure_blob_fs_update(instance, cmd,
+                                                    resource_group_name,
+                                                    factory_name,
+                                                    linked_service_name,
+                                                    type_properties_url,
+                                                    if_match=None,
+                                                    connect_via=None,
+                                                    description=None,
+                                                    parameters=None,
+                                                    annotations=None,
+                                                    type_properties_account_key=None,
+                                                    type_properties_service_principal_id=None,
+                                                    type_properties_service_principal_key=None,
+                                                    type_properties_tenant=None,
+                                                    type_properties_encrypted_credential=None):
     if isinstance(connect_via, str):
         connect_via = json.loads(connect_via)
     if isinstance(parameters, str):
@@ -920,7 +920,7 @@ def datafactory_linked_service_azure_blob_f_s_update(instance, cmd,
         type_properties_tenant = json.loads(type_properties_tenant)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = 'AzureBlobFS'
+    instance.type = 'AzureBlobFs'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -1750,220 +1750,6 @@ def datafactory_linked_service_azure_key_vault_update(instance, cmd,
     return instance
 
 
-def datafactory_linked_service_azure_m_l_create(cmd, client,
-                                                resource_group_name,
-                                                factory_name,
-                                                linked_service_name,
-                                                type_properties_ml_endpoint,
-                                                type_properties_api_key,
-                                                if_match=None,
-                                                connect_via=None,
-                                                description=None,
-                                                parameters=None,
-                                                annotations=None,
-                                                type_properties_update_resource_endpoint=None,
-                                                type_properties_service_principal_id=None,
-                                                type_properties_service_principal_key=None,
-                                                type_properties_tenant=None,
-                                                type_properties_encrypted_credential=None):
-    if isinstance(connect_via, str):
-        connect_via = json.loads(connect_via)
-    if isinstance(parameters, str):
-        parameters = json.loads(parameters)
-    if isinstance(annotations, str):
-        annotations = json.loads(annotations)
-    if isinstance(type_properties_ml_endpoint, str):
-        type_properties_ml_endpoint = json.loads(type_properties_ml_endpoint)
-    if isinstance(type_properties_api_key, str):
-        type_properties_api_key = json.loads(type_properties_api_key)
-    if isinstance(type_properties_update_resource_endpoint, str):
-        type_properties_update_resource_endpoint = json.loads(type_properties_update_resource_endpoint)
-    if isinstance(type_properties_service_principal_id, str):
-        type_properties_service_principal_id = json.loads(type_properties_service_principal_id)
-    if isinstance(type_properties_service_principal_key, str):
-        type_properties_service_principal_key = json.loads(type_properties_service_principal_key)
-    if isinstance(type_properties_tenant, str):
-        type_properties_tenant = json.loads(type_properties_tenant)
-    if isinstance(type_properties_encrypted_credential, str):
-        type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    properties = {}
-    properties['type'] = 'AzureML'
-    properties['connect_via'] = connect_via
-    properties['description'] = description
-    properties['parameters'] = parameters
-    properties['annotations'] = annotations
-    properties['ml_endpoint'] = type_properties_ml_endpoint
-    properties['api_key'] = type_properties_api_key
-    properties['update_resource_endpoint'] = type_properties_update_resource_endpoint
-    properties['service_principal_id'] = type_properties_service_principal_id
-    properties['service_principal_key'] = type_properties_service_principal_key
-    properties['tenant'] = type_properties_tenant
-    properties['encrypted_credential'] = type_properties_encrypted_credential
-    return client.create_or_update(resource_group_name=resource_group_name,
-                                   factory_name=factory_name,
-                                   linked_service_name=linked_service_name,
-                                   if_match=if_match,
-                                   properties=properties)
-
-
-def datafactory_linked_service_azure_m_l_update(instance, cmd,
-                                                resource_group_name,
-                                                factory_name,
-                                                linked_service_name,
-                                                type_properties_ml_endpoint,
-                                                type_properties_api_key,
-                                                if_match=None,
-                                                connect_via=None,
-                                                description=None,
-                                                parameters=None,
-                                                annotations=None,
-                                                type_properties_update_resource_endpoint=None,
-                                                type_properties_service_principal_id=None,
-                                                type_properties_service_principal_key=None,
-                                                type_properties_tenant=None,
-                                                type_properties_encrypted_credential=None):
-    if isinstance(connect_via, str):
-        connect_via = json.loads(connect_via)
-    if isinstance(parameters, str):
-        parameters = json.loads(parameters)
-    if isinstance(annotations, str):
-        annotations = json.loads(annotations)
-    if isinstance(type_properties_ml_endpoint, str):
-        type_properties_ml_endpoint = json.loads(type_properties_ml_endpoint)
-    if isinstance(type_properties_api_key, str):
-        type_properties_api_key = json.loads(type_properties_api_key)
-    if isinstance(type_properties_update_resource_endpoint, str):
-        type_properties_update_resource_endpoint = json.loads(type_properties_update_resource_endpoint)
-    if isinstance(type_properties_service_principal_id, str):
-        type_properties_service_principal_id = json.loads(type_properties_service_principal_id)
-    if isinstance(type_properties_service_principal_key, str):
-        type_properties_service_principal_key = json.loads(type_properties_service_principal_key)
-    if isinstance(type_properties_tenant, str):
-        type_properties_tenant = json.loads(type_properties_tenant)
-    if isinstance(type_properties_encrypted_credential, str):
-        type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = 'AzureML'
-    instance.connect_via = connect_via
-    instance.description = description
-    instance.parameters = parameters
-    instance.annotations = annotations
-    instance.ml_endpoint = type_properties_ml_endpoint
-    instance.api_key = type_properties_api_key
-    instance.update_resource_endpoint = type_properties_update_resource_endpoint
-    instance.service_principal_id = type_properties_service_principal_id
-    instance.service_principal_key = type_properties_service_principal_key
-    instance.tenant = type_properties_tenant
-    instance.encrypted_credential = type_properties_encrypted_credential
-    return instance
-
-
-def datafactory_linked_service_azure_m_l_service_create(cmd, client,
-                                                        resource_group_name,
-                                                        factory_name,
-                                                        linked_service_name,
-                                                        type_properties_subscription_id,
-                                                        type_properties_resource_group_name,
-                                                        type_properties_ml_workspace_name,
-                                                        if_match=None,
-                                                        connect_via=None,
-                                                        description=None,
-                                                        parameters=None,
-                                                        annotations=None,
-                                                        type_properties_service_principal_id=None,
-                                                        type_properties_service_principal_key=None,
-                                                        type_properties_tenant=None,
-                                                        type_properties_encrypted_credential=None):
-    if isinstance(connect_via, str):
-        connect_via = json.loads(connect_via)
-    if isinstance(parameters, str):
-        parameters = json.loads(parameters)
-    if isinstance(annotations, str):
-        annotations = json.loads(annotations)
-    if isinstance(type_properties_subscription_id, str):
-        type_properties_subscription_id = json.loads(type_properties_subscription_id)
-    if isinstance(type_properties_resource_group_name, str):
-        type_properties_resource_group_name = json.loads(type_properties_resource_group_name)
-    if isinstance(type_properties_ml_workspace_name, str):
-        type_properties_ml_workspace_name = json.loads(type_properties_ml_workspace_name)
-    if isinstance(type_properties_service_principal_id, str):
-        type_properties_service_principal_id = json.loads(type_properties_service_principal_id)
-    if isinstance(type_properties_service_principal_key, str):
-        type_properties_service_principal_key = json.loads(type_properties_service_principal_key)
-    if isinstance(type_properties_tenant, str):
-        type_properties_tenant = json.loads(type_properties_tenant)
-    if isinstance(type_properties_encrypted_credential, str):
-        type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    properties = {}
-    properties['type'] = 'AzureMLService'
-    properties['connect_via'] = connect_via
-    properties['description'] = description
-    properties['parameters'] = parameters
-    properties['annotations'] = annotations
-    properties['subscription_id'] = type_properties_subscription_id
-    properties['resource_group_name'] = type_properties_resource_group_name
-    properties['ml_workspace_name'] = type_properties_ml_workspace_name
-    properties['service_principal_id'] = type_properties_service_principal_id
-    properties['service_principal_key'] = type_properties_service_principal_key
-    properties['tenant'] = type_properties_tenant
-    properties['encrypted_credential'] = type_properties_encrypted_credential
-    return client.create_or_update(resource_group_name=resource_group_name,
-                                   factory_name=factory_name,
-                                   linked_service_name=linked_service_name,
-                                   if_match=if_match,
-                                   properties=properties)
-
-
-def datafactory_linked_service_azure_m_l_service_update(instance, cmd,
-                                                        resource_group_name,
-                                                        factory_name,
-                                                        linked_service_name,
-                                                        type_properties_subscription_id,
-                                                        type_properties_resource_group_name,
-                                                        type_properties_ml_workspace_name,
-                                                        if_match=None,
-                                                        connect_via=None,
-                                                        description=None,
-                                                        parameters=None,
-                                                        annotations=None,
-                                                        type_properties_service_principal_id=None,
-                                                        type_properties_service_principal_key=None,
-                                                        type_properties_tenant=None,
-                                                        type_properties_encrypted_credential=None):
-    if isinstance(connect_via, str):
-        connect_via = json.loads(connect_via)
-    if isinstance(parameters, str):
-        parameters = json.loads(parameters)
-    if isinstance(annotations, str):
-        annotations = json.loads(annotations)
-    if isinstance(type_properties_subscription_id, str):
-        type_properties_subscription_id = json.loads(type_properties_subscription_id)
-    if isinstance(type_properties_resource_group_name, str):
-        type_properties_resource_group_name = json.loads(type_properties_resource_group_name)
-    if isinstance(type_properties_ml_workspace_name, str):
-        type_properties_ml_workspace_name = json.loads(type_properties_ml_workspace_name)
-    if isinstance(type_properties_service_principal_id, str):
-        type_properties_service_principal_id = json.loads(type_properties_service_principal_id)
-    if isinstance(type_properties_service_principal_key, str):
-        type_properties_service_principal_key = json.loads(type_properties_service_principal_key)
-    if isinstance(type_properties_tenant, str):
-        type_properties_tenant = json.loads(type_properties_tenant)
-    if isinstance(type_properties_encrypted_credential, str):
-        type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = 'AzureMLService'
-    instance.connect_via = connect_via
-    instance.description = description
-    instance.parameters = parameters
-    instance.annotations = annotations
-    instance.subscription_id = type_properties_subscription_id
-    instance.resource_group_name = type_properties_resource_group_name
-    instance.ml_workspace_name = type_properties_ml_workspace_name
-    instance.service_principal_id = type_properties_service_principal_id
-    instance.service_principal_key = type_properties_service_principal_key
-    instance.tenant = type_properties_tenant
-    instance.encrypted_credential = type_properties_encrypted_credential
-    return instance
-
-
 def datafactory_linked_service_azure_maria_d_b_create(cmd, client,
                                                       resource_group_name,
                                                       factory_name,
@@ -2035,6 +1821,220 @@ def datafactory_linked_service_azure_maria_d_b_update(instance, cmd,
     instance.annotations = annotations
     instance.connection_string = type_properties_connection_string
     instance.pwd = type_properties_pwd
+    instance.encrypted_credential = type_properties_encrypted_credential
+    return instance
+
+
+def datafactory_linked_service_azure_ml_create(cmd, client,
+                                               resource_group_name,
+                                               factory_name,
+                                               linked_service_name,
+                                               type_properties_ml_endpoint,
+                                               type_properties_api_key,
+                                               if_match=None,
+                                               connect_via=None,
+                                               description=None,
+                                               parameters=None,
+                                               annotations=None,
+                                               type_properties_update_resource_endpoint=None,
+                                               type_properties_service_principal_id=None,
+                                               type_properties_service_principal_key=None,
+                                               type_properties_tenant=None,
+                                               type_properties_encrypted_credential=None):
+    if isinstance(connect_via, str):
+        connect_via = json.loads(connect_via)
+    if isinstance(parameters, str):
+        parameters = json.loads(parameters)
+    if isinstance(annotations, str):
+        annotations = json.loads(annotations)
+    if isinstance(type_properties_ml_endpoint, str):
+        type_properties_ml_endpoint = json.loads(type_properties_ml_endpoint)
+    if isinstance(type_properties_api_key, str):
+        type_properties_api_key = json.loads(type_properties_api_key)
+    if isinstance(type_properties_update_resource_endpoint, str):
+        type_properties_update_resource_endpoint = json.loads(type_properties_update_resource_endpoint)
+    if isinstance(type_properties_service_principal_id, str):
+        type_properties_service_principal_id = json.loads(type_properties_service_principal_id)
+    if isinstance(type_properties_service_principal_key, str):
+        type_properties_service_principal_key = json.loads(type_properties_service_principal_key)
+    if isinstance(type_properties_tenant, str):
+        type_properties_tenant = json.loads(type_properties_tenant)
+    if isinstance(type_properties_encrypted_credential, str):
+        type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
+    properties = {}
+    properties['type'] = 'AzureMl'
+    properties['connect_via'] = connect_via
+    properties['description'] = description
+    properties['parameters'] = parameters
+    properties['annotations'] = annotations
+    properties['ml_endpoint'] = type_properties_ml_endpoint
+    properties['api_key'] = type_properties_api_key
+    properties['update_resource_endpoint'] = type_properties_update_resource_endpoint
+    properties['service_principal_id'] = type_properties_service_principal_id
+    properties['service_principal_key'] = type_properties_service_principal_key
+    properties['tenant'] = type_properties_tenant
+    properties['encrypted_credential'] = type_properties_encrypted_credential
+    return client.create_or_update(resource_group_name=resource_group_name,
+                                   factory_name=factory_name,
+                                   linked_service_name=linked_service_name,
+                                   if_match=if_match,
+                                   properties=properties)
+
+
+def datafactory_linked_service_azure_ml_update(instance, cmd,
+                                               resource_group_name,
+                                               factory_name,
+                                               linked_service_name,
+                                               type_properties_ml_endpoint,
+                                               type_properties_api_key,
+                                               if_match=None,
+                                               connect_via=None,
+                                               description=None,
+                                               parameters=None,
+                                               annotations=None,
+                                               type_properties_update_resource_endpoint=None,
+                                               type_properties_service_principal_id=None,
+                                               type_properties_service_principal_key=None,
+                                               type_properties_tenant=None,
+                                               type_properties_encrypted_credential=None):
+    if isinstance(connect_via, str):
+        connect_via = json.loads(connect_via)
+    if isinstance(parameters, str):
+        parameters = json.loads(parameters)
+    if isinstance(annotations, str):
+        annotations = json.loads(annotations)
+    if isinstance(type_properties_ml_endpoint, str):
+        type_properties_ml_endpoint = json.loads(type_properties_ml_endpoint)
+    if isinstance(type_properties_api_key, str):
+        type_properties_api_key = json.loads(type_properties_api_key)
+    if isinstance(type_properties_update_resource_endpoint, str):
+        type_properties_update_resource_endpoint = json.loads(type_properties_update_resource_endpoint)
+    if isinstance(type_properties_service_principal_id, str):
+        type_properties_service_principal_id = json.loads(type_properties_service_principal_id)
+    if isinstance(type_properties_service_principal_key, str):
+        type_properties_service_principal_key = json.loads(type_properties_service_principal_key)
+    if isinstance(type_properties_tenant, str):
+        type_properties_tenant = json.loads(type_properties_tenant)
+    if isinstance(type_properties_encrypted_credential, str):
+        type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
+    instance.type = 'AzureMl'
+    instance.connect_via = connect_via
+    instance.description = description
+    instance.parameters = parameters
+    instance.annotations = annotations
+    instance.ml_endpoint = type_properties_ml_endpoint
+    instance.api_key = type_properties_api_key
+    instance.update_resource_endpoint = type_properties_update_resource_endpoint
+    instance.service_principal_id = type_properties_service_principal_id
+    instance.service_principal_key = type_properties_service_principal_key
+    instance.tenant = type_properties_tenant
+    instance.encrypted_credential = type_properties_encrypted_credential
+    return instance
+
+
+def datafactory_linked_service_azure_ml_service_create(cmd, client,
+                                                       resource_group_name,
+                                                       factory_name,
+                                                       linked_service_name,
+                                                       type_properties_subscription_id,
+                                                       type_properties_resource_group_name,
+                                                       type_properties_ml_workspace_name,
+                                                       if_match=None,
+                                                       connect_via=None,
+                                                       description=None,
+                                                       parameters=None,
+                                                       annotations=None,
+                                                       type_properties_service_principal_id=None,
+                                                       type_properties_service_principal_key=None,
+                                                       type_properties_tenant=None,
+                                                       type_properties_encrypted_credential=None):
+    if isinstance(connect_via, str):
+        connect_via = json.loads(connect_via)
+    if isinstance(parameters, str):
+        parameters = json.loads(parameters)
+    if isinstance(annotations, str):
+        annotations = json.loads(annotations)
+    if isinstance(type_properties_subscription_id, str):
+        type_properties_subscription_id = json.loads(type_properties_subscription_id)
+    if isinstance(type_properties_resource_group_name, str):
+        type_properties_resource_group_name = json.loads(type_properties_resource_group_name)
+    if isinstance(type_properties_ml_workspace_name, str):
+        type_properties_ml_workspace_name = json.loads(type_properties_ml_workspace_name)
+    if isinstance(type_properties_service_principal_id, str):
+        type_properties_service_principal_id = json.loads(type_properties_service_principal_id)
+    if isinstance(type_properties_service_principal_key, str):
+        type_properties_service_principal_key = json.loads(type_properties_service_principal_key)
+    if isinstance(type_properties_tenant, str):
+        type_properties_tenant = json.loads(type_properties_tenant)
+    if isinstance(type_properties_encrypted_credential, str):
+        type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
+    properties = {}
+    properties['type'] = 'AzureMlService'
+    properties['connect_via'] = connect_via
+    properties['description'] = description
+    properties['parameters'] = parameters
+    properties['annotations'] = annotations
+    properties['subscription_id'] = type_properties_subscription_id
+    properties['resource_group_name'] = type_properties_resource_group_name
+    properties['ml_workspace_name'] = type_properties_ml_workspace_name
+    properties['service_principal_id'] = type_properties_service_principal_id
+    properties['service_principal_key'] = type_properties_service_principal_key
+    properties['tenant'] = type_properties_tenant
+    properties['encrypted_credential'] = type_properties_encrypted_credential
+    return client.create_or_update(resource_group_name=resource_group_name,
+                                   factory_name=factory_name,
+                                   linked_service_name=linked_service_name,
+                                   if_match=if_match,
+                                   properties=properties)
+
+
+def datafactory_linked_service_azure_ml_service_update(instance, cmd,
+                                                       resource_group_name,
+                                                       factory_name,
+                                                       linked_service_name,
+                                                       type_properties_subscription_id,
+                                                       type_properties_resource_group_name,
+                                                       type_properties_ml_workspace_name,
+                                                       if_match=None,
+                                                       connect_via=None,
+                                                       description=None,
+                                                       parameters=None,
+                                                       annotations=None,
+                                                       type_properties_service_principal_id=None,
+                                                       type_properties_service_principal_key=None,
+                                                       type_properties_tenant=None,
+                                                       type_properties_encrypted_credential=None):
+    if isinstance(connect_via, str):
+        connect_via = json.loads(connect_via)
+    if isinstance(parameters, str):
+        parameters = json.loads(parameters)
+    if isinstance(annotations, str):
+        annotations = json.loads(annotations)
+    if isinstance(type_properties_subscription_id, str):
+        type_properties_subscription_id = json.loads(type_properties_subscription_id)
+    if isinstance(type_properties_resource_group_name, str):
+        type_properties_resource_group_name = json.loads(type_properties_resource_group_name)
+    if isinstance(type_properties_ml_workspace_name, str):
+        type_properties_ml_workspace_name = json.loads(type_properties_ml_workspace_name)
+    if isinstance(type_properties_service_principal_id, str):
+        type_properties_service_principal_id = json.loads(type_properties_service_principal_id)
+    if isinstance(type_properties_service_principal_key, str):
+        type_properties_service_principal_key = json.loads(type_properties_service_principal_key)
+    if isinstance(type_properties_tenant, str):
+        type_properties_tenant = json.loads(type_properties_tenant)
+    if isinstance(type_properties_encrypted_credential, str):
+        type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
+    instance.type = 'AzureMlService'
+    instance.connect_via = connect_via
+    instance.description = description
+    instance.parameters = parameters
+    instance.annotations = annotations
+    instance.subscription_id = type_properties_subscription_id
+    instance.resource_group_name = type_properties_resource_group_name
+    instance.ml_workspace_name = type_properties_ml_workspace_name
+    instance.service_principal_id = type_properties_service_principal_id
+    instance.service_principal_key = type_properties_service_principal_key
+    instance.tenant = type_properties_tenant
     instance.encrypted_credential = type_properties_encrypted_credential
     return instance
 
@@ -2264,105 +2264,6 @@ def datafactory_linked_service_azure_search_update(instance, cmd,
     return instance
 
 
-def datafactory_linked_service_azure_sql_d_w_create(cmd, client,
-                                                    resource_group_name,
-                                                    factory_name,
-                                                    linked_service_name,
-                                                    type_properties_connection_string,
-                                                    if_match=None,
-                                                    connect_via=None,
-                                                    description=None,
-                                                    parameters=None,
-                                                    annotations=None,
-                                                    type_properties_password=None,
-                                                    type_properties_service_principal_id=None,
-                                                    type_properties_service_principal_key=None,
-                                                    type_properties_tenant=None,
-                                                    type_properties_encrypted_credential=None):
-    if isinstance(connect_via, str):
-        connect_via = json.loads(connect_via)
-    if isinstance(parameters, str):
-        parameters = json.loads(parameters)
-    if isinstance(annotations, str):
-        annotations = json.loads(annotations)
-    if isinstance(type_properties_connection_string, str):
-        type_properties_connection_string = json.loads(type_properties_connection_string)
-    if isinstance(type_properties_password, str):
-        type_properties_password = json.loads(type_properties_password)
-    if isinstance(type_properties_service_principal_id, str):
-        type_properties_service_principal_id = json.loads(type_properties_service_principal_id)
-    if isinstance(type_properties_service_principal_key, str):
-        type_properties_service_principal_key = json.loads(type_properties_service_principal_key)
-    if isinstance(type_properties_tenant, str):
-        type_properties_tenant = json.loads(type_properties_tenant)
-    if isinstance(type_properties_encrypted_credential, str):
-        type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    properties = {}
-    properties['type'] = 'AzureSqlDW'
-    properties['connect_via'] = connect_via
-    properties['description'] = description
-    properties['parameters'] = parameters
-    properties['annotations'] = annotations
-    properties['connection_string'] = type_properties_connection_string
-    properties['password'] = type_properties_password
-    properties['service_principal_id'] = type_properties_service_principal_id
-    properties['service_principal_key'] = type_properties_service_principal_key
-    properties['tenant'] = type_properties_tenant
-    properties['encrypted_credential'] = type_properties_encrypted_credential
-    return client.create_or_update(resource_group_name=resource_group_name,
-                                   factory_name=factory_name,
-                                   linked_service_name=linked_service_name,
-                                   if_match=if_match,
-                                   properties=properties)
-
-
-def datafactory_linked_service_azure_sql_d_w_update(instance, cmd,
-                                                    resource_group_name,
-                                                    factory_name,
-                                                    linked_service_name,
-                                                    type_properties_connection_string,
-                                                    if_match=None,
-                                                    connect_via=None,
-                                                    description=None,
-                                                    parameters=None,
-                                                    annotations=None,
-                                                    type_properties_password=None,
-                                                    type_properties_service_principal_id=None,
-                                                    type_properties_service_principal_key=None,
-                                                    type_properties_tenant=None,
-                                                    type_properties_encrypted_credential=None):
-    if isinstance(connect_via, str):
-        connect_via = json.loads(connect_via)
-    if isinstance(parameters, str):
-        parameters = json.loads(parameters)
-    if isinstance(annotations, str):
-        annotations = json.loads(annotations)
-    if isinstance(type_properties_connection_string, str):
-        type_properties_connection_string = json.loads(type_properties_connection_string)
-    if isinstance(type_properties_password, str):
-        type_properties_password = json.loads(type_properties_password)
-    if isinstance(type_properties_service_principal_id, str):
-        type_properties_service_principal_id = json.loads(type_properties_service_principal_id)
-    if isinstance(type_properties_service_principal_key, str):
-        type_properties_service_principal_key = json.loads(type_properties_service_principal_key)
-    if isinstance(type_properties_tenant, str):
-        type_properties_tenant = json.loads(type_properties_tenant)
-    if isinstance(type_properties_encrypted_credential, str):
-        type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = 'AzureSqlDW'
-    instance.connect_via = connect_via
-    instance.description = description
-    instance.parameters = parameters
-    instance.annotations = annotations
-    instance.connection_string = type_properties_connection_string
-    instance.password = type_properties_password
-    instance.service_principal_id = type_properties_service_principal_id
-    instance.service_principal_key = type_properties_service_principal_key
-    instance.tenant = type_properties_tenant
-    instance.encrypted_credential = type_properties_encrypted_credential
-    return instance
-
-
 def datafactory_linked_service_azure_sql_database_create(cmd, client,
                                                          resource_group_name,
                                                          factory_name,
@@ -2462,21 +2363,21 @@ def datafactory_linked_service_azure_sql_database_update(instance, cmd,
     return instance
 
 
-def datafactory_linked_service_azure_sql_m_i_create(cmd, client,
-                                                    resource_group_name,
-                                                    factory_name,
-                                                    linked_service_name,
-                                                    type_properties_connection_string,
-                                                    if_match=None,
-                                                    connect_via=None,
-                                                    description=None,
-                                                    parameters=None,
-                                                    annotations=None,
-                                                    type_properties_password=None,
-                                                    type_properties_service_principal_id=None,
-                                                    type_properties_service_principal_key=None,
-                                                    type_properties_tenant=None,
-                                                    type_properties_encrypted_credential=None):
+def datafactory_linked_service_azure_sql_dw_create(cmd, client,
+                                                   resource_group_name,
+                                                   factory_name,
+                                                   linked_service_name,
+                                                   type_properties_connection_string,
+                                                   if_match=None,
+                                                   connect_via=None,
+                                                   description=None,
+                                                   parameters=None,
+                                                   annotations=None,
+                                                   type_properties_password=None,
+                                                   type_properties_service_principal_id=None,
+                                                   type_properties_service_principal_key=None,
+                                                   type_properties_tenant=None,
+                                                   type_properties_encrypted_credential=None):
     if isinstance(connect_via, str):
         connect_via = json.loads(connect_via)
     if isinstance(parameters, str):
@@ -2496,7 +2397,7 @@ def datafactory_linked_service_azure_sql_m_i_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = 'AzureSqlMI'
+    properties['type'] = 'AzureSqlDw'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -2514,21 +2415,21 @@ def datafactory_linked_service_azure_sql_m_i_create(cmd, client,
                                    properties=properties)
 
 
-def datafactory_linked_service_azure_sql_m_i_update(instance, cmd,
-                                                    resource_group_name,
-                                                    factory_name,
-                                                    linked_service_name,
-                                                    type_properties_connection_string,
-                                                    if_match=None,
-                                                    connect_via=None,
-                                                    description=None,
-                                                    parameters=None,
-                                                    annotations=None,
-                                                    type_properties_password=None,
-                                                    type_properties_service_principal_id=None,
-                                                    type_properties_service_principal_key=None,
-                                                    type_properties_tenant=None,
-                                                    type_properties_encrypted_credential=None):
+def datafactory_linked_service_azure_sql_dw_update(instance, cmd,
+                                                   resource_group_name,
+                                                   factory_name,
+                                                   linked_service_name,
+                                                   type_properties_connection_string,
+                                                   if_match=None,
+                                                   connect_via=None,
+                                                   description=None,
+                                                   parameters=None,
+                                                   annotations=None,
+                                                   type_properties_password=None,
+                                                   type_properties_service_principal_id=None,
+                                                   type_properties_service_principal_key=None,
+                                                   type_properties_tenant=None,
+                                                   type_properties_encrypted_credential=None):
     if isinstance(connect_via, str):
         connect_via = json.loads(connect_via)
     if isinstance(parameters, str):
@@ -2547,7 +2448,106 @@ def datafactory_linked_service_azure_sql_m_i_update(instance, cmd,
         type_properties_tenant = json.loads(type_properties_tenant)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = 'AzureSqlMI'
+    instance.type = 'AzureSqlDw'
+    instance.connect_via = connect_via
+    instance.description = description
+    instance.parameters = parameters
+    instance.annotations = annotations
+    instance.connection_string = type_properties_connection_string
+    instance.password = type_properties_password
+    instance.service_principal_id = type_properties_service_principal_id
+    instance.service_principal_key = type_properties_service_principal_key
+    instance.tenant = type_properties_tenant
+    instance.encrypted_credential = type_properties_encrypted_credential
+    return instance
+
+
+def datafactory_linked_service_azure_sql_mi_create(cmd, client,
+                                                   resource_group_name,
+                                                   factory_name,
+                                                   linked_service_name,
+                                                   type_properties_connection_string,
+                                                   if_match=None,
+                                                   connect_via=None,
+                                                   description=None,
+                                                   parameters=None,
+                                                   annotations=None,
+                                                   type_properties_password=None,
+                                                   type_properties_service_principal_id=None,
+                                                   type_properties_service_principal_key=None,
+                                                   type_properties_tenant=None,
+                                                   type_properties_encrypted_credential=None):
+    if isinstance(connect_via, str):
+        connect_via = json.loads(connect_via)
+    if isinstance(parameters, str):
+        parameters = json.loads(parameters)
+    if isinstance(annotations, str):
+        annotations = json.loads(annotations)
+    if isinstance(type_properties_connection_string, str):
+        type_properties_connection_string = json.loads(type_properties_connection_string)
+    if isinstance(type_properties_password, str):
+        type_properties_password = json.loads(type_properties_password)
+    if isinstance(type_properties_service_principal_id, str):
+        type_properties_service_principal_id = json.loads(type_properties_service_principal_id)
+    if isinstance(type_properties_service_principal_key, str):
+        type_properties_service_principal_key = json.loads(type_properties_service_principal_key)
+    if isinstance(type_properties_tenant, str):
+        type_properties_tenant = json.loads(type_properties_tenant)
+    if isinstance(type_properties_encrypted_credential, str):
+        type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
+    properties = {}
+    properties['type'] = 'AzureSqlMi'
+    properties['connect_via'] = connect_via
+    properties['description'] = description
+    properties['parameters'] = parameters
+    properties['annotations'] = annotations
+    properties['connection_string'] = type_properties_connection_string
+    properties['password'] = type_properties_password
+    properties['service_principal_id'] = type_properties_service_principal_id
+    properties['service_principal_key'] = type_properties_service_principal_key
+    properties['tenant'] = type_properties_tenant
+    properties['encrypted_credential'] = type_properties_encrypted_credential
+    return client.create_or_update(resource_group_name=resource_group_name,
+                                   factory_name=factory_name,
+                                   linked_service_name=linked_service_name,
+                                   if_match=if_match,
+                                   properties=properties)
+
+
+def datafactory_linked_service_azure_sql_mi_update(instance, cmd,
+                                                   resource_group_name,
+                                                   factory_name,
+                                                   linked_service_name,
+                                                   type_properties_connection_string,
+                                                   if_match=None,
+                                                   connect_via=None,
+                                                   description=None,
+                                                   parameters=None,
+                                                   annotations=None,
+                                                   type_properties_password=None,
+                                                   type_properties_service_principal_id=None,
+                                                   type_properties_service_principal_key=None,
+                                                   type_properties_tenant=None,
+                                                   type_properties_encrypted_credential=None):
+    if isinstance(connect_via, str):
+        connect_via = json.loads(connect_via)
+    if isinstance(parameters, str):
+        parameters = json.loads(parameters)
+    if isinstance(annotations, str):
+        annotations = json.loads(annotations)
+    if isinstance(type_properties_connection_string, str):
+        type_properties_connection_string = json.loads(type_properties_connection_string)
+    if isinstance(type_properties_password, str):
+        type_properties_password = json.loads(type_properties_password)
+    if isinstance(type_properties_service_principal_id, str):
+        type_properties_service_principal_id = json.loads(type_properties_service_principal_id)
+    if isinstance(type_properties_service_principal_key, str):
+        type_properties_service_principal_key = json.loads(type_properties_service_principal_key)
+    if isinstance(type_properties_tenant, str):
+        type_properties_tenant = json.loads(type_properties_tenant)
+    if isinstance(type_properties_encrypted_credential, str):
+        type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
+    instance.type = 'AzureSqlMi'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -3076,20 +3076,20 @@ def datafactory_linked_service_concur_update(instance, cmd,
     return instance
 
 
-def datafactory_linked_service_cosmos_db_create(cmd, client,
-                                                resource_group_name,
-                                                factory_name,
-                                                linked_service_name,
-                                                if_match=None,
-                                                connect_via=None,
-                                                description=None,
-                                                parameters=None,
-                                                annotations=None,
-                                                type_properties_connection_string=None,
-                                                type_properties_account_endpoint=None,
-                                                type_properties_database=None,
-                                                type_properties_account_key=None,
-                                                type_properties_encrypted_credential=None):
+def datafactory_linked_service_cosmos_d_b_create(cmd, client,
+                                                 resource_group_name,
+                                                 factory_name,
+                                                 linked_service_name,
+                                                 if_match=None,
+                                                 connect_via=None,
+                                                 description=None,
+                                                 parameters=None,
+                                                 annotations=None,
+                                                 type_properties_connection_string=None,
+                                                 type_properties_account_endpoint=None,
+                                                 type_properties_database=None,
+                                                 type_properties_account_key=None,
+                                                 type_properties_encrypted_credential=None):
     if isinstance(connect_via, str):
         connect_via = json.loads(connect_via)
     if isinstance(parameters, str):
@@ -3107,7 +3107,7 @@ def datafactory_linked_service_cosmos_db_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = 'CosmosDb'
+    properties['type'] = 'CosmosDB'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -3124,20 +3124,20 @@ def datafactory_linked_service_cosmos_db_create(cmd, client,
                                    properties=properties)
 
 
-def datafactory_linked_service_cosmos_db_update(instance, cmd,
-                                                resource_group_name,
-                                                factory_name,
-                                                linked_service_name,
-                                                if_match=None,
-                                                connect_via=None,
-                                                description=None,
-                                                parameters=None,
-                                                annotations=None,
-                                                type_properties_connection_string=None,
-                                                type_properties_account_endpoint=None,
-                                                type_properties_database=None,
-                                                type_properties_account_key=None,
-                                                type_properties_encrypted_credential=None):
+def datafactory_linked_service_cosmos_d_b_update(instance, cmd,
+                                                 resource_group_name,
+                                                 factory_name,
+                                                 linked_service_name,
+                                                 if_match=None,
+                                                 connect_via=None,
+                                                 description=None,
+                                                 parameters=None,
+                                                 annotations=None,
+                                                 type_properties_connection_string=None,
+                                                 type_properties_account_endpoint=None,
+                                                 type_properties_database=None,
+                                                 type_properties_account_key=None,
+                                                 type_properties_encrypted_credential=None):
     if isinstance(connect_via, str):
         connect_via = json.loads(connect_via)
     if isinstance(parameters, str):
@@ -3154,7 +3154,7 @@ def datafactory_linked_service_cosmos_db_update(instance, cmd,
         type_properties_account_key = json.loads(type_properties_account_key)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = 'CosmosDb'
+    instance.type = 'CosmosDB'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -3167,17 +3167,17 @@ def datafactory_linked_service_cosmos_db_update(instance, cmd,
     return instance
 
 
-def datafactory_linked_service_cosmos_db_mongo_db_api_create(cmd, client,
-                                                             resource_group_name,
-                                                             factory_name,
-                                                             linked_service_name,
-                                                             type_properties_connection_string,
-                                                             type_properties_database,
-                                                             if_match=None,
-                                                             connect_via=None,
-                                                             description=None,
-                                                             parameters=None,
-                                                             annotations=None):
+def datafactory_linked_service_cosmos_d_b_mongo_d_b_api_create(cmd, client,
+                                                               resource_group_name,
+                                                               factory_name,
+                                                               linked_service_name,
+                                                               type_properties_connection_string,
+                                                               type_properties_database,
+                                                               if_match=None,
+                                                               connect_via=None,
+                                                               description=None,
+                                                               parameters=None,
+                                                               annotations=None):
     if isinstance(connect_via, str):
         connect_via = json.loads(connect_via)
     if isinstance(parameters, str):
@@ -3189,7 +3189,7 @@ def datafactory_linked_service_cosmos_db_mongo_db_api_create(cmd, client,
     if isinstance(type_properties_database, str):
         type_properties_database = json.loads(type_properties_database)
     properties = {}
-    properties['type'] = 'CosmosDbMongoDbApi'
+    properties['type'] = 'CosmosDBMongoDBApi'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -3203,17 +3203,17 @@ def datafactory_linked_service_cosmos_db_mongo_db_api_create(cmd, client,
                                    properties=properties)
 
 
-def datafactory_linked_service_cosmos_db_mongo_db_api_update(instance, cmd,
-                                                             resource_group_name,
-                                                             factory_name,
-                                                             linked_service_name,
-                                                             type_properties_connection_string,
-                                                             type_properties_database,
-                                                             if_match=None,
-                                                             connect_via=None,
-                                                             description=None,
-                                                             parameters=None,
-                                                             annotations=None):
+def datafactory_linked_service_cosmos_d_b_mongo_d_b_api_update(instance, cmd,
+                                                               resource_group_name,
+                                                               factory_name,
+                                                               linked_service_name,
+                                                               type_properties_connection_string,
+                                                               type_properties_database,
+                                                               if_match=None,
+                                                               connect_via=None,
+                                                               description=None,
+                                                               parameters=None,
+                                                               annotations=None):
     if isinstance(connect_via, str):
         connect_via = json.loads(connect_via)
     if isinstance(parameters, str):
@@ -3224,7 +3224,7 @@ def datafactory_linked_service_cosmos_db_mongo_db_api_update(instance, cmd,
         type_properties_connection_string = json.loads(type_properties_connection_string)
     if isinstance(type_properties_database, str):
         type_properties_database = json.loads(type_properties_database)
-    instance.type = 'CosmosDbMongoDbApi'
+    instance.type = 'CosmosDBMongoDBApi'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -3695,21 +3695,21 @@ def datafactory_linked_service_dynamics_update(instance, cmd,
     return instance
 
 
-def datafactory_linked_service_dynamics_a_x_create(cmd, client,
-                                                   resource_group_name,
-                                                   factory_name,
-                                                   linked_service_name,
-                                                   type_properties_url,
-                                                   type_properties_service_principal_id,
-                                                   type_properties_service_principal_key,
-                                                   type_properties_tenant,
-                                                   type_properties_aad_resource_id,
-                                                   if_match=None,
-                                                   connect_via=None,
-                                                   description=None,
-                                                   parameters=None,
-                                                   annotations=None,
-                                                   type_properties_encrypted_credential=None):
+def datafactory_linked_service_dynamics_ax_create(cmd, client,
+                                                  resource_group_name,
+                                                  factory_name,
+                                                  linked_service_name,
+                                                  type_properties_url,
+                                                  type_properties_service_principal_id,
+                                                  type_properties_service_principal_key,
+                                                  type_properties_tenant,
+                                                  type_properties_aad_resource_id,
+                                                  if_match=None,
+                                                  connect_via=None,
+                                                  description=None,
+                                                  parameters=None,
+                                                  annotations=None,
+                                                  type_properties_encrypted_credential=None):
     if isinstance(connect_via, str):
         connect_via = json.loads(connect_via)
     if isinstance(parameters, str):
@@ -3729,7 +3729,7 @@ def datafactory_linked_service_dynamics_a_x_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = 'DynamicsAX'
+    properties['type'] = 'DynamicsAx'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -3747,21 +3747,21 @@ def datafactory_linked_service_dynamics_a_x_create(cmd, client,
                                    properties=properties)
 
 
-def datafactory_linked_service_dynamics_a_x_update(instance, cmd,
-                                                   resource_group_name,
-                                                   factory_name,
-                                                   linked_service_name,
-                                                   type_properties_url,
-                                                   type_properties_service_principal_id,
-                                                   type_properties_service_principal_key,
-                                                   type_properties_tenant,
-                                                   type_properties_aad_resource_id,
-                                                   if_match=None,
-                                                   connect_via=None,
-                                                   description=None,
-                                                   parameters=None,
-                                                   annotations=None,
-                                                   type_properties_encrypted_credential=None):
+def datafactory_linked_service_dynamics_ax_update(instance, cmd,
+                                                  resource_group_name,
+                                                  factory_name,
+                                                  linked_service_name,
+                                                  type_properties_url,
+                                                  type_properties_service_principal_id,
+                                                  type_properties_service_principal_key,
+                                                  type_properties_tenant,
+                                                  type_properties_aad_resource_id,
+                                                  if_match=None,
+                                                  connect_via=None,
+                                                  description=None,
+                                                  parameters=None,
+                                                  annotations=None,
+                                                  type_properties_encrypted_credential=None):
     if isinstance(connect_via, str):
         connect_via = json.loads(connect_via)
     if isinstance(parameters, str):
@@ -3780,7 +3780,7 @@ def datafactory_linked_service_dynamics_a_x_update(instance, cmd,
         type_properties_aad_resource_id = json.loads(type_properties_aad_resource_id)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = 'DynamicsAX'
+    instance.type = 'DynamicsAx'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -4801,23 +4801,23 @@ def datafactory_linked_service_h_base_update(instance, cmd,
     return instance
 
 
-def datafactory_linked_service_h_d_insight_create(cmd, client,
-                                                  resource_group_name,
-                                                  factory_name,
-                                                  linked_service_name,
-                                                  type_properties_cluster_uri,
-                                                  if_match=None,
-                                                  connect_via=None,
-                                                  description=None,
-                                                  parameters=None,
-                                                  annotations=None,
-                                                  type_properties_user_name=None,
-                                                  type_properties_password=None,
-                                                  type_properties_linked_service_name=None,
-                                                  type_properties_hcatalog_linked_service_name=None,
-                                                  type_properties_encrypted_credential=None,
-                                                  type_properties_is_esp_enabled=None,
-                                                  type_properties_file_system=None):
+def datafactory_linked_service_hd_insight_create(cmd, client,
+                                                 resource_group_name,
+                                                 factory_name,
+                                                 linked_service_name,
+                                                 type_properties_cluster_uri,
+                                                 if_match=None,
+                                                 connect_via=None,
+                                                 description=None,
+                                                 parameters=None,
+                                                 annotations=None,
+                                                 type_properties_user_name=None,
+                                                 type_properties_password=None,
+                                                 type_properties_linked_service_name=None,
+                                                 type_properties_hcatalog_linked_service_name=None,
+                                                 type_properties_encrypted_credential=None,
+                                                 type_properties_is_esp_enabled=None,
+                                                 type_properties_file_system=None):
     if isinstance(connect_via, str):
         connect_via = json.loads(connect_via)
     if isinstance(parameters, str):
@@ -4841,7 +4841,7 @@ def datafactory_linked_service_h_d_insight_create(cmd, client,
     if isinstance(type_properties_file_system, str):
         type_properties_file_system = json.loads(type_properties_file_system)
     properties = {}
-    properties['type'] = 'HDInsight'
+    properties['type'] = 'HdInsight'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -4861,23 +4861,23 @@ def datafactory_linked_service_h_d_insight_create(cmd, client,
                                    properties=properties)
 
 
-def datafactory_linked_service_h_d_insight_update(instance, cmd,
-                                                  resource_group_name,
-                                                  factory_name,
-                                                  linked_service_name,
-                                                  type_properties_cluster_uri,
-                                                  if_match=None,
-                                                  connect_via=None,
-                                                  description=None,
-                                                  parameters=None,
-                                                  annotations=None,
-                                                  type_properties_user_name=None,
-                                                  type_properties_password=None,
-                                                  type_properties_linked_service_name=None,
-                                                  type_properties_hcatalog_linked_service_name=None,
-                                                  type_properties_encrypted_credential=None,
-                                                  type_properties_is_esp_enabled=None,
-                                                  type_properties_file_system=None):
+def datafactory_linked_service_hd_insight_update(instance, cmd,
+                                                 resource_group_name,
+                                                 factory_name,
+                                                 linked_service_name,
+                                                 type_properties_cluster_uri,
+                                                 if_match=None,
+                                                 connect_via=None,
+                                                 description=None,
+                                                 parameters=None,
+                                                 annotations=None,
+                                                 type_properties_user_name=None,
+                                                 type_properties_password=None,
+                                                 type_properties_linked_service_name=None,
+                                                 type_properties_hcatalog_linked_service_name=None,
+                                                 type_properties_encrypted_credential=None,
+                                                 type_properties_is_esp_enabled=None,
+                                                 type_properties_file_system=None):
     if isinstance(connect_via, str):
         connect_via = json.loads(connect_via)
     if isinstance(parameters, str):
@@ -4900,7 +4900,7 @@ def datafactory_linked_service_h_d_insight_update(instance, cmd,
         type_properties_is_esp_enabled = json.loads(type_properties_is_esp_enabled)
     if isinstance(type_properties_file_system, str):
         type_properties_file_system = json.loads(type_properties_file_system)
-    instance.type = 'HDInsight'
+    instance.type = 'HdInsight'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -4916,48 +4916,48 @@ def datafactory_linked_service_h_d_insight_update(instance, cmd,
     return instance
 
 
-def datafactory_linked_service_h_d_insight_on_demand_create(cmd, client,
-                                                            resource_group_name,
-                                                            factory_name,
-                                                            linked_service_name,
-                                                            type_properties_cluster_size,
-                                                            type_properties_time_to_live,
-                                                            type_properties_version,
-                                                            type_properties_linked_service_name,
-                                                            type_properties_host_subscription_id,
-                                                            type_properties_tenant,
-                                                            type_properties_cluster_resource_group,
-                                                            if_match=None,
-                                                            connect_via=None,
-                                                            description=None,
-                                                            parameters=None,
-                                                            annotations=None,
-                                                            type_properties_service_principal_id=None,
-                                                            type_properties_service_principal_key=None,
-                                                            type_properties_cluster_name_prefix=None,
-                                                            type_properties_cluster_user_name=None,
-                                                            type_properties_cluster_password=None,
-                                                            type_properties_cluster_ssh_user_name=None,
-                                                            type_properties_cluster_ssh_password=None,
-                                                            type_properties_additional_linked_service_names=None,
-                                                            type_properties_hcatalog_linked_service_name=None,
-                                                            type_properties_cluster_type=None,
-                                                            type_properties_spark_version=None,
-                                                            type_properties_core_configuration=None,
-                                                            type_properties_h_base_configuration=None,
-                                                            type_properties_hdfs_configuration=None,
-                                                            type_properties_hive_configuration=None,
-                                                            type_properties_map_reduce_configuration=None,
-                                                            type_properties_oozie_configuration=None,
-                                                            type_properties_storm_configuration=None,
-                                                            type_properties_yarn_configuration=None,
-                                                            type_properties_encrypted_credential=None,
-                                                            type_properties_head_node_size=None,
-                                                            type_properties_data_node_size=None,
-                                                            type_properties_zookeeper_node_size=None,
-                                                            type_properties_script_actions=None,
-                                                            type_properties_virtual_network_id=None,
-                                                            type_properties_subnet_name=None):
+def datafactory_linked_service_hd_insight_on_demand_create(cmd, client,
+                                                           resource_group_name,
+                                                           factory_name,
+                                                           linked_service_name,
+                                                           type_properties_cluster_size,
+                                                           type_properties_time_to_live,
+                                                           type_properties_version,
+                                                           type_properties_linked_service_name,
+                                                           type_properties_host_subscription_id,
+                                                           type_properties_tenant,
+                                                           type_properties_cluster_resource_group,
+                                                           if_match=None,
+                                                           connect_via=None,
+                                                           description=None,
+                                                           parameters=None,
+                                                           annotations=None,
+                                                           type_properties_service_principal_id=None,
+                                                           type_properties_service_principal_key=None,
+                                                           type_properties_cluster_name_prefix=None,
+                                                           type_properties_cluster_user_name=None,
+                                                           type_properties_cluster_password=None,
+                                                           type_properties_cluster_ssh_user_name=None,
+                                                           type_properties_cluster_ssh_password=None,
+                                                           type_properties_additional_linked_service_names=None,
+                                                           type_properties_hcatalog_linked_service_name=None,
+                                                           type_properties_cluster_type=None,
+                                                           type_properties_spark_version=None,
+                                                           type_properties_core_configuration=None,
+                                                           type_properties_h_base_configuration=None,
+                                                           type_properties_hdfs_configuration=None,
+                                                           type_properties_hive_configuration=None,
+                                                           type_properties_map_reduce_configuration=None,
+                                                           type_properties_oozie_configuration=None,
+                                                           type_properties_storm_configuration=None,
+                                                           type_properties_yarn_configuration=None,
+                                                           type_properties_encrypted_credential=None,
+                                                           type_properties_head_node_size=None,
+                                                           type_properties_data_node_size=None,
+                                                           type_properties_zookeeper_node_size=None,
+                                                           type_properties_script_actions=None,
+                                                           type_properties_virtual_network_id=None,
+                                                           type_properties_subnet_name=None):
     if isinstance(connect_via, str):
         connect_via = json.loads(connect_via)
     if isinstance(parameters, str):
@@ -5029,7 +5029,7 @@ def datafactory_linked_service_h_d_insight_on_demand_create(cmd, client,
     if isinstance(type_properties_subnet_name, str):
         type_properties_subnet_name = json.loads(type_properties_subnet_name)
     properties = {}
-    properties['type'] = 'HDInsightOnDemand'
+    properties['type'] = 'HdInsightOnDemand'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -5074,48 +5074,48 @@ def datafactory_linked_service_h_d_insight_on_demand_create(cmd, client,
                                    properties=properties)
 
 
-def datafactory_linked_service_h_d_insight_on_demand_update(instance, cmd,
-                                                            resource_group_name,
-                                                            factory_name,
-                                                            linked_service_name,
-                                                            type_properties_cluster_size,
-                                                            type_properties_time_to_live,
-                                                            type_properties_version,
-                                                            type_properties_linked_service_name,
-                                                            type_properties_host_subscription_id,
-                                                            type_properties_tenant,
-                                                            type_properties_cluster_resource_group,
-                                                            if_match=None,
-                                                            connect_via=None,
-                                                            description=None,
-                                                            parameters=None,
-                                                            annotations=None,
-                                                            type_properties_service_principal_id=None,
-                                                            type_properties_service_principal_key=None,
-                                                            type_properties_cluster_name_prefix=None,
-                                                            type_properties_cluster_user_name=None,
-                                                            type_properties_cluster_password=None,
-                                                            type_properties_cluster_ssh_user_name=None,
-                                                            type_properties_cluster_ssh_password=None,
-                                                            type_properties_additional_linked_service_names=None,
-                                                            type_properties_hcatalog_linked_service_name=None,
-                                                            type_properties_cluster_type=None,
-                                                            type_properties_spark_version=None,
-                                                            type_properties_core_configuration=None,
-                                                            type_properties_h_base_configuration=None,
-                                                            type_properties_hdfs_configuration=None,
-                                                            type_properties_hive_configuration=None,
-                                                            type_properties_map_reduce_configuration=None,
-                                                            type_properties_oozie_configuration=None,
-                                                            type_properties_storm_configuration=None,
-                                                            type_properties_yarn_configuration=None,
-                                                            type_properties_encrypted_credential=None,
-                                                            type_properties_head_node_size=None,
-                                                            type_properties_data_node_size=None,
-                                                            type_properties_zookeeper_node_size=None,
-                                                            type_properties_script_actions=None,
-                                                            type_properties_virtual_network_id=None,
-                                                            type_properties_subnet_name=None):
+def datafactory_linked_service_hd_insight_on_demand_update(instance, cmd,
+                                                           resource_group_name,
+                                                           factory_name,
+                                                           linked_service_name,
+                                                           type_properties_cluster_size,
+                                                           type_properties_time_to_live,
+                                                           type_properties_version,
+                                                           type_properties_linked_service_name,
+                                                           type_properties_host_subscription_id,
+                                                           type_properties_tenant,
+                                                           type_properties_cluster_resource_group,
+                                                           if_match=None,
+                                                           connect_via=None,
+                                                           description=None,
+                                                           parameters=None,
+                                                           annotations=None,
+                                                           type_properties_service_principal_id=None,
+                                                           type_properties_service_principal_key=None,
+                                                           type_properties_cluster_name_prefix=None,
+                                                           type_properties_cluster_user_name=None,
+                                                           type_properties_cluster_password=None,
+                                                           type_properties_cluster_ssh_user_name=None,
+                                                           type_properties_cluster_ssh_password=None,
+                                                           type_properties_additional_linked_service_names=None,
+                                                           type_properties_hcatalog_linked_service_name=None,
+                                                           type_properties_cluster_type=None,
+                                                           type_properties_spark_version=None,
+                                                           type_properties_core_configuration=None,
+                                                           type_properties_h_base_configuration=None,
+                                                           type_properties_hdfs_configuration=None,
+                                                           type_properties_hive_configuration=None,
+                                                           type_properties_map_reduce_configuration=None,
+                                                           type_properties_oozie_configuration=None,
+                                                           type_properties_storm_configuration=None,
+                                                           type_properties_yarn_configuration=None,
+                                                           type_properties_encrypted_credential=None,
+                                                           type_properties_head_node_size=None,
+                                                           type_properties_data_node_size=None,
+                                                           type_properties_zookeeper_node_size=None,
+                                                           type_properties_script_actions=None,
+                                                           type_properties_virtual_network_id=None,
+                                                           type_properties_subnet_name=None):
     if isinstance(connect_via, str):
         connect_via = json.loads(connect_via)
     if isinstance(parameters, str):
@@ -5186,7 +5186,7 @@ def datafactory_linked_service_h_d_insight_on_demand_update(instance, cmd,
         type_properties_virtual_network_id = json.loads(type_properties_virtual_network_id)
     if isinstance(type_properties_subnet_name, str):
         type_properties_subnet_name = json.loads(type_properties_subnet_name)
-    instance.type = 'HDInsightOnDemand'
+    instance.type = 'HdInsightOnDemand'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -6448,25 +6448,25 @@ def datafactory_linked_service_microsoft_access_update(instance, cmd,
     return instance
 
 
-def datafactory_linked_service_mongo_db_create(cmd, client,
-                                               resource_group_name,
-                                               factory_name,
-                                               linked_service_name,
-                                               type_properties_server,
-                                               type_properties_database_name,
-                                               if_match=None,
-                                               connect_via=None,
-                                               description=None,
-                                               parameters=None,
-                                               annotations=None,
-                                               type_properties_authentication_type=None,
-                                               type_properties_username=None,
-                                               type_properties_password=None,
-                                               type_properties_auth_source=None,
-                                               type_properties_port=None,
-                                               type_properties_enable_ssl=None,
-                                               type_properties_allow_self_signed_server_cert=None,
-                                               type_properties_encrypted_credential=None):
+def datafactory_linked_service_mongo_d_b_create(cmd, client,
+                                                resource_group_name,
+                                                factory_name,
+                                                linked_service_name,
+                                                type_properties_server,
+                                                type_properties_database_name,
+                                                if_match=None,
+                                                connect_via=None,
+                                                description=None,
+                                                parameters=None,
+                                                annotations=None,
+                                                type_properties_authentication_type=None,
+                                                type_properties_username=None,
+                                                type_properties_password=None,
+                                                type_properties_auth_source=None,
+                                                type_properties_port=None,
+                                                type_properties_enable_ssl=None,
+                                                type_properties_allow_self_signed_server_cert=None,
+                                                type_properties_encrypted_credential=None):
     if isinstance(connect_via, str):
         connect_via = json.loads(connect_via)
     if isinstance(parameters, str):
@@ -6492,7 +6492,7 @@ def datafactory_linked_service_mongo_db_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = 'MongoDb'
+    properties['type'] = 'MongoDB'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -6514,25 +6514,25 @@ def datafactory_linked_service_mongo_db_create(cmd, client,
                                    properties=properties)
 
 
-def datafactory_linked_service_mongo_db_update(instance, cmd,
-                                               resource_group_name,
-                                               factory_name,
-                                               linked_service_name,
-                                               type_properties_server,
-                                               type_properties_database_name,
-                                               if_match=None,
-                                               connect_via=None,
-                                               description=None,
-                                               parameters=None,
-                                               annotations=None,
-                                               type_properties_authentication_type=None,
-                                               type_properties_username=None,
-                                               type_properties_password=None,
-                                               type_properties_auth_source=None,
-                                               type_properties_port=None,
-                                               type_properties_enable_ssl=None,
-                                               type_properties_allow_self_signed_server_cert=None,
-                                               type_properties_encrypted_credential=None):
+def datafactory_linked_service_mongo_d_b_update(instance, cmd,
+                                                resource_group_name,
+                                                factory_name,
+                                                linked_service_name,
+                                                type_properties_server,
+                                                type_properties_database_name,
+                                                if_match=None,
+                                                connect_via=None,
+                                                description=None,
+                                                parameters=None,
+                                                annotations=None,
+                                                type_properties_authentication_type=None,
+                                                type_properties_username=None,
+                                                type_properties_password=None,
+                                                type_properties_auth_source=None,
+                                                type_properties_port=None,
+                                                type_properties_enable_ssl=None,
+                                                type_properties_allow_self_signed_server_cert=None,
+                                                type_properties_encrypted_credential=None):
     if isinstance(connect_via, str):
         connect_via = json.loads(connect_via)
     if isinstance(parameters, str):
@@ -6557,7 +6557,7 @@ def datafactory_linked_service_mongo_db_update(instance, cmd,
         type_properties_allow_self_signed_server_cert = json.loads(type_properties_allow_self_signed_server_cert)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = 'MongoDb'
+    instance.type = 'MongoDB'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -6575,17 +6575,17 @@ def datafactory_linked_service_mongo_db_update(instance, cmd,
     return instance
 
 
-def datafactory_linked_service_mongo_db_v2_create(cmd, client,
-                                                  resource_group_name,
-                                                  factory_name,
-                                                  linked_service_name,
-                                                  type_properties_connection_string,
-                                                  type_properties_database,
-                                                  if_match=None,
-                                                  connect_via=None,
-                                                  description=None,
-                                                  parameters=None,
-                                                  annotations=None):
+def datafactory_linked_service_mongo_d_b_v2_create(cmd, client,
+                                                   resource_group_name,
+                                                   factory_name,
+                                                   linked_service_name,
+                                                   type_properties_connection_string,
+                                                   type_properties_database,
+                                                   if_match=None,
+                                                   connect_via=None,
+                                                   description=None,
+                                                   parameters=None,
+                                                   annotations=None):
     if isinstance(connect_via, str):
         connect_via = json.loads(connect_via)
     if isinstance(parameters, str):
@@ -6597,7 +6597,7 @@ def datafactory_linked_service_mongo_db_v2_create(cmd, client,
     if isinstance(type_properties_database, str):
         type_properties_database = json.loads(type_properties_database)
     properties = {}
-    properties['type'] = 'MongoDbV2'
+    properties['type'] = 'MongoDBV2'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -6611,17 +6611,17 @@ def datafactory_linked_service_mongo_db_v2_create(cmd, client,
                                    properties=properties)
 
 
-def datafactory_linked_service_mongo_db_v2_update(instance, cmd,
-                                                  resource_group_name,
-                                                  factory_name,
-                                                  linked_service_name,
-                                                  type_properties_connection_string,
-                                                  type_properties_database,
-                                                  if_match=None,
-                                                  connect_via=None,
-                                                  description=None,
-                                                  parameters=None,
-                                                  annotations=None):
+def datafactory_linked_service_mongo_d_b_v2_update(instance, cmd,
+                                                   resource_group_name,
+                                                   factory_name,
+                                                   linked_service_name,
+                                                   type_properties_connection_string,
+                                                   type_properties_database,
+                                                   if_match=None,
+                                                   connect_via=None,
+                                                   description=None,
+                                                   parameters=None,
+                                                   annotations=None):
     if isinstance(connect_via, str):
         connect_via = json.loads(connect_via)
     if isinstance(parameters, str):
@@ -6632,7 +6632,7 @@ def datafactory_linked_service_mongo_db_v2_update(instance, cmd,
         type_properties_connection_string = json.loads(type_properties_connection_string)
     if isinstance(type_properties_database, str):
         type_properties_database = json.loads(type_properties_database)
-    instance.type = 'MongoDbV2'
+    instance.type = 'MongoDBV2'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -8441,21 +8441,21 @@ def datafactory_linked_service_salesforce_service_cloud_update(instance, cmd,
     return instance
 
 
-def datafactory_linked_service_sap_b_w_create(cmd, client,
-                                              resource_group_name,
-                                              factory_name,
-                                              linked_service_name,
-                                              type_properties_server,
-                                              type_properties_system_number,
-                                              type_properties_client_id,
-                                              if_match=None,
-                                              connect_via=None,
-                                              description=None,
-                                              parameters=None,
-                                              annotations=None,
-                                              type_properties_user_name=None,
-                                              type_properties_password=None,
-                                              type_properties_encrypted_credential=None):
+def datafactory_linked_service_sap_bw_create(cmd, client,
+                                             resource_group_name,
+                                             factory_name,
+                                             linked_service_name,
+                                             type_properties_server,
+                                             type_properties_system_number,
+                                             type_properties_client_id,
+                                             if_match=None,
+                                             connect_via=None,
+                                             description=None,
+                                             parameters=None,
+                                             annotations=None,
+                                             type_properties_user_name=None,
+                                             type_properties_password=None,
+                                             type_properties_encrypted_credential=None):
     if isinstance(connect_via, str):
         connect_via = json.loads(connect_via)
     if isinstance(parameters, str):
@@ -8475,7 +8475,7 @@ def datafactory_linked_service_sap_b_w_create(cmd, client,
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
     properties = {}
-    properties['type'] = 'SapBW'
+    properties['type'] = 'SapBw'
     properties['connect_via'] = connect_via
     properties['description'] = description
     properties['parameters'] = parameters
@@ -8493,21 +8493,21 @@ def datafactory_linked_service_sap_b_w_create(cmd, client,
                                    properties=properties)
 
 
-def datafactory_linked_service_sap_b_w_update(instance, cmd,
-                                              resource_group_name,
-                                              factory_name,
-                                              linked_service_name,
-                                              type_properties_server,
-                                              type_properties_system_number,
-                                              type_properties_client_id,
-                                              if_match=None,
-                                              connect_via=None,
-                                              description=None,
-                                              parameters=None,
-                                              annotations=None,
-                                              type_properties_user_name=None,
-                                              type_properties_password=None,
-                                              type_properties_encrypted_credential=None):
+def datafactory_linked_service_sap_bw_update(instance, cmd,
+                                             resource_group_name,
+                                             factory_name,
+                                             linked_service_name,
+                                             type_properties_server,
+                                             type_properties_system_number,
+                                             type_properties_client_id,
+                                             if_match=None,
+                                             connect_via=None,
+                                             description=None,
+                                             parameters=None,
+                                             annotations=None,
+                                             type_properties_user_name=None,
+                                             type_properties_password=None,
+                                             type_properties_encrypted_credential=None):
     if isinstance(connect_via, str):
         connect_via = json.loads(connect_via)
     if isinstance(parameters, str):
@@ -8526,7 +8526,7 @@ def datafactory_linked_service_sap_b_w_update(instance, cmd,
         type_properties_password = json.loads(type_properties_password)
     if isinstance(type_properties_encrypted_credential, str):
         type_properties_encrypted_credential = json.loads(type_properties_encrypted_credential)
-    instance.type = 'SapBW'
+    instance.type = 'SapBw'
     instance.connect_via = connect_via
     instance.description = description
     instance.parameters = parameters
@@ -10425,19 +10425,19 @@ def datafactory_dataset_show(cmd, client,
                       if_none_match=if_none_match)
 
 
-def datafactory_dataset_amazon_m_w_s_object_create(cmd, client,
-                                                   resource_group_name,
-                                                   factory_name,
-                                                   dataset_name,
-                                                   linked_service_name,
-                                                   if_match=None,
-                                                   description=None,
-                                                   structure=None,
-                                                   schema=None,
-                                                   parameters=None,
-                                                   annotations=None,
-                                                   folder=None,
-                                                   type_properties_table_name=None):
+def datafactory_dataset_amazon_mws_object_create(cmd, client,
+                                                 resource_group_name,
+                                                 factory_name,
+                                                 dataset_name,
+                                                 linked_service_name,
+                                                 if_match=None,
+                                                 description=None,
+                                                 structure=None,
+                                                 schema=None,
+                                                 parameters=None,
+                                                 annotations=None,
+                                                 folder=None,
+                                                 type_properties_table_name=None):
     if isinstance(structure, str):
         structure = json.loads(structure)
     if isinstance(schema, str):
@@ -10451,7 +10451,7 @@ def datafactory_dataset_amazon_m_w_s_object_create(cmd, client,
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
     properties = {}
-    properties['type'] = 'AmazonMWSObject'
+    properties['type'] = 'AmazonMwsObject'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -10467,19 +10467,19 @@ def datafactory_dataset_amazon_m_w_s_object_create(cmd, client,
                                    properties=properties)
 
 
-def datafactory_dataset_amazon_m_w_s_object_update(instance, cmd,
-                                                   resource_group_name,
-                                                   factory_name,
-                                                   dataset_name,
-                                                   linked_service_name,
-                                                   if_match=None,
-                                                   description=None,
-                                                   structure=None,
-                                                   schema=None,
-                                                   parameters=None,
-                                                   annotations=None,
-                                                   folder=None,
-                                                   type_properties_table_name=None):
+def datafactory_dataset_amazon_mws_object_update(instance, cmd,
+                                                 resource_group_name,
+                                                 factory_name,
+                                                 dataset_name,
+                                                 linked_service_name,
+                                                 if_match=None,
+                                                 description=None,
+                                                 structure=None,
+                                                 schema=None,
+                                                 parameters=None,
+                                                 annotations=None,
+                                                 folder=None,
+                                                 type_properties_table_name=None):
     if isinstance(structure, str):
         structure = json.loads(structure)
     if isinstance(schema, str):
@@ -10492,7 +10492,7 @@ def datafactory_dataset_amazon_m_w_s_object_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_table_name, str):
         type_properties_table_name = json.loads(type_properties_table_name)
-    instance.type = 'AmazonMWSObject'
+    instance.type = 'AmazonMwsObject'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -11004,25 +11004,25 @@ def datafactory_dataset_azure_blob_update(instance, cmd,
     return instance
 
 
-def datafactory_dataset_azure_blob_f_s_file_create(cmd, client,
-                                                   resource_group_name,
-                                                   factory_name,
-                                                   dataset_name,
-                                                   linked_service_name,
-                                                   if_match=None,
-                                                   description=None,
-                                                   structure=None,
-                                                   schema=None,
-                                                   parameters=None,
-                                                   annotations=None,
-                                                   folder=None,
-                                                   type_properties_folder_path=None,
-                                                   type_properties_file_name=None,
-                                                   type_properties_format=None,
-                                                   dataset_b_zip2_compression=None,
-                                                   dataset_g_zip_compression=None,
-                                                   dataset_deflate_compression=None,
-                                                   dataset_zip_deflate_compression=None):
+def datafactory_dataset_azure_blob_fs_file_create(cmd, client,
+                                                  resource_group_name,
+                                                  factory_name,
+                                                  dataset_name,
+                                                  linked_service_name,
+                                                  if_match=None,
+                                                  description=None,
+                                                  structure=None,
+                                                  schema=None,
+                                                  parameters=None,
+                                                  annotations=None,
+                                                  folder=None,
+                                                  type_properties_folder_path=None,
+                                                  type_properties_file_name=None,
+                                                  type_properties_format=None,
+                                                  dataset_b_zip2_compression=None,
+                                                  dataset_g_zip_compression=None,
+                                                  dataset_deflate_compression=None,
+                                                  dataset_zip_deflate_compression=None):
     if isinstance(structure, str):
         structure = json.loads(structure)
     if isinstance(schema, str):
@@ -11053,7 +11053,7 @@ def datafactory_dataset_azure_blob_f_s_file_create(cmd, client,
                        'ion, dataset_zip_deflate_compression is needed for type_properties_compression!')
     type_properties_compression = all_type_properties_compression[0] if len(all_type_properties_compression) == 1 else None
     properties = {}
-    properties['type'] = 'AzureBlobFSFile'
+    properties['type'] = 'AzureBlobFsFile'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -11072,25 +11072,25 @@ def datafactory_dataset_azure_blob_f_s_file_create(cmd, client,
                                    properties=properties)
 
 
-def datafactory_dataset_azure_blob_f_s_file_update(instance, cmd,
-                                                   resource_group_name,
-                                                   factory_name,
-                                                   dataset_name,
-                                                   linked_service_name,
-                                                   if_match=None,
-                                                   description=None,
-                                                   structure=None,
-                                                   schema=None,
-                                                   parameters=None,
-                                                   annotations=None,
-                                                   folder=None,
-                                                   type_properties_folder_path=None,
-                                                   type_properties_file_name=None,
-                                                   type_properties_format=None,
-                                                   dataset_b_zip2_compression=None,
-                                                   dataset_g_zip_compression=None,
-                                                   dataset_deflate_compression=None,
-                                                   dataset_zip_deflate_compression=None):
+def datafactory_dataset_azure_blob_fs_file_update(instance, cmd,
+                                                  resource_group_name,
+                                                  factory_name,
+                                                  dataset_name,
+                                                  linked_service_name,
+                                                  if_match=None,
+                                                  description=None,
+                                                  structure=None,
+                                                  schema=None,
+                                                  parameters=None,
+                                                  annotations=None,
+                                                  folder=None,
+                                                  type_properties_folder_path=None,
+                                                  type_properties_file_name=None,
+                                                  type_properties_format=None,
+                                                  dataset_b_zip2_compression=None,
+                                                  dataset_g_zip_compression=None,
+                                                  dataset_deflate_compression=None,
+                                                  dataset_zip_deflate_compression=None):
     if isinstance(structure, str):
         structure = json.loads(structure)
     if isinstance(schema, str):
@@ -11120,7 +11120,7 @@ def datafactory_dataset_azure_blob_f_s_file_update(instance, cmd,
         raise CLIError('at most one of  dataset_b_zip2_compression, dataset_g_zip_compression, dataset_deflate_compress'
                        'ion, dataset_zip_deflate_compression is needed for type_properties_compression!')
     type_properties_compression = all_type_properties_compression[0] if len(all_type_properties_compression) == 1 else None
-    instance.type = 'AzureBlobFSFile'
+    instance.type = 'AzureBlobFsFile'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -11685,21 +11685,21 @@ def datafactory_dataset_azure_search_index_update(instance, cmd,
     return instance
 
 
-def datafactory_dataset_azure_sql_d_w_table_create(cmd, client,
-                                                   resource_group_name,
-                                                   factory_name,
-                                                   dataset_name,
-                                                   linked_service_name,
-                                                   if_match=None,
-                                                   description=None,
-                                                   structure=None,
-                                                   schema=None,
-                                                   parameters=None,
-                                                   annotations=None,
-                                                   folder=None,
-                                                   type_properties_table_name=None,
-                                                   type_properties_schema=None,
-                                                   type_properties_table=None):
+def datafactory_dataset_azure_sql_dw_table_create(cmd, client,
+                                                  resource_group_name,
+                                                  factory_name,
+                                                  dataset_name,
+                                                  linked_service_name,
+                                                  if_match=None,
+                                                  description=None,
+                                                  structure=None,
+                                                  schema=None,
+                                                  parameters=None,
+                                                  annotations=None,
+                                                  folder=None,
+                                                  type_properties_table_name=None,
+                                                  type_properties_schema=None,
+                                                  type_properties_table=None):
     if isinstance(structure, str):
         structure = json.loads(structure)
     if isinstance(schema, str):
@@ -11717,7 +11717,7 @@ def datafactory_dataset_azure_sql_d_w_table_create(cmd, client,
     if isinstance(type_properties_table, str):
         type_properties_table = json.loads(type_properties_table)
     properties = {}
-    properties['type'] = 'AzureSqlDWTable'
+    properties['type'] = 'AzureSqlDwTable'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -11735,21 +11735,21 @@ def datafactory_dataset_azure_sql_d_w_table_create(cmd, client,
                                    properties=properties)
 
 
-def datafactory_dataset_azure_sql_d_w_table_update(instance, cmd,
-                                                   resource_group_name,
-                                                   factory_name,
-                                                   dataset_name,
-                                                   linked_service_name,
-                                                   if_match=None,
-                                                   description=None,
-                                                   structure=None,
-                                                   schema=None,
-                                                   parameters=None,
-                                                   annotations=None,
-                                                   folder=None,
-                                                   type_properties_table_name=None,
-                                                   type_properties_schema=None,
-                                                   type_properties_table=None):
+def datafactory_dataset_azure_sql_dw_table_update(instance, cmd,
+                                                  resource_group_name,
+                                                  factory_name,
+                                                  dataset_name,
+                                                  linked_service_name,
+                                                  if_match=None,
+                                                  description=None,
+                                                  structure=None,
+                                                  schema=None,
+                                                  parameters=None,
+                                                  annotations=None,
+                                                  folder=None,
+                                                  type_properties_table_name=None,
+                                                  type_properties_schema=None,
+                                                  type_properties_table=None):
     if isinstance(structure, str):
         structure = json.loads(structure)
     if isinstance(schema, str):
@@ -11766,7 +11766,7 @@ def datafactory_dataset_azure_sql_d_w_table_update(instance, cmd,
         type_properties_schema = json.loads(type_properties_schema)
     if isinstance(type_properties_table, str):
         type_properties_table = json.loads(type_properties_table)
-    instance.type = 'AzureSqlDWTable'
+    instance.type = 'AzureSqlDwTable'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -11780,21 +11780,21 @@ def datafactory_dataset_azure_sql_d_w_table_update(instance, cmd,
     return instance
 
 
-def datafactory_dataset_azure_sql_m_i_table_create(cmd, client,
-                                                   resource_group_name,
-                                                   factory_name,
-                                                   dataset_name,
-                                                   linked_service_name,
-                                                   if_match=None,
-                                                   description=None,
-                                                   structure=None,
-                                                   schema=None,
-                                                   parameters=None,
-                                                   annotations=None,
-                                                   folder=None,
-                                                   type_properties_table_name=None,
-                                                   type_properties_schema=None,
-                                                   type_properties_table=None):
+def datafactory_dataset_azure_sql_mi_table_create(cmd, client,
+                                                  resource_group_name,
+                                                  factory_name,
+                                                  dataset_name,
+                                                  linked_service_name,
+                                                  if_match=None,
+                                                  description=None,
+                                                  structure=None,
+                                                  schema=None,
+                                                  parameters=None,
+                                                  annotations=None,
+                                                  folder=None,
+                                                  type_properties_table_name=None,
+                                                  type_properties_schema=None,
+                                                  type_properties_table=None):
     if isinstance(structure, str):
         structure = json.loads(structure)
     if isinstance(schema, str):
@@ -11812,7 +11812,7 @@ def datafactory_dataset_azure_sql_m_i_table_create(cmd, client,
     if isinstance(type_properties_table, str):
         type_properties_table = json.loads(type_properties_table)
     properties = {}
-    properties['type'] = 'AzureSqlMITable'
+    properties['type'] = 'AzureSqlMiTable'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -11830,21 +11830,21 @@ def datafactory_dataset_azure_sql_m_i_table_create(cmd, client,
                                    properties=properties)
 
 
-def datafactory_dataset_azure_sql_m_i_table_update(instance, cmd,
-                                                   resource_group_name,
-                                                   factory_name,
-                                                   dataset_name,
-                                                   linked_service_name,
-                                                   if_match=None,
-                                                   description=None,
-                                                   structure=None,
-                                                   schema=None,
-                                                   parameters=None,
-                                                   annotations=None,
-                                                   folder=None,
-                                                   type_properties_table_name=None,
-                                                   type_properties_schema=None,
-                                                   type_properties_table=None):
+def datafactory_dataset_azure_sql_mi_table_update(instance, cmd,
+                                                  resource_group_name,
+                                                  factory_name,
+                                                  dataset_name,
+                                                  linked_service_name,
+                                                  if_match=None,
+                                                  description=None,
+                                                  structure=None,
+                                                  schema=None,
+                                                  parameters=None,
+                                                  annotations=None,
+                                                  folder=None,
+                                                  type_properties_table_name=None,
+                                                  type_properties_schema=None,
+                                                  type_properties_table=None):
     if isinstance(structure, str):
         structure = json.loads(structure)
     if isinstance(schema, str):
@@ -11861,7 +11861,7 @@ def datafactory_dataset_azure_sql_m_i_table_update(instance, cmd,
         type_properties_schema = json.loads(type_properties_schema)
     if isinstance(type_properties_table, str):
         type_properties_table = json.loads(type_properties_table)
-    instance.type = 'AzureSqlMITable'
+    instance.type = 'AzureSqlMiTable'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -12409,19 +12409,19 @@ def datafactory_dataset_concur_object_update(instance, cmd,
     return instance
 
 
-def datafactory_dataset_cosmos_db_mongo_db_api_collection_create(cmd, client,
-                                                                 resource_group_name,
-                                                                 factory_name,
-                                                                 dataset_name,
-                                                                 linked_service_name,
-                                                                 type_properties_collection,
-                                                                 if_match=None,
-                                                                 description=None,
-                                                                 structure=None,
-                                                                 schema=None,
-                                                                 parameters=None,
-                                                                 annotations=None,
-                                                                 folder=None):
+def datafactory_dataset_cosmos_d_b_mongo_d_b_api_collection_create(cmd, client,
+                                                                   resource_group_name,
+                                                                   factory_name,
+                                                                   dataset_name,
+                                                                   linked_service_name,
+                                                                   type_properties_collection,
+                                                                   if_match=None,
+                                                                   description=None,
+                                                                   structure=None,
+                                                                   schema=None,
+                                                                   parameters=None,
+                                                                   annotations=None,
+                                                                   folder=None):
     if isinstance(structure, str):
         structure = json.loads(structure)
     if isinstance(schema, str):
@@ -12435,7 +12435,7 @@ def datafactory_dataset_cosmos_db_mongo_db_api_collection_create(cmd, client,
     if isinstance(type_properties_collection, str):
         type_properties_collection = json.loads(type_properties_collection)
     properties = {}
-    properties['type'] = 'CosmosDbMongoDbApiCollection'
+    properties['type'] = 'CosmosDBMongoDBApiCollection'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -12451,19 +12451,19 @@ def datafactory_dataset_cosmos_db_mongo_db_api_collection_create(cmd, client,
                                    properties=properties)
 
 
-def datafactory_dataset_cosmos_db_mongo_db_api_collection_update(instance, cmd,
-                                                                 resource_group_name,
-                                                                 factory_name,
-                                                                 dataset_name,
-                                                                 linked_service_name,
-                                                                 type_properties_collection,
-                                                                 if_match=None,
-                                                                 description=None,
-                                                                 structure=None,
-                                                                 schema=None,
-                                                                 parameters=None,
-                                                                 annotations=None,
-                                                                 folder=None):
+def datafactory_dataset_cosmos_d_b_mongo_d_b_api_collection_update(instance, cmd,
+                                                                   resource_group_name,
+                                                                   factory_name,
+                                                                   dataset_name,
+                                                                   linked_service_name,
+                                                                   type_properties_collection,
+                                                                   if_match=None,
+                                                                   description=None,
+                                                                   structure=None,
+                                                                   schema=None,
+                                                                   parameters=None,
+                                                                   annotations=None,
+                                                                   folder=None):
     if isinstance(structure, str):
         structure = json.loads(structure)
     if isinstance(schema, str):
@@ -12476,7 +12476,7 @@ def datafactory_dataset_cosmos_db_mongo_db_api_collection_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_collection, str):
         type_properties_collection = json.loads(type_properties_collection)
-    instance.type = 'CosmosDbMongoDbApiCollection'
+    instance.type = 'CosmosDBMongoDBApiCollection'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -12488,12 +12488,12 @@ def datafactory_dataset_cosmos_db_mongo_db_api_collection_update(instance, cmd,
     return instance
 
 
-def datafactory_dataset_cosmos_db_sql_api_collection_create(cmd, client,
-                                                            resource_group_name,
-                                                            factory_name,
-                                                            dataset_name,
-                                                            properties,
-                                                            if_match=None):
+def datafactory_dataset_cosmos_d_b_sql_api_collection_create(cmd, client,
+                                                             resource_group_name,
+                                                             factory_name,
+                                                             dataset_name,
+                                                             properties,
+                                                             if_match=None):
     if isinstance(properties, str):
         properties = json.loads(properties)
     return client.create_or_update(resource_group_name=resource_group_name,
@@ -12503,12 +12503,12 @@ def datafactory_dataset_cosmos_db_sql_api_collection_create(cmd, client,
                                    properties=properties)
 
 
-def datafactory_dataset_cosmos_db_sql_api_collection_update(instance, cmd,
-                                                            resource_group_name,
-                                                            factory_name,
-                                                            dataset_name,
-                                                            properties,
-                                                            if_match=None):
+def datafactory_dataset_cosmos_d_b_sql_api_collection_update(instance, cmd,
+                                                             resource_group_name,
+                                                             factory_name,
+                                                             dataset_name,
+                                                             properties,
+                                                             if_match=None):
     if isinstance(properties, str):
         properties = json.loads(properties)
     return instance
@@ -12910,19 +12910,19 @@ def datafactory_dataset_delimited_text_update(instance, cmd,
     return instance
 
 
-def datafactory_dataset_document_db_collection_create(cmd, client,
-                                                      resource_group_name,
-                                                      factory_name,
-                                                      dataset_name,
-                                                      linked_service_name,
-                                                      type_properties_collection_name,
-                                                      if_match=None,
-                                                      description=None,
-                                                      structure=None,
-                                                      schema=None,
-                                                      parameters=None,
-                                                      annotations=None,
-                                                      folder=None):
+def datafactory_dataset_document_d_b_collection_create(cmd, client,
+                                                       resource_group_name,
+                                                       factory_name,
+                                                       dataset_name,
+                                                       linked_service_name,
+                                                       type_properties_collection_name,
+                                                       if_match=None,
+                                                       description=None,
+                                                       structure=None,
+                                                       schema=None,
+                                                       parameters=None,
+                                                       annotations=None,
+                                                       folder=None):
     if isinstance(structure, str):
         structure = json.loads(structure)
     if isinstance(schema, str):
@@ -12936,7 +12936,7 @@ def datafactory_dataset_document_db_collection_create(cmd, client,
     if isinstance(type_properties_collection_name, str):
         type_properties_collection_name = json.loads(type_properties_collection_name)
     properties = {}
-    properties['type'] = 'DocumentDbCollection'
+    properties['type'] = 'DocumentDBCollection'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -12952,19 +12952,19 @@ def datafactory_dataset_document_db_collection_create(cmd, client,
                                    properties=properties)
 
 
-def datafactory_dataset_document_db_collection_update(instance, cmd,
-                                                      resource_group_name,
-                                                      factory_name,
-                                                      dataset_name,
-                                                      linked_service_name,
-                                                      type_properties_collection_name,
-                                                      if_match=None,
-                                                      description=None,
-                                                      structure=None,
-                                                      schema=None,
-                                                      parameters=None,
-                                                      annotations=None,
-                                                      folder=None):
+def datafactory_dataset_document_d_b_collection_update(instance, cmd,
+                                                       resource_group_name,
+                                                       factory_name,
+                                                       dataset_name,
+                                                       linked_service_name,
+                                                       type_properties_collection_name,
+                                                       if_match=None,
+                                                       description=None,
+                                                       structure=None,
+                                                       schema=None,
+                                                       parameters=None,
+                                                       annotations=None,
+                                                       folder=None):
     if isinstance(structure, str):
         structure = json.loads(structure)
     if isinstance(schema, str):
@@ -12977,7 +12977,7 @@ def datafactory_dataset_document_db_collection_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_collection_name, str):
         type_properties_collection_name = json.loads(type_properties_collection_name)
-    instance.type = 'DocumentDbCollection'
+    instance.type = 'DocumentDBCollection'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -13084,19 +13084,19 @@ def datafactory_dataset_drill_table_update(instance, cmd,
     return instance
 
 
-def datafactory_dataset_dynamics_a_x_resource_create(cmd, client,
-                                                     resource_group_name,
-                                                     factory_name,
-                                                     dataset_name,
-                                                     linked_service_name,
-                                                     type_properties_path,
-                                                     if_match=None,
-                                                     description=None,
-                                                     structure=None,
-                                                     schema=None,
-                                                     parameters=None,
-                                                     annotations=None,
-                                                     folder=None):
+def datafactory_dataset_dynamics_ax_resource_create(cmd, client,
+                                                    resource_group_name,
+                                                    factory_name,
+                                                    dataset_name,
+                                                    linked_service_name,
+                                                    type_properties_path,
+                                                    if_match=None,
+                                                    description=None,
+                                                    structure=None,
+                                                    schema=None,
+                                                    parameters=None,
+                                                    annotations=None,
+                                                    folder=None):
     if isinstance(structure, str):
         structure = json.loads(structure)
     if isinstance(schema, str):
@@ -13110,7 +13110,7 @@ def datafactory_dataset_dynamics_a_x_resource_create(cmd, client,
     if isinstance(type_properties_path, str):
         type_properties_path = json.loads(type_properties_path)
     properties = {}
-    properties['type'] = 'DynamicsAXResource'
+    properties['type'] = 'DynamicsAxResource'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -13126,19 +13126,19 @@ def datafactory_dataset_dynamics_a_x_resource_create(cmd, client,
                                    properties=properties)
 
 
-def datafactory_dataset_dynamics_a_x_resource_update(instance, cmd,
-                                                     resource_group_name,
-                                                     factory_name,
-                                                     dataset_name,
-                                                     linked_service_name,
-                                                     type_properties_path,
-                                                     if_match=None,
-                                                     description=None,
-                                                     structure=None,
-                                                     schema=None,
-                                                     parameters=None,
-                                                     annotations=None,
-                                                     folder=None):
+def datafactory_dataset_dynamics_ax_resource_update(instance, cmd,
+                                                    resource_group_name,
+                                                    factory_name,
+                                                    dataset_name,
+                                                    linked_service_name,
+                                                    type_properties_path,
+                                                    if_match=None,
+                                                    description=None,
+                                                    structure=None,
+                                                    schema=None,
+                                                    parameters=None,
+                                                    annotations=None,
+                                                    folder=None):
     if isinstance(structure, str):
         structure = json.loads(structure)
     if isinstance(schema, str):
@@ -13151,7 +13151,7 @@ def datafactory_dataset_dynamics_a_x_resource_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_path, str):
         type_properties_path = json.loads(type_properties_path)
-    instance.type = 'DynamicsAXResource'
+    instance.type = 'DynamicsAxResource'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -14916,19 +14916,19 @@ def datafactory_dataset_microsoft_access_table_update(instance, cmd,
     return instance
 
 
-def datafactory_dataset_mongo_db_collection_create(cmd, client,
-                                                   resource_group_name,
-                                                   factory_name,
-                                                   dataset_name,
-                                                   linked_service_name,
-                                                   type_properties_collection_name,
-                                                   if_match=None,
-                                                   description=None,
-                                                   structure=None,
-                                                   schema=None,
-                                                   parameters=None,
-                                                   annotations=None,
-                                                   folder=None):
+def datafactory_dataset_mongo_d_b_collection_create(cmd, client,
+                                                    resource_group_name,
+                                                    factory_name,
+                                                    dataset_name,
+                                                    linked_service_name,
+                                                    type_properties_collection_name,
+                                                    if_match=None,
+                                                    description=None,
+                                                    structure=None,
+                                                    schema=None,
+                                                    parameters=None,
+                                                    annotations=None,
+                                                    folder=None):
     if isinstance(structure, str):
         structure = json.loads(structure)
     if isinstance(schema, str):
@@ -14942,7 +14942,7 @@ def datafactory_dataset_mongo_db_collection_create(cmd, client,
     if isinstance(type_properties_collection_name, str):
         type_properties_collection_name = json.loads(type_properties_collection_name)
     properties = {}
-    properties['type'] = 'MongoDbCollection'
+    properties['type'] = 'MongoDBCollection'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -14958,19 +14958,19 @@ def datafactory_dataset_mongo_db_collection_create(cmd, client,
                                    properties=properties)
 
 
-def datafactory_dataset_mongo_db_collection_update(instance, cmd,
-                                                   resource_group_name,
-                                                   factory_name,
-                                                   dataset_name,
-                                                   linked_service_name,
-                                                   type_properties_collection_name,
-                                                   if_match=None,
-                                                   description=None,
-                                                   structure=None,
-                                                   schema=None,
-                                                   parameters=None,
-                                                   annotations=None,
-                                                   folder=None):
+def datafactory_dataset_mongo_d_b_collection_update(instance, cmd,
+                                                    resource_group_name,
+                                                    factory_name,
+                                                    dataset_name,
+                                                    linked_service_name,
+                                                    type_properties_collection_name,
+                                                    if_match=None,
+                                                    description=None,
+                                                    structure=None,
+                                                    schema=None,
+                                                    parameters=None,
+                                                    annotations=None,
+                                                    folder=None):
     if isinstance(structure, str):
         structure = json.loads(structure)
     if isinstance(schema, str):
@@ -14983,7 +14983,7 @@ def datafactory_dataset_mongo_db_collection_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_collection_name, str):
         type_properties_collection_name = json.loads(type_properties_collection_name)
-    instance.type = 'MongoDbCollection'
+    instance.type = 'MongoDBCollection'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -14995,19 +14995,19 @@ def datafactory_dataset_mongo_db_collection_update(instance, cmd,
     return instance
 
 
-def datafactory_dataset_mongo_db_v2_collection_create(cmd, client,
-                                                      resource_group_name,
-                                                      factory_name,
-                                                      dataset_name,
-                                                      linked_service_name,
-                                                      type_properties_collection,
-                                                      if_match=None,
-                                                      description=None,
-                                                      structure=None,
-                                                      schema=None,
-                                                      parameters=None,
-                                                      annotations=None,
-                                                      folder=None):
+def datafactory_dataset_mongo_d_b_v2_collection_create(cmd, client,
+                                                       resource_group_name,
+                                                       factory_name,
+                                                       dataset_name,
+                                                       linked_service_name,
+                                                       type_properties_collection,
+                                                       if_match=None,
+                                                       description=None,
+                                                       structure=None,
+                                                       schema=None,
+                                                       parameters=None,
+                                                       annotations=None,
+                                                       folder=None):
     if isinstance(structure, str):
         structure = json.loads(structure)
     if isinstance(schema, str):
@@ -15021,7 +15021,7 @@ def datafactory_dataset_mongo_db_v2_collection_create(cmd, client,
     if isinstance(type_properties_collection, str):
         type_properties_collection = json.loads(type_properties_collection)
     properties = {}
-    properties['type'] = 'MongoDbV2Collection'
+    properties['type'] = 'MongoDBV2Collection'
     properties['description'] = description
     properties['structure'] = structure
     properties['schema'] = schema
@@ -15037,19 +15037,19 @@ def datafactory_dataset_mongo_db_v2_collection_create(cmd, client,
                                    properties=properties)
 
 
-def datafactory_dataset_mongo_db_v2_collection_update(instance, cmd,
-                                                      resource_group_name,
-                                                      factory_name,
-                                                      dataset_name,
-                                                      linked_service_name,
-                                                      type_properties_collection,
-                                                      if_match=None,
-                                                      description=None,
-                                                      structure=None,
-                                                      schema=None,
-                                                      parameters=None,
-                                                      annotations=None,
-                                                      folder=None):
+def datafactory_dataset_mongo_d_b_v2_collection_update(instance, cmd,
+                                                       resource_group_name,
+                                                       factory_name,
+                                                       dataset_name,
+                                                       linked_service_name,
+                                                       type_properties_collection,
+                                                       if_match=None,
+                                                       description=None,
+                                                       structure=None,
+                                                       schema=None,
+                                                       parameters=None,
+                                                       annotations=None,
+                                                       folder=None):
     if isinstance(structure, str):
         structure = json.loads(structure)
     if isinstance(schema, str):
@@ -15062,7 +15062,7 @@ def datafactory_dataset_mongo_db_v2_collection_update(instance, cmd,
         annotations = json.loads(annotations)
     if isinstance(type_properties_collection, str):
         type_properties_collection = json.loads(type_properties_collection)
-    instance.type = 'MongoDbV2Collection'
+    instance.type = 'MongoDBV2Collection'
     instance.description = description
     instance.structure = structure
     instance.schema = schema
@@ -18627,15 +18627,17 @@ def datafactory_data_flow_debug_session_create(cmd, client,
                                                compute_type=None,
                                                core_count=None,
                                                time_to_live=None,
-                                               integration_runtime=None):
-    if isinstance(integration_runtime, str):
-        integration_runtime = json.loads(integration_runtime)
+                                               integration_runtime_name=None,
+                                               integration_runtime_properties=None):
+    if isinstance(integration_runtime_properties, str):
+        integration_runtime_properties = json.loads(integration_runtime_properties)
     return client.begin_create(resource_group_name=resource_group_name,
                                factory_name=factory_name,
                                compute_type=compute_type,
                                core_count=core_count,
                                time_to_live=time_to_live,
-                               integration_runtime=integration_runtime)
+                               name=integration_runtime_name,
+                               properties=integration_runtime_properties)
 
 
 def datafactory_data_flow_debug_session_delete(cmd, client,
@@ -18651,29 +18653,41 @@ def datafactory_data_flow_debug_session_add_data_flow(cmd, client,
                                                       resource_group_name,
                                                       factory_name,
                                                       session_id=None,
-                                                      data_flow=None,
                                                       datasets=None,
                                                       linked_services=None,
-                                                      staging=None,
-                                                      debug_settings=None):
-    if isinstance(data_flow, str):
-        data_flow = json.loads(data_flow)
+                                                      debug_settings_source_settings=None,
+                                                      debug_settings_parameters=None,
+                                                      debug_settings_dataset_parameters=None,
+                                                      staging_folder_path=None,
+                                                      staging_linked_service_reference_name=None,
+                                                      staging_linked_service_parameters=None,
+                                                      data_flow_name=None,
+                                                      data_flow_properties=None):
     if isinstance(datasets, str):
         datasets = json.loads(datasets)
     if isinstance(linked_services, str):
         linked_services = json.loads(linked_services)
-    if isinstance(staging, str):
-        staging = json.loads(staging)
-    if isinstance(debug_settings, str):
-        debug_settings = json.loads(debug_settings)
+    if isinstance(debug_settings_parameters, str):
+        debug_settings_parameters = json.loads(debug_settings_parameters)
+    if isinstance(debug_settings_dataset_parameters, str):
+        debug_settings_dataset_parameters = json.loads(debug_settings_dataset_parameters)
+    if isinstance(staging_linked_service_parameters, str):
+        staging_linked_service_parameters = json.loads(staging_linked_service_parameters)
+    if isinstance(data_flow_properties, str):
+        data_flow_properties = json.loads(data_flow_properties)
     return client.add_data_flow(resource_group_name=resource_group_name,
                                 factory_name=factory_name,
                                 session_id=session_id,
-                                data_flow=data_flow,
                                 datasets=datasets,
                                 linked_services=linked_services,
-                                staging=staging,
-                                debug_settings=debug_settings)
+                                source_settings=debug_settings_source_settings,
+                                parameters=debug_settings_parameters,
+                                dataset_parameters=debug_settings_dataset_parameters,
+                                folder_path=staging_folder_path,
+                                reference_name=staging_linked_service_reference_name,
+                                parameter_value_specification_parameters=staging_linked_service_parameters,
+                                name=data_flow_name,
+                                properties=data_flow_properties)
 
 
 def datafactory_data_flow_debug_session_execute_command(cmd, client,

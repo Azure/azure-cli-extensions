@@ -1,0 +1,594 @@
+OperationListResponse<2>
+Operation<4>(display:Operation-display)[properties] -> OperationProperties<1>(serviceSpecification:OperationServiceSpecification)
+Operation-display<4>
+OperationServiceSpecification<2>
+OperationLogSpecification<3>
+OperationMetricSpecification<10>
+OperationMetricAvailability<2>
+OperationMetricDimension<3>
+CloudError<1>[error] -> CloudErrorBody<4>
+FactoryListResponse<2>
+Resource<6>
+Factory<2>(identity:FactoryIdentity)[properties] -> FactoryProperties<4>(repoConfiguration*:FactoryRepoConfiguration)
+FactoryIdentity<3>
+FactoryRepoConfiguration<6>*
+FactoryRepoUpdate<2>(repoConfiguration*:FactoryRepoConfiguration)
+ExposureControlRequest<2>
+ExposureControlResponse<2>
+FactoryUpdateParameters<2>(identity:FactoryIdentity)
+GitHubAccessTokenRequest<3>
+GitHubAccessTokenResponse<1>
+UserAccessPolicy<5>
+AccessPolicyResponse<3>(policy:UserAccessPolicy)
+IntegrationRuntimeListResponse<2>
+SubResource<4>
+IntegrationRuntimeResource<1>(properties*:IntegrationRuntime)
+IntegrationRuntime<2>*
+UpdateIntegrationRuntimeRequest<2>
+IntegrationRuntimeStatusResponse<2>(properties*:IntegrationRuntimeStatus)
+IntegrationRuntimeStatus<3>*
+IntegrationRuntimeConnectionInfo<6>
+IntegrationRuntimeRegenerateKeyParameters<1>
+IntegrationRuntimeAuthKeys<2>
+IntegrationRuntimeMonitoringData<2>
+IntegrationRuntimeNodeMonitoringData<8>
+LinkedIntegrationRuntimeRequest<1>
+CreateLinkedIntegrationRuntimeRequest<4>
+SsisObjectMetadataStatusResponse<4>
+GetSsisObjectMetadataRequest<1>
+SsisObjectMetadataListResponse<2>
+SsisObjectMetadata<4>*
+SelfHostedIntegrationRuntimeNode<18>
+UpdateIntegrationRuntimeNodeRequest<1>
+IntegrationRuntimeNodeIpAddress<1>
+LinkedServiceListResponse<2>
+LinkedServiceResource<1>(properties*:LinkedService)
+LinkedService<5>*(connectVia:IntegrationRuntimeReference)
+IntegrationRuntimeReference<3>
+ParameterSpecification<2>
+DatasetListResponse<2>
+DatasetResource<1>(properties*:Dataset)
+Dataset<8>*(linkedServiceName:LinkedServiceReference, folder:Dataset-folder)
+LinkedServiceReference<3>
+Dataset-folder<1>
+PipelineListResponse<2>
+PipelineResource<1>[properties] -> Pipeline<8>(folder:Pipeline-folder)
+Activity<5>*
+ActivityDependency<2>
+UserProperty<2>
+VariableSpecification<2>
+Pipeline-folder<1>
+CreateRunResponse<1>
+RunFilterParameters<5>
+RunQueryFilter<3>
+RunQueryOrderBy<2>
+PipelineRunsQueryResponse<2>
+PipelineRun<13>(invokedBy:PipelineRunInvokedBy)
+PipelineRunInvokedBy<3>
+ActivityRunsQueryResponse<2>
+ActivityRun<13>
+TriggerListResponse<2>
+TriggerResource<1>(properties*:Trigger)
+Trigger<4>*
+TriggerFilterParameters<2>
+TriggerQueryResponse<2>
+TriggerSubscriptionOperationStatus<2>
+TriggerRunsQueryResponse<2>
+TriggerRun<10>
+DataFlowResource<1>(properties*:DataFlow)
+DataFlow<4>*(folder:DataFlow-folder)
+DataFlow-folder<1>
+DataFlowListResponse<2>
+CreateDataFlowDebugSessionRequest<4>[integrationRuntime] -> IntegrationRuntimeDebugResource<1>(properties*:IntegrationRuntime)
+SubResourceDebugResource<1>
+CreateDataFlowDebugSessionResponse<2>
+QueryDataFlowDebugSessionsResponse<2>
+DataFlowDebugSessionInfo<9>
+DataFlowDebugPackage<6>[dataFlow] -> DataFlowDebugResource<1>(properties*:DataFlow)
+DataFlowDebugPackage<6>[staging] -> DataFlowStagingInfo<2>[linkedService] -> LinkedServiceReference<3>
+DataFlowDebugPackage<6>[debugSettings] -> DataFlowDebugPackage-debugSettings<3>
+DatasetDebugResource<1>(properties*:Dataset)
+LinkedServiceDebugResource<1>(properties*:LinkedService)
+DataFlowSourceSetting<2>
+AddDataFlowToDebugSessionResponse<1>
+DeleteDataFlowDebugSessionRequest<1>
+DataFlowDebugCommandRequest<3>(commandPayload:DataFlowDebugCommandPayload)
+DataFlowDebugCommandPayload<4>
+DataFlowDebugCommandResponse<2>
+Expression<2>
+SecretBase<1>*
+SecureString<1>
+AzureKeyVaultSecretReference<3>(store:LinkedServiceReference)
+IntegrationRuntimeStatusListResponse<2>
+FactoryVSTSConfiguration<2>
+FactoryGitHubConfiguration<1>
+PipelineReference<3>
+TriggerPipelineReference<2>(pipelineReference:PipelineReference)
+DatasetReference<3>
+GetDataFactoryOperationStatusResponse<1>
+DataFlowReference<3>
+MappingDataFlow<1>[typeProperties] -> MappingDataFlowTypeProperties<4>
+Transformation<2>
+DataFlowSource<1>(dataset:DatasetReference)
+DataFlowSink<1>(dataset:DatasetReference)
+DatasetLocation<3>*
+AzureBlobStorageLocation<1>
+AzureBlobFSLocation<1>
+AzureDataLakeStoreLocation<0>
+AmazonS3Location<2>
+FileServerLocation<0>
+AzureFileStorageLocation<0>
+GoogleCloudStorageLocation<2>
+FtpServerLocation<0>
+SftpLocation<0>
+HttpServerLocation<1>
+HdfsLocation<0>
+DatasetDataElement<2>
+DatasetSchemaDataElement<2>
+DatasetStorageFormat<3>*
+TextFormat<9>
+JsonFormat<5>
+AvroFormat<0>
+OrcFormat<0>
+ParquetFormat<0>
+DatasetCompression<1>*
+DatasetBZip2Compression<0>
+DatasetGZipCompression<1>
+DatasetDeflateCompression<1>
+DatasetZipDeflateCompression<1>
+AmazonS3Dataset<1>[typeProperties] -> AmazonS3DatasetTypeProperties<8>(format*:DatasetStorageFormat, compression*:DatasetCompression)
+AvroDataset<1>[typeProperties] -> AvroDatasetTypeProperties<3>(location*:DatasetLocation)
+ParquetDataset<1>[typeProperties] -> ParquetDatasetTypeProperties<2>(location*:DatasetLocation)
+DelimitedTextDataset<1>[typeProperties] -> DelimitedTextDatasetTypeProperties<10>(location*:DatasetLocation)
+JsonDataset<1>[typeProperties] -> JsonDatasetTypeProperties<3>(location*:DatasetLocation, compression*:DatasetCompression)
+OrcDataset<1>[typeProperties] -> OrcDatasetTypeProperties<2>(location*:DatasetLocation)
+BinaryDataset<1>[typeProperties] -> BinaryDatasetTypeProperties<2>(location*:DatasetLocation, compression*:DatasetCompression)
+AzureBlobDataset<1>[typeProperties] -> AzureBlobDatasetTypeProperties<7>(format*:DatasetStorageFormat, compression*:DatasetCompression)
+AzureTableDataset<1>[typeProperties] -> AzureTableDatasetTypeProperties<1>
+AzureSqlTableDataset<1>[typeProperties] -> AzureSqlTableDatasetTypeProperties<3>
+AzureSqlMITableDataset<1>[typeProperties] -> AzureSqlMITableDatasetTypeProperties<3>
+AzureSqlDWTableDataset<1>[typeProperties] -> AzureSqlDWTableDatasetTypeProperties<3>
+CassandraTableDataset<1>[typeProperties] -> CassandraTableDatasetTypeProperties<2>
+CustomDataset<1>
+CosmosDbSqlApiCollectionDataset<1>[typeProperties] -> CosmosDbSqlApiCollectionDatasetTypeProperties<1>
+DocumentDbCollectionDataset<1>[typeProperties] -> DocumentDbCollectionDatasetTypeProperties<1>
+DynamicsEntityDataset<1>[typeProperties] -> DynamicsEntityDatasetTypeProperties<1>
+DynamicsCrmEntityDataset<1>[typeProperties] -> DynamicsCrmEntityDatasetTypeProperties<1>
+CommonDataServiceForAppsEntityDataset<1>[typeProperties] -> CommonDataServiceForAppsEntityDatasetTypeProperties<1>
+AzureDataLakeStoreDataset<1>[typeProperties] -> AzureDataLakeStoreDatasetTypeProperties<4>(format*:DatasetStorageFormat, compression*:DatasetCompression)
+AzureBlobFSDataset<1>[typeProperties] -> AzureBlobFSDatasetTypeProperties<4>(format*:DatasetStorageFormat, compression*:DatasetCompression)
+Office365Dataset<1>[typeProperties] -> Office365DatasetTypeProperties<2>
+FileShareDataset<1>[typeProperties] -> FileShareDatasetTypeProperties<7>(format*:DatasetStorageFormat, compression*:DatasetCompression)
+MongoDbCollectionDataset<1>[typeProperties] -> MongoDbCollectionDatasetTypeProperties<1>
+MongoDbV2CollectionDataset<1>[typeProperties] -> MongoDbV2CollectionDatasetTypeProperties<1>
+CosmosDbMongoDbApiCollectionDataset<1>[typeProperties] -> CosmosDbMongoDbApiCollectionDatasetTypeProperties<1>
+ODataResourceDataset<1>[typeProperties] -> ODataResourceDatasetTypeProperties<1>
+OracleTableDataset<1>[typeProperties] -> OracleTableDatasetTypeProperties<3>
+TeradataTableDataset<1>[typeProperties] -> TeradataTableDatasetTypeProperties<2>
+AzureMySqlTableDataset<1>[typeProperties] -> AzureMySqlTableDatasetTypeProperties<2>
+AmazonRedshiftTableDataset<1>[typeProperties] -> AmazonRedshiftTableDatasetTypeProperties<3>
+Db2TableDataset<1>[typeProperties] -> Db2TableDatasetTypeProperties<3>
+RelationalTableDataset<1>[typeProperties] -> RelationalTableDatasetTypeProperties<1>
+InformixTableDataset<1>[typeProperties] -> InformixTableDatasetTypeProperties<1>
+OdbcTableDataset<1>[typeProperties] -> OdbcTableDatasetTypeProperties<1>
+MySqlTableDataset<1>[typeProperties] -> MySqlTableDatasetTypeProperties<1>
+PostgreSqlTableDataset<1>[typeProperties] -> PostgreSqlTableDatasetTypeProperties<3>
+MicrosoftAccessTableDataset<1>[typeProperties] -> MicrosoftAccessTableDatasetTypeProperties<1>
+SalesforceObjectDataset<1>[typeProperties] -> SalesforceObjectDatasetTypeProperties<1>
+SalesforceServiceCloudObjectDataset<1>[typeProperties] -> SalesforceServiceCloudObjectDatasetTypeProperties<1>
+SybaseTableDataset<1>[typeProperties] -> SybaseTableDatasetTypeProperties<1>
+SapBwCubeDataset<0>
+SapCloudForCustomerResourceDataset<1>[typeProperties] -> SapCloudForCustomerResourceDatasetTypeProperties<1>
+SapEccResourceDataset<1>[typeProperties] -> SapEccResourceDatasetTypeProperties<1>
+SapHanaTableDataset<1>[typeProperties] -> SapHanaTableDatasetTypeProperties<2>
+SapOpenHubTableDataset<1>[typeProperties] -> SapOpenHubTableDatasetTypeProperties<3>
+SqlServerTableDataset<1>[typeProperties] -> SqlServerTableDatasetTypeProperties<3>
+RestResourceDataset<1>[typeProperties] -> RestResourceDatasetTypeProperties<5>
+SapTableResourceDataset<1>[typeProperties] -> SapTableResourceDatasetTypeProperties<1>
+WebTableDataset<1>[typeProperties] -> WebTableDatasetTypeProperties<2>
+AzureSearchIndexDataset<1>[typeProperties] -> AzureSearchIndexDatasetTypeProperties<1>
+HttpDataset<1>[typeProperties] -> HttpDatasetTypeProperties<6>(format*:DatasetStorageFormat, compression*:DatasetCompression)
+GenericDatasetTypeProperties<1>
+AmazonMWSObjectDataset<1>[typeProperties] -> GenericDatasetTypeProperties<1>
+AzurePostgreSqlTableDataset<1>[typeProperties] -> AzurePostgreSqlTableDatasetTypeProperties<3>
+ConcurObjectDataset<1>[typeProperties] -> GenericDatasetTypeProperties<1>
+CouchbaseTableDataset<1>[typeProperties] -> GenericDatasetTypeProperties<1>
+DrillTableDataset<1>[typeProperties] -> DrillDatasetTypeProperties<3>
+EloquaObjectDataset<1>[typeProperties] -> GenericDatasetTypeProperties<1>
+GoogleBigQueryObjectDataset<1>[typeProperties] -> GoogleBigQueryDatasetTypeProperties<3>
+GreenplumTableDataset<1>[typeProperties] -> GreenplumDatasetTypeProperties<3>
+HBaseObjectDataset<1>[typeProperties] -> GenericDatasetTypeProperties<1>
+HiveObjectDataset<1>[typeProperties] -> HiveDatasetTypeProperties<3>
+HubspotObjectDataset<1>[typeProperties] -> GenericDatasetTypeProperties<1>
+ImpalaObjectDataset<1>[typeProperties] -> ImpalaDatasetTypeProperties<3>
+JiraObjectDataset<1>[typeProperties] -> GenericDatasetTypeProperties<1>
+MagentoObjectDataset<1>[typeProperties] -> GenericDatasetTypeProperties<1>
+MariaDBTableDataset<1>[typeProperties] -> GenericDatasetTypeProperties<1>
+AzureMariaDBTableDataset<1>[typeProperties] -> GenericDatasetTypeProperties<1>
+MarketoObjectDataset<1>[typeProperties] -> GenericDatasetTypeProperties<1>
+PaypalObjectDataset<1>[typeProperties] -> GenericDatasetTypeProperties<1>
+PhoenixObjectDataset<1>[typeProperties] -> PhoenixDatasetTypeProperties<3>
+PrestoObjectDataset<1>[typeProperties] -> PrestoDatasetTypeProperties<3>
+QuickBooksObjectDataset<1>[typeProperties] -> GenericDatasetTypeProperties<1>
+ServiceNowObjectDataset<1>[typeProperties] -> GenericDatasetTypeProperties<1>
+ShopifyObjectDataset<1>[typeProperties] -> GenericDatasetTypeProperties<1>
+SparkObjectDataset<1>[typeProperties] -> SparkDatasetTypeProperties<3>
+SquareObjectDataset<1>[typeProperties] -> GenericDatasetTypeProperties<1>
+XeroObjectDataset<1>[typeProperties] -> GenericDatasetTypeProperties<1>
+ZohoObjectDataset<1>[typeProperties] -> GenericDatasetTypeProperties<1>
+NetezzaTableDataset<1>[typeProperties] -> NetezzaTableDatasetTypeProperties<3>
+VerticaTableDataset<1>[typeProperties] -> VerticaDatasetTypeProperties<3>
+SalesforceMarketingCloudObjectDataset<1>[typeProperties] -> GenericDatasetTypeProperties<1>
+ResponsysObjectDataset<1>[typeProperties] -> GenericDatasetTypeProperties<1>
+DynamicsAXResourceDataset<1>[typeProperties] -> DynamicsAXResourceDatasetTypeProperties<1>
+OracleServiceCloudObjectDataset<1>[typeProperties] -> GenericDatasetTypeProperties<1>
+AzureDataExplorerTableDataset<1>[typeProperties] -> AzureDataExplorerDatasetTypeProperties<1>
+GoogleAdWordsObjectDataset<1>[typeProperties] -> GenericDatasetTypeProperties<1>
+SnowflakeDataset<1>[typeProperties] -> SnowflakeDatasetTypeProperties<2>
+ManagedIntegrationRuntime<2>[typeProperties] -> ManagedIntegrationRuntimeTypeProperties<2>(computeProperties:IntegrationRuntimeComputeProperties, ssisProperties:IntegrationRuntimeSsisProperties)
+IntegrationRuntimeComputeProperties<6>(dataFlowProperties:IntegrationRuntimeDataFlowProperties, vNetProperties:IntegrationRuntimeVNetProperties)
+IntegrationRuntimeDataFlowProperties<3>
+IntegrationRuntimeVNetProperties<3>
+IntegrationRuntimeSsisProperties<6>(catalogInfo:IntegrationRuntimeSsisCatalogInfo, customSetupScriptProperties:IntegrationRuntimeCustomSetupScriptProperties, dataProxyProperties:IntegrationRuntimeDataProxyProperties)
+IntegrationRuntimeSsisCatalogInfo<4>(catalogAdminPassword:SecureString)
+IntegrationRuntimeCustomSetupScriptProperties<2>(sasToken:SecureString)
+IntegrationRuntimeDataProxyProperties<3>(connectVia:EntityReference, stagingLinkedService:EntityReference)
+EntityReference<2>
+CustomSetupBase<1>*
+CmdkeySetup<1>[typeProperties] -> CmdkeySetupTypeProperties<3>(password*:SecretBase)
+EnvironmentVariableSetup<1>[typeProperties] -> EnvironmentVariableSetupTypeProperties<2>
+ComponentSetup<1>[typeProperties] -> LicensedComponentSetupTypeProperties<2>(licenseKey*:SecretBase)
+SelfHostedIntegrationRuntime<1>[typeProperties] -> SelfHostedIntegrationRuntimeTypeProperties<1>(linkedInfo*:LinkedIntegrationRuntimeType)
+LinkedIntegrationRuntimeType<1>*
+LinkedIntegrationRuntimeKeyAuthorization<1>(key:SecureString)
+LinkedIntegrationRuntimeRbacAuthorization<1>
+ManagedIntegrationRuntimeStatus<1>[typeProperties] -> ManagedIntegrationRuntimeStatusTypeProperties<4>(lastOperation:ManagedIntegrationRuntimeOperationResult)
+ManagedIntegrationRuntimeNode<3>
+ManagedIntegrationRuntimeError<4>
+ManagedIntegrationRuntimeOperationResult<6>
+SelfHostedIntegrationRuntimeStatus<1>[typeProperties] -> SelfHostedIntegrationRuntimeStatusTypeProperties<16>
+LinkedIntegrationRuntime<5>
+SsisFolder<0>
+SsisProject<4>
+SsisEnvironmentReference<4>
+SsisParameter<12>
+SsisPackage<4>
+SsisEnvironment<2>
+SsisVariable<7>
+AzureStorageLinkedService<1>[typeProperties] -> AzureStorageLinkedServiceTypeProperties<5>(accountKey:AzureKeyVaultSecretReference, sasToken:AzureKeyVaultSecretReference)
+AzureBlobStorageLinkedService<1>[typeProperties] -> AzureBlobStorageLinkedServiceTypeProperties<9>(accountKey:AzureKeyVaultSecretReference, sasToken:AzureKeyVaultSecretReference, servicePrincipalKey*:SecretBase)
+AzureTableStorageLinkedService<1>[typeProperties] -> AzureStorageLinkedServiceTypeProperties<5>(accountKey:AzureKeyVaultSecretReference, sasToken:AzureKeyVaultSecretReference)
+AzureSqlDWLinkedService<1>[typeProperties] -> AzureSqlDWLinkedServiceTypeProperties<6>(password:AzureKeyVaultSecretReference, servicePrincipalKey*:SecretBase)
+SqlServerLinkedService<1>[typeProperties] -> SqlServerLinkedServiceTypeProperties<4>(password*:SecretBase)
+AzureSqlDatabaseLinkedService<1>[typeProperties] -> AzureSqlDatabaseLinkedServiceTypeProperties<6>(password:AzureKeyVaultSecretReference, servicePrincipalKey*:SecretBase)
+AzureSqlMILinkedService<1>[typeProperties] -> AzureSqlMILinkedServiceTypeProperties<6>(password:AzureKeyVaultSecretReference, servicePrincipalKey*:SecretBase)
+AzureBatchLinkedService<1>[typeProperties] -> AzureBatchLinkedServiceTypeProperties<6>(accessKey*:SecretBase, linkedServiceName:LinkedServiceReference)
+AzureKeyVaultLinkedService<1>[typeProperties] -> AzureKeyVaultLinkedServiceTypeProperties<1>
+CosmosDbLinkedService<1>[typeProperties] -> CosmosDbLinkedServiceTypeProperties<5>(accountKey*:SecretBase)
+DynamicsLinkedService<1>[typeProperties] -> DynamicsLinkedServiceTypeProperties<12>(password*:SecretBase, servicePrincipalCredential*:SecretBase)
+DynamicsCrmLinkedService<1>[typeProperties] -> DynamicsCrmLinkedServiceTypeProperties<12>(password*:SecretBase, servicePrincipalCredential*:SecretBase)
+CommonDataServiceForAppsLinkedService<1>[typeProperties] -> CommonDataServiceForAppsLinkedServiceTypeProperties<12>(password*:SecretBase, servicePrincipalCredential*:SecretBase)
+HDInsightLinkedService<1>[typeProperties] -> HDInsightLinkedServiceTypeProperties<8>(password*:SecretBase, linkedServiceName:LinkedServiceReference, hcatalogLinkedServiceName:LinkedServiceReference)
+FileServerLinkedService<1>[typeProperties] -> FileServerLinkedServiceTypeProperties<4>(password*:SecretBase)
+AzureFileStorageLinkedService<1>[typeProperties] -> AzureFileStorageLinkedServiceTypeProperties<4>(password*:SecretBase)
+GoogleCloudStorageLinkedService<1>[typeProperties] -> GoogleCloudStorageLinkedServiceTypeProperties<4>(secretAccessKey*:SecretBase)
+OracleLinkedService<1>[typeProperties] -> OracleLinkedServiceTypeProperties<3>(password:AzureKeyVaultSecretReference)
+AzureMySqlLinkedService<1>[typeProperties] -> AzureMySqlLinkedServiceTypeProperties<3>(password:AzureKeyVaultSecretReference)
+MySqlLinkedService<1>[typeProperties] -> MySqlLinkedServiceTypeProperties<3>(password:AzureKeyVaultSecretReference)
+PostgreSqlLinkedService<1>[typeProperties] -> PostgreSqlLinkedServiceTypeProperties<3>(password:AzureKeyVaultSecretReference)
+SybaseLinkedService<1>[typeProperties] -> SybaseLinkedServiceTypeProperties<7>(password*:SecretBase)
+Db2LinkedService<1>[typeProperties] -> Db2LinkedServiceTypeProperties<9>(password*:SecretBase)
+TeradataLinkedService<1>[typeProperties] -> TeradataLinkedServiceTypeProperties<6>(password*:SecretBase)
+AzureMLLinkedService<1>[typeProperties] -> AzureMLLinkedServiceTypeProperties<7>(apiKey*:SecretBase, servicePrincipalKey*:SecretBase)
+AzureMLServiceLinkedService<1>[typeProperties] -> AzureMLServiceLinkedServiceTypeProperties<7>(servicePrincipalKey*:SecretBase)
+OdbcLinkedService<1>[typeProperties] -> OdbcLinkedServiceTypeProperties<6>(credential*:SecretBase, password*:SecretBase)
+InformixLinkedService<1>[typeProperties] -> InformixLinkedServiceTypeProperties<6>(credential*:SecretBase, password*:SecretBase)
+MicrosoftAccessLinkedService<1>[typeProperties] -> MicrosoftAccessLinkedServiceTypeProperties<6>(credential*:SecretBase, password*:SecretBase)
+HdfsLinkedService<1>[typeProperties] -> HdfsLinkedServiceTypeProperties<5>(password*:SecretBase)
+ODataLinkedService<1>[typeProperties] -> ODataLinkedServiceTypeProperties<12>(password*:SecretBase, servicePrincipalKey*:SecretBase, servicePrincipalEmbeddedCert*:SecretBase, servicePrincipalEmbeddedCertPassword*:SecretBase)
+WebLinkedService<1>(typeProperties*:WebLinkedServiceTypeProperties)
+WebLinkedServiceTypeProperties<2>*
+WebAnonymousAuthentication<0>
+WebBasicAuthentication<2>(password*:SecretBase)
+WebClientCertificateAuthentication<2>(pfx*:SecretBase, password*:SecretBase)
+CassandraLinkedService<1>[typeProperties] -> CassandraLinkedServiceTypeProperties<6>(password*:SecretBase)
+MongoDbLinkedService<1>[typeProperties] -> MongoDbLinkedServiceTypeProperties<10>(password*:SecretBase)
+MongoDbV2LinkedService<1>[typeProperties] -> MongoDbV2LinkedServiceTypeProperties<2>
+CosmosDbMongoDbApiLinkedService<1>[typeProperties] -> CosmosDbMongoDbApiLinkedServiceTypeProperties<2>
+AzureDataLakeStoreLinkedService<1>[typeProperties] -> AzureDataLakeStoreLinkedServiceTypeProperties<8>(servicePrincipalKey*:SecretBase)
+AzureBlobFSLinkedService<1>[typeProperties] -> AzureBlobFSLinkedServiceTypeProperties<6>(servicePrincipalKey*:SecretBase)
+Office365LinkedService<1>[typeProperties] -> Office365LinkedServiceTypeProperties<5>(servicePrincipalKey*:SecretBase)
+SalesforceLinkedService<1>[typeProperties] -> SalesforceLinkedServiceTypeProperties<6>(password*:SecretBase, securityToken*:SecretBase)
+SalesforceServiceCloudLinkedService<1>[typeProperties] -> SalesforceServiceCloudLinkedServiceTypeProperties<7>(password*:SecretBase, securityToken*:SecretBase)
+SapCloudForCustomerLinkedService<1>[typeProperties] -> SapCloudForCustomerLinkedServiceTypeProperties<4>(password*:SecretBase)
+SapEccLinkedService<1>[typeProperties] -> SapEccLinkedServiceTypeProperties<4>(password*:SecretBase)
+SapOpenHubLinkedService<1>[typeProperties] -> SapOpenHubLinkedServiceTypeProperties<7>(password*:SecretBase)
+RestServiceLinkedService<1>[typeProperties] -> RestServiceLinkedServiceTypeProperties<10>(password*:SecretBase, servicePrincipalKey*:SecretBase)
+AmazonS3LinkedService<1>[typeProperties] -> AmazonS3LinkedServiceTypeProperties<4>(secretAccessKey*:SecretBase)
+AmazonRedshiftLinkedService<1>[typeProperties] -> AmazonRedshiftLinkedServiceTypeProperties<6>(password*:SecretBase)
+CustomDataSourceLinkedService<1>
+AzureSearchLinkedService<1>[typeProperties] -> AzureSearchLinkedServiceTypeProperties<3>(key*:SecretBase)
+HttpLinkedService<1>[typeProperties] -> HttpLinkedServiceTypeProperties<8>(password*:SecretBase)
+FtpServerLinkedService<1>[typeProperties] -> FtpServerLinkedServiceTypeProperties<8>(password*:SecretBase)
+SftpServerLinkedService<1>[typeProperties] -> SftpServerLinkedServiceTypeProperties<11>(password*:SecretBase, privateKeyContent*:SecretBase, passPhrase*:SecretBase)
+SapBWLinkedService<1>[typeProperties] -> SapBWLinkedServiceTypeProperties<6>(password*:SecretBase)
+SapHanaLinkedService<1>[typeProperties] -> SapHanaLinkedServiceProperties<6>(password*:SecretBase)
+AmazonMWSLinkedService<1>[typeProperties] -> AmazonMWSLinkedServiceTypeProperties<10>(mwsAuthToken*:SecretBase, secretKey*:SecretBase)
+AzurePostgreSqlLinkedService<1>[typeProperties] -> AzurePostgreSqlLinkedServiceTypeProperties<3>(password:AzureKeyVaultSecretReference)
+ConcurLinkedService<1>[typeProperties] -> ConcurLinkedServiceTypeProperties<7>(password*:SecretBase)
+CouchbaseLinkedService<1>[typeProperties] -> CouchbaseLinkedServiceTypeProperties<3>(credString:AzureKeyVaultSecretReference)
+DrillLinkedService<1>[typeProperties] -> DrillLinkedServiceTypeProperties<3>(pwd:AzureKeyVaultSecretReference)
+EloquaLinkedService<1>[typeProperties] -> EloquaLinkedServiceTypeProperties<7>(password*:SecretBase)
+GoogleBigQueryLinkedService<1>[typeProperties] -> GoogleBigQueryLinkedServiceTypeProperties<12>(refreshToken*:SecretBase, clientSecret*:SecretBase)
+GreenplumLinkedService<1>[typeProperties] -> GreenplumLinkedServiceTypeProperties<3>(pwd:AzureKeyVaultSecretReference)
+HBaseLinkedService<1>[typeProperties] -> HBaseLinkedServiceTypeProperties<11>(password*:SecretBase)
+HiveLinkedService<1>[typeProperties] -> HiveLinkedServiceTypeProperties<17>(password*:SecretBase)
+HubspotLinkedService<1>[typeProperties] -> HubspotLinkedServiceTypeProperties<8>(clientSecret*:SecretBase, accessToken*:SecretBase, refreshToken*:SecretBase)
+ImpalaLinkedService<1>[typeProperties] -> ImpalaLinkedServiceTypeProperties<11>(password*:SecretBase)
+JiraLinkedService<1>[typeProperties] -> JiraLinkedServiceTypeProperties<8>(password*:SecretBase)
+MagentoLinkedService<1>[typeProperties] -> MagentoLinkedServiceTypeProperties<6>(accessToken*:SecretBase)
+MariaDBLinkedService<1>[typeProperties] -> MariaDBLinkedServiceTypeProperties<3>(pwd:AzureKeyVaultSecretReference)
+AzureMariaDBLinkedService<1>[typeProperties] -> AzureMariaDBLinkedServiceTypeProperties<3>(pwd:AzureKeyVaultSecretReference)
+MarketoLinkedService<1>[typeProperties] -> MarketoLinkedServiceTypeProperties<7>(clientSecret*:SecretBase)
+PaypalLinkedService<1>[typeProperties] -> PaypalLinkedServiceTypeProperties<7>(clientSecret*:SecretBase)
+PhoenixLinkedService<1>[typeProperties] -> PhoenixLinkedServiceTypeProperties<12>(password*:SecretBase)
+PrestoLinkedService<1>[typeProperties] -> PrestoLinkedServiceTypeProperties<14>(password*:SecretBase)
+QuickBooksLinkedService<1>[typeProperties] -> QuickBooksLinkedServiceTypeProperties<8>(consumerSecret*:SecretBase, accessToken*:SecretBase, accessTokenSecret*:SecretBase)
+ServiceNowLinkedService<1>[typeProperties] -> ServiceNowLinkedServiceTypeProperties<10>(password*:SecretBase, clientSecret*:SecretBase)
+ShopifyLinkedService<1>[typeProperties] -> ShopifyLinkedServiceTypeProperties<6>(accessToken*:SecretBase)
+SparkLinkedService<1>[typeProperties] -> SparkLinkedServiceTypeProperties<14>(password*:SecretBase)
+SquareLinkedService<1>[typeProperties] -> SquareLinkedServiceTypeProperties<8>(clientSecret*:SecretBase)
+XeroLinkedService<1>[typeProperties] -> XeroLinkedServiceTypeProperties<7>(consumerKey*:SecretBase, privateKey*:SecretBase)
+ZohoLinkedService<1>[typeProperties] -> ZohoLinkedServiceTypeProperties<6>(accessToken*:SecretBase)
+VerticaLinkedService<1>[typeProperties] -> VerticaLinkedServiceTypeProperties<3>(pwd:AzureKeyVaultSecretReference)
+NetezzaLinkedService<1>[typeProperties] -> NetezzaLinkedServiceTypeProperties<3>(pwd:AzureKeyVaultSecretReference)
+SalesforceMarketingCloudLinkedService<1>[typeProperties] -> SalesforceMarketingCloudLinkedServiceTypeProperties<6>(clientSecret*:SecretBase)
+HDInsightOnDemandLinkedService<1>[typeProperties] -> HDInsightOnDemandLinkedServiceTypeProperties<33>(linkedServiceName:LinkedServiceReference, servicePrincipalKey*:SecretBase, clusterPassword*:SecretBase, clusterSshPassword*:SecretBase, hcatalogLinkedServiceName:LinkedServiceReference)
+ScriptAction<4>
+AzureDataLakeAnalyticsLinkedService<1>[typeProperties] -> AzureDataLakeAnalyticsLinkedServiceTypeProperties<8>(servicePrincipalKey*:SecretBase)
+AzureDatabricksLinkedService<1>[typeProperties] -> AzureDatabricksLinkedServiceTypeProperties<14>(accessToken*:SecretBase)
+ResponsysLinkedService<1>[typeProperties] -> ResponsysLinkedServiceTypeProperties<7>(clientSecret*:SecretBase)
+DynamicsAXLinkedService<1>[typeProperties] -> DynamicsAXLinkedServiceTypeProperties<6>(servicePrincipalKey*:SecretBase)
+OracleServiceCloudLinkedService<1>[typeProperties] -> OracleServiceCloudLinkedServiceTypeProperties<7>(password*:SecretBase)
+GoogleAdWordsLinkedService<1>[typeProperties] -> GoogleAdWordsLinkedServiceTypeProperties<11>(developerToken*:SecretBase, refreshToken*:SecretBase, clientSecret*:SecretBase)
+SapTableLinkedService<1>[typeProperties] -> SapTableLinkedServiceTypeProperties<16>(password*:SecretBase)
+AzureDataExplorerLinkedService<1>[typeProperties] -> AzureDataExplorerLinkedServiceTypeProperties<5>(servicePrincipalKey*:SecretBase)
+AzureFunctionLinkedService<1>[typeProperties] -> AzureFunctionLinkedServiceTypeProperties<3>(functionKey*:SecretBase)
+SnowflakeLinkedService<1>[typeProperties] -> SnowflakeLinkedServiceTypeProperties<3>(password:AzureKeyVaultSecretReference)
+ControlActivity<0>*
+ExecutionActivity<2>*(linkedServiceName:LinkedServiceReference, policy:ActivityPolicy)
+ActivityPolicy<5>
+StoreReadSettings<2>*
+AzureBlobStorageReadSettings<8>
+AzureBlobFSReadSettings<7>
+AzureDataLakeStoreReadSettings<7>
+AmazonS3ReadSettings<8>
+FileServerReadSettings<7>
+AzureFileStorageReadSettings<7>
+StoreWriteSettings<3>*
+SftpWriteSettings<2>
+GoogleCloudStorageReadSettings<8>
+FtpReadSettings<5>
+SftpReadSettings<6>
+HttpReadSettings<4>
+HdfsReadSettings<8>(distcpSettings:DistcpSettings)
+DistcpSettings<3>
+AzureBlobStorageWriteSettings<1>
+AzureBlobFSWriteSettings<1>
+AzureDataLakeStoreWriteSettings<1>
+FileServerWriteSettings<0>
+FormatReadSettings<1>*
+DelimitedTextReadSettings<1>
+FormatWriteSettings<1>*
+AvroWriteSettings<2>
+DelimitedTextWriteSettings<2>
+JsonWriteSettings<1>
+CopySource<4>*
+AvroSource<2>(storeSettings*:StoreReadSettings)
+AdditionalColumns<2>
+ParquetSource<2>(storeSettings*:StoreReadSettings)
+DelimitedTextSource<3>(storeSettings*:StoreReadSettings, formatSettings:DelimitedTextReadSettings)
+JsonSource<2>(storeSettings*:StoreReadSettings)
+OrcSource<2>(storeSettings*:StoreReadSettings)
+CopySink<6>*
+DelimitedTextSink<2>(storeSettings*:StoreWriteSettings, formatSettings:DelimitedTextWriteSettings)
+JsonSink<2>(storeSettings*:StoreWriteSettings, formatSettings:JsonWriteSettings)
+OrcSink<1>(storeSettings*:StoreWriteSettings)
+CopyActivity<3>[typeProperties] -> CopyActivityTypeProperties<14>(source*:CopySource, sink*:CopySink, stagingSettings:StagingSettings, redirectIncompatibleRowSettings:RedirectIncompatibleRowSettings, logStorageSettings:LogStorageSettings, skipErrorFile:SkipErrorFile)
+StagingSettings<3>(linkedServiceName:LinkedServiceReference)
+RedirectIncompatibleRowSettings<2>
+LogStorageSettings<2>(linkedServiceName:LinkedServiceReference)
+SkipErrorFile<2>
+BinarySource<1>(storeSettings*:StoreReadSettings)
+TabularSource<2>*
+AzureTableSource<2>
+BlobSource<3>
+DocumentDbCollectionSource<4>
+CosmosDbSqlApiSource<4>
+DynamicsSource<2>
+DynamicsCrmSource<2>
+CommonDataServiceForAppsSource<2>
+RelationalSource<2>
+InformixSource<1>
+MicrosoftAccessSource<2>
+Db2Source<1>
+OdbcSource<1>
+MySqlSource<1>
+PostgreSqlSource<1>
+SybaseSource<1>
+SapBwSource<1>
+ODataSource<2>
+SalesforceSource<2>
+SalesforceServiceCloudSource<3>
+SapCloudForCustomerSource<1>
+SapEccSource<1>
+SapHanaSource<4>(partitionSettings:SapHanaPartitionSettings)
+SapHanaPartitionSettings<1>
+SapOpenHubSource<2>
+SapTableSource<8>(partitionSettings:SapTablePartitionSettings)
+SapTablePartitionSettings<4>
+RestSource<7>
+SqlSource<4>
+StoredProcedureParameter<2>
+SqlServerSource<4>
+AzureSqlSource<4>
+SqlMISource<4>
+SqlDWSource<3>
+FileSystemSource<2>
+HdfsSource<2>(distcpSettings:DistcpSettings)
+AzureMySqlSource<1>
+AzureDataExplorerSource<4>
+OracleSource<5>(partitionSettings:OraclePartitionSettings)
+OraclePartitionSettings<4>
+TeradataSource<3>(partitionSettings:TeradataPartitionSettings)
+TeradataPartitionSettings<3>
+WebSource<1>
+CassandraSource<2>
+MongoDbSource<2>
+MongoDbV2Source<5>(cursorMethods:MongoDbCursorMethodsProperties)
+MongoDbCursorMethodsProperties<4>
+CosmosDbMongoDbApiSource<5>(cursorMethods:MongoDbCursorMethodsProperties)
+Office365Source<6>
+AzureDataLakeStoreSource<1>
+AzureBlobFSSource<3>
+HttpSource<1>
+AmazonMWSSource<1>
+AzurePostgreSqlSource<1>
+AzurePostgreSqlSink<1>
+AzureMySqlSink<1>
+ConcurSource<1>
+CouchbaseSource<1>
+DrillSource<1>
+EloquaSource<1>
+GoogleBigQuerySource<1>
+GreenplumSource<1>
+HBaseSource<1>
+HiveSource<1>
+HubspotSource<1>
+ImpalaSource<1>
+JiraSource<1>
+MagentoSource<1>
+MariaDBSource<1>
+AzureMariaDBSource<1>
+MarketoSource<1>
+PaypalSource<1>
+PhoenixSource<1>
+PrestoSource<1>
+QuickBooksSource<1>
+ServiceNowSource<1>
+ShopifySource<1>
+SparkSource<1>
+SquareSource<1>
+XeroSource<1>
+ZohoSource<1>
+NetezzaSource<3>(partitionSettings:NetezzaPartitionSettings)
+NetezzaPartitionSettings<3>
+VerticaSource<1>
+SalesforceMarketingCloudSource<1>
+ResponsysSource<1>
+DynamicsAXSource<1>
+OracleServiceCloudSource<1>
+GoogleAdWordsSource<1>
+AmazonRedshiftSource<2>(redshiftUnloadSettings:RedshiftUnloadSettings)
+RedshiftUnloadSettings<2>(s3LinkedServiceName:LinkedServiceReference)
+SnowflakeSource<2>(exportSettings:SnowflakeExportCopyCommand)
+ExportSettings<1>*
+SnowflakeExportCopyCommand<2>
+SapCloudForCustomerSink<1>
+AzureQueueSink<0>
+AzureTableSink<4>
+AvroSink<2>(storeSettings*:StoreWriteSettings, formatSettings:AvroWriteSettings)
+ParquetSink<1>(storeSettings*:StoreWriteSettings)
+BinarySink<1>(storeSettings*:StoreWriteSettings)
+BlobSink<4>
+FileSystemSink<1>
+DocumentDbCollectionSink<2>
+CosmosDbSqlApiSink<1>
+SqlSink<6>
+SqlServerSink<6>
+AzureSqlSink<6>
+SqlMISink<6>
+SqlDWSink<6>(polyBaseSettings:PolybaseSettings, copyCommandSettings:DWCopyCommandSettings)
+PolybaseSettings<4>
+DWCopyCommandSettings<2>
+DWCopyCommandDefaultValue<2>
+SnowflakeSink<2>(importSettings:SnowflakeImportCopyCommand)
+ImportSettings<1>*
+SnowflakeImportCopyCommand<2>
+OracleSink<1>
+AzureDataLakeStoreSink<2>
+AzureBlobFSSink<1>
+AzureSearchIndexSink<1>
+OdbcSink<1>
+InformixSink<1>
+MicrosoftAccessSink<1>
+DynamicsSink<3>
+DynamicsCrmSink<3>
+CommonDataServiceForAppsSink<3>
+AzureDataExplorerSink<3>
+SalesforceSink<3>
+SalesforceServiceCloudSink<3>
+CosmosDbMongoDbApiSink<1>
+CopyTranslator<1>*
+TabularTranslator<5>
+HDInsightHiveActivity<1>[typeProperties] -> HDInsightHiveActivityTypeProperties<8>(scriptLinkedService:LinkedServiceReference)
+HDInsightPigActivity<1>[typeProperties] -> HDInsightPigActivityTypeProperties<6>(scriptLinkedService:LinkedServiceReference)
+HDInsightMapReduceActivity<1>[typeProperties] -> HDInsightMapReduceActivityTypeProperties<8>(jarLinkedService:LinkedServiceReference)
+HDInsightStreamingActivity<1>[typeProperties] -> HDInsightStreamingActivityTypeProperties<12>(fileLinkedService:LinkedServiceReference)
+HDInsightSparkActivity<1>[typeProperties] -> HDInsightSparkActivityTypeProperties<8>(sparkJobLinkedService:LinkedServiceReference)
+ExecuteSSISPackageActivity<1>[typeProperties] -> ExecuteSSISPackageActivityTypeProperties<12>(packageLocation:SSISPackageLocation, executionCredential:SSISExecutionCredential, connectVia:IntegrationRuntimeReference, logLocation:SSISLogLocation)
+SSISPackageLocation<3>[typeProperties] -> SSISPackageLocationTypeProperties<7>(packagePassword*:SecretBase, accessCredential:SSISAccessCredential)
+SSISAccessCredential<3>(password*:SecretBase)
+SSISChildPackage<4>
+SSISExecutionCredential<3>(password:SecureString)
+SSISExecutionParameter<1>
+SSISPropertyOverride<2>
+SSISLogLocation<3>[typeProperties] -> SSISLogLocationTypeProperties<2>(accessCredential:SSISAccessCredential)
+CustomActivity<1>[typeProperties] -> CustomActivityTypeProperties<6>(resourceLinkedService:LinkedServiceReference, referenceObjects:CustomActivityReferenceObject)
+CustomActivityReferenceObject<2>
+SqlServerStoredProcedureActivity<1>[typeProperties] -> SqlServerStoredProcedureActivityTypeProperties<2>
+ExecutePipelineActivity<1>[typeProperties] -> ExecutePipelineActivityTypeProperties<3>(pipeline:PipelineReference)
+DeleteActivity<1>[typeProperties] -> DeleteActivityTypeProperties<5>(logStorageSettings:LogStorageSettings, dataset:DatasetReference)
+AzureDataExplorerCommandActivity<1>[typeProperties] -> AzureDataExplorerCommandActivityTypeProperties<2>
+LookupActivity<1>[typeProperties] -> LookupActivityTypeProperties<3>(source*:CopySource, dataset:DatasetReference)
+WebActivity<1>[typeProperties] -> WebActivityTypeProperties<8>(authentication:WebActivityAuthentication, connectVia:IntegrationRuntimeReference)
+WebActivityAuthentication<5>(pfx*:SecretBase, password*:SecretBase)
+GetMetadataActivity<1>[typeProperties] -> GetMetadataActivityTypeProperties<2>(dataset:DatasetReference)
+IfConditionActivity<1>[typeProperties] -> IfConditionActivityTypeProperties<3>(expression:Expression)
+SwitchActivity<1>[typeProperties] -> SwitchActivityTypeProperties<3>(on:Expression)
+SwitchCase<2>
+ForEachActivity<1>[typeProperties] -> ForEachActivityTypeProperties<4>(items:Expression)
+AzureMLBatchExecutionActivity<1>[typeProperties] -> AzureMLBatchExecutionActivityTypeProperties<3>
+AzureMLWebServiceFile<2>(linkedServiceName:LinkedServiceReference)
+AzureMLUpdateResourceActivity<1>[typeProperties] -> AzureMLUpdateResourceActivityTypeProperties<3>(trainedModelLinkedServiceName:LinkedServiceReference)
+AzureMLExecutePipelineActivity<1>[typeProperties] -> AzureMLExecutePipelineActivityTypeProperties<5>
+DataLakeAnalyticsUSQLActivity<1>[typeProperties] -> DataLakeAnalyticsUSQLActivityTypeProperties<7>(scriptLinkedService:LinkedServiceReference)
+WaitActivity<1>[typeProperties] -> WaitActivityTypeProperties<1>
+UntilActivity<1>[typeProperties] -> UntilActivityTypeProperties<3>(expression:Expression)
+ValidationActivity<1>[typeProperties] -> ValidationActivityTypeProperties<5>(dataset:DatasetReference)
+FilterActivity<1>[typeProperties] -> FilterActivityTypeProperties<2>(items:Expression, condition:Expression)
+DatabricksNotebookActivity<1>[typeProperties] -> DatabricksNotebookActivityTypeProperties<3>
+DatabricksSparkJarActivity<1>[typeProperties] -> DatabricksSparkJarActivityTypeProperties<3>
+DatabricksSparkPythonActivity<1>[typeProperties] -> DatabricksSparkPythonActivityTypeProperties<3>
+SetVariableActivity<1>[typeProperties] -> SetVariableActivityTypeProperties<2>
+AppendVariableActivity<1>[typeProperties] -> AppendVariableActivityTypeProperties<2>
+AzureFunctionActivity<1>[typeProperties] -> AzureFunctionActivityTypeProperties<4>
+WebHookActivity<1>[typeProperties] -> WebHookActivityTypeProperties<7>(authentication:WebActivityAuthentication)
+ExecuteDataFlowActivity<1>[typeProperties] -> ExecuteDataFlowActivityTypeProperties<4>(dataFlow:DataFlowReference, staging:DataFlowStagingInfo, integrationRuntime:IntegrationRuntimeReference, compute:ExecuteDataFlowActivityTypeProperties-compute)
+ExecuteDataFlowActivityTypeProperties-compute<2>
+MultiplePipelineTrigger<1>*
+ScheduleTrigger<1>[typeProperties] -> ScheduleTrigger-typeProperties<1>(recurrence:ScheduleTriggerRecurrence)
+ScheduleTriggerRecurrence<6>(schedule:RecurrenceSchedule)
+RecurrenceSchedule<5>
+RecurrenceScheduleOccurrence<2>
+BlobTrigger<1>[typeProperties] -> BlobTrigger-typeProperties<3>(linkedService:LinkedServiceReference)
+BlobEventsTrigger<1>[typeProperties] -> BlobEventsTrigger-typeProperties<5>
+TumblingWindowTrigger<2>(pipeline:TriggerPipelineReference)[typeProperties] -> TumblingWindowTrigger-typeProperties<8>(retryPolicy:RetryPolicy)
+RetryPolicy<2>
+DependencyReference<1>*
+TriggerReference<2>
+TriggerDependencyReference<1>*(referenceTrigger:TriggerReference)
+TumblingWindowTriggerDependencyReference<2>
+SelfDependencyTumblingWindowTriggerReference<2>
+RerunTumblingWindowTrigger<1>[typeProperties] -> RerunTumblingWindowTrigger-typeProperties<4>
+ChainingTrigger<2>(pipeline:TriggerPipelineReference)[typeProperties] -> ChainingTrigger-typeProperties<2>

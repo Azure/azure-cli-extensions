@@ -303,6 +303,31 @@ class AddOrderBy(argparse._AppendAction):
         return d
 
 
+class AddDebugSettingsSourceSettings(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        super(AddDebugSettingsSourceSettings, self).__call__(parser, namespace, action, option_string)
+
+
+    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+            if kl == 'source-name':
+                d['source_name'] = v[0]
+            elif kl == 'row-limit':
+                d['row_limit'] = v[0]
+        return d
+
+
 class AddCommandPayload(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)

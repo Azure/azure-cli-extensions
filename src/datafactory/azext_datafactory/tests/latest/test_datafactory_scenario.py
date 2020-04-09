@@ -21,13 +21,13 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 @try_manual
-def setup(test):
+def setup(test, rg):
     pass
 
 
 # EXAMPLE: /Factories/put/Factories_CreateOrUpdate
 @try_manual
-def step__factories_put_factories_createorupdate(test):
+def step__factories_put_factories_createorupdate(test, rg):
     test.cmd('az datafactory factory create '
              '--location "East US" '
              '--factory-name "{exampleFactoryName}" '
@@ -37,7 +37,7 @@ def step__factories_put_factories_createorupdate(test):
 
 # EXAMPLE: /Triggers/put/Triggers_Update
 @try_manual
-def step__triggers_put_triggers_update(test):
+def step__triggers_put_triggers_update(test, rg):
     test.cmd('az datafactory trigger create '
              '--factory-name "{exampleFactoryName}" '
              '--resource-group "{rg}" '
@@ -52,7 +52,7 @@ def step__triggers_put_triggers_update(test):
 
 # EXAMPLE: /Triggers/put/Triggers_Create
 @try_manual
-def step__triggers_put_triggers_create(test):
+def step__triggers_put_triggers_create(test, rg):
     test.cmd('az datafactory trigger create '
              '--factory-name "{exampleFactoryName}" '
              '--resource-group "{rg}" '
@@ -67,7 +67,7 @@ def step__triggers_put_triggers_create(test):
 
 # EXAMPLE: /DataFlows/put/DataFlows_Update
 @try_manual
-def step__dataflows_put_dataflows_update(test):
+def step__dataflows_put_dataflows_update(test, rg):
     test.cmd('az datafactory data-flow create '
              '--properties "{{\\"type\\":\\"MappingDataFlow\\",\\"description\\":\\"Sample demo data flow to convert cu'
              'rrencies showing usage of union, derive and conditional split transformation.\\",\\"typeProperties\\":{{'
@@ -92,7 +92,7 @@ def step__dataflows_put_dataflows_update(test):
 
 # EXAMPLE: /DataFlows/put/DataFlows_Create
 @try_manual
-def step__dataflows_put_dataflows_create(test):
+def step__dataflows_put_dataflows_create(test, rg):
     test.cmd('az datafactory data-flow create '
              '--properties "{{\\"type\\":\\"MappingDataFlow\\",\\"description\\":\\"Sample demo data flow to convert cu'
              'rrencies showing usage of union, derive and conditional split transformation.\\",\\"typeProperties\\":{{'
@@ -117,7 +117,7 @@ def step__dataflows_put_dataflows_create(test):
 
 # EXAMPLE: /Pipelines/put/Pipelines_Update
 @try_manual
-def step__pipelines_put_pipelines_update(test):
+def step__pipelines_put_pipelines_update(test, rg):
     test.cmd('az datafactory pipeline create '
              '--factory-name "{exampleFactoryName}" '
              '--pipeline "{{\\"properties\\":{{\\"description\\":\\"Example description\\",\\"activities\\":[{{\\"name'
@@ -138,7 +138,7 @@ def step__pipelines_put_pipelines_update(test):
 
 # EXAMPLE: /Pipelines/put/Pipelines_Create
 @try_manual
-def step__pipelines_put_pipelines_create(test):
+def step__pipelines_put_pipelines_create(test, rg):
     test.cmd('az datafactory pipeline create '
              '--factory-name "{exampleFactoryName}" '
              '--pipeline "{{\\"properties\\":{{\\"activities\\":[{{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":'
@@ -160,10 +160,9 @@ def step__pipelines_put_pipelines_create(test):
 
 # EXAMPLE: /LinkedServices/put/LinkedServices_Create
 @try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
+def step__linkedservices_put_linkedservices_create(test, rg):
+    test.cmd('az datafactory linked-service azure-storage create '
              '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
              '--linked-service-name "{exampleLinkedService}" '
              '--resource-group "{rg}"',
              checks=[])
@@ -171,23 +170,20 @@ def step__linkedservices_put_linkedservices_create(test):
 
 # EXAMPLE: /IntegrationRuntimes/put/IntegrationRuntimes_Create
 @try_manual
-def step__integrationruntimes_put_integrationruntimes_create(test):
-    test.cmd('az datafactory integration-runtime managed create '
+def step__integrationruntimes_put_integrationruntimes_create(test, rg):
+    test.cmd('az datafactory integration-runtime self-hosted create '
              '--factory-name "{exampleFactoryName}" '
-             '--type "SelfHosted" '
              '--description "A selfhosted integration runtime" '
              '--integration-runtime-name "{exampleIntegrationRuntime}" '
              '--resource-group "{rg}"',
              checks=[])
 
 
-# EXAMPLE: /IntegrationRuntimes/put/IntegrationRuntimes_Create
+# EXAMPLE: /IntegrationRuntimes/get/IntegrationRuntimes_Get
 @try_manual
-def step__integrationruntimes_put_integrationruntimes_create(test):
-    test.cmd('az datafactory integration-runtime managed create '
+def step__integrationruntimes_get_integrationruntimes_get(test, rg):
+    test.cmd('az datafactory integration-runtime show '
              '--factory-name "{exampleFactoryName}" '
-             '--type "SelfHosted" '
-             '--description "A selfhosted integration runtime" '
              '--integration-runtime-name "{exampleIntegrationRuntime}" '
              '--resource-group "{rg}"',
              checks=[])
@@ -195,10 +191,9 @@ def step__integrationruntimes_put_integrationruntimes_create(test):
 
 # EXAMPLE: /LinkedServices/put/LinkedServices_Update
 @try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
+def step__linkedservices_put_linkedservices_update(test, rg):
+    test.cmd('az datafactory linked-service azure-storage create '
              '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
              '--description "Example description" '
              '--linked-service-name "{exampleLinkedService}" '
              '--resource-group "{rg}"',
@@ -207,7 +202,7 @@ def step__linkedservices_put_linkedservices_update(test):
 
 # EXAMPLE: /Pipelines/get/Pipelines_Get
 @try_manual
-def step__pipelines_get_pipelines_get(test):
+def step__pipelines_get_pipelines_get(test, rg):
     test.cmd('az datafactory pipeline show '
              '--factory-name "{exampleFactoryName}" '
              '--pipeline-name "{examplePipeline}" '
@@ -217,7 +212,7 @@ def step__pipelines_get_pipelines_get(test):
 
 # EXAMPLE: /DataFlows/get/DataFlows_Get
 @try_manual
-def step__dataflows_get_dataflows_get(test):
+def step__dataflows_get_dataflows_get(test, rg):
     test.cmd('az datafactory data-flow show '
              '--data-flow-name "{exampleDataFlow}" '
              '--factory-name "{exampleFactoryName}" '
@@ -225,20 +220,23 @@ def step__dataflows_get_dataflows_get(test):
              checks=[])
 
 
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
+# EXAMPLE: /Datasets/put/Datasets_Create
 @try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
+def step__datasets_put_datasets_create(test, rg):
+    test.cmd('az datafactory dataset azure-blob create '
+             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
+             'ice\\"}}" '
+             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
+             '}}}}" '
+             '--dataset-name "{exampleDataset}" '
              '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
              '--resource-group "{rg}"',
              checks=[])
 
 
 # EXAMPLE: /Triggers/get/Triggers_Get
 @try_manual
-def step__triggers_get_triggers_get(test):
+def step__triggers_get_triggers_get(test, rg):
     test.cmd('az datafactory trigger show '
              '--factory-name "{exampleFactoryName}" '
              '--resource-group "{rg}" '
@@ -248,7 +246,7 @@ def step__triggers_get_triggers_get(test):
 
 # EXAMPLE: /PipelineRuns/get/PipelineRuns_Get
 @try_manual
-def step__pipelineruns_get_pipelineruns_get(test):
+def step__pipelineruns_get_pipelineruns_get(test, rg):
     test.cmd('az datafactory pipeline-run show '
              '--factory-name "{exampleFactoryName}" '
              '--resource-group "{rg}" '
@@ -258,7 +256,7 @@ def step__pipelineruns_get_pipelineruns_get(test):
 
 # EXAMPLE: /Factories/get/Factories_Get
 @try_manual
-def step__factories_get_factories_get(test):
+def step__factories_get_factories_get(test, rg):
     test.cmd('az datafactory factory show '
              '--factory-name "{exampleFactoryName}" '
              '--resource-group "{rg}"',
@@ -267,28 +265,25 @@ def step__factories_get_factories_get(test):
 
 # EXAMPLE: /IntegrationRuntimes/get/IntegrationRuntimes_ListByFactory
 @try_manual
-def step__integrationruntimes_get_integrationruntimes_listbyfactory(test):
+def step__integrationruntimes_get_integrationruntimes_listbyfactory(test, rg):
     test.cmd('az datafactory integration-runtime list '
              '--factory-name "{exampleFactoryName}" '
              '--resource-group "{rg}"',
              checks=[])
 
 
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
+# EXAMPLE: /LinkedServices/get/LinkedServices_ListByFactory
 @try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
+def step__linkedservices_get_linkedservices_listbyfactory(test, rg):
+    test.cmd('az datafactory linked-service list '
              '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
              '--resource-group "{rg}"',
              checks=[])
 
 
 # EXAMPLE: /Pipelines/get/Pipelines_ListByFactory
 @try_manual
-def step__pipelines_get_pipelines_listbyfactory(test):
+def step__pipelines_get_pipelines_listbyfactory(test, rg):
     test.cmd('az datafactory pipeline list '
              '--factory-name "{exampleFactoryName}" '
              '--resource-group "{rg}"',
@@ -297,27 +292,31 @@ def step__pipelines_get_pipelines_listbyfactory(test):
 
 # EXAMPLE: /DataFlows/get/DataFlows_ListByFactory
 @try_manual
-def step__dataflows_get_dataflows_listbyfactory(test):
+def step__dataflows_get_dataflows_listbyfactory(test, rg):
     test.cmd('az datafactory data-flow list '
              '--factory-name "{exampleFactoryName}" '
              '--resource-group "{rg}"',
              checks=[])
 
 
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
+# EXAMPLE: /Datasets/put/Datasets_Update
 @try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
+def step__datasets_put_datasets_update(test, rg):
+    test.cmd('az datafactory dataset azure-blob create '
+             '--description "Example description" '
+             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
+             'ice\\"}}" '
+             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
+             '}}}}" '
+             '--dataset-name "{exampleDataset}" '
              '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
              '--resource-group "{rg}"',
              checks=[])
 
 
 # EXAMPLE: /Triggers/get/Triggers_ListByFactory
 @try_manual
-def step__triggers_get_triggers_listbyfactory(test):
+def step__triggers_get_triggers_listbyfactory(test, rg):
     test.cmd('az datafactory trigger list '
              '--factory-name "{exampleFactoryName}" '
              '--resource-group "{rg}"',
@@ -326,7 +325,7 @@ def step__triggers_get_triggers_listbyfactory(test):
 
 # EXAMPLE: /Factories/get/Factories_ListByResourceGroup
 @try_manual
-def step__factories_get_factories_listbyresourcegroup(test):
+def step__factories_get_factories_listbyresourcegroup(test, rg):
     test.cmd('az datafactory factory list '
              '--resource-group "{rg}"',
              checks=[])
@@ -334,14 +333,14 @@ def step__factories_get_factories_listbyresourcegroup(test):
 
 # EXAMPLE: /Factories/get/Factories_List
 @try_manual
-def step__factories_get_factories_list(test):
+def step__factories_get_factories_list(test, rg):
     test.cmd('az datafactory factory list',
              checks=[])
 
 
 # EXAMPLE: /IntegrationRuntimeNodes/post/IntegrationRuntimeNodes_GetIpAddress
 @try_manual
-def step__integrationruntimenodes_post_integrationruntimenodes_getipaddress(test):
+def step__integrationruntimenodes_post_integrationruntimenodes_getipaddress(test, rg):
     test.cmd('az datafactory integration-runtime-node get-ip-address '
              '--factory-name "{exampleFactoryName}" '
              '--integration-runtime-name "{exampleIntegrationRuntime}" '
@@ -352,7 +351,7 @@ def step__integrationruntimenodes_post_integrationruntimenodes_getipaddress(test
 
 # EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_CreateLinkedIntegrationRuntime
 @try_manual
-def step__integrationruntimes_post_integrationruntimes_createlinkedintegrationruntime(test):
+def step__integrationruntimes_post_integrationruntimes_createlinkedintegrationruntime(test, rg):
     test.cmd('az datafactory integration-runtime create-linked-integration-runtime '
              '--name "bfa92911-9fb6-4fbe-8f23-beae87bc1c83" '
              '--data-factory-location "West US" '
@@ -367,7 +366,7 @@ def step__integrationruntimes_post_integrationruntimes_createlinkedintegrationru
 
 # EXAMPLE: /IntegrationRuntimeObjectMetadata/post/IntegrationRuntimeObjectMetadata_Refresh
 @try_manual
-def step__integrationruntimeobjectmetadata_post_integrationruntimeobjectmetadata_refresh(test):
+def step__integrationruntimeobjectmetadata_post_integrationruntimeobjectmetadata_refresh(test, rg):
     test.cmd('az datafactory integration-runtime-object-metadata refresh '
              '--factory-name "{exampleFactoryName}" '
              '--integration-runtime-name "{IntegrationRuntimes_2}" '
@@ -377,7 +376,7 @@ def step__integrationruntimeobjectmetadata_post_integrationruntimeobjectmetadata
 
 # EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_GetConnectionInfo
 @try_manual
-def step__integrationruntimes_post_integrationruntimes_getconnectioninfo(test):
+def step__integrationruntimes_post_integrationruntimes_getconnectioninfo(test, rg):
     test.cmd('az datafactory integration-runtime get-connection-info '
              '--factory-name "{exampleFactoryName}" '
              '--integration-runtime-name "{exampleIntegrationRuntime}" '
@@ -387,7 +386,7 @@ def step__integrationruntimes_post_integrationruntimes_getconnectioninfo(test):
 
 # EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_RegenerateAuthKey
 @try_manual
-def step__integrationruntimes_post_integrationruntimes_regenerateauthkey(test):
+def step__integrationruntimes_post_integrationruntimes_regenerateauthkey(test, rg):
     test.cmd('az datafactory integration-runtime regenerate-auth-key '
              '--factory-name "{exampleFactoryName}" '
              '--integration-runtime-name "{exampleIntegrationRuntime}" '
@@ -398,7 +397,7 @@ def step__integrationruntimes_post_integrationruntimes_regenerateauthkey(test):
 
 # EXAMPLE: /IntegrationRuntimeObjectMetadata/post/IntegrationRuntimeObjectMetadata_Get
 @try_manual
-def step__integrationruntimeobjectmetadata_post_integrationruntimeobjectmetadata_get(test):
+def step__integrationruntimeobjectmetadata_post_integrationruntimeobjectmetadata_get(test, rg):
     test.cmd('az datafactory integration-runtime-object-metadata get '
              '--factory-name "{exampleFactoryName}" '
              '--metadata-path "ssisFolders" '
@@ -409,7 +408,7 @@ def step__integrationruntimeobjectmetadata_post_integrationruntimeobjectmetadata
 
 # EXAMPLE: /IntegrationRuntimeNodes/patch/IntegrationRuntimeNodes_Update
 @try_manual
-def step__integrationruntimenodes_patch_integrationruntimenodes_update(test):
+def step__integrationruntimenodes_patch_integrationruntimenodes_update(test, rg):
     test.cmd('az datafactory integration-runtime-node update '
              '--factory-name "{exampleFactoryName}" '
              '--integration-runtime-name "{exampleIntegrationRuntime}" '
@@ -421,7 +420,7 @@ def step__integrationruntimenodes_patch_integrationruntimenodes_update(test):
 
 # EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_SyncCredentials
 @try_manual
-def step__integrationruntimes_post_integrationruntimes_synccredentials(test):
+def step__integrationruntimes_post_integrationruntimes_synccredentials(test, rg):
     test.cmd('az datafactory integration-runtime sync-credentials '
              '--factory-name "{exampleFactoryName}" '
              '--integration-runtime-name "{exampleIntegrationRuntime}" '
@@ -431,7 +430,7 @@ def step__integrationruntimes_post_integrationruntimes_synccredentials(test):
 
 # EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_GetMonitoringData
 @try_manual
-def step__integrationruntimes_post_integrationruntimes_getmonitoringdata(test):
+def step__integrationruntimes_post_integrationruntimes_getmonitoringdata(test, rg):
     test.cmd('az datafactory integration-runtime get-monitoring-data '
              '--factory-name "{exampleFactoryName}" '
              '--integration-runtime-name "{exampleIntegrationRuntime}" '
@@ -441,7 +440,7 @@ def step__integrationruntimes_post_integrationruntimes_getmonitoringdata(test):
 
 # EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_ListAuthKeys
 @try_manual
-def step__integrationruntimes_post_integrationruntimes_listauthkeys(test):
+def step__integrationruntimes_post_integrationruntimes_listauthkeys(test, rg):
     test.cmd('az datafactory integration-runtime list-auth-key '
              '--factory-name "{exampleFactoryName}" '
              '--integration-runtime-name "{exampleIntegrationRuntime}" '
@@ -451,7 +450,7 @@ def step__integrationruntimes_post_integrationruntimes_listauthkeys(test):
 
 # EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_Upgrade
 @try_manual
-def step__integrationruntimes_post_integrationruntimes_upgrade(test):
+def step__integrationruntimes_post_integrationruntimes_upgrade(test, rg):
     test.cmd('az datafactory integration-runtime remove-link '
              '--factory-name "{exampleFactoryName}" '
              '--integration-runtime-name "{exampleIntegrationRuntime}" '
@@ -461,7 +460,7 @@ def step__integrationruntimes_post_integrationruntimes_upgrade(test):
 
 # EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_GetStatus
 @try_manual
-def step__integrationruntimes_post_integrationruntimes_getstatus(test):
+def step__integrationruntimes_post_integrationruntimes_getstatus(test, rg):
     test.cmd('az datafactory integration-runtime get-status '
              '--factory-name "{exampleFactoryName}" '
              '--integration-runtime-name "{exampleIntegrationRuntime}" '
@@ -471,7 +470,7 @@ def step__integrationruntimes_post_integrationruntimes_getstatus(test):
 
 # EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_Upgrade
 @try_manual
-def step__integrationruntimes_post_integrationruntimes_upgrade(test):
+def step__integrationruntimes_post_integrationruntimes_upgrade(test, rg):
     test.cmd('az datafactory integration-runtime remove-link '
              '--factory-name "{exampleFactoryName}" '
              '--integration-runtime-name "{exampleIntegrationRuntime}" '
@@ -481,7 +480,7 @@ def step__integrationruntimes_post_integrationruntimes_upgrade(test):
 
 # EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_Start
 @try_manual
-def step__integrationruntimes_post_integrationruntimes_start(test):
+def step__integrationruntimes_post_integrationruntimes_start(test, rg):
     test.cmd('az datafactory integration-runtime start '
              '--factory-name "{exampleFactoryName}" '
              '--integration-runtime-name "{IntegrationRuntimes_3}" '
@@ -491,7 +490,7 @@ def step__integrationruntimes_post_integrationruntimes_start(test):
 
 # EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_Stop
 @try_manual
-def step__integrationruntimes_post_integrationruntimes_stop(test):
+def step__integrationruntimes_post_integrationruntimes_stop(test, rg):
     test.cmd('az datafactory integration-runtime stop '
              '--factory-name "{exampleFactoryName}" '
              '--integration-runtime-name "{IntegrationRuntimes_3}" '
@@ -501,7 +500,7 @@ def step__integrationruntimes_post_integrationruntimes_stop(test):
 
 # EXAMPLE: /Triggers/post/Triggers_GetEventSubscriptionStatus
 @try_manual
-def step__triggers_post_triggers_geteventsubscriptionstatus(test):
+def step__triggers_post_triggers_geteventsubscriptionstatus(test, rg):
     test.cmd('az datafactory trigger get-event-subscription-status '
              '--factory-name "{exampleFactoryName}" '
              '--resource-group "{rg}" '
@@ -511,7 +510,7 @@ def step__triggers_post_triggers_geteventsubscriptionstatus(test):
 
 # EXAMPLE: /TriggerRuns/post/Triggers_Rerun
 @try_manual
-def step__triggerruns_post_triggers_rerun(test):
+def step__triggerruns_post_triggers_rerun(test, rg):
     test.cmd('az datafactory trigger-run rerun '
              '--factory-name "{exampleFactoryName}" '
              '--resource-group "{rg}" '
@@ -522,7 +521,7 @@ def step__triggerruns_post_triggers_rerun(test):
 
 # EXAMPLE: /IntegrationRuntimeNodes/get/IntegrationRuntimeNodes_Get
 @try_manual
-def step__integrationruntimenodes_get_integrationruntimenodes_get(test):
+def step__integrationruntimenodes_get_integrationruntimenodes_get(test, rg):
     test.cmd('az datafactory integration-runtime-node show '
              '--factory-name "{exampleFactoryName}" '
              '--integration-runtime-name "{exampleIntegrationRuntime}" '
@@ -531,19 +530,9 @@ def step__integrationruntimenodes_get_integrationruntimenodes_get(test):
              checks=[])
 
 
-# EXAMPLE: /IntegrationRuntimes/get/IntegrationRuntimes_Get
-@try_manual
-def step__integrationruntimes_get_integrationruntimes_get(test):
-    test.cmd('az datafactory integration-runtime show '
-             '--factory-name "{exampleFactoryName}" '
-             '--integration-runtime-name "{exampleIntegrationRuntime}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
 # EXAMPLE: /IntegrationRuntimes/patch/IntegrationRuntimes_Update
 @try_manual
-def step__integrationruntimes_patch_integrationruntimes_update(test):
+def step__integrationruntimes_patch_integrationruntimes_update(test, rg):
     test.cmd('az datafactory integration-runtime update '
              '--factory-name "{exampleFactoryName}" '
              '--integration-runtime-name "{exampleIntegrationRuntime}" '
@@ -555,7 +544,7 @@ def step__integrationruntimes_patch_integrationruntimes_update(test):
 
 # EXAMPLE: /Triggers/post/Triggers_UnsubscribeFromEvents
 @try_manual
-def step__triggers_post_triggers_unsubscribefromevents(test):
+def step__triggers_post_triggers_unsubscribefromevents(test, rg):
     test.cmd('az datafactory trigger unsubscribe-from-event '
              '--factory-name "{exampleFactoryName}" '
              '--resource-group "{rg}" '
@@ -565,7 +554,7 @@ def step__triggers_post_triggers_unsubscribefromevents(test):
 
 # EXAMPLE: /Triggers/post/Triggers_SubscribeToEvents
 @try_manual
-def step__triggers_post_triggers_subscribetoevents(test):
+def step__triggers_post_triggers_subscribetoevents(test, rg):
     test.cmd('az datafactory trigger subscribe-to-event '
              '--factory-name "{exampleFactoryName}" '
              '--resource-group "{rg}" '
@@ -575,7 +564,7 @@ def step__triggers_post_triggers_subscribetoevents(test):
 
 # EXAMPLE: /ActivityRuns/post/ActivityRuns_QueryByPipelineRun
 @try_manual
-def step__activityruns_post_activityruns_querybypipelinerun(test):
+def step__activityruns_post_activityruns_querybypipelinerun(test, rg):
     test.cmd('az datafactory activity-run query-by-pipeline-run '
              '--factory-name "{exampleFactoryName}" '
              '--last-updated-after "2018-06-16T00:36:44.3345758Z" '
@@ -585,2139 +574,10 @@ def step__activityruns_post_activityruns_querybypipelinerun(test):
              checks=[])
 
 
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test):
-    test.cmd('az datafactory linked-service amazon-m-w-s create '
-             '--factory-name "{exampleFactoryName}" '
-             '--type "AzureStorage" '
-             '--description "Example description" '
-             '--linked-service-name "{exampleLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
 # EXAMPLE: /Datasets/put/Datasets_Create
 @try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
+def step__datasets_put_datasets_create(test, rg):
+    test.cmd('az datafactory dataset azure-blob create '
              '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
              'ice\\"}}" '
              '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
@@ -2730,7 +590,7 @@ def step__datasets_put_datasets_create(test):
 
 # EXAMPLE: /LinkedServices/get/LinkedServices_Get
 @try_manual
-def step__linkedservices_get_linkedservices_get(test):
+def step__linkedservices_get_linkedservices_get(test, rg):
     test.cmd('az datafactory linked-service show '
              '--factory-name "{exampleFactoryName}" '
              '--linked-service-name "{exampleLinkedService}" '
@@ -2738,49 +598,9 @@ def step__linkedservices_get_linkedservices_get(test):
              checks=[])
 
 
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/get/LinkedServices_ListByFactory
-@try_manual
-def step__linkedservices_get_linkedservices_listbyfactory(test):
-    test.cmd('az datafactory linked-service list '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
 # EXAMPLE: /Pipelines/post/Pipelines_CreateRun
 @try_manual
-def step__pipelines_post_pipelines_createrun(test):
+def step__pipelines_post_pipelines_createrun(test, rg):
     test.cmd('az datafactory pipeline create-run '
              '--factory-name "{exampleFactoryName}" '
              '--parameters "{{\\"OutputBlobNameList\\":[\\"exampleoutput.csv\\"]}}" '
@@ -2791,7 +611,7 @@ def step__pipelines_post_pipelines_createrun(test):
 
 # EXAMPLE: /Triggers/post/Triggers_Start
 @try_manual
-def step__triggers_post_triggers_start(test):
+def step__triggers_post_triggers_start(test, rg):
     test.cmd('az datafactory trigger start '
              '--factory-name "{exampleFactoryName}" '
              '--resource-group "{rg}" '
@@ -2801,7 +621,7 @@ def step__triggers_post_triggers_start(test):
 
 # EXAMPLE: /PipelineRuns/post/PipelineRuns_Cancel
 @try_manual
-def step__pipelineruns_post_pipelineruns_cancel(test):
+def step__pipelineruns_post_pipelineruns_cancel(test, rg):
     test.cmd('az datafactory pipeline-run cancel '
              '--factory-name "{exampleFactoryName}" '
              '--resource-group "{rg}" '
@@ -2811,7 +631,7 @@ def step__pipelineruns_post_pipelineruns_cancel(test):
 
 # EXAMPLE: /Triggers/post/Triggers_Stop
 @try_manual
-def step__triggers_post_triggers_stop(test):
+def step__triggers_post_triggers_stop(test, rg):
     test.cmd('az datafactory trigger stop '
              '--factory-name "{exampleFactoryName}" '
              '--resource-group "{rg}" '
@@ -2821,9 +641,8 @@ def step__triggers_post_triggers_stop(test):
 
 # EXAMPLE: /Datasets/put/Datasets_Update
 @try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
+def step__datasets_put_datasets_update(test, rg):
+    test.cmd('az datafactory dataset azure-blob create '
              '--description "Example description" '
              '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
              'ice\\"}}" '
@@ -2837,9 +656,8 @@ def step__datasets_put_datasets_update(test):
 
 # EXAMPLE: /Datasets/put/Datasets_Create
 @try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
+def step__datasets_put_datasets_create(test, rg):
+    test.cmd('az datafactory dataset azure-blob create '
              '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
              'ice\\"}}" '
              '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
@@ -2852,9 +670,8 @@ def step__datasets_put_datasets_create(test):
 
 # EXAMPLE: /Datasets/put/Datasets_Update
 @try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
+def step__datasets_put_datasets_update(test, rg):
+    test.cmd('az datafactory dataset azure-blob create '
              '--description "Example description" '
              '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
              'ice\\"}}" '
@@ -2866,2635 +683,10 @@ def step__datasets_put_datasets_update(test):
              checks=[])
 
 
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
+# EXAMPLE: /Datasets/get/Datasets_Get
 @try_manual
-def step__datasets_put_datasets_create(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Update
-@try_manual
-def step__datasets_put_datasets_update(test):
-    test.cmd('az datafactory dataset amazon-m-w-s-object create '
-             '--type "AzureBlob" '
-             '--description "Example description" '
-             '--linked-service-name "{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServ'
-             'ice\\"}}" '
-             '--parameters "{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"'
-             '}}}}" '
+def step__datasets_get_datasets_get(test, rg):
+    test.cmd('az datafactory dataset show '
              '--dataset-name "{exampleDataset}" '
              '--factory-name "{exampleFactoryName}" '
              '--resource-group "{rg}"',
@@ -5503,16 +695,30 @@ def step__datasets_put_datasets_update(test):
 
 # EXAMPLE: /Datasets/get/Datasets_ListByFactory
 @try_manual
-def step__datasets_get_datasets_listbyfactory(test):
+def step__datasets_get_datasets_listbyfactory(test, rg):
     test.cmd('az datafactory dataset list '
              '--factory-name "{exampleFactoryName}" '
              '--resource-group "{rg}"',
              checks=[])
 
 
+# EXAMPLE: /DataFlowDebugSession/post/DataFlowDebugSession_Create
+@try_manual
+def step__dataflowdebugsession_post_dataflowdebugsession_create(test, rg):
+    test.cmd('az datafactory data-flow-debug-session create '
+             '--factory-name "{exampleFactoryName}" '
+             '--resource-group "{rg}" '
+             '--integration-runtime-name "ir1" '
+             '--integration-runtime-properties "{{\\"type\\":\\"Managed\\",\\"typeProperties\\":{{\\"computeProperties'
+             '\\":{{\\"dataFlowProperties\\":{{\\"computeType\\":\\"General\\",\\"coreCount\\":48,\\"timeToLive\\":10}}'
+             ',\\"location\\":\\"AutoResolve\\"}}}}}}" '
+             '--time-to-live 60',
+             checks=[])
+
+
 # EXAMPLE: /DataFlowDebugSession/post/DataFlowDebugSession_ExecuteCommand
 @try_manual
-def step__dataflowdebugsession_post_dataflowdebugsession_executecommand(test):
+def step__dataflowdebugsession_post_dataflowdebugsession_executecommand(test, rg):
     test.cmd('az datafactory data-flow-debug-session execute-command '
              '--factory-name "{exampleFactoryName}" '
              '--resource-group "{rg}" '
@@ -5524,7 +730,7 @@ def step__dataflowdebugsession_post_dataflowdebugsession_executecommand(test):
 
 # EXAMPLE: /DataFlowDebugSession/post/DataFlowDebugSession_QueryByFactory
 @try_manual
-def step__dataflowdebugsession_post_dataflowdebugsession_querybyfactory(test):
+def step__dataflowdebugsession_post_dataflowdebugsession_querybyfactory(test, rg):
     test.cmd('az datafactory data-flow-debug-session query-by-factory '
              '--factory-name "{exampleFactoryName}" '
              '--resource-group "{rg}"',
@@ -5533,24 +739,26 @@ def step__dataflowdebugsession_post_dataflowdebugsession_querybyfactory(test):
 
 # EXAMPLE: /DataFlowDebugSession/post/DataFlowDebugSession_AddDataFlow
 @try_manual
-def step__dataflowdebugsession_post_dataflowdebugsession_adddataflow(test):
+def step__dataflowdebugsession_post_dataflowdebugsession_adddataflow(test, rg):
     test.cmd('az datafactory data-flow-debug-session add-data-flow '
              '--factory-name "{exampleFactoryName}" '
              '--resource-group "{rg}" '
-             '--data-flow "{{\\"name\\":\\"dataflow1\\",\\"properties\\":{{\\"type\\":\\"MappingDataFlow\\",\\"typeProp'
-             'erties\\":{{\\"script\\":\\"\\\\n\\\\nsource(output(\\\\n\\\\t\\\\tColumn_1 as string\\\\n\\\\t),\\\\n\\'
-             '\\tallowSchemaDrift: true,\\\\n\\\\tvalidateSchema: false) ~> source1\\",\\"sinks\\":[],\\"sources\\":[{{'
-             '\\"name\\":\\"source1\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"Delimit'
-             'edText2\\"}}}}],\\"transformations\\":[]}}}}}}" '
+             '--data-flow-name "dataflow1" '
+             '--data-flow-properties "{{\\"type\\":\\"MappingDataFlow\\",\\"typeProperties\\":{{\\"script\\":\\"\\\\n\\'
+             '\\nsource(output(\\\\n\\\\t\\\\tColumn_1 as string\\\\n\\\\t),\\\\n\\\\tallowSchemaDrift: true,\\\\n\\\\t'
+             'validateSchema: false) ~> source1\\",\\"sinks\\":[],\\"sources\\":[{{\\"name\\":\\"source1\\",\\"dataset'
+             '\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"DelimitedText2\\"}}}}],\\"transformations'
+             '\\":[]}}}}" '
              '--datasets "[{{\\"name\\":\\"dataset1\\",\\"properties\\":{{\\"type\\":\\"DelimitedText\\",\\"schema\\":['
              '{{\\"type\\":\\"String\\"}}],\\"annotations\\":[],\\"linkedServiceName\\":{{\\"type\\":\\"LinkedServiceRe'
              'ference\\",\\"referenceName\\":\\"linkedService5\\"}},\\"typeProperties\\":{{\\"columnDelimiter\\":\\",\\'
              '",\\"escapeChar\\":\\"\\\\\\\\\\",\\"firstRowAsHeader\\":true,\\"location\\":{{\\"type\\":\\"AzureBlobSto'
              'rageLocation\\",\\"container\\":\\"dataflow-sample-data\\",\\"fileName\\":\\"Ansiencoding.csv\\"}},\\"quo'
              'teChar\\":\\"\\\\\\"\\"}}}}}}]" '
-             '--debug-settings "{{\\"datasetParameters\\":{{\\"Movies\\":{{\\"path\\":\\"abc\\"}},\\"Output\\":{{\\"tim'
-             'e\\":\\"def\\"}}}},\\"parameters\\":{{\\"sourcePath\\":\\"Toy\\"}},\\"sourceSettings\\":[{{\\"rowLimit\\"'
-             ':1000,\\"sourceName\\":\\"source1\\"}},{{\\"rowLimit\\":222,\\"sourceName\\":\\"source2\\"}}]}}" '
+             '--debug-settings-dataset-parameters "{{\\"Movies\\":{{\\"path\\":\\"abc\\"}},\\"Output\\":{{\\"time\\":\\'
+             '"def\\"}}}}" '
+             '--debug-settings-source-settings row-limit=1000 source-name="source1" '
+             '--debug-settings-source-settings row-limit=222 source-name="source2" '
              '--linked-services "[{{\\"name\\":\\"linkedService1\\",\\"properties\\":{{\\"type\\":\\"AzureBlobStorage\\'
              '",\\"annotations\\":[],\\"typeProperties\\":{{\\"connectionString\\":\\"DefaultEndpointsProtocol=https;Ac'
              'countName=<storageName>;EndpointSuffix=core.windows.net;\\",\\"encryptedCredential\\":\\"<credential>\\"}'
@@ -5559,32 +767,9 @@ def step__dataflowdebugsession_post_dataflowdebugsession_adddataflow(test):
              checks=[])
 
 
-# EXAMPLE: /DataFlowDebugSession/post/DataFlowDebugSession_Create
-@try_manual
-def step__dataflowdebugsession_post_dataflowdebugsession_create(test):
-    test.cmd('az datafactory data-flow-debug-session create '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}" '
-             '--integration-runtime "{{\\"name\\":\\"ir1\\",\\"properties\\":{{\\"type\\":\\"Managed\\",\\"typeProperti'
-             'es\\":{{\\"computeProperties\\":{{\\"dataFlowProperties\\":{{\\"computeType\\":\\"General\\",\\"coreCount'
-             '\\":48,\\"timeToLive\\":10}},\\"location\\":\\"AutoResolve\\"}}}}}}}}" '
-             '--time-to-live 60',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/get/Datasets_Get
-@try_manual
-def step__datasets_get_datasets_get(test):
-    test.cmd('az datafactory dataset show '
-             '--dataset-name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
 # EXAMPLE: /Factories/post/Factories_GetGitHubAccessToken
 @try_manual
-def step__factories_post_factories_getgithubaccesstoken(test):
+def step__factories_post_factories_getgithubaccesstoken(test, rg):
     test.cmd('az datafactory factory get-git-hub-access-token '
              '--factory-name "{exampleFactoryName}" '
              '--git-hub-access-code "some" '
@@ -5596,7 +781,7 @@ def step__factories_post_factories_getgithubaccesstoken(test):
 
 # EXAMPLE: /Factories/post/Factories_GetDataPlaneAccess
 @try_manual
-def step__factories_post_factories_getdataplaneaccess(test):
+def step__factories_post_factories_getdataplaneaccess(test, rg):
     test.cmd('az datafactory factory get-data-plane-access '
              '--factory-name "{exampleFactoryName}" '
              '--access-resource-path "" '
@@ -5610,7 +795,7 @@ def step__factories_post_factories_getdataplaneaccess(test):
 
 # EXAMPLE: /PipelineRuns/post/PipelineRuns_QueryByFactory
 @try_manual
-def step__pipelineruns_post_pipelineruns_querybyfactory(test):
+def step__pipelineruns_post_pipelineruns_querybyfactory(test, rg):
     test.cmd('az datafactory pipeline-run query-by-factory '
              '--factory-name "{exampleFactoryName}" '
              '--filters operand="PipelineName" operator="Equals" values="examplePipeline" '
@@ -5622,7 +807,7 @@ def step__pipelineruns_post_pipelineruns_querybyfactory(test):
 
 # EXAMPLE: /TriggerRuns/post/TriggerRuns_QueryByFactory
 @try_manual
-def step__triggerruns_post_triggerruns_querybyfactory(test):
+def step__triggerruns_post_triggerruns_querybyfactory(test, rg):
     test.cmd('az datafactory trigger-run query-by-factory '
              '--factory-name "{exampleFactoryName}" '
              '--filters operand="TriggerName" operator="Equals" values="exampleTrigger" '
@@ -5634,7 +819,7 @@ def step__triggerruns_post_triggerruns_querybyfactory(test):
 
 # EXAMPLE: /ExposureControl/post/ExposureControl_GetFeatureValueByFactory
 @try_manual
-def step__exposurecontrol_post_exposurecontrol_getfeaturevaluebyfactory(test):
+def step__exposurecontrol_post_exposurecontrol_getfeaturevaluebyfactory(test, rg):
     test.cmd('az datafactory exposure-control get-feature-value-by-factory '
              '--feature-name "ADFIntegrationRuntimeSharingRbac" '
              '--feature-type "Feature" '
@@ -5645,7 +830,7 @@ def step__exposurecontrol_post_exposurecontrol_getfeaturevaluebyfactory(test):
 
 # EXAMPLE: /Triggers/post/Triggers_QueryByFactory
 @try_manual
-def step__triggers_post_triggers_querybyfactory(test):
+def step__triggers_post_triggers_querybyfactory(test, rg):
     test.cmd('az datafactory trigger query-by-factory '
              '--factory-name "{exampleFactoryName}" '
              '--parent-trigger-name "exampleTrigger" '
@@ -5655,7 +840,7 @@ def step__triggers_post_triggers_querybyfactory(test):
 
 # EXAMPLE: /Factories/patch/Factories_Update
 @try_manual
-def step__factories_patch_factories_update(test):
+def step__factories_patch_factories_update(test, rg):
     test.cmd('az datafactory factory update '
              '--factory-name "{exampleFactoryName}" '
              '--tags exampleTag="exampleValue" '
@@ -5665,20 +850,19 @@ def step__factories_patch_factories_update(test):
 
 # EXAMPLE: /Factories/post/Factories_ConfigureFactoryRepo
 @try_manual
-def step__factories_post_factories_configurefactoryrepo(test):
+def step__factories_post_factories_configurefactoryrepo(test, rg):
     test.cmd('az datafactory factory configure-factory-repo '
              '--factory-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.DataFacto'
              'ry/factories/{exampleFactoryName}" '
-             '--repo-configuration "{{\\"type\\":\\"FactoryVSTSConfiguration\\",\\"accountName\\":\\"ADF\\",\\"collabor'
-             'ationBranch\\":\\"master\\",\\"lastCommitId\\":\\"\\",\\"projectName\\":\\"project\\",\\"repositoryName\\'
-             '":\\"repo\\",\\"rootFolder\\":\\"/\\",\\"tenantId\\":\\"\\"}}" '
+             '--factory-vsts-configuration account-name="ADF" collaboration-branch="master" last-commit-id="" project-n'
+             'ame="project" repository-name="repo" root-folder="/" tenant-id="" '
              '--location-id "East US"',
              checks=[])
 
 
 # EXAMPLE: /ExposureControl/post/ExposureControl_GetFeatureValue
 @try_manual
-def step__exposurecontrol_post_exposurecontrol_getfeaturevalue(test):
+def step__exposurecontrol_post_exposurecontrol_getfeaturevalue(test, rg):
     test.cmd('az datafactory exposure-control get-feature-value '
              '--feature-name "ADFIntegrationRuntimeSharingRbac" '
              '--feature-type "Feature" '
@@ -5688,7 +872,7 @@ def step__exposurecontrol_post_exposurecontrol_getfeaturevalue(test):
 
 # EXAMPLE: /IntegrationRuntimeNodes/delete/IntegrationRuntimesNodes_Delete
 @try_manual
-def step__integrationruntimenodes_delete_integrationruntimesnodes_delete(test):
+def step__integrationruntimenodes_delete_integrationruntimesnodes_delete(test, rg):
     test.cmd('az datafactory integration-runtime-node delete '
              '--factory-name "{exampleFactoryName}" '
              '--integration-runtime-name "{exampleIntegrationRuntime}" '
@@ -5699,7 +883,7 @@ def step__integrationruntimenodes_delete_integrationruntimesnodes_delete(test):
 
 # EXAMPLE: /IntegrationRuntimes/delete/IntegrationRuntimes_Delete
 @try_manual
-def step__integrationruntimes_delete_integrationruntimes_delete(test):
+def step__integrationruntimes_delete_integrationruntimes_delete(test, rg):
     test.cmd('az datafactory integration-runtime delete '
              '--factory-name "{exampleFactoryName}" '
              '--integration-runtime-name "{exampleIntegrationRuntime}" '
@@ -5709,7 +893,7 @@ def step__integrationruntimes_delete_integrationruntimes_delete(test):
 
 # EXAMPLE: /DataFlowDebugSession/post/DataFlowDebugSession_Delete
 @try_manual
-def step__dataflowdebugsession_post_dataflowdebugsession_delete(test):
+def step__dataflowdebugsession_post_dataflowdebugsession_delete(test, rg):
     test.cmd('az datafactory data-flow-debug-session delete '
              '--factory-name "{exampleFactoryName}" '
              '--resource-group "{rg}" '
@@ -5719,7 +903,7 @@ def step__dataflowdebugsession_post_dataflowdebugsession_delete(test):
 
 # EXAMPLE: /Datasets/delete/Datasets_Delete
 @try_manual
-def step__datasets_delete_datasets_delete(test):
+def step__datasets_delete_datasets_delete(test, rg):
     test.cmd('az datafactory dataset delete '
              '--dataset-name "{exampleDataset}" '
              '--factory-name "{exampleFactoryName}" '
@@ -5729,7 +913,7 @@ def step__datasets_delete_datasets_delete(test):
 
 # EXAMPLE: /Pipelines/delete/Pipelines_Delete
 @try_manual
-def step__pipelines_delete_pipelines_delete(test):
+def step__pipelines_delete_pipelines_delete(test, rg):
     test.cmd('az datafactory pipeline delete '
              '--factory-name "{exampleFactoryName}" '
              '--pipeline-name "{examplePipeline}" '
@@ -5739,7 +923,7 @@ def step__pipelines_delete_pipelines_delete(test):
 
 # EXAMPLE: /DataFlows/delete/DataFlows_Delete
 @try_manual
-def step__dataflows_delete_dataflows_delete(test):
+def step__dataflows_delete_dataflows_delete(test, rg):
     test.cmd('az datafactory data-flow delete '
              '--data-flow-name "{exampleDataFlow}" '
              '--factory-name "{exampleFactoryName}" '
@@ -5749,7 +933,7 @@ def step__dataflows_delete_dataflows_delete(test):
 
 # EXAMPLE: /LinkedServices/delete/LinkedServices_Delete
 @try_manual
-def step__linkedservices_delete_linkedservices_delete(test):
+def step__linkedservices_delete_linkedservices_delete(test, rg):
     test.cmd('az datafactory linked-service delete '
              '--factory-name "{exampleFactoryName}" '
              '--linked-service-name "{exampleLinkedService}" '
@@ -5759,7 +943,7 @@ def step__linkedservices_delete_linkedservices_delete(test):
 
 # EXAMPLE: /Triggers/delete/Triggers_Delete
 @try_manual
-def step__triggers_delete_triggers_delete(test):
+def step__triggers_delete_triggers_delete(test, rg):
     test.cmd('az datafactory trigger delete '
              '--factory-name "{exampleFactoryName}" '
              '--resource-group "{rg}" '
@@ -5769,7 +953,7 @@ def step__triggers_delete_triggers_delete(test):
 
 # EXAMPLE: /Factories/delete/Factories_Delete
 @try_manual
-def step__factories_delete_factories_delete(test):
+def step__factories_delete_factories_delete(test, rg):
     test.cmd('az datafactory factory delete '
              '--factory-name "{exampleFactoryName}" '
              '--resource-group "{rg}"',
@@ -5777,470 +961,110 @@ def step__factories_delete_factories_delete(test):
 
 
 @try_manual
-def cleanup(test):
+def cleanup(test, rg):
     pass
 
 
 class DataFactoryManagementClientScenarioTest(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix='cli_test_datafactory_exampleResourceGroup'[:9], key='rg')
-    def test_datafactory(self, resource_group):
+    @ResourceGroupPreparer(name_prefix='clitestdatafactory_exampleResourceGroup'[:7], key='rg', parameter_name='rg')
+    def test_datafactory(self, rg):
 
         self.kwargs.update({
             'subscription_id': self.get_subscription_id()
         })
 
         self.kwargs.update({
-            'exampleFactoryName': self.create_random_name(prefix='cli_test_factories'[:9], length=24),
-            'exampleIntegrationRuntime': self.create_random_name(prefix='cli_test_integration_runtimes'[:9],
-                                                                 length=24),
+            'exampleFactoryName': self.create_random_name(prefix='clitestfactories'[:7], length=24),
+            'exampleIntegrationRuntime': self.create_random_name(prefix='clitestintegration_runtimes'[:7], length=24),
             'IntegrationRuntimes_2': 'IntegrationRuntimes_2',
             'IntegrationRuntimes_3': 'IntegrationRuntimes_3',
-            'exampleLinkedService': self.create_random_name(prefix='cli_test_linked_services'[:9], length=24),
-            'exampleDataset': self.create_random_name(prefix='cli_test_datasets'[:9], length=24),
-            'examplePipeline': self.create_random_name(prefix='cli_test_pipelines'[:9], length=24),
-            'exampleTrigger': self.create_random_name(prefix='cli_test_triggers'[:9], length=24),
-            'exampleDataFlow': self.create_random_name(prefix='cli_test_data_flows'[:9], length=24),
+            'exampleLinkedService': self.create_random_name(prefix='clitestlinked_services'[:7], length=24),
+            'exampleDataset': self.create_random_name(prefix='clitestdatasets'[:7], length=24),
+            'examplePipeline': self.create_random_name(prefix='clitestpipelines'[:7], length=24),
+            'exampleTrigger': self.create_random_name(prefix='clitesttriggers'[:7], length=24),
+            'exampleDataFlow': self.create_random_name(prefix='clitestdata_flows'[:7], length=24),
         })
 
-        setup(self)
-        step__factories_put_factories_createorupdate(self)
-        step__triggers_put_triggers_update(self)
-        step__triggers_put_triggers_create(self)
-        step__dataflows_put_dataflows_update(self)
-        step__dataflows_put_dataflows_create(self)
-        step__pipelines_put_pipelines_update(self)
-        step__pipelines_put_pipelines_create(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__integrationruntimes_put_integrationruntimes_create(self)
-        step__integrationruntimes_put_integrationruntimes_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__pipelines_get_pipelines_get(self)
-        step__dataflows_get_dataflows_get(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__triggers_get_triggers_get(self)
-        step__pipelineruns_get_pipelineruns_get(self)
-        step__factories_get_factories_get(self)
-        step__integrationruntimes_get_integrationruntimes_listbyfactory(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__pipelines_get_pipelines_listbyfactory(self)
-        step__dataflows_get_dataflows_listbyfactory(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__triggers_get_triggers_listbyfactory(self)
-        step__factories_get_factories_listbyresourcegroup(self)
-        step__factories_get_factories_list(self)
-        step__integrationruntimenodes_post_integrationruntimenodes_getipaddress(self)
-        step__integrationruntimes_post_integrationruntimes_createlinkedintegrationruntime(self)
-        step__integrationruntimeobjectmetadata_post_integrationruntimeobjectmetadata_refresh(self)
-        step__integrationruntimes_post_integrationruntimes_getconnectioninfo(self)
-        step__integrationruntimes_post_integrationruntimes_regenerateauthkey(self)
-        step__integrationruntimeobjectmetadata_post_integrationruntimeobjectmetadata_get(self)
-        step__integrationruntimenodes_patch_integrationruntimenodes_update(self)
-        step__integrationruntimes_post_integrationruntimes_synccredentials(self)
-        step__integrationruntimes_post_integrationruntimes_getmonitoringdata(self)
-        step__integrationruntimes_post_integrationruntimes_listauthkeys(self)
-        step__integrationruntimes_post_integrationruntimes_upgrade(self)
-        step__integrationruntimes_post_integrationruntimes_getstatus(self)
-        step__integrationruntimes_post_integrationruntimes_upgrade(self)
-        step__integrationruntimes_post_integrationruntimes_start(self)
-        step__integrationruntimes_post_integrationruntimes_stop(self)
-        step__triggers_post_triggers_geteventsubscriptionstatus(self)
-        step__triggerruns_post_triggers_rerun(self)
-        step__integrationruntimenodes_get_integrationruntimenodes_get(self)
-        step__integrationruntimes_get_integrationruntimes_get(self)
-        step__integrationruntimes_patch_integrationruntimes_update(self)
-        step__triggers_post_triggers_unsubscribefromevents(self)
-        step__triggers_post_triggers_subscribetoevents(self)
-        step__activityruns_post_activityruns_querybypipelinerun(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__linkedservices_put_linkedservices_create(self)
-        step__linkedservices_put_linkedservices_update(self)
-        step__datasets_put_datasets_create(self)
-        step__linkedservices_get_linkedservices_get(self)
-        step__datasets_put_datasets_update(self)
-        step__linkedservices_get_linkedservices_listbyfactory(self)
-        step__datasets_put_datasets_create(self)
-        step__pipelines_post_pipelines_createrun(self)
-        step__triggers_post_triggers_start(self)
-        step__pipelineruns_post_pipelineruns_cancel(self)
-        step__triggers_post_triggers_stop(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_put_datasets_create(self)
-        step__datasets_put_datasets_update(self)
-        step__datasets_get_datasets_listbyfactory(self)
-        step__dataflowdebugsession_post_dataflowdebugsession_executecommand(self)
-        step__dataflowdebugsession_post_dataflowdebugsession_querybyfactory(self)
-        step__dataflowdebugsession_post_dataflowdebugsession_adddataflow(self)
-        step__dataflowdebugsession_post_dataflowdebugsession_create(self)
-        step__datasets_get_datasets_get(self)
-        step__factories_post_factories_getgithubaccesstoken(self)
-        step__factories_post_factories_getdataplaneaccess(self)
-        step__pipelineruns_post_pipelineruns_querybyfactory(self)
-        step__triggerruns_post_triggerruns_querybyfactory(self)
-        step__exposurecontrol_post_exposurecontrol_getfeaturevaluebyfactory(self)
-        step__triggers_post_triggers_querybyfactory(self)
-        step__factories_patch_factories_update(self)
-        step__factories_post_factories_configurefactoryrepo(self)
-        step__exposurecontrol_post_exposurecontrol_getfeaturevalue(self)
-        step__integrationruntimenodes_delete_integrationruntimesnodes_delete(self)
-        step__integrationruntimes_delete_integrationruntimes_delete(self)
-        step__dataflowdebugsession_post_dataflowdebugsession_delete(self)
-        step__datasets_delete_datasets_delete(self)
-        step__pipelines_delete_pipelines_delete(self)
-        step__dataflows_delete_dataflows_delete(self)
-        step__linkedservices_delete_linkedservices_delete(self)
-        step__triggers_delete_triggers_delete(self)
-        step__factories_delete_factories_delete(self)
-        cleanup(self)
+        setup(self, rg)
+        step__factories_put_factories_createorupdate(self, rg)
+        step__triggers_put_triggers_update(self, rg)
+        step__triggers_put_triggers_create(self, rg)
+        step__dataflows_put_dataflows_update(self, rg)
+        step__dataflows_put_dataflows_create(self, rg)
+        step__pipelines_put_pipelines_update(self, rg)
+        step__pipelines_put_pipelines_create(self, rg)
+        step__linkedservices_put_linkedservices_create(self, rg)
+        step__integrationruntimes_put_integrationruntimes_create(self, rg)
+        step__integrationruntimes_get_integrationruntimes_get(self, rg)
+        step__linkedservices_put_linkedservices_update(self, rg)
+        step__pipelines_get_pipelines_get(self, rg)
+        step__dataflows_get_dataflows_get(self, rg)
+        step__datasets_put_datasets_create(self, rg)
+        step__triggers_get_triggers_get(self, rg)
+        step__pipelineruns_get_pipelineruns_get(self, rg)
+        step__factories_get_factories_get(self, rg)
+        step__integrationruntimes_get_integrationruntimes_listbyfactory(self, rg)
+        step__linkedservices_get_linkedservices_listbyfactory(self, rg)
+        step__pipelines_get_pipelines_listbyfactory(self, rg)
+        step__dataflows_get_dataflows_listbyfactory(self, rg)
+        step__datasets_put_datasets_update(self, rg)
+        step__triggers_get_triggers_listbyfactory(self, rg)
+        step__factories_get_factories_listbyresourcegroup(self, rg)
+        step__factories_get_factories_list(self, rg)
+        step__integrationruntimenodes_post_integrationruntimenodes_getipaddress(self, rg)
+        step__integrationruntimes_post_integrationruntimes_createlinkedintegrationruntime(self, rg)
+        step__integrationruntimeobjectmetadata_post_integrationruntimeobjectmetadata_refresh(self, rg)
+        step__integrationruntimes_post_integrationruntimes_getconnectioninfo(self, rg)
+        step__integrationruntimes_post_integrationruntimes_regenerateauthkey(self, rg)
+        step__integrationruntimeobjectmetadata_post_integrationruntimeobjectmetadata_get(self, rg)
+        step__integrationruntimenodes_patch_integrationruntimenodes_update(self, rg)
+        step__integrationruntimes_post_integrationruntimes_synccredentials(self, rg)
+        step__integrationruntimes_post_integrationruntimes_getmonitoringdata(self, rg)
+        step__integrationruntimes_post_integrationruntimes_listauthkeys(self, rg)
+        step__integrationruntimes_post_integrationruntimes_upgrade(self, rg)
+        step__integrationruntimes_post_integrationruntimes_getstatus(self, rg)
+        step__integrationruntimes_post_integrationruntimes_upgrade(self, rg)
+        step__integrationruntimes_post_integrationruntimes_start(self, rg)
+        step__integrationruntimes_post_integrationruntimes_stop(self, rg)
+        step__triggers_post_triggers_geteventsubscriptionstatus(self, rg)
+        step__triggerruns_post_triggers_rerun(self, rg)
+        step__integrationruntimenodes_get_integrationruntimenodes_get(self, rg)
+        step__integrationruntimes_patch_integrationruntimes_update(self, rg)
+        step__triggers_post_triggers_unsubscribefromevents(self, rg)
+        step__triggers_post_triggers_subscribetoevents(self, rg)
+        step__activityruns_post_activityruns_querybypipelinerun(self, rg)
+        step__datasets_put_datasets_create(self, rg)
+        step__linkedservices_get_linkedservices_get(self, rg)
+        step__pipelines_post_pipelines_createrun(self, rg)
+        step__triggers_post_triggers_start(self, rg)
+        step__pipelineruns_post_pipelineruns_cancel(self, rg)
+        step__triggers_post_triggers_stop(self, rg)
+        step__datasets_put_datasets_update(self, rg)
+        step__datasets_put_datasets_create(self, rg)
+        step__datasets_put_datasets_update(self, rg)
+        step__datasets_get_datasets_get(self, rg)
+        step__datasets_get_datasets_listbyfactory(self, rg)
+        step__dataflowdebugsession_post_dataflowdebugsession_create(self, rg)
+        step__dataflowdebugsession_post_dataflowdebugsession_executecommand(self, rg)
+        step__dataflowdebugsession_post_dataflowdebugsession_querybyfactory(self, rg)
+        step__dataflowdebugsession_post_dataflowdebugsession_adddataflow(self, rg)
+        step__factories_post_factories_getgithubaccesstoken(self, rg)
+        step__factories_post_factories_getdataplaneaccess(self, rg)
+        step__pipelineruns_post_pipelineruns_querybyfactory(self, rg)
+        step__triggerruns_post_triggerruns_querybyfactory(self, rg)
+        step__exposurecontrol_post_exposurecontrol_getfeaturevaluebyfactory(self, rg)
+        step__triggers_post_triggers_querybyfactory(self, rg)
+        step__factories_patch_factories_update(self, rg)
+        step__factories_post_factories_configurefactoryrepo(self, rg)
+        step__exposurecontrol_post_exposurecontrol_getfeaturevalue(self, rg)
+        step__integrationruntimenodes_delete_integrationruntimesnodes_delete(self, rg)
+        step__integrationruntimes_delete_integrationruntimes_delete(self, rg)
+        step__dataflowdebugsession_post_dataflowdebugsession_delete(self, rg)
+        step__datasets_delete_datasets_delete(self, rg)
+        step__pipelines_delete_pipelines_delete(self, rg)
+        step__dataflows_delete_dataflows_delete(self, rg)
+        step__linkedservices_delete_linkedservices_delete(self, rg)
+        step__triggers_delete_triggers_delete(self, rg)
+        step__factories_delete_factories_delete(self, rg)
+        cleanup(self, rg)

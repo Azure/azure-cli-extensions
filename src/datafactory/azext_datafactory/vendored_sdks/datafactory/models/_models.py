@@ -8462,15 +8462,18 @@ class CreateDataFlowDebugSessionRequest(msrest.serialization.Model):
     :type core_count: int
     :param time_to_live: Time to live setting of the cluster in minutes.
     :type time_to_live: int
-    :param integration_runtime: Set to use integration runtime setting for data flow debug session.
-    :type integration_runtime: ~azure.mgmt.datafactory.models.IntegrationRuntimeDebugResource
+    :param name: The resource name.
+    :type name: str
+    :param properties: Integration runtime properties.
+    :type properties: ~azure.mgmt.datafactory.models.IntegrationRuntime
     """
 
     _attribute_map = {
         'compute_type': {'key': 'computeType', 'type': 'str'},
         'core_count': {'key': 'coreCount', 'type': 'int'},
         'time_to_live': {'key': 'timeToLive', 'type': 'int'},
-        'integration_runtime': {'key': 'integrationRuntime', 'type': 'IntegrationRuntimeDebugResource'},
+        'name': {'key': 'integrationRuntime.name', 'type': 'str'},
+        'properties': {'key': 'integrationRuntime.properties', 'type': 'IntegrationRuntime'},
     }
 
     def __init__(
@@ -8481,7 +8484,8 @@ class CreateDataFlowDebugSessionRequest(msrest.serialization.Model):
         self.compute_type = kwargs.get('compute_type', None)
         self.core_count = kwargs.get('core_count', None)
         self.time_to_live = kwargs.get('time_to_live', None)
-        self.integration_runtime = kwargs.get('integration_runtime', None)
+        self.name = kwargs.get('name', None)
+        self.properties = kwargs.get('properties', None)
 
 
 class CreateDataFlowDebugSessionResponse(msrest.serialization.Model):
@@ -9090,32 +9094,58 @@ class DataFlowDebugCommandResponse(msrest.serialization.Model):
 class DataFlowDebugPackage(msrest.serialization.Model):
     """Request body structure for starting data flow debug session.
 
+    Variables are only populated by the server, and will be ignored when sending a request.
+
     :param additional_properties: Unmatched properties from the message are deserialized to this
      collection.
     :type additional_properties: dict[str, object]
     :param session_id: The ID of data flow debug session.
     :type session_id: str
-    :param data_flow: Data flow instance.
-    :type data_flow: ~azure.mgmt.datafactory.models.DataFlowDebugResource
     :param datasets: List of datasets.
     :type datasets: list[~azure.mgmt.datafactory.models.DatasetDebugResource]
     :param linked_services: List of linked services.
     :type linked_services: list[~azure.mgmt.datafactory.models.LinkedServiceDebugResource]
-    :param staging: Staging info for debug session.
-    :type staging: ~azure.mgmt.datafactory.models.DataFlowStagingInfo
-    :param debug_settings: Data flow debug settings.
-    :type debug_settings: ~azure.mgmt.datafactory.models.DataFlowDebugPackageDebugSettings
+    :param source_settings: Source setting for data flow debug.
+    :type source_settings: list[~azure.mgmt.datafactory.models.DataFlowSourceSetting]
+    :param parameters_debug_settings_parameters: Data flow parameters.
+    :type parameters_debug_settings_parameters: dict[str, object]
+    :param dataset_parameters: Parameters for dataset.
+    :type dataset_parameters: object
+    :param folder_path: Folder path for staging blob.
+    :type folder_path: str
+    :ivar type: Linked service reference type. Default value: "LinkedServiceReference".
+    :vartype type: str
+    :param reference_name: Reference LinkedService name.
+    :type reference_name: str
+    :param parameters_staging_linked_service_parameters: Arguments for LinkedService.
+    :type parameters_staging_linked_service_parameters: dict[str, object]
+    :param name: The resource name.
+    :type name: str
+    :param properties: Data flow properties.
+    :type properties: ~azure.mgmt.datafactory.models.DataFlow
     """
+
+    _validation = {
+        'type': {'constant': True},
+    }
 
     _attribute_map = {
         'additional_properties': {'key': '', 'type': '{object}'},
         'session_id': {'key': 'sessionId', 'type': 'str'},
-        'data_flow': {'key': 'dataFlow', 'type': 'DataFlowDebugResource'},
         'datasets': {'key': 'datasets', 'type': '[DatasetDebugResource]'},
         'linked_services': {'key': 'linkedServices', 'type': '[LinkedServiceDebugResource]'},
-        'staging': {'key': 'staging', 'type': 'DataFlowStagingInfo'},
-        'debug_settings': {'key': 'debugSettings', 'type': 'DataFlowDebugPackageDebugSettings'},
+        'source_settings': {'key': 'debugSettings.sourceSettings', 'type': '[DataFlowSourceSetting]'},
+        'parameters_debug_settings_parameters': {'key': 'debugSettings.parameters', 'type': '{object}'},
+        'dataset_parameters': {'key': 'debugSettings.datasetParameters', 'type': 'object'},
+        'folder_path': {'key': 'staging.folderPath', 'type': 'str'},
+        'type': {'key': 'staging.linkedService.type', 'type': 'str'},
+        'reference_name': {'key': 'staging.linkedService.referenceName', 'type': 'str'},
+        'parameters_staging_linked_service_parameters': {'key': 'staging.linkedService.parameters', 'type': '{object}'},
+        'name': {'key': 'dataFlow.name', 'type': 'str'},
+        'properties': {'key': 'dataFlow.properties', 'type': 'DataFlow'},
     }
+
+    type = "LinkedServiceReference"
 
     def __init__(
         self,
@@ -9124,38 +9154,16 @@ class DataFlowDebugPackage(msrest.serialization.Model):
         super(DataFlowDebugPackage, self).__init__(**kwargs)
         self.additional_properties = kwargs.get('additional_properties', None)
         self.session_id = kwargs.get('session_id', None)
-        self.data_flow = kwargs.get('data_flow', None)
         self.datasets = kwargs.get('datasets', None)
         self.linked_services = kwargs.get('linked_services', None)
-        self.staging = kwargs.get('staging', None)
-        self.debug_settings = kwargs.get('debug_settings', None)
-
-
-class DataFlowDebugPackageDebugSettings(msrest.serialization.Model):
-    """Data flow debug settings.
-
-    :param source_settings: Source setting for data flow debug.
-    :type source_settings: list[~azure.mgmt.datafactory.models.DataFlowSourceSetting]
-    :param parameters: Data flow parameters.
-    :type parameters: dict[str, object]
-    :param dataset_parameters: Parameters for dataset.
-    :type dataset_parameters: object
-    """
-
-    _attribute_map = {
-        'source_settings': {'key': 'sourceSettings', 'type': '[DataFlowSourceSetting]'},
-        'parameters': {'key': 'parameters', 'type': '{object}'},
-        'dataset_parameters': {'key': 'datasetParameters', 'type': 'object'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(DataFlowDebugPackageDebugSettings, self).__init__(**kwargs)
         self.source_settings = kwargs.get('source_settings', None)
-        self.parameters = kwargs.get('parameters', None)
+        self.parameters_debug_settings_parameters = kwargs.get('parameters_debug_settings_parameters', None)
         self.dataset_parameters = kwargs.get('dataset_parameters', None)
+        self.folder_path = kwargs.get('folder_path', None)
+        self.reference_name = kwargs.get('reference_name', None)
+        self.parameters_staging_linked_service_parameters = kwargs.get('parameters_staging_linked_service_parameters', None)
+        self.name = kwargs.get('name', None)
+        self.properties = kwargs.get('properties', None)
 
 
 class SubResourceDebugResource(msrest.serialization.Model):
@@ -9556,24 +9564,39 @@ class DataFlowSourceSetting(msrest.serialization.Model):
 class DataFlowStagingInfo(msrest.serialization.Model):
     """Staging info for execute data flow activity.
 
-    :param linked_service: Staging linked service reference.
-    :type linked_service: ~azure.mgmt.datafactory.models.LinkedServiceReference
+    Variables are only populated by the server, and will be ignored when sending a request.
+
     :param folder_path: Folder path for staging blob.
     :type folder_path: str
+    :ivar type: Linked service reference type. Default value: "LinkedServiceReference".
+    :vartype type: str
+    :param reference_name: Reference LinkedService name.
+    :type reference_name: str
+    :param parameters: Arguments for LinkedService.
+    :type parameters: dict[str, object]
     """
 
-    _attribute_map = {
-        'linked_service': {'key': 'linkedService', 'type': 'LinkedServiceReference'},
-        'folder_path': {'key': 'folderPath', 'type': 'str'},
+    _validation = {
+        'type': {'constant': True},
     }
+
+    _attribute_map = {
+        'folder_path': {'key': 'folderPath', 'type': 'str'},
+        'type': {'key': 'linkedService.type', 'type': 'str'},
+        'reference_name': {'key': 'linkedService.referenceName', 'type': 'str'},
+        'parameters': {'key': 'linkedService.parameters', 'type': '{object}'},
+    }
+
+    type = "LinkedServiceReference"
 
     def __init__(
         self,
         **kwargs
     ):
         super(DataFlowStagingInfo, self).__init__(**kwargs)
-        self.linked_service = kwargs.get('linked_service', None)
         self.folder_path = kwargs.get('folder_path', None)
+        self.reference_name = kwargs.get('reference_name', None)
+        self.parameters = kwargs.get('parameters', None)
 
 
 class DataLakeAnalyticsUsqlActivity(ExecutionActivity):

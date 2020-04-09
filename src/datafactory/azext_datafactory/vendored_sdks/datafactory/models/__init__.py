@@ -150,7 +150,6 @@ try:
     from ._models_py3 import DataFlowDebugCommandRequest
     from ._models_py3 import DataFlowDebugCommandResponse
     from ._models_py3 import DataFlowDebugPackage
-    from ._models_py3 import DataFlowDebugPackageDebugSettings
     from ._models_py3 import DataFlowDebugResource
     from ._models_py3 import DataFlowDebugSessionInfo
     from ._models_py3 import DataFlowFolder
@@ -746,7 +745,6 @@ except (SyntaxError, ImportError):
     from ._models import DataFlowDebugCommandRequest  # type: ignore
     from ._models import DataFlowDebugCommandResponse  # type: ignore
     from ._models import DataFlowDebugPackage  # type: ignore
-    from ._models import DataFlowDebugPackageDebugSettings  # type: ignore
     from ._models import DataFlowDebugResource  # type: ignore
     from ._models import DataFlowDebugSessionInfo  # type: ignore
     from ._models import DataFlowFolder  # type: ignore
@@ -1427,7 +1425,6 @@ __all__ = [
     'DataFlowDebugCommandRequest',
     'DataFlowDebugCommandResponse',
     'DataFlowDebugPackage',
-    'DataFlowDebugPackageDebugSettings',
     'DataFlowDebugResource',
     'DataFlowDebugSessionInfo',
     'DataFlowFolder',

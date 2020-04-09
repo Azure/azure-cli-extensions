@@ -19,6 +19,7 @@ from azure.cli.core.commands.parameters import (
     resource_group_name_type,
     get_location_type
 )
+from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from azext_datafactory.action import (
     AddIdentity,
     AddFactoryVstsConfiguration,
@@ -31,6 +32,7 @@ from azext_datafactory.action import (
     AddDatasetZipDeflateCompression,
     AddFilters,
     AddOrderBy,
+    AddDebugSettingsSourceSettings,
     AddCommandPayload
 )
 
@@ -38,21 +40,22 @@ from azext_datafactory.action import (
 def load_arguments(self, _):
 
     with self.argument_context('datafactory factory list') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
 
     with self.argument_context('datafactory factory show') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('if_none_match', help='ETag of the factory entity. Should only be specified for get. If the ETag mat'
                    'ches the existing entity tag, or if * was provided, then no content will be returned.')
 
     with self.argument_context('datafactory factory create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('if_match', help='ETag of the factory entity. Should only be specified for update, for which it shou'
                    'ld match existing entity or can be * for unconditional update.')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), help='The resource location.')
-        c.argument('tags', tags_type, help='The resource tags.')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx),
+                   validator=get_default_location_from_resource_group)
+        c.argument('tags', tags_type)
         c.argument('identity', action=AddIdentity, nargs='+', help='Managed service identity of the factory.')
         c.argument('factory_vsts_configuration', action=AddFactoryVstsConfiguration, nargs='+', help='Factory\'s VSTS r'
                    'epo information.', arg_group='RepoConfiguration')
@@ -60,13 +63,13 @@ def load_arguments(self, _):
                    'itHub repo information.', arg_group='RepoConfiguration')
 
     with self.argument_context('datafactory factory update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
-        c.argument('tags', tags_type, help='The resource tags.')
+        c.argument('tags', tags_type)
         c.argument('identity', action=AddIdentity, nargs='+', help='Managed service identity of the factory.')
 
     with self.argument_context('datafactory factory delete') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
 
     with self.argument_context('datafactory factory configure-factory-repo') as c:
@@ -78,7 +81,7 @@ def load_arguments(self, _):
                    'itHub repo information.', arg_group='RepoConfiguration')
 
     with self.argument_context('datafactory factory get-data-plane-access') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('permissions', help='The string with permissions for Data Plane access. Currently only \'r\' is supp'
                    'orted which grants read only access.')
@@ -91,7 +94,7 @@ def load_arguments(self, _):
                    'd by default the token will expire in eight hours.')
 
     with self.argument_context('datafactory factory get-git-hub-access-token') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('git_hub_access_code', help='GitHub access code.')
         c.argument('git_hub_client_id', help='GitHub application client ID.')
@@ -103,24 +106,24 @@ def load_arguments(self, _):
         c.argument('feature_type', help='The feature type.')
 
     with self.argument_context('datafactory exposure-control get-feature-value-by-factory') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('feature_name', help='The feature name.')
         c.argument('feature_type', help='The feature type.')
 
     with self.argument_context('datafactory integration-runtime list') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
 
     with self.argument_context('datafactory integration-runtime show') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('integration_runtime_name', help='The integration runtime name.')
         c.argument('if_none_match', help='ETag of the integration runtime entity. Should only be specified for get. If '
                    'the ETag matches the existing entity tag, or if * was provided, then no content will be returned.')
 
     with self.argument_context('datafactory integration-runtime managed create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('integration_runtime_name', help='The integration runtime name.')
         c.argument('if_match', help='ETag of the integration runtime entity. Should only be specified for update, for w'
@@ -132,7 +135,7 @@ def load_arguments(self, _):
                    'operties'], help='SSIS properties for managed integration runtime.'))
 
     with self.argument_context('datafactory integration-runtime self-hosted create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('integration_runtime_name', help='The integration runtime name.')
         c.argument('if_match', help='ETag of the integration runtime entity. Should only be specified for update, for w'
@@ -142,7 +145,7 @@ def load_arguments(self, _):
                    ''], help='The base definition of a linked integration runtime.'))
 
     with self.argument_context('datafactory integration-runtime update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('integration_runtime_name', help='The integration runtime name.')
         c.argument('auto_update', arg_type=get_enum_type(['On', 'Off']), help='Enables or disables the auto-update feat'
@@ -151,12 +154,12 @@ def load_arguments(self, _):
                    'gration runtime auto update will happen on that time.')
 
     with self.argument_context('datafactory integration-runtime delete') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('integration_runtime_name', help='The integration runtime name.')
 
     with self.argument_context('datafactory integration-runtime create-linked-integration-runtime') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('integration_runtime_name', help='The integration runtime name.')
         c.argument('name', help='The name of the linked integration runtime.')
@@ -168,77 +171,77 @@ def load_arguments(self, _):
                    'belongs to.')
 
     with self.argument_context('datafactory integration-runtime get-connection-info') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('integration_runtime_name', help='The integration runtime name.')
 
     with self.argument_context('datafactory integration-runtime get-monitoring-data') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('integration_runtime_name', help='The integration runtime name.')
 
     with self.argument_context('datafactory integration-runtime get-status') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('integration_runtime_name', help='The integration runtime name.')
 
     with self.argument_context('datafactory integration-runtime list-auth-key') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('integration_runtime_name', help='The integration runtime name.')
 
     with self.argument_context('datafactory integration-runtime regenerate-auth-key') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('integration_runtime_name', help='The integration runtime name.')
         c.argument('key_name', arg_type=get_enum_type(['authKey1', 'authKey2']), help='The name of the authentication k'
                    'ey to regenerate.')
 
     with self.argument_context('datafactory integration-runtime remove-link') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('integration_runtime_name', help='The integration runtime name.')
         c.argument('linked_factory_name', help='The data factory name for linked integration runtime.')
 
     with self.argument_context('datafactory integration-runtime start') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('integration_runtime_name', help='The integration runtime name.')
 
     with self.argument_context('datafactory integration-runtime stop') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('integration_runtime_name', help='The integration runtime name.')
 
     with self.argument_context('datafactory integration-runtime sync-credentials') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('integration_runtime_name', help='The integration runtime name.')
 
     with self.argument_context('datafactory integration-runtime upgrade') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('integration_runtime_name', help='The integration runtime name.')
 
     with self.argument_context('datafactory integration-runtime-object-metadata get') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('integration_runtime_name', help='The integration runtime name.')
         c.argument('metadata_path', help='Metadata path.')
 
     with self.argument_context('datafactory integration-runtime-object-metadata refresh') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('integration_runtime_name', help='The integration runtime name.')
 
     with self.argument_context('datafactory integration-runtime-node show') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('integration_runtime_name', help='The integration runtime name.')
         c.argument('node_name', help='The integration runtime node name.')
 
     with self.argument_context('datafactory integration-runtime-node update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('integration_runtime_name', help='The integration runtime name.')
         c.argument('node_name', help='The integration runtime node name.')
@@ -246,30 +249,30 @@ def load_arguments(self, _):
                    'time node. Values between 1 and maxConcurrentJobs(inclusive) are allowed.')
 
     with self.argument_context('datafactory integration-runtime-node delete') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('integration_runtime_name', help='The integration runtime name.')
         c.argument('node_name', help='The integration runtime node name.')
 
     with self.argument_context('datafactory integration-runtime-node get-ip-address') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('integration_runtime_name', help='The integration runtime name.')
         c.argument('node_name', help='The integration runtime node name.')
 
     with self.argument_context('datafactory linked-service list') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
 
     with self.argument_context('datafactory linked-service show') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_none_match', help='ETag of the linked service entity. Should only be specified for get. If the E'
                    'Tag matches the existing entity tag, or if * was provided, then no content will be returned.')
 
-    with self.argument_context('datafactory linked-service amazon-m-w-s create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory linked-service amazon-mws create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -309,8 +312,8 @@ def load_arguments(self, _):
                    'pted using the integration runtime credential manager. Type: string (or Expression with resultType '
                    'string).'))
 
-    with self.argument_context('datafactory linked-service amazon-m-w-s update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory linked-service amazon-mws update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -352,7 +355,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service amazon-redshift create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -383,7 +386,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service amazon-redshift update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -415,7 +418,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service amazon-s3 create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -443,7 +446,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service amazon-s3 update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -472,7 +475,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service azure-batch create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -501,7 +504,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service azure-batch update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -530,8 +533,8 @@ def load_arguments(self, _):
                    'string).'))
         c.ignore('properties')
 
-    with self.argument_context('datafactory linked-service azure-blob-f-s create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory linked-service azure-blob-fs create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -563,8 +566,8 @@ def load_arguments(self, _):
                    'pted using the integration runtime credential manager. Type: string (or Expression with resultType '
                    'string).'))
 
-    with self.argument_context('datafactory linked-service azure-blob-f-s update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory linked-service azure-blob-fs update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -598,7 +601,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service azure-blob-storage create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -636,7 +639,7 @@ def load_arguments(self, _):
                    ' with resultType string).')
 
     with self.argument_context('datafactory linked-service azure-blob-storage update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -675,7 +678,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service azure-data-explorer create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -704,7 +707,7 @@ def load_arguments(self, _):
                    'th resultType string).'))
 
     with self.argument_context('datafactory linked-service azure-data-explorer update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -734,7 +737,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service azure-data-lake-analytics create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -773,7 +776,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service azure-data-lake-analytics update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -813,7 +816,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service azure-data-lake-store create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -851,7 +854,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service azure-data-lake-store update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -890,7 +893,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service azure-databricks create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -955,7 +958,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service azure-databricks update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -1021,7 +1024,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service azure-file-storage create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -1045,7 +1048,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service azure-file-storage update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -1070,7 +1073,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service azure-function create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -1093,7 +1096,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service azure-function update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -1117,7 +1120,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service azure-key-vault create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -1134,7 +1137,7 @@ def load_arguments(self, _):
                    'ssion with resultType string).'))
 
     with self.argument_context('datafactory linked-service azure-key-vault update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -1151,154 +1154,8 @@ def load_arguments(self, _):
                    'ssion with resultType string).'))
         c.ignore('properties')
 
-    with self.argument_context('datafactory linked-service azure-m-l create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
-        c.argument('factory_name', help='The factory name.')
-        c.argument('linked_service_name', help='The linked service name.')
-        c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
-                   'it should match existing entity or can be * for unconditional update.')
-        c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
-                   'e reference.'))
-        c.argument('description', help='Linked service description.')
-        c.argument('parameters', arg_type=CLIArgumentType(options_list=['--parameters'], help='Parameters for linked se'
-                   'rvice.'))
-        c.argument('annotations', arg_type=CLIArgumentType(options_list=['--annotations'], help='List of tags that can '
-                   'be used for describing the linked service.'))
-        c.argument('type_properties_ml_endpoint', arg_type=CLIArgumentType(options_list=['--type-properties-ml-endpoint'
-                   ''], help='The Batch Execution REST URL for an Azure ML Studio Web Service endpoint. Type: string (o'
-                   'r Expression with resultType string).'))
-        c.argument('type_properties_api_key', arg_type=CLIArgumentType(options_list=['--type-properties-api-key'],
-                   help='The API key for accessing the Azure ML model endpoint.'))
-        c.argument('type_properties_update_resource_endpoint', arg_type=CLIArgumentType(options_list=['--type-propertie'
-                   's-update-resource-endpoint'], help='The Update Resource REST URL for an Azure ML Studio Web Service'
-                   ' endpoint. Type: string (or Expression with resultType string).'))
-        c.argument('type_properties_service_principal_id', arg_type=CLIArgumentType(options_list=['--type-properties-se'
-                   'rvice-principal-id'], help='The ID of the service principal used to authenticate against the ARM-ba'
-                   'sed updateResourceEndpoint of an Azure ML Studio web service. Type: string (or Expression with resu'
-                   'ltType string).'))
-        c.argument('type_properties_service_principal_key', arg_type=CLIArgumentType(options_list=['--type-properties-s'
-                   'ervice-principal-key'], help='The key of the service principal used to authenticate against the ARM'
-                   '-based updateResourceEndpoint of an Azure ML Studio web service.'))
-        c.argument('type_properties_tenant', arg_type=CLIArgumentType(options_list=['--type-properties-tenant'], help=
-                   'The name or ID of the tenant to which the service principal belongs. Type: string (or Expression wi'
-                   'th resultType string).'))
-        c.argument('type_properties_encrypted_credential', arg_type=CLIArgumentType(options_list=['--type-properties-en'
-                   'crypted-credential'], help='The encrypted credential used for authentication. Credentials are encry'
-                   'pted using the integration runtime credential manager. Type: string (or Expression with resultType '
-                   'string).'))
-
-    with self.argument_context('datafactory linked-service azure-m-l update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
-        c.argument('factory_name', help='The factory name.')
-        c.argument('linked_service_name', help='The linked service name.')
-        c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
-                   'it should match existing entity or can be * for unconditional update.')
-        c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
-                   'e reference.'))
-        c.argument('description', help='Linked service description.')
-        c.argument('parameters', arg_type=CLIArgumentType(options_list=['--parameters'], help='Parameters for linked se'
-                   'rvice.'))
-        c.argument('annotations', arg_type=CLIArgumentType(options_list=['--annotations'], help='List of tags that can '
-                   'be used for describing the linked service.'))
-        c.argument('type_properties_ml_endpoint', arg_type=CLIArgumentType(options_list=['--type-properties-ml-endpoint'
-                   ''], help='The Batch Execution REST URL for an Azure ML Studio Web Service endpoint. Type: string (o'
-                   'r Expression with resultType string).'))
-        c.argument('type_properties_api_key', arg_type=CLIArgumentType(options_list=['--type-properties-api-key'],
-                   help='The API key for accessing the Azure ML model endpoint.'))
-        c.argument('type_properties_update_resource_endpoint', arg_type=CLIArgumentType(options_list=['--type-propertie'
-                   's-update-resource-endpoint'], help='The Update Resource REST URL for an Azure ML Studio Web Service'
-                   ' endpoint. Type: string (or Expression with resultType string).'))
-        c.argument('type_properties_service_principal_id', arg_type=CLIArgumentType(options_list=['--type-properties-se'
-                   'rvice-principal-id'], help='The ID of the service principal used to authenticate against the ARM-ba'
-                   'sed updateResourceEndpoint of an Azure ML Studio web service. Type: string (or Expression with resu'
-                   'ltType string).'))
-        c.argument('type_properties_service_principal_key', arg_type=CLIArgumentType(options_list=['--type-properties-s'
-                   'ervice-principal-key'], help='The key of the service principal used to authenticate against the ARM'
-                   '-based updateResourceEndpoint of an Azure ML Studio web service.'))
-        c.argument('type_properties_tenant', arg_type=CLIArgumentType(options_list=['--type-properties-tenant'], help=
-                   'The name or ID of the tenant to which the service principal belongs. Type: string (or Expression wi'
-                   'th resultType string).'))
-        c.argument('type_properties_encrypted_credential', arg_type=CLIArgumentType(options_list=['--type-properties-en'
-                   'crypted-credential'], help='The encrypted credential used for authentication. Credentials are encry'
-                   'pted using the integration runtime credential manager. Type: string (or Expression with resultType '
-                   'string).'))
-        c.ignore('properties')
-
-    with self.argument_context('datafactory linked-service azure-m-l-service create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
-        c.argument('factory_name', help='The factory name.')
-        c.argument('linked_service_name', help='The linked service name.')
-        c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
-                   'it should match existing entity or can be * for unconditional update.')
-        c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
-                   'e reference.'))
-        c.argument('description', help='Linked service description.')
-        c.argument('parameters', arg_type=CLIArgumentType(options_list=['--parameters'], help='Parameters for linked se'
-                   'rvice.'))
-        c.argument('annotations', arg_type=CLIArgumentType(options_list=['--annotations'], help='List of tags that can '
-                   'be used for describing the linked service.'))
-        c.argument('type_properties_subscription_id', arg_type=CLIArgumentType(options_list=['--type-properties-subscri'
-                   'ption-id'], help='Azure ML Service workspace subscription ID. Type: string (or Expression with resu'
-                   'ltType string).'))
-        c.argument('type_properties_resource_group_name', arg_type=CLIArgumentType(options_list=['--type-properties-res'
-                   'ource-group-name'], help='Azure ML Service workspace resource group name. Type: string (or Expressi'
-                   'on with resultType string).'))
-        c.argument('type_properties_ml_workspace_name', arg_type=CLIArgumentType(options_list=['--type-properties-ml-wo'
-                   'rkspace-name'], help='Azure ML Service workspace name. Type: string (or Expression with resultType '
-                   'string).'))
-        c.argument('type_properties_service_principal_id', arg_type=CLIArgumentType(options_list=['--type-properties-se'
-                   'rvice-principal-id'], help='The ID of the service principal used to authenticate against the endpoi'
-                   'nt of a published Azure ML Service pipeline. Type: string (or Expression with resultType string).'))
-        c.argument('type_properties_service_principal_key', arg_type=CLIArgumentType(options_list=['--type-properties-s'
-                   'ervice-principal-key'], help='The key of the service principal used to authenticate against the end'
-                   'point of a published Azure ML Service pipeline.'))
-        c.argument('type_properties_tenant', arg_type=CLIArgumentType(options_list=['--type-properties-tenant'], help=
-                   'The name or ID of the tenant to which the service principal belongs. Type: string (or Expression wi'
-                   'th resultType string).'))
-        c.argument('type_properties_encrypted_credential', arg_type=CLIArgumentType(options_list=['--type-properties-en'
-                   'crypted-credential'], help='The encrypted credential used for authentication. Credentials are encry'
-                   'pted using the integration runtime credential manager. Type: string (or Expression with resultType '
-                   'string).'))
-
-    with self.argument_context('datafactory linked-service azure-m-l-service update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
-        c.argument('factory_name', help='The factory name.')
-        c.argument('linked_service_name', help='The linked service name.')
-        c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
-                   'it should match existing entity or can be * for unconditional update.')
-        c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
-                   'e reference.'))
-        c.argument('description', help='Linked service description.')
-        c.argument('parameters', arg_type=CLIArgumentType(options_list=['--parameters'], help='Parameters for linked se'
-                   'rvice.'))
-        c.argument('annotations', arg_type=CLIArgumentType(options_list=['--annotations'], help='List of tags that can '
-                   'be used for describing the linked service.'))
-        c.argument('type_properties_subscription_id', arg_type=CLIArgumentType(options_list=['--type-properties-subscri'
-                   'ption-id'], help='Azure ML Service workspace subscription ID. Type: string (or Expression with resu'
-                   'ltType string).'))
-        c.argument('type_properties_resource_group_name', arg_type=CLIArgumentType(options_list=['--type-properties-res'
-                   'ource-group-name'], help='Azure ML Service workspace resource group name. Type: string (or Expressi'
-                   'on with resultType string).'))
-        c.argument('type_properties_ml_workspace_name', arg_type=CLIArgumentType(options_list=['--type-properties-ml-wo'
-                   'rkspace-name'], help='Azure ML Service workspace name. Type: string (or Expression with resultType '
-                   'string).'))
-        c.argument('type_properties_service_principal_id', arg_type=CLIArgumentType(options_list=['--type-properties-se'
-                   'rvice-principal-id'], help='The ID of the service principal used to authenticate against the endpoi'
-                   'nt of a published Azure ML Service pipeline. Type: string (or Expression with resultType string).'))
-        c.argument('type_properties_service_principal_key', arg_type=CLIArgumentType(options_list=['--type-properties-s'
-                   'ervice-principal-key'], help='The key of the service principal used to authenticate against the end'
-                   'point of a published Azure ML Service pipeline.'))
-        c.argument('type_properties_tenant', arg_type=CLIArgumentType(options_list=['--type-properties-tenant'], help=
-                   'The name or ID of the tenant to which the service principal belongs. Type: string (or Expression wi'
-                   'th resultType string).'))
-        c.argument('type_properties_encrypted_credential', arg_type=CLIArgumentType(options_list=['--type-properties-en'
-                   'crypted-credential'], help='The encrypted credential used for authentication. Credentials are encry'
-                   'pted using the integration runtime credential manager. Type: string (or Expression with resultType '
-                   'string).'))
-        c.ignore('properties')
-
     with self.argument_context('datafactory linked-service azure-maria-d-b create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -1321,7 +1178,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service azure-maria-d-b update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -1344,8 +1201,154 @@ def load_arguments(self, _):
                    'string).'))
         c.ignore('properties')
 
+    with self.argument_context('datafactory linked-service azure-ml create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('factory_name', help='The factory name.')
+        c.argument('linked_service_name', help='The linked service name.')
+        c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
+                   'it should match existing entity or can be * for unconditional update.')
+        c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
+                   'e reference.'))
+        c.argument('description', help='Linked service description.')
+        c.argument('parameters', arg_type=CLIArgumentType(options_list=['--parameters'], help='Parameters for linked se'
+                   'rvice.'))
+        c.argument('annotations', arg_type=CLIArgumentType(options_list=['--annotations'], help='List of tags that can '
+                   'be used for describing the linked service.'))
+        c.argument('type_properties_ml_endpoint', arg_type=CLIArgumentType(options_list=['--type-properties-ml-endpoint'
+                   ''], help='The Batch Execution REST URL for an Azure ML Studio Web Service endpoint. Type: string (o'
+                   'r Expression with resultType string).'))
+        c.argument('type_properties_api_key', arg_type=CLIArgumentType(options_list=['--type-properties-api-key'],
+                   help='The API key for accessing the Azure ML model endpoint.'))
+        c.argument('type_properties_update_resource_endpoint', arg_type=CLIArgumentType(options_list=['--type-propertie'
+                   's-update-resource-endpoint'], help='The Update Resource REST URL for an Azure ML Studio Web Service'
+                   ' endpoint. Type: string (or Expression with resultType string).'))
+        c.argument('type_properties_service_principal_id', arg_type=CLIArgumentType(options_list=['--type-properties-se'
+                   'rvice-principal-id'], help='The ID of the service principal used to authenticate against the ARM-ba'
+                   'sed updateResourceEndpoint of an Azure ML Studio web service. Type: string (or Expression with resu'
+                   'ltType string).'))
+        c.argument('type_properties_service_principal_key', arg_type=CLIArgumentType(options_list=['--type-properties-s'
+                   'ervice-principal-key'], help='The key of the service principal used to authenticate against the ARM'
+                   '-based updateResourceEndpoint of an Azure ML Studio web service.'))
+        c.argument('type_properties_tenant', arg_type=CLIArgumentType(options_list=['--type-properties-tenant'], help=
+                   'The name or ID of the tenant to which the service principal belongs. Type: string (or Expression wi'
+                   'th resultType string).'))
+        c.argument('type_properties_encrypted_credential', arg_type=CLIArgumentType(options_list=['--type-properties-en'
+                   'crypted-credential'], help='The encrypted credential used for authentication. Credentials are encry'
+                   'pted using the integration runtime credential manager. Type: string (or Expression with resultType '
+                   'string).'))
+
+    with self.argument_context('datafactory linked-service azure-ml update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('factory_name', help='The factory name.')
+        c.argument('linked_service_name', help='The linked service name.')
+        c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
+                   'it should match existing entity or can be * for unconditional update.')
+        c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
+                   'e reference.'))
+        c.argument('description', help='Linked service description.')
+        c.argument('parameters', arg_type=CLIArgumentType(options_list=['--parameters'], help='Parameters for linked se'
+                   'rvice.'))
+        c.argument('annotations', arg_type=CLIArgumentType(options_list=['--annotations'], help='List of tags that can '
+                   'be used for describing the linked service.'))
+        c.argument('type_properties_ml_endpoint', arg_type=CLIArgumentType(options_list=['--type-properties-ml-endpoint'
+                   ''], help='The Batch Execution REST URL for an Azure ML Studio Web Service endpoint. Type: string (o'
+                   'r Expression with resultType string).'))
+        c.argument('type_properties_api_key', arg_type=CLIArgumentType(options_list=['--type-properties-api-key'],
+                   help='The API key for accessing the Azure ML model endpoint.'))
+        c.argument('type_properties_update_resource_endpoint', arg_type=CLIArgumentType(options_list=['--type-propertie'
+                   's-update-resource-endpoint'], help='The Update Resource REST URL for an Azure ML Studio Web Service'
+                   ' endpoint. Type: string (or Expression with resultType string).'))
+        c.argument('type_properties_service_principal_id', arg_type=CLIArgumentType(options_list=['--type-properties-se'
+                   'rvice-principal-id'], help='The ID of the service principal used to authenticate against the ARM-ba'
+                   'sed updateResourceEndpoint of an Azure ML Studio web service. Type: string (or Expression with resu'
+                   'ltType string).'))
+        c.argument('type_properties_service_principal_key', arg_type=CLIArgumentType(options_list=['--type-properties-s'
+                   'ervice-principal-key'], help='The key of the service principal used to authenticate against the ARM'
+                   '-based updateResourceEndpoint of an Azure ML Studio web service.'))
+        c.argument('type_properties_tenant', arg_type=CLIArgumentType(options_list=['--type-properties-tenant'], help=
+                   'The name or ID of the tenant to which the service principal belongs. Type: string (or Expression wi'
+                   'th resultType string).'))
+        c.argument('type_properties_encrypted_credential', arg_type=CLIArgumentType(options_list=['--type-properties-en'
+                   'crypted-credential'], help='The encrypted credential used for authentication. Credentials are encry'
+                   'pted using the integration runtime credential manager. Type: string (or Expression with resultType '
+                   'string).'))
+        c.ignore('properties')
+
+    with self.argument_context('datafactory linked-service azure-ml-service create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('factory_name', help='The factory name.')
+        c.argument('linked_service_name', help='The linked service name.')
+        c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
+                   'it should match existing entity or can be * for unconditional update.')
+        c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
+                   'e reference.'))
+        c.argument('description', help='Linked service description.')
+        c.argument('parameters', arg_type=CLIArgumentType(options_list=['--parameters'], help='Parameters for linked se'
+                   'rvice.'))
+        c.argument('annotations', arg_type=CLIArgumentType(options_list=['--annotations'], help='List of tags that can '
+                   'be used for describing the linked service.'))
+        c.argument('type_properties_subscription_id', arg_type=CLIArgumentType(options_list=['--type-properties-subscri'
+                   'ption-id'], help='Azure ML Service workspace subscription ID. Type: string (or Expression with resu'
+                   'ltType string).'))
+        c.argument('type_properties_resource_group_name', arg_type=CLIArgumentType(options_list=['--type-properties-res'
+                   'ource-group-name'], help='Azure ML Service workspace resource group name. Type: string (or Expressi'
+                   'on with resultType string).'))
+        c.argument('type_properties_ml_workspace_name', arg_type=CLIArgumentType(options_list=['--type-properties-ml-wo'
+                   'rkspace-name'], help='Azure ML Service workspace name. Type: string (or Expression with resultType '
+                   'string).'))
+        c.argument('type_properties_service_principal_id', arg_type=CLIArgumentType(options_list=['--type-properties-se'
+                   'rvice-principal-id'], help='The ID of the service principal used to authenticate against the endpoi'
+                   'nt of a published Azure ML Service pipeline. Type: string (or Expression with resultType string).'))
+        c.argument('type_properties_service_principal_key', arg_type=CLIArgumentType(options_list=['--type-properties-s'
+                   'ervice-principal-key'], help='The key of the service principal used to authenticate against the end'
+                   'point of a published Azure ML Service pipeline.'))
+        c.argument('type_properties_tenant', arg_type=CLIArgumentType(options_list=['--type-properties-tenant'], help=
+                   'The name or ID of the tenant to which the service principal belongs. Type: string (or Expression wi'
+                   'th resultType string).'))
+        c.argument('type_properties_encrypted_credential', arg_type=CLIArgumentType(options_list=['--type-properties-en'
+                   'crypted-credential'], help='The encrypted credential used for authentication. Credentials are encry'
+                   'pted using the integration runtime credential manager. Type: string (or Expression with resultType '
+                   'string).'))
+
+    with self.argument_context('datafactory linked-service azure-ml-service update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('factory_name', help='The factory name.')
+        c.argument('linked_service_name', help='The linked service name.')
+        c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
+                   'it should match existing entity or can be * for unconditional update.')
+        c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
+                   'e reference.'))
+        c.argument('description', help='Linked service description.')
+        c.argument('parameters', arg_type=CLIArgumentType(options_list=['--parameters'], help='Parameters for linked se'
+                   'rvice.'))
+        c.argument('annotations', arg_type=CLIArgumentType(options_list=['--annotations'], help='List of tags that can '
+                   'be used for describing the linked service.'))
+        c.argument('type_properties_subscription_id', arg_type=CLIArgumentType(options_list=['--type-properties-subscri'
+                   'ption-id'], help='Azure ML Service workspace subscription ID. Type: string (or Expression with resu'
+                   'ltType string).'))
+        c.argument('type_properties_resource_group_name', arg_type=CLIArgumentType(options_list=['--type-properties-res'
+                   'ource-group-name'], help='Azure ML Service workspace resource group name. Type: string (or Expressi'
+                   'on with resultType string).'))
+        c.argument('type_properties_ml_workspace_name', arg_type=CLIArgumentType(options_list=['--type-properties-ml-wo'
+                   'rkspace-name'], help='Azure ML Service workspace name. Type: string (or Expression with resultType '
+                   'string).'))
+        c.argument('type_properties_service_principal_id', arg_type=CLIArgumentType(options_list=['--type-properties-se'
+                   'rvice-principal-id'], help='The ID of the service principal used to authenticate against the endpoi'
+                   'nt of a published Azure ML Service pipeline. Type: string (or Expression with resultType string).'))
+        c.argument('type_properties_service_principal_key', arg_type=CLIArgumentType(options_list=['--type-properties-s'
+                   'ervice-principal-key'], help='The key of the service principal used to authenticate against the end'
+                   'point of a published Azure ML Service pipeline.'))
+        c.argument('type_properties_tenant', arg_type=CLIArgumentType(options_list=['--type-properties-tenant'], help=
+                   'The name or ID of the tenant to which the service principal belongs. Type: string (or Expression wi'
+                   'th resultType string).'))
+        c.argument('type_properties_encrypted_credential', arg_type=CLIArgumentType(options_list=['--type-properties-en'
+                   'crypted-credential'], help='The encrypted credential used for authentication. Credentials are encry'
+                   'pted using the integration runtime credential manager. Type: string (or Expression with resultType '
+                   'string).'))
+        c.ignore('properties')
+
     with self.argument_context('datafactory linked-service azure-my-sql create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -1368,7 +1371,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service azure-my-sql update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -1392,7 +1395,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service azure-postgre-sql create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -1415,7 +1418,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service azure-postgre-sql update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -1439,7 +1442,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service azure-search create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -1461,7 +1464,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service azure-search update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -1483,73 +1486,8 @@ def load_arguments(self, _):
                    'string).'))
         c.ignore('properties')
 
-    with self.argument_context('datafactory linked-service azure-sql-d-w create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
-        c.argument('factory_name', help='The factory name.')
-        c.argument('linked_service_name', help='The linked service name.')
-        c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
-                   'it should match existing entity or can be * for unconditional update.')
-        c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
-                   'e reference.'))
-        c.argument('description', help='Linked service description.')
-        c.argument('parameters', arg_type=CLIArgumentType(options_list=['--parameters'], help='Parameters for linked se'
-                   'rvice.'))
-        c.argument('annotations', arg_type=CLIArgumentType(options_list=['--annotations'], help='List of tags that can '
-                   'be used for describing the linked service.'))
-        c.argument('type_properties_connection_string', arg_type=CLIArgumentType(options_list=['--type-properties-conne'
-                   'ction-string'], help='The connection string. Type: string, SecureString or AzureKeyVaultSecretRefer'
-                   'ence. Type: string, SecureString or AzureKeyVaultSecretReference.'))
-        c.argument('type_properties_password', arg_type=CLIArgumentType(options_list=['--type-properties-password'],
-                   help='The Azure key vault secret reference of password in connection string.'))
-        c.argument('type_properties_service_principal_id', arg_type=CLIArgumentType(options_list=['--type-properties-se'
-                   'rvice-principal-id'], help='The ID of the service principal used to authenticate against Azure SQL '
-                   'Data Warehouse. Type: string (or Expression with resultType string).'))
-        c.argument('type_properties_service_principal_key', arg_type=CLIArgumentType(options_list=['--type-properties-s'
-                   'ervice-principal-key'], help='The key of the service principal used to authenticate against Azure S'
-                   'QL Data Warehouse.'))
-        c.argument('type_properties_tenant', arg_type=CLIArgumentType(options_list=['--type-properties-tenant'], help=
-                   'The name or ID of the tenant to which the service principal belongs. Type: string (or Expression wi'
-                   'th resultType string).'))
-        c.argument('type_properties_encrypted_credential', arg_type=CLIArgumentType(options_list=['--type-properties-en'
-                   'crypted-credential'], help='The encrypted credential used for authentication. Credentials are encry'
-                   'pted using the integration runtime credential manager. Type: string (or Expression with resultType '
-                   'string).'))
-
-    with self.argument_context('datafactory linked-service azure-sql-d-w update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
-        c.argument('factory_name', help='The factory name.')
-        c.argument('linked_service_name', help='The linked service name.')
-        c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
-                   'it should match existing entity or can be * for unconditional update.')
-        c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
-                   'e reference.'))
-        c.argument('description', help='Linked service description.')
-        c.argument('parameters', arg_type=CLIArgumentType(options_list=['--parameters'], help='Parameters for linked se'
-                   'rvice.'))
-        c.argument('annotations', arg_type=CLIArgumentType(options_list=['--annotations'], help='List of tags that can '
-                   'be used for describing the linked service.'))
-        c.argument('type_properties_connection_string', arg_type=CLIArgumentType(options_list=['--type-properties-conne'
-                   'ction-string'], help='The connection string. Type: string, SecureString or AzureKeyVaultSecretRefer'
-                   'ence. Type: string, SecureString or AzureKeyVaultSecretReference.'))
-        c.argument('type_properties_password', arg_type=CLIArgumentType(options_list=['--type-properties-password'],
-                   help='The Azure key vault secret reference of password in connection string.'))
-        c.argument('type_properties_service_principal_id', arg_type=CLIArgumentType(options_list=['--type-properties-se'
-                   'rvice-principal-id'], help='The ID of the service principal used to authenticate against Azure SQL '
-                   'Data Warehouse. Type: string (or Expression with resultType string).'))
-        c.argument('type_properties_service_principal_key', arg_type=CLIArgumentType(options_list=['--type-properties-s'
-                   'ervice-principal-key'], help='The key of the service principal used to authenticate against Azure S'
-                   'QL Data Warehouse.'))
-        c.argument('type_properties_tenant', arg_type=CLIArgumentType(options_list=['--type-properties-tenant'], help=
-                   'The name or ID of the tenant to which the service principal belongs. Type: string (or Expression wi'
-                   'th resultType string).'))
-        c.argument('type_properties_encrypted_credential', arg_type=CLIArgumentType(options_list=['--type-properties-en'
-                   'crypted-credential'], help='The encrypted credential used for authentication. Credentials are encry'
-                   'pted using the integration runtime credential manager. Type: string (or Expression with resultType '
-                   'string).'))
-        c.ignore('properties')
-
     with self.argument_context('datafactory linked-service azure-sql-database create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -1581,7 +1519,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service azure-sql-database update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -1613,8 +1551,73 @@ def load_arguments(self, _):
                    'string).'))
         c.ignore('properties')
 
-    with self.argument_context('datafactory linked-service azure-sql-m-i create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory linked-service azure-sql-dw create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('factory_name', help='The factory name.')
+        c.argument('linked_service_name', help='The linked service name.')
+        c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
+                   'it should match existing entity or can be * for unconditional update.')
+        c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
+                   'e reference.'))
+        c.argument('description', help='Linked service description.')
+        c.argument('parameters', arg_type=CLIArgumentType(options_list=['--parameters'], help='Parameters for linked se'
+                   'rvice.'))
+        c.argument('annotations', arg_type=CLIArgumentType(options_list=['--annotations'], help='List of tags that can '
+                   'be used for describing the linked service.'))
+        c.argument('type_properties_connection_string', arg_type=CLIArgumentType(options_list=['--type-properties-conne'
+                   'ction-string'], help='The connection string. Type: string, SecureString or AzureKeyVaultSecretRefer'
+                   'ence. Type: string, SecureString or AzureKeyVaultSecretReference.'))
+        c.argument('type_properties_password', arg_type=CLIArgumentType(options_list=['--type-properties-password'],
+                   help='The Azure key vault secret reference of password in connection string.'))
+        c.argument('type_properties_service_principal_id', arg_type=CLIArgumentType(options_list=['--type-properties-se'
+                   'rvice-principal-id'], help='The ID of the service principal used to authenticate against Azure SQL '
+                   'Data Warehouse. Type: string (or Expression with resultType string).'))
+        c.argument('type_properties_service_principal_key', arg_type=CLIArgumentType(options_list=['--type-properties-s'
+                   'ervice-principal-key'], help='The key of the service principal used to authenticate against Azure S'
+                   'QL Data Warehouse.'))
+        c.argument('type_properties_tenant', arg_type=CLIArgumentType(options_list=['--type-properties-tenant'], help=
+                   'The name or ID of the tenant to which the service principal belongs. Type: string (or Expression wi'
+                   'th resultType string).'))
+        c.argument('type_properties_encrypted_credential', arg_type=CLIArgumentType(options_list=['--type-properties-en'
+                   'crypted-credential'], help='The encrypted credential used for authentication. Credentials are encry'
+                   'pted using the integration runtime credential manager. Type: string (or Expression with resultType '
+                   'string).'))
+
+    with self.argument_context('datafactory linked-service azure-sql-dw update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('factory_name', help='The factory name.')
+        c.argument('linked_service_name', help='The linked service name.')
+        c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
+                   'it should match existing entity or can be * for unconditional update.')
+        c.argument('connect_via', arg_type=CLIArgumentType(options_list=['--connect-via'], help='The integration runtim'
+                   'e reference.'))
+        c.argument('description', help='Linked service description.')
+        c.argument('parameters', arg_type=CLIArgumentType(options_list=['--parameters'], help='Parameters for linked se'
+                   'rvice.'))
+        c.argument('annotations', arg_type=CLIArgumentType(options_list=['--annotations'], help='List of tags that can '
+                   'be used for describing the linked service.'))
+        c.argument('type_properties_connection_string', arg_type=CLIArgumentType(options_list=['--type-properties-conne'
+                   'ction-string'], help='The connection string. Type: string, SecureString or AzureKeyVaultSecretRefer'
+                   'ence. Type: string, SecureString or AzureKeyVaultSecretReference.'))
+        c.argument('type_properties_password', arg_type=CLIArgumentType(options_list=['--type-properties-password'],
+                   help='The Azure key vault secret reference of password in connection string.'))
+        c.argument('type_properties_service_principal_id', arg_type=CLIArgumentType(options_list=['--type-properties-se'
+                   'rvice-principal-id'], help='The ID of the service principal used to authenticate against Azure SQL '
+                   'Data Warehouse. Type: string (or Expression with resultType string).'))
+        c.argument('type_properties_service_principal_key', arg_type=CLIArgumentType(options_list=['--type-properties-s'
+                   'ervice-principal-key'], help='The key of the service principal used to authenticate against Azure S'
+                   'QL Data Warehouse.'))
+        c.argument('type_properties_tenant', arg_type=CLIArgumentType(options_list=['--type-properties-tenant'], help=
+                   'The name or ID of the tenant to which the service principal belongs. Type: string (or Expression wi'
+                   'th resultType string).'))
+        c.argument('type_properties_encrypted_credential', arg_type=CLIArgumentType(options_list=['--type-properties-en'
+                   'crypted-credential'], help='The encrypted credential used for authentication. Credentials are encry'
+                   'pted using the integration runtime credential manager. Type: string (or Expression with resultType '
+                   'string).'))
+        c.ignore('properties')
+
+    with self.argument_context('datafactory linked-service azure-sql-mi create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -1645,8 +1648,8 @@ def load_arguments(self, _):
                    'pted using the integration runtime credential manager. Type: string (or Expression with resultType '
                    'string).'))
 
-    with self.argument_context('datafactory linked-service azure-sql-m-i update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory linked-service azure-sql-mi update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -1679,7 +1682,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service azure-storage create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -1706,7 +1709,7 @@ def load_arguments(self, _):
                    ' with resultType string).')
 
     with self.argument_context('datafactory linked-service azure-storage update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -1734,7 +1737,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service azure-table-storage create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -1761,7 +1764,7 @@ def load_arguments(self, _):
                    ' with resultType string).')
 
     with self.argument_context('datafactory linked-service azure-table-storage update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -1789,7 +1792,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service cassandra create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -1818,7 +1821,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service cassandra update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -1848,7 +1851,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service common-data-service-for-apps create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -1907,7 +1910,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service common-data-service-for-apps update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -1967,7 +1970,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service concur create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -2000,7 +2003,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service concur update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -2033,8 +2036,8 @@ def load_arguments(self, _):
                    'string).'))
         c.ignore('properties')
 
-    with self.argument_context('datafactory linked-service cosmos-db create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory linked-service cosmos-d-b create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -2062,8 +2065,8 @@ def load_arguments(self, _):
                    'pted using the integration runtime credential manager. Type: string (or Expression with resultType '
                    'string).'))
 
-    with self.argument_context('datafactory linked-service cosmos-db update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory linked-service cosmos-d-b update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -2092,8 +2095,8 @@ def load_arguments(self, _):
                    'string).'))
         c.ignore('properties')
 
-    with self.argument_context('datafactory linked-service cosmos-db-mongo-db-api create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory linked-service cosmos-d-b-mongo-d-b-api create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -2112,8 +2115,8 @@ def load_arguments(self, _):
                    help='The name of the CosmosDB (MongoDB API) database that you want to access. Type: string (or Expr'
                    'ession with resultType string).'))
 
-    with self.argument_context('datafactory linked-service cosmos-db-mongo-db-api update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory linked-service cosmos-d-b-mongo-d-b-api update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -2134,7 +2137,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service couchbase create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -2157,7 +2160,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service couchbase update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -2181,7 +2184,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service custom-data-source create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -2197,7 +2200,7 @@ def load_arguments(self, _):
                    'service properties.'))
 
     with self.argument_context('datafactory linked-service custom-data-source update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -2214,7 +2217,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service db2 create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -2253,7 +2256,7 @@ def load_arguments(self, _):
                    'ng property. Type: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory linked-service db2 update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -2293,7 +2296,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service drill create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -2316,7 +2319,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service drill update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -2340,7 +2343,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service dynamics create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -2395,7 +2398,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service dynamics update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -2450,8 +2453,8 @@ def load_arguments(self, _):
                    'string).'))
         c.ignore('properties')
 
-    with self.argument_context('datafactory linked-service dynamics-a-x create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory linked-service dynamics-ax create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -2484,8 +2487,8 @@ def load_arguments(self, _):
                    'pted using the integration runtime credential manager. Type: string (or Expression with resultType '
                    'string).'))
 
-    with self.argument_context('datafactory linked-service dynamics-a-x update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory linked-service dynamics-ax update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -2520,7 +2523,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service dynamics-crm create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -2576,7 +2579,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service dynamics-crm update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -2633,7 +2636,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service eloqua create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -2667,7 +2670,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service eloqua update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -2702,7 +2705,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service file-server create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -2726,7 +2729,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service file-server update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -2751,7 +2754,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service ftp-server create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -2788,7 +2791,7 @@ def load_arguments(self, _):
                    'th resultType boolean).'))
 
     with self.argument_context('datafactory linked-service ftp-server update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -2826,7 +2829,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service google-ad-words create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -2874,7 +2877,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service google-ad-words update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -2923,7 +2926,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service google-big-query create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -2973,7 +2976,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service google-big-query update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -3024,7 +3027,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service google-cloud-storage create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -3052,7 +3055,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service google-cloud-storage update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -3081,7 +3084,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service greenplum create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -3104,7 +3107,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service greenplum update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -3128,7 +3131,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service h-base create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -3171,7 +3174,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service h-base update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -3214,8 +3217,8 @@ def load_arguments(self, _):
                    'string).'))
         c.ignore('properties')
 
-    with self.argument_context('datafactory linked-service h-d-insight create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory linked-service hd-insight create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -3249,8 +3252,8 @@ def load_arguments(self, _):
                    ''], help='Specify the FileSystem if the main storage for the HDInsight is ADLS Gen2. Type: string ('
                    'or Expression with resultType string).'))
 
-    with self.argument_context('datafactory linked-service h-d-insight update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory linked-service hd-insight update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -3285,8 +3288,8 @@ def load_arguments(self, _):
                    'or Expression with resultType string).'))
         c.ignore('properties')
 
-    with self.argument_context('datafactory linked-service h-d-insight-on-demand create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory linked-service hd-insight-on-demand create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -3395,8 +3398,8 @@ def load_arguments(self, _):
                    ''], help='The ARM resource ID for the subnet in the vNet. If virtualNetworkId was specified, then t'
                    'his property is required. Type: string (or Expression with resultType string).'))
 
-    with self.argument_context('datafactory linked-service h-d-insight-on-demand update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory linked-service hd-insight-on-demand update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -3507,7 +3510,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service hdfs create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -3535,7 +3538,7 @@ def load_arguments(self, _):
                    help='Password for Windows authentication.'))
 
     with self.argument_context('datafactory linked-service hdfs update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -3564,7 +3567,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service hive create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -3624,7 +3627,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service hive update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -3685,7 +3688,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service http-server create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -3727,7 +3730,7 @@ def load_arguments(self, _):
                    'certificate. Default value is true. Type: boolean (or Expression with resultType boolean).'))
 
     with self.argument_context('datafactory linked-service http-server update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -3770,7 +3773,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service hubspot create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -3805,7 +3808,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service hubspot update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -3841,7 +3844,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service impala create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -3886,7 +3889,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service impala update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -3932,7 +3935,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service informix create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -3963,7 +3966,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service informix update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -3995,7 +3998,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service jira create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -4031,7 +4034,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service jira update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -4068,7 +4071,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service magento create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -4099,7 +4102,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service magento update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -4131,7 +4134,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service maria-d-b create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -4154,7 +4157,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service maria-d-b update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -4178,7 +4181,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service marketo create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -4211,7 +4214,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service marketo update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -4245,7 +4248,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service microsoft-access create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -4277,7 +4280,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service microsoft-access update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -4309,8 +4312,8 @@ def load_arguments(self, _):
                    'string).'))
         c.ignore('properties')
 
-    with self.argument_context('datafactory linked-service mongo-db create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory linked-service mongo-d-b create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -4352,8 +4355,8 @@ def load_arguments(self, _):
                    'pted using the integration runtime credential manager. Type: string (or Expression with resultType '
                    'string).'))
 
-    with self.argument_context('datafactory linked-service mongo-db update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory linked-service mongo-d-b update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -4396,8 +4399,8 @@ def load_arguments(self, _):
                    'string).'))
         c.ignore('properties')
 
-    with self.argument_context('datafactory linked-service mongo-db-v2 create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory linked-service mongo-d-b-v2 create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -4416,8 +4419,8 @@ def load_arguments(self, _):
                    help='The name of the MongoDB database that you want to access. Type: string (or Expression with res'
                    'ultType string).'))
 
-    with self.argument_context('datafactory linked-service mongo-db-v2 update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory linked-service mongo-d-b-v2 update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -4438,7 +4441,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service my-sql create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -4460,7 +4463,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service my-sql update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -4483,7 +4486,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service netezza create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -4506,7 +4509,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service netezza update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -4530,7 +4533,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service o-data create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -4580,7 +4583,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service o-data update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -4631,7 +4634,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service odbc create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -4662,7 +4665,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service odbc update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -4694,7 +4697,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service office365 create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -4723,7 +4726,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service office365 update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -4753,7 +4756,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service oracle create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -4776,7 +4779,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service oracle update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -4800,7 +4803,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service oracle-service-cloud create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -4834,7 +4837,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service oracle-service-cloud update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -4869,7 +4872,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service paypal create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -4902,7 +4905,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service paypal update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -4936,7 +4939,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service phoenix create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -4984,7 +4987,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service phoenix update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -5033,7 +5036,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service postgre-sql create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -5055,7 +5058,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service postgre-sql update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -5078,7 +5081,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service presto create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -5129,7 +5132,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service presto update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -5181,7 +5184,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service quick-books create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -5215,7 +5218,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service quick-books update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -5250,7 +5253,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service responsys create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -5286,7 +5289,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service responsys update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -5323,7 +5326,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service rest-service create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -5365,7 +5368,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service rest-service update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -5408,7 +5411,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service salesforce create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -5441,7 +5444,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service salesforce update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -5475,7 +5478,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service salesforce-marketing-cloud create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -5509,7 +5512,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service salesforce-marketing-cloud update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -5544,7 +5547,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service salesforce-service-cloud create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -5580,7 +5583,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service salesforce-service-cloud update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -5616,8 +5619,8 @@ def load_arguments(self, _):
                    'string).'))
         c.ignore('properties')
 
-    with self.argument_context('datafactory linked-service sap-b-w create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory linked-service sap-bw create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -5646,8 +5649,8 @@ def load_arguments(self, _):
                    'pted using the integration runtime credential manager. Type: string (or Expression with resultType '
                    'string).'))
 
-    with self.argument_context('datafactory linked-service sap-b-w update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory linked-service sap-bw update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -5678,7 +5681,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service sap-cloud-for-customer create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -5703,7 +5706,7 @@ def load_arguments(self, _):
                    'ord must be provided. Type: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory linked-service sap-cloud-for-customer update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -5729,7 +5732,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service sap-ecc create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -5752,7 +5755,7 @@ def load_arguments(self, _):
                    'or username/password must be provided. Type: string (or Expression with resultType string).')
 
     with self.argument_context('datafactory linked-service sap-ecc update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -5776,7 +5779,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service sap-hana create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -5805,7 +5808,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service sap-hana update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -5835,7 +5838,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service sap-open-hub create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -5872,7 +5875,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service sap-open-hub update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -5910,7 +5913,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service sap-table create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -5972,7 +5975,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service sap-table update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -6035,7 +6038,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service service-now create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -6074,7 +6077,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service service-now update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -6114,7 +6117,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service sftp create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -6162,7 +6165,7 @@ def load_arguments(self, _):
                    'ing).'))
 
     with self.argument_context('datafactory linked-service sftp update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -6211,7 +6214,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service shopify create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -6243,7 +6246,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service shopify update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -6276,7 +6279,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service snowflake create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -6298,7 +6301,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service snowflake update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -6321,7 +6324,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service spark create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -6372,7 +6375,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service spark update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -6424,7 +6427,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service sql-server create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -6450,7 +6453,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service sql-server update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -6477,7 +6480,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service square create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -6513,7 +6516,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service square update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -6550,7 +6553,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service sybase create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -6580,7 +6583,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service sybase update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -6611,7 +6614,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service teradata create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -6640,7 +6643,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service teradata update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -6670,7 +6673,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service vertica create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -6693,7 +6696,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service vertica update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -6717,7 +6720,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service web create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -6733,7 +6736,7 @@ def load_arguments(self, _):
                    'vice properties.'))
 
     with self.argument_context('datafactory linked-service web update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -6750,7 +6753,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service xero create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -6784,7 +6787,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service xero update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -6819,7 +6822,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service zoho create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -6850,7 +6853,7 @@ def load_arguments(self, _):
                    'string).'))
 
     with self.argument_context('datafactory linked-service zoho update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
@@ -6882,23 +6885,23 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory linked-service delete') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('linked_service_name', help='The linked service name.')
 
     with self.argument_context('datafactory dataset list') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
 
     with self.argument_context('datafactory dataset show') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_none_match', help='ETag of the dataset entity. Should only be specified for get. If the ETag mat'
                    'ches the existing entity tag, or if * was provided, then no content will be returned.')
 
-    with self.argument_context('datafactory dataset amazon-m-w-s-object create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory dataset amazon-mws-object create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -6922,8 +6925,8 @@ def load_arguments(self, _):
                    arg_type=CLIArgumentType(options_list=['--type-properties-table-name'], help='The table name. Type: '
                    'string (or Expression with resultType string).'))
 
-    with self.argument_context('datafactory dataset amazon-m-w-s-object update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory dataset amazon-mws-object update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -6949,7 +6952,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset amazon-redshift-table create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -6978,7 +6981,7 @@ def load_arguments(self, _):
                    'The Amazon Redshift schema name. Type: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset amazon-redshift-table update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -7008,7 +7011,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset amazon-s3-object create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -7055,7 +7058,7 @@ def load_arguments(self, _):
                    'eflate compression method used on a dataset.', arg_group='TypePropertiesCompression')
 
     with self.argument_context('datafactory dataset amazon-s3-object update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -7103,7 +7106,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset avro create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -7130,7 +7133,7 @@ def load_arguments(self, _):
         c.argument('type_properties_avro_compression_level', help='')
 
     with self.argument_context('datafactory dataset avro update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -7158,7 +7161,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset azure-blob create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -7204,7 +7207,7 @@ def load_arguments(self, _):
                    'eflate compression method used on a dataset.', arg_group='TypePropertiesCompression')
 
     with self.argument_context('datafactory dataset azure-blob update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -7250,8 +7253,8 @@ def load_arguments(self, _):
                    'eflate compression method used on a dataset.', arg_group='TypePropertiesCompression')
         c.ignore('properties')
 
-    with self.argument_context('datafactory dataset azure-blob-f-s-file create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory dataset azure-blob-fs-file create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -7288,8 +7291,8 @@ def load_arguments(self, _):
         c.argument('dataset_zip_deflate_compression', action=AddDatasetZipDeflateCompression, nargs='+', help='The ZipD'
                    'eflate compression method used on a dataset.', arg_group='TypePropertiesCompression')
 
-    with self.argument_context('datafactory dataset azure-blob-f-s-file update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory dataset azure-blob-fs-file update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -7328,7 +7331,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset azure-data-explorer-table create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -7353,7 +7356,7 @@ def load_arguments(self, _):
                    'g).'))
 
     with self.argument_context('datafactory dataset azure-data-explorer-table update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -7379,7 +7382,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset azure-data-lake-store-file create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -7417,7 +7420,7 @@ def load_arguments(self, _):
                    'eflate compression method used on a dataset.', arg_group='TypePropertiesCompression')
 
     with self.argument_context('datafactory dataset azure-data-lake-store-file update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -7456,7 +7459,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset azure-maria-d-b-table create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -7481,7 +7484,7 @@ def load_arguments(self, _):
                    'string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset azure-maria-d-b-table update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -7507,7 +7510,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset azure-my-sql-table create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -7534,7 +7537,7 @@ def load_arguments(self, _):
                    'e name of Azure MySQL database table. Type: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset azure-my-sql-table update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -7562,7 +7565,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset azure-postgre-sql-table create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -7594,7 +7597,7 @@ def load_arguments(self, _):
                    'g).'))
 
     with self.argument_context('datafactory dataset azure-postgre-sql-table update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -7627,7 +7630,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset azure-search-index create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -7652,7 +7655,7 @@ def load_arguments(self, _):
                    'Search Index. Type: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset azure-search-index update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -7677,8 +7680,8 @@ def load_arguments(self, _):
                    'Search Index. Type: string (or Expression with resultType string).'))
         c.ignore('properties')
 
-    with self.argument_context('datafactory dataset azure-sql-d-w-table create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory dataset azure-sql-dw-table create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -7707,8 +7710,8 @@ def load_arguments(self, _):
         c.argument('type_properties_table', arg_type=CLIArgumentType(options_list=['--type-properties-table'], help='Th'
                    'e table name of the Azure SQL Data Warehouse. Type: string (or Expression with resultType string).'))
 
-    with self.argument_context('datafactory dataset azure-sql-d-w-table update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory dataset azure-sql-dw-table update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -7738,8 +7741,8 @@ def load_arguments(self, _):
                    'e table name of the Azure SQL Data Warehouse. Type: string (or Expression with resultType string).'))
         c.ignore('properties')
 
-    with self.argument_context('datafactory dataset azure-sql-m-i-table create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory dataset azure-sql-mi-table create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -7769,8 +7772,8 @@ def load_arguments(self, _):
                    'e table name of the Azure SQL Managed Instance dataset. Type: string (or Expression with resultType'
                    ' string).'))
 
-    with self.argument_context('datafactory dataset azure-sql-m-i-table update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory dataset azure-sql-mi-table update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -7802,7 +7805,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset azure-sql-table create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -7831,7 +7834,7 @@ def load_arguments(self, _):
                    'e table name of the Azure SQL database. Type: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset azure-sql-table update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -7861,7 +7864,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset azure-table create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -7886,7 +7889,7 @@ def load_arguments(self, _):
                    'Azure Table storage. Type: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset azure-table update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -7912,7 +7915,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset binary create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -7944,7 +7947,7 @@ def load_arguments(self, _):
                    'eflate compression method used on a dataset.', arg_group='TypePropertiesCompression')
 
     with self.argument_context('datafactory dataset binary update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -7977,7 +7980,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset cassandra-table create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -8004,7 +8007,7 @@ def load_arguments(self, _):
                    help='The keyspace of the Cassandra database. Type: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset cassandra-table update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -8032,7 +8035,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset common-data-service-for-apps-entity create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -8056,7 +8059,7 @@ def load_arguments(self, _):
                    ''], help='The logical name of the entity. Type: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset common-data-service-for-apps-entity update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -8081,7 +8084,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset concur-object create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -8106,7 +8109,7 @@ def load_arguments(self, _):
                    'string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset concur-object update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -8131,8 +8134,8 @@ def load_arguments(self, _):
                    'string (or Expression with resultType string).'))
         c.ignore('properties')
 
-    with self.argument_context('datafactory dataset cosmos-db-mongo-db-api-collection create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory dataset cosmos-d-b-mongo-d-b-api-collection create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -8156,8 +8159,8 @@ def load_arguments(self, _):
                    arg_type=CLIArgumentType(options_list=['--type-properties-collection'], help='The collection name of'
                    ' the CosmosDB (MongoDB API) database. Type: string (or Expression with resultType string).'))
 
-    with self.argument_context('datafactory dataset cosmos-db-mongo-db-api-collection update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory dataset cosmos-d-b-mongo-d-b-api-collection update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -8182,16 +8185,16 @@ def load_arguments(self, _):
                    ' the CosmosDB (MongoDB API) database. Type: string (or Expression with resultType string).'))
         c.ignore('properties')
 
-    with self.argument_context('datafactory dataset cosmos-db-sql-api-collection create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory dataset cosmos-d-b-sql-api-collection create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
         c.argument('properties', arg_type=CLIArgumentType(options_list=['--properties'], help='Dataset properties.'))
 
-    with self.argument_context('datafactory dataset cosmos-db-sql-api-collection update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory dataset cosmos-d-b-sql-api-collection update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -8199,7 +8202,7 @@ def load_arguments(self, _):
         c.argument('properties', arg_type=CLIArgumentType(options_list=['--properties'], help='Dataset properties.'))
 
     with self.argument_context('datafactory dataset couchbase-table create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -8224,7 +8227,7 @@ def load_arguments(self, _):
                    'string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset couchbase-table update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -8250,7 +8253,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset custom-dataset create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -8274,7 +8277,7 @@ def load_arguments(self, _):
                    ' properties.'))
 
     with self.argument_context('datafactory dataset custom-dataset update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -8299,7 +8302,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset db2-table create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -8328,7 +8331,7 @@ def load_arguments(self, _):
                    'e Db2 table name. Type: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset db2-table update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -8358,7 +8361,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset delimited-text create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -8407,7 +8410,7 @@ def load_arguments(self, _):
                    ' Type: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset delimited-text update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -8456,8 +8459,8 @@ def load_arguments(self, _):
                    ' Type: string (or Expression with resultType string).'))
         c.ignore('properties')
 
-    with self.argument_context('datafactory dataset document-db-collection create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory dataset document-d-b-collection create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -8481,8 +8484,8 @@ def load_arguments(self, _):
                    'ion-name'], help='Document Database collection name. Type: string (or Expression with resultType st'
                    'ring).'))
 
-    with self.argument_context('datafactory dataset document-db-collection update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory dataset document-d-b-collection update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -8508,7 +8511,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset drill-table create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -8537,7 +8540,7 @@ def load_arguments(self, _):
                    'The schema name of the Drill. Type: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset drill-table update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -8566,8 +8569,8 @@ def load_arguments(self, _):
                    'The schema name of the Drill. Type: string (or Expression with resultType string).'))
         c.ignore('properties')
 
-    with self.argument_context('datafactory dataset dynamics-a-x-resource create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory dataset dynamics-ax-resource create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -8590,8 +8593,8 @@ def load_arguments(self, _):
         c.argument('type_properties_path', arg_type=CLIArgumentType(options_list=['--type-properties-path'], help='The '
                    'path of the Dynamics AX OData entity. Type: string (or Expression with resultType string).'))
 
-    with self.argument_context('datafactory dataset dynamics-a-x-resource update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory dataset dynamics-ax-resource update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -8616,7 +8619,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset dynamics-crm-entity create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -8640,7 +8643,7 @@ def load_arguments(self, _):
                    ''], help='The logical name of the entity. Type: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset dynamics-crm-entity update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -8665,7 +8668,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset dynamics-entity create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -8689,7 +8692,7 @@ def load_arguments(self, _):
                    ''], help='The logical name of the entity. Type: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset dynamics-entity update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -8714,7 +8717,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset eloqua-object create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -8739,7 +8742,7 @@ def load_arguments(self, _):
                    'string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset eloqua-object update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -8765,7 +8768,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset file-share create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -8811,7 +8814,7 @@ def load_arguments(self, _):
                    'eflate compression method used on a dataset.', arg_group='TypePropertiesCompression')
 
     with self.argument_context('datafactory dataset file-share update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -8858,7 +8861,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset google-ad-words-object create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -8883,7 +8886,7 @@ def load_arguments(self, _):
                    'string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset google-ad-words-object update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -8909,7 +8912,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset google-big-query-object create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -8939,7 +8942,7 @@ def load_arguments(self, _):
                    ''))
 
     with self.argument_context('datafactory dataset google-big-query-object update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -8970,7 +8973,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset greenplum-table create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -8999,7 +9002,7 @@ def load_arguments(self, _):
                    'The schema name of Greenplum. Type: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset greenplum-table update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -9029,7 +9032,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset h-base-object create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -9054,7 +9057,7 @@ def load_arguments(self, _):
                    'string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset h-base-object update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -9080,7 +9083,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset hive-object create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -9109,7 +9112,7 @@ def load_arguments(self, _):
                    'The schema name of the Hive. Type: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset hive-object update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -9139,7 +9142,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset http-file create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -9183,7 +9186,7 @@ def load_arguments(self, _):
                    'eflate compression method used on a dataset.', arg_group='TypePropertiesCompression')
 
     with self.argument_context('datafactory dataset http-file update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -9228,7 +9231,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset hubspot-object create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -9253,7 +9256,7 @@ def load_arguments(self, _):
                    'string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset hubspot-object update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -9279,7 +9282,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset impala-object create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -9308,7 +9311,7 @@ def load_arguments(self, _):
                    'The schema name of the Impala. Type: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset impala-object update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -9338,7 +9341,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset informix-table create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -9363,7 +9366,7 @@ def load_arguments(self, _):
                    'e. Type: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset informix-table update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -9389,7 +9392,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset jira-object create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -9414,7 +9417,7 @@ def load_arguments(self, _):
                    'string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset jira-object update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -9440,7 +9443,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset json create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -9477,7 +9480,7 @@ def load_arguments(self, _):
                    'eflate compression method used on a dataset.', arg_group='TypePropertiesCompression')
 
     with self.argument_context('datafactory dataset json update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -9515,7 +9518,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset magento-object create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -9540,7 +9543,7 @@ def load_arguments(self, _):
                    'string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset magento-object update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -9566,7 +9569,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset maria-d-b-table create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -9591,7 +9594,7 @@ def load_arguments(self, _):
                    'string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset maria-d-b-table update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -9617,7 +9620,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset marketo-object create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -9642,7 +9645,7 @@ def load_arguments(self, _):
                    'string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset marketo-object update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -9668,7 +9671,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset microsoft-access-table create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -9693,7 +9696,7 @@ def load_arguments(self, _):
                    'able name. Type: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset microsoft-access-table update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -9718,8 +9721,8 @@ def load_arguments(self, _):
                    'able name. Type: string (or Expression with resultType string).'))
         c.ignore('properties')
 
-    with self.argument_context('datafactory dataset mongo-db-collection create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory dataset mongo-d-b-collection create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -9743,8 +9746,8 @@ def load_arguments(self, _):
                    'ion-name'], help='The table name of the MongoDB database. Type: string (or Expression with resultTy'
                    'pe string).'))
 
-    with self.argument_context('datafactory dataset mongo-db-collection update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory dataset mongo-d-b-collection update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -9769,8 +9772,8 @@ def load_arguments(self, _):
                    'pe string).'))
         c.ignore('properties')
 
-    with self.argument_context('datafactory dataset mongo-db-v2-collection create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory dataset mongo-d-b-v2-collection create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -9794,8 +9797,8 @@ def load_arguments(self, _):
                    arg_type=CLIArgumentType(options_list=['--type-properties-collection'], help='The collection name of'
                    ' the MongoDB database. Type: string (or Expression with resultType string).'))
 
-    with self.argument_context('datafactory dataset mongo-db-v2-collection update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+    with self.argument_context('datafactory dataset mongo-d-b-v2-collection update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -9821,7 +9824,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset my-sql-table create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -9846,7 +9849,7 @@ def load_arguments(self, _):
                    'Type: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset my-sql-table update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -9872,7 +9875,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset netezza-table create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -9901,7 +9904,7 @@ def load_arguments(self, _):
                    'The schema name of the Netezza. Type: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset netezza-table update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -9931,7 +9934,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset o-data-resource create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -9955,7 +9958,7 @@ def load_arguments(self, _):
                    'OData resource path. Type: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset o-data-resource update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -9980,7 +9983,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset odbc-table create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10005,7 +10008,7 @@ def load_arguments(self, _):
                    'ype: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset odbc-table update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10031,7 +10034,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset office365-table create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10059,7 +10062,7 @@ def load_arguments(self, _):
                    '. Type: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset office365-table update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10088,7 +10091,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset oracle-service-cloud-object create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10113,7 +10116,7 @@ def load_arguments(self, _):
                    'string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset oracle-service-cloud-object update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10139,7 +10142,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset oracle-table create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10170,7 +10173,7 @@ def load_arguments(self, _):
                    ').'))
 
     with self.argument_context('datafactory dataset oracle-table update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10202,7 +10205,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset orc create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10228,7 +10231,7 @@ def load_arguments(self, _):
                    help='')
 
     with self.argument_context('datafactory dataset orc update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10255,7 +10258,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset parquet create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10281,7 +10284,7 @@ def load_arguments(self, _):
                    '', 'deflate', 'zipDeflate', 'lz4']), help='')
 
     with self.argument_context('datafactory dataset parquet update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10308,7 +10311,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset paypal-object create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10333,7 +10336,7 @@ def load_arguments(self, _):
                    'string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset paypal-object update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10359,7 +10362,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset phoenix-object create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10388,7 +10391,7 @@ def load_arguments(self, _):
                    'The schema name of the Phoenix. Type: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset phoenix-object update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10418,7 +10421,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset postgre-sql-table create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10447,7 +10450,7 @@ def load_arguments(self, _):
                    'The PostgreSQL schema name. Type: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset postgre-sql-table update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10477,7 +10480,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset presto-object create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10506,7 +10509,7 @@ def load_arguments(self, _):
                    'The schema name of the Presto. Type: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset presto-object update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10536,7 +10539,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset quick-books-object create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10561,7 +10564,7 @@ def load_arguments(self, _):
                    'string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset quick-books-object update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10587,7 +10590,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset relational-table create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10612,7 +10615,7 @@ def load_arguments(self, _):
                    'ame. Type: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset relational-table update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10638,7 +10641,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset responsys-object create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10663,7 +10666,7 @@ def load_arguments(self, _):
                    'string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset responsys-object update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10689,7 +10692,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset rest-resource create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10726,7 +10729,7 @@ def load_arguments(self, _):
                    ' with resultType string).'))
 
     with self.argument_context('datafactory dataset rest-resource update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10764,7 +10767,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset salesforce-marketing-cloud-object create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10789,7 +10792,7 @@ def load_arguments(self, _):
                    'string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset salesforce-marketing-cloud-object update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10815,7 +10818,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset salesforce-object create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10840,7 +10843,7 @@ def load_arguments(self, _):
                    'g).'))
 
     with self.argument_context('datafactory dataset salesforce-object update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10866,7 +10869,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset salesforce-service-cloud-object create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10891,7 +10894,7 @@ def load_arguments(self, _):
                    'sultType string).'))
 
     with self.argument_context('datafactory dataset salesforce-service-cloud-object update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10917,7 +10920,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset sap-bw-cube create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10939,7 +10942,7 @@ def load_arguments(self, _):
                    'ataset will appear at the root level.')
 
     with self.argument_context('datafactory dataset sap-bw-cube update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10962,7 +10965,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset sap-cloud-for-customer-resource create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -10987,7 +10990,7 @@ def load_arguments(self, _):
                    ').'))
 
     with self.argument_context('datafactory dataset sap-cloud-for-customer-resource update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -11013,7 +11016,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset sap-ecc-resource create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -11037,7 +11040,7 @@ def load_arguments(self, _):
                    'path of the SAP ECC OData entity. Type: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset sap-ecc-resource update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -11062,7 +11065,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset sap-hana-table create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -11088,7 +11091,7 @@ def load_arguments(self, _):
                    'e table name of SAP HANA. Type: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset sap-hana-table update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -11115,7 +11118,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset sap-open-hub-table create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -11147,7 +11150,7 @@ def load_arguments(self, _):
                    'pression with resultType integer ).'))
 
     with self.argument_context('datafactory dataset sap-open-hub-table update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -11180,7 +11183,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset sap-table-resource create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -11205,7 +11208,7 @@ def load_arguments(self, _):
                    'ble. Type: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset sap-table-resource update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -11231,7 +11234,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset service-now-object create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -11256,7 +11259,7 @@ def load_arguments(self, _):
                    'string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset service-now-object update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -11282,7 +11285,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset shopify-object create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -11307,7 +11310,7 @@ def load_arguments(self, _):
                    'string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset shopify-object update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -11333,7 +11336,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset snowflake-table create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -11359,7 +11362,7 @@ def load_arguments(self, _):
                    'e table name of the Snowflake database. Type: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset snowflake-table update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -11386,7 +11389,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset spark-object create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -11415,7 +11418,7 @@ def load_arguments(self, _):
                    'The schema name of the Spark. Type: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset spark-object update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -11445,7 +11448,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset sql-server-table create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -11474,7 +11477,7 @@ def load_arguments(self, _):
                    'e table name of the SQL Server dataset. Type: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset sql-server-table update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -11504,7 +11507,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset square-object create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -11529,7 +11532,7 @@ def load_arguments(self, _):
                    'string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset square-object update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -11555,7 +11558,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset sybase-table create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -11580,7 +11583,7 @@ def load_arguments(self, _):
                    ' Type: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset sybase-table update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -11606,7 +11609,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset teradata-table create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -11632,7 +11635,7 @@ def load_arguments(self, _):
                    'e table name of Teradata. Type: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset teradata-table update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -11659,7 +11662,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset vertica-table create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -11688,7 +11691,7 @@ def load_arguments(self, _):
                    'The schema name of the Vertica. Type: string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset vertica-table update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -11718,7 +11721,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset web-table create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -11746,7 +11749,7 @@ def load_arguments(self, _):
                    'pe string).'))
 
     with self.argument_context('datafactory dataset web-table update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -11775,7 +11778,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset xero-object create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -11800,7 +11803,7 @@ def load_arguments(self, _):
                    'string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset xero-object update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -11826,7 +11829,7 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset zoho-object create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -11851,7 +11854,7 @@ def load_arguments(self, _):
                    'string (or Expression with resultType string).'))
 
     with self.argument_context('datafactory dataset zoho-object update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
@@ -11877,23 +11880,23 @@ def load_arguments(self, _):
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset delete') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', help='The dataset name.')
 
     with self.argument_context('datafactory pipeline list') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
 
     with self.argument_context('datafactory pipeline show') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('pipeline_name', help='The pipeline name.')
         c.argument('if_none_match', help='ETag of the pipeline entity. Should only be specified for get. If the ETag ma'
                    'tches the existing entity tag, or if * was provided, then no content will be returned.')
 
     with self.argument_context('datafactory pipeline create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('pipeline_name', help='The pipeline name.')
         c.argument('if_match', help='ETag of the pipeline entity.  Should only be specified for update, for which it sh'
@@ -11902,7 +11905,7 @@ def load_arguments(self, _):
                    '.'))
 
     with self.argument_context('datafactory pipeline update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('pipeline_name', help='The pipeline name.')
         c.argument('if_match', help='ETag of the pipeline entity.  Should only be specified for update, for which it sh'
@@ -11911,12 +11914,12 @@ def load_arguments(self, _):
                    '.'))
 
     with self.argument_context('datafactory pipeline delete') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('pipeline_name', help='The pipeline name.')
 
     with self.argument_context('datafactory pipeline create-run') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('pipeline_name', help='The pipeline name.')
         c.argument('reference_pipeline_run_id', help='The pipeline run identifier. If run ID is specified the parameter'
@@ -11933,19 +11936,19 @@ def load_arguments(self, _):
                    'ne run. These parameters will be used only if the runId is not specified.'))
 
     with self.argument_context('datafactory pipeline-run show') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('run_id', help='The pipeline run identifier.')
 
     with self.argument_context('datafactory pipeline-run cancel') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('run_id', help='The pipeline run identifier.')
         c.argument('is_recursive', arg_type=get_three_state_flag(), help='If true, cancel all the Child pipelines that '
                    'are triggered by the current pipeline.')
 
     with self.argument_context('datafactory pipeline-run query-by-factory') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('continuation_token', help='The continuation token for getting the next page of results. Null for fi'
                    'rst page.')
@@ -11957,7 +11960,7 @@ def load_arguments(self, _):
         c.argument('order_by', action=AddOrderBy, nargs='+', help='List of OrderBy option.')
 
     with self.argument_context('datafactory activity-run query-by-pipeline-run') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('run_id', help='The pipeline run identifier.')
         c.argument('continuation_token', help='The continuation token for getting the next page of results. Null for fi'
@@ -11970,18 +11973,18 @@ def load_arguments(self, _):
         c.argument('order_by', action=AddOrderBy, nargs='+', help='List of OrderBy option.')
 
     with self.argument_context('datafactory trigger list') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
 
     with self.argument_context('datafactory trigger show') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('trigger_name', help='The trigger name.')
         c.argument('if_none_match', help='ETag of the trigger entity. Should only be specified for get. If the ETag mat'
                    'ches the existing entity tag, or if * was provided, then no content will be returned.')
 
     with self.argument_context('datafactory trigger create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('trigger_name', help='The trigger name.')
         c.argument('if_match', help='ETag of the trigger entity.  Should only be specified for update, for which it sho'
@@ -11990,7 +11993,7 @@ def load_arguments(self, _):
                    'r.'))
 
     with self.argument_context('datafactory trigger update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('trigger_name', help='The trigger name.')
         c.argument('if_match', help='ETag of the trigger entity.  Should only be specified for update, for which it sho'
@@ -11999,17 +12002,17 @@ def load_arguments(self, _):
                    'r.'))
 
     with self.argument_context('datafactory trigger delete') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('trigger_name', help='The trigger name.')
 
     with self.argument_context('datafactory trigger get-event-subscription-status') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('trigger_name', help='The trigger name.')
 
     with self.argument_context('datafactory trigger query-by-factory') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('continuation_token', help='The continuation token for getting the next page of results. Null for fi'
                    'rst page.')
@@ -12017,27 +12020,27 @@ def load_arguments(self, _):
                    'ggers')
 
     with self.argument_context('datafactory trigger start') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('trigger_name', help='The trigger name.')
 
     with self.argument_context('datafactory trigger stop') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('trigger_name', help='The trigger name.')
 
     with self.argument_context('datafactory trigger subscribe-to-event') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('trigger_name', help='The trigger name.')
 
     with self.argument_context('datafactory trigger unsubscribe-from-event') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('trigger_name', help='The trigger name.')
 
     with self.argument_context('datafactory trigger-run query-by-factory') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('continuation_token', help='The continuation token for getting the next page of results. Null for fi'
                    'rst page.')
@@ -12049,24 +12052,24 @@ def load_arguments(self, _):
         c.argument('order_by', action=AddOrderBy, nargs='+', help='List of OrderBy option.')
 
     with self.argument_context('datafactory trigger-run rerun') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('trigger_name', help='The trigger name.')
         c.argument('run_id', help='The pipeline run identifier.')
 
     with self.argument_context('datafactory data-flow list') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
 
     with self.argument_context('datafactory data-flow show') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('data_flow_name', help='The data flow name.')
         c.argument('if_none_match', help='ETag of the data flow entity. Should only be specified for get. If the ETag m'
                    'atches the existing entity tag, or if * was provided, then no content will be returned.')
 
     with self.argument_context('datafactory data-flow create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('data_flow_name', help='The data flow name.')
         c.argument('if_match', help='ETag of the data flow entity. Should only be specified for update, for which it sh'
@@ -12075,7 +12078,7 @@ def load_arguments(self, _):
                    help='Data flow properties.'))
 
     with self.argument_context('datafactory data-flow update') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('data_flow_name', help='The data flow name.')
         c.argument('if_match', help='ETag of the data flow entity. Should only be specified for update, for which it sh'
@@ -12084,41 +12087,50 @@ def load_arguments(self, _):
                    help='Data flow properties.'))
 
     with self.argument_context('datafactory data-flow delete') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('data_flow_name', help='The data flow name.')
 
     with self.argument_context('datafactory data-flow-debug-session create') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('compute_type', help='Compute type of the cluster. The value will be overwritten by the same setting'
                    ' in integration runtime if provided.')
         c.argument('core_count', help='Core count of the cluster. The value will be overwritten by the same setting in '
                    'integration runtime if provided.')
         c.argument('time_to_live', help='Time to live setting of the cluster in minutes.')
-        c.argument('integration_runtime', arg_type=CLIArgumentType(options_list=['--integration-runtime'], help='Set to'
-                   ' use integration runtime setting for data flow debug session.'))
+        c.argument('integration_runtime_name', help='The resource name.')
+        c.argument('integration_runtime_properties', arg_type=CLIArgumentType(options_list=['--integration-runtime-prop'
+                   'erties'], help='Integration runtime properties.'))
 
     with self.argument_context('datafactory data-flow-debug-session delete') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('session_id', help='The ID of data flow debug session.')
 
     with self.argument_context('datafactory data-flow-debug-session add-data-flow') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('session_id', help='The ID of data flow debug session.')
-        c.argument('data_flow', arg_type=CLIArgumentType(options_list=['--data-flow'], help='Data flow instance.'))
         c.argument('datasets', arg_type=CLIArgumentType(options_list=['--datasets'], help='List of datasets.'))
         c.argument('linked_services', arg_type=CLIArgumentType(options_list=['--linked-services'], help='List of linked'
                    ' services.'))
-        c.argument('staging', arg_type=CLIArgumentType(options_list=['--staging'], help='Staging info for debug session'
-                   '.'))
-        c.argument('debug_settings', arg_type=CLIArgumentType(options_list=['--debug-settings'], help='Data flow debug '
-                   'settings.'))
+        c.argument('debug_settings_source_settings', action=AddDebugSettingsSourceSettings, nargs='+', help='Source set'
+                   'ting for data flow debug.')
+        c.argument('debug_settings_parameters', arg_type=CLIArgumentType(options_list=['--debug-settings-parameters'],
+                   help='Data flow parameters.'))
+        c.argument('debug_settings_dataset_parameters', arg_type=CLIArgumentType(options_list=['--debug-settings-datase'
+                   't-parameters'], help='Parameters for dataset.'))
+        c.argument('staging_folder_path', help='Folder path for staging blob.')
+        c.argument('staging_linked_service_reference_name', help='Reference LinkedService name.')
+        c.argument('staging_linked_service_parameters', arg_type=CLIArgumentType(options_list=['--staging-linked-servic'
+                   'e-parameters'], help='Arguments for LinkedService.'))
+        c.argument('data_flow_name', help='The resource name.')
+        c.argument('data_flow_properties', arg_type=CLIArgumentType(options_list=['--data-flow-properties'], help='Data'
+                   ' flow properties.'))
 
     with self.argument_context('datafactory data-flow-debug-session execute-command') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('session_id', help='The ID of data flow debug session.')
         c.argument('command', arg_type=get_enum_type(['executePreviewQuery', 'executeStatisticsQuery', 'executeExpressi'
@@ -12126,5 +12138,5 @@ def load_arguments(self, _):
         c.argument('command_payload', action=AddCommandPayload, nargs='+', help='The command payload object.')
 
     with self.argument_context('datafactory data-flow-debug-session query-by-factory') as c:
-        c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')

@@ -30,12 +30,12 @@ def try_manual(func):
             ".".join(manual_file_path.split(os.path.sep) + [module_name, ])
         return getattr(import_module(manual_module, package=__name__), origin_func.__name__)
 
-    def wrapper(test_class):
+    def wrapper(*args, **kwargs):
         func_to_call = func
         try:
             func_to_call = import_manual_function(func)
             print("Will call manual function for {}()".format(func.__name__))
         except (ImportError, AttributeError):
             pass
-        return func_to_call(test_class)
+        return func_to_call(*args, **kwargs)
     return wrapper

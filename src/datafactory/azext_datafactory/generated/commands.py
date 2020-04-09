@@ -18,7 +18,8 @@ def load_command_table(self, _):
         operations_tmpl='azext_datafactory.vendored_sdks.datafactory.operations._factory_operations#FactoryOperations.{'
         '}',
         client_factory=cf_factory)
-    with self.command_group('datafactory factory', datafactory_factory, client_factory=cf_factory) as g:
+    with self.command_group('datafactory factory', datafactory_factory, client_factory=cf_factory,
+                            is_experimental=True) as g:
         g.custom_command('list', 'datafactory_factory_list')
         g.custom_show_command('show', 'datafactory_factory_show')
         g.custom_command('create', 'datafactory_factory_create')
@@ -34,7 +35,7 @@ def load_command_table(self, _):
         'ntrolOperations.{}',
         client_factory=cf_exposure_control)
     with self.command_group('datafactory exposure-control', datafactory_exposure_control,
-                            client_factory=cf_exposure_control) as g:
+                            client_factory=cf_exposure_control, is_experimental=True) as g:
         g.custom_command('get-feature-value', 'datafactory_exposure_control_get_feature_value')
         g.custom_command('get-feature-value-by-factory', 'datafactory_exposure_control_get_feature_value_by_factory')
 
@@ -44,7 +45,7 @@ def load_command_table(self, _):
         'tionRuntimeOperations.{}',
         client_factory=cf_integration_runtime)
     with self.command_group('datafactory integration-runtime', datafactory_integration_runtime,
-                            client_factory=cf_integration_runtime) as g:
+                            client_factory=cf_integration_runtime, is_experimental=True) as g:
         g.custom_command('list', 'datafactory_integration_runtime_list')
         g.custom_show_command('show', 'datafactory_integration_runtime_show')
         g.custom_command('managed create', 'datafactory_integration_runtime_managed_create')
@@ -72,7 +73,7 @@ def load_command_table(self, _):
         client_factory=cf_integration_runtime_object_metadata)
     with self.command_group('datafactory integration-runtime-object-metadata',
                             datafactory_integration_runtime_object_metadata,
-                            client_factory=cf_integration_runtime_object_metadata) as g:
+                            client_factory=cf_integration_runtime_object_metadata, is_experimental=True) as g:
         g.custom_command('get', 'datafactory_integration_runtime_object_metadata_get')
         g.custom_command('refresh', 'datafactory_integration_runtime_object_metadata_refresh', supports_no_wait=True)
         g.wait_command('wait')
@@ -83,7 +84,7 @@ def load_command_table(self, _):
         'tegrationRuntimeNodeOperations.{}',
         client_factory=cf_integration_runtime_node)
     with self.command_group('datafactory integration-runtime-node', datafactory_integration_runtime_node,
-                            client_factory=cf_integration_runtime_node) as g:
+                            client_factory=cf_integration_runtime_node, is_experimental=True) as g:
         g.custom_show_command('show', 'datafactory_integration_runtime_node_show')
         g.custom_command('update', 'datafactory_integration_runtime_node_update')
         g.custom_command('delete', 'datafactory_integration_runtime_node_delete')
@@ -94,13 +95,13 @@ def load_command_table(self, _):
         operations_tmpl='azext_datafactory.vendored_sdks.datafactory.operations._linked_service_operations#LinkedServic'
         'eOperations.{}',
         client_factory=cf_linked_service)
-    with self.command_group('datafactory linked-service', datafactory_linked_service,
-                            client_factory=cf_linked_service) as g:
+    with self.command_group('datafactory linked-service', datafactory_linked_service, client_factory=cf_linked_service,
+                             is_experimental=True) as g:
         g.custom_command('list', 'datafactory_linked_service_list')
         g.custom_show_command('show', 'datafactory_linked_service_show')
-        g.custom_command('amazon-m-w-s create', 'datafactory_linked_service_amazon_m_w_s_create')
-        g.generic_update_command('amazon-m-w-s update', setter_arg_name = 'properties', custom_func_name = 'datafactory'
-                                 '_linked_service_amazon_m_w_s_update')
+        g.custom_command('amazon-mws create', 'datafactory_linked_service_amazon_mws_create')
+        g.generic_update_command('amazon-mws update', setter_arg_name = 'properties', custom_func_name = 'datafactory_l'
+                                 'inked_service_amazon_mws_update')
         g.custom_command('amazon-redshift create', 'datafactory_linked_service_amazon_redshift_create')
         g.generic_update_command('amazon-redshift update', setter_arg_name = 'properties', custom_func_name = 'datafact'
                                  'ory_linked_service_amazon_redshift_update')
@@ -110,9 +111,9 @@ def load_command_table(self, _):
         g.custom_command('azure-batch create', 'datafactory_linked_service_azure_batch_create')
         g.generic_update_command('azure-batch update', setter_arg_name = 'properties', custom_func_name = 'datafactory_'
                                  'linked_service_azure_batch_update')
-        g.custom_command('azure-blob-f-s create', 'datafactory_linked_service_azure_blob_f_s_create')
-        g.generic_update_command('azure-blob-f-s update', setter_arg_name = 'properties', custom_func_name = 'datafacto'
-                                 'ry_linked_service_azure_blob_f_s_update')
+        g.custom_command('azure-blob-fs create', 'datafactory_linked_service_azure_blob_fs_create')
+        g.generic_update_command('azure-blob-fs update', setter_arg_name = 'properties', custom_func_name = 'datafactor'
+                                 'y_linked_service_azure_blob_fs_update')
         g.custom_command('azure-blob-storage create', 'datafactory_linked_service_azure_blob_storage_create')
         g.generic_update_command('azure-blob-storage update', setter_arg_name = 'properties', custom_func_name = 'dataf'
                                  'actory_linked_service_azure_blob_storage_update')
@@ -138,15 +139,15 @@ def load_command_table(self, _):
         g.custom_command('azure-key-vault create', 'datafactory_linked_service_azure_key_vault_create')
         g.generic_update_command('azure-key-vault update', setter_arg_name = 'properties', custom_func_name = 'datafact'
                                  'ory_linked_service_azure_key_vault_update')
-        g.custom_command('azure-m-l create', 'datafactory_linked_service_azure_m_l_create')
-        g.generic_update_command('azure-m-l update', setter_arg_name = 'properties', custom_func_name = 'datafactory_li'
-                                 'nked_service_azure_m_l_update')
-        g.custom_command('azure-m-l-service create', 'datafactory_linked_service_azure_m_l_service_create')
-        g.generic_update_command('azure-m-l-service update', setter_arg_name = 'properties', custom_func_name = 'datafa'
-                                 'ctory_linked_service_azure_m_l_service_update')
         g.custom_command('azure-maria-d-b create', 'datafactory_linked_service_azure_maria_d_b_create')
         g.generic_update_command('azure-maria-d-b update', setter_arg_name = 'properties', custom_func_name = 'datafact'
                                  'ory_linked_service_azure_maria_d_b_update')
+        g.custom_command('azure-ml create', 'datafactory_linked_service_azure_ml_create')
+        g.generic_update_command('azure-ml update', setter_arg_name = 'properties', custom_func_name = 'datafactory_lin'
+                                 'ked_service_azure_ml_update')
+        g.custom_command('azure-ml-service create', 'datafactory_linked_service_azure_ml_service_create')
+        g.generic_update_command('azure-ml-service update', setter_arg_name = 'properties', custom_func_name = 'datafac'
+                                 'tory_linked_service_azure_ml_service_update')
         g.custom_command('azure-my-sql create', 'datafactory_linked_service_azure_my_sql_create')
         g.generic_update_command('azure-my-sql update', setter_arg_name = 'properties', custom_func_name = 'datafactory'
                                  '_linked_service_azure_my_sql_update')
@@ -156,15 +157,15 @@ def load_command_table(self, _):
         g.custom_command('azure-search create', 'datafactory_linked_service_azure_search_create')
         g.generic_update_command('azure-search update', setter_arg_name = 'properties', custom_func_name = 'datafactory'
                                  '_linked_service_azure_search_update')
-        g.custom_command('azure-sql-d-w create', 'datafactory_linked_service_azure_sql_d_w_create')
-        g.generic_update_command('azure-sql-d-w update', setter_arg_name = 'properties', custom_func_name = 'datafactor'
-                                 'y_linked_service_azure_sql_d_w_update')
         g.custom_command('azure-sql-database create', 'datafactory_linked_service_azure_sql_database_create')
         g.generic_update_command('azure-sql-database update', setter_arg_name = 'properties', custom_func_name = 'dataf'
                                  'actory_linked_service_azure_sql_database_update')
-        g.custom_command('azure-sql-m-i create', 'datafactory_linked_service_azure_sql_m_i_create')
-        g.generic_update_command('azure-sql-m-i update', setter_arg_name = 'properties', custom_func_name = 'datafactor'
-                                 'y_linked_service_azure_sql_m_i_update')
+        g.custom_command('azure-sql-dw create', 'datafactory_linked_service_azure_sql_dw_create')
+        g.generic_update_command('azure-sql-dw update', setter_arg_name = 'properties', custom_func_name = 'datafactory'
+                                 '_linked_service_azure_sql_dw_update')
+        g.custom_command('azure-sql-mi create', 'datafactory_linked_service_azure_sql_mi_create')
+        g.generic_update_command('azure-sql-mi update', setter_arg_name = 'properties', custom_func_name = 'datafactory'
+                                 '_linked_service_azure_sql_mi_update')
         g.custom_command('azure-storage create', 'datafactory_linked_service_azure_storage_create')
         g.generic_update_command('azure-storage update', setter_arg_name = 'properties', custom_func_name = 'datafactor'
                                  'y_linked_service_azure_storage_update')
@@ -181,12 +182,13 @@ def load_command_table(self, _):
         g.custom_command('concur create', 'datafactory_linked_service_concur_create')
         g.generic_update_command('concur update', setter_arg_name = 'properties', custom_func_name = 'datafactory_linke'
                                  'd_service_concur_update')
-        g.custom_command('cosmos-db create', 'datafactory_linked_service_cosmos_db_create')
-        g.generic_update_command('cosmos-db update', setter_arg_name = 'properties', custom_func_name = 'datafactory_li'
-                                 'nked_service_cosmos_db_update')
-        g.custom_command('cosmos-db-mongo-db-api create', 'datafactory_linked_service_cosmos_db_mongo_db_api_create')
-        g.generic_update_command('cosmos-db-mongo-db-api update', setter_arg_name = 'properties', custom_func_name = 'd'
-                                 'atafactory_linked_service_cosmos_db_mongo_db_api_update')
+        g.custom_command('cosmos-d-b create', 'datafactory_linked_service_cosmos_d_b_create')
+        g.generic_update_command('cosmos-d-b update', setter_arg_name = 'properties', custom_func_name = 'datafactory_l'
+                                 'inked_service_cosmos_d_b_update')
+        g.custom_command('cosmos-d-b-mongo-d-b-api create', 'datafactory_linked_service_cosmos_d_b_mongo_d_b_api_create'
+                         '')
+        g.generic_update_command('cosmos-d-b-mongo-d-b-api update', setter_arg_name = 'properties',
+                                 custom_func_name = 'datafactory_linked_service_cosmos_d_b_mongo_d_b_api_update')
         g.custom_command('couchbase create', 'datafactory_linked_service_couchbase_create')
         g.generic_update_command('couchbase update', setter_arg_name = 'properties', custom_func_name = 'datafactory_li'
                                  'nked_service_couchbase_update')
@@ -202,9 +204,9 @@ def load_command_table(self, _):
         g.custom_command('dynamics create', 'datafactory_linked_service_dynamics_create')
         g.generic_update_command('dynamics update', setter_arg_name = 'properties', custom_func_name = 'datafactory_lin'
                                  'ked_service_dynamics_update')
-        g.custom_command('dynamics-a-x create', 'datafactory_linked_service_dynamics_a_x_create')
-        g.generic_update_command('dynamics-a-x update', setter_arg_name = 'properties', custom_func_name = 'datafactory'
-                                 '_linked_service_dynamics_a_x_update')
+        g.custom_command('dynamics-ax create', 'datafactory_linked_service_dynamics_ax_create')
+        g.generic_update_command('dynamics-ax update', setter_arg_name = 'properties', custom_func_name = 'datafactory_'
+                                 'linked_service_dynamics_ax_update')
         g.custom_command('dynamics-crm create', 'datafactory_linked_service_dynamics_crm_create')
         g.generic_update_command('dynamics-crm update', setter_arg_name = 'properties', custom_func_name = 'datafactory'
                                  '_linked_service_dynamics_crm_update')
@@ -232,12 +234,12 @@ def load_command_table(self, _):
         g.custom_command('h-base create', 'datafactory_linked_service_h_base_create')
         g.generic_update_command('h-base update', setter_arg_name = 'properties', custom_func_name = 'datafactory_linke'
                                  'd_service_h_base_update')
-        g.custom_command('h-d-insight create', 'datafactory_linked_service_h_d_insight_create')
-        g.generic_update_command('h-d-insight update', setter_arg_name = 'properties', custom_func_name = 'datafactory_'
-                                 'linked_service_h_d_insight_update')
-        g.custom_command('h-d-insight-on-demand create', 'datafactory_linked_service_h_d_insight_on_demand_create')
-        g.generic_update_command('h-d-insight-on-demand update', setter_arg_name = 'properties', custom_func_name = 'da'
-                                 'tafactory_linked_service_h_d_insight_on_demand_update')
+        g.custom_command('hd-insight create', 'datafactory_linked_service_hd_insight_create')
+        g.generic_update_command('hd-insight update', setter_arg_name = 'properties', custom_func_name = 'datafactory_l'
+                                 'inked_service_hd_insight_update')
+        g.custom_command('hd-insight-on-demand create', 'datafactory_linked_service_hd_insight_on_demand_create')
+        g.generic_update_command('hd-insight-on-demand update', setter_arg_name = 'properties', custom_func_name = 'dat'
+                                 'afactory_linked_service_hd_insight_on_demand_update')
         g.custom_command('hdfs create', 'datafactory_linked_service_hdfs_create')
         g.generic_update_command('hdfs update', setter_arg_name = 'properties', custom_func_name = 'datafactory_linked_'
                                  'service_hdfs_update')
@@ -271,12 +273,12 @@ def load_command_table(self, _):
         g.custom_command('microsoft-access create', 'datafactory_linked_service_microsoft_access_create')
         g.generic_update_command('microsoft-access update', setter_arg_name = 'properties', custom_func_name = 'datafac'
                                  'tory_linked_service_microsoft_access_update')
-        g.custom_command('mongo-db create', 'datafactory_linked_service_mongo_db_create')
-        g.generic_update_command('mongo-db update', setter_arg_name = 'properties', custom_func_name = 'datafactory_lin'
-                                 'ked_service_mongo_db_update')
-        g.custom_command('mongo-db-v2 create', 'datafactory_linked_service_mongo_db_v2_create')
-        g.generic_update_command('mongo-db-v2 update', setter_arg_name = 'properties', custom_func_name = 'datafactory_'
-                                 'linked_service_mongo_db_v2_update')
+        g.custom_command('mongo-d-b create', 'datafactory_linked_service_mongo_d_b_create')
+        g.generic_update_command('mongo-d-b update', setter_arg_name = 'properties', custom_func_name = 'datafactory_li'
+                                 'nked_service_mongo_d_b_update')
+        g.custom_command('mongo-d-b-v2 create', 'datafactory_linked_service_mongo_d_b_v2_create')
+        g.generic_update_command('mongo-d-b-v2 update', setter_arg_name = 'properties', custom_func_name = 'datafactory'
+                                 '_linked_service_mongo_d_b_v2_update')
         g.custom_command('my-sql create', 'datafactory_linked_service_my_sql_create')
         g.generic_update_command('my-sql update', setter_arg_name = 'properties', custom_func_name = 'datafactory_linke'
                                  'd_service_my_sql_update')
@@ -330,9 +332,9 @@ def load_command_table(self, _):
                          '')
         g.generic_update_command('salesforce-service-cloud update', setter_arg_name = 'properties',
                                  custom_func_name = 'datafactory_linked_service_salesforce_service_cloud_update')
-        g.custom_command('sap-b-w create', 'datafactory_linked_service_sap_b_w_create')
-        g.generic_update_command('sap-b-w update', setter_arg_name = 'properties', custom_func_name = 'datafactory_link'
-                                 'ed_service_sap_b_w_update')
+        g.custom_command('sap-bw create', 'datafactory_linked_service_sap_bw_create')
+        g.generic_update_command('sap-bw update', setter_arg_name = 'properties', custom_func_name = 'datafactory_linke'
+                                 'd_service_sap_bw_update')
         g.custom_command('sap-cloud-for-customer create', 'datafactory_linked_service_sap_cloud_for_customer_create')
         g.generic_update_command('sap-cloud-for-customer update', setter_arg_name = 'properties', custom_func_name = 'd'
                                  'atafactory_linked_service_sap_cloud_for_customer_update')
@@ -394,12 +396,13 @@ def load_command_table(self, _):
         operations_tmpl='azext_datafactory.vendored_sdks.datafactory.operations._dataset_operations#DatasetOperations.{'
         '}',
         client_factory=cf_dataset)
-    with self.command_group('datafactory dataset', datafactory_dataset, client_factory=cf_dataset) as g:
+    with self.command_group('datafactory dataset', datafactory_dataset, client_factory=cf_dataset,
+                            is_experimental=True) as g:
         g.custom_command('list', 'datafactory_dataset_list')
         g.custom_show_command('show', 'datafactory_dataset_show')
-        g.custom_command('amazon-m-w-s-object create', 'datafactory_dataset_amazon_m_w_s_object_create')
-        g.generic_update_command('amazon-m-w-s-object update', setter_arg_name = 'properties', custom_func_name = 'data'
-                                 'factory_dataset_amazon_m_w_s_object_update')
+        g.custom_command('amazon-mws-object create', 'datafactory_dataset_amazon_mws_object_create')
+        g.generic_update_command('amazon-mws-object update', setter_arg_name = 'properties', custom_func_name = 'datafa'
+                                 'ctory_dataset_amazon_mws_object_update')
         g.custom_command('amazon-redshift-table create', 'datafactory_dataset_amazon_redshift_table_create')
         g.generic_update_command('amazon-redshift-table update', setter_arg_name = 'properties', custom_func_name = 'da'
                                  'tafactory_dataset_amazon_redshift_table_update')
@@ -412,9 +415,9 @@ def load_command_table(self, _):
         g.custom_command('azure-blob create', 'datafactory_dataset_azure_blob_create')
         g.generic_update_command('azure-blob update', setter_arg_name = 'properties', custom_func_name = 'datafactory_d'
                                  'ataset_azure_blob_update')
-        g.custom_command('azure-blob-f-s-file create', 'datafactory_dataset_azure_blob_f_s_file_create')
-        g.generic_update_command('azure-blob-f-s-file update', setter_arg_name = 'properties', custom_func_name = 'data'
-                                 'factory_dataset_azure_blob_f_s_file_update')
+        g.custom_command('azure-blob-fs-file create', 'datafactory_dataset_azure_blob_fs_file_create')
+        g.generic_update_command('azure-blob-fs-file update', setter_arg_name = 'properties', custom_func_name = 'dataf'
+                                 'actory_dataset_azure_blob_fs_file_update')
         g.custom_command('azure-data-explorer-table create', 'datafactory_dataset_azure_data_explorer_table_create')
         g.generic_update_command('azure-data-explorer-table update', setter_arg_name = 'properties',
                                  custom_func_name = 'datafactory_dataset_azure_data_explorer_table_update')
@@ -433,12 +436,12 @@ def load_command_table(self, _):
         g.custom_command('azure-search-index create', 'datafactory_dataset_azure_search_index_create')
         g.generic_update_command('azure-search-index update', setter_arg_name = 'properties', custom_func_name = 'dataf'
                                  'actory_dataset_azure_search_index_update')
-        g.custom_command('azure-sql-d-w-table create', 'datafactory_dataset_azure_sql_d_w_table_create')
-        g.generic_update_command('azure-sql-d-w-table update', setter_arg_name = 'properties', custom_func_name = 'data'
-                                 'factory_dataset_azure_sql_d_w_table_update')
-        g.custom_command('azure-sql-m-i-table create', 'datafactory_dataset_azure_sql_m_i_table_create')
-        g.generic_update_command('azure-sql-m-i-table update', setter_arg_name = 'properties', custom_func_name = 'data'
-                                 'factory_dataset_azure_sql_m_i_table_update')
+        g.custom_command('azure-sql-dw-table create', 'datafactory_dataset_azure_sql_dw_table_create')
+        g.generic_update_command('azure-sql-dw-table update', setter_arg_name = 'properties', custom_func_name = 'dataf'
+                                 'actory_dataset_azure_sql_dw_table_update')
+        g.custom_command('azure-sql-mi-table create', 'datafactory_dataset_azure_sql_mi_table_create')
+        g.generic_update_command('azure-sql-mi-table update', setter_arg_name = 'properties', custom_func_name = 'dataf'
+                                 'actory_dataset_azure_sql_mi_table_update')
         g.custom_command('azure-sql-table create', 'datafactory_dataset_azure_sql_table_create')
         g.generic_update_command('azure-sql-table update', setter_arg_name = 'properties', custom_func_name = 'datafact'
                                  'ory_dataset_azure_sql_table_update')
@@ -458,14 +461,14 @@ def load_command_table(self, _):
         g.custom_command('concur-object create', 'datafactory_dataset_concur_object_create')
         g.generic_update_command('concur-object update', setter_arg_name = 'properties', custom_func_name = 'datafactor'
                                  'y_dataset_concur_object_update')
-        g.custom_command('cosmos-db-mongo-db-api-collection create', 'datafactory_dataset_cosmos_db_mongo_db_api_collec'
-                         'tion_create')
-        g.generic_update_command('cosmos-db-mongo-db-api-collection update', setter_arg_name = 'properties',
-                                 custom_func_name = 'datafactory_dataset_cosmos_db_mongo_db_api_collection_update')
-        g.custom_command('cosmos-db-sql-api-collection create', 'datafactory_dataset_cosmos_db_sql_api_collection_creat'
-                         'e')
-        g.generic_update_command('cosmos-db-sql-api-collection update', setter_arg_name = 'properties',
-                                 custom_func_name = 'datafactory_dataset_cosmos_db_sql_api_collection_update')
+        g.custom_command('cosmos-d-b-mongo-d-b-api-collection create', 'datafactory_dataset_cosmos_d_b_mongo_d_b_api_co'
+                         'llection_create')
+        g.generic_update_command('cosmos-d-b-mongo-d-b-api-collection update', setter_arg_name = 'properties',
+                                 custom_func_name = 'datafactory_dataset_cosmos_d_b_mongo_d_b_api_collection_update')
+        g.custom_command('cosmos-d-b-sql-api-collection create', 'datafactory_dataset_cosmos_d_b_sql_api_collection_cre'
+                         'ate')
+        g.generic_update_command('cosmos-d-b-sql-api-collection update', setter_arg_name = 'properties',
+                                 custom_func_name = 'datafactory_dataset_cosmos_d_b_sql_api_collection_update')
         g.custom_command('couchbase-table create', 'datafactory_dataset_couchbase_table_create')
         g.generic_update_command('couchbase-table update', setter_arg_name = 'properties', custom_func_name = 'datafact'
                                  'ory_dataset_couchbase_table_update')
@@ -478,15 +481,15 @@ def load_command_table(self, _):
         g.custom_command('delimited-text create', 'datafactory_dataset_delimited_text_create')
         g.generic_update_command('delimited-text update', setter_arg_name = 'properties', custom_func_name = 'datafacto'
                                  'ry_dataset_delimited_text_update')
-        g.custom_command('document-db-collection create', 'datafactory_dataset_document_db_collection_create')
-        g.generic_update_command('document-db-collection update', setter_arg_name = 'properties', custom_func_name = 'd'
-                                 'atafactory_dataset_document_db_collection_update')
+        g.custom_command('document-d-b-collection create', 'datafactory_dataset_document_d_b_collection_create')
+        g.generic_update_command('document-d-b-collection update', setter_arg_name = 'properties', custom_func_name = 
+                                 'datafactory_dataset_document_d_b_collection_update')
         g.custom_command('drill-table create', 'datafactory_dataset_drill_table_create')
         g.generic_update_command('drill-table update', setter_arg_name = 'properties', custom_func_name = 'datafactory_'
                                  'dataset_drill_table_update')
-        g.custom_command('dynamics-a-x-resource create', 'datafactory_dataset_dynamics_a_x_resource_create')
-        g.generic_update_command('dynamics-a-x-resource update', setter_arg_name = 'properties', custom_func_name = 'da'
-                                 'tafactory_dataset_dynamics_a_x_resource_update')
+        g.custom_command('dynamics-ax-resource create', 'datafactory_dataset_dynamics_ax_resource_create')
+        g.generic_update_command('dynamics-ax-resource update', setter_arg_name = 'properties', custom_func_name = 'dat'
+                                 'afactory_dataset_dynamics_ax_resource_update')
         g.custom_command('dynamics-crm-entity create', 'datafactory_dataset_dynamics_crm_entity_create')
         g.generic_update_command('dynamics-crm-entity update', setter_arg_name = 'properties', custom_func_name = 'data'
                                  'factory_dataset_dynamics_crm_entity_update')
@@ -544,12 +547,12 @@ def load_command_table(self, _):
         g.custom_command('microsoft-access-table create', 'datafactory_dataset_microsoft_access_table_create')
         g.generic_update_command('microsoft-access-table update', setter_arg_name = 'properties', custom_func_name = 'd'
                                  'atafactory_dataset_microsoft_access_table_update')
-        g.custom_command('mongo-db-collection create', 'datafactory_dataset_mongo_db_collection_create')
-        g.generic_update_command('mongo-db-collection update', setter_arg_name = 'properties', custom_func_name = 'data'
-                                 'factory_dataset_mongo_db_collection_update')
-        g.custom_command('mongo-db-v2-collection create', 'datafactory_dataset_mongo_db_v2_collection_create')
-        g.generic_update_command('mongo-db-v2-collection update', setter_arg_name = 'properties', custom_func_name = 'd'
-                                 'atafactory_dataset_mongo_db_v2_collection_update')
+        g.custom_command('mongo-d-b-collection create', 'datafactory_dataset_mongo_d_b_collection_create')
+        g.generic_update_command('mongo-d-b-collection update', setter_arg_name = 'properties', custom_func_name = 'dat'
+                                 'afactory_dataset_mongo_d_b_collection_update')
+        g.custom_command('mongo-d-b-v2-collection create', 'datafactory_dataset_mongo_d_b_v2_collection_create')
+        g.generic_update_command('mongo-d-b-v2-collection update', setter_arg_name = 'properties', custom_func_name = 
+                                 'datafactory_dataset_mongo_d_b_v2_collection_update')
         g.custom_command('my-sql-table create', 'datafactory_dataset_my_sql_table_create')
         g.generic_update_command('my-sql-table update', setter_arg_name = 'properties', custom_func_name = 'datafactory'
                                  '_dataset_my_sql_table_update')
@@ -675,7 +678,8 @@ def load_command_table(self, _):
         operations_tmpl='azext_datafactory.vendored_sdks.datafactory.operations._pipeline_operations#PipelineOperations'
         '.{}',
         client_factory=cf_pipeline)
-    with self.command_group('datafactory pipeline', datafactory_pipeline, client_factory=cf_pipeline) as g:
+    with self.command_group('datafactory pipeline', datafactory_pipeline, client_factory=cf_pipeline,
+                            is_experimental=True) as g:
         g.custom_command('list', 'datafactory_pipeline_list')
         g.custom_show_command('show', 'datafactory_pipeline_show')
         g.custom_command('create', 'datafactory_pipeline_create')
@@ -689,8 +693,8 @@ def load_command_table(self, _):
         operations_tmpl='azext_datafactory.vendored_sdks.datafactory.operations._pipeline_run_operations#PipelineRunOpe'
         'rations.{}',
         client_factory=cf_pipeline_run)
-    with self.command_group('datafactory pipeline-run', datafactory_pipeline_run,
-                            client_factory=cf_pipeline_run) as g:
+    with self.command_group('datafactory pipeline-run', datafactory_pipeline_run, client_factory=cf_pipeline_run,
+                            is_experimental=True) as g:
         g.custom_show_command('show', 'datafactory_pipeline_run_show')
         g.custom_command('cancel', 'datafactory_pipeline_run_cancel')
         g.custom_command('query-by-factory', 'datafactory_pipeline_run_query_by_factory')
@@ -700,8 +704,8 @@ def load_command_table(self, _):
         operations_tmpl='azext_datafactory.vendored_sdks.datafactory.operations._activity_run_operations#ActivityRunOpe'
         'rations.{}',
         client_factory=cf_activity_run)
-    with self.command_group('datafactory activity-run', datafactory_activity_run,
-                            client_factory=cf_activity_run) as g:
+    with self.command_group('datafactory activity-run', datafactory_activity_run, client_factory=cf_activity_run,
+                            is_experimental=True) as g:
         g.custom_command('query-by-pipeline-run', 'datafactory_activity_run_query_by_pipeline_run')
 
     from azext_datafactory.generated._client_factory import cf_trigger
@@ -709,7 +713,8 @@ def load_command_table(self, _):
         operations_tmpl='azext_datafactory.vendored_sdks.datafactory.operations._trigger_operations#TriggerOperations.{'
         '}',
         client_factory=cf_trigger)
-    with self.command_group('datafactory trigger', datafactory_trigger, client_factory=cf_trigger) as g:
+    with self.command_group('datafactory trigger', datafactory_trigger, client_factory=cf_trigger,
+                            is_experimental=True) as g:
         g.custom_command('list', 'datafactory_trigger_list')
         g.custom_show_command('show', 'datafactory_trigger_show')
         g.custom_command('create', 'datafactory_trigger_create')
@@ -730,7 +735,8 @@ def load_command_table(self, _):
         operations_tmpl='azext_datafactory.vendored_sdks.datafactory.operations._trigger_run_operations#TriggerRunOpera'
         'tions.{}',
         client_factory=cf_trigger_run)
-    with self.command_group('datafactory trigger-run', datafactory_trigger_run, client_factory=cf_trigger_run) as g:
+    with self.command_group('datafactory trigger-run', datafactory_trigger_run, client_factory=cf_trigger_run,
+                            is_experimental=True) as g:
         g.custom_command('query-by-factory', 'datafactory_trigger_run_query_by_factory')
         g.custom_command('rerun', 'datafactory_trigger_run_rerun')
 
@@ -739,7 +745,8 @@ def load_command_table(self, _):
         operations_tmpl='azext_datafactory.vendored_sdks.datafactory.operations._data_flow_operations#DataFlowOperation'
         's.{}',
         client_factory=cf_data_flow)
-    with self.command_group('datafactory data-flow', datafactory_data_flow, client_factory=cf_data_flow) as g:
+    with self.command_group('datafactory data-flow', datafactory_data_flow, client_factory=cf_data_flow,
+                            is_experimental=True) as g:
         g.custom_command('list', 'datafactory_data_flow_list')
         g.custom_show_command('show', 'datafactory_data_flow_show')
         g.custom_command('create', 'datafactory_data_flow_create')
@@ -753,7 +760,7 @@ def load_command_table(self, _):
         'aFlowDebugSessionOperations.{}',
         client_factory=cf_data_flow_debug_session)
     with self.command_group('datafactory data-flow-debug-session', datafactory_data_flow_debug_session,
-                            client_factory=cf_data_flow_debug_session) as g:
+                            client_factory=cf_data_flow_debug_session, is_experimental=True) as g:
         g.custom_command('create', 'datafactory_data_flow_debug_session_create', supports_no_wait=True)
         g.custom_command('delete', 'datafactory_data_flow_debug_session_delete')
         g.custom_command('add-data-flow', 'datafactory_data_flow_debug_session_add_data_flow')
