@@ -152,7 +152,7 @@ def load_arguments(self, _):
         c.argument('account_name', help='The name of the share account.')
         c.argument('share_name', help='The name of the share.')
 
-    with self.argument_context('datashare share list-synchronization-detail') as c:
+    with self.argument_context('datashare share synchronization list-detail') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
         c.argument('account_name', help='The name of the share account.')
         c.argument('share_name', help='The name of the share.')
@@ -167,7 +167,7 @@ def load_arguments(self, _):
         c.argument('status', help='Raw Status')
         c.argument('synchronization_id', help='Synchronization id')
 
-    with self.argument_context('datashare share list-synchronization') as c:
+    with self.argument_context('datashare share synchronization list') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
         c.argument('account_name', help='The name of the share account.')
         c.argument('share_name', help='The name of the share.')
@@ -219,20 +219,20 @@ def load_arguments(self, _):
         c.argument('account_name', help='The name of the share account.')
         c.argument('share_subscription_name', help='The name of the shareSubscription.')
 
-    with self.argument_context('datashare share-subscription list-synchronization-detail') as c:
+    with self.argument_context('datashare share-subscription synchronization list-detail') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
         c.argument('account_name', help='The name of the share account.')
         c.argument('share_subscription_name', help='The name of the shareSubscription.')
         c.argument('skip_token', help='Continuation token')
         c.argument('synchronization_id', help='Synchronization id')
 
-    with self.argument_context('datashare share-subscription synchronize') as c:
+    with self.argument_context('datashare share-subscription synchronization start') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
         c.argument('account_name', help='The name of the share account.')
         c.argument('share_subscription_name', help='The name of the shareSubscription.')
         c.argument('synchronization_mode', arg_type=get_enum_type(['Incremental', 'FullSync']), help='Synchronization mode')
 
-    with self.argument_context('datashare share-subscription cancel-synchronization') as c:
+    with self.argument_context('datashare share-subscription synchronization cancel') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
         c.argument('account_name', help='The name of the share account.')
         c.argument('share_subscription_name', help='The name of the shareSubscription.')
@@ -244,7 +244,7 @@ def load_arguments(self, _):
         c.argument('share_subscription_name', help='The name of the shareSubscription.')
         c.argument('skip_token', help='Continuation token')
 
-    with self.argument_context('datashare share-subscription list-synchronization') as c:
+    with self.argument_context('datashare share-subscription synchronization list') as c:
         c.argument('resource_group_name', resource_group_name_type, help='The resource group name.')
         c.argument('account_name', help='The name of the share account.')
         c.argument('share_subscription_name', help='The name of the shareSubscription.')

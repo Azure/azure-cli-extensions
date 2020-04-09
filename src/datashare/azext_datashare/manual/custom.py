@@ -9,11 +9,10 @@ from azure.cli.core.util import sdk_no_wait
 
 
 def datashare_account_list(cmd, client,
-                           resource_group_name=None,
-                           skip_token=None):
+                           resource_group_name=None):
     if resource_group_name:
-        return client.list_by_resource_group(resource_group_name=resource_group_name, skip_token=skip_token)
-    return client.list_by_subscription(skip_token=skip_token)
+        return client.list_by_resource_group(resource_group_name=resource_group_name)
+    return client.list_by_subscription()
 
 
 def datashare_account_show(cmd, client,
@@ -55,9 +54,8 @@ def datashare_account_delete(cmd, client,
                        account_name=account_name)
 
 
-def datashare_consumer_invitation_list(cmd, client,
-                                       skip_token=None):
-    return client.list_invitation(skip_token=skip_token)
+def datashare_consumer_invitation_list(cmd, client):
+    return client.list_invitation()
 
 
 def datashare_consumer_invitation_show(cmd, client,
@@ -75,9 +73,10 @@ def datashare_consumer_invitation_reject_invitation(cmd, client,
 def datashare_data_set_list(cmd, client,
                             resource_group_name,
                             account_name,
-                            share_name,
-                            skip_token=None):
-    return client.list_by_share(resource_group_name=resource_group_name, account_name=account_name, share_name=share_name, skip_token=skip_token)
+                            share_name):
+    return client.list_by_share(resource_group_name=resource_group_name,
+                                account_name=account_name,
+                                share_name=share_name)
 
 
 def datashare_data_set_show(cmd, client,
@@ -119,16 +118,23 @@ def datashare_data_set_delete(cmd, client,
                               resource_group_name,
                               account_name,
                               share_name,
-                              data_set_name):
-    return client.begin_delete(resource_group_name=resource_group_name, account_name=account_name, share_name=share_name, data_set_name=data_set_name)
+                              data_set_name,
+                              no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_delete,
+                       resource_group_name=resource_group_name,
+                       account_name=account_name,
+                       share_name=share_name,
+                       data_set_name=data_set_name)
 
 
 def datashare_data_set_mapping_list(cmd, client,
                                     resource_group_name,
                                     account_name,
-                                    share_subscription_name,
-                                    skip_token=None):
-    return client.list_by_share_subscription(resource_group_name=resource_group_name, account_name=account_name, share_subscription_name=share_subscription_name, skip_token=skip_token)
+                                    share_subscription_name):
+    return client.list_by_share_subscription(resource_group_name=resource_group_name,
+                                             account_name=account_name,
+                                             share_subscription_name=share_subscription_name)
 
 
 def datashare_data_set_mapping_show(cmd, client,
@@ -168,9 +174,10 @@ def datashare_data_set_mapping_delete(cmd, client,
 def datashare_invitation_list(cmd, client,
                               resource_group_name,
                               account_name,
-                              share_name,
-                              skip_token=None):
-    return client.list_by_share(resource_group_name=resource_group_name, account_name=account_name, share_name=share_name, skip_token=skip_token)
+                              share_name):
+    return client.list_by_share(resource_group_name=resource_group_name,
+                                account_name=account_name,
+                                share_name=share_name)
 
 
 def datashare_invitation_show(cmd, client,
@@ -202,9 +209,8 @@ def datashare_invitation_delete(cmd, client,
 
 def datashare_share_list(cmd, client,
                          resource_group_name,
-                         account_name,
-                         skip_token=None):
-    return client.list_by_account(resource_group_name=resource_group_name, account_name=account_name, skip_token=skip_token)
+                         account_name):
+    return client.list_by_account(resource_group_name=resource_group_name, account_name=account_name)
 
 
 def datashare_share_show(cmd, client,
@@ -227,41 +233,42 @@ def datashare_share_create(cmd, client,
 def datashare_share_delete(cmd, client,
                            resource_group_name,
                            account_name,
-                           share_name):
-    return client.begin_delete(resource_group_name=resource_group_name, account_name=account_name, share_name=share_name)
+                           share_name,
+                           no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_delete,
+                       resource_group_name=resource_group_name,
+                       account_name=account_name,
+                       share_name=share_name)
 
 
 def datashare_share_list_synchronization_detail(cmd, client,
                                                 resource_group_name,
                                                 account_name,
                                                 share_name,
-                                                skip_token=None,
-                                                consumer_email=None,
-                                                consumer_name=None,
-                                                consumer_tenant_name=None,
-                                                duration_ms=None,
-                                                end_time=None,
-                                                message=None,
-                                                start_time=None,
-                                                status=None,
                                                 synchronization_id=None):
-    return client.list_synchronization_detail(resource_group_name=resource_group_name, account_name=account_name, share_name=share_name, skip_token=skip_token, consumer_email=consumer_email, consumer_name=consumer_name, consumer_tenant_name=consumer_tenant_name, duration_ms=duration_ms, end_time=end_time, message=message, start_time=start_time, status=status, synchronization_id=synchronization_id)
+    return client.list_synchronization_detail(resource_group_name=resource_group_name,
+                                              account_name=account_name,
+                                              share_name=share_name,
+                                              synchronization_id=synchronization_id)
 
 
 def datashare_share_list_synchronization(cmd, client,
                                          resource_group_name,
                                          account_name,
-                                         share_name,
-                                         skip_token=None):
-    return client.list_synchronization(resource_group_name=resource_group_name, account_name=account_name, share_name=share_name, skip_token=skip_token)
+                                         share_name):
+    return client.list_synchronization(resource_group_name=resource_group_name,
+                                       account_name=account_name,
+                                       share_name=share_name)
 
 
 def datashare_provider_share_subscription_list(cmd, client,
                                                resource_group_name,
                                                account_name,
-                                               share_name,
-                                               skip_token=None):
-    return client.list_by_share(resource_group_name=resource_group_name, account_name=account_name, share_name=share_name, skip_token=skip_token)
+                                               share_name):
+    return client.list_by_share(resource_group_name=resource_group_name,
+                                account_name=account_name,
+                                share_name=share_name)
 
 
 def datashare_provider_share_subscription_show(cmd, client,
@@ -276,8 +283,14 @@ def datashare_provider_share_subscription_revoke(cmd, client,
                                                  resource_group_name,
                                                  account_name,
                                                  share_name,
-                                                 provider_share_subscription_id):
-    return client.begin_revoke(resource_group_name=resource_group_name, account_name=account_name, share_name=share_name, provider_share_subscription_id=provider_share_subscription_id)
+                                                 provider_share_subscription_id,
+                                                 no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_revoke,
+                       resource_group_name=resource_group_name,
+                       account_name=account_name,
+                       share_name=share_name,
+                       provider_share_subscription_id=provider_share_subscription_id)
 
 
 def datashare_provider_share_subscription_reinstate(cmd, client,
@@ -290,9 +303,8 @@ def datashare_provider_share_subscription_reinstate(cmd, client,
 
 def datashare_share_subscription_list(cmd, client,
                                       resource_group_name,
-                                      account_name,
-                                      skip_token=None):
-    return client.list_by_account(resource_group_name=resource_group_name, account_name=account_name, skip_token=skip_token)
+                                      account_name):
+    return client.list_by_account(resource_group_name=resource_group_name, account_name=account_name)
 
 
 def datashare_share_subscription_show(cmd, client,
@@ -314,65 +326,86 @@ def datashare_share_subscription_create(cmd, client,
 def datashare_share_subscription_delete(cmd, client,
                                         resource_group_name,
                                         account_name,
-                                        share_subscription_name):
-    return client.begin_delete(resource_group_name=resource_group_name, account_name=account_name, share_subscription_name=share_subscription_name)
+                                        share_subscription_name,
+                                        no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_delete,
+                       resource_group_name=resource_group_name,
+                       account_name=account_name,
+                       share_subscription_name=share_subscription_name)
 
 
 def datashare_share_subscription_list_synchronization_detail(cmd, client,
                                                              resource_group_name,
                                                              account_name,
                                                              share_subscription_name,
-                                                             synchronization_id,
-                                                             skip_token=None):
-    return client.list_synchronization_detail(resource_group_name=resource_group_name, account_name=account_name, share_subscription_name=share_subscription_name, skip_token=skip_token, synchronization_id=synchronization_id)
+                                                             synchronization_id):
+    return client.list_synchronization_detail(resource_group_name=resource_group_name,
+                                              account_name=account_name,
+                                              share_subscription_name=share_subscription_name,
+                                              synchronization_id=synchronization_id)
 
 
 def datashare_share_subscription_synchronize(cmd, client,
                                              resource_group_name,
                                              account_name,
                                              share_subscription_name,
-                                             synchronization_mode=None):
-    return client.begin_synchronize(resource_group_name=resource_group_name, account_name=account_name, share_subscription_name=share_subscription_name, synchronization_mode=synchronization_mode)
+                                             synchronization_mode=None,
+                                             no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_synchronize,
+                       resource_group_name=resource_group_name,
+                       account_name=account_name,
+                       share_subscription_name=share_subscription_name,
+                       synchronization_mode=synchronization_mode)
 
 
 def datashare_share_subscription_cancel_synchronization(cmd, client,
                                                         resource_group_name,
                                                         account_name,
                                                         share_subscription_name,
-                                                        synchronization_id):
-    return client.begin_cancel_synchronization(resource_group_name=resource_group_name, account_name=account_name, share_subscription_name=share_subscription_name, synchronization_id=synchronization_id)
+                                                        synchronization_id,
+                                                        no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_cancel_synchronization,
+                       resource_group_name=resource_group_name,
+                       account_name=account_name,
+                       share_subscription_name=share_subscription_name,
+                       synchronization_id=synchronization_id)
 
 
 def datashare_share_subscription_list_source_share_synchronization_setting(cmd, client,
                                                                            resource_group_name,
                                                                            account_name,
-                                                                           share_subscription_name,
-                                                                           skip_token=None):
-    return client.list_source_share_synchronization_setting(resource_group_name=resource_group_name, account_name=account_name, share_subscription_name=share_subscription_name, skip_token=skip_token)
+                                                                           share_subscription_name):
+    return client.list_source_share_synchronization_setting(resource_group_name=resource_group_name,
+                                                            account_name=account_name,
+                                                            share_subscription_name=share_subscription_name)
 
 
 def datashare_share_subscription_list_synchronization(cmd, client,
                                                       resource_group_name,
                                                       account_name,
-                                                      share_subscription_name,
-                                                      skip_token=None):
-    return client.list_synchronization(resource_group_name=resource_group_name, account_name=account_name, share_subscription_name=share_subscription_name, skip_token=skip_token)
+                                                      share_subscription_name):
+    return client.list_synchronization(resource_group_name=resource_group_name,
+                                       account_name=account_name,
+                                       share_subscription_name=share_subscription_name)
 
 
 def datashare_consumer_source_data_set_list(cmd, client,
                                             resource_group_name,
                                             account_name,
-                                            share_subscription_name,
-                                            skip_token=None):
-    return client.list_by_share_subscription(resource_group_name=resource_group_name, account_name=account_name, share_subscription_name=share_subscription_name, skip_token=skip_token)
+                                            share_subscription_name):
+    return client.list_by_share_subscription(resource_group_name=resource_group_name, account_name=account_name, share_subscription_name=share_subscription_name)
 
 
 def datashare_synchronization_setting_list(cmd, client,
                                            resource_group_name,
                                            account_name,
-                                           share_name,
-                                           skip_token=None):
-    return client.list_by_share(resource_group_name=resource_group_name, account_name=account_name, share_name=share_name, skip_token=skip_token)
+                                           share_name):
+    return client.list_by_share(resource_group_name=resource_group_name,
+                                account_name=account_name,
+                                share_name=share_name)
 
 
 def datashare_synchronization_setting_show(cmd, client,
@@ -410,16 +443,23 @@ def datashare_synchronization_setting_delete(cmd, client,
                                              resource_group_name,
                                              account_name,
                                              share_name,
-                                             synchronization_setting_name):
-    return client.begin_delete(resource_group_name=resource_group_name, account_name=account_name, share_name=share_name, synchronization_setting_name=synchronization_setting_name)
+                                             synchronization_setting_name,
+                                             no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_delete,
+                       resource_group_name=resource_group_name,
+                       account_name=account_name,
+                       share_name=share_name,
+                       synchronization_setting_name=synchronization_setting_name)
 
 
 def datashare_trigger_list(cmd, client,
                            resource_group_name,
                            account_name,
-                           share_subscription_name,
-                           skip_token=None):
-    return client.list_by_share_subscription(resource_group_name=resource_group_name, account_name=account_name, share_subscription_name=share_subscription_name, skip_token=skip_token)
+                           share_subscription_name):
+    return client.list_by_share_subscription(resource_group_name=resource_group_name,
+                                             account_name=account_name,
+                                             share_subscription_name=share_subscription_name)
 
 
 def datashare_trigger_show(cmd, client,
@@ -435,17 +475,26 @@ def datashare_trigger_create(cmd, client,
                              account_name,
                              share_subscription_name,
                              trigger_name,
-                             trigger):
-    return client.begin_create(resource_group_name=resource_group_name,
-                               account_name=account_name,
-                               share_subscription_name=share_subscription_name,
-                               trigger_name=trigger_name,
-                               trigger=trigger)
+                             trigger,
+                             no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_create,
+                       resource_group_name=resource_group_name,
+                       account_name=account_name,
+                       share_subscription_name=share_subscription_name,
+                       trigger_name=trigger_name,
+                       trigger=trigger)
 
 
 def datashare_trigger_delete(cmd, client,
                              resource_group_name,
                              account_name,
                              share_subscription_name,
-                             trigger_name):
-    return client.begin_delete(resource_group_name=resource_group_name, account_name=account_name, share_subscription_name=share_subscription_name, trigger_name=trigger_name)
+                             trigger_name,
+                             no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_delete,
+                       resource_group_name=resource_group_name,
+                       account_name=account_name,
+                       share_subscription_name=share_subscription_name,
+                       trigger_name=trigger_name)

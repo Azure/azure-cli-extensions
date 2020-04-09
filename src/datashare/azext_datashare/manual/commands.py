@@ -26,7 +26,7 @@ def load_command_table(self, _):
     datashare_consumer_invitation = CliCommandType(
         operations_tmpl='azext_datashare.vendored_sdks.datashare.operations._consumer_invitation_operations#ConsumerInvitationOperations.{}',
         client_factory=cf_consumer_invitation)
-    with self.command_group('datashare consumer-invitation', datashare_consumer_invitation, client_factory=cf_consumer_invitation) as g:
+    with self.command_group('datashare consumer invitation', datashare_consumer_invitation, client_factory=cf_consumer_invitation) as g:
         g.custom_command('list', 'datashare_consumer_invitation_list')
         g.custom_show_command('show', 'datashare_consumer_invitation_show')
         g.custom_command('reject-invitation', 'datashare_consumer_invitation_reject_invitation')
@@ -46,7 +46,7 @@ def load_command_table(self, _):
     datashare_data_set_mapping = CliCommandType(
         operations_tmpl='azext_datashare.vendored_sdks.datashare.operations._data_set_mapping_operations#DataSetMappingOperations.{}',
         client_factory=cf_data_set_mapping)
-    with self.command_group('datashare dataset-mapping', datashare_data_set_mapping, client_factory=cf_data_set_mapping) as g:  # modified
+    with self.command_group('datashare consumer dataset-mapping', datashare_data_set_mapping, client_factory=cf_data_set_mapping) as g:  # modified
         g.custom_command('list', 'datashare_data_set_mapping_list')
         g.custom_show_command('show', 'datashare_data_set_mapping_show')
         g.custom_command('create', 'datashare_data_set_mapping_create')
@@ -71,9 +71,11 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'datashare_share_show')
         g.custom_command('create', 'datashare_share_create')
         g.custom_command('delete', 'datashare_share_delete', supports_no_wait=True, confirmation=True)
-        g.custom_command('list-synchronization-detail', 'datashare_share_list_synchronization_detail')
-        g.custom_command('list-synchronization', 'datashare_share_list_synchronization')
         g.wait_command('wait')
+
+    with self.command_group('datashare synchronization', datashare_share, client_factory=cf_share, is_experimental=True) as g:
+        g.custom_command('list-detail', 'datashare_share_list_synchronization_detail')
+        g.custom_command('list', 'datashare_share_list_synchronization')
 
     from azext_datashare.generated._client_factory import cf_provider_share_subscription
     datashare_provider_share_subscription = CliCommandType(
@@ -90,24 +92,26 @@ def load_command_table(self, _):
     datashare_share_subscription = CliCommandType(
         operations_tmpl='azext_datashare.vendored_sdks.datashare.operations._share_subscription_operations#ShareSubscriptionOperations.{}',
         client_factory=cf_share_subscription)
-    with self.command_group('datashare share-subscription', datashare_share_subscription, client_factory=cf_share_subscription) as g:
+    with self.command_group('datashare consumer share-subscription', datashare_share_subscription, client_factory=cf_share_subscription) as g:
         g.custom_command('list', 'datashare_share_subscription_list')
         g.custom_show_command('show', 'datashare_share_subscription_show')
         g.custom_command('create', 'datashare_share_subscription_create')
         g.custom_command('delete', 'datashare_share_subscription_delete', supports_no_wait=True, confirmation=True)
-        g.custom_command('list-synchronization-detail', 'datashare_share_subscription_list_synchronization_detail')
-        g.custom_command('synchronize', 'datashare_share_subscription_synchronize', supports_no_wait=True)
-        g.custom_command('cancel-synchronization', 'datashare_share_subscription_cancel_synchronization', supports_no_wait=True)
         g.custom_command('list-source-share-synchronization-setting', 'datashare_share_subscription_list_source_share_synchronization_setting')
-        g.custom_command('list-synchronization', 'datashare_share_subscription_list_synchronization')
         g.wait_command('wait')
+
+    with self.command_group('datashare consumer share-subscription synchronization', datashare_share_subscription, client_factory=cf_share_subscription) as g:
+        g.custom_command('list', 'datashare_share_subscription_list_synchronization')
+        g.custom_command('list-detail', 'datashare_share_subscription_list_synchronization_detail')
+        g.custom_command('start', 'datashare_share_subscription_synchronize', supports_no_wait=True)
+        g.custom_command('cancel', 'datashare_share_subscription_cancel_synchronization', supports_no_wait=True)
 
     from azext_datashare.generated._client_factory import cf_consumer_source_data_set
     datashare_consumer_source_data_set = CliCommandType(
         operations_tmpl='azext_datashare.vendored_sdks.datashare.operations._consumer_source_data_set_operations#ConsumerSourceDataSetOperations.{}',
         client_factory=cf_consumer_source_data_set)
-    with self.command_group('datashare consumer-source-dataset', datashare_consumer_source_data_set, client_factory=cf_consumer_source_data_set) as g:
-        g.custom_command('list', 'datashare_consumer_source_data_set_list')
+    with self.command_group('datashare consumer share-subscription', datashare_consumer_source_data_set, client_factory=cf_consumer_source_data_set) as g:
+        g.custom_command('list-source-dataset', 'datashare_consumer_source_data_set_list')
 
     from azext_datashare.generated._client_factory import cf_synchronization_setting
     datashare_synchronization_setting = CliCommandType(
@@ -124,7 +128,7 @@ def load_command_table(self, _):
     datashare_trigger = CliCommandType(
         operations_tmpl='azext_datashare.vendored_sdks.datashare.operations._trigger_operations#TriggerOperations.{}',
         client_factory=cf_trigger)
-    with self.command_group('datashare trigger', datashare_trigger, client_factory=cf_trigger) as g:
+    with self.command_group('datashare consumer trigger', datashare_trigger, client_factory=cf_trigger) as g:
         g.custom_command('list', 'datashare_trigger_list')
         g.custom_show_command('show', 'datashare_trigger_show')
         g.custom_command('create', 'datashare_trigger_create', supports_no_wait=True)

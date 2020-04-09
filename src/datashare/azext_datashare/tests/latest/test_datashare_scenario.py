@@ -14,8 +14,8 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class DataShareManagementClientScenarioTest(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix='cli_test_datashare_provider_rg'[:9], location='westus2', key='ProviderResourceGroup')
-    @StorageAccountPreparer(name_prefix='clitestdatashareprovidersa'[:9], location='westus2', key='ProviderStorageAccount')
+    @ResourceGroupPreparer(name_prefix='cli_test_datashare_provider_rg'[:12], location='westus2', key='ProviderResourceGroup')
+    @StorageAccountPreparer(name_prefix='clitestdatashareprovidersa'[:12], location='westus2', key='ProviderStorageAccount')
     @AllowLargeResponse()
     def test_datashare(self, resource_group, storage_account):
 
@@ -26,7 +26,7 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
             'ProviderEmail': 'feng.zhou@microsoft.com',
             'ConsumerEmail': 'fengzhou810@163.com',
             'ProviderAccount': 'cli_test_account',
-            'ConsumerAccount': 'cli_test_acc_consumer_account',
+            'ConsumerAccount': 'cli_test_consumer_account',
             'ProviderDataset': 'cli_test_data_set',
             'ConsumerDatasetMapping': 'cli_test_data_set_mapping',
             'ProviderInvitation': 'cli_test_invitation',
@@ -224,13 +224,13 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
                          self.check('[0].resourceGroup', '{ProviderResourceGroup}'),
                          self.check('[0].synchronizationTime', '2020-04-05T10:50:00+00:00')])
 
-        self.cmd('az datashare list-synchronization '
+        self.cmd('az datashare synchronization list '
                  '--account-name "{ProviderAccount}" '
                  '--resource-group "{ProviderResourceGroup}" '
                  '--share-name "{ProviderShare}"',
                  checks=[])
 
-        # self.cmd('az datashare list-synchronization-detail '
+        # self.cmd('az datashare synchronization list-detail '
         #          '--account-name "{ProviderAccount}" '
         #          '--resource-group "{ProviderResourceGroup}" '
         #          '--share-name "{ProviderShare}" '
@@ -278,7 +278,7 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
                                                     self.check('location', 'westus2'),
                                                     self.check('resourceGroup', '{ConsumerResourceGroup}')]).get_output_in_json()
 
-        invitations = self.cmd('az datashare consumer-invitation list '
+        invitations = self.cmd('az datashare consumer invitation list '
                                '--subscription "{ConsumerSubscription}"',
                                checks=[self.check('[0].invitationStatus', 'Pending'),
                                        self.check('[0].name', '{ProviderInvitation}'),
@@ -290,7 +290,7 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
         self.kwargs.update({'InvitationId1': invitationId,
                             'Location1': sourceShareLocation})
 
-        self.cmd('az datashare consumer-invitation show '
+        self.cmd('az datashare consumer invitation show '
                  '--invitation-id "{InvitationId1}" '
                  '--subscription "{ConsumerSubscription}"',
                  checks=[self.check('invitationStatus', 'Pending'),
@@ -298,7 +298,7 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
                          self.check('shareName', '{ProviderShare}'),
                          self.check('providerEmail', '{ProviderEmail}')])
 
-#         self.cmd('az datashare consumer-invitation reject-invitation '
+#         self.cmd('az datashare consumer invitation reject-invitation '
 #                  '--invitation-id "dfbbc788-19eb-4607-a5a1-c74181bfff03" '
 #                  checks=[])
 
@@ -309,7 +309,7 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
                  '--subscription "{ConsumerSubscription}"',
                  checks=[])
 
-        self.cmd('az datashare share-subscription create '
+        self.cmd('az datashare consumer share-subscription create '
                  '--account-name "{ConsumerAccount}" '
                  '--resource-group "{ConsumerResourceGroup}" '
                  '--invitation-id "{InvitationId1}" '
@@ -323,7 +323,7 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
                          self.check('shareKind', 'CopyBased'),
                          self.check('sourceShareLocation', '{Location1}')])
 
-        self.cmd('az datashare share-subscription show '
+        self.cmd('az datashare consumer share-subscription show '
                  '--account-name "{ConsumerAccount}" '
                  '--resource-group "{ConsumerResourceGroup}" '
                  '--name "{ConsumerShareSubscription}" '
@@ -335,7 +335,7 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
                          self.check('shareKind', 'CopyBased'),
                          self.check('sourceShareLocation', '{Location1}')])
 
-        self.cmd('az datashare share-subscription list '
+        self.cmd('az datashare consumer share-subscription list '
                  '--account-name "{ConsumerAccount}" '
                  '--resource-group "{ConsumerResourceGroup}" '
                  '--subscription "{ConsumerSubscription}"',
@@ -346,7 +346,7 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
                          self.check('[0].shareKind', 'CopyBased'),
                          self.check('[0].sourceShareLocation', '{Location1}')])
 
-        sourceDatasets = self.cmd('az datashare consumer-source-dataset list '
+        sourceDatasets = self.cmd('az datashare consumer share-subscription list-source-dataset '
                                   '--account-name "{ConsumerAccount}" '
                                   '--resource-group "{ConsumerResourceGroup}" '
                                   '--share-subscription-name "{ConsumerShareSubscription}" '
@@ -383,7 +383,7 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
         self.kwargs.update({
             'ConsumerDatasetMappingContent': datasetMappingContent
         })
-        self.cmd('az datashare dataset-mapping create '
+        self.cmd('az datashare consumer dataset-mapping create '
                  '--account-name "{ConsumerAccount}" '
                  '--name "{ConsumerDatasetMapping}" '
                  '--resource-group "{ConsumerResourceGroup}" '
@@ -395,7 +395,7 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
                          self.check('prefix', '{ProviderDataset}'),
                          self.check('storageAccountName', '{ConsumerStorageAccount}')])
 
-        self.cmd('az datashare share-subscription synchronize '
+        self.cmd('az datashare consumer share-subscription synchronization start '
                  '--account-name "{ConsumerAccount}" '
                  '--resource-group "{ConsumerResourceGroup}" '
                  '--share-subscription-name "{ConsumerShareSubscription}" '
@@ -404,7 +404,7 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
                  checks=[self.check('status', 'Queued'),
                          self.check('synchronizationMode', 'Incremental')])
 
-        self.cmd('az datashare dataset-mapping show '
+        self.cmd('az datashare consumer dataset-mapping show '
                  '--account-name "{ConsumerAccount}" '
                  '--name "{ConsumerDatasetMapping}" '
                  '--resource-group "{ConsumerResourceGroup}" '
@@ -415,7 +415,7 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
                          self.check('prefix', '{ProviderDataset}'),
                          self.check('storageAccountName', '{ConsumerStorageAccount}')])
 
-        self.cmd('az datashare dataset-mapping list '
+        self.cmd('az datashare consumer dataset-mapping list '
                  '--account-name "{ConsumerAccount}" '
                  '--resource-group "{ConsumerResourceGroup}" '
                  '--share-subscription-name "{ConsumerShareSubscription}" '
@@ -425,14 +425,14 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
                          self.check('[0].prefix', '{ProviderDataset}'),
                          self.check('[0].storageAccountName', '{ConsumerStorageAccount}')])
 
-        self.cmd('az datashare share-subscription list-synchronization '
+        self.cmd('az datashare consumer share-subscription synchronization list '
                  '--account-name "{ConsumerAccount}" '
                  '--resource-group "{ConsumerResourceGroup}" '
                  '--share-subscription-name "{ConsumerShareSubscription}" '
                  '--subscription "{ConsumerSubscription}"',
                  checks=[self.check('[0].synchronizationMode', 'Incremental')])
 
-#         self.cmd('az datashare share-subscription list-synchronization-detail '
+#         self.cmd('az datashare consumer share-subscription synchronization list-detail '
 #                  '--account-name "{ConsumerAccount}" '
 #                  '--resource-group "{ConsumerResourceGroup}" '
 #                  '--share-subscription-name "{ConsumerShareSubscription}" '
@@ -440,7 +440,7 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
 #                  '--subscription "{ConsumerSubscription}"',
 #                  checks=[])
 
-#         self.cmd('az datashare share-subscription cancel-synchronization '
+#         self.cmd('az datashare consumer share-subscription synchronization cancel '
 #                  '--account-name "{ConsumerAccount}" '
 #                  '--resource-group "{ConsumerResourceGroup}" '
 #                  '--share-subscription-name "{ConsumerShareSubscription}" '
@@ -448,7 +448,7 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
 #                  '--subscription "{ConsumerSubscription}"',
 #                  checks=[])
 
-        self.cmd('az datashare share-subscription list-source-share-synchronization-setting '
+        self.cmd('az datashare consumer share-subscription list-source-share-synchronization-setting '
                  '--account-name "{ConsumerAccount}" '
                  '--resource-group "{ConsumerResourceGroup}" '
                  '--share-subscription-name "{ConsumerShareSubscription}" '
@@ -458,7 +458,7 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
 
         triggerContent = {"kind": "ScheduleBased", "recurrenceInterval": "Day", "synchronizationTime": "2020-04-05T10:50:00+00:00"}
         self.kwargs.update({'TriggerContent': triggerContent})
-        self.cmd('az datashare trigger create '
+        self.cmd('az datashare consumer trigger create '
                  '--account-name "{ConsumerAccount}" '
                  '--resource-group "{ConsumerResourceGroup}" '
                  '--share-subscription-name "{ConsumerShareSubscription}" '
@@ -468,7 +468,7 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
                  checks=[self.check('properties.recurrenceInterval', 'Day'),  # TODO properties is not removed in the response structure
                          self.check('properties.synchronizationMode', 'Incremental')])
 
-        self.cmd('az datashare trigger show '
+        self.cmd('az datashare consumer trigger show '
                  '--account-name "{ConsumerAccount}" '
                  '--resource-group "{ConsumerResourceGroup}" '
                  '--share-subscription-name "{ConsumerShareSubscription}" '
@@ -477,7 +477,7 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
                  checks=[self.check('recurrenceInterval', 'Day'),
                          self.check('synchronizationMode', 'Incremental')])
 
-        self.cmd('az datashare trigger list '
+        self.cmd('az datashare consumer trigger list '
                  '--account-name "{ConsumerAccount}" '
                  '--resource-group "{ConsumerResourceGroup}" '
                  '--share-subscription-name "{ConsumerShareSubscription}" '
@@ -572,7 +572,7 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
                  '--yes',
                  checks=[])
 
-        self.cmd('az datashare trigger delete '
+        self.cmd('az datashare consumer trigger delete '
                  '--account-name "{ConsumerAccount}" '
                  '--resource-group "{ConsumerResourceGroup}" '
                  '--share-subscription-name "{ConsumerShareSubscription}" '
@@ -580,7 +580,7 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
                  '--yes '
                  '--subscription "{ConsumerSubscription}"',
                  checks=[])
-        self.cmd('az datashare dataset-mapping delete '
+        self.cmd('az datashare consumer dataset-mapping delete '
                  '--account-name "{ConsumerAccount}" '
                  '--name "{ConsumerDatasetMapping}" '
                  '--resource-group "{ConsumerResourceGroup}" '
@@ -588,7 +588,7 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
                  '--yes '
                  '--subscription "{ConsumerSubscription}"',
                  checks=[])
-        self.cmd('az datashare share-subscription delete '
+        self.cmd('az datashare consumer share-subscription delete '
                  '--account-name "{ConsumerAccount}" '
                  '--resource-group "{ConsumerResourceGroup}" '
                  '--name "{ConsumerShareSubscription}" '
