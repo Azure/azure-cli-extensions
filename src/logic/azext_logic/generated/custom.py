@@ -66,6 +66,8 @@ def logic_workflow_update(cmd, client,
                           integration_account=None):
     
     # check workflow exist before another update is done via a put
+    # per dicussion with the logic service team and to match powershells
+    # behavior
     workflow = client.get(resource_group_name=resource_group_name,
                       workflow_name=name) 
     integration_account = integration_account if integration_account else workflow.integration_account
@@ -118,6 +120,8 @@ def logic_integration_account_create(cmd, client,
                                    sku=sku,
                                    integration_service_environment=integration_service_environment,
                                    state=state if state else 'Enabled')
+                                    # TODO: Work around for empty property serialization issue. 
+                                    # Remove after LogicApp deploy the service fix. Contact: Rama Rayud"
 
 
 def logic_integration_account_import(cmd, client,
@@ -142,8 +146,9 @@ def logic_integration_account_import(cmd, client,
                                 tags=integration.get('tags', tags),
                                 sku=integration.get('sku', sku),
                                 integration_service_environment=integration_service_environment,
-                                state=integration['properties'].get('state', 'Enabled'))
-
+                                state=integration['properties'].get('state', 'Enabled')) 
+                                # TODO: Work around for empty property serialization issue. 
+                                # Remove after LogicApp deploy the service fix. Contact: Rama Rayud"
 
 def logic_integration_account_update(cmd, client,
                                      name,
