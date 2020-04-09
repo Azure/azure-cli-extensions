@@ -159,7 +159,7 @@ helps['spring-cloud app identity assign'] = """
     - name: Enable the system assigned identity.
       text: az spring-cloud app identity assign -n MyApp -s MyCluster -g MyResourceGroup
     - name: Enable the system assigned identity on an app with the 'Reader' role.
-      text: az spring-cloud app identity assign -n MyApp --role Reader --scope /subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxx/providers/Microsoft.KeyVault/vaults/xxxxx
+      text: az spring-cloud app identity assign -n MyApp -s MyCluster -g MyResourceGroup --role Reader --scope /subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxx/providers/Microsoft.KeyVault/vaults/xxxxx
 """
 
 helps['spring-cloud app identity remove'] = """
