@@ -16,6 +16,7 @@ from .vendored_sdks.appplatform import models
 from knack.log import get_logger
 from .azure_storage_file import FileService
 from azure.cli.core.util import sdk_no_wait
+from azure.cli.core.profiles import ResourceType, get_sdk
 from ast import literal_eval
 from azure.cli.core.commands import cached_put
 from ._utils import _get_rg_location
@@ -439,7 +440,7 @@ def app_tail_log(cmd, client, resource_group, service, name, instance=None, foll
         raise exceptions[0]
 
 
-def app_identity_assign(cmd, client, resource_group, service, name):
+def app_identity_assign(cmd, client, resource_group, service, name, role=None, scope=None):
     app_resource = models.AppResource()
     identity = models.ManagedIdentityProperties(type="systemassigned")
     properties = models.AppResourceProperties()
@@ -449,7 +450,39 @@ def app_identity_assign(cmd, client, resource_group, service, name):
     app_resource.identity = identity
     app_resource.properties = properties
     app_resource.location = location
-    return client.apps.update(resource_group, service, name, app_resource)
+    client.apps.update(resource_group, service, name, app_resource)
+    app = client.apps.get(resource_group, service, name)
+    if role:
+        principal_id = app.identity.principal_id
+
+        from azure.cli.core.commands import arm as _arm
+        identity_role_id = _arm.resolve_role_id(cmd.cli_ctx, role, scope)
+        from azure.cli.core.commands.client_factory import get_mgmt_service_client
+        assignments_client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_AUTHORIZATION).role_assignments
+        RoleAssignmentCreateParameters = get_sdk(cmd.cli_ctx, ResourceType.MGMT_AUTHORIZATION,
+                                                 'RoleAssignmentCreateParameters', mod='models',
+                                                 operation_group='role_assignments')
+        parameters = RoleAssignmentCreateParameters(role_definition_id=identity_role_id, principal_id=principal_id)
+        logger.info("Creating an assignment with a role '%s' on the scope of '%s'", identity_role_id, scope)
+        retry_times = 36
+        assignment_name = _arm._gen_guid()
+        for l in range(0, retry_times):
+            try:
+                assignments_client.create(scope=scope, role_assignment_name=assignment_name,
+                                          parameters=parameters)
+                break
+            except CloudError as ex:
+                if 'role assignment already exists' in ex.message:
+                    logger.info('Role assignment already exists')
+                    break
+                elif l < retry_times and ' does not exist in the directory ' in ex.message:
+                    sleep(APP_CREATE_OR_UPDATE_SLEEP_INTERVAL)
+                    logger.warning('Retrying role assignment creation: %s/%s', l + 1,
+                                   retry_times)
+                    continue
+                else:
+                    raise
+    return app
 
 
 def app_identity_remove(cmd, client, resource_group, service, name):
