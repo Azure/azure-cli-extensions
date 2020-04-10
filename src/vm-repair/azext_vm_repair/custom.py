@@ -121,9 +121,10 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
                                                     .format(g=repair_group_name, repair=repair_vm_name, vault=key_vault, volume=volume_type)
                     logger.info('Installing extension on repair VM without KEK \n')
                     _call_az_command(install_ade_extension_command)
-            except AzCommandError as azCommandError:
+            except Exception as error:
+                error = "Failed to encrypt data volumes"
                 command.error_stack_trace = traceback.format_exc()
-                command.error_message = str(azCommandError)
+                command.error_message = str(error)
                 command.message = "'Failed to encrypt data volumes' exception can be ignored"
                 # Execute commands on repair VM through run command option to unlock the copy of encrypted disk and mount.
             finally:
