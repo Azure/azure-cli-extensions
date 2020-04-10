@@ -3,9 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import json
 from json import loads
-import traceback
 import subprocess
 import shlex
 import os
@@ -178,21 +176,31 @@ def _list_resource_ids_in_rg(resource_group_name):
     ids = loads(_call_az_command(get_resources_command))
     return ids
 
+
 def _uses_encrypted_disk(source_vm):
     if source_vm.storage_profile.os_disk.encryption_settings is not None:
-        return "Dual"
+        encryption_type = "dual"
+        key_vault = "Null"
+        kekurl = "Null"
+        return encryption_type, key_vault, kekurl
     else:
         disk_id = source_vm.storage_profile.os_disk.managed_disk.id
         show_disk_command = 'az disk show --id {i} --query [encryptionSettingsCollection,encryptionSettingsCollection.encryptionSettings[].diskEncryptionKey.sourceVault.id,encryptionSettingsCollection.encryptionSettings[].keyEncryptionKey.keyUrl] -o json'.format(i=disk_id)
         disk_info = loads(_call_az_command(show_disk_command))
         if disk_info == [None, None, None]:
-            return "not encrypted"
+            encryption_type = "not encrypted"
+            key_vault = "Null"
+            kekurl = "Null"
+            return encryption_type, key_vault, kekurl
         elif disk_info[2] == []:
+            encryption_type = "single_without_kek"
             key_vault = disk_info[1][0]
-            return (key_vault)
+            kekurl = "Null"
+            return encryption_type, key_vault, kekurl
         else:
             key_vault, kekurl = disk_info[1][0], disk_info[2][0]
-            return (key_vault, kekurl)
+            encryption_type = "single_with_kek"
+            return encryption_type, key_vault, kekurl
 
 
 def _fetch_compatible_windows_os_urn(source_vm):

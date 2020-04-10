@@ -35,14 +35,13 @@ from .repair_utils import (
     _uses_encrypted_disk,
 )
 
-from ._validators import ask_user, _encryption_type
 
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError
 
 logger = get_logger(__name__)
 
 
-def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None):
+def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encryption=None):
 
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair create')
@@ -56,10 +55,8 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         is_managed = _uses_managed_disk(source_vm)
         copy_disk_id = None
         resource_tag = _get_repair_resource_tag(resource_group_name, vm_name)
-        encryption_type = _encryption_type(source_vm)
         created_resources = []
-        if encryption_type in ("single_with_kek", "single_without_kek"):
-            ask_user()
+        encryption_type, key_vault, kekurl = _uses_encrypted_disk(source_vm)
 
         # Fetch OS image urn and set OS type for disk create
         if is_linux:
@@ -114,14 +111,12 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             # Install extension in case of single pass encrypted VM
             try:
                 if encryption_type == "single_with_kek":
-                    key_vault, kekurl = _uses_encrypted_disk(source_vm)
 
                     install_ade_extension_command = 'az vm encryption enable --disk-encryption-keyvault {vault} --name {repair} --resource-group {g} --key-encryption-key {kek_url} --volume-type {volume}' \
                                                     .format(g=repair_group_name, repair=repair_vm_name, vault=key_vault, kek_url=kekurl, volume=volume_type)
                     logger.info('Installing extension on repair VM with KEK\n')
                     _call_az_command(install_ade_extension_command)
                 elif encryption_type == "single_without_kek":
-                    key_vault = _uses_encrypted_disk(source_vm)
                     install_ade_extension_command = 'az vm encryption enable --disk-encryption-keyvault {vault} --name {repair} --resource-group {g} --volume-type {volume}' \
                                                     .format(g=repair_group_name, repair=repair_vm_name, vault=key_vault, volume=volume_type)
                     logger.info('Installing extension on repair VM without KEK \n')

@@ -57,8 +57,17 @@ def validate_create(cmd, namespace):
     else:
         namespace.repair_group_name = 'repair-' + namespace.vm_name + '-' + timestamp
 
-
-# Validating check_encryption value to check the type of encryption
+    # Check encrypted disk
+    # TODO, validate this with encrypted VMs
+    check_encryption = _uses_encrypted_disk(source_vm)
+    if check_encryption[0] != "not encrypted":
+        logger.warning('The source VM\'s OS disk is encrypted.')
+        if check_encryption[0] in ('single_with_kek', 'single_without_kek'):
+            if not namespace.unlock_encryption:
+                ask_user()
+        elif check_encryption[0] == "dual":
+            logger.warning('This script does not support VMs which were encrypted using dual pass')
+            exit(0)
 
     # Validate Auth Params
     # Prompt vm username
@@ -71,33 +80,6 @@ def validate_create(cmd, namespace):
         _prompt_repair_password(namespace)
     # Validate vm password
     validate_vm_password(namespace.repair_password, is_linux)
-
-def ask_user():
-   check = str(input("VM is encrypted using single pass method, are we ok to unlock the disk and mount on repair VM ? (Y/N): ")).lower().strip()
-   try:
-       if check[0] == 'y':
-          return True
-       elif check[0] == 'n':
-          print('Stopping the execution upon user input')
-          exit(0)
-          return False
-       else:
-          print('Invalid Input.valid inputs are "y" or "n"')
-          return ask_user()
-   except Exception as error:
-       print('Invalid Input.valid inputs are "y" or "n"')
-       return ask_user()
-
-def _encryption_type(source_vm):
-   check_encryption = _uses_encrypted_disk(source_vm)
-   if len(check_encryption) == 2:
-       return ("single_with_kek")
-       ask_user()
-   elif check_encryption not in ("Dual", "not encrypted"):
-       return ("single_without_kek")
-       ask_user()
-   else:
-       return ("Dual / not encrypted")
 
 
 def validate_restore(cmd, namespace):
@@ -181,6 +163,24 @@ def validate_run(cmd, namespace):
 
     if not is_valid_resource_id(namespace.repair_vm_id):
         raise CLIError('Repair resource id is not valid.')
+
+
+def ask_user():
+    check = str(input("VM is encrypted using single pass method, are we ok to unlock the disk and mount on repair VM ? (Y/N): ")).lower().strip()
+    try:
+        if check[0] == 'y':
+            return True
+        elif check[0] == 'n':
+            print('Stopping the execution upon user input')
+            exit(0)
+            return False
+        else:
+            print('Invalid Input.valid inputs are "y" or "n"')
+            return ask_user()
+    except Exception as error:
+        print(error)
+        print('Invalid Input.valid inputs are "y" or "n"')
+        return ask_user()
 
 
 def _prompt_repair_username(namespace):
