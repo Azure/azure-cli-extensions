@@ -23,8 +23,8 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
             'ConsumerSubscription': '00000000-0000-0000-0000-000000000000',  # change this value in live test
             'ConsumerResourceGroup': 'datashare_consumer_rg',  # this is a pre-existing reosurce group in consumer subscription
             'ConsumerStorageAccount': 'datashareconsumersa',  # this is a pre-existing storage account in consumer subscription
-            'ProviderEmail': 'feng.zhou@microsoft.com',
-            'ConsumerEmail': 'fengzhou810@163.com',
+            'ProviderEmail': 'provider@microsoft.com',  # change this value in live test
+            'ConsumerEmail': 'consumer@microsoft.com',  # change this value in live test
             'ProviderAccount': 'cli_test_account',
             'ConsumerAccount': 'cli_test_consumer_account',
             'ProviderDataset': 'cli_test_data_set',
