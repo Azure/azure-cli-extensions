@@ -14,11 +14,11 @@ class AgreementContent(msrest.serialization.Model):
     """The integration account agreement content.
 
     :param a_s2: The AS2 agreement content.
-    :type a_s2: ~logic_management_client.models.As2AgreementContent
+    :type a_s2: ~azure.mgmt.logic.models.As2AgreementContent
     :param x12: The X12 agreement content.
-    :type x12: ~logic_management_client.models.X12AgreementContent
+    :type x12: ~azure.mgmt.logic.models.X12AgreementContent
     :param edifact: The EDIFACT agreement content.
-    :type edifact: ~logic_management_client.models.EdifactAgreementContent
+    :type edifact: ~azure.mgmt.logic.models.EdifactAgreementContent
     """
 
     _attribute_map = {
@@ -48,9 +48,9 @@ class ApiDeploymentParameterMetadata(msrest.serialization.Model):
     :type display_name: str
     :param description: The description.
     :type description: str
-    :param visibility: The visibility. Possible values include: 'NotSpecified', 'Default',
-     'Internal'.
-    :type visibility: str or ~logic_management_client.models.ApiDeploymentParameterVisibility
+    :param visibility: The visibility. Possible values include: "NotSpecified", "Default",
+     "Internal".
+    :type visibility: str or ~azure.mgmt.logic.models.ApiDeploymentParameterVisibility
     """
 
     _attribute_map = {
@@ -77,10 +77,9 @@ class ApiDeploymentParameterMetadataSet(msrest.serialization.Model):
     """The API deployment parameters metadata.
 
     :param package_content_link: The package content link parameter.
-    :type package_content_link: ~logic_management_client.models.ApiDeploymentParameterMetadata
+    :type package_content_link: ~azure.mgmt.logic.models.ApiDeploymentParameterMetadata
     :param redis_cache_connection_string: The package content link parameter.
-    :type redis_cache_connection_string:
-     ~logic_management_client.models.ApiDeploymentParameterMetadata
+    :type redis_cache_connection_string: ~azure.mgmt.logic.models.ApiDeploymentParameterMetadata
     """
 
     _attribute_map = {
@@ -156,7 +155,7 @@ class ApiOperation(Resource):
     :param tags: A set of tags. The resource tags.
     :type tags: dict[str, str]
     :param properties: The api operations properties.
-    :type properties: ~logic_management_client.models.ApiOperationPropertiesDefinition
+    :type properties: ~azure.mgmt.logic.models.ApiOperationPropertiesDefinition
     """
 
     _validation = {
@@ -185,9 +184,9 @@ class ApiOperation(Resource):
 class ApiOperationAnnotation(msrest.serialization.Model):
     """The Api Operation Annotation.
 
-    :param status: The status annotation. Possible values include: 'NotSpecified', 'Preview',
-     'Production'.
-    :type status: str or ~logic_management_client.models.StatusAnnotation
+    :param status: The status annotation. Possible values include: "NotSpecified", "Preview",
+     "Production".
+    :type status: str or ~azure.mgmt.logic.models.StatusAnnotation
     :param family: The family.
     :type family: str
     :param revision: The revision.
@@ -214,7 +213,7 @@ class ApiOperationListResult(msrest.serialization.Model):
     """The list of managed API operations.
 
     :param value: The api operation definitions for an API.
-    :type value: list[~logic_management_client.models.ApiOperation]
+    :type value: list[~azure.mgmt.logic.models.ApiOperation]
     :param next_link: The URL to get the next set of results.
     :type next_link: str
     """
@@ -249,13 +248,13 @@ class ApiOperationPropertiesDefinition(msrest.serialization.Model):
     :param pageable: Indicates whether the api operation is pageable.
     :type pageable: bool
     :param annotation: The annotation of api operation.
-    :type annotation: ~logic_management_client.models.ApiOperationAnnotation
+    :type annotation: ~azure.mgmt.logic.models.ApiOperationAnnotation
     :param api: The api reference.
-    :type api: ~logic_management_client.models.ApiReference
+    :type api: ~azure.mgmt.logic.models.ApiReference
     :param inputs_definition: The operation inputs definition schema.
-    :type inputs_definition: ~logic_management_client.models.SwaggerSchema
+    :type inputs_definition: ~azure.mgmt.logic.models.SwaggerSchema
     :param responses_definition: The operation responses definition schemas.
-    :type responses_definition: dict[str, ~logic_management_client.models.SwaggerSchema]
+    :type responses_definition: dict[str, ~azure.mgmt.logic.models.SwaggerSchema]
     :param is_webhook: Indicates whether the API operation is webhook or not.
     :type is_webhook: bool
     :param is_notification: Indicates whether the API operation is notification or not.
@@ -351,11 +350,11 @@ class ApiReference(ResourceReference):
     :type swagger: object
     :param brand_color: The brand color of the api.
     :type brand_color: str
-    :param category: The tier. Possible values include: 'NotSpecified', 'Enterprise', 'Standard',
-     'Premium'.
-    :type category: str or ~logic_management_client.models.ApiTier
+    :param category: The tier. Possible values include: "NotSpecified", "Enterprise", "Standard",
+     "Premium".
+    :type category: str or ~azure.mgmt.logic.models.ApiTier
     :param integration_service_environment: The integration service environment reference.
-    :type integration_service_environment: ~logic_management_client.models.ResourceReference
+    :type integration_service_environment: ~azure.mgmt.logic.models.ResourceReference
     """
 
     _validation = {
@@ -445,9 +444,9 @@ class ApiResourceGeneralInformation(msrest.serialization.Model):
     :type terms_of_use_url: str
     :param release_tag: The release tag.
     :type release_tag: str
-    :param tier: The tier. Possible values include: 'NotSpecified', 'Enterprise', 'Standard',
-     'Premium'.
-    :type tier: str or ~logic_management_client.models.ApiTier
+    :param tier: The tier. Possible values include: "NotSpecified", "Enterprise", "Standard",
+     "Premium".
+    :type tier: str or ~azure.mgmt.logic.models.ApiTier
     """
 
     _attribute_map = {
@@ -483,22 +482,22 @@ class ApiResourceMetadata(msrest.serialization.Model):
     :type hide_key: str
     :param tags: A set of tags. The tags.
     :type tags: dict[str, str]
-    :param api_type: The api type. Possible values include: 'NotSpecified', 'Rest', 'Soap'.
-    :type api_type: str or ~logic_management_client.models.ApiType
+    :param api_type: The api type. Possible values include: "NotSpecified", "Rest", "Soap".
+    :type api_type: str or ~azure.mgmt.logic.models.ApiType
     :param wsdl_service: The WSDL service.
-    :type wsdl_service: ~logic_management_client.models.WsdlService
-    :param wsdl_import_method: The WSDL import method. Possible values include: 'NotSpecified',
-     'SoapToRest', 'SoapPassThrough'.
-    :type wsdl_import_method: str or ~logic_management_client.models.WsdlImportMethod
+    :type wsdl_service: ~azure.mgmt.logic.models.WsdlService
+    :param wsdl_import_method: The WSDL import method. Possible values include: "NotSpecified",
+     "SoapToRest", "SoapPassThrough".
+    :type wsdl_import_method: str or ~azure.mgmt.logic.models.WsdlImportMethod
     :param connection_type: The connection type.
     :type connection_type: str
-    :param provisioning_state: The provisioning state. Possible values include: 'NotSpecified',
-     'Accepted', 'Running', 'Ready', 'Creating', 'Created', 'Deleting', 'Deleted', 'Canceled',
-     'Failed', 'Succeeded', 'Moving', 'Updating', 'Registering', 'Registered', 'Unregistering',
-     'Unregistered', 'Completed'.
-    :type provisioning_state: str or ~logic_management_client.models.WorkflowProvisioningState
+    :param provisioning_state: The provisioning state. Possible values include: "NotSpecified",
+     "Accepted", "Running", "Ready", "Creating", "Created", "Deleting", "Deleted", "Canceled",
+     "Failed", "Succeeded", "Moving", "Updating", "Registering", "Registered", "Unregistering",
+     "Unregistered", "Completed", "Renewing", "Pending", "Waiting", "InProgress".
+    :type provisioning_state: str or ~azure.mgmt.logic.models.WorkflowProvisioningState
     :param deployment_parameters: The connector deployment parameters metadata.
-    :type deployment_parameters: ~logic_management_client.models.ApiDeploymentParameterMetadataSet
+    :type deployment_parameters: ~azure.mgmt.logic.models.ApiDeploymentParameterMetadataSet
     """
 
     _attribute_map = {
@@ -562,31 +561,31 @@ class ApiResourceProperties(msrest.serialization.Model):
     :param connection_parameters: The connection parameters.
     :type connection_parameters: dict[str, object]
     :param metadata: The metadata.
-    :type metadata: ~logic_management_client.models.ApiResourceMetadata
+    :type metadata: ~azure.mgmt.logic.models.ApiResourceMetadata
     :param runtime_urls: The runtime urls.
     :type runtime_urls: list[str]
     :param general_information: The api general information.
-    :type general_information: ~logic_management_client.models.ApiResourceGeneralInformation
+    :type general_information: ~azure.mgmt.logic.models.ApiResourceGeneralInformation
     :param capabilities: The capabilities.
     :type capabilities: list[str]
     :param backend_service: The backend service.
-    :type backend_service: ~logic_management_client.models.ApiResourceBackendService
+    :type backend_service: ~azure.mgmt.logic.models.ApiResourceBackendService
     :param policies: The policies for the API.
-    :type policies: ~logic_management_client.models.ApiResourcePolicies
+    :type policies: ~azure.mgmt.logic.models.ApiResourcePolicies
     :param api_definition_url: The API definition.
     :type api_definition_url: str
     :param api_definitions: The api definitions.
-    :type api_definitions: ~logic_management_client.models.ApiResourceDefinitions
+    :type api_definitions: ~azure.mgmt.logic.models.ApiResourceDefinitions
     :param integration_service_environment: The integration service environment reference.
-    :type integration_service_environment: ~logic_management_client.models.ResourceReference
-    :param provisioning_state: The provisioning state. Possible values include: 'NotSpecified',
-     'Accepted', 'Running', 'Ready', 'Creating', 'Created', 'Deleting', 'Deleted', 'Canceled',
-     'Failed', 'Succeeded', 'Moving', 'Updating', 'Registering', 'Registered', 'Unregistering',
-     'Unregistered', 'Completed'.
-    :type provisioning_state: str or ~logic_management_client.models.WorkflowProvisioningState
-    :param category: The category. Possible values include: 'NotSpecified', 'Enterprise',
-     'Standard', 'Premium'.
-    :type category: str or ~logic_management_client.models.ApiTier
+    :type integration_service_environment: ~azure.mgmt.logic.models.ResourceReference
+    :param provisioning_state: The provisioning state. Possible values include: "NotSpecified",
+     "Accepted", "Running", "Ready", "Creating", "Created", "Deleting", "Deleted", "Canceled",
+     "Failed", "Succeeded", "Moving", "Updating", "Registering", "Registered", "Unregistering",
+     "Unregistered", "Completed", "Renewing", "Pending", "Waiting", "InProgress".
+    :type provisioning_state: str or ~azure.mgmt.logic.models.WorkflowProvisioningState
+    :param category: The category. Possible values include: "NotSpecified", "Enterprise",
+     "Standard", "Premium".
+    :type category: str or ~azure.mgmt.logic.models.ApiTier
     """
 
     _attribute_map = {
@@ -666,7 +665,7 @@ class ArtifactContentPropertiesDefinition(ArtifactProperties):
     :param content_type: The content type.
     :type content_type: str
     :param content_link: The content link.
-    :type content_link: ~logic_management_client.models.ContentLink
+    :type content_link: ~azure.mgmt.logic.models.ContentLink
     """
 
     _attribute_map = {
@@ -724,10 +723,10 @@ class As2AcknowledgementConnectionSettings(msrest.serialization.Model):
         **kwargs
     ):
         super(As2AcknowledgementConnectionSettings, self).__init__(**kwargs)
-        self.ignore_certificate_name_mismatch = kwargs.get('ignore_certificate_name_mismatch', None)
-        self.support_http_status_code_continue = kwargs.get('support_http_status_code_continue', None)
-        self.keep_http_connection_alive = kwargs.get('keep_http_connection_alive', None)
-        self.unfold_http_headers = kwargs.get('unfold_http_headers', None)
+        self.ignore_certificate_name_mismatch = kwargs['ignore_certificate_name_mismatch']
+        self.support_http_status_code_continue = kwargs['support_http_status_code_continue']
+        self.keep_http_connection_alive = kwargs['keep_http_connection_alive']
+        self.unfold_http_headers = kwargs['unfold_http_headers']
 
 
 class As2AgreementContent(msrest.serialization.Model):
@@ -736,9 +735,9 @@ class As2AgreementContent(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param receive_agreement: Required. The AS2 one-way receive agreement.
-    :type receive_agreement: ~logic_management_client.models.As2OneWayAgreement
+    :type receive_agreement: ~azure.mgmt.logic.models.As2OneWayAgreement
     :param send_agreement: Required. The AS2 one-way send agreement.
-    :type send_agreement: ~logic_management_client.models.As2OneWayAgreement
+    :type send_agreement: ~azure.mgmt.logic.models.As2OneWayAgreement
     """
 
     _validation = {
@@ -756,8 +755,8 @@ class As2AgreementContent(msrest.serialization.Model):
         **kwargs
     ):
         super(As2AgreementContent, self).__init__(**kwargs)
-        self.receive_agreement = kwargs.get('receive_agreement', None)
-        self.send_agreement = kwargs.get('send_agreement', None)
+        self.receive_agreement = kwargs['receive_agreement']
+        self.send_agreement = kwargs['send_agreement']
 
 
 class As2EnvelopeSettings(msrest.serialization.Model):
@@ -801,11 +800,11 @@ class As2EnvelopeSettings(msrest.serialization.Model):
         **kwargs
     ):
         super(As2EnvelopeSettings, self).__init__(**kwargs)
-        self.message_content_type = kwargs.get('message_content_type', None)
-        self.transmit_file_name_in_mime_header = kwargs.get('transmit_file_name_in_mime_header', None)
-        self.file_name_template = kwargs.get('file_name_template', None)
-        self.suspend_message_on_file_name_generation_error = kwargs.get('suspend_message_on_file_name_generation_error', None)
-        self.autogenerate_file_name = kwargs.get('autogenerate_file_name', None)
+        self.message_content_type = kwargs['message_content_type']
+        self.transmit_file_name_in_mime_header = kwargs['transmit_file_name_in_mime_header']
+        self.file_name_template = kwargs['file_name_template']
+        self.suspend_message_on_file_name_generation_error = kwargs['suspend_message_on_file_name_generation_error']
+        self.autogenerate_file_name = kwargs['autogenerate_file_name']
 
 
 class As2ErrorSettings(msrest.serialization.Model):
@@ -836,8 +835,8 @@ class As2ErrorSettings(msrest.serialization.Model):
         **kwargs
     ):
         super(As2ErrorSettings, self).__init__(**kwargs)
-        self.suspend_duplicate_message = kwargs.get('suspend_duplicate_message', None)
-        self.resend_if_mdn_not_received = kwargs.get('resend_if_mdn_not_received', None)
+        self.suspend_duplicate_message = kwargs['suspend_duplicate_message']
+        self.resend_if_mdn_not_received = kwargs['resend_if_mdn_not_received']
 
 
 class As2MdnSettings(msrest.serialization.Model):
@@ -865,8 +864,8 @@ class As2MdnSettings(msrest.serialization.Model):
      MDN to message box.
     :type send_inbound_mdn_to_message_box: bool
     :param mic_hashing_algorithm: Required. The signing or hashing algorithm. Possible values
-     include: 'NotSpecified', 'None', 'MD5', 'SHA1', 'SHA2256', 'SHA2384', 'SHA2512'.
-    :type mic_hashing_algorithm: str or ~logic_management_client.models.HashingAlgorithm
+     include: "NotSpecified", "None", "MD5", "SHA1", "SHA2256", "SHA2384", "SHA2512".
+    :type mic_hashing_algorithm: str or ~azure.mgmt.logic.models.HashingAlgorithm
     """
 
     _validation = {
@@ -895,15 +894,15 @@ class As2MdnSettings(msrest.serialization.Model):
         **kwargs
     ):
         super(As2MdnSettings, self).__init__(**kwargs)
-        self.need_mdn = kwargs.get('need_mdn', None)
-        self.sign_mdn = kwargs.get('sign_mdn', None)
-        self.send_mdn_asynchronously = kwargs.get('send_mdn_asynchronously', None)
+        self.need_mdn = kwargs['need_mdn']
+        self.sign_mdn = kwargs['sign_mdn']
+        self.send_mdn_asynchronously = kwargs['send_mdn_asynchronously']
         self.receipt_delivery_url = kwargs.get('receipt_delivery_url', None)
         self.disposition_notification_to = kwargs.get('disposition_notification_to', None)
-        self.sign_outbound_mdn_if_optional = kwargs.get('sign_outbound_mdn_if_optional', None)
+        self.sign_outbound_mdn_if_optional = kwargs['sign_outbound_mdn_if_optional']
         self.mdn_text = kwargs.get('mdn_text', None)
-        self.send_inbound_mdn_to_message_box = kwargs.get('send_inbound_mdn_to_message_box', None)
-        self.mic_hashing_algorithm = kwargs.get('mic_hashing_algorithm', None)
+        self.send_inbound_mdn_to_message_box = kwargs['send_inbound_mdn_to_message_box']
+        self.mic_hashing_algorithm = kwargs['mic_hashing_algorithm']
 
 
 class As2MessageConnectionSettings(msrest.serialization.Model):
@@ -943,10 +942,10 @@ class As2MessageConnectionSettings(msrest.serialization.Model):
         **kwargs
     ):
         super(As2MessageConnectionSettings, self).__init__(**kwargs)
-        self.ignore_certificate_name_mismatch = kwargs.get('ignore_certificate_name_mismatch', None)
-        self.support_http_status_code_continue = kwargs.get('support_http_status_code_continue', None)
-        self.keep_http_connection_alive = kwargs.get('keep_http_connection_alive', None)
-        self.unfold_http_headers = kwargs.get('unfold_http_headers', None)
+        self.ignore_certificate_name_mismatch = kwargs['ignore_certificate_name_mismatch']
+        self.support_http_status_code_continue = kwargs['support_http_status_code_continue']
+        self.keep_http_connection_alive = kwargs['keep_http_connection_alive']
+        self.unfold_http_headers = kwargs['unfold_http_headers']
 
 
 class As2OneWayAgreement(msrest.serialization.Model):
@@ -955,11 +954,11 @@ class As2OneWayAgreement(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param sender_business_identity: Required. The sender business identity.
-    :type sender_business_identity: ~logic_management_client.models.BusinessIdentity
+    :type sender_business_identity: ~azure.mgmt.logic.models.BusinessIdentity
     :param receiver_business_identity: Required. The receiver business identity.
-    :type receiver_business_identity: ~logic_management_client.models.BusinessIdentity
+    :type receiver_business_identity: ~azure.mgmt.logic.models.BusinessIdentity
     :param protocol_settings: Required. The AS2 protocol settings.
-    :type protocol_settings: ~logic_management_client.models.As2ProtocolSettings
+    :type protocol_settings: ~azure.mgmt.logic.models.As2ProtocolSettings
     """
 
     _validation = {
@@ -979,9 +978,9 @@ class As2OneWayAgreement(msrest.serialization.Model):
         **kwargs
     ):
         super(As2OneWayAgreement, self).__init__(**kwargs)
-        self.sender_business_identity = kwargs.get('sender_business_identity', None)
-        self.receiver_business_identity = kwargs.get('receiver_business_identity', None)
-        self.protocol_settings = kwargs.get('protocol_settings', None)
+        self.sender_business_identity = kwargs['sender_business_identity']
+        self.receiver_business_identity = kwargs['receiver_business_identity']
+        self.protocol_settings = kwargs['protocol_settings']
 
 
 class As2ProtocolSettings(msrest.serialization.Model):
@@ -990,20 +989,20 @@ class As2ProtocolSettings(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param message_connection_settings: Required. The message connection settings.
-    :type message_connection_settings: ~logic_management_client.models.As2MessageConnectionSettings
+    :type message_connection_settings: ~azure.mgmt.logic.models.As2MessageConnectionSettings
     :param acknowledgement_connection_settings: Required. The acknowledgement connection settings.
     :type acknowledgement_connection_settings:
-     ~logic_management_client.models.As2AcknowledgementConnectionSettings
+     ~azure.mgmt.logic.models.As2AcknowledgementConnectionSettings
     :param mdn_settings: Required. The MDN settings.
-    :type mdn_settings: ~logic_management_client.models.As2MdnSettings
+    :type mdn_settings: ~azure.mgmt.logic.models.As2MdnSettings
     :param security_settings: Required. The security settings.
-    :type security_settings: ~logic_management_client.models.As2SecuritySettings
+    :type security_settings: ~azure.mgmt.logic.models.As2SecuritySettings
     :param validation_settings: Required. The validation settings.
-    :type validation_settings: ~logic_management_client.models.As2ValidationSettings
+    :type validation_settings: ~azure.mgmt.logic.models.As2ValidationSettings
     :param envelope_settings: Required. The envelope settings.
-    :type envelope_settings: ~logic_management_client.models.As2EnvelopeSettings
+    :type envelope_settings: ~azure.mgmt.logic.models.As2EnvelopeSettings
     :param error_settings: Required. The error settings.
-    :type error_settings: ~logic_management_client.models.As2ErrorSettings
+    :type error_settings: ~azure.mgmt.logic.models.As2ErrorSettings
     """
 
     _validation = {
@@ -1031,13 +1030,13 @@ class As2ProtocolSettings(msrest.serialization.Model):
         **kwargs
     ):
         super(As2ProtocolSettings, self).__init__(**kwargs)
-        self.message_connection_settings = kwargs.get('message_connection_settings', None)
-        self.acknowledgement_connection_settings = kwargs.get('acknowledgement_connection_settings', None)
-        self.mdn_settings = kwargs.get('mdn_settings', None)
-        self.security_settings = kwargs.get('security_settings', None)
-        self.validation_settings = kwargs.get('validation_settings', None)
-        self.envelope_settings = kwargs.get('envelope_settings', None)
-        self.error_settings = kwargs.get('error_settings', None)
+        self.message_connection_settings = kwargs['message_connection_settings']
+        self.acknowledgement_connection_settings = kwargs['acknowledgement_connection_settings']
+        self.mdn_settings = kwargs['mdn_settings']
+        self.security_settings = kwargs['security_settings']
+        self.validation_settings = kwargs['validation_settings']
+        self.envelope_settings = kwargs['envelope_settings']
+        self.error_settings = kwargs['error_settings']
 
 
 class As2SecuritySettings(msrest.serialization.Model):
@@ -1103,15 +1102,15 @@ class As2SecuritySettings(msrest.serialization.Model):
         **kwargs
     ):
         super(As2SecuritySettings, self).__init__(**kwargs)
-        self.override_group_signing_certificate = kwargs.get('override_group_signing_certificate', None)
+        self.override_group_signing_certificate = kwargs['override_group_signing_certificate']
         self.signing_certificate_name = kwargs.get('signing_certificate_name', None)
         self.encryption_certificate_name = kwargs.get('encryption_certificate_name', None)
-        self.enable_nrr_for_inbound_encoded_messages = kwargs.get('enable_nrr_for_inbound_encoded_messages', None)
-        self.enable_nrr_for_inbound_decoded_messages = kwargs.get('enable_nrr_for_inbound_decoded_messages', None)
-        self.enable_nrr_for_outbound_mdn = kwargs.get('enable_nrr_for_outbound_mdn', None)
-        self.enable_nrr_for_outbound_encoded_messages = kwargs.get('enable_nrr_for_outbound_encoded_messages', None)
-        self.enable_nrr_for_outbound_decoded_messages = kwargs.get('enable_nrr_for_outbound_decoded_messages', None)
-        self.enable_nrr_for_inbound_mdn = kwargs.get('enable_nrr_for_inbound_mdn', None)
+        self.enable_nrr_for_inbound_encoded_messages = kwargs['enable_nrr_for_inbound_encoded_messages']
+        self.enable_nrr_for_inbound_decoded_messages = kwargs['enable_nrr_for_inbound_decoded_messages']
+        self.enable_nrr_for_outbound_mdn = kwargs['enable_nrr_for_outbound_mdn']
+        self.enable_nrr_for_outbound_encoded_messages = kwargs['enable_nrr_for_outbound_encoded_messages']
+        self.enable_nrr_for_outbound_decoded_messages = kwargs['enable_nrr_for_outbound_decoded_messages']
+        self.enable_nrr_for_inbound_mdn = kwargs['enable_nrr_for_inbound_mdn']
         self.sha2_algorithm_format = kwargs.get('sha2_algorithm_format', None)
 
 
@@ -1143,11 +1142,11 @@ class As2ValidationSettings(msrest.serialization.Model):
      check for certificate revocation list on receive.
     :type check_certificate_revocation_list_on_receive: bool
     :param encryption_algorithm: Required. The encryption algorithm. Possible values include:
-     'NotSpecified', 'None', 'DES3', 'RC2', 'AES128', 'AES192', 'AES256'.
-    :type encryption_algorithm: str or ~logic_management_client.models.EncryptionAlgorithm
-    :param signing_algorithm: The signing algorithm. Possible values include: 'NotSpecified',
-     'Default', 'SHA1', 'SHA2256', 'SHA2384', 'SHA2512'.
-    :type signing_algorithm: str or ~logic_management_client.models.SigningAlgorithm
+     "NotSpecified", "None", "DES3", "RC2", "AES128", "AES192", "AES256".
+    :type encryption_algorithm: str or ~azure.mgmt.logic.models.EncryptionAlgorithm
+    :param signing_algorithm: The signing algorithm. Possible values include: "NotSpecified",
+     "Default", "SHA1", "SHA2256", "SHA2384", "SHA2512".
+    :type signing_algorithm: str or ~azure.mgmt.logic.models.SigningAlgorithm
     """
 
     _validation = {
@@ -1180,15 +1179,15 @@ class As2ValidationSettings(msrest.serialization.Model):
         **kwargs
     ):
         super(As2ValidationSettings, self).__init__(**kwargs)
-        self.override_message_properties = kwargs.get('override_message_properties', None)
-        self.encrypt_message = kwargs.get('encrypt_message', None)
-        self.sign_message = kwargs.get('sign_message', None)
-        self.compress_message = kwargs.get('compress_message', None)
-        self.check_duplicate_message = kwargs.get('check_duplicate_message', None)
-        self.interchange_duplicates_validity_days = kwargs.get('interchange_duplicates_validity_days', None)
-        self.check_certificate_revocation_list_on_send = kwargs.get('check_certificate_revocation_list_on_send', None)
-        self.check_certificate_revocation_list_on_receive = kwargs.get('check_certificate_revocation_list_on_receive', None)
-        self.encryption_algorithm = kwargs.get('encryption_algorithm', None)
+        self.override_message_properties = kwargs['override_message_properties']
+        self.encrypt_message = kwargs['encrypt_message']
+        self.sign_message = kwargs['sign_message']
+        self.compress_message = kwargs['compress_message']
+        self.check_duplicate_message = kwargs['check_duplicate_message']
+        self.interchange_duplicates_validity_days = kwargs['interchange_duplicates_validity_days']
+        self.check_certificate_revocation_list_on_send = kwargs['check_certificate_revocation_list_on_send']
+        self.check_certificate_revocation_list_on_receive = kwargs['check_certificate_revocation_list_on_receive']
+        self.encryption_algorithm = kwargs['encryption_algorithm']
         self.signing_algorithm = kwargs.get('signing_algorithm', None)
 
 
@@ -1196,7 +1195,7 @@ class AssemblyCollection(msrest.serialization.Model):
     """A collection of assembly definitions.
 
     :param value:
-    :type value: list[~logic_management_client.models.AssemblyDefinition]
+    :type value: list[~azure.mgmt.logic.models.AssemblyDefinition]
     """
 
     _attribute_map = {
@@ -1229,7 +1228,7 @@ class AssemblyDefinition(Resource):
     :param tags: A set of tags. The resource tags.
     :type tags: dict[str, str]
     :param properties: Required. The assembly properties.
-    :type properties: ~logic_management_client.models.AssemblyProperties
+    :type properties: ~azure.mgmt.logic.models.AssemblyProperties
     """
 
     _validation = {
@@ -1253,7 +1252,7 @@ class AssemblyDefinition(Resource):
         **kwargs
     ):
         super(AssemblyDefinition, self).__init__(**kwargs)
-        self.properties = kwargs.get('properties', None)
+        self.properties = kwargs['properties']
 
 
 class AssemblyProperties(ArtifactContentPropertiesDefinition):
@@ -1272,7 +1271,7 @@ class AssemblyProperties(ArtifactContentPropertiesDefinition):
     :param content_type: The content type.
     :type content_type: str
     :param content_link: The content link.
-    :type content_link: ~logic_management_client.models.ContentLink
+    :type content_link: ~azure.mgmt.logic.models.ContentLink
     :param assembly_name: Required. The assembly name.
     :type assembly_name: str
     :param assembly_version: The assembly version.
@@ -1305,7 +1304,7 @@ class AssemblyProperties(ArtifactContentPropertiesDefinition):
         **kwargs
     ):
         super(AssemblyProperties, self).__init__(**kwargs)
-        self.assembly_name = kwargs.get('assembly_name', None)
+        self.assembly_name = kwargs['assembly_name']
         self.assembly_version = kwargs.get('assembly_version', None)
         self.assembly_culture = kwargs.get('assembly_culture', None)
         self.assembly_public_key_token = kwargs.get('assembly_public_key_token', None)
@@ -1333,7 +1332,7 @@ class ErrorInfo(msrest.serialization.Model):
         **kwargs
     ):
         super(ErrorInfo, self).__init__(**kwargs)
-        self.code = kwargs.get('code', None)
+        self.code = kwargs['code']
 
 
 class AzureResourceErrorInfo(ErrorInfo):
@@ -1346,7 +1345,7 @@ class AzureResourceErrorInfo(ErrorInfo):
     :param message: Required. The error message.
     :type message: str
     :param details: The error details.
-    :type details: list[~logic_management_client.models.AzureResourceErrorInfo]
+    :type details: list[~azure.mgmt.logic.models.AzureResourceErrorInfo]
     """
 
     _validation = {
@@ -1365,7 +1364,7 @@ class AzureResourceErrorInfo(ErrorInfo):
         **kwargs
     ):
         super(AzureResourceErrorInfo, self).__init__(**kwargs)
-        self.message = kwargs.get('message', None)
+        self.message = kwargs['message']
         self.details = kwargs.get('details', None)
 
 
@@ -1373,7 +1372,7 @@ class B2BPartnerContent(msrest.serialization.Model):
     """The B2B partner content.
 
     :param business_identities: The list of partner business identities.
-    :type business_identities: list[~logic_management_client.models.BusinessIdentity]
+    :type business_identities: list[~azure.mgmt.logic.models.BusinessIdentity]
     """
 
     _attribute_map = {
@@ -1406,7 +1405,7 @@ class BatchConfiguration(Resource):
     :param tags: A set of tags. The resource tags.
     :type tags: dict[str, str]
     :param properties: Required. The batch configuration properties.
-    :type properties: ~logic_management_client.models.BatchConfigurationProperties
+    :type properties: ~azure.mgmt.logic.models.BatchConfigurationProperties
     """
 
     _validation = {
@@ -1430,14 +1429,14 @@ class BatchConfiguration(Resource):
         **kwargs
     ):
         super(BatchConfiguration, self).__init__(**kwargs)
-        self.properties = kwargs.get('properties', None)
+        self.properties = kwargs['properties']
 
 
 class BatchConfigurationCollection(msrest.serialization.Model):
     """A collection of batch configurations.
 
     :param value:
-    :type value: list[~logic_management_client.models.BatchConfiguration]
+    :type value: list[~azure.mgmt.logic.models.BatchConfiguration]
     """
 
     _attribute_map = {
@@ -1457,16 +1456,16 @@ class BatchConfigurationProperties(ArtifactProperties):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param created_time: The artifact creation time.
-    :type created_time: ~datetime.datetime
-    :param changed_time: The artifact changed time.
-    :type changed_time: ~datetime.datetime
     :param metadata: Any object.
     :type metadata: object
     :param batch_group_name: Required. The name of the batch group.
     :type batch_group_name: str
     :param release_criteria: Required. The batch release criteria.
-    :type release_criteria: ~logic_management_client.models.BatchReleaseCriteria
+    :type release_criteria: ~azure.mgmt.logic.models.BatchReleaseCriteria
+    :param created_time: The created time.
+    :type created_time: ~datetime.datetime
+    :param changed_time: The changed time.
+    :type changed_time: ~datetime.datetime
     """
 
     _validation = {
@@ -1475,11 +1474,11 @@ class BatchConfigurationProperties(ArtifactProperties):
     }
 
     _attribute_map = {
-        'created_time': {'key': 'createdTime', 'type': 'iso-8601'},
-        'changed_time': {'key': 'changedTime', 'type': 'iso-8601'},
         'metadata': {'key': 'metadata', 'type': 'object'},
         'batch_group_name': {'key': 'batchGroupName', 'type': 'str'},
         'release_criteria': {'key': 'releaseCriteria', 'type': 'BatchReleaseCriteria'},
+        'created_time': {'key': 'createdTime', 'type': 'iso-8601'},
+        'changed_time': {'key': 'changedTime', 'type': 'iso-8601'},
     }
 
     def __init__(
@@ -1487,8 +1486,10 @@ class BatchConfigurationProperties(ArtifactProperties):
         **kwargs
     ):
         super(BatchConfigurationProperties, self).__init__(**kwargs)
-        self.batch_group_name = kwargs.get('batch_group_name', None)
-        self.release_criteria = kwargs.get('release_criteria', None)
+        self.batch_group_name = kwargs['batch_group_name']
+        self.release_criteria = kwargs['release_criteria']
+        self.created_time = kwargs.get('created_time', None)
+        self.changed_time = kwargs.get('changed_time', None)
 
 
 class BatchReleaseCriteria(msrest.serialization.Model):
@@ -1499,7 +1500,7 @@ class BatchReleaseCriteria(msrest.serialization.Model):
     :param batch_size: The batch size in bytes.
     :type batch_size: int
     :param recurrence: The recurrence.
-    :type recurrence: ~logic_management_client.models.WorkflowTriggerRecurrence
+    :type recurrence: ~azure.mgmt.logic.models.WorkflowTriggerRecurrence
     """
 
     _attribute_map = {
@@ -1544,8 +1545,8 @@ class BusinessIdentity(msrest.serialization.Model):
         **kwargs
     ):
         super(BusinessIdentity, self).__init__(**kwargs)
-        self.qualifier = kwargs.get('qualifier', None)
-        self.value = kwargs.get('value', None)
+        self.qualifier = kwargs['qualifier']
+        self.value = kwargs['value']
 
 
 class CallbackUrl(msrest.serialization.Model):
@@ -1600,7 +1601,7 @@ class ContentLink(msrest.serialization.Model):
     :param content_size: The content size.
     :type content_size: long
     :param content_hash: The content hash.
-    :type content_hash: ~logic_management_client.models.ContentHash
+    :type content_hash: ~azure.mgmt.logic.models.ContentHash
     :param metadata: The metadata.
     :type metadata: object
     """
@@ -1713,17 +1714,17 @@ class EdifactAcknowledgementSettings(msrest.serialization.Model):
         **kwargs
     ):
         super(EdifactAcknowledgementSettings, self).__init__(**kwargs)
-        self.need_technical_acknowledgement = kwargs.get('need_technical_acknowledgement', None)
-        self.batch_technical_acknowledgements = kwargs.get('batch_technical_acknowledgements', None)
-        self.need_functional_acknowledgement = kwargs.get('need_functional_acknowledgement', None)
-        self.batch_functional_acknowledgements = kwargs.get('batch_functional_acknowledgements', None)
-        self.need_loop_for_valid_messages = kwargs.get('need_loop_for_valid_messages', None)
-        self.send_synchronous_acknowledgement = kwargs.get('send_synchronous_acknowledgement', None)
+        self.need_technical_acknowledgement = kwargs['need_technical_acknowledgement']
+        self.batch_technical_acknowledgements = kwargs['batch_technical_acknowledgements']
+        self.need_functional_acknowledgement = kwargs['need_functional_acknowledgement']
+        self.batch_functional_acknowledgements = kwargs['batch_functional_acknowledgements']
+        self.need_loop_for_valid_messages = kwargs['need_loop_for_valid_messages']
+        self.send_synchronous_acknowledgement = kwargs['send_synchronous_acknowledgement']
         self.acknowledgement_control_number_prefix = kwargs.get('acknowledgement_control_number_prefix', None)
         self.acknowledgement_control_number_suffix = kwargs.get('acknowledgement_control_number_suffix', None)
-        self.acknowledgement_control_number_lower_bound = kwargs.get('acknowledgement_control_number_lower_bound', None)
-        self.acknowledgement_control_number_upper_bound = kwargs.get('acknowledgement_control_number_upper_bound', None)
-        self.rollover_acknowledgement_control_number = kwargs.get('rollover_acknowledgement_control_number', None)
+        self.acknowledgement_control_number_lower_bound = kwargs['acknowledgement_control_number_lower_bound']
+        self.acknowledgement_control_number_upper_bound = kwargs['acknowledgement_control_number_upper_bound']
+        self.rollover_acknowledgement_control_number = kwargs['rollover_acknowledgement_control_number']
 
 
 class EdifactAgreementContent(msrest.serialization.Model):
@@ -1732,9 +1733,9 @@ class EdifactAgreementContent(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param receive_agreement: Required. The EDIFACT one-way receive agreement.
-    :type receive_agreement: ~logic_management_client.models.EdifactOneWayAgreement
+    :type receive_agreement: ~azure.mgmt.logic.models.EdifactOneWayAgreement
     :param send_agreement: Required. The EDIFACT one-way send agreement.
-    :type send_agreement: ~logic_management_client.models.EdifactOneWayAgreement
+    :type send_agreement: ~azure.mgmt.logic.models.EdifactOneWayAgreement
     """
 
     _validation = {
@@ -1752,8 +1753,8 @@ class EdifactAgreementContent(msrest.serialization.Model):
         **kwargs
     ):
         super(EdifactAgreementContent, self).__init__(**kwargs)
-        self.receive_agreement = kwargs.get('receive_agreement', None)
-        self.send_agreement = kwargs.get('send_agreement', None)
+        self.receive_agreement = kwargs['receive_agreement']
+        self.send_agreement = kwargs['send_agreement']
 
 
 class EdifactDelimiterOverride(msrest.serialization.Model):
@@ -1776,11 +1777,11 @@ class EdifactDelimiterOverride(msrest.serialization.Model):
     :param repetition_separator: Required. The repetition separator.
     :type repetition_separator: int
     :param segment_terminator_suffix: Required. The segment terminator suffix. Possible values
-     include: 'NotSpecified', 'None', 'CR', 'LF', 'CRLF'.
-    :type segment_terminator_suffix: str or ~logic_management_client.models.SegmentTerminatorSuffix
+     include: "NotSpecified", "None", "CR", "LF", "CRLF".
+    :type segment_terminator_suffix: str or ~azure.mgmt.logic.models.SegmentTerminatorSuffix
     :param decimal_point_indicator: Required. The decimal point indicator. Possible values include:
-     'NotSpecified', 'Comma', 'Decimal'.
-    :type decimal_point_indicator: str or ~logic_management_client.models.EdifactDecimalIndicator
+     "NotSpecified", "Comma", "Decimal".
+    :type decimal_point_indicator: str or ~azure.mgmt.logic.models.EdifactDecimalIndicator
     :param release_indicator: Required. The release indicator.
     :type release_indicator: int
     :param message_association_assigned_code: The message association assigned code.
@@ -1823,13 +1824,13 @@ class EdifactDelimiterOverride(msrest.serialization.Model):
         self.message_id = kwargs.get('message_id', None)
         self.message_version = kwargs.get('message_version', None)
         self.message_release = kwargs.get('message_release', None)
-        self.data_element_separator = kwargs.get('data_element_separator', None)
-        self.component_separator = kwargs.get('component_separator', None)
-        self.segment_terminator = kwargs.get('segment_terminator', None)
-        self.repetition_separator = kwargs.get('repetition_separator', None)
-        self.segment_terminator_suffix = kwargs.get('segment_terminator_suffix', None)
-        self.decimal_point_indicator = kwargs.get('decimal_point_indicator', None)
-        self.release_indicator = kwargs.get('release_indicator', None)
+        self.data_element_separator = kwargs['data_element_separator']
+        self.component_separator = kwargs['component_separator']
+        self.segment_terminator = kwargs['segment_terminator']
+        self.repetition_separator = kwargs['repetition_separator']
+        self.segment_terminator_suffix = kwargs['segment_terminator_suffix']
+        self.decimal_point_indicator = kwargs['decimal_point_indicator']
+        self.release_indicator = kwargs['release_indicator']
         self.message_association_assigned_code = kwargs.get('message_association_assigned_code', None)
         self.target_namespace = kwargs.get('target_namespace', None)
 
@@ -2080,16 +2081,16 @@ class EdifactEnvelopeSettings(msrest.serialization.Model):
         super(EdifactEnvelopeSettings, self).__init__(**kwargs)
         self.group_association_assigned_code = kwargs.get('group_association_assigned_code', None)
         self.communication_agreement_id = kwargs.get('communication_agreement_id', None)
-        self.apply_delimiter_string_advice = kwargs.get('apply_delimiter_string_advice', None)
-        self.create_grouping_segments = kwargs.get('create_grouping_segments', None)
-        self.enable_default_group_headers = kwargs.get('enable_default_group_headers', None)
+        self.apply_delimiter_string_advice = kwargs['apply_delimiter_string_advice']
+        self.create_grouping_segments = kwargs['create_grouping_segments']
+        self.enable_default_group_headers = kwargs['enable_default_group_headers']
         self.recipient_reference_password_value = kwargs.get('recipient_reference_password_value', None)
         self.recipient_reference_password_qualifier = kwargs.get('recipient_reference_password_qualifier', None)
         self.application_reference_id = kwargs.get('application_reference_id', None)
         self.processing_priority_code = kwargs.get('processing_priority_code', None)
-        self.interchange_control_number_lower_bound = kwargs.get('interchange_control_number_lower_bound', None)
-        self.interchange_control_number_upper_bound = kwargs.get('interchange_control_number_upper_bound', None)
-        self.rollover_interchange_control_number = kwargs.get('rollover_interchange_control_number', None)
+        self.interchange_control_number_lower_bound = kwargs['interchange_control_number_lower_bound']
+        self.interchange_control_number_upper_bound = kwargs['interchange_control_number_upper_bound']
+        self.rollover_interchange_control_number = kwargs['rollover_interchange_control_number']
         self.interchange_control_number_prefix = kwargs.get('interchange_control_number_prefix', None)
         self.interchange_control_number_suffix = kwargs.get('interchange_control_number_suffix', None)
         self.sender_reverse_routing_address = kwargs.get('sender_reverse_routing_address', None)
@@ -2098,9 +2099,9 @@ class EdifactEnvelopeSettings(msrest.serialization.Model):
         self.group_controlling_agency_code = kwargs.get('group_controlling_agency_code', None)
         self.group_message_version = kwargs.get('group_message_version', None)
         self.group_message_release = kwargs.get('group_message_release', None)
-        self.group_control_number_lower_bound = kwargs.get('group_control_number_lower_bound', None)
-        self.group_control_number_upper_bound = kwargs.get('group_control_number_upper_bound', None)
-        self.rollover_group_control_number = kwargs.get('rollover_group_control_number', None)
+        self.group_control_number_lower_bound = kwargs['group_control_number_lower_bound']
+        self.group_control_number_upper_bound = kwargs['group_control_number_upper_bound']
+        self.rollover_group_control_number = kwargs['rollover_group_control_number']
         self.group_control_number_prefix = kwargs.get('group_control_number_prefix', None)
         self.group_control_number_suffix = kwargs.get('group_control_number_suffix', None)
         self.group_application_receiver_qualifier = kwargs.get('group_application_receiver_qualifier', None)
@@ -2108,13 +2109,13 @@ class EdifactEnvelopeSettings(msrest.serialization.Model):
         self.group_application_sender_qualifier = kwargs.get('group_application_sender_qualifier', None)
         self.group_application_sender_id = kwargs.get('group_application_sender_id', None)
         self.group_application_password = kwargs.get('group_application_password', None)
-        self.overwrite_existing_transaction_set_control_number = kwargs.get('overwrite_existing_transaction_set_control_number', None)
+        self.overwrite_existing_transaction_set_control_number = kwargs['overwrite_existing_transaction_set_control_number']
         self.transaction_set_control_number_prefix = kwargs.get('transaction_set_control_number_prefix', None)
         self.transaction_set_control_number_suffix = kwargs.get('transaction_set_control_number_suffix', None)
-        self.transaction_set_control_number_lower_bound = kwargs.get('transaction_set_control_number_lower_bound', None)
-        self.transaction_set_control_number_upper_bound = kwargs.get('transaction_set_control_number_upper_bound', None)
-        self.rollover_transaction_set_control_number = kwargs.get('rollover_transaction_set_control_number', None)
-        self.is_test_interchange = kwargs.get('is_test_interchange', None)
+        self.transaction_set_control_number_lower_bound = kwargs['transaction_set_control_number_lower_bound']
+        self.transaction_set_control_number_upper_bound = kwargs['transaction_set_control_number_upper_bound']
+        self.rollover_transaction_set_control_number = kwargs['rollover_transaction_set_control_number']
+        self.is_test_interchange = kwargs['is_test_interchange']
         self.sender_internal_identification = kwargs.get('sender_internal_identification', None)
         self.sender_internal_sub_identification = kwargs.get('sender_internal_sub_identification', None)
         self.receiver_internal_identification = kwargs.get('receiver_internal_identification', None)
@@ -2143,15 +2144,15 @@ class EdifactFramingSettings(msrest.serialization.Model):
     :param repetition_separator: Required. The repetition separator.
     :type repetition_separator: int
     :param character_set: Required. The EDIFACT frame setting characterSet. Possible values
-     include: 'NotSpecified', 'UNOB', 'UNOA', 'UNOC', 'UNOD', 'UNOE', 'UNOF', 'UNOG', 'UNOH',
-     'UNOI', 'UNOJ', 'UNOK', 'UNOX', 'UNOY', 'KECA'.
-    :type character_set: str or ~logic_management_client.models.EdifactCharacterSet
+     include: "NotSpecified", "UNOB", "UNOA", "UNOC", "UNOD", "UNOE", "UNOF", "UNOG", "UNOH",
+     "UNOI", "UNOJ", "UNOK", "UNOX", "UNOY", "KECA".
+    :type character_set: str or ~azure.mgmt.logic.models.EdifactCharacterSet
     :param decimal_point_indicator: Required. The EDIFACT frame setting decimal indicator. Possible
-     values include: 'NotSpecified', 'Comma', 'Decimal'.
-    :type decimal_point_indicator: str or ~logic_management_client.models.EdifactDecimalIndicator
+     values include: "NotSpecified", "Comma", "Decimal".
+    :type decimal_point_indicator: str or ~azure.mgmt.logic.models.EdifactDecimalIndicator
     :param segment_terminator_suffix: Required. The EDIFACT frame setting segment terminator
-     suffix. Possible values include: 'NotSpecified', 'None', 'CR', 'LF', 'CRLF'.
-    :type segment_terminator_suffix: str or ~logic_management_client.models.SegmentTerminatorSuffix
+     suffix. Possible values include: "NotSpecified", "None", "CR", "LF", "CRLF".
+    :type segment_terminator_suffix: str or ~azure.mgmt.logic.models.SegmentTerminatorSuffix
     """
 
     _validation = {
@@ -2187,15 +2188,15 @@ class EdifactFramingSettings(msrest.serialization.Model):
         super(EdifactFramingSettings, self).__init__(**kwargs)
         self.service_code_list_directory_version = kwargs.get('service_code_list_directory_version', None)
         self.character_encoding = kwargs.get('character_encoding', None)
-        self.protocol_version = kwargs.get('protocol_version', None)
-        self.data_element_separator = kwargs.get('data_element_separator', None)
-        self.component_separator = kwargs.get('component_separator', None)
-        self.segment_terminator = kwargs.get('segment_terminator', None)
-        self.release_indicator = kwargs.get('release_indicator', None)
-        self.repetition_separator = kwargs.get('repetition_separator', None)
-        self.character_set = kwargs.get('character_set', None)
-        self.decimal_point_indicator = kwargs.get('decimal_point_indicator', None)
-        self.segment_terminator_suffix = kwargs.get('segment_terminator_suffix', None)
+        self.protocol_version = kwargs['protocol_version']
+        self.data_element_separator = kwargs['data_element_separator']
+        self.component_separator = kwargs['component_separator']
+        self.segment_terminator = kwargs['segment_terminator']
+        self.release_indicator = kwargs['release_indicator']
+        self.repetition_separator = kwargs['repetition_separator']
+        self.character_set = kwargs['character_set']
+        self.decimal_point_indicator = kwargs['decimal_point_indicator']
+        self.segment_terminator_suffix = kwargs['segment_terminator_suffix']
 
 
 class EdifactMessageFilter(msrest.serialization.Model):
@@ -2204,8 +2205,8 @@ class EdifactMessageFilter(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param message_filter_type: Required. The message filter type. Possible values include:
-     'NotSpecified', 'Include', 'Exclude'.
-    :type message_filter_type: str or ~logic_management_client.models.MessageFilterType
+     "NotSpecified", "Include", "Exclude".
+    :type message_filter_type: str or ~azure.mgmt.logic.models.MessageFilterType
     """
 
     _validation = {
@@ -2221,7 +2222,7 @@ class EdifactMessageFilter(msrest.serialization.Model):
         **kwargs
     ):
         super(EdifactMessageFilter, self).__init__(**kwargs)
-        self.message_filter_type = kwargs.get('message_filter_type', None)
+        self.message_filter_type = kwargs['message_filter_type']
 
 
 class EdifactMessageIdentifier(msrest.serialization.Model):
@@ -2246,7 +2247,7 @@ class EdifactMessageIdentifier(msrest.serialization.Model):
         **kwargs
     ):
         super(EdifactMessageIdentifier, self).__init__(**kwargs)
-        self.message_id = kwargs.get('message_id', None)
+        self.message_id = kwargs['message_id']
 
 
 class EdifactOneWayAgreement(msrest.serialization.Model):
@@ -2255,11 +2256,11 @@ class EdifactOneWayAgreement(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param sender_business_identity: Required. The sender business identity.
-    :type sender_business_identity: ~logic_management_client.models.BusinessIdentity
+    :type sender_business_identity: ~azure.mgmt.logic.models.BusinessIdentity
     :param receiver_business_identity: Required. The receiver business identity.
-    :type receiver_business_identity: ~logic_management_client.models.BusinessIdentity
+    :type receiver_business_identity: ~azure.mgmt.logic.models.BusinessIdentity
     :param protocol_settings: Required. The EDIFACT protocol settings.
-    :type protocol_settings: ~logic_management_client.models.EdifactProtocolSettings
+    :type protocol_settings: ~azure.mgmt.logic.models.EdifactProtocolSettings
     """
 
     _validation = {
@@ -2279,9 +2280,9 @@ class EdifactOneWayAgreement(msrest.serialization.Model):
         **kwargs
     ):
         super(EdifactOneWayAgreement, self).__init__(**kwargs)
-        self.sender_business_identity = kwargs.get('sender_business_identity', None)
-        self.receiver_business_identity = kwargs.get('receiver_business_identity', None)
-        self.protocol_settings = kwargs.get('protocol_settings', None)
+        self.sender_business_identity = kwargs['sender_business_identity']
+        self.receiver_business_identity = kwargs['receiver_business_identity']
+        self.protocol_settings = kwargs['protocol_settings']
 
 
 class EdifactProcessingSettings(msrest.serialization.Model):
@@ -2325,11 +2326,11 @@ class EdifactProcessingSettings(msrest.serialization.Model):
         **kwargs
     ):
         super(EdifactProcessingSettings, self).__init__(**kwargs)
-        self.mask_security_info = kwargs.get('mask_security_info', None)
-        self.preserve_interchange = kwargs.get('preserve_interchange', None)
-        self.suspend_interchange_on_error = kwargs.get('suspend_interchange_on_error', None)
-        self.create_empty_xml_tags_for_trailing_separators = kwargs.get('create_empty_xml_tags_for_trailing_separators', None)
-        self.use_dot_as_decimal_separator = kwargs.get('use_dot_as_decimal_separator', None)
+        self.mask_security_info = kwargs['mask_security_info']
+        self.preserve_interchange = kwargs['preserve_interchange']
+        self.suspend_interchange_on_error = kwargs['suspend_interchange_on_error']
+        self.create_empty_xml_tags_for_trailing_separators = kwargs['create_empty_xml_tags_for_trailing_separators']
+        self.use_dot_as_decimal_separator = kwargs['use_dot_as_decimal_separator']
 
 
 class EdifactProtocolSettings(msrest.serialization.Model):
@@ -2338,28 +2339,27 @@ class EdifactProtocolSettings(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param validation_settings: Required. The EDIFACT validation settings.
-    :type validation_settings: ~logic_management_client.models.EdifactValidationSettings
+    :type validation_settings: ~azure.mgmt.logic.models.EdifactValidationSettings
     :param framing_settings: Required. The EDIFACT framing settings.
-    :type framing_settings: ~logic_management_client.models.EdifactFramingSettings
+    :type framing_settings: ~azure.mgmt.logic.models.EdifactFramingSettings
     :param envelope_settings: Required. The EDIFACT envelope settings.
-    :type envelope_settings: ~logic_management_client.models.EdifactEnvelopeSettings
+    :type envelope_settings: ~azure.mgmt.logic.models.EdifactEnvelopeSettings
     :param acknowledgement_settings: Required. The EDIFACT acknowledgement settings.
-    :type acknowledgement_settings: ~logic_management_client.models.EdifactAcknowledgementSettings
+    :type acknowledgement_settings: ~azure.mgmt.logic.models.EdifactAcknowledgementSettings
     :param message_filter: Required. The EDIFACT message filter.
-    :type message_filter: ~logic_management_client.models.EdifactMessageFilter
+    :type message_filter: ~azure.mgmt.logic.models.EdifactMessageFilter
     :param processing_settings: Required. The EDIFACT processing Settings.
-    :type processing_settings: ~logic_management_client.models.EdifactProcessingSettings
+    :type processing_settings: ~azure.mgmt.logic.models.EdifactProcessingSettings
     :param envelope_overrides: The EDIFACT envelope override settings.
-    :type envelope_overrides: list[~logic_management_client.models.EdifactEnvelopeOverride]
+    :type envelope_overrides: list[~azure.mgmt.logic.models.EdifactEnvelopeOverride]
     :param message_filter_list: The EDIFACT message filter list.
-    :type message_filter_list: list[~logic_management_client.models.EdifactMessageIdentifier]
+    :type message_filter_list: list[~azure.mgmt.logic.models.EdifactMessageIdentifier]
     :param schema_references: Required. The EDIFACT schema references.
-    :type schema_references: list[~logic_management_client.models.EdifactSchemaReference]
+    :type schema_references: list[~azure.mgmt.logic.models.EdifactSchemaReference]
     :param validation_overrides: The EDIFACT validation override settings.
-    :type validation_overrides: list[~logic_management_client.models.EdifactValidationOverride]
+    :type validation_overrides: list[~azure.mgmt.logic.models.EdifactValidationOverride]
     :param edifact_delimiter_overrides: The EDIFACT delimiter override settings.
-    :type edifact_delimiter_overrides:
-     list[~logic_management_client.models.EdifactDelimiterOverride]
+    :type edifact_delimiter_overrides: list[~azure.mgmt.logic.models.EdifactDelimiterOverride]
     """
 
     _validation = {
@@ -2391,15 +2391,15 @@ class EdifactProtocolSettings(msrest.serialization.Model):
         **kwargs
     ):
         super(EdifactProtocolSettings, self).__init__(**kwargs)
-        self.validation_settings = kwargs.get('validation_settings', None)
-        self.framing_settings = kwargs.get('framing_settings', None)
-        self.envelope_settings = kwargs.get('envelope_settings', None)
-        self.acknowledgement_settings = kwargs.get('acknowledgement_settings', None)
-        self.message_filter = kwargs.get('message_filter', None)
-        self.processing_settings = kwargs.get('processing_settings', None)
+        self.validation_settings = kwargs['validation_settings']
+        self.framing_settings = kwargs['framing_settings']
+        self.envelope_settings = kwargs['envelope_settings']
+        self.acknowledgement_settings = kwargs['acknowledgement_settings']
+        self.message_filter = kwargs['message_filter']
+        self.processing_settings = kwargs['processing_settings']
         self.envelope_overrides = kwargs.get('envelope_overrides', None)
         self.message_filter_list = kwargs.get('message_filter_list', None)
-        self.schema_references = kwargs.get('schema_references', None)
+        self.schema_references = kwargs['schema_references']
         self.validation_overrides = kwargs.get('validation_overrides', None)
         self.edifact_delimiter_overrides = kwargs.get('edifact_delimiter_overrides', None)
 
@@ -2447,13 +2447,13 @@ class EdifactSchemaReference(msrest.serialization.Model):
         **kwargs
     ):
         super(EdifactSchemaReference, self).__init__(**kwargs)
-        self.message_id = kwargs.get('message_id', None)
-        self.message_version = kwargs.get('message_version', None)
-        self.message_release = kwargs.get('message_release', None)
+        self.message_id = kwargs['message_id']
+        self.message_version = kwargs['message_version']
+        self.message_release = kwargs['message_release']
         self.sender_application_id = kwargs.get('sender_application_id', None)
         self.sender_application_qualifier = kwargs.get('sender_application_qualifier', None)
         self.association_assigned_code = kwargs.get('association_assigned_code', None)
-        self.schema_name = kwargs.get('schema_name', None)
+        self.schema_name = kwargs['schema_name']
 
 
 class EdifactValidationOverride(msrest.serialization.Model):
@@ -2473,8 +2473,8 @@ class EdifactValidationOverride(msrest.serialization.Model):
      allow leading and trailing spaces and zeroes.
     :type allow_leading_and_trailing_spaces_and_zeroes: bool
     :param trailing_separator_policy: Required. The trailing separator policy. Possible values
-     include: 'NotSpecified', 'NotAllowed', 'Optional', 'Mandatory'.
-    :type trailing_separator_policy: str or ~logic_management_client.models.TrailingSeparatorPolicy
+     include: "NotSpecified", "NotAllowed", "Optional", "Mandatory".
+    :type trailing_separator_policy: str or ~azure.mgmt.logic.models.TrailingSeparatorPolicy
     :param trim_leading_and_trailing_spaces_and_zeroes: Required. The value indicating whether to
      trim leading and trailing spaces and zeroes.
     :type trim_leading_and_trailing_spaces_and_zeroes: bool
@@ -2505,13 +2505,13 @@ class EdifactValidationOverride(msrest.serialization.Model):
         **kwargs
     ):
         super(EdifactValidationOverride, self).__init__(**kwargs)
-        self.message_id = kwargs.get('message_id', None)
-        self.enforce_character_set = kwargs.get('enforce_character_set', None)
-        self.validate_edi_types = kwargs.get('validate_edi_types', None)
-        self.validate_xsd_types = kwargs.get('validate_xsd_types', None)
-        self.allow_leading_and_trailing_spaces_and_zeroes = kwargs.get('allow_leading_and_trailing_spaces_and_zeroes', None)
-        self.trailing_separator_policy = kwargs.get('trailing_separator_policy', None)
-        self.trim_leading_and_trailing_spaces_and_zeroes = kwargs.get('trim_leading_and_trailing_spaces_and_zeroes', None)
+        self.message_id = kwargs['message_id']
+        self.enforce_character_set = kwargs['enforce_character_set']
+        self.validate_edi_types = kwargs['validate_edi_types']
+        self.validate_xsd_types = kwargs['validate_xsd_types']
+        self.allow_leading_and_trailing_spaces_and_zeroes = kwargs['allow_leading_and_trailing_spaces_and_zeroes']
+        self.trailing_separator_policy = kwargs['trailing_separator_policy']
+        self.trim_leading_and_trailing_spaces_and_zeroes = kwargs['trim_leading_and_trailing_spaces_and_zeroes']
 
 
 class EdifactValidationSettings(msrest.serialization.Model):
@@ -2547,8 +2547,8 @@ class EdifactValidationSettings(msrest.serialization.Model):
      trim leading and trailing spaces and zeroes.
     :type trim_leading_and_trailing_spaces_and_zeroes: bool
     :param trailing_separator_policy: Required. The trailing separator policy. Possible values
-     include: 'NotSpecified', 'NotAllowed', 'Optional', 'Mandatory'.
-    :type trailing_separator_policy: str or ~logic_management_client.models.TrailingSeparatorPolicy
+     include: "NotSpecified", "NotAllowed", "Optional", "Mandatory".
+    :type trailing_separator_policy: str or ~azure.mgmt.logic.models.TrailingSeparatorPolicy
     """
 
     _validation = {
@@ -2582,16 +2582,16 @@ class EdifactValidationSettings(msrest.serialization.Model):
         **kwargs
     ):
         super(EdifactValidationSettings, self).__init__(**kwargs)
-        self.validate_character_set = kwargs.get('validate_character_set', None)
-        self.check_duplicate_interchange_control_number = kwargs.get('check_duplicate_interchange_control_number', None)
-        self.interchange_control_number_validity_days = kwargs.get('interchange_control_number_validity_days', None)
-        self.check_duplicate_group_control_number = kwargs.get('check_duplicate_group_control_number', None)
-        self.check_duplicate_transaction_set_control_number = kwargs.get('check_duplicate_transaction_set_control_number', None)
-        self.validate_edi_types = kwargs.get('validate_edi_types', None)
-        self.validate_xsd_types = kwargs.get('validate_xsd_types', None)
-        self.allow_leading_and_trailing_spaces_and_zeroes = kwargs.get('allow_leading_and_trailing_spaces_and_zeroes', None)
-        self.trim_leading_and_trailing_spaces_and_zeroes = kwargs.get('trim_leading_and_trailing_spaces_and_zeroes', None)
-        self.trailing_separator_policy = kwargs.get('trailing_separator_policy', None)
+        self.validate_character_set = kwargs['validate_character_set']
+        self.check_duplicate_interchange_control_number = kwargs['check_duplicate_interchange_control_number']
+        self.interchange_control_number_validity_days = kwargs['interchange_control_number_validity_days']
+        self.check_duplicate_group_control_number = kwargs['check_duplicate_group_control_number']
+        self.check_duplicate_transaction_set_control_number = kwargs['check_duplicate_transaction_set_control_number']
+        self.validate_edi_types = kwargs['validate_edi_types']
+        self.validate_xsd_types = kwargs['validate_xsd_types']
+        self.allow_leading_and_trailing_spaces_and_zeroes = kwargs['allow_leading_and_trailing_spaces_and_zeroes']
+        self.trim_leading_and_trailing_spaces_and_zeroes = kwargs['trim_leading_and_trailing_spaces_and_zeroes']
+        self.trailing_separator_policy = kwargs['trailing_separator_policy']
 
 
 class ErrorProperties(msrest.serialization.Model):
@@ -2621,7 +2621,7 @@ class ErrorResponse(msrest.serialization.Model):
     """Error response indicates Logic service is not able to process the incoming request. The error property contains the error details.
 
     :param error: The error properties.
-    :type error: ~logic_management_client.models.ErrorProperties
+    :type error: ~azure.mgmt.logic.models.ErrorProperties
     """
 
     _attribute_map = {
@@ -2644,9 +2644,9 @@ class Expression(msrest.serialization.Model):
     :param value: Any object.
     :type value: object
     :param subexpressions: The sub expressions.
-    :type subexpressions: list[~logic_management_client.models.Expression]
+    :type subexpressions: list[~azure.mgmt.logic.models.Expression]
     :param error: The azure resource error info.
-    :type error: ~logic_management_client.models.AzureResourceErrorInfo
+    :type error: ~azure.mgmt.logic.models.AzureResourceErrorInfo
     """
 
     _attribute_map = {
@@ -2675,9 +2675,9 @@ class ExpressionRoot(Expression):
     :param value: Any object.
     :type value: object
     :param subexpressions: The sub expressions.
-    :type subexpressions: list[~logic_management_client.models.Expression]
+    :type subexpressions: list[~azure.mgmt.logic.models.Expression]
     :param error: The azure resource error info.
-    :type error: ~logic_management_client.models.AzureResourceErrorInfo
+    :type error: ~azure.mgmt.logic.models.AzureResourceErrorInfo
     :param path: The path.
     :type path: str
     """
@@ -2702,7 +2702,7 @@ class ExpressionTraces(msrest.serialization.Model):
     """The expression traces.
 
     :param inputs:
-    :type inputs: list[~logic_management_client.models.ExpressionRoot]
+    :type inputs: list[~azure.mgmt.logic.models.ExpressionRoot]
     """
 
     _attribute_map = {
@@ -2722,13 +2722,13 @@ class ExtendedErrorInfo(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param code: Required. The error code. Possible values include: 'NotSpecified',
-     'IntegrationServiceEnvironmentNotFound', 'InternalServerError', 'InvalidOperationId'.
-    :type code: str or ~logic_management_client.models.ErrorResponseCode
+    :param code: Required. The error code. Possible values include: "NotSpecified",
+     "IntegrationServiceEnvironmentNotFound", "InternalServerError", "InvalidOperationId".
+    :type code: str or ~azure.mgmt.logic.models.ErrorResponseCode
     :param message: Required. The error message.
     :type message: str
     :param details: The error message details.
-    :type details: list[~logic_management_client.models.ExtendedErrorInfo]
+    :type details: list[~azure.mgmt.logic.models.ExtendedErrorInfo]
     :param inner_error: The inner error.
     :type inner_error: object
     """
@@ -2750,19 +2750,73 @@ class ExtendedErrorInfo(msrest.serialization.Model):
         **kwargs
     ):
         super(ExtendedErrorInfo, self).__init__(**kwargs)
-        self.code = kwargs.get('code', None)
-        self.message = kwargs.get('message', None)
+        self.code = kwargs['code']
+        self.message = kwargs['message']
         self.details = kwargs.get('details', None)
         self.inner_error = kwargs.get('inner_error', None)
+
+
+class FlowAccessControlConfiguration(msrest.serialization.Model):
+    """The access control configuration.
+
+    :param triggers: The access control configuration for invoking workflow triggers.
+    :type triggers: ~azure.mgmt.logic.models.FlowAccessControlConfigurationPolicy
+    :param contents: The access control configuration for accessing workflow run contents.
+    :type contents: ~azure.mgmt.logic.models.FlowAccessControlConfigurationPolicy
+    :param actions: The access control configuration for workflow actions.
+    :type actions: ~azure.mgmt.logic.models.FlowAccessControlConfigurationPolicy
+    :param workflow_management: The access control configuration for workflow management.
+    :type workflow_management: ~azure.mgmt.logic.models.FlowAccessControlConfigurationPolicy
+    """
+
+    _attribute_map = {
+        'triggers': {'key': 'triggers', 'type': 'FlowAccessControlConfigurationPolicy'},
+        'contents': {'key': 'contents', 'type': 'FlowAccessControlConfigurationPolicy'},
+        'actions': {'key': 'actions', 'type': 'FlowAccessControlConfigurationPolicy'},
+        'workflow_management': {'key': 'workflowManagement', 'type': 'FlowAccessControlConfigurationPolicy'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(FlowAccessControlConfiguration, self).__init__(**kwargs)
+        self.triggers = kwargs.get('triggers', None)
+        self.contents = kwargs.get('contents', None)
+        self.actions = kwargs.get('actions', None)
+        self.workflow_management = kwargs.get('workflow_management', None)
+
+
+class FlowAccessControlConfigurationPolicy(msrest.serialization.Model):
+    """The access control configuration policy.
+
+    :param allowed_caller_ip_addresses: The allowed caller IP address ranges.
+    :type allowed_caller_ip_addresses: list[~azure.mgmt.logic.models.IpAddressRange]
+    :param open_authentication_policies: The authentication policies for workflow.
+    :type open_authentication_policies: ~azure.mgmt.logic.models.OpenAuthenticationAccessPolicies
+    """
+
+    _attribute_map = {
+        'allowed_caller_ip_addresses': {'key': 'allowedCallerIpAddresses', 'type': '[IpAddressRange]'},
+        'open_authentication_policies': {'key': 'openAuthenticationPolicies', 'type': 'OpenAuthenticationAccessPolicies'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(FlowAccessControlConfigurationPolicy, self).__init__(**kwargs)
+        self.allowed_caller_ip_addresses = kwargs.get('allowed_caller_ip_addresses', None)
+        self.open_authentication_policies = kwargs.get('open_authentication_policies', None)
 
 
 class FlowEndpoints(msrest.serialization.Model):
     """The flow endpoints configuration.
 
     :param outgoing_ip_addresses: The outgoing ip address.
-    :type outgoing_ip_addresses: list[~logic_management_client.models.IpAddress]
+    :type outgoing_ip_addresses: list[~azure.mgmt.logic.models.IpAddress]
     :param access_endpoint_ip_addresses: The access endpoint ip address.
-    :type access_endpoint_ip_addresses: list[~logic_management_client.models.IpAddress]
+    :type access_endpoint_ip_addresses: list[~azure.mgmt.logic.models.IpAddress]
     """
 
     _attribute_map = {
@@ -2783,9 +2837,9 @@ class FlowEndpointsConfiguration(msrest.serialization.Model):
     """The endpoints configuration.
 
     :param workflow: The workflow endpoints.
-    :type workflow: ~logic_management_client.models.FlowEndpoints
+    :type workflow: ~azure.mgmt.logic.models.FlowEndpoints
     :param connector: The connector endpoints.
-    :type connector: ~logic_management_client.models.FlowEndpoints
+    :type connector: ~azure.mgmt.logic.models.FlowEndpoints
     """
 
     _attribute_map = {
@@ -2826,8 +2880,8 @@ class GetCallbackUrlParameters(msrest.serialization.Model):
 
     :param not_after: The expiry time.
     :type not_after: ~datetime.datetime
-    :param key_type: The key type. Possible values include: 'NotSpecified', 'Primary', 'Secondary'.
-    :type key_type: str or ~logic_management_client.models.KeyType
+    :param key_type: The key type. Possible values include: "NotSpecified", "Primary", "Secondary".
+    :type key_type: str or ~azure.mgmt.logic.models.KeyType
     """
 
     _attribute_map = {
@@ -2860,13 +2914,12 @@ class IntegrationAccount(Resource):
     :param tags: A set of tags. The resource tags.
     :type tags: dict[str, str]
     :param sku: The sku.
-    :type sku: ~logic_management_client.models.IntegrationAccountSku
+    :type sku: ~azure.mgmt.logic.models.IntegrationAccountSku
     :param integration_service_environment: The integration service environment.
-    :type integration_service_environment:
-     ~logic_management_client.models.IntegrationServiceEnvironment
-    :param state: The workflow state. Possible values include: 'NotSpecified', 'Completed',
-     'Enabled', 'Disabled', 'Deleted', 'Suspended'.
-    :type state: str or ~logic_management_client.models.WorkflowState
+    :type integration_service_environment: ~azure.mgmt.logic.models.IntegrationServiceEnvironment
+    :param state: The workflow state. Possible values include: "NotSpecified", "Completed",
+     "Enabled", "Disabled", "Deleted", "Suspended".
+    :type state: str or ~azure.mgmt.logic.models.WorkflowState
     """
 
     _validation = {
@@ -2919,9 +2972,9 @@ class IntegrationAccountAgreement(Resource):
     :vartype changed_time: ~datetime.datetime
     :param metadata: The metadata.
     :type metadata: object
-    :param agreement_type: Required. The agreement type. Possible values include: 'NotSpecified',
-     'AS2', 'X12', 'Edifact'.
-    :type agreement_type: str or ~logic_management_client.models.AgreementType
+    :param agreement_type: Required. The agreement type. Possible values include: "NotSpecified",
+     "AS2", "X12", "Edifact".
+    :type agreement_type: str or ~azure.mgmt.logic.models.AgreementType
     :param host_partner: Required. The integration account partner that is set as host partner for
      this agreement.
     :type host_partner: str
@@ -2929,11 +2982,11 @@ class IntegrationAccountAgreement(Resource):
      for this agreement.
     :type guest_partner: str
     :param host_identity: Required. The business identity of the host partner.
-    :type host_identity: ~logic_management_client.models.BusinessIdentity
+    :type host_identity: ~azure.mgmt.logic.models.BusinessIdentity
     :param guest_identity: Required. The business identity of the guest partner.
-    :type guest_identity: ~logic_management_client.models.BusinessIdentity
+    :type guest_identity: ~azure.mgmt.logic.models.BusinessIdentity
     :param content: Required. The agreement content.
-    :type content: ~logic_management_client.models.AgreementContent
+    :type content: ~azure.mgmt.logic.models.AgreementContent
     """
 
     _validation = {
@@ -2975,12 +3028,12 @@ class IntegrationAccountAgreement(Resource):
         self.created_time = None
         self.changed_time = None
         self.metadata = kwargs.get('metadata', None)
-        self.agreement_type = kwargs.get('agreement_type', None)
-        self.host_partner = kwargs.get('host_partner', None)
-        self.guest_partner = kwargs.get('guest_partner', None)
-        self.host_identity = kwargs.get('host_identity', None)
-        self.guest_identity = kwargs.get('guest_identity', None)
-        self.content = kwargs.get('content', None)
+        self.agreement_type = kwargs['agreement_type']
+        self.host_partner = kwargs['host_partner']
+        self.guest_partner = kwargs['guest_partner']
+        self.host_identity = kwargs['host_identity']
+        self.guest_identity = kwargs['guest_identity']
+        self.content = kwargs['content']
 
 
 class IntegrationAccountAgreementFilter(msrest.serialization.Model):
@@ -2989,8 +3042,8 @@ class IntegrationAccountAgreementFilter(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param agreement_type: Required. The agreement type of integration account agreement. Possible
-     values include: 'NotSpecified', 'AS2', 'X12', 'Edifact'.
-    :type agreement_type: str or ~logic_management_client.models.AgreementType
+     values include: "NotSpecified", "AS2", "X12", "Edifact".
+    :type agreement_type: str or ~azure.mgmt.logic.models.AgreementType
     """
 
     _validation = {
@@ -3006,14 +3059,14 @@ class IntegrationAccountAgreementFilter(msrest.serialization.Model):
         **kwargs
     ):
         super(IntegrationAccountAgreementFilter, self).__init__(**kwargs)
-        self.agreement_type = kwargs.get('agreement_type', None)
+        self.agreement_type = kwargs['agreement_type']
 
 
 class IntegrationAccountAgreementListResult(msrest.serialization.Model):
     """The list of integration account agreements.
 
     :param value: The list of integration account agreements.
-    :type value: list[~logic_management_client.models.IntegrationAccountAgreement]
+    :type value: list[~azure.mgmt.logic.models.IntegrationAccountAgreement]
     :param next_link: The URL to get the next set of results.
     :type next_link: str
     """
@@ -3054,7 +3107,7 @@ class IntegrationAccountCertificate(Resource):
     :param metadata: The metadata.
     :type metadata: object
     :param key: The key details in the key vault.
-    :type key: ~logic_management_client.models.KeyVaultKeyReference
+    :type key: ~azure.mgmt.logic.models.KeyVaultKeyReference
     :param public_certificate: The public certificate.
     :type public_certificate: str
     """
@@ -3096,7 +3149,7 @@ class IntegrationAccountCertificateListResult(msrest.serialization.Model):
     """The list of integration account certificates.
 
     :param value: The list of integration account certificates.
-    :type value: list[~logic_management_client.models.IntegrationAccountCertificate]
+    :type value: list[~azure.mgmt.logic.models.IntegrationAccountCertificate]
     :param next_link: The URL to get the next set of results.
     :type next_link: str
     """
@@ -3119,7 +3172,7 @@ class IntegrationAccountListResult(msrest.serialization.Model):
     """The list of integration accounts.
 
     :param value: The list of integration accounts.
-    :type value: list[~logic_management_client.models.IntegrationAccount]
+    :type value: list[~azure.mgmt.logic.models.IntegrationAccount]
     :param next_link: The URL to get the next set of results.
     :type next_link: str
     """
@@ -3155,12 +3208,12 @@ class IntegrationAccountMap(Resource):
     :type location: str
     :param tags: A set of tags. The resource tags.
     :type tags: dict[str, str]
-    :param map_type: Required. The map type. Possible values include: 'NotSpecified', 'Xslt',
-     'Xslt20', 'Xslt30', 'Liquid'.
-    :type map_type: str or ~logic_management_client.models.MapType
+    :param map_type: Required. The map type. Possible values include: "NotSpecified", "Xslt",
+     "Xslt20", "Xslt30", "Liquid".
+    :type map_type: str or ~azure.mgmt.logic.models.MapType
     :param parameters_schema: The parameters schema of integration account map.
     :type parameters_schema:
-     ~logic_management_client.models.IntegrationAccountMapPropertiesParametersSchema
+     ~azure.mgmt.logic.models.IntegrationAccountMapPropertiesParametersSchema
     :ivar created_time: The created time.
     :vartype created_time: ~datetime.datetime
     :ivar changed_time: The changed time.
@@ -3170,7 +3223,7 @@ class IntegrationAccountMap(Resource):
     :param content_type: The content type.
     :type content_type: str
     :ivar content_link: The content link.
-    :vartype content_link: ~logic_management_client.models.ContentLink
+    :vartype content_link: ~azure.mgmt.logic.models.ContentLink
     :param metadata: The metadata.
     :type metadata: object
     """
@@ -3206,7 +3259,7 @@ class IntegrationAccountMap(Resource):
         **kwargs
     ):
         super(IntegrationAccountMap, self).__init__(**kwargs)
-        self.map_type = kwargs.get('map_type', None)
+        self.map_type = kwargs['map_type']
         self.parameters_schema = kwargs.get('parameters_schema', None)
         self.created_time = None
         self.changed_time = None
@@ -3222,8 +3275,8 @@ class IntegrationAccountMapFilter(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param map_type: Required. The map type of integration account map. Possible values include:
-     'NotSpecified', 'Xslt', 'Xslt20', 'Xslt30', 'Liquid'.
-    :type map_type: str or ~logic_management_client.models.MapType
+     "NotSpecified", "Xslt", "Xslt20", "Xslt30", "Liquid".
+    :type map_type: str or ~azure.mgmt.logic.models.MapType
     """
 
     _validation = {
@@ -3239,14 +3292,14 @@ class IntegrationAccountMapFilter(msrest.serialization.Model):
         **kwargs
     ):
         super(IntegrationAccountMapFilter, self).__init__(**kwargs)
-        self.map_type = kwargs.get('map_type', None)
+        self.map_type = kwargs['map_type']
 
 
 class IntegrationAccountMapListResult(msrest.serialization.Model):
     """The list of integration account maps.
 
     :param value: The list of integration account maps.
-    :type value: list[~logic_management_client.models.IntegrationAccountMap]
+    :type value: list[~azure.mgmt.logic.models.IntegrationAccountMap]
     :param next_link: The URL to get the next set of results.
     :type next_link: str
     """
@@ -3301,9 +3354,9 @@ class IntegrationAccountPartner(Resource):
     :type location: str
     :param tags: A set of tags. The resource tags.
     :type tags: dict[str, str]
-    :param partner_type: Required. The partner type. Possible values include: 'NotSpecified',
-     'B2B'.
-    :type partner_type: str or ~logic_management_client.models.PartnerType
+    :param partner_type: Required. The partner type. Possible values include: "NotSpecified",
+     "B2B".
+    :type partner_type: str or ~azure.mgmt.logic.models.PartnerType
     :ivar created_time: The created time.
     :vartype created_time: ~datetime.datetime
     :ivar changed_time: The changed time.
@@ -3311,7 +3364,7 @@ class IntegrationAccountPartner(Resource):
     :param metadata: The metadata.
     :type metadata: object
     :param content: Required. The partner content.
-    :type content: ~logic_management_client.models.PartnerContent
+    :type content: ~azure.mgmt.logic.models.PartnerContent
     """
 
     _validation = {
@@ -3342,11 +3395,11 @@ class IntegrationAccountPartner(Resource):
         **kwargs
     ):
         super(IntegrationAccountPartner, self).__init__(**kwargs)
-        self.partner_type = kwargs.get('partner_type', None)
+        self.partner_type = kwargs['partner_type']
         self.created_time = None
         self.changed_time = None
         self.metadata = kwargs.get('metadata', None)
-        self.content = kwargs.get('content', None)
+        self.content = kwargs['content']
 
 
 class IntegrationAccountPartnerFilter(msrest.serialization.Model):
@@ -3355,8 +3408,8 @@ class IntegrationAccountPartnerFilter(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param partner_type: Required. The partner type of integration account partner. Possible values
-     include: 'NotSpecified', 'B2B'.
-    :type partner_type: str or ~logic_management_client.models.PartnerType
+     include: "NotSpecified", "B2B".
+    :type partner_type: str or ~azure.mgmt.logic.models.PartnerType
     """
 
     _validation = {
@@ -3372,14 +3425,14 @@ class IntegrationAccountPartnerFilter(msrest.serialization.Model):
         **kwargs
     ):
         super(IntegrationAccountPartnerFilter, self).__init__(**kwargs)
-        self.partner_type = kwargs.get('partner_type', None)
+        self.partner_type = kwargs['partner_type']
 
 
 class IntegrationAccountPartnerListResult(msrest.serialization.Model):
     """The list of integration account partners.
 
     :param value: The list of integration account partners.
-    :type value: list[~logic_management_client.models.IntegrationAccountPartner]
+    :type value: list[~azure.mgmt.logic.models.IntegrationAccountPartner]
     :param next_link: The URL to get the next set of results.
     :type next_link: str
     """
@@ -3415,8 +3468,8 @@ class IntegrationAccountSchema(Resource):
     :type location: str
     :param tags: A set of tags. The resource tags.
     :type tags: dict[str, str]
-    :param schema_type: Required. The schema type. Possible values include: 'NotSpecified', 'Xml'.
-    :type schema_type: str or ~logic_management_client.models.SchemaType
+    :param schema_type: Required. The schema type. Possible values include: "NotSpecified", "Xml".
+    :type schema_type: str or ~azure.mgmt.logic.models.SchemaType
     :param target_namespace: The target namespace of the schema.
     :type target_namespace: str
     :param document_name: The document name.
@@ -3434,7 +3487,7 @@ class IntegrationAccountSchema(Resource):
     :param content_type: The content type.
     :type content_type: str
     :ivar content_link: The content link.
-    :vartype content_link: ~logic_management_client.models.ContentLink
+    :vartype content_link: ~azure.mgmt.logic.models.ContentLink
     """
 
     _validation = {
@@ -3470,7 +3523,7 @@ class IntegrationAccountSchema(Resource):
         **kwargs
     ):
         super(IntegrationAccountSchema, self).__init__(**kwargs)
-        self.schema_type = kwargs.get('schema_type', None)
+        self.schema_type = kwargs['schema_type']
         self.target_namespace = kwargs.get('target_namespace', None)
         self.document_name = kwargs.get('document_name', None)
         self.file_name = kwargs.get('file_name', None)
@@ -3488,8 +3541,8 @@ class IntegrationAccountSchemaFilter(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param schema_type: Required. The schema type of integration account schema. Possible values
-     include: 'NotSpecified', 'Xml'.
-    :type schema_type: str or ~logic_management_client.models.SchemaType
+     include: "NotSpecified", "Xml".
+    :type schema_type: str or ~azure.mgmt.logic.models.SchemaType
     """
 
     _validation = {
@@ -3505,14 +3558,14 @@ class IntegrationAccountSchemaFilter(msrest.serialization.Model):
         **kwargs
     ):
         super(IntegrationAccountSchemaFilter, self).__init__(**kwargs)
-        self.schema_type = kwargs.get('schema_type', None)
+        self.schema_type = kwargs['schema_type']
 
 
 class IntegrationAccountSchemaListResult(msrest.serialization.Model):
     """The list of integration account schemas.
 
     :param value: The list of integration account schemas.
-    :type value: list[~logic_management_client.models.IntegrationAccountSchema]
+    :type value: list[~azure.mgmt.logic.models.IntegrationAccountSchema]
     :param next_link: The URL to get the next set of results.
     :type next_link: str
     """
@@ -3605,14 +3658,14 @@ class IntegrationAccountSessionFilter(msrest.serialization.Model):
         **kwargs
     ):
         super(IntegrationAccountSessionFilter, self).__init__(**kwargs)
-        self.changed_time = kwargs.get('changed_time', None)
+        self.changed_time = kwargs['changed_time']
 
 
 class IntegrationAccountSessionListResult(msrest.serialization.Model):
     """The list of integration account sessions.
 
     :param value: The list of integration account sessions.
-    :type value: list[~logic_management_client.models.IntegrationAccountSession]
+    :type value: list[~azure.mgmt.logic.models.IntegrationAccountSession]
     :param next_link: The URL to get the next set of results.
     :type next_link: str
     """
@@ -3636,9 +3689,9 @@ class IntegrationAccountSku(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param name: Required. The sku name. Possible values include: 'NotSpecified', 'Free', 'Basic',
-     'Standard'.
-    :type name: str or ~logic_management_client.models.IntegrationAccountSkuName
+    :param name: Required. The sku name. Possible values include: "NotSpecified", "Free", "Basic",
+     "Standard".
+    :type name: str or ~azure.mgmt.logic.models.IntegrationAccountSkuName
     """
 
     _validation = {
@@ -3654,7 +3707,7 @@ class IntegrationAccountSku(msrest.serialization.Model):
         **kwargs
     ):
         super(IntegrationAccountSku, self).__init__(**kwargs)
-        self.name = kwargs.get('name', None)
+        self.name = kwargs['name']
 
 
 class IntegrationServiceEnvironment(Resource):
@@ -3673,9 +3726,9 @@ class IntegrationServiceEnvironment(Resource):
     :param tags: A set of tags. The resource tags.
     :type tags: dict[str, str]
     :param properties: The integration service environment properties.
-    :type properties: ~logic_management_client.models.IntegrationServiceEnvironmentProperties
+    :type properties: ~azure.mgmt.logic.models.IntegrationServiceEnvironmentProperties
     :param sku: The sku.
-    :type sku: ~logic_management_client.models.IntegrationServiceEnvironmentSku
+    :type sku: ~azure.mgmt.logic.models.IntegrationServiceEnvironmentSku
     """
 
     _validation = {
@@ -3706,10 +3759,9 @@ class IntegrationServiceEnvironment(Resource):
 class IntegrationServiceEnvironmentAccessEndpoint(msrest.serialization.Model):
     """The integration service environment access endpoint.
 
-    :param type: The access endpoint type. Possible values include: 'NotSpecified', 'External',
-     'Internal'.
-    :type type: str or
-     ~logic_management_client.models.IntegrationServiceEnvironmentAccessEndpointType
+    :param type: The access endpoint type. Possible values include: "NotSpecified", "External",
+     "Internal".
+    :type type: str or ~azure.mgmt.logic.models.IntegrationServiceEnvironmentAccessEndpointType
     """
 
     _attribute_map = {
@@ -3728,7 +3780,7 @@ class IntegrationServiceEnvironmentListResult(msrest.serialization.Model):
     """The list of integration service environments.
 
     :param value:
-    :type value: list[~logic_management_client.models.IntegrationServiceEnvironment]
+    :type value: list[~azure.mgmt.logic.models.IntegrationServiceEnvironment]
     :param next_link: The URL to get the next set of results.
     :type next_link: str
     """
@@ -3750,17 +3802,16 @@ class IntegrationServiceEnvironmentListResult(msrest.serialization.Model):
 class IntegrationServiceEnvironmentNetworkDependency(msrest.serialization.Model):
     """The azure async operation resource.
 
-    :param category: The network dependency category type. Possible values include: 'NotSpecified',
-     'AzureStorage', 'AzureManagement', 'AzureActiveDirectory', 'SSLCertificateVerification',
-     'DiagnosticLogsAndMetrics', 'IntegrationServiceEnvironmentConnectors', 'RedisCache',
-     'AccessEndpoints', 'RecoveryService', 'SQL', 'RegionalService'.
+    :param category: The network dependency category type. Possible values include: "NotSpecified",
+     "AzureStorage", "AzureManagement", "AzureActiveDirectory", "SSLCertificateVerification",
+     "DiagnosticLogsAndMetrics", "IntegrationServiceEnvironmentConnectors", "RedisCache",
+     "AccessEndpoints", "RecoveryService", "SQL", "RegionalService".
     :type category: str or
-     ~logic_management_client.models.IntegrationServiceEnvironmentNetworkDependencyCategoryType
+     ~azure.mgmt.logic.models.IntegrationServiceEnvironmentNetworkDependencyCategoryType
     :param display_name: The display name.
     :type display_name: str
     :param endpoints: The endpoints.
-    :type endpoints:
-     list[~logic_management_client.models.IntegrationServiceEnvironmentNetworkEndpoint]
+    :type endpoints: list[~azure.mgmt.logic.models.IntegrationServiceEnvironmentNetworkEndpoint]
     """
 
     _attribute_map = {
@@ -3783,11 +3834,11 @@ class IntegrationServiceEnvironmentNetworkDependencyHealth(msrest.serialization.
     """The integration service environment subnet network health.
 
     :param error: The error if any occurred during the operation.
-    :type error: ~logic_management_client.models.ExtendedErrorInfo
-    :param state: The network dependency health state. Possible values include: 'NotSpecified',
-     'Healthy', 'Unhealthy', 'Unknown'.
+    :type error: ~azure.mgmt.logic.models.ExtendedErrorInfo
+    :param state: The network dependency health state. Possible values include: "NotSpecified",
+     "Healthy", "Unhealthy", "Unknown".
     :type state: str or
-     ~logic_management_client.models.IntegrationServiceEnvironmentNetworkDependencyHealthState
+     ~azure.mgmt.logic.models.IntegrationServiceEnvironmentNetworkDependencyHealthState
     """
 
     _attribute_map = {
@@ -3807,10 +3858,10 @@ class IntegrationServiceEnvironmentNetworkDependencyHealth(msrest.serialization.
 class IntegrationServiceEnvironmentNetworkEndpoint(msrest.serialization.Model):
     """The network endpoint.
 
-    :param accessibility: The accessibility state. Possible values include: 'NotSpecified',
-     'Unknown', 'Available', 'NotAvailable'.
+    :param accessibility: The accessibility state. Possible values include: "NotSpecified",
+     "Unknown", "Available", "NotAvailable".
     :type accessibility: str or
-     ~logic_management_client.models.IntegrationServiceEnvironmentNetworkEndPointAccessibilityState
+     ~azure.mgmt.logic.models.IntegrationServiceEnvironmentNetworkEndPointAccessibilityState
     :param domain_name: The domain name.
     :type domain_name: str
     :param ports: The ports.
@@ -3836,20 +3887,20 @@ class IntegrationServiceEnvironmentNetworkEndpoint(msrest.serialization.Model):
 class IntegrationServiceEnvironmentProperties(msrest.serialization.Model):
     """The integration service environment properties.
 
-    :param provisioning_state: The provisioning state. Possible values include: 'NotSpecified',
-     'Accepted', 'Running', 'Ready', 'Creating', 'Created', 'Deleting', 'Deleted', 'Canceled',
-     'Failed', 'Succeeded', 'Moving', 'Updating', 'Registering', 'Registered', 'Unregistering',
-     'Unregistered', 'Completed'.
-    :type provisioning_state: str or ~logic_management_client.models.WorkflowProvisioningState
+    :param provisioning_state: The provisioning state. Possible values include: "NotSpecified",
+     "Accepted", "Running", "Ready", "Creating", "Created", "Deleting", "Deleted", "Canceled",
+     "Failed", "Succeeded", "Moving", "Updating", "Registering", "Registered", "Unregistering",
+     "Unregistered", "Completed", "Renewing", "Pending", "Waiting", "InProgress".
+    :type provisioning_state: str or ~azure.mgmt.logic.models.WorkflowProvisioningState
     :param state: The integration service environment state. Possible values include:
-     'NotSpecified', 'Completed', 'Enabled', 'Disabled', 'Deleted', 'Suspended'.
-    :type state: str or ~logic_management_client.models.WorkflowState
+     "NotSpecified", "Completed", "Enabled", "Disabled", "Deleted", "Suspended".
+    :type state: str or ~azure.mgmt.logic.models.WorkflowState
     :param integration_service_environment_id: Gets the tracking id.
     :type integration_service_environment_id: str
     :param endpoints_configuration: The endpoints configuration.
-    :type endpoints_configuration: ~logic_management_client.models.FlowEndpointsConfiguration
+    :type endpoints_configuration: ~azure.mgmt.logic.models.FlowEndpointsConfiguration
     :param network_configuration: The network configuration.
-    :type network_configuration: ~logic_management_client.models.NetworkConfiguration
+    :type network_configuration: ~azure.mgmt.logic.models.NetworkConfiguration
     """
 
     _attribute_map = {
@@ -3875,8 +3926,8 @@ class IntegrationServiceEnvironmentProperties(msrest.serialization.Model):
 class IntegrationServiceEnvironmentSku(msrest.serialization.Model):
     """The integration service environment sku.
 
-    :param name: The sku name. Possible values include: 'NotSpecified', 'Premium', 'Developer'.
-    :type name: str or ~logic_management_client.models.IntegrationServiceEnvironmentSkuName
+    :param name: The sku name. Possible values include: "NotSpecified", "Premium", "Developer".
+    :type name: str or ~azure.mgmt.logic.models.IntegrationServiceEnvironmentSkuName
     :param capacity: The sku capacity.
     :type capacity: int
     """
@@ -3904,9 +3955,8 @@ class IntegrationServiceEnvironmentSkuCapacity(msrest.serialization.Model):
     :type maximum: int
     :param default: The default capacity.
     :type default: int
-    :param scale_type: The sku scale type. Possible values include: 'Manual', 'Automatic', 'None'.
-    :type scale_type: str or
-     ~logic_management_client.models.IntegrationServiceEnvironmentSkuScaleType
+    :param scale_type: The sku scale type. Possible values include: "Manual", "Automatic", "None".
+    :type scale_type: str or ~azure.mgmt.logic.models.IntegrationServiceEnvironmentSkuScaleType
     """
 
     _attribute_map = {
@@ -3933,9 +3983,9 @@ class IntegrationServiceEnvironmentSkuDefinition(msrest.serialization.Model):
     :param resource_type: The resource type.
     :type resource_type: str
     :param sku: The sku.
-    :type sku: ~logic_management_client.models.IntegrationServiceEnvironmentSkuDefinitionSku
+    :type sku: ~azure.mgmt.logic.models.IntegrationServiceEnvironmentSkuDefinitionSku
     :param capacity: The sku capacity.
-    :type capacity: ~logic_management_client.models.IntegrationServiceEnvironmentSkuCapacity
+    :type capacity: ~azure.mgmt.logic.models.IntegrationServiceEnvironmentSkuCapacity
     """
 
     _attribute_map = {
@@ -3957,8 +4007,8 @@ class IntegrationServiceEnvironmentSkuDefinition(msrest.serialization.Model):
 class IntegrationServiceEnvironmentSkuDefinitionSku(msrest.serialization.Model):
     """The sku.
 
-    :param name: The sku name. Possible values include: 'NotSpecified', 'Premium', 'Developer'.
-    :type name: str or ~logic_management_client.models.IntegrationServiceEnvironmentSkuName
+    :param name: The sku name. Possible values include: "NotSpecified", "Premium", "Developer".
+    :type name: str or ~azure.mgmt.logic.models.IntegrationServiceEnvironmentSkuName
     :param tier: The sku tier.
     :type tier: str
     """
@@ -3981,7 +4031,7 @@ class IntegrationServiceEnvironmentSkuList(msrest.serialization.Model):
     """The list of integration service environment skus.
 
     :param value: The list of integration service environment skus.
-    :type value: list[~logic_management_client.models.IntegrationServiceEnvironmentSkuDefinition]
+    :type value: list[~azure.mgmt.logic.models.IntegrationServiceEnvironmentSkuDefinition]
     :param next_link: The URL to get the next set of results.
     :type next_link: str
     """
@@ -4007,14 +4057,14 @@ class IntegrationServiceEnvironmentSubnetNetworkHealth(msrest.serialization.Mode
 
     :param outbound_network_dependencies: The outbound network dependencies.
     :type outbound_network_dependencies:
-     list[~logic_management_client.models.IntegrationServiceEnvironmentNetworkDependency]
+     list[~azure.mgmt.logic.models.IntegrationServiceEnvironmentNetworkDependency]
     :param outbound_network_health: The integration service environment network health.
     :type outbound_network_health:
-     ~logic_management_client.models.IntegrationServiceEnvironmentNetworkDependencyHealth
+     ~azure.mgmt.logic.models.IntegrationServiceEnvironmentNetworkDependencyHealth
     :param network_dependency_health_state: Required. The integration service environment network
-     health state. Possible values include: 'NotSpecified', 'Unknown', 'Available', 'NotAvailable'.
+     health state. Possible values include: "NotSpecified", "Unknown", "Available", "NotAvailable".
     :type network_dependency_health_state: str or
-     ~logic_management_client.models.IntegrationServiceEnvironmentNetworkEndPointAccessibilityState
+     ~azure.mgmt.logic.models.IntegrationServiceEnvironmentNetworkEndPointAccessibilityState
     """
 
     _validation = {
@@ -4034,7 +4084,7 @@ class IntegrationServiceEnvironmentSubnetNetworkHealth(msrest.serialization.Mode
         super(IntegrationServiceEnvironmentSubnetNetworkHealth, self).__init__(**kwargs)
         self.outbound_network_dependencies = kwargs.get('outbound_network_dependencies', None)
         self.outbound_network_health = kwargs.get('outbound_network_health', None)
-        self.network_dependency_health_state = kwargs.get('network_dependency_health_state', None)
+        self.network_dependency_health_state = kwargs['network_dependency_health_state']
 
 
 class IpAddress(msrest.serialization.Model):
@@ -4054,6 +4104,25 @@ class IpAddress(msrest.serialization.Model):
     ):
         super(IpAddress, self).__init__(**kwargs)
         self.address = kwargs.get('address', None)
+
+
+class IpAddressRange(msrest.serialization.Model):
+    """The ip address range.
+
+    :param address_range: The IP address range.
+    :type address_range: str
+    """
+
+    _attribute_map = {
+        'address_range': {'key': 'addressRange', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(IpAddressRange, self).__init__(**kwargs)
+        self.address_range = kwargs.get('address_range', None)
 
 
 class JsonSchema(msrest.serialization.Model):
@@ -4085,7 +4154,7 @@ class KeyVaultKey(msrest.serialization.Model):
     :param kid: The key id.
     :type kid: str
     :param attributes: The key attributes.
-    :type attributes: ~logic_management_client.models.KeyVaultKeyAttributes
+    :type attributes: ~azure.mgmt.logic.models.KeyVaultKeyAttributes
     """
 
     _attribute_map = {
@@ -4133,7 +4202,7 @@ class KeyVaultKeyCollection(msrest.serialization.Model):
     """Collection of key vault keys.
 
     :param value: The key vault keys.
-    :type value: list[~logic_management_client.models.KeyVaultKey]
+    :type value: list[~azure.mgmt.logic.models.KeyVaultKey]
     :param skip_token: The skip token.
     :type skip_token: str
     """
@@ -4158,7 +4227,7 @@ class KeyVaultKeyReference(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param key_vault: Required. The key vault reference.
-    :type key_vault: ~logic_management_client.models.KeyVaultKeyReferenceKeyVault
+    :type key_vault: ~azure.mgmt.logic.models.KeyVaultKeyReferenceKeyVault
     :param key_name: Required. The private key name in key vault.
     :type key_name: str
     :param key_version: The private key version in key vault.
@@ -4181,8 +4250,8 @@ class KeyVaultKeyReference(msrest.serialization.Model):
         **kwargs
     ):
         super(KeyVaultKeyReference, self).__init__(**kwargs)
-        self.key_vault = kwargs.get('key_vault', None)
-        self.key_name = kwargs.get('key_name', None)
+        self.key_vault = kwargs['key_vault']
+        self.key_name = kwargs['key_name']
         self.key_version = kwargs.get('key_version', None)
 
 
@@ -4227,21 +4296,20 @@ class KeyVaultReference(ResourceReference):
 
     :param id: The resource id.
     :type id: str
-    :ivar name: Gets the resource name.
-    :vartype name: str
     :ivar type: Gets the resource type.
     :vartype type: str
+    :param name: The key vault name.
+    :type name: str
     """
 
     _validation = {
-        'name': {'readonly': True},
         'type': {'readonly': True},
     }
 
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
     }
 
     def __init__(
@@ -4249,6 +4317,7 @@ class KeyVaultReference(ResourceReference):
         **kwargs
     ):
         super(KeyVaultReference, self).__init__(**kwargs)
+        self.name = kwargs.get('name', None)
 
 
 class ListKeyVaultKeysDefinition(msrest.serialization.Model):
@@ -4257,7 +4326,7 @@ class ListKeyVaultKeysDefinition(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param key_vault: Required. The key vault reference.
-    :type key_vault: ~logic_management_client.models.KeyVaultReference
+    :type key_vault: ~azure.mgmt.logic.models.KeyVaultReference
     :param skip_token: The skip token.
     :type skip_token: str
     """
@@ -4276,7 +4345,7 @@ class ListKeyVaultKeysDefinition(msrest.serialization.Model):
         **kwargs
     ):
         super(ListKeyVaultKeysDefinition, self).__init__(**kwargs)
-        self.key_vault = kwargs.get('key_vault', None)
+        self.key_vault = kwargs['key_vault']
         self.skip_token = kwargs.get('skip_token', None)
 
 
@@ -4296,7 +4365,7 @@ class ManagedApi(Resource):
     :param tags: A set of tags. The resource tags.
     :type tags: dict[str, str]
     :param properties: The api resource properties.
-    :type properties: ~logic_management_client.models.ApiResourceProperties
+    :type properties: ~azure.mgmt.logic.models.ApiResourceProperties
     """
 
     _validation = {
@@ -4326,7 +4395,7 @@ class ManagedApiListResult(msrest.serialization.Model):
     """The list of managed APIs.
 
     :param value: The managed APIs.
-    :type value: list[~logic_management_client.models.ManagedApi]
+    :type value: list[~azure.mgmt.logic.models.ManagedApi]
     :param next_link: The URL to get the next set of results.
     :type next_link: str
     """
@@ -4351,10 +4420,9 @@ class NetworkConfiguration(msrest.serialization.Model):
     :param virtual_network_address_space: Gets the virtual network address space.
     :type virtual_network_address_space: str
     :param access_endpoint: The access endpoint.
-    :type access_endpoint:
-     ~logic_management_client.models.IntegrationServiceEnvironmentAccessEndpoint
+    :type access_endpoint: ~azure.mgmt.logic.models.IntegrationServiceEnvironmentAccessEndpoint
     :param subnets: The subnets.
-    :type subnets: list[~logic_management_client.models.ResourceReference]
+    :type subnets: list[~azure.mgmt.logic.models.ResourceReference]
     """
 
     _attribute_map = {
@@ -4373,18 +4441,97 @@ class NetworkConfiguration(msrest.serialization.Model):
         self.subnets = kwargs.get('subnets', None)
 
 
-class Operation(msrest.serialization.Model):
-    """Logic REST API operation.
+class OpenAuthenticationAccessPolicies(msrest.serialization.Model):
+    """AuthenticationPolicy of type Open.
 
-    :param name: Operation name: {provider}/{resource}/{operation}.
+    :param policies: Open authentication policies.
+    :type policies: dict[str, ~azure.mgmt.logic.models.OpenAuthenticationAccessPolicy]
+    """
+
+    _attribute_map = {
+        'policies': {'key': 'policies', 'type': '{OpenAuthenticationAccessPolicy}'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(OpenAuthenticationAccessPolicies, self).__init__(**kwargs)
+        self.policies = kwargs.get('policies', None)
+
+
+class OpenAuthenticationAccessPolicy(msrest.serialization.Model):
+    """Open authentication access policy defined by user.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar type: Type of provider for OAuth. Default value: "AAD".
+    :vartype type: str
+    :param claims: The access policy claims.
+    :type claims: list[~azure.mgmt.logic.models.OpenAuthenticationPolicyClaim]
+    """
+
+    _validation = {
+        'type': {'readonly': True, 'constant': True},
+    }
+
+    _attribute_map = {
+        'type': {'key': 'type', 'type': 'str'},
+        'claims': {'key': 'claims', 'type': '[OpenAuthenticationPolicyClaim]'},
+    }
+
+    type = "AAD"
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(OpenAuthenticationAccessPolicy, self).__init__(**kwargs)
+        self.type = None
+        self.claims = kwargs.get('claims', None)
+
+
+class OpenAuthenticationPolicyClaim(msrest.serialization.Model):
+    """Open authentication policy claim.
+
+    :param name: The name of the claim.
     :type name: str
-    :param display: The object that represents the operation.
-    :type display: ~logic_management_client.models.OperationDisplay
+    :param value: The value of the claim.
+    :type value: str
     """
 
     _attribute_map = {
         'name': {'key': 'name', 'type': 'str'},
+        'value': {'key': 'value', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(OpenAuthenticationPolicyClaim, self).__init__(**kwargs)
+        self.name = kwargs.get('name', None)
+        self.value = kwargs.get('value', None)
+
+
+class Operation(msrest.serialization.Model):
+    """Logic REST API operation.
+
+    :param origin: Operation: origin.
+    :type origin: str
+    :param name: Operation name: {provider}/{resource}/{operation}.
+    :type name: str
+    :param display: The object that represents the operation.
+    :type display: ~azure.mgmt.logic.models.OperationDisplay
+    :param properties: The properties.
+    :type properties: object
+    """
+
+    _attribute_map = {
+        'origin': {'key': 'origin', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
         'display': {'key': 'display', 'type': 'OperationDisplay'},
+        'properties': {'key': 'properties', 'type': 'object'},
     }
 
     def __init__(
@@ -4392,8 +4539,10 @@ class Operation(msrest.serialization.Model):
         **kwargs
     ):
         super(Operation, self).__init__(**kwargs)
+        self.origin = kwargs.get('origin', None)
         self.name = kwargs.get('name', None)
         self.display = kwargs.get('display', None)
+        self.properties = kwargs.get('properties', None)
 
 
 class OperationDisplay(msrest.serialization.Model):
@@ -4405,12 +4554,15 @@ class OperationDisplay(msrest.serialization.Model):
     :type resource: str
     :param operation: Operation type: Read, write, delete, etc.
     :type operation: str
+    :param description: Operation: description.
+    :type description: str
     """
 
     _attribute_map = {
         'provider': {'key': 'provider', 'type': 'str'},
         'resource': {'key': 'resource', 'type': 'str'},
         'operation': {'key': 'operation', 'type': 'str'},
+        'description': {'key': 'description', 'type': 'str'},
     }
 
     def __init__(
@@ -4421,13 +4573,14 @@ class OperationDisplay(msrest.serialization.Model):
         self.provider = kwargs.get('provider', None)
         self.resource = kwargs.get('resource', None)
         self.operation = kwargs.get('operation', None)
+        self.description = kwargs.get('description', None)
 
 
 class OperationListResult(msrest.serialization.Model):
     """Result of the request to list Logic operations. It contains a list of operations and a URL link to get the next set of results.
 
     :param value: List of Logic operations supported by the Logic resource provider.
-    :type value: list[~logic_management_client.models.Operation]
+    :type value: list[~azure.mgmt.logic.models.Operation]
     :param next_link: URL to get the next set of operation list results if there are any.
     :type next_link: str
     """
@@ -4454,11 +4607,11 @@ class OperationResultProperties(msrest.serialization.Model):
     :param end_time: The end time of the workflow scope repetition.
     :type end_time: ~datetime.datetime
     :param correlation: The correlation properties.
-    :type correlation: ~logic_management_client.models.RunActionCorrelation
+    :type correlation: ~azure.mgmt.logic.models.RunActionCorrelation
     :param status: The status of the workflow scope repetition. Possible values include:
-     'NotSpecified', 'Paused', 'Running', 'Waiting', 'Succeeded', 'Skipped', 'Suspended',
-     'Cancelled', 'Failed', 'Faulted', 'TimedOut', 'Aborted', 'Ignored'.
-    :type status: str or ~logic_management_client.models.WorkflowStatus
+     "NotSpecified", "Paused", "Running", "Waiting", "Succeeded", "Skipped", "Suspended",
+     "Cancelled", "Failed", "Faulted", "TimedOut", "Aborted", "Ignored".
+    :type status: str or ~azure.mgmt.logic.models.WorkflowStatus
     :param code: The workflow scope repetition code.
     :type code: str
     :param error: Any object.
@@ -4497,11 +4650,11 @@ class OperationResult(OperationResultProperties):
     :param end_time: The end time of the workflow scope repetition.
     :type end_time: ~datetime.datetime
     :param correlation: The correlation properties.
-    :type correlation: ~logic_management_client.models.RunActionCorrelation
+    :type correlation: ~azure.mgmt.logic.models.RunActionCorrelation
     :param status: The status of the workflow scope repetition. Possible values include:
-     'NotSpecified', 'Paused', 'Running', 'Waiting', 'Succeeded', 'Skipped', 'Suspended',
-     'Cancelled', 'Failed', 'Faulted', 'TimedOut', 'Aborted', 'Ignored'.
-    :type status: str or ~logic_management_client.models.WorkflowStatus
+     "NotSpecified", "Paused", "Running", "Waiting", "Succeeded", "Skipped", "Suspended",
+     "Cancelled", "Failed", "Faulted", "TimedOut", "Aborted", "Ignored".
+    :type status: str or ~azure.mgmt.logic.models.WorkflowStatus
     :param code: The workflow scope repetition code.
     :type code: str
     :param error: Any object.
@@ -4511,15 +4664,15 @@ class OperationResult(OperationResultProperties):
     :ivar inputs: Gets the inputs.
     :vartype inputs: object
     :ivar inputs_link: Gets the link to inputs.
-    :vartype inputs_link: ~logic_management_client.models.ContentLink
+    :vartype inputs_link: ~azure.mgmt.logic.models.ContentLink
     :ivar outputs: Gets the outputs.
     :vartype outputs: object
     :ivar outputs_link: Gets the link to outputs.
-    :vartype outputs_link: ~logic_management_client.models.ContentLink
+    :vartype outputs_link: ~azure.mgmt.logic.models.ContentLink
     :ivar tracked_properties: Gets the tracked properties.
     :vartype tracked_properties: object
     :param retry_history: Gets the retry histories.
-    :type retry_history: list[~logic_management_client.models.RetryHistory]
+    :type retry_history: list[~azure.mgmt.logic.models.RetryHistory]
     :param iteration_count:
     :type iteration_count: int
     """
@@ -4569,7 +4722,7 @@ class PartnerContent(msrest.serialization.Model):
     """The integration account partner content.
 
     :param b2_b: The B2B partner content.
-    :type b2_b: ~logic_management_client.models.B2BPartnerContent
+    :type b2_b: ~azure.mgmt.logic.models.B2BPartnerContent
     """
 
     _attribute_map = {
@@ -4592,11 +4745,11 @@ class RecurrenceSchedule(msrest.serialization.Model):
     :param hours: The hours.
     :type hours: list[int]
     :param week_days: The days of the week.
-    :type week_days: list[str or ~logic_management_client.models.DaysOfWeek]
+    :type week_days: list[str or ~azure.mgmt.logic.models.DaysOfWeek]
     :param month_days: The month days.
     :type month_days: list[int]
     :param monthly_occurrences: The monthly occurrences.
-    :type monthly_occurrences: list[~logic_management_client.models.RecurrenceScheduleOccurrence]
+    :type monthly_occurrences: list[~azure.mgmt.logic.models.RecurrenceScheduleOccurrence]
     """
 
     _attribute_map = {
@@ -4622,9 +4775,9 @@ class RecurrenceSchedule(msrest.serialization.Model):
 class RecurrenceScheduleOccurrence(msrest.serialization.Model):
     """The recurrence schedule occurrence.
 
-    :param day: The day of the week. Possible values include: 'Sunday', 'Monday', 'Tuesday',
-     'Wednesday', 'Thursday', 'Friday', 'Saturday'.
-    :type day: str or ~logic_management_client.models.DayOfWeek
+    :param day: The day of the week. Possible values include: "Sunday", "Monday", "Tuesday",
+     "Wednesday", "Thursday", "Friday", "Saturday".
+    :type day: str or ~azure.mgmt.logic.models.DayOfWeek
     :param occurrence: The occurrence.
     :type occurrence: int
     """
@@ -4646,8 +4799,8 @@ class RecurrenceScheduleOccurrence(msrest.serialization.Model):
 class RegenerateActionParameter(msrest.serialization.Model):
     """The access key regenerate action content.
 
-    :param key_type: The key type. Possible values include: 'NotSpecified', 'Primary', 'Secondary'.
-    :type key_type: str or ~logic_management_client.models.KeyType
+    :param key_type: The key type. Possible values include: "NotSpecified", "Primary", "Secondary".
+    :type key_type: str or ~azure.mgmt.logic.models.KeyType
     """
 
     _attribute_map = {
@@ -4688,7 +4841,7 @@ class RepetitionIndex(msrest.serialization.Model):
     ):
         super(RepetitionIndex, self).__init__(**kwargs)
         self.scope_name = kwargs.get('scope_name', None)
-        self.item_index = kwargs.get('item_index', None)
+        self.item_index = kwargs['item_index']
 
 
 class Request(msrest.serialization.Model):
@@ -4734,7 +4887,7 @@ class RequestHistory(Resource):
     :param tags: A set of tags. The resource tags.
     :type tags: dict[str, str]
     :param properties: The request history properties.
-    :type properties: ~logic_management_client.models.RequestHistoryProperties
+    :type properties: ~azure.mgmt.logic.models.RequestHistoryProperties
     """
 
     _validation = {
@@ -4764,7 +4917,7 @@ class RequestHistoryListResult(msrest.serialization.Model):
     """The list of workflow request histories.
 
     :param value: A list of workflow request histories.
-    :type value: list[~logic_management_client.models.RequestHistory]
+    :type value: list[~azure.mgmt.logic.models.RequestHistory]
     :param next_link: The URL to get the next set of results.
     :type next_link: str
     """
@@ -4791,9 +4944,9 @@ class RequestHistoryProperties(msrest.serialization.Model):
     :param end_time: The time the request ended.
     :type end_time: ~datetime.datetime
     :param request: The request.
-    :type request: ~logic_management_client.models.Request
+    :type request: ~azure.mgmt.logic.models.Request
     :param response: The response.
-    :type response: ~logic_management_client.models.Response
+    :type response: ~azure.mgmt.logic.models.Response
     """
 
     _attribute_map = {
@@ -4822,7 +4975,7 @@ class Response(msrest.serialization.Model):
     :param status_code: The status code of the response.
     :type status_code: int
     :param body_link: Details on the location of the body content.
-    :type body_link: ~logic_management_client.models.ContentLink
+    :type body_link: ~azure.mgmt.logic.models.ContentLink
     """
 
     _attribute_map = {
@@ -4855,7 +5008,7 @@ class RetryHistory(msrest.serialization.Model):
     :param service_request_id: Gets the service request Id.
     :type service_request_id: str
     :param error: Gets the error response.
-    :type error: ~logic_management_client.models.ErrorResponse
+    :type error: ~azure.mgmt.logic.models.ErrorResponse
     """
 
     _attribute_map = {
@@ -4934,7 +5087,7 @@ class SetTriggerStateActionDefinition(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param source: Required. The source.
-    :type source: ~logic_management_client.models.WorkflowTrigger
+    :type source: ~azure.mgmt.logic.models.WorkflowTriggerReference
     """
 
     _validation = {
@@ -4942,7 +5095,7 @@ class SetTriggerStateActionDefinition(msrest.serialization.Model):
     }
 
     _attribute_map = {
-        'source': {'key': 'source', 'type': 'WorkflowTrigger'},
+        'source': {'key': 'source', 'type': 'WorkflowTriggerReference'},
     }
 
     def __init__(
@@ -4950,7 +5103,7 @@ class SetTriggerStateActionDefinition(msrest.serialization.Model):
         **kwargs
     ):
         super(SetTriggerStateActionDefinition, self).__init__(**kwargs)
-        self.source = kwargs.get('source', None)
+        self.source = kwargs['source']
 
 
 class Sku(msrest.serialization.Model):
@@ -4958,11 +5111,11 @@ class Sku(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param name: Required. The name. Possible values include: 'NotSpecified', 'Free', 'Shared',
-     'Basic', 'Standard', 'Premium'.
-    :type name: str or ~logic_management_client.models.SkuName
+    :param name: Required. The name. Possible values include: "NotSpecified", "Free", "Shared",
+     "Basic", "Standard", "Premium".
+    :type name: str or ~azure.mgmt.logic.models.SkuName
     :param plan: The reference to plan.
-    :type plan: ~logic_management_client.models.ResourceReference
+    :type plan: ~azure.mgmt.logic.models.ResourceReference
     """
 
     _validation = {
@@ -4979,7 +5132,7 @@ class Sku(msrest.serialization.Model):
         **kwargs
     ):
         super(Sku, self).__init__(**kwargs)
-        self.name = kwargs.get('name', None)
+        self.name = kwargs['name']
         self.plan = kwargs.get('plan', None)
 
 
@@ -5024,7 +5177,7 @@ class SwaggerCustomDynamicList(msrest.serialization.Model):
      item.
     :type item_title_path: str
     :param parameters: The parameters.
-    :type parameters: dict[str, ~logic_management_client.models.SwaggerCustomDynamicProperties]
+    :type parameters: dict[str, ~azure.mgmt.logic.models.SwaggerCustomDynamicProperties]
     """
 
     _attribute_map = {
@@ -5057,7 +5210,7 @@ class SwaggerCustomDynamicProperties(msrest.serialization.Model):
     :param value_path: Json pointer to the dynamic schema on the response body.
     :type value_path: str
     :param parameters: The operation parameters.
-    :type parameters: dict[str, ~logic_management_client.models.SwaggerCustomDynamicProperties]
+    :type parameters: dict[str, ~azure.mgmt.logic.models.SwaggerCustomDynamicProperties]
     """
 
     _attribute_map = {
@@ -5107,11 +5260,11 @@ class SwaggerCustomDynamicTree(msrest.serialization.Model):
     """The swagger custom dynamic tree.
 
     :param settings: The tree settings.
-    :type settings: ~logic_management_client.models.SwaggerCustomDynamicTreeSettings
+    :type settings: ~azure.mgmt.logic.models.SwaggerCustomDynamicTreeSettings
     :param open: The tree on-open configuration.
-    :type open: ~logic_management_client.models.SwaggerCustomDynamicTreeCommand
+    :type open: ~azure.mgmt.logic.models.SwaggerCustomDynamicTreeCommand
     :param browse: The tree on-browse configuration.
-    :type browse: ~logic_management_client.models.SwaggerCustomDynamicTreeCommand
+    :type browse: ~azure.mgmt.logic.models.SwaggerCustomDynamicTreeCommand
     """
 
     _attribute_map = {
@@ -5152,7 +5305,7 @@ class SwaggerCustomDynamicTreeCommand(msrest.serialization.Model):
      item.
     :type selectable_filter: str
     :param parameters: Dictionary of :code:`<SwaggerCustomDynamicTreeParameter>`.
-    :type parameters: dict[str, ~logic_management_client.models.SwaggerCustomDynamicTreeParameter]
+    :type parameters: dict[str, ~azure.mgmt.logic.models.SwaggerCustomDynamicTreeParameter]
     """
 
     _attribute_map = {
@@ -5268,15 +5421,15 @@ class SwaggerSchema(msrest.serialization.Model):
 
     :param ref: The reference.
     :type ref: str
-    :param type: The type. Possible values include: 'String', 'Number', 'Integer', 'Boolean',
-     'Array', 'File', 'Object', 'Null'.
-    :type type: str or ~logic_management_client.models.SwaggerSchemaType
+    :param type: The type. Possible values include: "String", "Number", "Integer", "Boolean",
+     "Array", "File", "Object", "Null".
+    :type type: str or ~azure.mgmt.logic.models.SwaggerSchemaType
     :param title: The title.
     :type title: str
     :param items: The items schema.
-    :type items: ~logic_management_client.models.SwaggerSchema
+    :type items: ~azure.mgmt.logic.models.SwaggerSchema
     :param properties: The object properties.
-    :type properties: dict[str, ~logic_management_client.models.SwaggerSchema]
+    :type properties: dict[str, ~azure.mgmt.logic.models.SwaggerSchema]
     :param additional_properties: The additional properties.
     :type additional_properties: object
     :param required: The object required properties.
@@ -5286,28 +5439,28 @@ class SwaggerSchema(msrest.serialization.Model):
     :param min_properties: The minimum number of allowed properties.
     :type min_properties: int
     :param all_of: The schemas which must pass validation when this schema is used.
-    :type all_of: list[~logic_management_client.models.SwaggerSchema]
+    :type all_of: list[~azure.mgmt.logic.models.SwaggerSchema]
     :param discriminator: The discriminator.
     :type discriminator: str
     :param read_only: Indicates whether this property must be present in the a request.
     :type read_only: bool
     :param xml: The xml representation format for a property.
-    :type xml: ~logic_management_client.models.SwaggerXml
+    :type xml: ~azure.mgmt.logic.models.SwaggerXml
     :param external_docs: The external documentation.
-    :type external_docs: ~logic_management_client.models.SwaggerExternalDocumentation
+    :type external_docs: ~azure.mgmt.logic.models.SwaggerExternalDocumentation
     :param example: The example value.
     :type example: object
     :param notification_url_extension: Indicates the notification url extension. If this is set,
      the property's value should be a callback url for a webhook.
     :type notification_url_extension: bool
     :param dynamic_schema_old: The dynamic schema configuration.
-    :type dynamic_schema_old: ~logic_management_client.models.SwaggerCustomDynamicSchema
+    :type dynamic_schema_old: ~azure.mgmt.logic.models.SwaggerCustomDynamicSchema
     :param dynamic_schema_new: The dynamic schema configuration.
-    :type dynamic_schema_new: ~logic_management_client.models.SwaggerCustomDynamicProperties
+    :type dynamic_schema_new: ~azure.mgmt.logic.models.SwaggerCustomDynamicProperties
     :param dynamic_list_new: The dynamic list.
-    :type dynamic_list_new: ~logic_management_client.models.SwaggerCustomDynamicList
+    :type dynamic_list_new: ~azure.mgmt.logic.models.SwaggerCustomDynamicList
     :param dynamic_tree: The dynamic values tree configuration.
-    :type dynamic_tree: ~logic_management_client.models.SwaggerCustomDynamicTree
+    :type dynamic_tree: ~azure.mgmt.logic.models.SwaggerCustomDynamicTree
     """
 
     _attribute_map = {
@@ -5404,20 +5557,22 @@ class TrackingEvent(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param event_level: Required. The event level. Possible values include: 'LogAlways',
-     'Critical', 'Error', 'Warning', 'Informational', 'Verbose'.
-    :type event_level: str or ~logic_management_client.models.EventLevel
+    :param event_level: Required. The event level. Possible values include: "LogAlways",
+     "Critical", "Error", "Warning", "Informational", "Verbose".
+    :type event_level: str or ~azure.mgmt.logic.models.EventLevel
     :param event_time: Required. The event time.
     :type event_time: ~datetime.datetime
-    :param record_type: Required. The record type. Possible values include: 'NotSpecified',
-     'Custom', 'AS2Message', 'AS2MDN', 'X12Interchange', 'X12FunctionalGroup', 'X12TransactionSet',
-     'X12InterchangeAcknowledgment', 'X12FunctionalGroupAcknowledgment',
-     'X12TransactionSetAcknowledgment', 'EdifactInterchange', 'EdifactFunctionalGroup',
-     'EdifactTransactionSet', 'EdifactInterchangeAcknowledgment',
-     'EdifactFunctionalGroupAcknowledgment', 'EdifactTransactionSetAcknowledgment'.
-    :type record_type: str or ~logic_management_client.models.TrackingRecordType
+    :param record_type: Required. The record type. Possible values include: "NotSpecified",
+     "Custom", "AS2Message", "AS2MDN", "X12Interchange", "X12FunctionalGroup", "X12TransactionSet",
+     "X12InterchangeAcknowledgment", "X12FunctionalGroupAcknowledgment",
+     "X12TransactionSetAcknowledgment", "EdifactInterchange", "EdifactFunctionalGroup",
+     "EdifactTransactionSet", "EdifactInterchangeAcknowledgment",
+     "EdifactFunctionalGroupAcknowledgment", "EdifactTransactionSetAcknowledgment".
+    :type record_type: str or ~azure.mgmt.logic.models.TrackingRecordType
+    :param record: The record.
+    :type record: object
     :param error: The error.
-    :type error: ~logic_management_client.models.TrackingEventErrorInfo
+    :type error: ~azure.mgmt.logic.models.TrackingEventErrorInfo
     """
 
     _validation = {
@@ -5430,6 +5585,7 @@ class TrackingEvent(msrest.serialization.Model):
         'event_level': {'key': 'eventLevel', 'type': 'str'},
         'event_time': {'key': 'eventTime', 'type': 'iso-8601'},
         'record_type': {'key': 'recordType', 'type': 'str'},
+        'record': {'key': 'record', 'type': 'object'},
         'error': {'key': 'error', 'type': 'TrackingEventErrorInfo'},
     }
 
@@ -5438,9 +5594,10 @@ class TrackingEvent(msrest.serialization.Model):
         **kwargs
     ):
         super(TrackingEvent, self).__init__(**kwargs)
-        self.event_level = kwargs.get('event_level', None)
-        self.event_time = kwargs.get('event_time', None)
-        self.record_type = kwargs.get('record_type', None)
+        self.event_level = kwargs['event_level']
+        self.event_time = kwargs['event_time']
+        self.record_type = kwargs['record_type']
+        self.record = kwargs.get('record', None)
         self.error = kwargs.get('error', None)
 
 
@@ -5474,11 +5631,11 @@ class TrackingEventsDefinition(msrest.serialization.Model):
 
     :param source_type: Required. The source type.
     :type source_type: str
-    :param track_events_options: The track events options. Possible values include: 'None',
-     'DisableSourceInfoEnrich'.
-    :type track_events_options: str or ~logic_management_client.models.TrackEventsOperationOptions
+    :param track_events_options: The track events options. Possible values include: "None",
+     "DisableSourceInfoEnrich".
+    :type track_events_options: str or ~azure.mgmt.logic.models.TrackEventsOperationOptions
     :param events: Required. The events.
-    :type events: list[~logic_management_client.models.TrackingEvent]
+    :type events: list[~azure.mgmt.logic.models.TrackingEvent]
     """
 
     _validation = {
@@ -5497,9 +5654,9 @@ class TrackingEventsDefinition(msrest.serialization.Model):
         **kwargs
     ):
         super(TrackingEventsDefinition, self).__init__(**kwargs)
-        self.source_type = kwargs.get('source_type', None)
+        self.source_type = kwargs['source_type']
         self.track_events_options = kwargs.get('track_events_options', None)
-        self.events = kwargs.get('events', None)
+        self.events = kwargs['events']
 
 
 class Workflow(Resource):
@@ -5517,32 +5674,36 @@ class Workflow(Resource):
     :type location: str
     :param tags: A set of tags. The resource tags.
     :type tags: dict[str, str]
-    :ivar provisioning_state: Gets the provisioning state. Possible values include: 'NotSpecified',
-     'Accepted', 'Running', 'Ready', 'Creating', 'Created', 'Deleting', 'Deleted', 'Canceled',
-     'Failed', 'Succeeded', 'Moving', 'Updating', 'Registering', 'Registered', 'Unregistering',
-     'Unregistered', 'Completed'.
-    :vartype provisioning_state: str or ~logic_management_client.models.WorkflowProvisioningState
+    :ivar provisioning_state: Gets the provisioning state. Possible values include: "NotSpecified",
+     "Accepted", "Running", "Ready", "Creating", "Created", "Deleting", "Deleted", "Canceled",
+     "Failed", "Succeeded", "Moving", "Updating", "Registering", "Registered", "Unregistering",
+     "Unregistered", "Completed", "Renewing", "Pending", "Waiting", "InProgress".
+    :vartype provisioning_state: str or ~azure.mgmt.logic.models.WorkflowProvisioningState
     :ivar created_time: Gets the created time.
     :vartype created_time: ~datetime.datetime
     :ivar changed_time: Gets the changed time.
     :vartype changed_time: ~datetime.datetime
-    :param state: The state. Possible values include: 'NotSpecified', 'Completed', 'Enabled',
-     'Disabled', 'Deleted', 'Suspended'.
-    :type state: str or ~logic_management_client.models.WorkflowState
+    :param state: The state. Possible values include: "NotSpecified", "Completed", "Enabled",
+     "Disabled", "Deleted", "Suspended".
+    :type state: str or ~azure.mgmt.logic.models.WorkflowState
     :ivar version: Gets the version.
     :vartype version: str
     :ivar access_endpoint: Gets the access endpoint.
     :vartype access_endpoint: str
     :param endpoints_configuration: The endpoints configuration.
-    :type endpoints_configuration: ~logic_management_client.models.FlowEndpointsConfiguration
+    :type endpoints_configuration: ~azure.mgmt.logic.models.FlowEndpointsConfiguration
+    :param access_control: The access control configuration.
+    :type access_control: ~azure.mgmt.logic.models.FlowAccessControlConfiguration
+    :ivar sku: The sku.
+    :vartype sku: ~azure.mgmt.logic.models.Sku
     :param integration_account: The integration account.
-    :type integration_account: ~logic_management_client.models.ResourceReference
+    :type integration_account: ~azure.mgmt.logic.models.ResourceReference
     :param integration_service_environment: The integration service environment.
-    :type integration_service_environment: ~logic_management_client.models.ResourceReference
+    :type integration_service_environment: ~azure.mgmt.logic.models.ResourceReference
     :param definition: The definition.
     :type definition: object
     :param parameters: The parameters.
-    :type parameters: dict[str, ~logic_management_client.models.WorkflowParameter]
+    :type parameters: dict[str, ~azure.mgmt.logic.models.WorkflowParameter]
     """
 
     _validation = {
@@ -5554,6 +5715,7 @@ class Workflow(Resource):
         'changed_time': {'readonly': True},
         'version': {'readonly': True},
         'access_endpoint': {'readonly': True},
+        'sku': {'readonly': True},
     }
 
     _attribute_map = {
@@ -5569,6 +5731,8 @@ class Workflow(Resource):
         'version': {'key': 'properties.version', 'type': 'str'},
         'access_endpoint': {'key': 'properties.accessEndpoint', 'type': 'str'},
         'endpoints_configuration': {'key': 'properties.endpointsConfiguration', 'type': 'FlowEndpointsConfiguration'},
+        'access_control': {'key': 'properties.accessControl', 'type': 'FlowAccessControlConfiguration'},
+        'sku': {'key': 'properties.sku', 'type': 'Sku'},
         'integration_account': {'key': 'properties.integrationAccount', 'type': 'ResourceReference'},
         'integration_service_environment': {'key': 'properties.integrationServiceEnvironment', 'type': 'ResourceReference'},
         'definition': {'key': 'properties.definition', 'type': 'object'},
@@ -5587,6 +5751,8 @@ class Workflow(Resource):
         self.version = None
         self.access_endpoint = None
         self.endpoints_configuration = kwargs.get('endpoints_configuration', None)
+        self.access_control = kwargs.get('access_control', None)
+        self.sku = None
         self.integration_account = kwargs.get('integration_account', None)
         self.integration_service_environment = kwargs.get('integration_service_environment', None)
         self.definition = kwargs.get('definition', None)
@@ -5596,9 +5762,9 @@ class Workflow(Resource):
 class WorkflowFilter(msrest.serialization.Model):
     """The workflow filter.
 
-    :param state: The state of workflows. Possible values include: 'NotSpecified', 'Completed',
-     'Enabled', 'Disabled', 'Deleted', 'Suspended'.
-    :type state: str or ~logic_management_client.models.WorkflowState
+    :param state: The state of workflows. Possible values include: "NotSpecified", "Completed",
+     "Enabled", "Disabled", "Deleted", "Suspended".
+    :type state: str or ~azure.mgmt.logic.models.WorkflowState
     """
 
     _attribute_map = {
@@ -5617,7 +5783,7 @@ class WorkflowListResult(msrest.serialization.Model):
     """The list of workflows.
 
     :param value: The list of workflows.
-    :type value: list[~logic_management_client.models.Workflow]
+    :type value: list[~azure.mgmt.logic.models.Workflow]
     :param next_link: The URL to get the next set of results.
     :type next_link: str
     """
@@ -5639,9 +5805,9 @@ class WorkflowListResult(msrest.serialization.Model):
 class WorkflowParameter(msrest.serialization.Model):
     """The workflow parameters.
 
-    :param type: The type. Possible values include: 'NotSpecified', 'String', 'SecureString',
-     'Int', 'Float', 'Bool', 'Array', 'Object', 'SecureObject'.
-    :type type: str or ~logic_management_client.models.ParameterType
+    :param type: The type. Possible values include: "NotSpecified", "String", "SecureString",
+     "Int", "Float", "Bool", "Array", "Object", "SecureObject".
+    :type type: str or ~azure.mgmt.logic.models.ParameterType
     :param value: The value.
     :type value: object
     :param metadata: The metadata.
@@ -5673,9 +5839,9 @@ class WorkflowOutputParameter(WorkflowParameter):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :param type: The type. Possible values include: 'NotSpecified', 'String', 'SecureString',
-     'Int', 'Float', 'Bool', 'Array', 'Object', 'SecureObject'.
-    :type type: str or ~logic_management_client.models.ParameterType
+    :param type: The type. Possible values include: "NotSpecified", "String", "SecureString",
+     "Int", "Float", "Bool", "Array", "Object", "SecureObject".
+    :type type: str or ~azure.mgmt.logic.models.ParameterType
     :param value: The value.
     :type value: object
     :param metadata: The metadata.
@@ -5706,6 +5872,37 @@ class WorkflowOutputParameter(WorkflowParameter):
         self.error = None
 
 
+class WorkflowReference(ResourceReference):
+    """The workflow reference.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :param id: The resource id.
+    :type id: str
+    :ivar type: Gets the resource type.
+    :vartype type: str
+    :param name: The workflow name.
+    :type name: str
+    """
+
+    _validation = {
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(WorkflowReference, self).__init__(**kwargs)
+        self.name = kwargs.get('name', None)
+
+
 class WorkflowRun(SubResource):
     """The workflow run.
 
@@ -5723,10 +5920,10 @@ class WorkflowRun(SubResource):
     :vartype start_time: ~datetime.datetime
     :ivar end_time: Gets the end time.
     :vartype end_time: ~datetime.datetime
-    :ivar status: Gets the status. Possible values include: 'NotSpecified', 'Paused', 'Running',
-     'Waiting', 'Succeeded', 'Skipped', 'Suspended', 'Cancelled', 'Failed', 'Faulted', 'TimedOut',
-     'Aborted', 'Ignored'.
-    :vartype status: str or ~logic_management_client.models.WorkflowStatus
+    :ivar status: Gets the status. Possible values include: "NotSpecified", "Paused", "Running",
+     "Waiting", "Succeeded", "Skipped", "Suspended", "Cancelled", "Failed", "Faulted", "TimedOut",
+     "Aborted", "Ignored".
+    :vartype status: str or ~azure.mgmt.logic.models.WorkflowStatus
     :ivar code: Gets the code.
     :vartype code: str
     :ivar error: Gets the error.
@@ -5734,15 +5931,15 @@ class WorkflowRun(SubResource):
     :ivar correlation_id: Gets the correlation id.
     :vartype correlation_id: str
     :param correlation: The run correlation.
-    :type correlation: ~logic_management_client.models.Correlation
+    :type correlation: ~azure.mgmt.logic.models.Correlation
     :ivar workflow: Gets the reference to workflow version.
-    :vartype workflow: ~logic_management_client.models.ResourceReference
+    :vartype workflow: ~azure.mgmt.logic.models.ResourceReference
     :ivar trigger: Gets the fired trigger.
-    :vartype trigger: ~logic_management_client.models.WorkflowRunTrigger
+    :vartype trigger: ~azure.mgmt.logic.models.WorkflowRunTrigger
     :ivar outputs: Gets the outputs.
-    :vartype outputs: dict[str, ~logic_management_client.models.WorkflowOutputParameter]
+    :vartype outputs: dict[str, ~azure.mgmt.logic.models.WorkflowOutputParameter]
     :ivar response: Gets the response of the flow run.
-    :vartype response: ~logic_management_client.models.WorkflowRunTrigger
+    :vartype response: ~azure.mgmt.logic.models.WorkflowRunTrigger
     """
 
     _validation = {
@@ -5816,10 +6013,10 @@ class WorkflowRunAction(SubResource):
     :vartype start_time: ~datetime.datetime
     :ivar end_time: Gets the end time.
     :vartype end_time: ~datetime.datetime
-    :ivar status: Gets the status. Possible values include: 'NotSpecified', 'Paused', 'Running',
-     'Waiting', 'Succeeded', 'Skipped', 'Suspended', 'Cancelled', 'Failed', 'Faulted', 'TimedOut',
-     'Aborted', 'Ignored'.
-    :vartype status: str or ~logic_management_client.models.WorkflowStatus
+    :ivar status: Gets the status. Possible values include: "NotSpecified", "Paused", "Running",
+     "Waiting", "Succeeded", "Skipped", "Suspended", "Cancelled", "Failed", "Faulted", "TimedOut",
+     "Aborted", "Ignored".
+    :vartype status: str or ~azure.mgmt.logic.models.WorkflowStatus
     :ivar code: Gets the code.
     :vartype code: str
     :ivar error: Gets the error.
@@ -5827,15 +6024,15 @@ class WorkflowRunAction(SubResource):
     :ivar tracking_id: Gets the tracking id.
     :vartype tracking_id: str
     :param correlation: The correlation properties.
-    :type correlation: ~logic_management_client.models.Correlation
+    :type correlation: ~azure.mgmt.logic.models.RunActionCorrelation
     :ivar inputs_link: Gets the link to inputs.
-    :vartype inputs_link: ~logic_management_client.models.ContentLink
+    :vartype inputs_link: ~azure.mgmt.logic.models.ContentLink
     :ivar outputs_link: Gets the link to outputs.
-    :vartype outputs_link: ~logic_management_client.models.ContentLink
+    :vartype outputs_link: ~azure.mgmt.logic.models.ContentLink
     :ivar tracked_properties: Gets the tracked properties.
     :vartype tracked_properties: object
     :param retry_history: Gets the retry histories.
-    :type retry_history: list[~logic_management_client.models.RetryHistory]
+    :type retry_history: list[~azure.mgmt.logic.models.RetryHistory]
     """
 
     _validation = {
@@ -5863,7 +6060,7 @@ class WorkflowRunAction(SubResource):
         'code': {'key': 'properties.code', 'type': 'str'},
         'error': {'key': 'properties.error', 'type': 'object'},
         'tracking_id': {'key': 'properties.trackingId', 'type': 'str'},
-        'correlation': {'key': 'properties.correlation', 'type': 'Correlation'},
+        'correlation': {'key': 'properties.correlation', 'type': 'RunActionCorrelation'},
         'inputs_link': {'key': 'properties.inputsLink', 'type': 'ContentLink'},
         'outputs_link': {'key': 'properties.outputsLink', 'type': 'ContentLink'},
         'tracked_properties': {'key': 'properties.trackedProperties', 'type': 'object'},
@@ -5893,10 +6090,10 @@ class WorkflowRunAction(SubResource):
 class WorkflowRunActionFilter(msrest.serialization.Model):
     """The workflow run action filter.
 
-    :param status: The status of workflow run action. Possible values include: 'NotSpecified',
-     'Paused', 'Running', 'Waiting', 'Succeeded', 'Skipped', 'Suspended', 'Cancelled', 'Failed',
-     'Faulted', 'TimedOut', 'Aborted', 'Ignored'.
-    :type status: str or ~logic_management_client.models.WorkflowStatus
+    :param status: The status of workflow run action. Possible values include: "NotSpecified",
+     "Paused", "Running", "Waiting", "Succeeded", "Skipped", "Suspended", "Cancelled", "Failed",
+     "Faulted", "TimedOut", "Aborted", "Ignored".
+    :type status: str or ~azure.mgmt.logic.models.WorkflowStatus
     """
 
     _attribute_map = {
@@ -5915,7 +6112,7 @@ class WorkflowRunActionListResult(msrest.serialization.Model):
     """The list of workflow run actions.
 
     :param value: A list of workflow run actions.
-    :type value: list[~logic_management_client.models.WorkflowRunAction]
+    :type value: list[~azure.mgmt.logic.models.WorkflowRunAction]
     :param next_link: The URL to get the next set of results.
     :type next_link: str
     """
@@ -5954,11 +6151,11 @@ class WorkflowRunActionRepetitionDefinition(Resource):
     :param end_time: The end time of the workflow scope repetition.
     :type end_time: ~datetime.datetime
     :param correlation: The correlation properties.
-    :type correlation: ~logic_management_client.models.RunActionCorrelation
+    :type correlation: ~azure.mgmt.logic.models.RunActionCorrelation
     :param status: The status of the workflow scope repetition. Possible values include:
-     'NotSpecified', 'Paused', 'Running', 'Waiting', 'Succeeded', 'Skipped', 'Suspended',
-     'Cancelled', 'Failed', 'Faulted', 'TimedOut', 'Aborted', 'Ignored'.
-    :type status: str or ~logic_management_client.models.WorkflowStatus
+     "NotSpecified", "Paused", "Running", "Waiting", "Succeeded", "Skipped", "Suspended",
+     "Cancelled", "Failed", "Faulted", "TimedOut", "Aborted", "Ignored".
+    :type status: str or ~azure.mgmt.logic.models.WorkflowStatus
     :param code: The workflow scope repetition code.
     :type code: str
     :param error: Any object.
@@ -5968,19 +6165,19 @@ class WorkflowRunActionRepetitionDefinition(Resource):
     :ivar inputs: Gets the inputs.
     :vartype inputs: object
     :ivar inputs_link: Gets the link to inputs.
-    :vartype inputs_link: ~logic_management_client.models.ContentLink
+    :vartype inputs_link: ~azure.mgmt.logic.models.ContentLink
     :ivar outputs: Gets the outputs.
     :vartype outputs: object
     :ivar outputs_link: Gets the link to outputs.
-    :vartype outputs_link: ~logic_management_client.models.ContentLink
+    :vartype outputs_link: ~azure.mgmt.logic.models.ContentLink
     :ivar tracked_properties: Gets the tracked properties.
     :vartype tracked_properties: object
     :param retry_history: Gets the retry histories.
-    :type retry_history: list[~logic_management_client.models.RetryHistory]
+    :type retry_history: list[~azure.mgmt.logic.models.RetryHistory]
     :param iteration_count:
     :type iteration_count: int
     :param repetition_indexes: The repetition indexes.
-    :type repetition_indexes: list[~logic_management_client.models.RepetitionIndex]
+    :type repetition_indexes: list[~azure.mgmt.logic.models.RepetitionIndex]
     """
 
     _validation = {
@@ -6046,7 +6243,7 @@ class WorkflowRunActionRepetitionDefinitionCollection(msrest.serialization.Model
     :param next_link: The link used to get the next page of recommendations.
     :type next_link: str
     :param value:
-    :type value: list[~logic_management_client.models.WorkflowRunActionRepetitionDefinition]
+    :type value: list[~azure.mgmt.logic.models.WorkflowRunActionRepetitionDefinition]
     """
 
     _attribute_map = {
@@ -6073,11 +6270,11 @@ class WorkflowRunActionRepetitionProperties(OperationResult):
     :param end_time: The end time of the workflow scope repetition.
     :type end_time: ~datetime.datetime
     :param correlation: The correlation properties.
-    :type correlation: ~logic_management_client.models.RunActionCorrelation
+    :type correlation: ~azure.mgmt.logic.models.RunActionCorrelation
     :param status: The status of the workflow scope repetition. Possible values include:
-     'NotSpecified', 'Paused', 'Running', 'Waiting', 'Succeeded', 'Skipped', 'Suspended',
-     'Cancelled', 'Failed', 'Faulted', 'TimedOut', 'Aborted', 'Ignored'.
-    :type status: str or ~logic_management_client.models.WorkflowStatus
+     "NotSpecified", "Paused", "Running", "Waiting", "Succeeded", "Skipped", "Suspended",
+     "Cancelled", "Failed", "Faulted", "TimedOut", "Aborted", "Ignored".
+    :type status: str or ~azure.mgmt.logic.models.WorkflowStatus
     :param code: The workflow scope repetition code.
     :type code: str
     :param error: Any object.
@@ -6087,19 +6284,19 @@ class WorkflowRunActionRepetitionProperties(OperationResult):
     :ivar inputs: Gets the inputs.
     :vartype inputs: object
     :ivar inputs_link: Gets the link to inputs.
-    :vartype inputs_link: ~logic_management_client.models.ContentLink
+    :vartype inputs_link: ~azure.mgmt.logic.models.ContentLink
     :ivar outputs: Gets the outputs.
     :vartype outputs: object
     :ivar outputs_link: Gets the link to outputs.
-    :vartype outputs_link: ~logic_management_client.models.ContentLink
+    :vartype outputs_link: ~azure.mgmt.logic.models.ContentLink
     :ivar tracked_properties: Gets the tracked properties.
     :vartype tracked_properties: object
     :param retry_history: Gets the retry histories.
-    :type retry_history: list[~logic_management_client.models.RetryHistory]
+    :type retry_history: list[~azure.mgmt.logic.models.RetryHistory]
     :param iteration_count:
     :type iteration_count: int
     :param repetition_indexes: The repetition indexes.
-    :type repetition_indexes: list[~logic_management_client.models.RepetitionIndex]
+    :type repetition_indexes: list[~azure.mgmt.logic.models.RepetitionIndex]
     """
 
     _validation = {
@@ -6140,10 +6337,10 @@ class WorkflowRunActionRepetitionProperties(OperationResult):
 class WorkflowRunFilter(msrest.serialization.Model):
     """The workflow run filter.
 
-    :param status: The status of workflow run. Possible values include: 'NotSpecified', 'Paused',
-     'Running', 'Waiting', 'Succeeded', 'Skipped', 'Suspended', 'Cancelled', 'Failed', 'Faulted',
-     'TimedOut', 'Aborted', 'Ignored'.
-    :type status: str or ~logic_management_client.models.WorkflowStatus
+    :param status: The status of workflow run. Possible values include: "NotSpecified", "Paused",
+     "Running", "Waiting", "Succeeded", "Skipped", "Suspended", "Cancelled", "Failed", "Faulted",
+     "TimedOut", "Aborted", "Ignored".
+    :type status: str or ~azure.mgmt.logic.models.WorkflowStatus
     """
 
     _attribute_map = {
@@ -6162,7 +6359,7 @@ class WorkflowRunListResult(msrest.serialization.Model):
     """The list of workflow runs.
 
     :param value: A list of workflow runs.
-    :type value: list[~logic_management_client.models.WorkflowRun]
+    :type value: list[~azure.mgmt.logic.models.WorkflowRun]
     :param next_link: The URL to get the next set of results.
     :type next_link: str
     """
@@ -6191,11 +6388,11 @@ class WorkflowRunTrigger(msrest.serialization.Model):
     :ivar inputs: Gets the inputs.
     :vartype inputs: object
     :ivar inputs_link: Gets the link to inputs.
-    :vartype inputs_link: ~logic_management_client.models.ContentLink
+    :vartype inputs_link: ~azure.mgmt.logic.models.ContentLink
     :ivar outputs: Gets the outputs.
     :vartype outputs: object
     :ivar outputs_link: Gets the link to outputs.
-    :vartype outputs_link: ~logic_management_client.models.ContentLink
+    :vartype outputs_link: ~azure.mgmt.logic.models.ContentLink
     :ivar scheduled_time: Gets the scheduled time.
     :vartype scheduled_time: ~datetime.datetime
     :ivar start_time: Gets the start time.
@@ -6205,13 +6402,13 @@ class WorkflowRunTrigger(msrest.serialization.Model):
     :ivar tracking_id: Gets the tracking id.
     :vartype tracking_id: str
     :param correlation: The run correlation.
-    :type correlation: ~logic_management_client.models.Correlation
+    :type correlation: ~azure.mgmt.logic.models.Correlation
     :ivar code: Gets the code.
     :vartype code: str
-    :ivar status: Gets the status. Possible values include: 'NotSpecified', 'Paused', 'Running',
-     'Waiting', 'Succeeded', 'Skipped', 'Suspended', 'Cancelled', 'Failed', 'Faulted', 'TimedOut',
-     'Aborted', 'Ignored'.
-    :vartype status: str or ~logic_management_client.models.WorkflowStatus
+    :ivar status: Gets the status. Possible values include: "NotSpecified", "Paused", "Running",
+     "Waiting", "Succeeded", "Skipped", "Suspended", "Cancelled", "Failed", "Faulted", "TimedOut",
+     "Aborted", "Ignored".
+    :vartype status: str or ~azure.mgmt.logic.models.WorkflowStatus
     :ivar error: Gets the error.
     :vartype error: object
     :ivar tracked_properties: Gets the tracked properties.
@@ -6283,31 +6480,30 @@ class WorkflowTrigger(SubResource):
     :vartype name: str
     :ivar type: Gets the workflow trigger type.
     :vartype type: str
-    :ivar provisioning_state: Gets the provisioning state. Possible values include: 'NotSpecified',
-     'Accepted', 'Running', 'Ready', 'Creating', 'Created', 'Deleting', 'Deleted', 'Canceled',
-     'Failed', 'Succeeded', 'Moving', 'Updating', 'Registering', 'Registered', 'Unregistering',
-     'Unregistered', 'Completed'.
-    :vartype provisioning_state: str or
-     ~logic_management_client.models.WorkflowTriggerProvisioningState
+    :ivar provisioning_state: Gets the provisioning state. Possible values include: "NotSpecified",
+     "Accepted", "Running", "Ready", "Creating", "Created", "Deleting", "Deleted", "Canceled",
+     "Failed", "Succeeded", "Moving", "Updating", "Registering", "Registered", "Unregistering",
+     "Unregistered", "Completed".
+    :vartype provisioning_state: str or ~azure.mgmt.logic.models.WorkflowTriggerProvisioningState
     :ivar created_time: Gets the created time.
     :vartype created_time: ~datetime.datetime
     :ivar changed_time: Gets the changed time.
     :vartype changed_time: ~datetime.datetime
-    :ivar state: Gets the state. Possible values include: 'NotSpecified', 'Completed', 'Enabled',
-     'Disabled', 'Deleted', 'Suspended'.
-    :vartype state: str or ~logic_management_client.models.WorkflowState
-    :ivar status: Gets the status. Possible values include: 'NotSpecified', 'Paused', 'Running',
-     'Waiting', 'Succeeded', 'Skipped', 'Suspended', 'Cancelled', 'Failed', 'Faulted', 'TimedOut',
-     'Aborted', 'Ignored'.
-    :vartype status: str or ~logic_management_client.models.WorkflowStatus
+    :ivar state: Gets the state. Possible values include: "NotSpecified", "Completed", "Enabled",
+     "Disabled", "Deleted", "Suspended".
+    :vartype state: str or ~azure.mgmt.logic.models.WorkflowState
+    :ivar status: Gets the status. Possible values include: "NotSpecified", "Paused", "Running",
+     "Waiting", "Succeeded", "Skipped", "Suspended", "Cancelled", "Failed", "Faulted", "TimedOut",
+     "Aborted", "Ignored".
+    :vartype status: str or ~azure.mgmt.logic.models.WorkflowStatus
     :ivar last_execution_time: Gets the last execution time.
     :vartype last_execution_time: ~datetime.datetime
     :ivar next_execution_time: Gets the next execution time.
     :vartype next_execution_time: ~datetime.datetime
     :ivar recurrence: Gets the workflow trigger recurrence.
-    :vartype recurrence: ~logic_management_client.models.WorkflowTriggerRecurrence
+    :vartype recurrence: ~azure.mgmt.logic.models.WorkflowTriggerRecurrence
     :ivar workflow: Gets the reference to workflow.
-    :vartype workflow: ~logic_management_client.models.ResourceReference
+    :vartype workflow: ~azure.mgmt.logic.models.ResourceReference
     """
 
     _validation = {
@@ -6375,7 +6571,7 @@ class WorkflowTriggerCallbackUrl(msrest.serialization.Model):
      parameters.
     :type relative_path_parameters: list[str]
     :param queries: Gets the workflow trigger callback URL query parameters.
-    :type queries: ~logic_management_client.models.WorkflowTriggerListCallbackUrlQueries
+    :type queries: ~azure.mgmt.logic.models.WorkflowTriggerListCallbackUrlQueries
     """
 
     _validation = {
@@ -6410,9 +6606,9 @@ class WorkflowTriggerCallbackUrl(msrest.serialization.Model):
 class WorkflowTriggerFilter(msrest.serialization.Model):
     """The workflow trigger filter.
 
-    :param state: The state of workflow trigger. Possible values include: 'NotSpecified',
-     'Completed', 'Enabled', 'Disabled', 'Deleted', 'Suspended'.
-    :type state: str or ~logic_management_client.models.WorkflowState
+    :param state: The state of workflow trigger. Possible values include: "NotSpecified",
+     "Completed", "Enabled", "Disabled", "Deleted", "Suspended".
+    :type state: str or ~azure.mgmt.logic.models.WorkflowState
     """
 
     _attribute_map = {
@@ -6442,10 +6638,12 @@ class WorkflowTriggerHistory(SubResource):
     :vartype start_time: ~datetime.datetime
     :ivar end_time: Gets the end time.
     :vartype end_time: ~datetime.datetime
-    :ivar status: Gets the status. Possible values include: 'NotSpecified', 'Paused', 'Running',
-     'Waiting', 'Succeeded', 'Skipped', 'Suspended', 'Cancelled', 'Failed', 'Faulted', 'TimedOut',
-     'Aborted', 'Ignored'.
-    :vartype status: str or ~logic_management_client.models.WorkflowStatus
+    :ivar scheduled_time: The scheduled time.
+    :vartype scheduled_time: ~datetime.datetime
+    :ivar status: Gets the status. Possible values include: "NotSpecified", "Paused", "Running",
+     "Waiting", "Succeeded", "Skipped", "Suspended", "Cancelled", "Failed", "Faulted", "TimedOut",
+     "Aborted", "Ignored".
+    :vartype status: str or ~azure.mgmt.logic.models.WorkflowStatus
     :ivar code: Gets the code.
     :vartype code: str
     :ivar error: Gets the error.
@@ -6453,15 +6651,15 @@ class WorkflowTriggerHistory(SubResource):
     :ivar tracking_id: Gets the tracking id.
     :vartype tracking_id: str
     :param correlation: The run correlation.
-    :type correlation: ~logic_management_client.models.Correlation
+    :type correlation: ~azure.mgmt.logic.models.Correlation
     :ivar inputs_link: Gets the link to input parameters.
-    :vartype inputs_link: ~logic_management_client.models.ContentLink
+    :vartype inputs_link: ~azure.mgmt.logic.models.ContentLink
     :ivar outputs_link: Gets the link to output parameters.
-    :vartype outputs_link: ~logic_management_client.models.ContentLink
+    :vartype outputs_link: ~azure.mgmt.logic.models.ContentLink
     :ivar fired: The value indicating whether trigger was fired.
     :vartype fired: bool
     :ivar run: Gets the reference to workflow run.
-    :vartype run: ~logic_management_client.models.ResourceReference
+    :vartype run: ~azure.mgmt.logic.models.ResourceReference
     """
 
     _validation = {
@@ -6470,6 +6668,7 @@ class WorkflowTriggerHistory(SubResource):
         'type': {'readonly': True},
         'start_time': {'readonly': True},
         'end_time': {'readonly': True},
+        'scheduled_time': {'readonly': True},
         'status': {'readonly': True},
         'code': {'readonly': True},
         'error': {'readonly': True},
@@ -6486,6 +6685,7 @@ class WorkflowTriggerHistory(SubResource):
         'type': {'key': 'type', 'type': 'str'},
         'start_time': {'key': 'properties.startTime', 'type': 'iso-8601'},
         'end_time': {'key': 'properties.endTime', 'type': 'iso-8601'},
+        'scheduled_time': {'key': 'properties.scheduledTime', 'type': 'iso-8601'},
         'status': {'key': 'properties.status', 'type': 'str'},
         'code': {'key': 'properties.code', 'type': 'str'},
         'error': {'key': 'properties.error', 'type': 'object'},
@@ -6506,6 +6706,7 @@ class WorkflowTriggerHistory(SubResource):
         self.type = None
         self.start_time = None
         self.end_time = None
+        self.scheduled_time = None
         self.status = None
         self.code = None
         self.error = None
@@ -6520,10 +6721,10 @@ class WorkflowTriggerHistory(SubResource):
 class WorkflowTriggerHistoryFilter(msrest.serialization.Model):
     """The workflow trigger history filter.
 
-    :param status: The status of workflow trigger history. Possible values include: 'NotSpecified',
-     'Paused', 'Running', 'Waiting', 'Succeeded', 'Skipped', 'Suspended', 'Cancelled', 'Failed',
-     'Faulted', 'TimedOut', 'Aborted', 'Ignored'.
-    :type status: str or ~logic_management_client.models.WorkflowStatus
+    :param status: The status of workflow trigger history. Possible values include: "NotSpecified",
+     "Paused", "Running", "Waiting", "Succeeded", "Skipped", "Suspended", "Cancelled", "Failed",
+     "Faulted", "TimedOut", "Aborted", "Ignored".
+    :type status: str or ~azure.mgmt.logic.models.WorkflowStatus
     """
 
     _attribute_map = {
@@ -6542,7 +6743,7 @@ class WorkflowTriggerHistoryListResult(msrest.serialization.Model):
     """The list of workflow trigger histories.
 
     :param value: A list of workflow trigger histories.
-    :type value: list[~logic_management_client.models.WorkflowTriggerHistory]
+    :type value: list[~azure.mgmt.logic.models.WorkflowTriggerHistory]
     :param next_link: The URL to get the next set of results.
     :type next_link: str
     """
@@ -6600,7 +6801,7 @@ class WorkflowTriggerListResult(msrest.serialization.Model):
     """The list of workflow triggers.
 
     :param value: A list of workflow triggers.
-    :type value: list[~logic_management_client.models.WorkflowTrigger]
+    :type value: list[~azure.mgmt.logic.models.WorkflowTrigger]
     :param next_link: The URL to get the next set of results.
     :type next_link: str
     """
@@ -6622,9 +6823,9 @@ class WorkflowTriggerListResult(msrest.serialization.Model):
 class WorkflowTriggerRecurrence(msrest.serialization.Model):
     """The workflow trigger recurrence.
 
-    :param frequency: The frequency. Possible values include: 'NotSpecified', 'Second', 'Minute',
-     'Hour', 'Day', 'Week', 'Month', 'Year'.
-    :type frequency: str or ~logic_management_client.models.RecurrenceFrequency
+    :param frequency: The frequency. Possible values include: "NotSpecified", "Second", "Minute",
+     "Hour", "Day", "Week", "Month", "Year".
+    :type frequency: str or ~azure.mgmt.logic.models.RecurrenceFrequency
     :param interval: The interval.
     :type interval: int
     :param start_time: The start time.
@@ -6634,7 +6835,7 @@ class WorkflowTriggerRecurrence(msrest.serialization.Model):
     :param time_zone: The time zone.
     :type time_zone: str
     :param schedule: The recurrence schedule.
-    :type schedule: ~logic_management_client.models.RecurrenceSchedule
+    :type schedule: ~azure.mgmt.logic.models.RecurrenceSchedule
     """
 
     _attribute_map = {
@@ -6659,6 +6860,45 @@ class WorkflowTriggerRecurrence(msrest.serialization.Model):
         self.schedule = kwargs.get('schedule', None)
 
 
+class WorkflowTriggerReference(ResourceReference):
+    """The workflow trigger reference.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :param id: The resource id.
+    :type id: str
+    :ivar type: Gets the resource type.
+    :vartype type: str
+    :param name: The workflow trigger resource reference name.
+    :type name: str
+    :param flow_name: The workflow name.
+    :type flow_name: str
+    :param trigger_name: The workflow trigger name.
+    :type trigger_name: str
+    """
+
+    _validation = {
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'flow_name': {'key': 'flowName', 'type': 'str'},
+        'trigger_name': {'key': 'triggerName', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(WorkflowTriggerReference, self).__init__(**kwargs)
+        self.name = kwargs.get('name', None)
+        self.flow_name = kwargs.get('flow_name', None)
+        self.trigger_name = kwargs.get('trigger_name', None)
+
+
 class WorkflowVersion(Resource):
     """The workflow version.
 
@@ -6674,35 +6914,46 @@ class WorkflowVersion(Resource):
     :type location: str
     :param tags: A set of tags. The resource tags.
     :type tags: dict[str, str]
+    :ivar provisioning_state: The provisioning state. Possible values include: "NotSpecified",
+     "Accepted", "Running", "Ready", "Creating", "Created", "Deleting", "Deleted", "Canceled",
+     "Failed", "Succeeded", "Moving", "Updating", "Registering", "Registered", "Unregistering",
+     "Unregistered", "Completed", "Renewing", "Pending", "Waiting", "InProgress".
+    :vartype provisioning_state: str or ~azure.mgmt.logic.models.WorkflowProvisioningState
     :ivar created_time: Gets the created time.
     :vartype created_time: ~datetime.datetime
     :ivar changed_time: Gets the changed time.
     :vartype changed_time: ~datetime.datetime
-    :param state: The state. Possible values include: 'NotSpecified', 'Completed', 'Enabled',
-     'Disabled', 'Deleted', 'Suspended'.
-    :type state: str or ~logic_management_client.models.WorkflowState
+    :param state: The state. Possible values include: "NotSpecified", "Completed", "Enabled",
+     "Disabled", "Deleted", "Suspended".
+    :type state: str or ~azure.mgmt.logic.models.WorkflowState
     :ivar version: Gets the version.
     :vartype version: str
     :ivar access_endpoint: Gets the access endpoint.
     :vartype access_endpoint: str
-    :param sku: The sku.
-    :type sku: ~logic_management_client.models.Sku
+    :param endpoints_configuration: The endpoints configuration.
+    :type endpoints_configuration: ~azure.mgmt.logic.models.FlowEndpointsConfiguration
+    :param access_control: The access control configuration.
+    :type access_control: ~azure.mgmt.logic.models.FlowAccessControlConfiguration
+    :ivar sku: The sku.
+    :vartype sku: ~azure.mgmt.logic.models.Sku
     :param integration_account: The integration account.
-    :type integration_account: ~logic_management_client.models.ResourceReference
+    :type integration_account: ~azure.mgmt.logic.models.ResourceReference
     :param definition: The definition.
     :type definition: object
     :param parameters: The parameters.
-    :type parameters: dict[str, ~logic_management_client.models.WorkflowParameter]
+    :type parameters: dict[str, ~azure.mgmt.logic.models.WorkflowParameter]
     """
 
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
         'type': {'readonly': True},
+        'provisioning_state': {'readonly': True},
         'created_time': {'readonly': True},
         'changed_time': {'readonly': True},
         'version': {'readonly': True},
         'access_endpoint': {'readonly': True},
+        'sku': {'readonly': True},
     }
 
     _attribute_map = {
@@ -6711,11 +6962,14 @@ class WorkflowVersion(Resource):
         'type': {'key': 'type', 'type': 'str'},
         'location': {'key': 'location', 'type': 'str'},
         'tags': {'key': 'tags', 'type': '{str}'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'created_time': {'key': 'properties.createdTime', 'type': 'iso-8601'},
         'changed_time': {'key': 'properties.changedTime', 'type': 'iso-8601'},
         'state': {'key': 'properties.state', 'type': 'str'},
         'version': {'key': 'properties.version', 'type': 'str'},
         'access_endpoint': {'key': 'properties.accessEndpoint', 'type': 'str'},
+        'endpoints_configuration': {'key': 'properties.endpointsConfiguration', 'type': 'FlowEndpointsConfiguration'},
+        'access_control': {'key': 'properties.accessControl', 'type': 'FlowAccessControlConfiguration'},
         'sku': {'key': 'properties.sku', 'type': 'Sku'},
         'integration_account': {'key': 'properties.integrationAccount', 'type': 'ResourceReference'},
         'definition': {'key': 'properties.definition', 'type': 'object'},
@@ -6727,12 +6981,15 @@ class WorkflowVersion(Resource):
         **kwargs
     ):
         super(WorkflowVersion, self).__init__(**kwargs)
+        self.provisioning_state = None
         self.created_time = None
         self.changed_time = None
         self.state = kwargs.get('state', None)
         self.version = None
         self.access_endpoint = None
-        self.sku = kwargs.get('sku', None)
+        self.endpoints_configuration = kwargs.get('endpoints_configuration', None)
+        self.access_control = kwargs.get('access_control', None)
+        self.sku = None
         self.integration_account = kwargs.get('integration_account', None)
         self.definition = kwargs.get('definition', None)
         self.parameters = kwargs.get('parameters', None)
@@ -6742,7 +6999,7 @@ class WorkflowVersionListResult(msrest.serialization.Model):
     """The list of workflow versions.
 
     :param value: A list of workflow versions.
-    :type value: list[~logic_management_client.models.WorkflowVersion]
+    :type value: list[~azure.mgmt.logic.models.WorkflowVersion]
     :param next_link: The URL to get the next set of results.
     :type next_link: str
     """
@@ -6869,21 +7126,21 @@ class X12AcknowledgementSettings(msrest.serialization.Model):
         **kwargs
     ):
         super(X12AcknowledgementSettings, self).__init__(**kwargs)
-        self.need_technical_acknowledgement = kwargs.get('need_technical_acknowledgement', None)
-        self.batch_technical_acknowledgements = kwargs.get('batch_technical_acknowledgements', None)
-        self.need_functional_acknowledgement = kwargs.get('need_functional_acknowledgement', None)
+        self.need_technical_acknowledgement = kwargs['need_technical_acknowledgement']
+        self.batch_technical_acknowledgements = kwargs['batch_technical_acknowledgements']
+        self.need_functional_acknowledgement = kwargs['need_functional_acknowledgement']
         self.functional_acknowledgement_version = kwargs.get('functional_acknowledgement_version', None)
-        self.batch_functional_acknowledgements = kwargs.get('batch_functional_acknowledgements', None)
-        self.need_implementation_acknowledgement = kwargs.get('need_implementation_acknowledgement', None)
+        self.batch_functional_acknowledgements = kwargs['batch_functional_acknowledgements']
+        self.need_implementation_acknowledgement = kwargs['need_implementation_acknowledgement']
         self.implementation_acknowledgement_version = kwargs.get('implementation_acknowledgement_version', None)
-        self.batch_implementation_acknowledgements = kwargs.get('batch_implementation_acknowledgements', None)
-        self.need_loop_for_valid_messages = kwargs.get('need_loop_for_valid_messages', None)
-        self.send_synchronous_acknowledgement = kwargs.get('send_synchronous_acknowledgement', None)
+        self.batch_implementation_acknowledgements = kwargs['batch_implementation_acknowledgements']
+        self.need_loop_for_valid_messages = kwargs['need_loop_for_valid_messages']
+        self.send_synchronous_acknowledgement = kwargs['send_synchronous_acknowledgement']
         self.acknowledgement_control_number_prefix = kwargs.get('acknowledgement_control_number_prefix', None)
         self.acknowledgement_control_number_suffix = kwargs.get('acknowledgement_control_number_suffix', None)
-        self.acknowledgement_control_number_lower_bound = kwargs.get('acknowledgement_control_number_lower_bound', None)
-        self.acknowledgement_control_number_upper_bound = kwargs.get('acknowledgement_control_number_upper_bound', None)
-        self.rollover_acknowledgement_control_number = kwargs.get('rollover_acknowledgement_control_number', None)
+        self.acknowledgement_control_number_lower_bound = kwargs['acknowledgement_control_number_lower_bound']
+        self.acknowledgement_control_number_upper_bound = kwargs['acknowledgement_control_number_upper_bound']
+        self.rollover_acknowledgement_control_number = kwargs['rollover_acknowledgement_control_number']
 
 
 class X12AgreementContent(msrest.serialization.Model):
@@ -6892,9 +7149,9 @@ class X12AgreementContent(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param receive_agreement: Required. The X12 one-way receive agreement.
-    :type receive_agreement: ~logic_management_client.models.X12OneWayAgreement
+    :type receive_agreement: ~azure.mgmt.logic.models.X12OneWayAgreement
     :param send_agreement: Required. The X12 one-way send agreement.
-    :type send_agreement: ~logic_management_client.models.X12OneWayAgreement
+    :type send_agreement: ~azure.mgmt.logic.models.X12OneWayAgreement
     """
 
     _validation = {
@@ -6912,8 +7169,8 @@ class X12AgreementContent(msrest.serialization.Model):
         **kwargs
     ):
         super(X12AgreementContent, self).__init__(**kwargs)
-        self.receive_agreement = kwargs.get('receive_agreement', None)
-        self.send_agreement = kwargs.get('send_agreement', None)
+        self.receive_agreement = kwargs['receive_agreement']
+        self.send_agreement = kwargs['send_agreement']
 
 
 class X12DelimiterOverrides(msrest.serialization.Model):
@@ -6932,8 +7189,8 @@ class X12DelimiterOverrides(msrest.serialization.Model):
     :param segment_terminator: Required. The segment terminator.
     :type segment_terminator: int
     :param segment_terminator_suffix: Required. The segment terminator suffix. Possible values
-     include: 'NotSpecified', 'None', 'CR', 'LF', 'CRLF'.
-    :type segment_terminator_suffix: str or ~logic_management_client.models.SegmentTerminatorSuffix
+     include: "NotSpecified", "None", "CR", "LF", "CRLF".
+    :type segment_terminator_suffix: str or ~azure.mgmt.logic.models.SegmentTerminatorSuffix
     :param replace_character: Required. The replacement character.
     :type replace_character: int
     :param replace_separators_in_payload: Required. The value indicating whether to replace
@@ -6972,12 +7229,12 @@ class X12DelimiterOverrides(msrest.serialization.Model):
         super(X12DelimiterOverrides, self).__init__(**kwargs)
         self.protocol_version = kwargs.get('protocol_version', None)
         self.message_id = kwargs.get('message_id', None)
-        self.data_element_separator = kwargs.get('data_element_separator', None)
-        self.component_separator = kwargs.get('component_separator', None)
-        self.segment_terminator = kwargs.get('segment_terminator', None)
-        self.segment_terminator_suffix = kwargs.get('segment_terminator_suffix', None)
-        self.replace_character = kwargs.get('replace_character', None)
-        self.replace_separators_in_payload = kwargs.get('replace_separators_in_payload', None)
+        self.data_element_separator = kwargs['data_element_separator']
+        self.component_separator = kwargs['component_separator']
+        self.segment_terminator = kwargs['segment_terminator']
+        self.segment_terminator_suffix = kwargs['segment_terminator_suffix']
+        self.replace_character = kwargs['replace_character']
+        self.replace_separators_in_payload = kwargs['replace_separators_in_payload']
         self.target_namespace = kwargs.get('target_namespace', None)
 
 
@@ -7004,12 +7261,12 @@ class X12EnvelopeOverride(msrest.serialization.Model):
     :type receiver_application_id: str
     :param functional_identifier_code: The functional identifier code.
     :type functional_identifier_code: str
-    :param date_format: Required. The date format. Possible values include: 'NotSpecified',
-     'CCYYMMDD', 'YYMMDD'.
-    :type date_format: str or ~logic_management_client.models.X12DateFormat
-    :param time_format: Required. The time format. Possible values include: 'NotSpecified', 'HHMM',
-     'HHMMSS', 'HHMMSSdd', 'HHMMSSd'.
-    :type time_format: str or ~logic_management_client.models.X12TimeFormat
+    :param date_format: Required. The date format. Possible values include: "NotSpecified",
+     "CCYYMMDD", "YYMMDD".
+    :type date_format: str or ~azure.mgmt.logic.models.X12DateFormat
+    :param time_format: Required. The time format. Possible values include: "NotSpecified", "HHMM",
+     "HHMMSS", "HHMMSSdd", "HHMMSSd".
+    :type time_format: str or ~azure.mgmt.logic.models.X12TimeFormat
     """
 
     _validation = {
@@ -7042,16 +7299,16 @@ class X12EnvelopeOverride(msrest.serialization.Model):
         **kwargs
     ):
         super(X12EnvelopeOverride, self).__init__(**kwargs)
-        self.target_namespace = kwargs.get('target_namespace', None)
-        self.protocol_version = kwargs.get('protocol_version', None)
-        self.message_id = kwargs.get('message_id', None)
-        self.responsible_agency_code = kwargs.get('responsible_agency_code', None)
-        self.header_version = kwargs.get('header_version', None)
-        self.sender_application_id = kwargs.get('sender_application_id', None)
-        self.receiver_application_id = kwargs.get('receiver_application_id', None)
+        self.target_namespace = kwargs['target_namespace']
+        self.protocol_version = kwargs['protocol_version']
+        self.message_id = kwargs['message_id']
+        self.responsible_agency_code = kwargs['responsible_agency_code']
+        self.header_version = kwargs['header_version']
+        self.sender_application_id = kwargs['sender_application_id']
+        self.receiver_application_id = kwargs['receiver_application_id']
         self.functional_identifier_code = kwargs.get('functional_identifier_code', None)
-        self.date_format = kwargs.get('date_format', None)
-        self.time_format = kwargs.get('time_format', None)
+        self.date_format = kwargs['date_format']
+        self.time_format = kwargs['time_format']
 
 
 class X12EnvelopeSettings(msrest.serialization.Model):
@@ -7112,14 +7369,14 @@ class X12EnvelopeSettings(msrest.serialization.Model):
      whether to overwrite existing transaction set control number.
     :type overwrite_existing_transaction_set_control_number: bool
     :param group_header_date_format: Required. The group header date format. Possible values
-     include: 'NotSpecified', 'CCYYMMDD', 'YYMMDD'.
-    :type group_header_date_format: str or ~logic_management_client.models.X12DateFormat
+     include: "NotSpecified", "CCYYMMDD", "YYMMDD".
+    :type group_header_date_format: str or ~azure.mgmt.logic.models.X12DateFormat
     :param group_header_time_format: Required. The group header time format. Possible values
-     include: 'NotSpecified', 'HHMM', 'HHMMSS', 'HHMMSSdd', 'HHMMSSd'.
-    :type group_header_time_format: str or ~logic_management_client.models.X12TimeFormat
-    :param usage_indicator: Required. The usage indicator. Possible values include: 'NotSpecified',
-     'Test', 'Information', 'Production'.
-    :type usage_indicator: str or ~logic_management_client.models.UsageIndicator
+     include: "NotSpecified", "HHMM", "HHMMSS", "HHMMSSdd", "HHMMSSd".
+    :type group_header_time_format: str or ~azure.mgmt.logic.models.X12TimeFormat
+    :param usage_indicator: Required. The usage indicator. Possible values include: "NotSpecified",
+     "Test", "Information", "Production".
+    :type usage_indicator: str or ~azure.mgmt.logic.models.UsageIndicator
     """
 
     _validation = {
@@ -7178,30 +7435,30 @@ class X12EnvelopeSettings(msrest.serialization.Model):
         **kwargs
     ):
         super(X12EnvelopeSettings, self).__init__(**kwargs)
-        self.control_standards_id = kwargs.get('control_standards_id', None)
-        self.use_control_standards_id_as_repetition_character = kwargs.get('use_control_standards_id_as_repetition_character', None)
-        self.sender_application_id = kwargs.get('sender_application_id', None)
-        self.receiver_application_id = kwargs.get('receiver_application_id', None)
-        self.control_version_number = kwargs.get('control_version_number', None)
-        self.interchange_control_number_lower_bound = kwargs.get('interchange_control_number_lower_bound', None)
-        self.interchange_control_number_upper_bound = kwargs.get('interchange_control_number_upper_bound', None)
-        self.rollover_interchange_control_number = kwargs.get('rollover_interchange_control_number', None)
-        self.enable_default_group_headers = kwargs.get('enable_default_group_headers', None)
+        self.control_standards_id = kwargs['control_standards_id']
+        self.use_control_standards_id_as_repetition_character = kwargs['use_control_standards_id_as_repetition_character']
+        self.sender_application_id = kwargs['sender_application_id']
+        self.receiver_application_id = kwargs['receiver_application_id']
+        self.control_version_number = kwargs['control_version_number']
+        self.interchange_control_number_lower_bound = kwargs['interchange_control_number_lower_bound']
+        self.interchange_control_number_upper_bound = kwargs['interchange_control_number_upper_bound']
+        self.rollover_interchange_control_number = kwargs['rollover_interchange_control_number']
+        self.enable_default_group_headers = kwargs['enable_default_group_headers']
         self.functional_group_id = kwargs.get('functional_group_id', None)
-        self.group_control_number_lower_bound = kwargs.get('group_control_number_lower_bound', None)
-        self.group_control_number_upper_bound = kwargs.get('group_control_number_upper_bound', None)
-        self.rollover_group_control_number = kwargs.get('rollover_group_control_number', None)
-        self.group_header_agency_code = kwargs.get('group_header_agency_code', None)
-        self.group_header_version = kwargs.get('group_header_version', None)
-        self.transaction_set_control_number_lower_bound = kwargs.get('transaction_set_control_number_lower_bound', None)
-        self.transaction_set_control_number_upper_bound = kwargs.get('transaction_set_control_number_upper_bound', None)
-        self.rollover_transaction_set_control_number = kwargs.get('rollover_transaction_set_control_number', None)
+        self.group_control_number_lower_bound = kwargs['group_control_number_lower_bound']
+        self.group_control_number_upper_bound = kwargs['group_control_number_upper_bound']
+        self.rollover_group_control_number = kwargs['rollover_group_control_number']
+        self.group_header_agency_code = kwargs['group_header_agency_code']
+        self.group_header_version = kwargs['group_header_version']
+        self.transaction_set_control_number_lower_bound = kwargs['transaction_set_control_number_lower_bound']
+        self.transaction_set_control_number_upper_bound = kwargs['transaction_set_control_number_upper_bound']
+        self.rollover_transaction_set_control_number = kwargs['rollover_transaction_set_control_number']
         self.transaction_set_control_number_prefix = kwargs.get('transaction_set_control_number_prefix', None)
         self.transaction_set_control_number_suffix = kwargs.get('transaction_set_control_number_suffix', None)
-        self.overwrite_existing_transaction_set_control_number = kwargs.get('overwrite_existing_transaction_set_control_number', None)
-        self.group_header_date_format = kwargs.get('group_header_date_format', None)
-        self.group_header_time_format = kwargs.get('group_header_time_format', None)
-        self.usage_indicator = kwargs.get('usage_indicator', None)
+        self.overwrite_existing_transaction_set_control_number = kwargs['overwrite_existing_transaction_set_control_number']
+        self.group_header_date_format = kwargs['group_header_date_format']
+        self.group_header_time_format = kwargs['group_header_time_format']
+        self.usage_indicator = kwargs['usage_indicator']
 
 
 class X12FramingSettings(msrest.serialization.Model):
@@ -7220,12 +7477,12 @@ class X12FramingSettings(msrest.serialization.Model):
     :type replace_character: int
     :param segment_terminator: Required. The segment terminator.
     :type segment_terminator: int
-    :param character_set: Required. The X12 character set. Possible values include: 'NotSpecified',
-     'Basic', 'Extended', 'UTF8'.
-    :type character_set: str or ~logic_management_client.models.X12CharacterSet
+    :param character_set: Required. The X12 character set. Possible values include: "NotSpecified",
+     "Basic", "Extended", "UTF8".
+    :type character_set: str or ~azure.mgmt.logic.models.X12CharacterSet
     :param segment_terminator_suffix: Required. The segment terminator suffix. Possible values
-     include: 'NotSpecified', 'None', 'CR', 'LF', 'CRLF'.
-    :type segment_terminator_suffix: str or ~logic_management_client.models.SegmentTerminatorSuffix
+     include: "NotSpecified", "None", "CR", "LF", "CRLF".
+    :type segment_terminator_suffix: str or ~azure.mgmt.logic.models.SegmentTerminatorSuffix
     """
 
     _validation = {
@@ -7253,13 +7510,13 @@ class X12FramingSettings(msrest.serialization.Model):
         **kwargs
     ):
         super(X12FramingSettings, self).__init__(**kwargs)
-        self.data_element_separator = kwargs.get('data_element_separator', None)
-        self.component_separator = kwargs.get('component_separator', None)
-        self.replace_separators_in_payload = kwargs.get('replace_separators_in_payload', None)
-        self.replace_character = kwargs.get('replace_character', None)
-        self.segment_terminator = kwargs.get('segment_terminator', None)
-        self.character_set = kwargs.get('character_set', None)
-        self.segment_terminator_suffix = kwargs.get('segment_terminator_suffix', None)
+        self.data_element_separator = kwargs['data_element_separator']
+        self.component_separator = kwargs['component_separator']
+        self.replace_separators_in_payload = kwargs['replace_separators_in_payload']
+        self.replace_character = kwargs['replace_character']
+        self.segment_terminator = kwargs['segment_terminator']
+        self.character_set = kwargs['character_set']
+        self.segment_terminator_suffix = kwargs['segment_terminator_suffix']
 
 
 class X12MessageFilter(msrest.serialization.Model):
@@ -7268,8 +7525,8 @@ class X12MessageFilter(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param message_filter_type: Required. The message filter type. Possible values include:
-     'NotSpecified', 'Include', 'Exclude'.
-    :type message_filter_type: str or ~logic_management_client.models.MessageFilterType
+     "NotSpecified", "Include", "Exclude".
+    :type message_filter_type: str or ~azure.mgmt.logic.models.MessageFilterType
     """
 
     _validation = {
@@ -7285,7 +7542,7 @@ class X12MessageFilter(msrest.serialization.Model):
         **kwargs
     ):
         super(X12MessageFilter, self).__init__(**kwargs)
-        self.message_filter_type = kwargs.get('message_filter_type', None)
+        self.message_filter_type = kwargs['message_filter_type']
 
 
 class X12MessageIdentifier(msrest.serialization.Model):
@@ -7310,7 +7567,7 @@ class X12MessageIdentifier(msrest.serialization.Model):
         **kwargs
     ):
         super(X12MessageIdentifier, self).__init__(**kwargs)
-        self.message_id = kwargs.get('message_id', None)
+        self.message_id = kwargs['message_id']
 
 
 class X12OneWayAgreement(msrest.serialization.Model):
@@ -7319,11 +7576,11 @@ class X12OneWayAgreement(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param sender_business_identity: Required. The sender business identity.
-    :type sender_business_identity: ~logic_management_client.models.BusinessIdentity
+    :type sender_business_identity: ~azure.mgmt.logic.models.BusinessIdentity
     :param receiver_business_identity: Required. The receiver business identity.
-    :type receiver_business_identity: ~logic_management_client.models.BusinessIdentity
+    :type receiver_business_identity: ~azure.mgmt.logic.models.BusinessIdentity
     :param protocol_settings: Required. The X12 protocol settings.
-    :type protocol_settings: ~logic_management_client.models.X12ProtocolSettings
+    :type protocol_settings: ~azure.mgmt.logic.models.X12ProtocolSettings
     """
 
     _validation = {
@@ -7343,9 +7600,9 @@ class X12OneWayAgreement(msrest.serialization.Model):
         **kwargs
     ):
         super(X12OneWayAgreement, self).__init__(**kwargs)
-        self.sender_business_identity = kwargs.get('sender_business_identity', None)
-        self.receiver_business_identity = kwargs.get('receiver_business_identity', None)
-        self.protocol_settings = kwargs.get('protocol_settings', None)
+        self.sender_business_identity = kwargs['sender_business_identity']
+        self.receiver_business_identity = kwargs['receiver_business_identity']
+        self.protocol_settings = kwargs['protocol_settings']
 
 
 class X12ProcessingSettings(msrest.serialization.Model):
@@ -7394,12 +7651,12 @@ class X12ProcessingSettings(msrest.serialization.Model):
         **kwargs
     ):
         super(X12ProcessingSettings, self).__init__(**kwargs)
-        self.mask_security_info = kwargs.get('mask_security_info', None)
-        self.convert_implied_decimal = kwargs.get('convert_implied_decimal', None)
-        self.preserve_interchange = kwargs.get('preserve_interchange', None)
-        self.suspend_interchange_on_error = kwargs.get('suspend_interchange_on_error', None)
-        self.create_empty_xml_tags_for_trailing_separators = kwargs.get('create_empty_xml_tags_for_trailing_separators', None)
-        self.use_dot_as_decimal_separator = kwargs.get('use_dot_as_decimal_separator', None)
+        self.mask_security_info = kwargs['mask_security_info']
+        self.convert_implied_decimal = kwargs['convert_implied_decimal']
+        self.preserve_interchange = kwargs['preserve_interchange']
+        self.suspend_interchange_on_error = kwargs['suspend_interchange_on_error']
+        self.create_empty_xml_tags_for_trailing_separators = kwargs['create_empty_xml_tags_for_trailing_separators']
+        self.use_dot_as_decimal_separator = kwargs['use_dot_as_decimal_separator']
 
 
 class X12ProtocolSettings(msrest.serialization.Model):
@@ -7408,29 +7665,29 @@ class X12ProtocolSettings(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param validation_settings: Required. The X12 validation settings.
-    :type validation_settings: ~logic_management_client.models.X12ValidationSettings
+    :type validation_settings: ~azure.mgmt.logic.models.X12ValidationSettings
     :param framing_settings: Required. The X12 framing settings.
-    :type framing_settings: ~logic_management_client.models.X12FramingSettings
+    :type framing_settings: ~azure.mgmt.logic.models.X12FramingSettings
     :param envelope_settings: Required. The X12 envelope settings.
-    :type envelope_settings: ~logic_management_client.models.X12EnvelopeSettings
+    :type envelope_settings: ~azure.mgmt.logic.models.X12EnvelopeSettings
     :param acknowledgement_settings: Required. The X12 acknowledgment settings.
-    :type acknowledgement_settings: ~logic_management_client.models.X12AcknowledgementSettings
+    :type acknowledgement_settings: ~azure.mgmt.logic.models.X12AcknowledgementSettings
     :param message_filter: Required. The X12 message filter.
-    :type message_filter: ~logic_management_client.models.X12MessageFilter
+    :type message_filter: ~azure.mgmt.logic.models.X12MessageFilter
     :param security_settings: Required. The X12 security settings.
-    :type security_settings: ~logic_management_client.models.X12SecuritySettings
+    :type security_settings: ~azure.mgmt.logic.models.X12SecuritySettings
     :param processing_settings: Required. The X12 processing settings.
-    :type processing_settings: ~logic_management_client.models.X12ProcessingSettings
+    :type processing_settings: ~azure.mgmt.logic.models.X12ProcessingSettings
     :param envelope_overrides: The X12 envelope override settings.
-    :type envelope_overrides: list[~logic_management_client.models.X12EnvelopeOverride]
+    :type envelope_overrides: list[~azure.mgmt.logic.models.X12EnvelopeOverride]
     :param validation_overrides: The X12 validation override settings.
-    :type validation_overrides: list[~logic_management_client.models.X12ValidationOverride]
+    :type validation_overrides: list[~azure.mgmt.logic.models.X12ValidationOverride]
     :param message_filter_list: The X12 message filter list.
-    :type message_filter_list: list[~logic_management_client.models.X12MessageIdentifier]
+    :type message_filter_list: list[~azure.mgmt.logic.models.X12MessageIdentifier]
     :param schema_references: Required. The X12 schema references.
-    :type schema_references: list[~logic_management_client.models.X12SchemaReference]
+    :type schema_references: list[~azure.mgmt.logic.models.X12SchemaReference]
     :param x12_delimiter_overrides: The X12 delimiter override settings.
-    :type x12_delimiter_overrides: list[~logic_management_client.models.X12DelimiterOverrides]
+    :type x12_delimiter_overrides: list[~azure.mgmt.logic.models.X12DelimiterOverrides]
     """
 
     _validation = {
@@ -7464,17 +7721,17 @@ class X12ProtocolSettings(msrest.serialization.Model):
         **kwargs
     ):
         super(X12ProtocolSettings, self).__init__(**kwargs)
-        self.validation_settings = kwargs.get('validation_settings', None)
-        self.framing_settings = kwargs.get('framing_settings', None)
-        self.envelope_settings = kwargs.get('envelope_settings', None)
-        self.acknowledgement_settings = kwargs.get('acknowledgement_settings', None)
-        self.message_filter = kwargs.get('message_filter', None)
-        self.security_settings = kwargs.get('security_settings', None)
-        self.processing_settings = kwargs.get('processing_settings', None)
+        self.validation_settings = kwargs['validation_settings']
+        self.framing_settings = kwargs['framing_settings']
+        self.envelope_settings = kwargs['envelope_settings']
+        self.acknowledgement_settings = kwargs['acknowledgement_settings']
+        self.message_filter = kwargs['message_filter']
+        self.security_settings = kwargs['security_settings']
+        self.processing_settings = kwargs['processing_settings']
         self.envelope_overrides = kwargs.get('envelope_overrides', None)
         self.validation_overrides = kwargs.get('validation_overrides', None)
         self.message_filter_list = kwargs.get('message_filter_list', None)
-        self.schema_references = kwargs.get('schema_references', None)
+        self.schema_references = kwargs['schema_references']
         self.x12_delimiter_overrides = kwargs.get('x12_delimiter_overrides', None)
 
 
@@ -7511,10 +7768,10 @@ class X12SchemaReference(msrest.serialization.Model):
         **kwargs
     ):
         super(X12SchemaReference, self).__init__(**kwargs)
-        self.message_id = kwargs.get('message_id', None)
+        self.message_id = kwargs['message_id']
         self.sender_application_id = kwargs.get('sender_application_id', None)
-        self.schema_version = kwargs.get('schema_version', None)
-        self.schema_name = kwargs.get('schema_name', None)
+        self.schema_version = kwargs['schema_version']
+        self.schema_name = kwargs['schema_name']
 
 
 class X12SecuritySettings(msrest.serialization.Model):
@@ -7549,9 +7806,9 @@ class X12SecuritySettings(msrest.serialization.Model):
         **kwargs
     ):
         super(X12SecuritySettings, self).__init__(**kwargs)
-        self.authorization_qualifier = kwargs.get('authorization_qualifier', None)
+        self.authorization_qualifier = kwargs['authorization_qualifier']
         self.authorization_value = kwargs.get('authorization_value', None)
-        self.security_qualifier = kwargs.get('security_qualifier', None)
+        self.security_qualifier = kwargs['security_qualifier']
         self.password_value = kwargs.get('password_value', None)
 
 
@@ -7576,8 +7833,8 @@ class X12ValidationOverride(msrest.serialization.Model):
      trim leading and trailing spaces and zeroes.
     :type trim_leading_and_trailing_spaces_and_zeroes: bool
     :param trailing_separator_policy: Required. The trailing separator policy. Possible values
-     include: 'NotSpecified', 'NotAllowed', 'Optional', 'Mandatory'.
-    :type trailing_separator_policy: str or ~logic_management_client.models.TrailingSeparatorPolicy
+     include: "NotSpecified", "NotAllowed", "Optional", "Mandatory".
+    :type trailing_separator_policy: str or ~azure.mgmt.logic.models.TrailingSeparatorPolicy
     """
 
     _validation = {
@@ -7605,13 +7862,13 @@ class X12ValidationOverride(msrest.serialization.Model):
         **kwargs
     ):
         super(X12ValidationOverride, self).__init__(**kwargs)
-        self.message_id = kwargs.get('message_id', None)
-        self.validate_edi_types = kwargs.get('validate_edi_types', None)
-        self.validate_xsd_types = kwargs.get('validate_xsd_types', None)
-        self.allow_leading_and_trailing_spaces_and_zeroes = kwargs.get('allow_leading_and_trailing_spaces_and_zeroes', None)
-        self.validate_character_set = kwargs.get('validate_character_set', None)
-        self.trim_leading_and_trailing_spaces_and_zeroes = kwargs.get('trim_leading_and_trailing_spaces_and_zeroes', None)
-        self.trailing_separator_policy = kwargs.get('trailing_separator_policy', None)
+        self.message_id = kwargs['message_id']
+        self.validate_edi_types = kwargs['validate_edi_types']
+        self.validate_xsd_types = kwargs['validate_xsd_types']
+        self.allow_leading_and_trailing_spaces_and_zeroes = kwargs['allow_leading_and_trailing_spaces_and_zeroes']
+        self.validate_character_set = kwargs['validate_character_set']
+        self.trim_leading_and_trailing_spaces_and_zeroes = kwargs['trim_leading_and_trailing_spaces_and_zeroes']
+        self.trailing_separator_policy = kwargs['trailing_separator_policy']
 
 
 class X12ValidationSettings(msrest.serialization.Model):
@@ -7647,8 +7904,8 @@ class X12ValidationSettings(msrest.serialization.Model):
      trim leading and trailing spaces and zeroes.
     :type trim_leading_and_trailing_spaces_and_zeroes: bool
     :param trailing_separator_policy: Required. The trailing separator policy. Possible values
-     include: 'NotSpecified', 'NotAllowed', 'Optional', 'Mandatory'.
-    :type trailing_separator_policy: str or ~logic_management_client.models.TrailingSeparatorPolicy
+     include: "NotSpecified", "NotAllowed", "Optional", "Mandatory".
+    :type trailing_separator_policy: str or ~azure.mgmt.logic.models.TrailingSeparatorPolicy
     """
 
     _validation = {
@@ -7682,13 +7939,13 @@ class X12ValidationSettings(msrest.serialization.Model):
         **kwargs
     ):
         super(X12ValidationSettings, self).__init__(**kwargs)
-        self.validate_character_set = kwargs.get('validate_character_set', None)
-        self.check_duplicate_interchange_control_number = kwargs.get('check_duplicate_interchange_control_number', None)
-        self.interchange_control_number_validity_days = kwargs.get('interchange_control_number_validity_days', None)
-        self.check_duplicate_group_control_number = kwargs.get('check_duplicate_group_control_number', None)
-        self.check_duplicate_transaction_set_control_number = kwargs.get('check_duplicate_transaction_set_control_number', None)
-        self.validate_edi_types = kwargs.get('validate_edi_types', None)
-        self.validate_xsd_types = kwargs.get('validate_xsd_types', None)
-        self.allow_leading_and_trailing_spaces_and_zeroes = kwargs.get('allow_leading_and_trailing_spaces_and_zeroes', None)
-        self.trim_leading_and_trailing_spaces_and_zeroes = kwargs.get('trim_leading_and_trailing_spaces_and_zeroes', None)
-        self.trailing_separator_policy = kwargs.get('trailing_separator_policy', None)
+        self.validate_character_set = kwargs['validate_character_set']
+        self.check_duplicate_interchange_control_number = kwargs['check_duplicate_interchange_control_number']
+        self.interchange_control_number_validity_days = kwargs['interchange_control_number_validity_days']
+        self.check_duplicate_group_control_number = kwargs['check_duplicate_group_control_number']
+        self.check_duplicate_transaction_set_control_number = kwargs['check_duplicate_transaction_set_control_number']
+        self.validate_edi_types = kwargs['validate_edi_types']
+        self.validate_xsd_types = kwargs['validate_xsd_types']
+        self.allow_leading_and_trailing_spaces_and_zeroes = kwargs['allow_leading_and_trailing_spaces_and_zeroes']
+        self.trim_leading_and_trailing_spaces_and_zeroes = kwargs['trim_leading_and_trailing_spaces_and_zeroes']
+        self.trailing_separator_policy = kwargs['trailing_separator_policy']

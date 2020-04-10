@@ -261,6 +261,7 @@ class WorkflowOperations(object):
         tags=None,  # type: Optional[Dict[str, str]]
         state=None,  # type: Optional[Union[str, "models.WorkflowState"]]
         endpoints_configuration=None,  # type: Optional["models.FlowEndpointsConfiguration"]
+        access_control=None,  # type: Optional["models.FlowAccessControlConfiguration"]
         integration_account=None,  # type: Optional["models.ResourceReference"]
         integration_service_environment=None,  # type: Optional["models.ResourceReference"]
         definition=None,  # type: Optional[object]
@@ -299,7 +300,7 @@ class WorkflowOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Workflow"]
         error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        _workflow = models.Workflow(location=location, tags=tags, state=state, endpoints_configuration=endpoints_configuration, integration_account=integration_account, integration_service_environment=integration_service_environment, definition=definition, parameters=parameters)
+        _workflow = models.Workflow(location=location, tags=tags, state=state, endpoints_configuration=endpoints_configuration, access_control=access_control, integration_account=integration_account, integration_service_environment=integration_service_environment, definition=definition, parameters=parameters)
         api_version = "2019-05-01"
         content_type = kwargs.pop("content_type", "application/json")
 

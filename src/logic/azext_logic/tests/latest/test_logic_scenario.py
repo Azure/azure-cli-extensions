@@ -100,10 +100,12 @@ class LogicManagementClientScenarioTest(ScenarioTest):
 
         self.cmd('az logic workflow delete '
                  '--resource-group "{rg}" '
-                 '--name "{testWorkflow}"',
+                 '--name "{testWorkflow}" '
+                 '-y',
                  checks=[])
 
         self.cmd('az logic integration-account delete '
                  '--name "{IntegrationAccounts_2}" '
-                 '--resource-group "{rg_2}"',
+                 '--resource-group "{rg_2}" '
+                 '-y',
                  checks=[])

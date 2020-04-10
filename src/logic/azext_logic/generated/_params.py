@@ -44,6 +44,8 @@ def load_arguments(self, _):
                    'rvice environment.')
         c.argument('endpoints_configuration', arg_type=CLIArgumentType(options_list=['--endpoints-configuration'],
             help='The endpoints configuration.'))
+        c.argument('access_control', arg_type=CLIArgumentType(options_list=['--access-control'], help='The access contr'
+                'ol configuration.'))
         c.argument('state', arg_type=get_enum_type(['NotSpecified', 'Completed', 'Enabled', 'Disabled', 'Deleted', 'Sus'
                    'pended']), help='The state.')
         c.argument('tags', tags_type, help='The resource tags.')
