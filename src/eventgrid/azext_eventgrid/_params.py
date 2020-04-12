@@ -47,13 +47,13 @@ public_network_access_type = CLIArgumentType(
 )
 
 sku_type = CLIArgumentType(
-    help="The Sku name of the resource. The possible values are basic or premium.",
+    help="The Sku name of the resource.",
     arg_type=get_enum_type(['basic', 'premium']),
     options_list=['--sku']
 )
 
 identity_type = CLIArgumentType(
-    help="The identity type of the resource. The possible values are noidentity or systemassigned.",
+    help="The identity type of the resource.",
     arg_type=get_enum_type(['noidentity', 'systemassigned']),
     options_list=['--identity']
 )
@@ -185,6 +185,9 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
         c.argument('destination_resource_group', help="Azure Resource Group of the customer creating the event channel. The partner topic associated with the event channel will be created under this resource group.")
         c.argument('destination_subscription_id', help="Azure subscription Id of the customer creating the event channel. The partner topic associated with the event channel will be created under this Azure subscription.")
         c.argument('topic_type', help="Name of the topic type.", completer=get_resource_name_completion_list('Microsoft.EventGrid/topictypes'))
+        c.argument('approval_description', help="Comments for the approval.")
+        c.argument('rejection_description', help="Comments for the rejection.")
+        c.argument('actions_required', help="The actions required for the private endpoint connection, if any.")
 
     with self.argument_context('eventgrid topic') as c:
         c.argument('topic_name', arg_type=name_type, help='Name of the topic.', id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/topics'))
@@ -200,14 +203,22 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
         c.argument('private_endpoint_connection_name', arg_type=private_endpoint_connection_name_type, options_list=['--name', '-n'], id_part='privateendpointconnections')
 
     with self.argument_context('eventgrid topic private-endpoint-connection list') as c:
-        c.argument('topic_name', arg_type=topic_name_type, options_list=['--name', '-n'], id_part=None)
+        c.argument('topic_name', arg_type=topic_name_type, id_part=None)
+
+    with self.argument_context('eventgrid topic private-endpoint-connection approve') as c:
+        c.argument('topic_name', arg_type=topic_name_type, id_part=None)
+        c.argument('approval_description', id_part=None)
+
+    with self.argument_context('eventgrid topic private-endpoint-connection reject') as c:
+        c.argument('topic_name', arg_type=topic_name_type, id_part=None)
+        c.argument('rejections_description', id_part=None)
 
     with self.argument_context('eventgrid topic private-link-resource') as c:
         c.argument('topic_name', arg_type=topic_name_type, id_part='name')
         c.argument('private_link_resource_name', arg_type=private_link_resource_name_type, options_list=['--name', '-n'], id_part='privatelinkresources')
 
     with self.argument_context('eventgrid topic private-link-resource list') as c:
-        c.argument('topic_name', arg_type=topic_name_type, options_list=['--name', '-n'], id_part=None)
+        c.argument('topic_name', arg_type=topic_name_type, id_part=None)
 
     with self.argument_context('eventgrid domain') as c:
         c.argument('domain_name', arg_type=domain_name_type, options_list=['--name', '-n'], id_part='name')
@@ -233,12 +244,20 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
     with self.argument_context('eventgrid domain private-endpoint-connection list') as c:
         c.argument('domain_name', arg_type=domain_name_type, options_list=['--name', '-n'], id_part=None)
 
+    with self.argument_context('eventgrid domain private-endpoint-connection approve') as c:
+        c.argument('domain_name', arg_type=domain_name_type, id_part=None)
+        c.argument('approval_description', id_part=None)
+
+    with self.argument_context('eventgrid domain private-endpoint-connection reject') as c:
+        c.argument('domain_name', arg_type=domain_name_type, id_part=None)
+        c.argument('rejection_description', id_part=None)
+
     with self.argument_context('eventgrid domain private-link-resource') as c:
         c.argument('domain_name', arg_type=domain_name_type, id_part='name')
         c.argument('private_link_resource_name', arg_type=private_link_resource_name_type, options_list=['--name', '-n'], id_part='privatelinkresources')
 
     with self.argument_context('eventgrid domain private-link-resource list') as c:
-        c.argument('domain_name', arg_type=domain_name_type, options_list=['--name', '-n'], id_part=None)
+        c.argument('domain_name', arg_type=domain_name_type, id_part=None)
 
     with self.argument_context('eventgrid system-topic') as c:
         c.argument('system_topic_name', arg_type=system_topic_name_type, options_list=['--name', '-n'], id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/systemtopics'))

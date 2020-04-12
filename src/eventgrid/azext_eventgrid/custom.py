@@ -39,7 +39,9 @@ from azext_eventgrid.vendored_sdks.eventgrid.models import (
     PartnerTopic,
     EventChannelSource,
     EventChannelDestination,
-    SystemTopic
+    SystemTopic,
+    PrivateEndpointConnection,
+    ConnectionState
 )
 
 logger = get_logger(__name__)
@@ -127,6 +129,8 @@ def cli_topic_create_or_update(
     if (identity is not None and identity.lower() != IDENTITY_NONE.lower()):
         identity_type_name = _get_identity_type(identity)
         identity_info = IdentityInfo(type=identity_type_name)
+    else:
+        identity_info = IdentityInfo(type=IDENTITY_NONE)
 
     topic_info = Topic(
         location=location,
@@ -153,8 +157,10 @@ def cli_topic_update(
         inbound_ip_rules=None,
         sku=None,
         identity=None):
-    sku_name = _get_sku(sku)
-    sku_info = ResourceSku(name=sku_name)
+    sku_info = None
+    if sku is not None:
+        sku_name = _get_sku(sku)
+        sku_info = ResourceSku(name=sku_name)
 
     identity_info = None
 
@@ -184,9 +190,10 @@ def cli_domain_update(
         inbound_ip_rules=None,
         sku=None,
         identity=None):
-    sku_name = _get_sku(sku)
-    sku_info = ResourceSku(
-        name=sku_name)
+    sku_info = None
+    if sku is not None:
+        sku_name = _get_sku(sku)
+        sku_info = ResourceSku(name=sku_name)
 
     identity_info = None
     if (identity is not None and identity.lower() != IDENTITY_NONE.lower()):
@@ -859,6 +866,40 @@ def cli_topic_private_endpoint_connection_list(
     return client.list_by_resource(resource_group_name, EVENTGRID_TOPICS, topic_name)
 
 
+def cli_topic_private_endpoint_connection_approve(
+        client,
+        resource_group_name,
+        topic_name,
+        private_endpoint_connection_name,
+        approval_description=None):
+
+    status = ConnectionState(description=approval_description, status='Approved')
+    private_endpoint_conn = PrivateEndpointConnection(private_link_service_connection_state=status)
+    return client.update(
+        resource_group_name,
+        EVENTGRID_TOPICS,
+        topic_name,
+        private_endpoint_connection_name,
+        private_endpoint_conn)
+
+
+def cli_topic_private_endpoint_connection_reject(
+        client,
+        resource_group_name,
+        topic_name,
+        private_endpoint_connection_name,
+        rejection_description=None):
+
+    status = ConnectionState(description=rejection_description, status='Rejected')
+    private_endpoint_conn = PrivateEndpointConnection(private_link_service_connection_state=status)
+    return client.update(
+        resource_group_name,
+        EVENTGRID_TOPICS,
+        topic_name,
+        private_endpoint_connection_name,
+        private_endpoint_conn)
+
+
 def cli_domain_private_endpoint_connection_get(
         client,
         resource_group_name,
@@ -883,6 +924,40 @@ def cli_domain_private_endpoint_connection_delete(
         private_endpoint_connection_name):
 
     return client.delete(resource_group_name, EVENTGRID_DOMAINS, domain_name, private_endpoint_connection_name)
+
+
+def cli_domain_private_endpoint_connection_approve(
+        client,
+        resource_group_name,
+        domain_name,
+        private_endpoint_connection_name,
+        approval_description=None):
+
+    status = ConnectionState(description=approval_description, status='Approved')
+    private_endpoint_conn = PrivateEndpointConnection(private_link_service_connection_state=status)
+    return client.update(
+        resource_group_name,
+        EVENTGRID_DOMAINS,
+        domain_name,
+        private_endpoint_connection_name,
+        private_endpoint_conn)
+
+
+def cli_domain_private_endpoint_connection_reject(
+        client,
+        resource_group_name,
+        domain_name,
+        private_endpoint_connection_name,
+        rejection_description=None):
+
+    status = ConnectionState(description=rejection_description, status='Rejected')
+    private_endpoint_conn = PrivateEndpointConnection(private_link_service_connection_state=status)
+    return client.update(
+        resource_group_name,
+        EVENTGRID_DOMAINS,
+        domain_name,
+        private_endpoint_connection_name,
+        private_endpoint_conn)
 
 
 def cli_topic_private_link_resource_get(
