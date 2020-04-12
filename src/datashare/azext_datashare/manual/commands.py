@@ -105,6 +105,7 @@ def load_command_table(self, _):
         g.custom_command('list-detail', 'datashare_share_subscription_list_synchronization_detail')
         g.custom_command('start', 'datashare_share_subscription_synchronize', supports_no_wait=True)
         g.custom_command('cancel', 'datashare_share_subscription_cancel_synchronization', supports_no_wait=True)
+        g.custom_wait_command('wait', '_datashare_share_subscription_get_synchronization')
 
     from azext_datashare.generated._client_factory import cf_consumer_source_data_set
     datashare_consumer_source_data_set = CliCommandType(

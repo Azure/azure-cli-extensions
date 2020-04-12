@@ -392,6 +392,20 @@ def datashare_share_subscription_list_synchronization(cmd, client,
                                        share_subscription_name=share_subscription_name)
 
 
+def _datashare_share_subscription_get_synchronization(cmd, client,
+                                                      resource_group_name,
+                                                      account_name,
+                                                      share_subscription_name,
+                                                      synchronization_id):
+    from knack.util import todict
+    from azure.cli.core.commands import AzCliCommandInvoker
+    result = client.list_synchronization(resource_group_name=resource_group_name,
+                                         account_name=account_name,
+                                         share_subscription_name=share_subscription_name)
+    result = todict(list(result), AzCliCommandInvoker.remove_additional_prop_layer)
+    return next((x for x in result if x['synchronizationId'] == synchronization_id), None)
+
+
 def datashare_consumer_source_data_set_list(cmd, client,
                                             resource_group_name,
                                             account_name,

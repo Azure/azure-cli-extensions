@@ -474,6 +474,16 @@ helps['datashare consumer share-subscription synchronization cancel'] = """
                az datashare consumer share-subscription synchronization cancel --account-name MyAccount --resource-group MyResourceGroup --share-subscription-name "ShareSubscription1" --synchronization-id "7d0536a6-3fa5-43de-b152-3d07c4f6b2bb"
 """
 
+helps['datashare consumer share-subscription synchronization wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the datashare share subscription synchronization is met.
+    examples:
+        - name: Pause executing next line of CLI script until the datashare share subscription synchronization finishes successfully.
+          text: az datashare consumer share-subscription synchronization wait --custom "status=='Succeeded'" --account-name MyAccount --resource-group MyResourceGroup --share-subscription-name "ShareSubscription1" --synchronization-id "7d0536a6-3fa5-43de-b152-3d07c4f6b2bb"
+        - name: Pause executing next line of CLI script until the datashare share subscription synchronization is cancelled.
+          text: az datashare consumer share-subscription synchronization wait --custom "status=='Cancelled'" --account-name MyAccount --resource-group MyResourceGroup --share-subscription-name "ShareSubscription1" --synchronization-id "7d0536a6-3fa5-43de-b152-3d07c4f6b2bb"
+"""
+
 helps['datashare consumer share-subscription list-source-share-synchronization-setting'] = """
     type: command
     short-summary: List synchronization settings set on a share

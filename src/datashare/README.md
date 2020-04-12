@@ -59,8 +59,8 @@ az datashare dataset create \
 --dataset "{\"container_name\":\"mycontainer\",\"storage_account_name\":\"mysa\",\"kind\":\"Container\"}"
 ```
 
-Please make sure the datashare account has the right permission to the data source when creating a data set upon it.
-For instance, you can use `az datashare account show` to get 'identity.principalId' in the result, then assign the right role to it.
+Please make sure the datashare account has the right permission of the data source when creating a data set upon it.
+For instance, you can use `az datashare account show` to get 'identity.principalId' of the account, then assign the right role to it.
 ```
 az role assignment create \
 --role "Storage Blob Data Reader" \
@@ -157,8 +157,7 @@ az datashare consumer dataset-mapping create \
 \"container_name\":\"newcontainer\", \"storage_account_name\":\"consumersa\", \
 \"kind\":\"BlobFolder\",\"prefix\":\"myprefix\"}"
 ```
-Please make sure the datashare account has the right permission to the data target when creating a data set mapping on it.
-For instance, you can use `az datashare account show` to get 'identity.principalId' in the result, then assign the right role to it.
+Please make sure the datashare consumer account has the right permission of the data target when creating a data set mapping on it. For instance, you can use `az datashare account show` to get 'identity.principalId' of the account, then assign the right role to it.
 ```
 az role assignment create \
 --role "Storage Blob Data Contributor" \

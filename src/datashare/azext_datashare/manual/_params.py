@@ -48,16 +48,31 @@ def load_arguments(self, _):
     with self.argument_context('datashare account wait') as c:
         c.argument('account_name', options_list=['--name', '-n'], id_part='name', help='The name of the share account.')  # modified
 
-    with self.argument_context('datashare consumer invitation list') as c:
-        pass
+    with self.argument_context('datashare list') as c:  # modified
+        c.argument('resource_group_name', resource_group_name_type)  # modified
+        c.argument('account_name', help='The name of the share account.')
 
-    with self.argument_context('datashare consumer invitation show') as c:
-        c.argument('location', arg_type=get_location_type(self.cli_ctx))  # modified
-        c.argument('invitation_id', validator=invitation_id_validator, help='An invitation id')
+    with self.argument_context('datashare show') as c:  # modified
+        c.argument('resource_group_name', resource_group_name_type)  # modified
+        c.argument('account_name', id_part='name', help='The name of the share account.')  # modified
+        c.argument('share_name', options_list=['--name', '-n'], id_part='child_name_1', help='The name of the share.')  # modified
 
-    with self.argument_context('datashare consumer invitation reject-invitation') as c:
-        c.argument('location', arg_type=get_location_type(self.cli_ctx))  # modified
-        c.argument('invitation_id', validator=invitation_id_validator, help='An invitation id')  # modified
+    with self.argument_context('datashare create') as c:  # modified
+        c.argument('resource_group_name', resource_group_name_type)  # modified
+        c.argument('account_name', help='The name of the share account.')
+        c.argument('share_name', options_list=['--name', '-n'], help='The name of the share.')  # modified
+        c.argument('description', help='Share description.')  # modified
+        c.argument('share_kind', arg_type=get_enum_type(ShareKind), help='Share kind.')  # modified
+        c.argument('terms', help='Share terms.')  # modified
+
+    with self.argument_context('datashare delete') as c:
+        c.argument('resource_group_name', resource_group_name_type)  # modified
+        c.argument('account_name', id_part='name', help='The name of the share account.')  # modified
+        c.argument('share_name', options_list=['--name', '-n'], id_part='child_name_1', help='The name of the share.')  # modified
+
+    with self.argument_context('datashare wait') as c:
+        c.argument('account_name', id_part='name', help='The name of the share account.')  # modified
+        c.argument('share_name', options_list=['--name', '-n'], id_part='child_name_1', help='The name of the share.')  # modified
 
     with self.argument_context('datashare dataset list') as c:  # modified
         c.argument('resource_group_name', resource_group_name_type)  # modified
@@ -84,36 +99,9 @@ def load_arguments(self, _):
         c.argument('data_set_name', options_list=['--name', '-n'], id_part='child_name_2', help='The name of the dataset.')  # modified
 
     with self.argument_context('datashare dataset wait') as c:
+        c.argument('account_name', id_part='name', help='The name of the share account.')  # modified
+        c.argument('share_name', id_part='child_name_1', help='The name of the share.')  # modified
         c.argument('data_set_name', options_list=['--name', '-n'], id_part='child_name_2', help='The name of the dataset.')  # modified
-
-    with self.argument_context('datashare consumer dataset-mapping list') as c:  # modified
-        c.argument('resource_group_name', resource_group_name_type)  # modified
-        c.argument('account_name', help='The name of the share account.')
-        c.argument('share_subscription_name', help='The name of the share subscription.')
-
-    with self.argument_context('datashare consumer dataset-mapping show') as c:  # modified
-        c.argument('resource_group_name', resource_group_name_type)  # modified
-        c.argument('account_name', id_part='name', help='The name of the share account.')
-        c.argument('share_subscription_name', id_part='child_name_1', help='The name of the share subscription.')
-        c.argument('data_set_mapping_name', id_part='child_name_2', options_list=['--name', '-n'], help='The name of the datasetMapping.')  # modified
-
-    with self.argument_context('datashare consumer dataset-mapping create') as c:  # modified
-        c.argument('resource_group_name', resource_group_name_type)  # modified
-        c.argument('account_name', help='The name of the share account.')
-        c.argument('share_subscription_name', help='The name of the share subscription.')
-        c.argument('data_set_mapping_name', options_list=['--name', '-n'], help='The name of the datasetMapping.')  # modified
-        c.argument('data_set_mapping', options_list=['--mapping'], type=validate_file_or_dict, help='Dataset mapping in JSON string or path to JSON file.')  # modified
-
-    with self.argument_context('datashare consumer dataset-mapping delete') as c:  # modified
-        c.argument('resource_group_name', resource_group_name_type)  # modified
-        c.argument('account_name', id_part='name', help='The name of the share account.')
-        c.argument('share_subscription_name', id_part='child_name_1', help='The name of the share subscription.')
-        c.argument('data_set_mapping_name', id_part='child_name_2', options_list=['--name', '-n'], help='The name of the datasetMapping.')  # modified
-
-    with self.argument_context('datashare consumer dataset-mapping wait') as c:
-        c.argument('account_name', id_part='name', help='The name of the share account.')
-        c.argument('share_subscription_name', id_part='child_name_1', help='The name of the share subscription.')
-        c.argument('data_set_mapping_name', id_part='child_name_2', options_list=['--name', '-n'], help='The name of the datasetMapping.')  # modified
 
     with self.argument_context('datashare invitation list') as c:
         c.argument('resource_group_name', resource_group_name_type)  # modified
@@ -141,42 +129,45 @@ def load_arguments(self, _):
         c.argument('share_name', id_part='child_name_1', help='The name of the share.')  # modified
         c.argument('invitation_name', options_list=['--name', '-n'], id_part='child_name_2', help='The name of the invitation.')  # modified
 
-    with self.argument_context('datashare list') as c:  # modified
+    with self.argument_context('datashare synchronization-setting list') as c:
         c.argument('resource_group_name', resource_group_name_type)  # modified
         c.argument('account_name', help='The name of the share account.')
+        c.argument('share_name', help='The name of the share.')
 
-    with self.argument_context('datashare show') as c:  # modified
+    with self.argument_context('datashare synchronization-setting show') as c:
         c.argument('resource_group_name', resource_group_name_type)  # modified
         c.argument('account_name', id_part='name', help='The name of the share account.')  # modified
-        c.argument('share_name', options_list=['--name', '-n'], id_part='child_name_1', help='The name of the share.')  # modified
+        c.argument('share_name', id_part='child_name_1', help='The name of the share.')  # modified
+        c.argument('synchronization_setting_name', options_list=['--name', '-n'], id_part='child_name_2', help='The name of the synchronizationSetting.')  # modified
 
-    with self.argument_context('datashare create') as c:  # modified
+    with self.argument_context('datashare synchronization-setting create') as c:
         c.argument('resource_group_name', resource_group_name_type)  # modified
         c.argument('account_name', help='The name of the share account.')
-        c.argument('share_name', options_list=['--name', '-n'], help='The name of the share.')  # modified
-        c.argument('description', help='Share description.')  # modified
-        c.argument('share_kind', arg_type=get_enum_type(ShareKind), help='Share kind.')  # modified
-        c.argument('terms', help='Share terms.')  # modified
+        c.argument('share_name', help='The name of the share.')
+        c.argument('synchronization_setting_name', options_list=['--name', '-n'], help='The name of the synchronizationSetting.')  # modified
+        c.argument('synchronization_setting', options_list=['--setting'], type=validate_file_or_dict, help='Synchronization settings in JSON string or path to JSON file.')
 
-    with self.argument_context('datashare delete') as c:
+    with self.argument_context('datashare synchronization-setting delete') as c:
         c.argument('resource_group_name', resource_group_name_type)  # modified
         c.argument('account_name', id_part='name', help='The name of the share account.')  # modified
-        c.argument('share_name', options_list=['--name', '-n'], id_part='child_name_1', help='The name of the share.')  # modified
+        c.argument('share_name', id_part='child_name_1', help='The name of the share.')  # modified
+        c.argument('synchronization_setting_name', options_list=['--name', '-n'], id_part='child_name_2', help='The name of the synchronizationSetting.')  # modified
+
+    with self.argument_context('datashare synchronization-setting wait') as c:
+        c.argument('account_name', id_part='name', help='The name of the share account.')  # modified
+        c.argument('share_name', id_part='child_name_1', help='The name of the share.')  # modified
+        c.argument('synchronization_setting_name', options_list=['--name', '-n'], id_part='child_name_2', help='The name of the synchronizationSetting.')  # modified
 
     with self.argument_context('datashare synchronization list-detail') as c:
         c.argument('resource_group_name', resource_group_name_type)  # modified
         c.argument('account_name', help='The name of the share account.')  # modified
         c.argument('share_name', help='The name of the share.')  # modified
-        c.argument('synchronization_id', help='Synchronization id')
+        c.argument('synchronization_id', help='The synchronization GUID.')
 
     with self.argument_context('datashare synchronization list') as c:  # modified
         c.argument('resource_group_name', resource_group_name_type)  # modified
         c.argument('account_name', help='The name of the share account.')  # modified
         c.argument('share_name', help='The name of the share.')  # modified
-
-    with self.argument_context('datashare wait') as c:
-        c.argument('account_name', id_part='name', help='The name of the share account.')  # modified
-        c.argument('share_name', options_list=['--name', '-n'], id_part='child_name_1', help='The name of the share.')  # modified
 
     with self.argument_context('datashare provider-share-subscription list') as c:
         c.argument('resource_group_name', resource_group_name_type)  # modified
@@ -206,6 +197,17 @@ def load_arguments(self, _):
         c.argument('share_name', id_part='child_name_1', help='The name of the share.')  # modified
         c.argument('provider_share_subscription_id', options_list=['--share-subscription'], id_part='child_name_2', help='To locate share subscription')  # modified
 
+    with self.argument_context('datashare consumer invitation list') as c:
+        pass
+
+    with self.argument_context('datashare consumer invitation show') as c:
+        c.argument('location', arg_type=get_location_type(self.cli_ctx))  # modified
+        c.argument('invitation_id', validator=invitation_id_validator, help='An invitation id')
+
+    with self.argument_context('datashare consumer invitation reject-invitation') as c:
+        c.argument('location', arg_type=get_location_type(self.cli_ctx))  # modified
+        c.argument('invitation_id', validator=invitation_id_validator, help='An invitation id')  # modified
+
     with self.argument_context('datashare consumer share-subscription list') as c:
         c.argument('resource_group_name', resource_group_name_type)  # modified
         c.argument('account_name', help='The name of the share account.')
@@ -216,15 +218,30 @@ def load_arguments(self, _):
         c.argument('share_subscription_name', options_list=['--name', '-n'], id_part='child_name_1', help='The name of the share subscription.')  # modified
 
     with self.argument_context('datashare consumer share-subscription create') as c:
+        from azure.cli.core.commands.parameters import get_location_name_type, get_location_completion_list
         c.argument('resource_group_name', resource_group_name_type)  # modified
         c.argument('account_name', help='The name of the share account.')
         c.argument('share_subscription_name', options_list=['--name', '-n'], help='The name of the share subscription.')  # modified
         c.argument('invitation_id', validator=invitation_id_validator, help='The invitation id.')  # modified
-        c.argument('source_share_location', help='Source share location.')  # modified
+        c.argument('source_share_location', type=get_location_name_type(self.cli_ctx), help='Source share location.', completer=get_location_completion_list)  # modified
 
     with self.argument_context('datashare consumer share-subscription delete') as c:
         c.argument('resource_group_name', resource_group_name_type)  # modified
         c.argument('account_name', id_part='name', help='The name of the share account.')  # modified
+        c.argument('share_subscription_name', options_list=['--name', '-n'], id_part='child_name_1', help='The name of the share subscription.')  # modified
+
+    with self.argument_context('datashare consumer share-subscription list-source-share-synchronization-setting') as c:
+        c.argument('resource_group_name', resource_group_name_type)  # modified
+        c.argument('account_name', help='The name of the share account.')
+        c.argument('share_subscription_name', help='The name of the share subscription.')
+
+    with self.argument_context('datashare consumer share-subscription list-source-dataset') as c:
+        c.argument('resource_group_name', resource_group_name_type)  # modified
+        c.argument('account_name', help='The name of the share account.')
+        c.argument('share_subscription_name', help='The name of the share subscription.')
+
+    with self.argument_context('datashare consumer share-subscription wait') as c:
+        c.argument('account_name', id_part='name', help='The name of the share account.')
         c.argument('share_subscription_name', options_list=['--name', '-n'], id_part='child_name_1', help='The name of the share subscription.')  # modified
 
     with self.argument_context('datashare consumer share-subscription synchronization start') as c:
@@ -237,7 +254,12 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)  # modified
         c.argument('account_name', help='The name of the share account.')
         c.argument('share_subscription_name', help='The name of the share subscription.')
-        c.argument('synchronization_id', help='Synchronization id')
+        c.argument('synchronization_id', help='The synchronization GUID')
+
+    with self.argument_context('datashare consumer share-subscription synchronization wait') as c:
+        c.argument('account_name', help='The name of the share account.')
+        c.argument('share_subscription_name', help='The name of the share subscription.')
+        c.argument('synchronization_id', help='The synchronization GUID')
 
     with self.argument_context('datashare consumer share-subscription synchronization list') as c:
         c.argument('resource_group_name', resource_group_name_type)  # modified
@@ -250,46 +272,34 @@ def load_arguments(self, _):
         c.argument('share_subscription_name', help='The name of the share subscription.')
         c.argument('synchronization_id', help='Synchronization id')
 
-    with self.argument_context('datashare consumer share-subscription list-source-share-synchronization-setting') as c:
+    with self.argument_context('datashare consumer dataset-mapping list') as c:  # modified
         c.argument('resource_group_name', resource_group_name_type)  # modified
         c.argument('account_name', help='The name of the share account.')
         c.argument('share_subscription_name', help='The name of the share subscription.')
 
-    with self.argument_context('datashare consumer share-subscription wait') as c:
+    with self.argument_context('datashare consumer dataset-mapping show') as c:  # modified
+        c.argument('resource_group_name', resource_group_name_type)  # modified
         c.argument('account_name', id_part='name', help='The name of the share account.')
-        c.argument('share_subscription_name', options_list=['--name', '-n'], id_part='child_name_1', help='The name of the share subscription.')  # modified
+        c.argument('share_subscription_name', id_part='child_name_1', help='The name of the share subscription.')
+        c.argument('data_set_mapping_name', id_part='child_name_2', options_list=['--name', '-n'], help='The name of the datasetMapping.')  # modified
 
-    with self.argument_context('datashare consumer share-subscription list-source-dataset') as c:
+    with self.argument_context('datashare consumer dataset-mapping create') as c:  # modified
         c.argument('resource_group_name', resource_group_name_type)  # modified
         c.argument('account_name', help='The name of the share account.')
         c.argument('share_subscription_name', help='The name of the share subscription.')
+        c.argument('data_set_mapping_name', options_list=['--name', '-n'], help='The name of the datasetMapping.')  # modified
+        c.argument('data_set_mapping', options_list=['--mapping'], type=validate_file_or_dict, help='Dataset mapping in JSON string or path to JSON file.')  # modified
 
-    with self.argument_context('datashare synchronization-setting list') as c:
+    with self.argument_context('datashare consumer dataset-mapping delete') as c:  # modified
         c.argument('resource_group_name', resource_group_name_type)  # modified
-        c.argument('account_name', help='The name of the share account.')
-        c.argument('share_name', help='The name of the share.')
+        c.argument('account_name', id_part='name', help='The name of the share account.')
+        c.argument('share_subscription_name', id_part='child_name_1', help='The name of the share subscription.')
+        c.argument('data_set_mapping_name', id_part='child_name_2', options_list=['--name', '-n'], help='The name of the datasetMapping.')  # modified
 
-    with self.argument_context('datashare synchronization-setting show') as c:
-        c.argument('resource_group_name', resource_group_name_type)  # modified
-        c.argument('account_name', id_part='name', help='The name of the share account.')  # modified
-        c.argument('share_name', id_part='child_name_1', help='The name of the share.')  # modified
-        c.argument('synchronization_setting_name', options_list=['--name', '-n'], id_part='child_name_2', help='The name of the synchronizationSetting.')  # modified
-
-    with self.argument_context('datashare synchronization-setting create') as c:
-        c.argument('resource_group_name', resource_group_name_type)  # modified
-        c.argument('account_name', help='The name of the share account.')
-        c.argument('share_name', help='The name of the share.')
-        c.argument('synchronization_setting_name', options_list=['--name', '-n'], help='The name of the synchronizationSetting.')  # modified
-        c.argument('synchronization_setting', options_list=['--setting'], type=validate_file_or_dict, help='Synchronization settings in JSON string or path to JSON file.')
-
-    with self.argument_context('datashare synchronization-setting delete') as c:
-        c.argument('resource_group_name', resource_group_name_type)  # modified
-        c.argument('account_name', id_part='name', help='The name of the share account.')  # modified
-        c.argument('share_name', id_part='child_name_1', help='The name of the share.')  # modified
-        c.argument('synchronization_setting_name', options_list=['--name', '-n'], id_part='child_name_2', help='The name of the synchronizationSetting.')  # modified
-
-    with self.argument_context('datashare synchronization-setting wait') as c:
-        c.argument('synchronization_setting_name', options_list=['--name', '-n'], help='The name of the synchronizationSetting.')  # modified
+    with self.argument_context('datashare consumer dataset-mapping wait') as c:
+        c.argument('account_name', id_part='name', help='The name of the share account.')
+        c.argument('share_subscription_name', id_part='child_name_1', help='The name of the share subscription.')
+        c.argument('data_set_mapping_name', id_part='child_name_2', options_list=['--name', '-n'], help='The name of the datasetMapping.')  # modified
 
     with self.argument_context('datashare consumer trigger list') as c:
         c.argument('resource_group_name', resource_group_name_type)  # modified

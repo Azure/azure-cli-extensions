@@ -15,7 +15,7 @@ class DataShareManagementClientCommandsLoader(AzCommandsLoader):
         from azure.cli.core.commands import CliCommandType
         from azext_datashare.generated._client_factory import cf_datashare
         datashare_custom = CliCommandType(
-            operations_tmpl='azext_datashare.custom#{}',
+            operations_tmpl='azext_datashare.manual.custom#{}',  # modified
             client_factory=cf_datashare)
         super(DataShareManagementClientCommandsLoader, self).__init__(cli_ctx=cli_ctx,
                                                                       custom_command_type=datashare_custom)
