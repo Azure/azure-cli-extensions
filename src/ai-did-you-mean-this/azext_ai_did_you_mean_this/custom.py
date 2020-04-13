@@ -69,7 +69,7 @@ def parse_recommendation(recommendation):
     return success_command, parameter_buffer, placeholder_buffer
 
 def log_debug(msg):
-    # TODO: see if there's a way to change the log foramtter locally without printing to stdout
+    # TODO: see if there's a way to change the log formatter locally without printing to stdout
     prefix = '[Thoth]'
     logger.debug('%s: %s', prefix, msg)
 
