@@ -1173,9 +1173,11 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
         instance.agent_pool_profiles[0].min_count = None
         instance.agent_pool_profiles[0].max_count = None
 
-    if not cluster_autoscaler_profile:
+    # if intention is to clear profile
+    if cluster_autoscaler_profile == {}:
         instance.auto_scaler_profile = {}
-    else:
+    # else profile is provided, update instance profile if it exists
+    elif cluster_autoscaler_profile:
         instance.auto_scaler_profile = _update_dict(instance.auto_scaler_profile.__dict__,
                                                     dict((key.replace("-", "_"), value)
                                                          for (key, value) in cluster_autoscaler_profile.items())) \
