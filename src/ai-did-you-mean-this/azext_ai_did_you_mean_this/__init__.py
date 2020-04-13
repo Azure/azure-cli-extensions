@@ -21,7 +21,7 @@ class AiDidYouMeanThisCommandsLoader(AzCommandsLoader):
             operations_tmpl='azext_ai_did_you_mean_this.custom#{}')
         super(AiDidYouMeanThisCommandsLoader, self).__init__(cli_ctx=cli_ctx,
                                                              custom_command_type=ai_did_you_mean_this_custom)
-        
+
         inject_functions_into_core()
 
     def load_command_table(self, args):
