@@ -118,7 +118,7 @@ def create_support_tickets(cmd, client,
     start_date_time = start_date_time.strftime("%Y-%m-%dT%H:%M:%SZ")
     body["problem_start_time"] = start_date_time
 
-    if is_quota_ticket(service):
+    if is_quota_ticket(service) and quota_change_version is not None:
         quotaBody = {}
         quotaBody["quota_change_request_sub_type"] = quota_change_subtype
         quotaBody["quota_change_request_version"] = quota_change_version
@@ -129,7 +129,7 @@ def create_support_tickets(cmd, client,
         quotaBody["quota_change_requests"] = quota_change_requests
         body["quota_ticket_details"] = quotaBody
 
-    if is_technical_ticket(service):
+    if is_technical_ticket(service) and technical_resource is not None:
         body["technical_ticket_details"] = {"resource_id": technical_resource}
 
     logger.debug("Sending create request with below payload: ")
