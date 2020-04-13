@@ -14,8 +14,8 @@ from enum import Enum
 
 class ResourceIdentityType(str, Enum):
 
-    system_assigned = "SystemAssigned"
     none = "None"
+    system_assigned = "SystemAssigned"
 
 
 class ProvisioningState(str, Enum):

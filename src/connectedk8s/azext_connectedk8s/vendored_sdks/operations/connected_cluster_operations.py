@@ -36,7 +36,6 @@ class ConnectedClusterOperations(object):
         self._serialize = serializer
         self._deserialize = deserializer
         self.api_version = "2020-01-01-preview"
-        #self.api_version = "2019-09-01-privatepreview"
         self.config = config
 
 
@@ -45,8 +44,8 @@ class ConnectedClusterOperations(object):
         # Construct URL
         url = self.create.metadata['url']
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str')
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -74,7 +73,9 @@ class ConnectedClusterOperations(object):
         response = self._client.send(request, stream=False, **operation_config)
 
         if response.status_code not in [200, 201]:
-            raise models.ErrorResponseException(self._deserialize, response)
+            exp = CloudError(response)
+            exp.request_id = response.headers.get('x-ms-request-id')
+            raise exp
 
         deserialized = None
 
@@ -91,18 +92,19 @@ class ConnectedClusterOperations(object):
 
     def create(
             self, resource_group_name, cluster_name, connected_cluster, custom_headers=None, raw=False, polling=True, **operation_config):
-        """Registers a new K8s cluster.
+        """Register a new Kubernetes cluster with Azure Resource Manager.
 
-        API to register a new K8s cluster and thereby create a tracked resource
-        in ARM.
+        API to register a new Kubernetes cluster and create a tracked resource
+        in Azure Resource Manager (ARM).
 
-        :param resource_group_name: The name of the resource group to which
-         the kubernetes cluster is registered.
+        :param resource_group_name: The name of the resource group. The name
+         is case insensitive.
         :type resource_group_name: str
         :param cluster_name: The name of the Kubernetes cluster on which get
          is called.
         :type cluster_name: str
-        :param connected_cluster:
+        :param connected_cluster: Parameters supplied to Create a Connected
+         Cluster.
         :type connected_cluster:
          ~azure.mgmt.hybridkubernetes.models.ConnectedCluster
         :param dict custom_headers: headers that will be added to the request
@@ -147,19 +149,23 @@ class ConnectedClusterOperations(object):
     create.metadata = {'url': '/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Kubernetes/connectedClusters/{clusterName}'}
 
     def update(
-            self, resource_group_name, cluster_name, tags=None, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, cluster_name, tags=None, agent_public_key_certificate=None, custom_headers=None, raw=False, **operation_config):
         """Updates a connected cluster.
 
         API to update certain properties of the connected cluster resource.
 
-        :param resource_group_name: The name of the resource group to which
-         the kubernetes cluster is registered.
+        :param resource_group_name: The name of the resource group. The name
+         is case insensitive.
         :type resource_group_name: str
         :param cluster_name: The name of the Kubernetes cluster on which get
          is called.
         :type cluster_name: str
         :param tags: Resource tags.
         :type tags: dict[str, str]
+        :param agent_public_key_certificate: Base64 encoded public certificate
+         used by the agent to do the initial handshake to the backend services
+         in Azure.
+        :type agent_public_key_certificate: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
@@ -171,13 +177,13 @@ class ConnectedClusterOperations(object):
         :raises:
          :class:`ErrorResponseException<azure.mgmt.hybridkubernetes.models.ErrorResponseException>`
         """
-        connected_cluster_patch = models.ConnectedClusterPatch(tags=tags)
+        connected_cluster_patch = models.ConnectedClusterPatch(tags=tags, agent_public_key_certificate=agent_public_key_certificate)
 
         # Construct URL
         url = self.update.metadata['url']
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str')
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -221,12 +227,13 @@ class ConnectedClusterOperations(object):
 
     def get(
             self, resource_group_name, cluster_name, custom_headers=None, raw=False, **operation_config):
-        """Gets data of the specified cluster.
+        """Get the properties of the specified connected cluster.
 
-        API to get the properties of a specific registered K8s cluster.
+        Returns the properties of the specified connected cluster, including
+        name, identity, properties, and additional cluster details.
 
-        :param resource_group_name: The name of the resource group to which
-         the kubernetes cluster is registered.
+        :param resource_group_name: The name of the resource group. The name
+         is case insensitive.
         :type resource_group_name: str
         :param cluster_name: The name of the Kubernetes cluster on which get
          is called.
@@ -245,8 +252,8 @@ class ConnectedClusterOperations(object):
         # Construct URL
         url = self.get.metadata['url']
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str')
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -292,8 +299,8 @@ class ConnectedClusterOperations(object):
         # Construct URL
         url = self.delete.metadata['url']
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str')
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -317,7 +324,9 @@ class ConnectedClusterOperations(object):
         response = self._client.send(request, stream=False, **operation_config)
 
         if response.status_code not in [200, 202, 204]:
-            raise models.ErrorResponseException(self._deserialize, response)
+            exp = CloudError(response)
+            exp.request_id = response.headers.get('x-ms-request-id')
+            raise exp
 
         if raw:
             client_raw_response = ClientRawResponse(None, response)
@@ -325,12 +334,13 @@ class ConnectedClusterOperations(object):
 
     def delete(
             self, resource_group_name, cluster_name, custom_headers=None, raw=False, polling=True, **operation_config):
-        """Deletes a specified cluster.
+        """Delete a connected cluster.
 
-        API to delete an existing K8s cluster being tracked.
+        Delete a connected cluster, removing the tracked resource in Azure
+        Resource Manager (ARM).
 
-        :param resource_group_name: The name of the resource group to which
-         the kubernetes cluster is registered.
+        :param resource_group_name: The name of the resource group. The name
+         is case insensitive.
         :type resource_group_name: str
         :param cluster_name: The name of the Kubernetes cluster on which get
          is called.
@@ -376,8 +386,8 @@ class ConnectedClusterOperations(object):
         Gets cluster user credentials of the connected cluster with a specified
         resource group and name.
 
-        :param resource_group_name: The name of the resource group to which
-         the kubernetes cluster is registered.
+        :param resource_group_name: The name of the resource group. The name
+         is case insensitive.
         :type resource_group_name: str
         :param cluster_name: The name of the Kubernetes cluster on which get
          is called.
@@ -387,8 +397,8 @@ class ConnectedClusterOperations(object):
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: CredentialResult or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.hybridkubernetes.models.CredentialResult or
+        :return: CredentialResults or ClientRawResponse if raw=true
+        :rtype: ~azure.mgmt.hybridkubernetes.models.CredentialResults or
          ~msrest.pipeline.ClientRawResponse
         :raises:
          :class:`ErrorResponseException<azure.mgmt.hybridkubernetes.models.ErrorResponseException>`
@@ -396,8 +406,8 @@ class ConnectedClusterOperations(object):
         # Construct URL
         url = self.list_cluster_user_credentials.metadata['url']
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str')
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -442,8 +452,8 @@ class ConnectedClusterOperations(object):
         API to enumerate registered connected K8s clusters under a Resource
         Group.
 
-        :param resource_group_name: The name of the resource group to which
-         the kubernetes cluster is registered.
+        :param resource_group_name: The name of the resource group. The name
+         is case insensitive.
         :type resource_group_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
@@ -462,8 +472,8 @@ class ConnectedClusterOperations(object):
                 # Construct URL
                 url = self.list_by_resource_group.metadata['url']
                 path_format_arguments = {
-                    'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str')
+                    'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str', min_length=1),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$')
                 }
                 url = self._client.format_url(url, **path_format_arguments)
 
@@ -531,7 +541,7 @@ class ConnectedClusterOperations(object):
                 # Construct URL
                 url = self.list_by_subscription.metadata['url']
                 path_format_arguments = {
-                    'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str')
+                    'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str', min_length=1)
                 }
                 url = self._client.format_url(url, **path_format_arguments)
 

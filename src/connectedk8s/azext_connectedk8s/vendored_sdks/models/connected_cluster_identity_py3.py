@@ -29,7 +29,7 @@ class ConnectedClusterIdentity(Model):
     :param type: Required. The type of identity used for the connected
      cluster. The type 'SystemAssigned, includes a system created identity. The
      type 'None' means no identity is assigned to the connected cluster.
-     Possible values include: 'SystemAssigned', 'None'
+     Possible values include: 'None', 'SystemAssigned'
     :type type: str or
      ~azure.mgmt.hybridkubernetes.models.ResourceIdentityType
     """

@@ -21,19 +21,14 @@ class ConnectedClusterPatch(Model):
      used by the agent to do the initial handshake to the backend services in
      Azure.
     :type agent_public_key_certificate: str
-    :param location_data: Metadata pertaining to the geographic location of
-     the resource.
-    :type location_data: ~azure.mgmt.hybridkubernetes.models.LocationData
     """
 
     _attribute_map = {
         'tags': {'key': 'tags', 'type': '{str}'},
         'agent_public_key_certificate': {'key': 'properties.agentPublicKeyCertificate', 'type': 'str'},
-        'location_data': {'key': 'properties.locationData', 'type': 'LocationData'},
     }
 
     def __init__(self, **kwargs):
         super(ConnectedClusterPatch, self).__init__(**kwargs)
         self.tags = kwargs.get('tags', None)
         self.agent_public_key_certificate = kwargs.get('agent_public_key_certificate', None)
-        self.location_data = kwargs.get('location_data', None)

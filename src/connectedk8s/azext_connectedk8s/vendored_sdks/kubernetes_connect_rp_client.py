@@ -18,16 +18,15 @@ from .operations.operations import Operations
 from . import models
 
 
-class K8ConnectRPConfiguration(AzureConfiguration):
-    """Configuration for K8ConnectRP
+class KubernetesConnectRPClientConfiguration(AzureConfiguration):
+    """Configuration for KubernetesConnectRPClient
     Note that all parameters used to create this instance are saved as instance
     attributes.
 
     :param credentials: Credentials needed for the client to connect to Azure.
     :type credentials: :mod:`A msrestazure Credentials
      object<msrestazure.azure_active_directory>`
-    :param subscription_id: The ID of the subscription to which the kubernetes
-     cluster is registered.
+    :param subscription_id: The ID of the target subscription.
     :type subscription_id: str
     :param str base_url: Service URL
     """
@@ -42,7 +41,7 @@ class K8ConnectRPConfiguration(AzureConfiguration):
         if not base_url:
             base_url = 'https://management.azure.com'
 
-        super(K8ConnectRPConfiguration, self).__init__(base_url)
+        super(KubernetesConnectRPClientConfiguration, self).__init__(base_url)
 
         self.add_user_agent('azure-mgmt-hybridkubernetes/{}'.format(VERSION))
         self.add_user_agent('Azure-SDK-For-Python')
@@ -51,11 +50,11 @@ class K8ConnectRPConfiguration(AzureConfiguration):
         self.subscription_id = subscription_id
 
 
-class K8ConnectRP(SDKClient):
+class KubernetesConnectRPClient(SDKClient):
     """Azure Connected Cluster Resource Provider API for adopting any Kubernetes Cluster
 
     :ivar config: Configuration for client.
-    :vartype config: K8ConnectRPConfiguration
+    :vartype config: KubernetesConnectRPClientConfiguration
 
     :ivar connected_cluster: ConnectedCluster operations
     :vartype connected_cluster: azure.mgmt.hybridkubernetes.operations.ConnectedClusterOperations
@@ -65,8 +64,7 @@ class K8ConnectRP(SDKClient):
     :param credentials: Credentials needed for the client to connect to Azure.
     :type credentials: :mod:`A msrestazure Credentials
      object<msrestazure.azure_active_directory>`
-    :param subscription_id: The ID of the subscription to which the kubernetes
-     cluster is registered.
+    :param subscription_id: The ID of the target subscription.
     :type subscription_id: str
     :param str base_url: Service URL
     """
@@ -74,8 +72,8 @@ class K8ConnectRP(SDKClient):
     def __init__(
             self, credentials, subscription_id, base_url=None):
 
-        self.config = K8ConnectRPConfiguration(credentials, subscription_id, base_url)
-        super(K8ConnectRP, self).__init__(self.config.credentials, self.config)
+        self.config = KubernetesConnectRPClientConfiguration(credentials, subscription_id, base_url)
+        super(KubernetesConnectRPClient, self).__init__(self.config.credentials, self.config)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
         self.api_version = '2020-01-01-preview'

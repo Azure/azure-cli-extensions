@@ -9,27 +9,29 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from msrest.serialization import Model
+from .tracked_resource_py3 import TrackedResource
 
 
-class ConnectedCluster(Model):
-    """ConnectedCluster.
+class ConnectedCluster(TrackedResource):
+    """Represents a connected cluster.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar id: Resource Id
+    :ivar id: Fully qualified resource Id for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}
     :vartype id: str
-    :ivar name: Resource name
+    :ivar name: The name of the resource
     :vartype name: str
-    :ivar type: Type of the resource requested
+    :ivar type: The type of the resource. Ex-
+     Microsoft.Compute/virtualMachines or Microsoft.Storage/storageAccounts.
     :vartype type: str
-    :param location: Required. Location of the cluster
-    :type location: str
-    :param tags: Connected Cluster Resource Tags.
+    :param tags: Resource tags.
     :type tags: dict[str, str]
+    :param location: Required. The geo-location where the resource lives
+    :type location: str
     :param identity: Required. The identity of the connected cluster.
     :type identity:
      ~azure.mgmt.hybridkubernetes.models.ConnectedClusterIdentity
@@ -49,9 +51,6 @@ class ConnectedCluster(Model):
     :ivar agent_version: Version of the agent running on the connected cluster
      resource
     :vartype agent_version: str
-    :param location_data: Metadata pertaining to the geographic location of
-     the resource.
-    :type location_data: ~azure.mgmt.hybridkubernetes.models.LocationData
     :param provisioning_state: Possible values include: 'Succeeded', 'Failed',
      'Canceled', 'Provisioning', 'Updating', 'Deleting', 'Accepted'
     :type provisioning_state: str or
@@ -75,30 +74,23 @@ class ConnectedCluster(Model):
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
-        'location': {'key': 'location', 'type': 'str'},
         'tags': {'key': 'tags', 'type': '{str}'},
+        'location': {'key': 'location', 'type': 'str'},
         'identity': {'key': 'identity', 'type': 'ConnectedClusterIdentity'},
         'agent_public_key_certificate': {'key': 'properties.agentPublicKeyCertificate', 'type': 'str'},
         'aad_profile': {'key': 'properties.aadProfile', 'type': 'ConnectedClusterAADProfile'},
         'kubernetes_version': {'key': 'properties.kubernetesVersion', 'type': 'str'},
         'total_node_count': {'key': 'properties.totalNodeCount', 'type': 'int'},
         'agent_version': {'key': 'properties.agentVersion', 'type': 'str'},
-        'location_data': {'key': 'properties.locationData', 'type': 'LocationData'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
     }
 
-    def __init__(self, *, location: str, identity, agent_public_key_certificate: str, aad_profile, tags=None, location_data=None, provisioning_state=None, **kwargs) -> None:
-        super(ConnectedCluster, self).__init__(**kwargs)
-        self.id = None
-        self.name = None
-        self.type = None
-        self.location = location
-        self.tags = tags
+    def __init__(self, *, location: str, identity, agent_public_key_certificate: str, aad_profile, tags=None, provisioning_state=None, **kwargs) -> None:
+        super(ConnectedCluster, self).__init__(tags=tags, location=location, **kwargs)
         self.identity = identity
         self.agent_public_key_certificate = agent_public_key_certificate
         self.aad_profile = aad_profile
         self.kubernetes_version = None
         self.total_node_count = None
         self.agent_version = None
-        self.location_data = location_data
         self.provisioning_state = provisioning_state

@@ -20,7 +20,7 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.backends import default_backend
 
-from .vendored_sdks.models import ConnectedCluster, ConnectedClusterAADProfile, ConnectedClusterIdentity, LocationData
+from .vendored_sdks.models import ConnectedCluster, ConnectedClusterAADProfile, ConnectedClusterIdentity
 
 import os
 import subprocess
@@ -40,17 +40,10 @@ from base64 import b64encode
 logger = get_logger(__name__)
 
 
-def create_connectedk8s(cmd, client, resource_group_name, cluster_name,
-                        location=None, kube_config=None, kube_context=None, no_wait=False,
-                        location_data_name=None, location_data_country_or_region=None,
-                        location_data_district=None, location_data_city=None, tags=None):
+def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location=None, 
+                        kube_config=None, kube_context=None, no_wait=False, tags=None):
     print("Ensure that you have the latest helm version installed before proceeding to avoid unexpected errors.")
     print("This operation might take a while...\n")
-
-    # Checking location data info
-    if location_data_name is None:
-        if ((location_data_country_or_region is not None) or (location_data_district is not None) or (location_data_city is not None)):
-            raise CLIError("--location-data-name is required when providing location data info.")
 
     # Setting subscription id
     subscription_id = get_subscription_id(cmd.cli_ctx) 
@@ -113,7 +106,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name,
             if (configmap_resource_group_name.lower() == resource_group_name.lower() and configmap_cluster_name.lower() == cluster_name.lower()):
                 # Re-put connected cluster
                 public_key = client.get(configmap_resource_group_name, configmap_cluster_name).agent_public_key_certificate
-                cc = generate_request_payload(configuration, location, public_key, location_data_name, location_data_city, location_data_district, location_data_country_or_region, tags)
+                cc = generate_request_payload(configuration, location, public_key, tags)
                 try:
                     return sdk_no_wait(no_wait, client.create, resource_group_name=resource_group_name, cluster_name=cluster_name, connected_cluster=cc)
                 except CloudError as ex:
@@ -162,7 +155,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name,
         raise CLIError("Unable to install helm release: " + error_helm_install.decode("ascii"))
 
     # Create connected cluster resource
-    cc = generate_request_payload(configuration, location, public_key, location_data_name, location_data_city, location_data_district, location_data_country_or_region, tags)
+    cc = generate_request_payload(configuration, location, public_key, tags)
     try:
         put_cc_response = sdk_no_wait(no_wait, client.create, resource_group_name=resource_group_name, cluster_name=cluster_name, connected_cluster=cc)
         if no_wait:
@@ -293,7 +286,7 @@ def get_agent_version(configuration):
         print("Exception when calling CoreV1Api->read_namespaced_config_map: %s\n" % e)
 
 
-def generate_request_payload(configuration, location, public_key, location_data_name, location_data_city, location_data_district, location_data_country_or_region, tags):
+def generate_request_payload(configuration, location, public_key, tags):
     # Fetch cluster info
     total_node_count = get_node_count(configuration)
     kubernetes_version = get_server_version(configuration)
@@ -308,12 +301,8 @@ def generate_request_payload(configuration, location, public_key, location_data_
     identity = ConnectedClusterIdentity(
         type="SystemAssigned"
     )
-    location_data = LocationData(
-        name=location_data_name,
-        city=location_data_city,
-        district=location_data_district,
-        country_or_region=location_data_country_or_region
-    )
+    if tags is None:
+        tags = {}
     cc = ConnectedCluster(
         location=location,
         identity=identity,
@@ -324,8 +313,6 @@ def generate_request_payload(configuration, location, public_key, location_data_
         agent_version=azure_arc_agent_version,
         tags=tags
     )
-    if location_data_name:
-        cc.location_data=location_data
     return cc
 
 
@@ -349,7 +336,7 @@ def get_pod_dict(api_instance):
 def check_pod_status(pod_dict):
     v1 = kube_client.CoreV1Api()
     w = watch.Watch()
-    for event in w.stream(v1.list_namespaced_pod, namespace='azure-arc', timeout_seconds=60):
+    for event in w.stream(v1.list_namespaced_pod, namespace='azure-arc', timeout_seconds=360):
         pod_status = event['raw_object'].get('status')
         pod_name = event['object'].metadata.name
         #print(pod_status)

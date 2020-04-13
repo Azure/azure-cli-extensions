@@ -11,8 +11,8 @@ import re
 
 
 def cf_connectedk8s(cli_ctx, *_):
-    from azext_connectedk8s.vendored_sdks import K8ConnectRP
-    return get_mgmt_service_client(cli_ctx, K8ConnectRP)
+    from azext_connectedk8s.vendored_sdks import KubernetesConnectRPClient
+    return get_mgmt_service_client(cli_ctx, KubernetesConnectRPClient)
 
 
 def cf_connected_cluster(cli_ctx, _):
