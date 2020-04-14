@@ -21,7 +21,7 @@ def load_command_table(self, _):
         g.custom_command('create-subscription-in-enrollment-account', 'account_subscription_create_subscription_in_enrollment_account', supports_no_wait=True)
         g.custom_command('create-csp-subscription', 'account_subscription_create_csp_subscription', supports_no_wait=True)
         g.custom_command('rename', 'account_subscription_rename')
-        g.custom_command('cancel', 'account_subscription_cancel')
+        g.custom_command('cancel', 'account_subscription_cancel', confirmation=True)
         g.custom_command('enable', 'account_subscription_enable')
         g.wait_command('wait');
 
