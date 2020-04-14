@@ -101,7 +101,7 @@ class TimeSeriesInsightsClientScenarioTest(ScenarioTest):
 
         # This is broken, because --data-retention is required, but "Only a single environment property can be updated
         # per PATCH request."
-        # self.cmd('az timeseriesinsights environment standard update --resource-group {rg} --name {env} --storage-limit-exceeded-behavior PurgeOldData',
+        # self.cmd('az timeseriesinsights environment standard update --resource-group {rg} --name {env} --storage-management-key xxx',
         #          checks=[self.check('storageLimitExceededBehavior', 'PurgeOldData')])
 
     @ResourceGroupPreparer(name_prefix='cli_test_timeseriesinsights')
