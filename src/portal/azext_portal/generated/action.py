@@ -20,7 +20,6 @@ class AddMetadata(argparse.Action):
             raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
-            kl = k.lower()
             v = properties[k]
             d[k] = v
         return d
