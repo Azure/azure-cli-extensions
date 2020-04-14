@@ -17,7 +17,8 @@ class AddMetadata(argparse.Action):
         try:
             properties = dict(x.split('=', 1) for x in values)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             v = properties[k]

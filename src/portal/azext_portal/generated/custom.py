@@ -60,12 +60,15 @@ def parse_properties_json(input_path):
             try:
                 properties = json.load(json_file)
             except json.decoder.JSONDecodeError as ex:
-                raise CLIError('JSON decode error for {}: {}'.format(json_file, str(ex)))
+                raise CLIError(
+                    'JSON decode error for {}: {}'.format(json_file, str(ex)))
             if 'lenses' not in properties:
-                raise CLIError(str(json_file) + " does not contain the property 'lenses'")
+                raise CLIError(str(json_file) +
+                               " does not contain the property 'lenses'")
             properties_lenses = properties['lenses']
             if 'metadata' not in properties:
-                raise CLIError(str(json_file) + " does not contain the property 'metadata'")
+                raise CLIError(str(json_file) +
+                               " does not contain the property 'metadata'")
             properties_metadata = properties['metadata']
             return properties_lenses, properties_metadata
     except FileNotFoundError as ex:
@@ -78,15 +81,20 @@ def parse_dashboard_json(input_path):
             try:
                 dashboard = json.load(json_file)
             except json.decoder.JSONDecodeError as ex:
-                raise CLIError('There was an error decoding the JSON file {}: {}'.format(json_file, str(ex)))
+                raise CLIError(
+                    'There was an error decoding the JSON file {}: {}'.format(json_file, str(ex)))
             if 'location' not in dashboard:
-                raise CLIError(str(json_file) + " does not contain the property 'location'")
+                raise CLIError(str(json_file) +
+                               " does not contain the property 'location'")
             if 'properties' not in dashboard:
-                raise CLIError(str(json_file) + " does not contain the property 'properties'")
+                raise CLIError(str(json_file) +
+                               " does not contain the property 'properties'")
             if 'lenses' not in dashboard['properties']:
-                raise CLIError(str(json_file) + " does not contain the property 'lenses' in 'properties'")
+                raise CLIError(
+                    str(json_file) + " does not contain the property 'lenses' in 'properties'")
             if 'metadata' not in dashboard['properties']:
-                raise CLIError(str(json_file) + " does not contain the property 'metadata' in 'properties'")
+                raise CLIError(
+                    str(json_file) + " does not contain the property 'metadata' in 'properties'")
             return dashboard
     except FileNotFoundError as ex:
         raise CLIError('File not Found: {}'.format(str(ex)))

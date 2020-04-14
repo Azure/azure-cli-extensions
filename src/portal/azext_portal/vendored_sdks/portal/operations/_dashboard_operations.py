@@ -16,7 +16,9 @@ from azure.core.pipeline.transport import HttpRequest, HttpResponse
 from .. import models
 
 T = TypeVar('T')
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
+ClsType = Optional[Callable[[
+    PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
+
 
 class DashboardOperations(object):
     """DashboardOperations operations.
@@ -69,10 +71,11 @@ class DashboardOperations(object):
         :rtype: ~portal.models.Dashboard or ~portal.models.Dashboard
         :raises: ~portal.models.ErrorResponseException:
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.Dashboard"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.Dashboard"]
         error_map = kwargs.pop('error_map', {})
 
-        dashboard = models.Dashboard(location=location, tags=tags, lenses=lenses, metadata=metadata)
+        dashboard = models.Dashboard(
+            location=location, tags=tags, lenses=lenses, metadata=metadata)
         api_version = "2019-01-01-preview"
 
         # Construct URL
@@ -86,7 +89,8 @@ class DashboardOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -97,13 +101,17 @@ class DashboardOperations(object):
         body_content = self._serialize.body(dashboard, 'Dashboard')
 
         # Construct and send request
-        request = self._client.put(url, query_parameters, header_parameters, body_content)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        request = self._client.put(
+            url, query_parameters, header_parameters, body_content)
+        pipeline_response = self._client._pipeline.run(
+            request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 201]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.ErrorResponseException.from_response(response, self._deserialize)
+            map_error(status_code=response.status_code,
+                      response=response, error_map=error_map)
+            raise models.ErrorResponseException.from_response(
+                response, self._deserialize)
 
         deserialized = None
         if response.status_code == 200:
@@ -113,10 +121,11 @@ class DashboardOperations(object):
             deserialized = self._deserialize('Dashboard', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Portal/dashboards/{dashboardName}'}
+    create_or_update.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Portal/dashboards/{dashboardName}'}
 
     def delete(
         self,
@@ -136,7 +145,7 @@ class DashboardOperations(object):
         :rtype: None
         :raises: ~portal.models.ErrorResponseException:
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType[None]
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = kwargs.pop('error_map', {})
         api_version = "2019-01-01-preview"
 
@@ -151,24 +160,29 @@ class DashboardOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}
 
         # Construct and send request
         request = self._client.delete(url, query_parameters, header_parameters)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        pipeline_response = self._client._pipeline.run(
+            request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 204]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.ErrorResponseException.from_response(response, self._deserialize)
+            map_error(status_code=response.status_code,
+                      response=response, error_map=error_map)
+            raise models.ErrorResponseException.from_response(
+                response, self._deserialize)
 
         if cls:
-          return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, {})
 
-    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Portal/dashboards/{dashboardName}'}
+    delete.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Portal/dashboards/{dashboardName}'}
 
     def get(
         self,
@@ -188,7 +202,7 @@ class DashboardOperations(object):
         :rtype: ~portal.models.Dashboard
         :raises: ~portal.models.ErrorResponseException:
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.Dashboard"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.Dashboard"]
         error_map = kwargs.pop('error_map', {})
         api_version = "2019-01-01-preview"
 
@@ -203,7 +217,8 @@ class DashboardOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -211,20 +226,24 @@ class DashboardOperations(object):
 
         # Construct and send request
         request = self._client.get(url, query_parameters, header_parameters)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        pipeline_response = self._client._pipeline.run(
+            request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.ErrorResponseException.from_response(response, self._deserialize)
+            map_error(status_code=response.status_code,
+                      response=response, error_map=error_map)
+            raise models.ErrorResponseException.from_response(
+                response, self._deserialize)
 
         deserialized = self._deserialize('Dashboard', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Portal/dashboards/{dashboardName}'}
+    get.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Portal/dashboards/{dashboardName}'}
 
     def update(
         self,
@@ -250,7 +269,7 @@ class DashboardOperations(object):
         :rtype: ~portal.models.Dashboard
         :raises: ~portal.models.ErrorResponseException:
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.Dashboard"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.Dashboard"]
         error_map = kwargs.pop('error_map', {})
 
         dashboard = models.PatchableDashboard(lenses=lenses, metadata=metadata)
@@ -267,7 +286,8 @@ class DashboardOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -278,21 +298,26 @@ class DashboardOperations(object):
         body_content = self._serialize.body(dashboard, 'PatchableDashboard')
 
         # Construct and send request
-        request = self._client.patch(url, query_parameters, header_parameters, body_content)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        request = self._client.patch(
+            url, query_parameters, header_parameters, body_content)
+        pipeline_response = self._client._pipeline.run(
+            request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.ErrorResponseException.from_response(response, self._deserialize)
+            map_error(status_code=response.status_code,
+                      response=response, error_map=error_map)
+            raise models.ErrorResponseException.from_response(
+                response, self._deserialize)
 
         deserialized = self._deserialize('Dashboard', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Portal/dashboards/{dashboardName}'}
+    update.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Portal/dashboards/{dashboardName}'}
 
     def list_by_resource_group(
         self,
@@ -309,7 +334,8 @@ class DashboardOperations(object):
         :rtype: ~portal.models.DashboardListResult
         :raises: ~portal.models.ErrorResponseException:
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.DashboardListResult"]
+        cls = kwargs.pop(
+            'cls', None)  # type: ClsType["models.DashboardListResult"]
         error_map = kwargs.pop('error_map', {})
         api_version = "2019-01-01-preview"
 
@@ -327,18 +353,21 @@ class DashboardOperations(object):
 
             # Construct parameters
             query_parameters = {}
-            query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+            query_parameters['api-version'] = self._serialize.query(
+                "api_version", api_version, 'str')
 
             # Construct headers
             header_parameters = {}
             header_parameters['Accept'] = 'application/json'
 
             # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
+            request = self._client.get(
+                url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize('DashboardListResult', pipeline_response)
+            deserialized = self._deserialize(
+                'DashboardListResult', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -347,19 +376,23 @@ class DashboardOperations(object):
         def get_next(next_link=None):
             request = prepare_request(next_link)
 
-            pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+            pipeline_response = self._client._pipeline.run(
+                request, stream=False, **kwargs)
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise models.ErrorResponseException.from_response(response, self._deserialize)
+                map_error(status_code=response.status_code,
+                          response=response, error_map=error_map)
+                raise models.ErrorResponseException.from_response(
+                    response, self._deserialize)
 
             return pipeline_response
 
         return ItemPaged(
             get_next, extract_data
         )
-    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Portal/dashboards'}
+    list_by_resource_group.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Portal/dashboards'}
 
     def list_by_subscription(
         self,
@@ -373,7 +406,8 @@ class DashboardOperations(object):
         :rtype: ~portal.models.DashboardListResult
         :raises: ~portal.models.ErrorResponseException:
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.DashboardListResult"]
+        cls = kwargs.pop(
+            'cls', None)  # type: ClsType["models.DashboardListResult"]
         error_map = kwargs.pop('error_map', {})
         api_version = "2019-01-01-preview"
 
@@ -390,18 +424,21 @@ class DashboardOperations(object):
 
             # Construct parameters
             query_parameters = {}
-            query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+            query_parameters['api-version'] = self._serialize.query(
+                "api_version", api_version, 'str')
 
             # Construct headers
             header_parameters = {}
             header_parameters['Accept'] = 'application/json'
 
             # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
+            request = self._client.get(
+                url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize('DashboardListResult', pipeline_response)
+            deserialized = self._deserialize(
+                'DashboardListResult', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -410,19 +447,23 @@ class DashboardOperations(object):
         def get_next(next_link=None):
             request = prepare_request(next_link)
 
-            pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+            pipeline_response = self._client._pipeline.run(
+                request, stream=False, **kwargs)
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise models.ErrorResponseException.from_response(response, self._deserialize)
+                map_error(status_code=response.status_code,
+                          response=response, error_map=error_map)
+                raise models.ErrorResponseException.from_response(
+                    response, self._deserialize)
 
             return pipeline_response
 
         return ItemPaged(
             get_next, extract_data
         )
-    list_by_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Portal/dashboards'}
+    list_by_subscription.metadata = {
+        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Portal/dashboards'}
 
     def dashboard_import(
         self,
@@ -445,7 +486,7 @@ class DashboardOperations(object):
         :rtype: ~portal.models.Dashboard or ~portal.models.Dashboard
         :raises: ~portal.models.ErrorResponseException:
         """
-        cls = kwargs.pop('cls', None )  # type: ClsType["models.Dashboard"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.Dashboard"]
         error_map = kwargs.pop('error_map', {})
         api_version = "2019-01-01-preview"
 
@@ -460,7 +501,8 @@ class DashboardOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -471,13 +513,17 @@ class DashboardOperations(object):
         body_content = self._serialize.body(dashboard, 'Dashboard')
 
         # Construct and send request
-        request = self._client.put(url, query_parameters, header_parameters, body_content)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        request = self._client.put(
+            url, query_parameters, header_parameters, body_content)
+        pipeline_response = self._client._pipeline.run(
+            request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 201]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise models.ErrorResponseException.from_response(response, self._deserialize)
+            map_error(status_code=response.status_code,
+                      response=response, error_map=error_map)
+            raise models.ErrorResponseException.from_response(
+                response, self._deserialize)
 
         deserialized = None
         if response.status_code == 200:
@@ -487,7 +533,7 @@ class DashboardOperations(object):
             deserialized = self._deserialize('Dashboard', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
     create_or_update.metadata = {

@@ -37,8 +37,8 @@ helps['portal dashboard create'] = """
     examples:
       - name: Create or update a Dashboard
         text: |-
-               az portal dashboard create --location "eastus" --name "testDashboard"
-               --resource-group "testRG" --input-path "/src/json/properties.json"
+               az portal dashboard create --location "eastus" --name "testDashboard" \\
+               --resource-group "testRG" --input-path "/src/json/properties.json" \\
                --tags aKey=aValue anotherKey=anotherValue
 """
 
@@ -48,7 +48,7 @@ helps['portal dashboard update'] = """
     examples:
       - name: Update a Dashboard
         text: |-
-               az portal dashboard update --name "testDashboard" --resource-group "testRG"
+               az portal dashboard update --name "testDashboard" --resource-group "testRG" \\
                --input-path "/src/json/properties.json"
 """
 
@@ -67,6 +67,6 @@ helps['portal dashboard import'] = """
     examples:
       - name: Import a Dashboard
         text: |-
-               az portal dashboard import --name "testDashboard" --resource-group "testRG"
+               az portal dashboard import --name "testDashboard" --resource-group "testRG" \\
                --input-path "/src/json/dashboard.json"
 """
