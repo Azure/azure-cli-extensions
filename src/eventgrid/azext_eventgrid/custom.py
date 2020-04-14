@@ -1428,10 +1428,8 @@ def _update_event_subscription_internal(  # pylint: disable=too-many-locals,too-
     max_events_per_batch = 0
     preferred_batch_size_in_kilobytes = 0
 
-    condition = event_subscription_destination.endpoint_type.lower() == WEBHOOK_DESTINATION.lower() or \
-        event_subscription_destination.endpoint_type.lower() == AZUREFUNCTION_DESTINATION.lower()
     if event_subscription_destination is not None and \
-       event_subscription_destination.endpoint_type is not None and condition:
+       event_subscription_destination.endpoint_type is not None and (event_subscription_destination.endpoint_type.lower() == WEBHOOK_DESTINATION.lower() or event_subscription_destination.endpoint_type.lower() == AZUREFUNCTION_DESTINATION.lower()):  # pylint: disable=line-too-long
         max_events_per_batch = event_subscription_destination.max_events_per_batch
         preferred_batch_size_in_kilobytes = event_subscription_destination.preferred_batch_size_in_kilobytes
 
@@ -1503,6 +1501,8 @@ def _update_event_subscription_internal(  # pylint: disable=too-many-locals,too-
         delivery_with_resource_identity=delivery_with_resource_identity,
         dead_letter_with_resource_identity=deadletter_with_resource_identity)
 
+    print('====> params')
+    print(params)
     return params
 
 
