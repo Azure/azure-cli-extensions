@@ -155,9 +155,7 @@ def create_timeseriesinsights_event_source_iothub(cmd, client,
 
 
 def update_timeseriesinsights_event_source_iothub(cmd, client,
-                                                  resource_group_name,
-                                                  environment_name,
-                                                  name,
+                                                  resource_group_name, environment_name, event_source_name,
                                                   timestamp_property_name=None,
                                                   local_timestamp_format=None, time_zone_offset_property_name=None,
                                                   shared_access_key=None,
@@ -174,7 +172,7 @@ def update_timeseriesinsights_event_source_iothub(cmd, client,
         local_timestamp=local_timestamp,
         shared_access_key=shared_access_key
     )
-    return client.update(resource_group_name=resource_group_name, environment_name=environment_name, event_source_name=name, parameters=parameters)
+    return client.update(resource_group_name=resource_group_name, environment_name=environment_name, event_source_name=event_source_name, parameters=parameters)
 
 
 def create_timeseriesinsights_reference_data_set(cmd, client,

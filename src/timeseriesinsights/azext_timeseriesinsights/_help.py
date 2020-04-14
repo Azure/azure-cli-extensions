@@ -33,6 +33,11 @@ type: group
 short-summary: Commands to manage timeseriesinsights environment.
 """
 
+helps['timeseriesinsights environment standard'] = """
+type: group
+short-summary: Create or update a standard environment in the specified subscription and resource group.
+"""
+
 helps['timeseriesinsights environment standard create'] = """
 type: command
 short-summary: Create or update a standard environment in the specified subscription and resource group.
@@ -51,6 +56,11 @@ examples:
     text: az timeseriesinsights environment standard update --resource-group {rg} --name {env} --data-retention-time 8
   - name: Update storage limit exceeded behavior
     text: az timeseriesinsights environment standard update --resource-group {rg} --name {env} --storage-limit-exceeded-behavior PurgeOldData
+"""
+
+helps['timeseriesinsights environment longterm'] = """
+type: group
+short-summary: Create or update a longterm environment in the specified subscription and resource group.
 """
 
 helps['timeseriesinsights environment longterm create'] = """
@@ -73,7 +83,7 @@ examples:
   - name: Update dataRetention
     text: az timeseriesinsights environment longterm update --resource-group {rg} --name {env} --data-retention 8
   - name: Update storageLimitExceededBehavior (not working yet)
-    text: az timeseriesinsights environment standard update --resource-group {rg} --name {env} --storage-limit-exceeded-behavior PurgeOldData
+    text: az timeseriesinsights environment longterm update --resource-group {rg} --name {env} --storage-limit-exceeded-behavior PurgeOldData
 """
 
 helps['timeseriesinsights environment delete'] = """
@@ -111,6 +121,11 @@ type: group
 short-summary: Commands to manage timeseriesinsights event source.
 """
 
+helps['timeseriesinsights event-source eventhub'] = """
+type: group
+short-summary: Create or update an event hub event source under the specified environment.
+"""
+
 helps['timeseriesinsights event-source eventhub create'] = """
 type: command
 short-summary: Create or update an event hub event source under the specified environment.
@@ -136,6 +151,11 @@ examples:
     text: az timeseriesinsights event-source eventhub update -g {rg} --environment-name {env} --name {es} --local-timestamp-format Timespan --time-zone-offset-property-name OffsetDeviceId1
   - name: Update sharedAccessKey
     text: az timeseriesinsights event-source eventhub update -g {rg} --environment-name {env} --name {es} --shared-access-key {shared_access_key}
+"""
+
+helps['timeseriesinsights event-source iothub'] = """
+type: group
+short-summary: Create or update an iothub event source under the specified environment.
 """
 
 helps['timeseriesinsights event-source iothub create'] = """
