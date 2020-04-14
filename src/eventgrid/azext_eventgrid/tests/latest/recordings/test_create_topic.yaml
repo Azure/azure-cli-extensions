@@ -1,7 +1,7 @@
 interactions:
 - request:
     body: '{"location": "centraluseuap", "properties": {"inputSchema": "EventGridSchema"},
-      "sku": {"name": "Basic"}}'
+      "sku": {"name": "Basic"}, "identity": {"type": "None"}}'
     headers:
       Accept:
       - application/json
@@ -12,32 +12,32 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '105'
+      - '135'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
       - --name --resource-group --location
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"properties":{"provisioningState":"Creating","endpoint":null,"inputSchema":"EventGridSchema"},"sku":{"name":"Basic"},"location":"centraluseuap","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002","name":"cli000002","type":"Microsoft.EventGrid/topics"}'
+      string: '{"properties":{"provisioningState":"Creating","endpoint":null,"inputSchema":"EventGridSchema"},"sku":{"name":"Basic"},"identity":{"type":"None","principalId":null,"tenantId":null,"userAssignedIdentities":null},"location":"centraluseuap","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002","name":"cli000002","type":"Microsoft.EventGrid/topics"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/D034120C-EF12-4C8B-BE88-2B6224872383?api-version=2020-04-01-preview
+      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/D4698DFB-E86E-42A3-9DC4-1DBCFFB3BB02?api-version=2020-04-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '471'
+      - '563'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:55:16 GMT
+      - Tue, 14 Apr 2020 08:27:41 GMT
       expires:
       - '-1'
       pragma:
@@ -67,13 +67,13 @@ interactions:
       ParameterSetName:
       - --name --resource-group --location
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/D034120C-EF12-4C8B-BE88-2B6224872383?api-version=2020-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/D4698DFB-E86E-42A3-9DC4-1DBCFFB3BB02?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/D034120C-EF12-4C8B-BE88-2B6224872383?api-version=2020-04-01-preview","name":"d034120c-ef12-4c8b-be88-2b6224872383","status":"Succeeded"}'
+      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/D4698DFB-E86E-42A3-9DC4-1DBCFFB3BB02?api-version=2020-04-01-preview","name":"d4698dfb-e86e-42a3-9dc4-1dbcffb3bb02","status":"Succeeded"}'
     headers:
       cache-control:
       - no-cache
@@ -82,7 +82,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:55:27 GMT
+      - Tue, 14 Apr 2020 08:27:51 GMT
       expires:
       - '-1'
       pragma:
@@ -114,22 +114,22 @@ interactions:
       ParameterSetName:
       - --name --resource-group --location
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","endpoint":"https://cli000002.centraluseuap-1.eventgrid.azure.net/api/events","inputSchema":"EventGridSchema","metricResourceId":"51125f63-7ee9-459d-912b-af8ce6a6f524","publicNetworkAccess":"Enabled"},"sku":{"name":"Basic"},"location":"centraluseuap","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002","name":"cli000002","type":"Microsoft.EventGrid/topics"}'
+      string: '{"properties":{"provisioningState":"Succeeded","endpoint":"https://cli000002.centraluseuap-1.eventgrid.azure.net/api/events","inputSchema":"EventGridSchema","metricResourceId":"250e5eb8-272c-468d-a406-ecc621ae9d86","publicNetworkAccess":"Enabled"},"sku":{"name":"Basic"},"identity":{"type":"None","principalId":null,"tenantId":null,"userAssignedIdentities":null},"location":"centraluseuap","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002","name":"cli000002","type":"Microsoft.EventGrid/topics"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '655'
+      - '747'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:55:27 GMT
+      - Tue, 14 Apr 2020 08:27:51 GMT
       expires:
       - '-1'
       pragma:
@@ -161,24 +161,24 @@ interactions:
       ParameterSetName:
       - --name --resource-group
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","endpoint":"https://cli000002.centraluseuap-1.eventgrid.azure.net/api/events","inputSchema":"EventGridSchema","metricResourceId":"51125f63-7ee9-459d-912b-af8ce6a6f524","publicNetworkAccess":"Enabled"},"sku":{"name":"Basic"},"location":"centraluseuap","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002","name":"cli000002","type":"Microsoft.EventGrid/topics"}'
+      string: '{"properties":{"provisioningState":"Succeeded","endpoint":"https://cli000002.centraluseuap-1.eventgrid.azure.net/api/events","inputSchema":"EventGridSchema","metricResourceId":"250e5eb8-272c-468d-a406-ecc621ae9d86","publicNetworkAccess":"Enabled"},"sku":{"name":"Basic"},"identity":{"type":"None","principalId":null,"tenantId":null,"userAssignedIdentities":null},"location":"centraluseuap","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002","name":"cli000002","type":"Microsoft.EventGrid/topics"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '655'
+      - '747'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:55:28 GMT
+      - Tue, 14 Apr 2020 08:27:53 GMT
       expires:
       - '-1'
       pragma:
@@ -198,7 +198,7 @@ interactions:
       message: OK
 - request:
     body: '{"location": "centraluseuap", "properties": {"inputSchema": "CloudEventSchemaV1_0"},
-      "sku": {"name": "Basic"}}'
+      "sku": {"name": "Basic"}, "identity": {"type": "None"}}'
     headers:
       Accept:
       - application/json
@@ -209,32 +209,32 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '110'
+      - '140'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
       - --name --resource-group --location --input-schema
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000003?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"properties":{"provisioningState":"Creating","endpoint":null,"inputSchema":"CloudEventSchemaV1_0"},"sku":{"name":"Basic"},"location":"centraluseuap","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000003","name":"cli000003","type":"Microsoft.EventGrid/topics"}'
+      string: '{"properties":{"provisioningState":"Creating","endpoint":null,"inputSchema":"CloudEventSchemaV1_0"},"sku":{"name":"Basic"},"identity":{"type":"None","principalId":null,"tenantId":null,"userAssignedIdentities":null},"location":"centraluseuap","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000003","name":"cli000003","type":"Microsoft.EventGrid/topics"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/E941C431-FAF2-48ED-B5A6-4D02233BA680?api-version=2020-04-01-preview
+      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/F608A00C-3F00-4799-8E2D-FA1F08CAB1F0?api-version=2020-04-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '476'
+      - '568'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:55:30 GMT
+      - Tue, 14 Apr 2020 08:27:54 GMT
       expires:
       - '-1'
       pragma:
@@ -246,7 +246,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -264,13 +264,13 @@ interactions:
       ParameterSetName:
       - --name --resource-group --location --input-schema
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/E941C431-FAF2-48ED-B5A6-4D02233BA680?api-version=2020-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/F608A00C-3F00-4799-8E2D-FA1F08CAB1F0?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/E941C431-FAF2-48ED-B5A6-4D02233BA680?api-version=2020-04-01-preview","name":"e941c431-faf2-48ed-b5a6-4d02233ba680","status":"Succeeded"}'
+      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/F608A00C-3F00-4799-8E2D-FA1F08CAB1F0?api-version=2020-04-01-preview","name":"f608a00c-3f00-4799-8e2d-fa1f08cab1f0","status":"Succeeded"}'
     headers:
       cache-control:
       - no-cache
@@ -279,7 +279,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:55:40 GMT
+      - Tue, 14 Apr 2020 08:28:05 GMT
       expires:
       - '-1'
       pragma:
@@ -311,22 +311,22 @@ interactions:
       ParameterSetName:
       - --name --resource-group --location --input-schema
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000003?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","endpoint":"https://cli000003.centraluseuap-1.eventgrid.azure.net/api/events","inputSchema":"CloudEventSchemaV1_0","metricResourceId":"fbcd3e2b-228b-4374-a47d-e7c5fed9f5f0","publicNetworkAccess":"Enabled"},"sku":{"name":"Basic"},"location":"centraluseuap","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000003","name":"cli000003","type":"Microsoft.EventGrid/topics"}'
+      string: '{"properties":{"provisioningState":"Succeeded","endpoint":"https://cli000003.centraluseuap-1.eventgrid.azure.net/api/events","inputSchema":"CloudEventSchemaV1_0","metricResourceId":"711471db-992a-4680-9a1f-f41be791e675","publicNetworkAccess":"Enabled"},"sku":{"name":"Basic"},"identity":{"type":"None","principalId":null,"tenantId":null,"userAssignedIdentities":null},"location":"centraluseuap","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000003","name":"cli000003","type":"Microsoft.EventGrid/topics"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '660'
+      - '752'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:55:41 GMT
+      - Tue, 14 Apr 2020 08:28:06 GMT
       expires:
       - '-1'
       pragma:
@@ -366,18 +366,18 @@ interactions:
       - --name --resource-group --location --public-network-access --inbound-ip-rules
         --inbound-ip-rules --sku --identity
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000005?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"properties":{"provisioningState":"Creating","endpoint":null,"inputSchema":"EventGridSchema","publicNetworkAccess":"Disabled","inboundIpRules":[{"ipMask":"19.12.43.90/102","action":"Allow"},{"ipMask":"19.12.43.70/81","action":"Allow"}]},"sku":{"name":"Basic"},"identity":{"type":"SystemAssigned","principalId":"a76ea9b4-816c-4a2c-96ec-069ae5c4d5a0","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","userAssignedIdentities":null},"location":"centraluseuap","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000005","name":"cli000005","type":"Microsoft.EventGrid/topics"}'
+      string: '{"properties":{"provisioningState":"Creating","endpoint":null,"inputSchema":"EventGridSchema","publicNetworkAccess":"Disabled","inboundIpRules":[{"ipMask":"19.12.43.90/102","action":"Allow"},{"ipMask":"19.12.43.70/81","action":"Allow"}]},"sku":{"name":"Basic"},"identity":{"type":"SystemAssigned","principalId":"67c81daa-66dc-496d-823c-10cd3fe06ce3","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","userAssignedIdentities":null},"location":"centraluseuap","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000005","name":"cli000005","type":"Microsoft.EventGrid/topics"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/79845E99-182C-48DB-AD08-46E5E0A86FC4?api-version=2020-04-01-preview
+      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/6AABBEFE-4EC9-4EA3-B928-B26D381EC2B8?api-version=2020-04-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -385,7 +385,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:55:44 GMT
+      - Tue, 14 Apr 2020 08:28:09 GMT
       expires:
       - '-1'
       pragma:
@@ -397,7 +397,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1195'
     status:
       code: 201
       message: Created
@@ -416,13 +416,13 @@ interactions:
       - --name --resource-group --location --public-network-access --inbound-ip-rules
         --inbound-ip-rules --sku --identity
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/79845E99-182C-48DB-AD08-46E5E0A86FC4?api-version=2020-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/6AABBEFE-4EC9-4EA3-B928-B26D381EC2B8?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/79845E99-182C-48DB-AD08-46E5E0A86FC4?api-version=2020-04-01-preview","name":"79845e99-182c-48db-ad08-46e5e0a86fc4","status":"Succeeded"}'
+      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/6AABBEFE-4EC9-4EA3-B928-B26D381EC2B8?api-version=2020-04-01-preview","name":"6aabbefe-4ec9-4ea3-b928-b26d381ec2b8","status":"Succeeded"}'
     headers:
       cache-control:
       - no-cache
@@ -431,7 +431,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:55:54 GMT
+      - Tue, 14 Apr 2020 08:28:19 GMT
       expires:
       - '-1'
       pragma:
@@ -464,13 +464,13 @@ interactions:
       - --name --resource-group --location --public-network-access --inbound-ip-rules
         --inbound-ip-rules --sku --identity
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000005?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","endpoint":"https://cli000005.centraluseuap-1.eventgrid.azure.net/api/events","inputSchema":"EventGridSchema","metricResourceId":"35a897e1-8fb6-4428-975d-49c7e89a055d","publicNetworkAccess":"Disabled","inboundIpRules":[{"ipMask":"19.12.43.90/102","action":"Allow"},{"ipMask":"19.12.43.70/81","action":"Allow"}]},"sku":{"name":"Basic"},"identity":{"type":"SystemAssigned","principalId":"a76ea9b4-816c-4a2c-96ec-069ae5c4d5a0","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","userAssignedIdentities":null},"location":"centraluseuap","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000005","name":"cli000005","type":"Microsoft.EventGrid/topics"}'
+      string: '{"properties":{"provisioningState":"Succeeded","endpoint":"https://cli000005.centraluseuap-1.eventgrid.azure.net/api/events","inputSchema":"EventGridSchema","metricResourceId":"0d590a01-de7f-42a4-9469-d30732bb75b0","publicNetworkAccess":"Disabled","inboundIpRules":[{"ipMask":"19.12.43.90/102","action":"Allow"},{"ipMask":"19.12.43.70/81","action":"Allow"}]},"sku":{"name":"Basic"},"identity":{"type":"SystemAssigned","principalId":"67c81daa-66dc-496d-823c-10cd3fe06ce3","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","userAssignedIdentities":null},"location":"centraluseuap","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000005","name":"cli000005","type":"Microsoft.EventGrid/topics"}'
     headers:
       cache-control:
       - no-cache
@@ -479,7 +479,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:55:54 GMT
+      - Tue, 14 Apr 2020 08:28:19 GMT
       expires:
       - '-1'
       pragma:
@@ -515,18 +515,18 @@ interactions:
       ParameterSetName:
       - --name --resource-group --tags --sku
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: PATCH
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000005?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"properties":{"provisioningState":"Updating","endpoint":"https://cli000005.centraluseuap-1.eventgrid.azure.net/api/events","inputSchema":"EventGridSchema","metricResourceId":"35a897e1-8fb6-4428-975d-49c7e89a055d","publicNetworkAccess":"Disabled","inboundIpRules":[{"ipMask":"19.12.43.90/102","action":"Allow"},{"ipMask":"19.12.43.70/81","action":"Allow"}]},"sku":{"name":"Premium"},"identity":{"type":"SystemAssigned","principalId":"a76ea9b4-816c-4a2c-96ec-069ae5c4d5a0","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","userAssignedIdentities":null},"location":"centraluseuap","tags":{"Dept":"IT"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000005","name":"cli000005","type":"Microsoft.EventGrid/topics"}'
+      string: '{"properties":{"provisioningState":"Updating","endpoint":"https://cli000005.centraluseuap-1.eventgrid.azure.net/api/events","inputSchema":"EventGridSchema","metricResourceId":"0d590a01-de7f-42a4-9469-d30732bb75b0","publicNetworkAccess":"Disabled","inboundIpRules":[{"ipMask":"19.12.43.90/102","action":"Allow"},{"ipMask":"19.12.43.70/81","action":"Allow"}]},"sku":{"name":"Premium"},"identity":{"type":"SystemAssigned","principalId":"67c81daa-66dc-496d-823c-10cd3fe06ce3","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","userAssignedIdentities":null},"location":"centraluseuap","tags":{"Dept":"IT"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000005","name":"cli000005","type":"Microsoft.EventGrid/topics"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/9A385B27-7838-43BE-BDEA-5BDA0D1032A7?api-version=2020-04-01-preview
+      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/D7524895-7E69-4120-A3B2-0B3021DB49BF?api-version=2020-04-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -534,7 +534,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:55:56 GMT
+      - Tue, 14 Apr 2020 08:28:21 GMT
       expires:
       - '-1'
       pragma:
@@ -546,7 +546,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1196'
     status:
       code: 201
       message: Created
@@ -564,13 +564,13 @@ interactions:
       ParameterSetName:
       - --name --resource-group --tags --sku
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/9A385B27-7838-43BE-BDEA-5BDA0D1032A7?api-version=2020-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/D7524895-7E69-4120-A3B2-0B3021DB49BF?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/9A385B27-7838-43BE-BDEA-5BDA0D1032A7?api-version=2020-04-01-preview","name":"9a385b27-7838-43be-bdea-5bda0d1032a7","status":"Succeeded"}'
+      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/D7524895-7E69-4120-A3B2-0B3021DB49BF?api-version=2020-04-01-preview","name":"d7524895-7e69-4120-a3b2-0b3021db49bf","status":"Succeeded"}'
     headers:
       cache-control:
       - no-cache
@@ -579,7 +579,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:56:07 GMT
+      - Tue, 14 Apr 2020 08:28:31 GMT
       expires:
       - '-1'
       pragma:
@@ -611,13 +611,13 @@ interactions:
       ParameterSetName:
       - --name --resource-group --tags --sku
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000005?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","endpoint":"https://cli000005.centraluseuap-1.eventgrid.azure.net/api/events","inputSchema":"EventGridSchema","metricResourceId":"35a897e1-8fb6-4428-975d-49c7e89a055d","publicNetworkAccess":"Disabled","inboundIpRules":[{"ipMask":"19.12.43.90/102","action":"Allow"},{"ipMask":"19.12.43.70/81","action":"Allow"}]},"sku":{"name":"Premium"},"identity":{"type":"SystemAssigned","principalId":"a76ea9b4-816c-4a2c-96ec-069ae5c4d5a0","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","userAssignedIdentities":null},"location":"centraluseuap","tags":{"Dept":"IT"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000005","name":"cli000005","type":"Microsoft.EventGrid/topics"}'
+      string: '{"properties":{"provisioningState":"Succeeded","endpoint":"https://cli000005.centraluseuap-1.eventgrid.azure.net/api/events","inputSchema":"EventGridSchema","metricResourceId":"0d590a01-de7f-42a4-9469-d30732bb75b0","publicNetworkAccess":"Disabled","inboundIpRules":[{"ipMask":"19.12.43.90/102","action":"Allow"},{"ipMask":"19.12.43.70/81","action":"Allow"}]},"sku":{"name":"Premium"},"identity":{"type":"SystemAssigned","principalId":"67c81daa-66dc-496d-823c-10cd3fe06ce3","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","userAssignedIdentities":null},"location":"centraluseuap","tags":{"Dept":"IT"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000005","name":"cli000005","type":"Microsoft.EventGrid/topics"}'
     headers:
       cache-control:
       - no-cache
@@ -626,7 +626,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:56:07 GMT
+      - Tue, 14 Apr 2020 08:28:31 GMT
       expires:
       - '-1'
       pragma:
@@ -663,18 +663,18 @@ interactions:
       ParameterSetName:
       - --name --resource-group --tags --sku --identity
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: PATCH
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000005?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"properties":{"provisioningState":"Updating","endpoint":"https://cli000005.centraluseuap-1.eventgrid.azure.net/api/events","inputSchema":"EventGridSchema","metricResourceId":"35a897e1-8fb6-4428-975d-49c7e89a055d","publicNetworkAccess":"Disabled","inboundIpRules":[{"ipMask":"19.12.43.90/102","action":"Allow"},{"ipMask":"19.12.43.70/81","action":"Allow"}]},"sku":{"name":"Basic"},"identity":{"type":"None","principalId":null,"tenantId":null,"userAssignedIdentities":null},"location":"centraluseuap","tags":{"Dept":"Finance"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000005","name":"cli000005","type":"Microsoft.EventGrid/topics"}'
+      string: '{"properties":{"provisioningState":"Updating","endpoint":"https://cli000005.centraluseuap-1.eventgrid.azure.net/api/events","inputSchema":"EventGridSchema","metricResourceId":"0d590a01-de7f-42a4-9469-d30732bb75b0","publicNetworkAccess":"Disabled","inboundIpRules":[{"ipMask":"19.12.43.90/102","action":"Allow"},{"ipMask":"19.12.43.70/81","action":"Allow"}]},"sku":{"name":"Basic"},"identity":{"type":"None","principalId":null,"tenantId":null,"userAssignedIdentities":null},"location":"centraluseuap","tags":{"Dept":"Finance"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000005","name":"cli000005","type":"Microsoft.EventGrid/topics"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/B5831517-D1C5-47CE-9C86-5244B04FF00F?api-version=2020-04-01-preview
+      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/9F5C70A2-D73A-43E9-9FB0-8D8DDFA94D36?api-version=2020-04-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -682,7 +682,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:56:10 GMT
+      - Tue, 14 Apr 2020 08:28:34 GMT
       expires:
       - '-1'
       pragma:
@@ -694,7 +694,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '1197'
     status:
       code: 201
       message: Created
@@ -712,13 +712,13 @@ interactions:
       ParameterSetName:
       - --name --resource-group --tags --sku --identity
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/B5831517-D1C5-47CE-9C86-5244B04FF00F?api-version=2020-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/9F5C70A2-D73A-43E9-9FB0-8D8DDFA94D36?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/B5831517-D1C5-47CE-9C86-5244B04FF00F?api-version=2020-04-01-preview","name":"b5831517-d1c5-47ce-9c86-5244b04ff00f","status":"Succeeded"}'
+      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/9F5C70A2-D73A-43E9-9FB0-8D8DDFA94D36?api-version=2020-04-01-preview","name":"9f5c70a2-d73a-43e9-9fb0-8d8ddfa94d36","status":"Succeeded"}'
     headers:
       cache-control:
       - no-cache
@@ -727,7 +727,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:56:20 GMT
+      - Tue, 14 Apr 2020 08:28:44 GMT
       expires:
       - '-1'
       pragma:
@@ -759,13 +759,13 @@ interactions:
       ParameterSetName:
       - --name --resource-group --tags --sku --identity
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000005?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","endpoint":"https://cli000005.centraluseuap-1.eventgrid.azure.net/api/events","inputSchema":"EventGridSchema","metricResourceId":"35a897e1-8fb6-4428-975d-49c7e89a055d","publicNetworkAccess":"Disabled","inboundIpRules":[{"ipMask":"19.12.43.90/102","action":"Allow"},{"ipMask":"19.12.43.70/81","action":"Allow"}]},"sku":{"name":"Basic"},"identity":{"type":"None","principalId":null,"tenantId":null,"userAssignedIdentities":null},"location":"centraluseuap","tags":{"Dept":"Finance"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000005","name":"cli000005","type":"Microsoft.EventGrid/topics"}'
+      string: '{"properties":{"provisioningState":"Succeeded","endpoint":"https://cli000005.centraluseuap-1.eventgrid.azure.net/api/events","inputSchema":"EventGridSchema","metricResourceId":"0d590a01-de7f-42a4-9469-d30732bb75b0","publicNetworkAccess":"Disabled","inboundIpRules":[{"ipMask":"19.12.43.90/102","action":"Allow"},{"ipMask":"19.12.43.70/81","action":"Allow"}]},"sku":{"name":"Basic"},"identity":{"type":"None","principalId":null,"tenantId":null,"userAssignedIdentities":null},"location":"centraluseuap","tags":{"Dept":"Finance"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000005","name":"cli000005","type":"Microsoft.EventGrid/topics"}'
     headers:
       cache-control:
       - no-cache
@@ -774,7 +774,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:56:20 GMT
+      - Tue, 14 Apr 2020 08:28:45 GMT
       expires:
       - '-1'
       pragma:
@@ -806,24 +806,24 @@ interactions:
       ParameterSetName:
       - --resource-group
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics?api-version=2020-04-01-preview&$top=100
   response:
     body:
-      string: '{"value":[{"properties":{"provisioningState":"Succeeded","endpoint":"https://cli000002.centraluseuap-1.eventgrid.azure.net/api/events","inputSchema":"EventGridSchema","metricResourceId":"51125f63-7ee9-459d-912b-af8ce6a6f524","publicNetworkAccess":"Enabled"},"sku":{"name":"Basic"},"location":"centraluseuap","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002","name":"cli000002","type":"Microsoft.EventGrid/topics"},{"properties":{"provisioningState":"Succeeded","endpoint":"https://cli000003.centraluseuap-1.eventgrid.azure.net/api/events","inputSchema":"CloudEventSchemaV1_0","metricResourceId":"fbcd3e2b-228b-4374-a47d-e7c5fed9f5f0","publicNetworkAccess":"Enabled"},"sku":{"name":"Basic"},"location":"centraluseuap","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000003","name":"cli000003","type":"Microsoft.EventGrid/topics"},{"properties":{"provisioningState":"Succeeded","endpoint":"https://cli000005.centraluseuap-1.eventgrid.azure.net/api/events","inputSchema":"EventGridSchema","metricResourceId":"35a897e1-8fb6-4428-975d-49c7e89a055d","publicNetworkAccess":"Disabled","inboundIpRules":[{"ipMask":"19.12.43.90/102","action":"Allow"},{"ipMask":"19.12.43.70/81","action":"Allow"}]},"sku":{"name":"Basic"},"identity":{"type":"None","principalId":null,"tenantId":null,"userAssignedIdentities":null},"location":"centraluseuap","tags":{"Dept":"Finance"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000005","name":"cli000005","type":"Microsoft.EventGrid/topics"}]}'
+      string: '{"value":[{"properties":{"provisioningState":"Succeeded","endpoint":"https://cli000002.centraluseuap-1.eventgrid.azure.net/api/events","inputSchema":"EventGridSchema","metricResourceId":"250e5eb8-272c-468d-a406-ecc621ae9d86","publicNetworkAccess":"Enabled"},"sku":{"name":"Basic"},"identity":{"type":"None","principalId":null,"tenantId":null,"userAssignedIdentities":null},"location":"centraluseuap","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002","name":"cli000002","type":"Microsoft.EventGrid/topics"},{"properties":{"provisioningState":"Succeeded","endpoint":"https://cli000003.centraluseuap-1.eventgrid.azure.net/api/events","inputSchema":"CloudEventSchemaV1_0","metricResourceId":"711471db-992a-4680-9a1f-f41be791e675","publicNetworkAccess":"Enabled"},"sku":{"name":"Basic"},"identity":{"type":"None","principalId":null,"tenantId":null,"userAssignedIdentities":null},"location":"centraluseuap","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000003","name":"cli000003","type":"Microsoft.EventGrid/topics"},{"properties":{"provisioningState":"Succeeded","endpoint":"https://cli000005.centraluseuap-1.eventgrid.azure.net/api/events","inputSchema":"EventGridSchema","metricResourceId":"0d590a01-de7f-42a4-9469-d30732bb75b0","publicNetworkAccess":"Disabled","inboundIpRules":[{"ipMask":"19.12.43.90/102","action":"Allow"},{"ipMask":"19.12.43.70/81","action":"Allow"}]},"sku":{"name":"Basic"},"identity":{"type":"None","principalId":null,"tenantId":null,"userAssignedIdentities":null},"location":"centraluseuap","tags":{"Dept":"Finance"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000005","name":"cli000005","type":"Microsoft.EventGrid/topics"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '2201'
+      - '2385'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:56:21 GMT
+      - Tue, 14 Apr 2020 08:28:46 GMT
       expires:
       - '-1'
       pragma:
@@ -855,24 +855,24 @@ interactions:
       ParameterSetName:
       - --resource-group --odata-query
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics?api-version=2020-04-01-preview&$filter=name%20eq%20%27cli000002%27&$top=100
   response:
     body:
-      string: '{"value":[{"properties":{"provisioningState":"Succeeded","endpoint":"https://cli000002.centraluseuap-1.eventgrid.azure.net/api/events","inputSchema":"EventGridSchema","metricResourceId":"51125f63-7ee9-459d-912b-af8ce6a6f524","publicNetworkAccess":"Enabled"},"sku":{"name":"Basic"},"location":"centraluseuap","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002","name":"cli000002","type":"Microsoft.EventGrid/topics"}]}'
+      string: '{"value":[{"properties":{"provisioningState":"Succeeded","endpoint":"https://cli000002.centraluseuap-1.eventgrid.azure.net/api/events","inputSchema":"EventGridSchema","metricResourceId":"250e5eb8-272c-468d-a406-ecc621ae9d86","publicNetworkAccess":"Enabled"},"sku":{"name":"Basic"},"identity":{"type":"None","principalId":null,"tenantId":null,"userAssignedIdentities":null},"location":"centraluseuap","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002","name":"cli000002","type":"Microsoft.EventGrid/topics"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '667'
+      - '759'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:56:22 GMT
+      - Tue, 14 Apr 2020 08:28:46 GMT
       expires:
       - '-1'
       pragma:
@@ -906,15 +906,15 @@ interactions:
       ParameterSetName:
       - --name --resource-group
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002/listKeys?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"key1":"6jcClGfqG5+wqdJznefmojrqsDdukcjKSofgWQgnQcw=","key2":"HzarYNuBqIZcY7HxNKL1W0BzUkcF69su63WdaYLmsI8="}'
+      string: '{"key1":"n0+vmy3PEb1ikfKOY8Ytzn/BBE+dcQoiyyDGI0YPFgw=","key2":"HD+sNs5o3VTTyerlP0lBx++qnZoXl0Xtnm9mgILGbTw="}'
     headers:
       cache-control:
       - no-cache
@@ -923,7 +923,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:56:22 GMT
+      - Tue, 14 Apr 2020 08:28:47 GMT
       expires:
       - '-1'
       pragma:
@@ -939,7 +939,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1197'
     status:
       code: 200
       message: OK
@@ -961,15 +961,15 @@ interactions:
       ParameterSetName:
       - --name --resource-group --key-name
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002/regenerateKey?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"key1":"PJVDALBNG2HZnWjnzQsXim0Bkkj06HtMvhIuWJNTp+Y=","key2":"HzarYNuBqIZcY7HxNKL1W0BzUkcF69su63WdaYLmsI8="}'
+      string: '{"key1":"BdbAS25ASYNz3mHtCbl9QN4Qli81cBKjLldCTqbRCJ8=","key2":"HD+sNs5o3VTTyerlP0lBx++qnZoXl0Xtnm9mgILGbTw="}'
     headers:
       cache-control:
       - no-cache
@@ -978,7 +978,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:56:24 GMT
+      - Tue, 14 Apr 2020 08:28:48 GMT
       expires:
       - '-1'
       pragma:
@@ -1016,15 +1016,15 @@ interactions:
       ParameterSetName:
       - --name --resource-group --key-name
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002/regenerateKey?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"key1":"PJVDALBNG2HZnWjnzQsXim0Bkkj06HtMvhIuWJNTp+Y=","key2":"FXhHNRNXwHefu5d+4TSgwucC7yl9lCjdezcpl5+xqrY="}'
+      string: '{"key1":"BdbAS25ASYNz3mHtCbl9QN4Qli81cBKjLldCTqbRCJ8=","key2":"O1JvKxGjP5V9kf9QZu/8bdDlNucibIF5PGCREMpcM8c="}'
     headers:
       cache-control:
       - no-cache
@@ -1033,7 +1033,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:56:25 GMT
+      - Tue, 14 Apr 2020 08:28:49 GMT
       expires:
       - '-1'
       pragma:
@@ -1049,13 +1049,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1197'
     status:
       code: 200
       message: OK
 - request:
     body: '{"properties": {"destination": {"endpointType": "WebHook", "properties":
-      {"endpointUrl": "https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid?functionName=EventGridTrigger1&code=an3f31ORDSQ/llPPTaUDJiEJGoebE9ha7dODRhb1nIyg/LiYLfSVCA=="}},
+      {"endpointUrl": "https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid?functionName=EventGridTrigger1&code=<HIDDEN>"}},
       "filter": {"isSubjectCaseSensitive": false}, "retryPolicy": {"maxDeliveryAttempts":
       30, "eventTimeToLiveInMinutes": 1440}}}'
     headers:
@@ -1074,8 +1074,8 @@ interactions:
       ParameterSetName:
       - --source-resource-id --name --endpoint
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: PUT
@@ -1085,7 +1085,7 @@ interactions:
       string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.eventgrid/topics/cli000002","provisioningState":"Creating","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid"},"endpointType":"WebHook"},"filter":{},"labels":null,"retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002/providers/Microsoft.EventGrid/eventSubscriptions/cli000006","name":"cli000006","type":"Microsoft.EventGrid/eventSubscriptions"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/AFA8C2AE-F2CF-45EE-BBC0-B6A52C07B2C0?api-version=2020-04-01-preview
+      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/6350BAB3-31CE-4F19-B3CE-E380452A004A?api-version=2020-04-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -1093,7 +1093,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:56:26 GMT
+      - Tue, 14 Apr 2020 08:28:50 GMT
       expires:
       - '-1'
       pragma:
@@ -1123,13 +1123,13 @@ interactions:
       ParameterSetName:
       - --source-resource-id --name --endpoint
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/AFA8C2AE-F2CF-45EE-BBC0-B6A52C07B2C0?api-version=2020-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/6350BAB3-31CE-4F19-B3CE-E380452A004A?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/AFA8C2AE-F2CF-45EE-BBC0-B6A52C07B2C0?api-version=2020-04-01-preview","name":"afa8c2ae-f2cf-45ee-bbc0-b6a52c07b2c0","status":"Succeeded"}'
+      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/6350BAB3-31CE-4F19-B3CE-E380452A004A?api-version=2020-04-01-preview","name":"6350bab3-31ce-4f19-b3ce-e380452a004a","status":"Succeeded"}'
     headers:
       cache-control:
       - no-cache
@@ -1138,7 +1138,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:56:35 GMT
+      - Tue, 14 Apr 2020 08:29:00 GMT
       expires:
       - '-1'
       pragma:
@@ -1170,8 +1170,8 @@ interactions:
       ParameterSetName:
       - --source-resource-id --name --endpoint
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002/providers/Microsoft.EventGrid/eventSubscriptions/cli000006?api-version=2020-04-01-preview
   response:
@@ -1185,7 +1185,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:56:36 GMT
+      - Tue, 14 Apr 2020 08:29:00 GMT
       expires:
       - '-1'
       pragma:
@@ -1217,8 +1217,8 @@ interactions:
       ParameterSetName:
       - --source-resource-id --name
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: GET
@@ -1234,7 +1234,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:56:37 GMT
+      - Tue, 14 Apr 2020 08:29:02 GMT
       expires:
       - '-1'
       pragma:
@@ -1266,8 +1266,8 @@ interactions:
       ParameterSetName:
       - --source-resource-id --name --include-full-endpoint-url
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: GET
@@ -1283,7 +1283,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:56:38 GMT
+      - Tue, 14 Apr 2020 08:29:02 GMT
       expires:
       - '-1'
       pragma:
@@ -1317,15 +1317,15 @@ interactions:
       ParameterSetName:
       - --source-resource-id --name --include-full-endpoint-url
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002/providers/Microsoft.EventGrid/eventSubscriptions/cli000006/getFullUrl?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"endpointUrl":"https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid?functionName=EventGridTrigger1&code=an3f31ORDSQ/llPPTaUDJiEJGoebE9ha7dODRhb1nIyg/LiYLfSVCA=="}'
+      string: '{"endpointUrl":"https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid?functionName=EventGridTrigger1&code=<HIDDEN>"}'
     headers:
       cache-control:
       - no-cache
@@ -1334,7 +1334,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:56:38 GMT
+      - Tue, 14 Apr 2020 08:29:03 GMT
       expires:
       - '-1'
       pragma:
@@ -1350,7 +1350,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1108'
+      - '1198'
     status:
       code: 200
       message: OK
@@ -1368,8 +1368,8 @@ interactions:
       ParameterSetName:
       - --source-resource-id --name --endpoint
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: GET
@@ -1385,7 +1385,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:56:39 GMT
+      - Tue, 14 Apr 2020 08:29:03 GMT
       expires:
       - '-1'
       pragma:
@@ -1405,7 +1405,7 @@ interactions:
       message: OK
 - request:
     body: '{"destination": {"endpointType": "WebHook", "properties": {"endpointUrl":
-      "https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid?functionName=EventGridTrigger1&code=an3f31ORDSQ/llPPTaUDJiEJGoebE9ha7dODRhb1nIyg/LiYLfSVCA==",
+      "https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid?functionName=EventGridTrigger1&code=<HIDDEN>",
       "maxEventsPerBatch": 1, "preferredBatchSizeInKilobytes": 64}}, "filter": {"subjectBeginsWith":
       "", "subjectEndsWith": ""}, "eventDeliverySchema": "EventGridSchema", "retryPolicy":
       {"maxDeliveryAttempts": 30, "eventTimeToLiveInMinutes": 1440}}'
@@ -1425,8 +1425,8 @@ interactions:
       ParameterSetName:
       - --source-resource-id --name --endpoint
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: PATCH
@@ -1436,7 +1436,7 @@ interactions:
       string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.eventgrid/topics/cli000002","provisioningState":"Updating","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid","maxEventsPerBatch":1,"preferredBatchSizeInKilobytes":64},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002/providers/Microsoft.EventGrid/eventSubscriptions/cli000006","name":"cli000006","type":"Microsoft.EventGrid/eventSubscriptions"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/C36BC49C-0B06-4A7D-9395-37858A3C1368?api-version=2020-04-01-preview
+      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/55ADEF2B-DB98-4DCA-8E3C-E90A9F56B8C5?api-version=2020-04-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -1444,7 +1444,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:56:40 GMT
+      - Tue, 14 Apr 2020 08:29:03 GMT
       expires:
       - '-1'
       pragma:
@@ -1474,13 +1474,13 @@ interactions:
       ParameterSetName:
       - --source-resource-id --name --endpoint
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/C36BC49C-0B06-4A7D-9395-37858A3C1368?api-version=2020-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/55ADEF2B-DB98-4DCA-8E3C-E90A9F56B8C5?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/C36BC49C-0B06-4A7D-9395-37858A3C1368?api-version=2020-04-01-preview","name":"c36bc49c-0b06-4a7d-9395-37858a3c1368","status":"Succeeded"}'
+      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/55ADEF2B-DB98-4DCA-8E3C-E90A9F56B8C5?api-version=2020-04-01-preview","name":"55adef2b-db98-4dca-8e3c-e90a9f56b8c5","status":"Succeeded"}'
     headers:
       cache-control:
       - no-cache
@@ -1489,7 +1489,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:56:50 GMT
+      - Tue, 14 Apr 2020 08:29:13 GMT
       expires:
       - '-1'
       pragma:
@@ -1521,8 +1521,8 @@ interactions:
       ParameterSetName:
       - --source-resource-id --name --endpoint
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002/providers/Microsoft.EventGrid/eventSubscriptions/cli000006?api-version=2020-04-01-preview
   response:
@@ -1536,7 +1536,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:56:50 GMT
+      - Tue, 14 Apr 2020 08:29:13 GMT
       expires:
       - '-1'
       pragma:
@@ -1568,8 +1568,8 @@ interactions:
       ParameterSetName:
       - --source-resource-id
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: GET
@@ -1585,7 +1585,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:56:51 GMT
+      - Tue, 14 Apr 2020 08:29:14 GMT
       expires:
       - '-1'
       pragma:
@@ -1617,8 +1617,8 @@ interactions:
       ParameterSetName:
       - --source-resource-id --odata-query
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: GET
@@ -1634,7 +1634,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:56:52 GMT
+      - Tue, 14 Apr 2020 08:29:15 GMT
       expires:
       - '-1'
       pragma:
@@ -1666,24 +1666,24 @@ interactions:
       ParameterSetName:
       - --topic-type --location
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/topicTypes/Microsoft.EventGrid.Topics/eventSubscriptions?api-version=2020-04-01-preview&$top=100
   response:
     body:
-      string: '{"value":[{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azureeventgridrunnerrgcentraluseuap/providers/microsoft.eventgrid/topics/eg-latency-runner-topic-centraluseuap","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.EventHub/namespaces/egrunnereventhubnamespacecentraluseuap/eventhubs/egltncyrunnereventhubcentraluseuap"},"endpointType":"EventHub"},"filter":{"subjectBeginsWith":"Subject","subjectEndsWith":"","isSubjectCaseSensitive":true,"advancedFilters":[{"values":["runner"],"operatorType":"StringContains","key":"topic"},{"values":["Info"],"operatorType":"StringEndsWith","key":"data.EventData"},{"values":[1.0,2.0,3.0],"operatorType":"NumberIn","key":"data.key1"},{"value":true,"operatorType":"BoolEquals","key":"data.key2"},{"values":["3.0"],"operatorType":"StringContains","key":"dataversion"}]},"labels":["TestLabel1","TestLabel2"],"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1439}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.EventGrid/topics/eg-latency-runner-topic-centraluseuap/providers/Microsoft.EventGrid/eventSubscriptions/eg-latency-runner-subscription-centraluseuap","name":"eg-latency-runner-subscription-centraluseuap","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azureeventgridrunnerrgcentraluseuap/providers/microsoft.eventgrid/topics/eg-latency-runner-topic-eg-euap-usce-01","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.EventHub/namespaces/egrunnereventhubnamespacecentraluseuap/eventhubs/egltncyrunnereventhub-eg-euap-usce-01"},"endpointType":"EventHub"},"filter":{"subjectBeginsWith":"Subject","subjectEndsWith":"","isSubjectCaseSensitive":true,"advancedFilters":[{"values":["runner"],"operatorType":"StringContains","key":"topic"},{"values":["Info"],"operatorType":"StringEndsWith","key":"data.EventData"},{"values":[1.0,2.0,3.0],"operatorType":"NumberIn","key":"data.key1"},{"value":true,"operatorType":"BoolEquals","key":"data.key2"},{"values":["3.0"],"operatorType":"StringContains","key":"dataversion"}]},"labels":["TestLabel1","TestLabel2"],"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1439}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.EventGrid/topics/eg-latency-runner-topic-eg-euap-usce-01/providers/Microsoft.EventGrid/eventSubscriptions/eg-latency-runner-subscription-eg-euap-usce-01","name":"eg-latency-runner-subscription-eg-euap-usce-01","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azureeventgridrunnerrgcentraluseuap/providers/microsoft.eventgrid/topics/eg-latency-runner-topic-eg-euap-usce-02","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.EventHub/namespaces/egrunnereventhubnamespacecentraluseuap/eventhubs/egltncyrunnereventhub-eg-euap-usce-02"},"endpointType":"EventHub"},"filter":{"subjectBeginsWith":"Subject","subjectEndsWith":"","isSubjectCaseSensitive":true,"advancedFilters":[{"values":["runner"],"operatorType":"StringContains","key":"topic"},{"values":["Info"],"operatorType":"StringEndsWith","key":"data.EventData"},{"values":[1.0,2.0,3.0],"operatorType":"NumberIn","key":"data.key1"},{"value":true,"operatorType":"BoolEquals","key":"data.key2"},{"values":["3.0"],"operatorType":"StringContains","key":"dataversion"}]},"labels":["TestLabel1","TestLabel2"],"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1439}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.EventGrid/topics/eg-latency-runner-topic-eg-euap-usce-02/providers/Microsoft.EventGrid/eventSubscriptions/eg-latency-runner-subscription-eg-euap-usce-02","name":"eg-latency-runner-subscription-eg-euap-usce-02","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azureeventgridrunnerrgcentraluseuap/providers/microsoft.eventgrid/topics/eglatencyrunnerqueuetopiccentraluseuap","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.Storage/storageAccounts/egrunnerstgcentraluseuap","queueName":"egltcyrunnerstgqueuedestinationcentraluseuap"},"endpointType":"StorageQueue"},"filter":{"subjectBeginsWith":"Subject","subjectEndsWith":"","isSubjectCaseSensitive":true,"advancedFilters":[{"values":["runner"],"operatorType":"StringContains","key":"topic"},{"values":["Info"],"operatorType":"StringEndsWith","key":"data.EventData"},{"values":[1.0,2.0,3.0],"operatorType":"NumberIn","key":"data.key1"},{"value":true,"operatorType":"BoolEquals","key":"data.key2"},{"values":["3.0"],"operatorType":"StringContains","key":"dataversion"}]},"labels":["TestLabel1","TestLabel2"],"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1439},"deadLetterDestination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.Storage/storageAccounts/egrunnerstgcentraluseuap","blobContainerName":"egltcyrunnerstgdlqcentraluseuap"},"endpointType":"StorageBlob"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.EventGrid/topics/eglatencyrunnerqueuetopiccentraluseuap/providers/Microsoft.EventGrid/eventSubscriptions/eglatencyrunnerqueuesubscriptioncentraluseuap","name":"eglatencyrunnerqueuesubscriptioncentraluseuap","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azureeventgridrunnerrgcentraluseuap/providers/microsoft.eventgrid/topics/eg-latency-runner-topic-localtest-centraluseuap","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.EventHub/namespaces/egrunnereventhubnamespacecentraluseuap/eventhubs/egltncyrunnereventhublocaltestcentraluseuap"},"endpointType":"EventHub"},"filter":{"subjectBeginsWith":"Subject","subjectEndsWith":"","isSubjectCaseSensitive":true,"advancedFilters":[{"values":["runner"],"operatorType":"StringContains","key":"topic"},{"values":["Info"],"operatorType":"StringEndsWith","key":"data.EventData"},{"values":[1.0,2.0,3.0],"operatorType":"NumberIn","key":"data.key1"},{"value":true,"operatorType":"BoolEquals","key":"data.key2"},{"values":["3.0"],"operatorType":"StringContains","key":"dataversion"}]},"labels":["TestLabel1","TestLabel2"],"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1439}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.EventGrid/topics/eg-latency-runner-topic-localtest-centraluseuap/providers/Microsoft.EventGrid/eventSubscriptions/eg-latency-runner-localtest-subscription-centraluseuap","name":"eg-latency-runner-localtest-subscription-centraluseuap","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azureeventgridrunnerrgcentraluseuap/providers/microsoft.eventgrid/topics/eg-latency-dq-runner-topic-eg-euap-usce-01","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.EventHub/namespaces/egrunnereventhubnamespacecentraluseuap/eventhubs/egltncydqrunnereventhub-eg-euap-usce-01"},"endpointType":"EventHub"},"filter":{"subjectBeginsWith":"Subject","subjectEndsWith":"","isSubjectCaseSensitive":true,"advancedFilters":[{"values":["runner"],"operatorType":"StringContains","key":"topic"},{"values":["Info"],"operatorType":"StringEndsWith","key":"data.EventData"},{"values":[1.0,2.0,3.0],"operatorType":"NumberIn","key":"data.key1"},{"value":true,"operatorType":"BoolEquals","key":"data.key2"},{"values":["3.0"],"operatorType":"StringContains","key":"dataversion"}]},"labels":["TestLabel1","TestLabel2"],"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1439}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.EventGrid/topics/eg-latency-dq-runner-topic-eg-euap-usce-01/providers/Microsoft.EventGrid/eventSubscriptions/eg-latency-dq-runner-subscription-eg-euap-usce-01","name":"eg-latency-dq-runner-subscription-eg-euap-usce-01","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest/providers/microsoft.eventgrid/topics/kal2020testce2","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kalstest/providers/Microsoft.Storage/storageAccounts/kalsiotstorage","queueName":"sq1"},"endpointType":"StorageQueue"},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"CloudEventSchemaV1_0","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest/providers/Microsoft.EventGrid/topics/kal2020testCE2/providers/Microsoft.EventGrid/eventSubscriptions/es4","name":"es4","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest/providers/microsoft.eventgrid/topics/kal2020testce2","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kalstest/providers/Microsoft.ServiceBus/namespaces/sbdesttest/topics/top1"},"endpointType":"ServiceBusTopic"},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"CloudEventSchemaV1_0","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest/providers/Microsoft.EventGrid/topics/kal2020testCE2/providers/Microsoft.EventGrid/eventSubscriptions/essbtopic","name":"essbtopic","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest/providers/microsoft.eventgrid/topics/kal2020testce2","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kalstest/providers/Microsoft.ServiceBus/namespaces/sbdesttest/topics/top1"},"endpointType":"ServiceBusTopic"},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"CloudEventSchemaV1_0","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest/providers/Microsoft.EventGrid/topics/kal2020testCE2/providers/Microsoft.EventGrid/eventSubscriptions/essbtopic2","name":"essbtopic2","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sdk-eventgrid-rg-652/providers/microsoft.eventgrid/topics/sdk-topic-5763","provisioningState":"Succeeded","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid","maxEventsPerBatch":4400,"preferredBatchSizeInKilobytes":900},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"TestPrefix","subjectEndsWith":".jpg","includedEventTypes":["Event1","Event2"]},"labels":["UpdatedLabel1","UpdatedLabel2"],"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sdk-EventGrid-RG-652/providers/Microsoft.EventGrid/topics/sdk-Topic-5763/providers/Microsoft.EventGrid/eventSubscriptions/sdk-EventSubscription-7490","name":"sdk-EventSubscription-7490","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/microsoft.eventgrid/topics/amdtesttopic500delete","provisioningState":"Succeeded","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid","maxEventsPerBatch":1,"preferredBatchSizeInKilobytes":64},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/amdtesttopic500delete/providers/Microsoft.EventGrid/eventSubscriptions/ES3333333","name":"ES3333333","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/microsoft.eventgrid/topics/amdtesttopic500delete","provisioningState":"Succeeded","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid","maxEventsPerBatch":1,"preferredBatchSizeInKilobytes":64},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/amdtesttopic500delete/providers/Microsoft.EventGrid/eventSubscriptions/ES99999","name":"ES99999","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/microsoft.eventgrid/topics/amdtesttopic999delete","provisioningState":"Succeeded","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid","maxEventsPerBatch":1,"preferredBatchSizeInKilobytes":64},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/amdtesttopic999delete/providers/Microsoft.EventGrid/eventSubscriptions/ES99889989","name":"ES99889989","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/tryTopicBug2","provisioningState":"Succeeded","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid","maxEventsPerBatch":1,"preferredBatchSizeInKilobytes":64},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":[],"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/tryTopicBug2/providers/Microsoft.EventGrid/eventSubscriptions/testEs10101010","name":"testEs10101010","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/testTopic123","provisioningState":"Succeeded","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid","maxEventsPerBatch":1,"preferredBatchSizeInKilobytes":64},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":[],"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/testTopic123/providers/Microsoft.EventGrid/eventSubscriptions/test123es","name":"test123es","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/microsoft.eventgrid/topics/testtopic123","provisioningState":"Succeeded","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://devexpfuncappdestination.azurewebsites.net/api/DevExpFunc","maxEventsPerBatch":1,"preferredBatchSizeInKilobytes":64},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/testTopic123/providers/Microsoft.EventGrid/eventSubscriptions/test1234566es1","name":"test1234566es1","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azureeventgridrunnerrgcentraluseuap/providers/microsoft.eventgrid/topics/eg-latency-runner-topic-msi-centraluseuap","provisioningState":"Succeeded","destination":null,"deliveryWithResourceIdentity":{"identity":{"type":"SystemAssigned"},"destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.Storage/storageAccounts/egrunnertgcentraluseuap2","queueName":"egltcyrunnerstgqueuedestinationmsicentraluseuap"},"endpointType":"StorageQueue"}},"filter":{"subjectBeginsWith":"Subject","subjectEndsWith":"","isSubjectCaseSensitive":true,"advancedFilters":[{"values":["runner"],"operatorType":"StringContains","key":"topic"},{"values":["Info"],"operatorType":"StringEndsWith","key":"data.EventData"},{"values":[1.0,2.0,3.0],"operatorType":"NumberIn","key":"data.key1"},{"value":true,"operatorType":"BoolEquals","key":"data.key2"},{"values":["3.0"],"operatorType":"StringContains","key":"dataversion"}]},"labels":["TestLabel1","TestLabel2"],"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1439}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.EventGrid/topics/eg-latency-runner-topic-msi-centraluseuap/providers/Microsoft.EventGrid/eventSubscriptions/eg-latency-runner-subscription-msi-centraluseuap","name":"eg-latency-runner-subscription-msi-centraluseuap","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azureeventgridrunnerrgcentraluseuap/providers/microsoft.eventgrid/topics/eg-latency-runner-topic-msi-centraluseuap2","provisioningState":"Succeeded","destination":null,"deliveryWithResourceIdentity":{"identity":{"type":"SystemAssigned"},"destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.Storage/storageAccounts/egrunnertgcentraluseuap2","queueName":"egltcyrunnerstgqueuedestinationmsicentraluseuap"},"endpointType":"StorageQueue"}},"filter":{"subjectBeginsWith":"Subject","subjectEndsWith":"","isSubjectCaseSensitive":true,"advancedFilters":[{"values":["runner"],"operatorType":"StringContains","key":"topic"},{"values":["Info"],"operatorType":"StringEndsWith","key":"data.EventData"},{"values":[1.0,2.0,3.0],"operatorType":"NumberIn","key":"data.key1"},{"value":true,"operatorType":"BoolEquals","key":"data.key2"},{"values":["3.0"],"operatorType":"StringContains","key":"dataversion"}]},"labels":["TestLabel1","TestLabel2"],"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1439}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.EventGrid/topics/eg-latency-runner-topic-msi-centraluseuap2/providers/Microsoft.EventGrid/eventSubscriptions/eg-latency-runner-subscription-msi-centraluseuap","name":"eg-latency-runner-subscription-msi-centraluseuap","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msibugbash/providers/microsoft.eventgrid/topics/msitesttopic","provisioningState":"Succeeded","destination":null,"deliveryWithResourceIdentity":{"identity":{"type":"SystemAssigned"},"destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msibugbash/providers/Microsoft.ServiceBus/namespaces/msitestwithsb/queues/msitestwithsb"},"endpointType":"ServiceBusQueue"}},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440},"deadLetterWithResourceIdentity":{"identity":{"type":"SystemAssigned"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msibugbash/providers/Microsoft.EventGrid/topics/msitesttopic/providers/Microsoft.EventGrid/eventSubscriptions/msitestwithsb","name":"msitestwithsb","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msibugbash/providers/microsoft.eventgrid/topics/msitesttopic","provisioningState":"Succeeded","destination":null,"deliveryWithResourceIdentity":{"identity":{"type":"SystemAssigned"},"destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msibugbash/providers/Microsoft.ServiceBus/namespaces/msitestwithsb/queues/msitestwithsb"},"endpointType":"ServiceBusQueue"}},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440},"deadLetterWithResourceIdentity":{"identity":{"type":"SystemAssigned"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msibugbash/providers/Microsoft.EventGrid/topics/msitesttopic/providers/Microsoft.EventGrid/eventSubscriptions/msitestwithsb1","name":"msitestwithsb1","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msibugbash/providers/microsoft.eventgrid/topics/msitesttopic","provisioningState":"Succeeded","destination":null,"deliveryWithResourceIdentity":{"identity":{"type":"SystemAssigned"},"destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msibugbash/providers/Microsoft.Storage/storageAccounts/msitestwithsa","queueName":"msitestwithsa"},"endpointType":"StorageQueue"}},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msibugbash/providers/Microsoft.EventGrid/topics/msitesttopic/providers/Microsoft.EventGrid/eventSubscriptions/msitestwithea","name":"msitestwithea","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/microsoft.eventgrid/topics/topicbugbash1","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.ServiceBus/namespaces/devexpservicebus/topics/devexptopic1"},"endpointType":"ServiceBusTopic"},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/topicBugBash1/providers/Microsoft.EventGrid/eventSubscriptions/bugbash1ES1SvcBusTopic1","name":"bugbash1ES1SvcBusTopic1","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msibugbash/providers/microsoft.eventgrid/topics/msitesttopic","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msiiitest/providers/Microsoft.EventHub/namespaces/msitestwithehub/eventhubs/msitestwithehub"},"endpointType":"EventHub"},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msibugbash/providers/Microsoft.EventGrid/topics/msitesttopic/providers/Microsoft.EventGrid/eventSubscriptions/msitestwitheh","name":"msitestwitheh","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/microsoft.eventgrid/topics/topicbugbash1","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Storage/storageAccounts/devexpstg","queueName":"stogqueuedestination"},"endpointType":"StorageQueue"},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/topicBugBash1/providers/Microsoft.EventGrid/eventSubscriptions/bugbashEs2StorageQueue1","name":"bugbashEs2StorageQueue1","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/microsoft.eventgrid/topics/topicbugbash1","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Web/sites/eventgridclitestapp/functions/EventGridTrigger1","maxEventsPerBatch":1,"preferredBatchSizeInKilobytes":64},"endpointType":"AzureFunction"},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/topicBugBash1/providers/Microsoft.EventGrid/eventSubscriptions/bugbash1Es3Func2","name":"bugbash1Es3Func2","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msibugbash/providers/microsoft.eventgrid/topics/msitesttopic","provisioningState":"Succeeded","destination":null,"deliveryWithResourceIdentity":{"identity":{"type":"SystemAssigned"},"destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msibugbash/providers/Microsoft.Storage/storageAccounts/msitestwithsa","queueName":"msitestwithsa"},"endpointType":"StorageQueue"}},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msibugbash/providers/Microsoft.EventGrid/topics/msitesttopic/providers/Microsoft.EventGrid/eventSubscriptions/msiwithsa","name":"msiwithsa","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msibugbash/providers/microsoft.eventgrid/topics/noktesttopic","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/msibugbash/providers/Microsoft.Storage/storageAccounts/nokstorageaccount","queueName":"queue1"},"endpointType":"StorageQueue"},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msibugbash/providers/Microsoft.EventGrid/topics/noktesttopic/providers/Microsoft.EventGrid/eventSubscriptions/noktesttopicsubidentity","name":"noktesttopicsubidentity","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msibugbash/providers/microsoft.eventgrid/topics/noktesttopic","provisioningState":"Succeeded","destination":null,"deliveryWithResourceIdentity":{"identity":{"type":"SystemAssigned"},"destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/msibugbash/providers/Microsoft.Storage/storageAccounts/nokstorageaccount","queueName":"queue2"},"endpointType":"StorageQueue"}},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msibugbash/providers/Microsoft.EventGrid/topics/noktesttopic/providers/Microsoft.EventGrid/eventSubscriptions/noktesttopicsubnoidentity","name":"noktesttopicsubnoidentity","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/mparkmsi","provisioningState":"Succeeded","destination":null,"deliveryWithResourceIdentity":{"identity":{"type":"SystemAssigned"},"destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/alitest/providers/Microsoft.EventHub/namespaces/rrama-reprokafka-eus/eventhubs/eh1"},"endpointType":"EventHub"}},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":[],"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/mparkmsi/providers/Microsoft.EventGrid/eventSubscriptions/mparkes","name":"mparkes","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/mparkmsi","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/alitest/providers/Microsoft.EventHub/namespaces/rrama-reprokafka-eus/eventhubs/eh1"},"endpointType":"EventHub"},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":[],"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440},"deadLetterDestination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureEventGridRunnerRGEastUS2EUAP/providers/Microsoft.Storage/storageAccounts/aegrrunnertest","blobContainerName":"azure-webjobs-hosts"},"endpointType":"StorageBlob"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/mparkmsi/providers/Microsoft.EventGrid/eventSubscriptions/mparkes2","name":"mparkes2","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.eventgrid/topics/cli000002","provisioningState":"Succeeded","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid","maxEventsPerBatch":1,"preferredBatchSizeInKilobytes":64},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002/providers/Microsoft.EventGrid/eventSubscriptions/cli000006","name":"cli000006","type":"Microsoft.EventGrid/eventSubscriptions"}]}'
+      string: '{"value":[{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azureeventgridrunnerrgcentraluseuap/providers/microsoft.eventgrid/topics/eg-latency-runner-topic-centraluseuap","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.EventHub/namespaces/egrunnereventhubnamespacecentraluseuap/eventhubs/egltncyrunnereventhubcentraluseuap"},"endpointType":"EventHub"},"filter":{"subjectBeginsWith":"Subject","subjectEndsWith":"","isSubjectCaseSensitive":true,"advancedFilters":[{"values":["runner"],"operatorType":"StringContains","key":"topic"},{"values":["Info"],"operatorType":"StringEndsWith","key":"data.EventData"},{"values":[1.0,2.0,3.0],"operatorType":"NumberIn","key":"data.key1"},{"value":true,"operatorType":"BoolEquals","key":"data.key2"},{"values":["3.0"],"operatorType":"StringContains","key":"dataversion"}]},"labels":["TestLabel1","TestLabel2"],"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1439}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.EventGrid/topics/eg-latency-runner-topic-centraluseuap/providers/Microsoft.EventGrid/eventSubscriptions/eg-latency-runner-subscription-centraluseuap","name":"eg-latency-runner-subscription-centraluseuap","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azureeventgridrunnerrgcentraluseuap/providers/microsoft.eventgrid/topics/eg-latency-runner-topic-eg-euap-usce-01","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.EventHub/namespaces/egrunnereventhubnamespacecentraluseuap/eventhubs/egltncyrunnereventhub-eg-euap-usce-01"},"endpointType":"EventHub"},"filter":{"subjectBeginsWith":"Subject","subjectEndsWith":"","isSubjectCaseSensitive":true,"advancedFilters":[{"values":["runner"],"operatorType":"StringContains","key":"topic"},{"values":["Info"],"operatorType":"StringEndsWith","key":"data.EventData"},{"values":[1.0,2.0,3.0],"operatorType":"NumberIn","key":"data.key1"},{"value":true,"operatorType":"BoolEquals","key":"data.key2"},{"values":["3.0"],"operatorType":"StringContains","key":"dataversion"}]},"labels":["TestLabel1","TestLabel2"],"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1439}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.EventGrid/topics/eg-latency-runner-topic-eg-euap-usce-01/providers/Microsoft.EventGrid/eventSubscriptions/eg-latency-runner-subscription-eg-euap-usce-01","name":"eg-latency-runner-subscription-eg-euap-usce-01","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azureeventgridrunnerrgcentraluseuap/providers/microsoft.eventgrid/topics/eg-latency-runner-topic-eg-euap-usce-02","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.EventHub/namespaces/egrunnereventhubnamespacecentraluseuap/eventhubs/egltncyrunnereventhub-eg-euap-usce-02"},"endpointType":"EventHub"},"filter":{"subjectBeginsWith":"Subject","subjectEndsWith":"","isSubjectCaseSensitive":true,"advancedFilters":[{"values":["runner"],"operatorType":"StringContains","key":"topic"},{"values":["Info"],"operatorType":"StringEndsWith","key":"data.EventData"},{"values":[1.0,2.0,3.0],"operatorType":"NumberIn","key":"data.key1"},{"value":true,"operatorType":"BoolEquals","key":"data.key2"},{"values":["3.0"],"operatorType":"StringContains","key":"dataversion"}]},"labels":["TestLabel1","TestLabel2"],"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1439}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.EventGrid/topics/eg-latency-runner-topic-eg-euap-usce-02/providers/Microsoft.EventGrid/eventSubscriptions/eg-latency-runner-subscription-eg-euap-usce-02","name":"eg-latency-runner-subscription-eg-euap-usce-02","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azureeventgridrunnerrgcentraluseuap/providers/microsoft.eventgrid/topics/eglatencyrunnerqueuetopiccentraluseuap","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.Storage/storageAccounts/egrunnerstgcentraluseuap","queueName":"egltcyrunnerstgqueuedestinationcentraluseuap"},"endpointType":"StorageQueue"},"filter":{"subjectBeginsWith":"Subject","subjectEndsWith":"","isSubjectCaseSensitive":true,"advancedFilters":[{"values":["runner"],"operatorType":"StringContains","key":"topic"},{"values":["Info"],"operatorType":"StringEndsWith","key":"data.EventData"},{"values":[1.0,2.0,3.0],"operatorType":"NumberIn","key":"data.key1"},{"value":true,"operatorType":"BoolEquals","key":"data.key2"},{"values":["3.0"],"operatorType":"StringContains","key":"dataversion"}]},"labels":["TestLabel1","TestLabel2"],"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1439},"deadLetterDestination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.Storage/storageAccounts/egrunnerstgcentraluseuap","blobContainerName":"egltcyrunnerstgdlqcentraluseuap"},"endpointType":"StorageBlob"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.EventGrid/topics/eglatencyrunnerqueuetopiccentraluseuap/providers/Microsoft.EventGrid/eventSubscriptions/eglatencyrunnerqueuesubscriptioncentraluseuap","name":"eglatencyrunnerqueuesubscriptioncentraluseuap","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azureeventgridrunnerrgcentraluseuap/providers/microsoft.eventgrid/topics/eg-latency-runner-topic-localtest-centraluseuap","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.EventHub/namespaces/egrunnereventhubnamespacecentraluseuap/eventhubs/egltncyrunnereventhublocaltestcentraluseuap"},"endpointType":"EventHub"},"filter":{"subjectBeginsWith":"Subject","subjectEndsWith":"","isSubjectCaseSensitive":true,"advancedFilters":[{"values":["runner"],"operatorType":"StringContains","key":"topic"},{"values":["Info"],"operatorType":"StringEndsWith","key":"data.EventData"},{"values":[1.0,2.0,3.0],"operatorType":"NumberIn","key":"data.key1"},{"value":true,"operatorType":"BoolEquals","key":"data.key2"},{"values":["3.0"],"operatorType":"StringContains","key":"dataversion"}]},"labels":["TestLabel1","TestLabel2"],"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1439}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.EventGrid/topics/eg-latency-runner-topic-localtest-centraluseuap/providers/Microsoft.EventGrid/eventSubscriptions/eg-latency-runner-localtest-subscription-centraluseuap","name":"eg-latency-runner-localtest-subscription-centraluseuap","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azureeventgridrunnerrgcentraluseuap/providers/microsoft.eventgrid/topics/eg-latency-dq-runner-topic-eg-euap-usce-01","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.EventHub/namespaces/egrunnereventhubnamespacecentraluseuap/eventhubs/egltncydqrunnereventhub-eg-euap-usce-01"},"endpointType":"EventHub"},"filter":{"subjectBeginsWith":"Subject","subjectEndsWith":"","isSubjectCaseSensitive":true,"advancedFilters":[{"values":["runner"],"operatorType":"StringContains","key":"topic"},{"values":["Info"],"operatorType":"StringEndsWith","key":"data.EventData"},{"values":[1.0,2.0,3.0],"operatorType":"NumberIn","key":"data.key1"},{"value":true,"operatorType":"BoolEquals","key":"data.key2"},{"values":["3.0"],"operatorType":"StringContains","key":"dataversion"}]},"labels":["TestLabel1","TestLabel2"],"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1439}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.EventGrid/topics/eg-latency-dq-runner-topic-eg-euap-usce-01/providers/Microsoft.EventGrid/eventSubscriptions/eg-latency-dq-runner-subscription-eg-euap-usce-01","name":"eg-latency-dq-runner-subscription-eg-euap-usce-01","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest/providers/microsoft.eventgrid/topics/kal2020testce2","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kalstest/providers/Microsoft.Storage/storageAccounts/kalsiotstorage","queueName":"sq1"},"endpointType":"StorageQueue"},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"CloudEventSchemaV1_0","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest/providers/Microsoft.EventGrid/topics/kal2020testCE2/providers/Microsoft.EventGrid/eventSubscriptions/es4","name":"es4","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest/providers/microsoft.eventgrid/topics/kal2020testce2","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kalstest/providers/Microsoft.ServiceBus/namespaces/sbdesttest/topics/top1"},"endpointType":"ServiceBusTopic"},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"CloudEventSchemaV1_0","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest/providers/Microsoft.EventGrid/topics/kal2020testCE2/providers/Microsoft.EventGrid/eventSubscriptions/essbtopic","name":"essbtopic","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest/providers/microsoft.eventgrid/topics/kal2020testce2","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kalstest/providers/Microsoft.ServiceBus/namespaces/sbdesttest/topics/top1"},"endpointType":"ServiceBusTopic"},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"CloudEventSchemaV1_0","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest/providers/Microsoft.EventGrid/topics/kal2020testCE2/providers/Microsoft.EventGrid/eventSubscriptions/essbtopic2","name":"essbtopic2","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sdk-eventgrid-rg-652/providers/microsoft.eventgrid/topics/sdk-topic-5763","provisioningState":"Succeeded","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid","maxEventsPerBatch":4400,"preferredBatchSizeInKilobytes":900},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"TestPrefix","subjectEndsWith":".jpg","includedEventTypes":["Event1","Event2"]},"labels":["UpdatedLabel1","UpdatedLabel2"],"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sdk-EventGrid-RG-652/providers/Microsoft.EventGrid/topics/sdk-Topic-5763/providers/Microsoft.EventGrid/eventSubscriptions/sdk-EventSubscription-7490","name":"sdk-EventSubscription-7490","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/microsoft.eventgrid/topics/amdtesttopic500delete","provisioningState":"Succeeded","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid","maxEventsPerBatch":1,"preferredBatchSizeInKilobytes":64},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/amdtesttopic500delete/providers/Microsoft.EventGrid/eventSubscriptions/ES3333333","name":"ES3333333","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/microsoft.eventgrid/topics/amdtesttopic500delete","provisioningState":"Succeeded","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid","maxEventsPerBatch":1,"preferredBatchSizeInKilobytes":64},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/amdtesttopic500delete/providers/Microsoft.EventGrid/eventSubscriptions/ES99999","name":"ES99999","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/microsoft.eventgrid/topics/amdtesttopic999delete","provisioningState":"Succeeded","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid","maxEventsPerBatch":1,"preferredBatchSizeInKilobytes":64},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/amdtesttopic999delete/providers/Microsoft.EventGrid/eventSubscriptions/ES99889989","name":"ES99889989","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/tryTopicBug2","provisioningState":"Succeeded","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid","maxEventsPerBatch":1,"preferredBatchSizeInKilobytes":64},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":[],"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/tryTopicBug2/providers/Microsoft.EventGrid/eventSubscriptions/testEs10101010","name":"testEs10101010","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/testTopic123","provisioningState":"Succeeded","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid","maxEventsPerBatch":1,"preferredBatchSizeInKilobytes":64},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":[],"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/testTopic123/providers/Microsoft.EventGrid/eventSubscriptions/test123es","name":"test123es","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/microsoft.eventgrid/topics/testtopic123","provisioningState":"Succeeded","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://devexpfuncappdestination.azurewebsites.net/api/DevExpFunc","maxEventsPerBatch":1,"preferredBatchSizeInKilobytes":64},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/testTopic123/providers/Microsoft.EventGrid/eventSubscriptions/test1234566es1","name":"test1234566es1","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azureeventgridrunnerrgcentraluseuap/providers/microsoft.eventgrid/topics/eg-latency-runner-topic-msi-centraluseuap","provisioningState":"Succeeded","destination":null,"deliveryWithResourceIdentity":{"identity":{"type":"SystemAssigned"},"destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.Storage/storageAccounts/egrunnertgcentraluseuap2","queueName":"egltcyrunnerstgqueuedestinationmsicentraluseuap"},"endpointType":"StorageQueue"}},"filter":{"subjectBeginsWith":"Subject","subjectEndsWith":"","isSubjectCaseSensitive":true,"advancedFilters":[{"values":["runner"],"operatorType":"StringContains","key":"topic"},{"values":["Info"],"operatorType":"StringEndsWith","key":"data.EventData"},{"values":[1.0,2.0,3.0],"operatorType":"NumberIn","key":"data.key1"},{"value":true,"operatorType":"BoolEquals","key":"data.key2"},{"values":["3.0"],"operatorType":"StringContains","key":"dataversion"}]},"labels":["TestLabel1","TestLabel2"],"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1439}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.EventGrid/topics/eg-latency-runner-topic-msi-centraluseuap/providers/Microsoft.EventGrid/eventSubscriptions/eg-latency-runner-subscription-msi-centraluseuap","name":"eg-latency-runner-subscription-msi-centraluseuap","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azureeventgridrunnerrgcentraluseuap/providers/microsoft.eventgrid/topics/eg-latency-runner-topic-msi-centraluseuap2","provisioningState":"Succeeded","destination":null,"deliveryWithResourceIdentity":{"identity":{"type":"SystemAssigned"},"destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.Storage/storageAccounts/egrunnertgcentraluseuap2","queueName":"egltcyrunnerstgqueuedestinationmsicentraluseuap"},"endpointType":"StorageQueue"}},"filter":{"subjectBeginsWith":"Subject","subjectEndsWith":"","isSubjectCaseSensitive":true,"advancedFilters":[{"values":["runner"],"operatorType":"StringContains","key":"topic"},{"values":["Info"],"operatorType":"StringEndsWith","key":"data.EventData"},{"values":[1.0,2.0,3.0],"operatorType":"NumberIn","key":"data.key1"},{"value":true,"operatorType":"BoolEquals","key":"data.key2"},{"values":["3.0"],"operatorType":"StringContains","key":"dataversion"}]},"labels":["TestLabel1","TestLabel2"],"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1439}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.EventGrid/topics/eg-latency-runner-topic-msi-centraluseuap2/providers/Microsoft.EventGrid/eventSubscriptions/eg-latency-runner-subscription-msi-centraluseuap","name":"eg-latency-runner-subscription-msi-centraluseuap","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msibugbash/providers/microsoft.eventgrid/topics/msitesttopic","provisioningState":"Succeeded","destination":null,"deliveryWithResourceIdentity":{"identity":{"type":"SystemAssigned"},"destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msibugbash/providers/Microsoft.ServiceBus/namespaces/msitestwithsb/queues/msitestwithsb"},"endpointType":"ServiceBusQueue"}},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440},"deadLetterWithResourceIdentity":{"identity":{"type":"SystemAssigned"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msibugbash/providers/Microsoft.EventGrid/topics/msitesttopic/providers/Microsoft.EventGrid/eventSubscriptions/msitestwithsb","name":"msitestwithsb","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msibugbash/providers/microsoft.eventgrid/topics/msitesttopic","provisioningState":"Succeeded","destination":null,"deliveryWithResourceIdentity":{"identity":{"type":"SystemAssigned"},"destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msibugbash/providers/Microsoft.ServiceBus/namespaces/msitestwithsb/queues/msitestwithsb"},"endpointType":"ServiceBusQueue"}},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440},"deadLetterWithResourceIdentity":{"identity":{"type":"SystemAssigned"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msibugbash/providers/Microsoft.EventGrid/topics/msitesttopic/providers/Microsoft.EventGrid/eventSubscriptions/msitestwithsb1","name":"msitestwithsb1","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msibugbash/providers/microsoft.eventgrid/topics/msitesttopic","provisioningState":"Succeeded","destination":null,"deliveryWithResourceIdentity":{"identity":{"type":"SystemAssigned"},"destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msibugbash/providers/Microsoft.Storage/storageAccounts/msitestwithsa","queueName":"msitestwithsa"},"endpointType":"StorageQueue"}},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msibugbash/providers/Microsoft.EventGrid/topics/msitesttopic/providers/Microsoft.EventGrid/eventSubscriptions/msitestwithea","name":"msitestwithea","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/microsoft.eventgrid/topics/topicbugbash1","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.ServiceBus/namespaces/devexpservicebus/topics/devexptopic1"},"endpointType":"ServiceBusTopic"},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/topicBugBash1/providers/Microsoft.EventGrid/eventSubscriptions/bugbash1ES1SvcBusTopic1","name":"bugbash1ES1SvcBusTopic1","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msibugbash/providers/microsoft.eventgrid/topics/msitesttopic","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msiiitest/providers/Microsoft.EventHub/namespaces/msitestwithehub/eventhubs/msitestwithehub"},"endpointType":"EventHub"},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msibugbash/providers/Microsoft.EventGrid/topics/msitesttopic/providers/Microsoft.EventGrid/eventSubscriptions/msitestwitheh","name":"msitestwitheh","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/microsoft.eventgrid/topics/topicbugbash1","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Storage/storageAccounts/devexpstg","queueName":"stogqueuedestination"},"endpointType":"StorageQueue"},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/topicBugBash1/providers/Microsoft.EventGrid/eventSubscriptions/bugbashEs2StorageQueue1","name":"bugbashEs2StorageQueue1","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/microsoft.eventgrid/topics/topicbugbash1","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Web/sites/eventgridclitestapp/functions/EventGridTrigger1","maxEventsPerBatch":1,"preferredBatchSizeInKilobytes":64},"endpointType":"AzureFunction"},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/topicBugBash1/providers/Microsoft.EventGrid/eventSubscriptions/bugbash1Es3Func2","name":"bugbash1Es3Func2","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msibugbash/providers/microsoft.eventgrid/topics/msitesttopic","provisioningState":"Succeeded","destination":null,"deliveryWithResourceIdentity":{"identity":{"type":"SystemAssigned"},"destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msibugbash/providers/Microsoft.Storage/storageAccounts/msitestwithsa","queueName":"msitestwithsa"},"endpointType":"StorageQueue"}},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msibugbash/providers/Microsoft.EventGrid/topics/msitesttopic/providers/Microsoft.EventGrid/eventSubscriptions/msiwithsa","name":"msiwithsa","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msibugbash/providers/microsoft.eventgrid/topics/noktesttopic","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/msibugbash/providers/Microsoft.Storage/storageAccounts/nokstorageaccount","queueName":"queue1"},"endpointType":"StorageQueue"},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msibugbash/providers/Microsoft.EventGrid/topics/noktesttopic/providers/Microsoft.EventGrid/eventSubscriptions/noktesttopicsubidentity","name":"noktesttopicsubidentity","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msibugbash/providers/microsoft.eventgrid/topics/noktesttopic","provisioningState":"Succeeded","destination":null,"deliveryWithResourceIdentity":{"identity":{"type":"SystemAssigned"},"destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/msibugbash/providers/Microsoft.Storage/storageAccounts/nokstorageaccount","queueName":"queue2"},"endpointType":"StorageQueue"}},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msibugbash/providers/Microsoft.EventGrid/topics/noktesttopic/providers/Microsoft.EventGrid/eventSubscriptions/noktesttopicsubnoidentity","name":"noktesttopicsubnoidentity","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/mparkmsi","provisioningState":"Succeeded","destination":null,"deliveryWithResourceIdentity":{"identity":{"type":"SystemAssigned"},"destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/alitest/providers/Microsoft.EventHub/namespaces/rrama-reprokafka-eus/eventhubs/eh1"},"endpointType":"EventHub"}},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":[],"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/mparkmsi/providers/Microsoft.EventGrid/eventSubscriptions/mparkes","name":"mparkes","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/mparkmsi","provisioningState":"Succeeded","destination":null,"deliveryWithResourceIdentity":{"identity":{"type":"SystemAssigned"},"destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/alitest/providers/Microsoft.EventHub/namespaces/rrama-reprokafka-eus/eventhubs/eh1"},"endpointType":"EventHub"}},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":[],"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440},"deadLetterWithResourceIdentity":{"identity":{"type":"SystemAssigned"},"deadLetterDestination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureEventGridRunnerRGEastUS2EUAP/providers/Microsoft.Storage/storageAccounts/aegrrunnertest","blobContainerName":"azure-webjobs-hosts"},"endpointType":"StorageBlob"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/mparkmsi/providers/Microsoft.EventGrid/eventSubscriptions/mparkes2","name":"mparkes2","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/mparkmsi","provisioningState":"Succeeded","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://ent441q50n0p.x.pipedream.net/","maxEventsPerBatch":1,"preferredBatchSizeInKilobytes":64},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":[],"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/mparkmsi/providers/Microsoft.EventGrid/eventSubscriptions/mparkes3","name":"mparkes3","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/mparkmsi","provisioningState":"Succeeded","destination":null,"deliveryWithResourceIdentity":{"identity":{"type":"SystemAssigned"},"destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/alitest/providers/Microsoft.ServiceBus/namespaces/mparktest2/queues/testq"},"endpointType":"ServiceBusQueue"}},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":[],"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/mparkmsi/providers/Microsoft.EventGrid/eventSubscriptions/mparkes4","name":"mparkes4","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/microsoft.eventgrid/topics/tpoicwithnoidentity2","provisioningState":"Succeeded","destination":null,"deliveryWithResourceIdentity":{"identity":{"type":"SystemAssigned"},"destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.eventhub/namespaces/devexpeh/eventhubs/eventhub1"},"endpointType":"EventHub"}},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/tpoicWithNoIdentity2/providers/Microsoft.EventGrid/eventSubscriptions/es123456","name":"es123456","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/microsoft.eventgrid/topics/tpoicwithnoidentity2","provisioningState":"Succeeded","destination":null,"deliveryWithResourceIdentity":{"identity":{"type":"SystemAssigned"},"destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.eventhub/namespaces/devexpeh/eventhubs/eventhub1"},"endpointType":"EventHub"}},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/tpoicWithNoIdentity2/providers/Microsoft.EventGrid/eventSubscriptions/es123456122112","name":"es123456122112","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/microsoft.eventgrid/topics/tpoicwithnoidentity2","provisioningState":"Succeeded","destination":null,"deliveryWithResourceIdentity":{"identity":{"type":"SystemAssigned"},"destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.eventhub/namespaces/devexpeh/eventhubs/eventhub1"},"endpointType":"EventHub"}},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440},"deadLetterWithResourceIdentity":{"identity":{"type":"SystemAssigned"},"deadLetterDestination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Storage/storageAccounts/devexpstg","blobContainerName":"dlqwithidentity"},"endpointType":"StorageBlob"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/tpoicWithNoIdentity2/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription4","name":"CliTestEventsubscription4","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/microsoft.eventgrid/topics/tpoicwithnoidentity2","provisioningState":"Succeeded","destination":null,"deliveryWithResourceIdentity":{"identity":{"type":"SystemAssigned"},"destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.eventhub/namespaces/devexpeh/eventhubs/eventhub1"},"endpointType":"EventHub"}},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/tpoicWithNoIdentity2/providers/Microsoft.EventGrid/eventSubscriptions/es123456122112xys","name":"es123456122112xys","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/microsoft.eventgrid/topics/tpoicwithnoidentity2","provisioningState":"Succeeded","destination":null,"deliveryWithResourceIdentity":{"identity":{"type":"SystemAssigned"},"destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.eventhub/namespaces/devexpeh/eventhubs/eventhub1"},"endpointType":"EventHub"}},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/tpoicWithNoIdentity2/providers/Microsoft.EventGrid/eventSubscriptions/es123456122112xysxsq","name":"es123456122112xysxsq","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/microsoft.eventgrid/topics/tpoicwithnoidentity2","provisioningState":"Succeeded","destination":null,"deliveryWithResourceIdentity":{"identity":{"type":"SystemAssigned"},"destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.eventhub/namespaces/devexpeh/eventhubs/eventhub1"},"endpointType":"EventHub"}},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/tpoicWithNoIdentity2/providers/Microsoft.EventGrid/eventSubscriptions/esxyz1","name":"esxyz1","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/microsoft.eventgrid/topics/tpoicwithnoidentity2","provisioningState":"Succeeded","destination":null,"deliveryWithResourceIdentity":{"identity":{"type":"SystemAssigned"},"destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.eventhub/namespaces/devexpeh/eventhubs/eventhub1"},"endpointType":"EventHub"}},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/tpoicWithNoIdentity2/providers/Microsoft.EventGrid/eventSubscriptions/esxyz2","name":"esxyz2","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/microsoft.eventgrid/topics/tpoicwithnoidentity2","provisioningState":"Succeeded","destination":null,"deliveryWithResourceIdentity":{"identity":{"type":"SystemAssigned"},"destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.eventhub/namespaces/devexpeh/eventhubs/eventhub1"},"endpointType":"EventHub"}},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/tpoicWithNoIdentity2/providers/Microsoft.EventGrid/eventSubscriptions/esxyz3","name":"esxyz3","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/microsoft.eventgrid/topics/tpoicwithnoidentity2","provisioningState":"Succeeded","destination":null,"deliveryWithResourceIdentity":{"identity":{"type":"SystemAssigned"},"destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.eventhub/namespaces/devexpeh/eventhubs/eventhub1"},"endpointType":"EventHub"}},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/tpoicWithNoIdentity2/providers/Microsoft.EventGrid/eventSubscriptions/esxyz4","name":"esxyz4","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/microsoft.eventgrid/topics/tpoicwithnoidentity2","provisioningState":"Succeeded","destination":null,"deliveryWithResourceIdentity":{"identity":{"type":"SystemAssigned"},"destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.eventhub/namespaces/devexpeh/eventhubs/eventhub1"},"endpointType":"EventHub"}},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/tpoicWithNoIdentity2/providers/Microsoft.EventGrid/eventSubscriptions/esxyz5","name":"esxyz5","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/microsoft.eventgrid/topics/tpoicwithnoidentity2","provisioningState":"Succeeded","destination":null,"deliveryWithResourceIdentity":{"identity":{"type":"SystemAssigned"},"destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.eventhub/namespaces/devexpeh/eventhubs/eventhub1"},"endpointType":"EventHub"}},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/tpoicWithNoIdentity2/providers/Microsoft.EventGrid/eventSubscriptions/esxyz6","name":"esxyz6","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/microsoft.eventgrid/topics/tpoicwithnoidentity2","provisioningState":"Succeeded","destination":null,"deliveryWithResourceIdentity":{"identity":{"type":"SystemAssigned"},"destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.eventhub/namespaces/devexpeh/eventhubs/eventhub1"},"endpointType":"EventHub"}},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440},"deadLetterWithResourceIdentity":{"identity":{"type":"SystemAssigned"},"deadLetterDestination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Storage/storageAccounts/devexpstg","blobContainerName":"dlqwithidentity"},"endpointType":"StorageBlob"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/tpoicWithNoIdentity2/providers/Microsoft.EventGrid/eventSubscriptions/esxyz7","name":"esxyz7","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/microsoft.eventgrid/topics/tpoicwithnoidentity2","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Web/sites/eventgridclitestapp/functions/EventGridTrigger1","maxEventsPerBatch":1,"preferredBatchSizeInKilobytes":64},"endpointType":"AzureFunction"},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amh/providers/Microsoft.EventGrid/topics/tpoicWithNoIdentity2/providers/Microsoft.EventGrid/eventSubscriptions/es1234azFunc","name":"es1234azFunc","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.eventgrid/topics/cli000002","provisioningState":"Succeeded","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid","maxEventsPerBatch":1,"preferredBatchSizeInKilobytes":64},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"","subjectEndsWith":""},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002/providers/Microsoft.EventGrid/eventSubscriptions/cli000006","name":"cli000006","type":"Microsoft.EventGrid/eventSubscriptions"},{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azureeventgridrunnerrgcentraluseuap/providers/microsoft.eventgrid/topics/egcrudrunnerqueuetopic83810126centraluseuap","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.Storage/storageAccounts/egrunnerstgcentraluseuap","queueName":"egrunnerstgqueuedestinationcentraluseuap"},"endpointType":"StorageQueue"},"filter":{"subjectBeginsWith":"Subject","subjectEndsWith":"","isSubjectCaseSensitive":true,"advancedFilters":[{"values":["runner"],"operatorType":"StringContains","key":"topic"},{"values":["Info"],"operatorType":"StringEndsWith","key":"data.EventData"},{"values":[1.0,2.0,3.0],"operatorType":"NumberIn","key":"data.key1"},{"value":true,"operatorType":"BoolEquals","key":"data.key2"},{"values":["3.0"],"operatorType":"StringContains","key":"dataversion"}]},"labels":["NewTestLabel1","NewTestLabel2","NewTestLabel3"],"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1438},"deadLetterDestination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.Storage/storageAccounts/egrunnerstgcentraluseuap","blobContainerName":"egrunnerstgdlqcentraluseuap"},"endpointType":"StorageBlob"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureEventGridRunnerRGCentralUSEUAP/providers/Microsoft.EventGrid/topics/egcrudrunnerqueuetopic83810126CentralUSEUAP/providers/Microsoft.EventGrid/eventSubscriptions/eg-crud-runner-subscription-4d695310-Central-US-EUAP","name":"eg-crud-runner-subscription-4d695310-Central-US-EUAP","type":"Microsoft.EventGrid/eventSubscriptions"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '34111'
+      - '50731'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:56:52 GMT
+      - Tue, 14 Apr 2020 08:29:16 GMT
       expires:
       - '-1'
       pragma:
@@ -1715,8 +1715,8 @@ interactions:
       ParameterSetName:
       - --topic-type --location --odata-query
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: GET
@@ -1732,7 +1732,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:56:53 GMT
+      - Tue, 14 Apr 2020 08:29:17 GMT
       expires:
       - '-1'
       pragma:
@@ -1766,8 +1766,8 @@ interactions:
       ParameterSetName:
       - --source-resource-id --name
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: DELETE
@@ -1777,17 +1777,17 @@ interactions:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/938F709B-F30F-4DA1-873E-2BB174AADFB8?api-version=2020-04-01-preview
+      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/24B121DF-3A99-4485-8A8D-886B3DA592E5?api-version=2020-04-01-preview
       cache-control:
       - no-cache
       content-length:
       - '0'
       date:
-      - Sun, 05 Apr 2020 19:56:53 GMT
+      - Tue, 14 Apr 2020 08:29:17 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationResults/938F709B-F30F-4DA1-873E-2BB174AADFB8?api-version=2020-04-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationResults/24B121DF-3A99-4485-8A8D-886B3DA592E5?api-version=2020-04-01-preview
       pragma:
       - no-cache
       server:
@@ -1797,7 +1797,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14997'
+      - '14998'
     status:
       code: 202
       message: Accepted
@@ -1815,13 +1815,13 @@ interactions:
       ParameterSetName:
       - --source-resource-id --name
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/938F709B-F30F-4DA1-873E-2BB174AADFB8?api-version=2020-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/24B121DF-3A99-4485-8A8D-886B3DA592E5?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/938F709B-F30F-4DA1-873E-2BB174AADFB8?api-version=2020-04-01-preview","name":"938f709b-f30f-4da1-873e-2bb174aadfb8","status":"Succeeded"}'
+      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/24B121DF-3A99-4485-8A8D-886B3DA592E5?api-version=2020-04-01-preview","name":"24b121df-3a99-4485-8a8d-886b3da592e5","status":"Succeeded"}'
     headers:
       cache-control:
       - no-cache
@@ -1830,7 +1830,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:57:04 GMT
+      - Tue, 14 Apr 2020 08:29:28 GMT
       expires:
       - '-1'
       pragma:
@@ -1864,8 +1864,8 @@ interactions:
       ParameterSetName:
       - --name --resource-group
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
       accept-language:
       - en-US
     method: DELETE
@@ -1875,17 +1875,17 @@ interactions:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/FA437B94-BFC9-4204-8D71-8092E38CA335?api-version=2020-04-01-preview
+      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/46D55974-20D5-4290-A388-5F62C3C13C61?api-version=2020-04-01-preview
       cache-control:
       - no-cache
       content-length:
       - '0'
       date:
-      - Sun, 05 Apr 2020 19:57:06 GMT
+      - Tue, 14 Apr 2020 08:29:29 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationResults/FA437B94-BFC9-4204-8D71-8092E38CA335?api-version=2020-04-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationResults/46D55974-20D5-4290-A388-5F62C3C13C61?api-version=2020-04-01-preview
       pragma:
       - no-cache
       server:
@@ -1913,13 +1913,13 @@ interactions:
       ParameterSetName:
       - --name --resource-group
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/FA437B94-BFC9-4204-8D71-8092E38CA335?api-version=2020-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/46D55974-20D5-4290-A388-5F62C3C13C61?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/FA437B94-BFC9-4204-8D71-8092E38CA335?api-version=2020-04-01-preview","name":"fa437b94-bfc9-4204-8d71-8092e38ca335","status":"Succeeded"}'
+      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/46D55974-20D5-4290-A388-5F62C3C13C61?api-version=2020-04-01-preview","name":"46d55974-20d5-4290-a388-5f62c3c13c61","status":"Succeeded"}'
     headers:
       cache-control:
       - no-cache
@@ -1928,7 +1928,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 05 Apr 2020 19:57:16 GMT
+      - Tue, 14 Apr 2020 08:29:39 GMT
       expires:
       - '-1'
       pragma:

@@ -811,6 +811,8 @@ parameters:
         Example: --deadletter-endpoint /subscriptions/{SubID}/resourceGroups/rg1/providers/Microsoft.Storage/storageAccounts/sa1/blobServices/default/containers/containerName
   - name: --endpoint-type
     short-summary: The type of the destination endpoint.
+  - name: --delivery-identity-endpoint-type
+    short-summary: The type of the destination endpoint with resource identity.
 examples:
   - name: Create a new event subscription for an Event Grid topic, using default filters.
     text: |
@@ -905,6 +907,12 @@ examples:
         az eventgrid event-subscription create --name es1 \\
             --source-resource-id /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.EventGrid/topics/topic1 \\
             --endpoint /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.Web/sites/{functionappname}/functions/{functionname} --endpoint-type azurefunction
+
+  - name: Create a new event subscription for an Event Grid topic, using Eventhub with systemassigned MSI identity as destination and with deadletter with MSI identity
+    text: |
+        az eventgrid event-subscription create --source-resource-id /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.EventGrid/topics/topic1 \\
+            --delivery-identity-endpoint-type eventhub --delivery-identity systemassigned --delivery-identity-endpoint /subscriptions/{SubId2|}/resourceGroups/{RG2}/providers/Microsoft.eventhub/namespaces/{EventHubNamespace}/eventhubs/{EventhubName} \\
+            --deadletter-identity-endpoint /subscriptions/{SubID}/resourceGroups/TestRG/providers/Microsoft.Storage/storageAccounts/s2/blobServices/default/containers/blobcontainer1 --deadletter-identity systemassigned -n {EventSubscriptionName}
 
 """
 
@@ -1067,6 +1075,8 @@ parameters:
         For EventGrid domain topic: --source-resource-id /subscriptions/{SubID}/resourceGroups/rg1/providers/Microsoft.EventGrid/domains/d1/topics/t1
   - name: --endpoint-type
     short-summary: The type of the destination endpoint.
+  - name: --delivery-identity-endpoint-type
+    short-summary: The type of the destination endpoint with resource identity.
   - name: --advanced-filter
     short-summary: An advanced filter enables filtering of events based on a specific event property.
     long-summary: |
