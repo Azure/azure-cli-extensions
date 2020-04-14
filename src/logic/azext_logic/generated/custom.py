@@ -67,23 +67,19 @@ def logic_workflow_update(cmd, client,
                           name,
                           definition,
                           tags=None,
-                          state=None,
-                          endpoints_configuration=None,
-                          integration_account=None):
+                          state=None):
 
     # check workflow exist before another update is done via a put
     # per dicussion with the logic service team and to match powershells
     # behavior
     workflow = client.get(resource_group_name=resource_group_name,
                           workflow_name=name)
-    integration_account = integration_account if integration_account else workflow.integration_account
-    endpoints_configuration = endpoints_configuration if endpoints_configuration else workflow.endpoints_configuration
     return logic_workflow_create(cmd, client, resource_group_name, name,
                                  definition, workflow.location,
                                  tags if tags else workflow.tags,
                                  state,
-                                 endpoints_configuration,
-                                 integration_account,
+                                 workflow.endpoints_configuration,
+                                 workflow.integration_account,
                                  workflow.integration_service_environment)
 
 

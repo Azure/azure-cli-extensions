@@ -34,7 +34,8 @@ def load_arguments(self, _):
     with self.argument_context('logic workflow show') as c:
         c.argument('resource_group_name', resource_group_name_type,
                    help='The resource group name.')
-        c.argument('name', options_list=['--name', '-n'], help='The workflow name.')
+        c.argument('name', options_list=[
+                   '--name', '-n'], help='The workflow name.')
 
     with self.argument_context('logic workflow create') as c:
         c.argument('resource_group_name', resource_group_name_type,
@@ -66,8 +67,6 @@ def load_arguments(self, _):
                                                     'pended']), help='The state.')
         c.argument('definition', type=file_type, help='Path to a workflow JSON file. ' +
                    'This JSON format should match what the logic app design tool exports', completer=FilesCompleter())
-        c.argument('integration_account', action=AddIntegrationAccount,
-                   nargs='+', help='The integration account.')
         c.argument('tags', tags_type, help='The resource tags.')
 
     with self.argument_context('logic workflow delete') as c:

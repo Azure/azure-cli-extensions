@@ -19,7 +19,7 @@ helps['logic workflow list'] = """
     examples:
       - name: List all workflows in a resource group
         text: |-
-               az logic workflow list --resource-group "testResourceGroup"
+               az logic workflow list --resource-group "test_resource_group"
 """
 
 helps['logic workflow show'] = """
@@ -28,8 +28,8 @@ helps['logic workflow show'] = """
     examples:
       - name: Get a workflow
         text: |-
-               az logic workflow show --resource-group "testResourceGroup" --name
-               "testWorkflow"
+               az logic workflow show --resource-group "test_resource_group" --name
+               "test_workflow"
 """
 
 helps['logic workflow create'] = """
@@ -38,8 +38,8 @@ helps['logic workflow create'] = """
     examples:
       - name: Create or update a workflow
         text: |-
-               az logic workflow create --resource-group "testResourceGroup" --location "centralus"
-               -name "testWorkflow" --defintion "workflow.json"
+               az logic workflow create --resource-group "test_resource_group" --location "centralus"
+               -name "test_workflow" --defintion "workflow.json"
 """
 
 helps['logic workflow update'] = """
@@ -48,8 +48,8 @@ helps['logic workflow update'] = """
     examples:
       - name: Patch a workflow
         text: |-
-               az logic workflow update --resource-group "testResourceGroup" --location "centralus"
-               --input-file workflow.json --name "testWorkflow"
+               az logic workflow update --resource-group "test_resource_group"
+               --definition workflow.json --name "test_workflow"
 """
 
 helps['logic workflow delete'] = """
@@ -58,8 +58,8 @@ helps['logic workflow delete'] = """
     examples:
       - name: Delete a workflow
         text: |-
-               az logic workflow delete --resource-group "testResourceGroup" --name
-               "testWorkflow"
+               az logic workflow delete --resource-group "test_resource_group" --name
+               "test_workflow"
 """
 
 helps['logic integration-account'] = """
@@ -73,7 +73,7 @@ helps['logic integration-account list'] = """
     examples:
       - name: List integration accounts by resource group name
         text: |-
-               az logic integration-account list --resource-group "testResourceGroup"
+               az logic integration-account list --resource-group "test_resource_group"
 """
 
 helps['logic integration-account show'] = """
@@ -82,8 +82,8 @@ helps['logic integration-account show'] = """
     examples:
       - name: Get integration account by name
         text: |-
-               az logic integration-account show --name "testIntegrationAccount"
-               --resource-group "testResourceGroup"
+               az logic integration-account show --name "test_integration_account"
+               --resource-group "test_resource_group"
 """
 
 helps['logic integration-account create'] = """
@@ -93,7 +93,7 @@ helps['logic integration-account create'] = """
       - name: Create or update an integration account
         text: |-
                az logic integration-account create --location "centralus"
-               --name "testIntegrationAccount" --resource-group "testResourceGroup"
+               --name "test_integration_account" --resource-group "test_resource_group"
                --sku name=Standard
 """
 
@@ -104,7 +104,7 @@ helps['logic integration-account update'] = """
       - name: Patch an integration account
         text: |-
                az logic integration-account update --sku name=Basic --tag atag=123
-               --name "testIntegrationAccount" --resource-group "testResourceGroup"
+               --name "test_integration_account" --resource-group "test_resource_group"
 """
 
 
@@ -114,8 +114,8 @@ helps['logic integration-account import'] = """
     examples:
       - name: Import an integration account.
         text: |-
-               az logic integration-account import --name "testIntegrationAccount"
-               --resource-group "testResourceGroup --input-path integration.json"
+               az logic integration-account import --name "test_integration_account"
+               --resource-group "test_resource_group --input-path integration.json"
 """
 
 helps['logic integration-account delete'] = """
@@ -124,6 +124,6 @@ helps['logic integration-account delete'] = """
     examples:
       - name: Delete an integration account
         text: |-
-               az logic integration-account delete --name "testIntegrationAccount"
-               --resource-group "testResourceGroup"
+               az logic integration-account delete --name "test_integration_account"
+               --resource-group "test_resource_group"
 """
