@@ -28,8 +28,7 @@ helps['logic workflow show'] = """
     examples:
       - name: Get a workflow
         text: |-
-               az logic workflow show --resource-group "test_resource_group" --name
-               "test_workflow"
+               az logic workflow show --resource-group "test_resource_group" --name "test_workflow"
 """
 
 helps['logic workflow create'] = """
@@ -38,8 +37,7 @@ helps['logic workflow create'] = """
     examples:
       - name: Create or update a workflow
         text: |-
-               az logic workflow create --resource-group "test_resource_group" --location "centralus"
-               -name "test_workflow" --defintion "workflow.json"
+               az logic workflow create --resource-group "test_resource_group" --location "centralus" --name "test_workflow" --definition "workflow.json"
 """
 
 helps['logic workflow update'] = """
@@ -48,8 +46,7 @@ helps['logic workflow update'] = """
     examples:
       - name: Patch a workflow
         text: |-
-               az logic workflow update --resource-group "test_resource_group"
-               --definition workflow.json --name "test_workflow"
+               az logic workflow update --resource-group "test_resource_group" --definition workflow.json --name "test_workflow"
 """
 
 helps['logic workflow delete'] = """
@@ -58,8 +55,7 @@ helps['logic workflow delete'] = """
     examples:
       - name: Delete a workflow
         text: |-
-               az logic workflow delete --resource-group "test_resource_group" --name
-               "test_workflow"
+               az logic workflow delete --resource-group "test_resource_group" --name "test_workflow"
 """
 
 helps['logic integration-account'] = """
@@ -82,8 +78,7 @@ helps['logic integration-account show'] = """
     examples:
       - name: Get integration account by name
         text: |-
-               az logic integration-account show --name "test_integration_account"
-               --resource-group "test_resource_group"
+               az logic integration-account show --name "test_integration_account" --resource-group "test_resource_group"
 """
 
 helps['logic integration-account create'] = """
@@ -92,8 +87,7 @@ helps['logic integration-account create'] = """
     examples:
       - name: Create or update an integration account
         text: |-
-               az logic integration-account create --location "centralus" --sku name=Standard
-               --name "test_integration_account" --resource-group "test_resource_group"
+               az logic integration-account create --location "centralus" --sku name=Standard --name "test_integration_account" --resource-group "test_resource_group"
 """
 
 helps['logic integration-account update'] = """
@@ -102,8 +96,7 @@ helps['logic integration-account update'] = """
     examples:
       - name: Patch an integration account
         text: |-
-               az logic integration-account update --sku name=Basic --tag atag=123
-               --name "test_integration_account" --resource-group "test_resource_group"
+               az logic integration-account update --sku name=Basic --tag atag=123 --name "test_integration_account" --resource-group "test_resource_group"
 """
 
 
@@ -113,8 +106,7 @@ helps['logic integration-account import'] = """
     examples:
       - name: Import an integration account.
         text: |-
-               az logic integration-account import --name "test_integration_account"
-               --resource-group "test_resource_group --input-path integration.json"
+               az logic integration-account import --name "test_integration_account" --resource-group "test_resource_group" --input-path "integration.json"
 """
 
 helps['logic integration-account delete'] = """
@@ -123,6 +115,5 @@ helps['logic integration-account delete'] = """
     examples:
       - name: Delete an integration account
         text: |-
-               az logic integration-account delete --name "test_integration_account"
-               --resource-group "test_resource_group"
+               az logic integration-account delete --name "test_integration_account" --resource-group "test_resource_group"
 """
