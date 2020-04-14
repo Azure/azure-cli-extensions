@@ -292,7 +292,8 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
 
         self.cmd('az datashare consumer invitation show '
                  '--invitation-id "{InvitationId1}" '
-                 '--subscription "{ConsumerSubscription}"',
+                 '--subscription "{ConsumerSubscription}" '
+                 '--location "{Location1}"',
                  checks=[self.check('invitationStatus', 'Pending'),
                          self.check('name', '{ProviderInvitation}'),
                          self.check('shareName', '{ProviderShare}'),
