@@ -7,10 +7,12 @@ from azure.cli.core import AzCommandsLoader
 
 from azext_ai_did_you_mean_this._help import helps  # pylint: disable=unused-import
 
+
 def inject_functions_into_core():
     from azure.cli.core.parser import AzCliCommandParser
     from azext_ai_did_you_mean_this.custom import recommend_recovery_options
     AzCliCommandParser.recommendation_provider = recommend_recovery_options
+
 
 class AiDidYouMeanThisCommandsLoader(AzCommandsLoader):
 

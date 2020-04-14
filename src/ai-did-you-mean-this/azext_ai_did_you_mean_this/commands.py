@@ -5,6 +5,7 @@
 
 # pylint: disable=line-too-long
 
+
 def load_command_table(self, _):
 
     with self.command_group('ai-did-you-mean-this') as g:
