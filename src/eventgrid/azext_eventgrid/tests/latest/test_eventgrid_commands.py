@@ -851,21 +851,21 @@ class EventGridTests(ScenarioTest):
         ])
 
         # Create an event hub destination based event subscription with default eventgrid event schema as the delivery schema and with system assigned identity and systemassigned deadletter destination
-        self.cmd('az eventgrid event-subscription create --source-resource-id {source_resource_id_with_identity} --delivery-identity-endpoint-type eventhub --delivery-identity systemassigned --delivery-identity-endpoint {eventhub_with_identity_endpoint_id} -n {event_subscription_name4} --deadletter-identity-endpoint {deadletter_endpoint_id_with_identity} --deadletter-identity systemassigned')
+        # self.cmd('az eventgrid event-subscription create --source-resource-id {source_resource_id_with_identity} --delivery-identity-endpoint-type eventhub --delivery-identity systemassigned --delivery-identity-endpoint {eventhub_with_identity_endpoint_id} -n {event_subscription_name4} --deadletter-identity-endpoint {deadletter_endpoint_id_with_identity} --deadletter-identity systemassigned')
 
-        self.cmd('az eventgrid event-subscription show --source-resource-id {source_resource_id_with_identity} --name {event_subscription_name4}', checks=[
-            self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
-            self.check('provisioningState', 'Succeeded'),
-            self.check('destination', None),
-            self.check('deliveryWithResourceIdentity.identity.userAssignedIdentity', None),
-            self.check('deliveryWithResourceIdentity.identity.type', 'SystemAssigned'),
-            self.check('deliveryWithResourceIdentity.destination.endpointType', 'EventHub'),
-            self.check('deliveryWithResourceIdentity.destination.resourceId', self.kwargs['eventhub_with_identity_endpoint_id']),
-            self.check('deadLetterDestination', None),
-            self.check('deadLetterWithResourceIdentity.identity.userAssignedIdentity', None),
-            self.check('deadLetterWithResourceIdentity.identity.type', 'SystemAssigned'),
-            self.check('deadLetterWithResourceIdentity.deadLetterDestination.endpointType', 'StorageBlob')
-        ])
+        # self.cmd('az eventgrid event-subscription show --source-resource-id {source_resource_id_with_identity} --name {event_subscription_name4}', checks=[
+        #    self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
+        #    self.check('provisioningState', 'Succeeded'),
+        #    self.check('destination', None),
+        #    self.check('deliveryWithResourceIdentity.identity.userAssignedIdentity', None),
+        #    self.check('deliveryWithResourceIdentity.identity.type', 'SystemAssigned'),
+        #    self.check('deliveryWithResourceIdentity.destination.endpointType', 'EventHub'),
+        #    self.check('deliveryWithResourceIdentity.destination.resourceId', self.kwargs['eventhub_with_identity_endpoint_id']),
+        #    self.check('deadLetterDestination', None),
+        #    self.check('deadLetterWithResourceIdentity.identity.userAssignedIdentity', None),
+        #    self.check('deadLetterWithResourceIdentity.identity.type', 'SystemAssigned'),
+        #    self.check('deadLetterWithResourceIdentity.deadLetterDestination.endpointType', 'StorageBlob')
+        # ])
 
         # Update an event hub destination based event subscription with default eventgrid event schema as the delivery schema and with system assigned identity
         # self.cmd('az eventgrid event-subscription update --source-resource-id {source_resource_id_with_identity} -n {event_subscription_name4} --deadletter-endpoint {deadletter_endpoint_id}')
@@ -873,7 +873,7 @@ class EventGridTests(ScenarioTest):
         self.cmd('az eventgrid event-subscription delete  --source-resource-id {source_resource_id} --name {event_subscription_name1}')
         self.cmd('az eventgrid event-subscription delete  --source-resource-id {source_resource_id} --name {event_subscription_name2}')
         self.cmd('az eventgrid event-subscription delete  --source-resource-id {source_resource_id} --name {event_subscription_name3}')
-        self.cmd('az eventgrid event-subscription delete  --source-resource-id {source_resource_id} --name {event_subscription_name4}')
+        # self.cmd('az eventgrid event-subscription delete  --source-resource-id {source_resource_id} --name {event_subscription_name4}')
         self.cmd('az storage account delete -y -g {rg} -n {sa}')
 
     @ResourceGroupPreparer(name_prefix='clieventgridrg', location='centraluseuap')
