@@ -92,9 +92,8 @@ helps['logic integration-account create'] = """
     examples:
       - name: Create or update an integration account
         text: |-
-               az logic integration-account create --location "centralus"
+               az logic integration-account create --location "centralus" --sku name=Standard
                --name "test_integration_account" --resource-group "test_resource_group"
-               --sku name=Standard
 """
 
 helps['logic integration-account update'] = """
