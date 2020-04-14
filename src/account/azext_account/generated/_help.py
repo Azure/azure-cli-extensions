@@ -16,7 +16,7 @@ helps['account subscription'] = """
 
 helps['account subscription create'] = """
     type: command
-    short-summary: The operation to create a new WebDirect or EA Azure subscription.
+    short-summary: Create a new WebDirect or EA Azure subscription.
     examples:
       - name: Create subscription
         text: |-
@@ -30,7 +30,7 @@ helps['account subscription create-subscription-in-enrollment-account'] = """
     type: command
     short-summary: Create subscription in enrolment account
     examples:
-      - name: createSubscription
+      - name: Create subscription in enrollment account
         text: |-
                az account subscription create-subscription-in-enrollment-account --body-display-name \\
                "Test Ea Azure Sub" --body-offer-type "MS-AZR-0017P" --enrollment-account-name \\
@@ -39,7 +39,7 @@ helps['account subscription create-subscription-in-enrollment-account'] = """
 
 helps['account subscription create-csp-subscription'] = """
     type: command
-    short-summary: The operation to create a new CSP subscription.
+    short-summary: Create a new CSP subscription.
     examples:
       - name: Create CSP subscription
         text: |-
@@ -53,7 +53,7 @@ helps['account subscription rename'] = """
     type: command
     short-summary: Rename subscription
     examples:
-      - name: renameSubscription
+      - name: Rename subscription
         text: |-
                az account subscription rename --subscription-id xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 """
@@ -62,7 +62,7 @@ helps['account subscription cancel'] = """
     type: command
     short-summary: Cancel subscription
     examples:
-      - name: cancelSubscription
+      - name: Cancel subscription
         text: |-
                az account subscription cancel --subscription-id xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 """
@@ -71,7 +71,7 @@ helps['account subscription enable'] = """
     type: command
     short-summary: Enable subscription
     examples:
-      - name: enableSubscription
+      - name: Enable subscription
         text: |-
                az account subscription enable --subscription-id xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 """
