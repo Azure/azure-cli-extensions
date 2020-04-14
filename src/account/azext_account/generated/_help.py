@@ -18,7 +18,7 @@ helps['account subscription create-subscription'] = """
     type: command
     short-summary: The operation to create a new WebDirect or EA Azure subscription.
     examples:
-      - name: createSubscription
+      - name: Create subscription
         text: |-
                az account subscription create-subscription --billing-account-name \\
                "0aa27f2b-ec7f-5a65-71f6-a5ff0897bd55:ae0dae1e-de9a-41f6-8257-76b055d98372_2019-05-31" \\
@@ -28,7 +28,7 @@ helps['account subscription create-subscription'] = """
 
 helps['account subscription create-subscription-in-enrollment-account'] = """
     type: command
-    short-summary: Creates an Azure subscription
+    short-summary: Create subscription in enrolment account
     examples:
       - name: createSubscription
         text: |-
@@ -41,7 +41,7 @@ helps['account subscription create-csp-subscription'] = """
     type: command
     short-summary: The operation to create a new CSP subscription.
     examples:
-      - name: createSubscription
+      - name: Create CSP subscription
         text: |-
                az account subscription create-csp-subscription --billing-account-name \\
                "2bc54a6f-8d8a-5be1-5bff-bb4f285f512b:11a72812-d9a4-446e-9a1e-70c8bcadf5c0_2019-05-31" \\
@@ -51,7 +51,7 @@ helps['account subscription create-csp-subscription'] = """
 
 helps['account subscription rename'] = """
     type: command
-    short-summary: The operation to rename a subscription
+    short-summary: Rename subscription
     examples:
       - name: renameSubscription
         text: |-
@@ -60,7 +60,7 @@ helps['account subscription rename'] = """
 
 helps['account subscription cancel'] = """
     type: command
-    short-summary: The operation to cancel a subscription
+    short-summary: Cancel subscription
     examples:
       - name: cancelSubscription
         text: |-
@@ -69,7 +69,7 @@ helps['account subscription cancel'] = """
 
 helps['account subscription enable'] = """
     type: command
-    short-summary: The operation to enable a subscription
+    short-summary: Enable subscription
     examples:
       - name: enableSubscription
         text: |-
