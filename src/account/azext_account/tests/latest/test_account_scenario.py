@@ -18,7 +18,7 @@ class SubscriptionClientScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_account')
     def test_account(self, resource_group):
 
-        self.cmd('az account subscription create-subscription '
+        self.cmd('az account subscription create '
                  '--billing-account-name "0aa27f2b-ec7f-5a65-71f6-a5ff0897bd55:ae0dae1e-de9a-41f6-8257-76b055d98372_2019-05-31" '
                  '--billing-profile-name "27VR-HDWX-BG7-TGB" '
                  '--cost-center "135366376" '
@@ -40,7 +40,7 @@ class SubscriptionClientScenarioTest(ScenarioTest):
                  '--customer-name "e33ba30d-3718-4b15-bfaa-5627a57cda6f"',
                  checks=[])
 
-        self.cmd('az account subscription create-subscription '
+        self.cmd('az account subscription create '
                  '--billing-account-name "0aa27f2b-ec7f-5a65-71f6-a5ff0897bd55:ae0dae1e-de9a-41f6-8257-76b055d98372_2019-05-31" '
                  '--billing-profile-name "27VR-HDWX-BG7-TGB" '
                  '--cost-center "135366376" '
@@ -62,7 +62,7 @@ class SubscriptionClientScenarioTest(ScenarioTest):
                  '--customer-name "e33ba30d-3718-4b15-bfaa-5627a57cda6f"',
                  checks=[])
 
-        self.cmd('az account subscription create-subscription '
+        self.cmd('az account subscription create '
                  '--billing-account-name "0aa27f2b-ec7f-5a65-71f6-a5ff0897bd55:ae0dae1e-de9a-41f6-8257-76b055d98372_2019-05-31" '
                  '--billing-profile-name "27VR-HDWX-BG7-TGB" '
                  '--cost-center "135366376" '
