@@ -14,5 +14,6 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
+
 class AiDidYouMeanThisScenarioTest(unittest.TestCase):
     pass
