@@ -13,7 +13,7 @@ az provider register -n "Microsoft.DataShare"
 ```
 
 ### Included Features
-#### Datashare Account Management:
+#### Datashare Account Management
 *Examples:*
 
 ##### Create a Datashare Account
@@ -35,7 +35,7 @@ az datashare account wait \
 --created
 ```
 
-#### Datashare Resource Management for a Provider:
+#### Datashare Resource Management for a Provider
 *Examples:*
 
 ##### Create a Datashare
@@ -107,20 +107,24 @@ az datashare provider-share-subscription list \
 Share subscriptions are created by Datashare consumers when they accept invitations.
 
 ##### Revoke Datashare for a Share Subscription
+```
 az datashare provider-share-subscription revoke \
 --account-name "cli_test_account" \
 --share-subscription "{ProviderShareSubscriptionObjectId}" \
 --resource-group "datashare_provider_rg" \
 --share-name "cli_test_share"
+```
 
 ##### Reinstate Datashare for a Share Subscription
+```
 az datashare provider-share-subscription reinstate \
 --account-name "cli_test_account" \
 --share-subscription "{ProviderShareSubscriptionObjectId}" \
 --resource-group "datashare_provider_rg" \
 --share-name "cli_test_share"
+```
 
-#### Datashare Resource Management for a Consumer:
+#### Datashare Resource Management for a Consumer
 *Examples:*
 
 ##### List received Invitations
