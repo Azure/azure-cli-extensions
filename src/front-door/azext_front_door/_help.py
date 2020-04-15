@@ -236,6 +236,87 @@ helps['network front-door routing-rule delete'] = """
 """
 # endregion
 
+# region FrontDoor RulesEngine
+helps['network front-door rules-engine'] = """
+    type: group
+    short-summary: Manage Front Door rules engines.
+"""
+
+helps['network front-door rules-engine rule'] = """
+    type: group
+    short-summary: Manage Rules Engine rules.
+"""
+
+helps['network front-door rules-engine rule create'] = """
+    type: command
+    short-summary: Create a Rules Engine rule for a Front Door.
+    long-summary: >
+        This command allows creating Rules Engine configuration with Header
+        action type. To add additional actions like Route overrides,
+        use the `az network front-door rules-engine rule action add` command.
+"""
+
+helps['network front-door rules-engine rule update'] = """
+    type: command
+    short-summary: Update Rules Engine configuration of a rule.
+"""
+
+helps['network front-door rules-engine rule delete'] = """
+    type: command
+    short-summary: Delete a Rules Engine rule.
+"""
+
+helps['network front-door rules-engine rule show'] = """
+    type: command
+    short-summary: Get the details of a Rules Engine rule.
+"""
+
+helps['network front-door rules-engine rule list'] = """
+    type: command
+    short-summary: List rules of a Rules Engine configuration.
+"""
+
+helps['network front-door rules-engine rule action'] = """
+    type: group
+    short-summary: Manage Rules Engine actions for Front Door.
+"""
+
+helps['network front-door rules-engine rule action add'] = """
+    type: command
+    short-summary: Add an action to a Rules Engine rule.
+"""
+
+helps['network front-door rules-engine rule action list'] = """
+    type: command
+    short-summary: Show all actions that apply for a Rules Engine rule.
+"""
+
+helps['network front-door rules-engine rule action remove'] = """
+    type: command
+    short-summary: Remove an action from a Rules Engine rule.
+"""
+
+helps['network front-door rules-engine rule condition'] = """
+    type: group
+    short-summary: Manage Rules Engine match conditions for Front Door.
+"""
+
+helps['network front-door rules-engine rule condition add'] = """
+    type: command
+    short-summary: Add a match condition to a Rules Engine rule.
+"""
+
+helps['network front-door rules-engine rule condition list'] = """
+    type: command
+    short-summary: Show all match conditions associated with a Rules Engine rule.
+"""
+
+helps['network front-door rules-engine rule condition remove'] = """
+    type: command
+    short-summary: Remove a match condition from a Rules Engine rule.
+"""
+# endregion
+
 # region WAFPolicy
 helps['network front-door waf-policy'] = """
     type: group

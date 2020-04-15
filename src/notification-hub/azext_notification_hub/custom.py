@@ -20,6 +20,10 @@ def create_notificationhubs_namespace(cmd, client,
                                       sku_name,
                                       location=None,
                                       tags=None):
+    from knack.util import CLIError
+    check_result = client.check_availability(parameters={"name": namespace_name})
+    if check_result and not check_result.is_availiable:  # misspell inherited from swagger
+        raise CLIError("A Notification Hub Namespace with the name: {} already exists.".format(namespace_name))
     body = {}
     body['location'] = location  # str
     body['tags'] = tags  # dictionary
@@ -57,7 +61,7 @@ def get_notificationhubs_namespace(cmd, client,
 
 def list_notificationhubs_namespace(cmd, client,
                                     resource_group_name=None):
-    if resource_group_name is not None:
+    if resource_group_name:
         return client.list(resource_group_name=resource_group_name)
     return client.list_all()
 
@@ -116,14 +120,27 @@ def create_notificationhubs_hub(cmd, client,
                                 resource_group_name,
                                 namespace_name,
                                 notification_hub_name,
-                                sku_name,
                                 location,
                                 tags=None,
                                 registration_ttl=None):
+    from knack.util import CLIError
+    check_result = client.check_notification_hub_availability(resource_group_name=resource_group_name,
+                                                              namespace_name=namespace_name,
+                                                              parameters={"name": notification_hub_name})
+    if check_result and not check_result.is_availiable:  # misspell inherited from swagger
+        raise CLIError("A Notification Hub with the name: {} already exists in {}.".format(notification_hub_name, namespace_name))
+
     body = {}
     body['location'] = location  # str
     body['tags'] = tags  # dictionary
-    body.setdefault('sku', {})['name'] = sku_name  # str
+
+    # sku is actually a property of namespace, current service ignores it. The swagger added it as required in notification hub(a bug?).
+    # Here we fetch the sku from the namespace.
+    from ._client_factory import cf_namespaces
+    namespace_client = cf_namespaces(cmd.cli_ctx)
+    namespace = namespace_client.get(resource_group_name=resource_group_name, namespace_name=namespace_name)
+    body.setdefault('sku', {})['name'] = namespace.sku.name
+
     body['registration_ttl'] = registration_ttl  # str
     return client.create_or_update(resource_group_name=resource_group_name, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
 
@@ -132,13 +149,10 @@ def update_notificationhubs_hub(cmd, client,
                                 resource_group_name,
                                 namespace_name,
                                 notification_hub_name,
-                                tags=None,
-                                sku_name=None):
+                                tags=None):
     body = client.get(resource_group_name=resource_group_name, namespace_name=namespace_name, notification_hub_name=notification_hub_name).as_dict()
     if tags is not None:
         body['tags'] = tags  # dictionary
-    if sku_name is not None:
-        body.setdefault('sku', {})['name'] = sku_name  # str
     return client.create_or_update(resource_group_name=resource_group_name, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
 
 
