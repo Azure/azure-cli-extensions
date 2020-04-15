@@ -32,16 +32,16 @@ from .repair_utils import (
     _parse_run_script_raw_logs,
     _check_script_succeeded,
     _fetch_disk_info,
-    _uses_encrypted_disk,
+    _fetch_encryption_settings,
+    _unlock_encrypted_disk
 )
 
 
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError
-
 logger = get_logger(__name__)
 
 
-def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encryption=None):
+def create(cmd, vm_name, resource_group_name, unlock_encrypted_vm=None, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None):
 
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair create')
@@ -56,7 +56,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         copy_disk_id = None
         resource_tag = _get_repair_resource_tag(resource_group_name, vm_name)
         created_resources = []
-        encryption_type, key_vault, kekurl = _uses_encrypted_disk(source_vm)
+        encryption_type, key_vault, kekurl = _fetch_encryption_settings(source_vm)
 
         # Fetch OS image urn and set OS type for disk create
         if is_linux:
@@ -90,8 +90,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             # Copy OS disk command
             disk_sku, location, os_type, hyperV_generation = _fetch_disk_info(resource_group_name, target_disk_name)
             copy_disk_command = 'az disk create -g {g} -n {n} --source {s} --sku {sku} --location {loc} --os-type {os_type} --query id -o tsv' \
-                                  .format(g=resource_group_name, n=copy_disk_name, s=target_disk_name, sku=disk_sku, loc=location, os_type=os_type)
-#                                .format(g=resource_group_name, n=copy_disk_name, s=target_disk_name, sku=disk_sku, loc=location, os_type=os_type, hyperV=hyperV_generation)
+                                .format(g=resource_group_name, n=copy_disk_name, s=target_disk_name, sku=disk_sku, loc=location, os_type=os_type, hyperV=hyperV_generation)
             # Validate create vm create command to validate parameters before runnning copy disk command
             validate_create_vm_command = create_repair_vm_command + ' --validate'
 
@@ -109,36 +108,23 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             _call_az_command(attach_disk_command)
 
             # Install extension in case of single pass encrypted VM
-            try:
-                if encryption_type == "single_with_kek":
-
+            if encryption_type in ("single_with_kek", "single_without_kek"):
+                try:
                     install_ade_extension_command = 'az vm encryption enable --disk-encryption-keyvault {vault} --name {repair} --resource-group {g} --key-encryption-key {kek_url} --volume-type {volume}' \
                                                     .format(g=repair_group_name, repair=repair_vm_name, vault=key_vault, kek_url=kekurl, volume=volume_type)
-                    logger.info('Installing extension on repair VM with KEK\n')
+                    logger.info('Installing extension on repair VM \'%s\'...', encryption_type)
                     _call_az_command(install_ade_extension_command)
-                elif encryption_type == "single_without_kek":
-                    install_ade_extension_command = 'az vm encryption enable --disk-encryption-keyvault {vault} --name {repair} --resource-group {g} --volume-type {volume}' \
-                                                    .format(g=repair_group_name, repair=repair_vm_name, vault=key_vault, volume=volume_type)
-                    logger.info('Installing extension on repair VM without KEK \n')
-                    _call_az_command(install_ade_extension_command)
-            except Exception as error:
-                error = "Failed to encrypt data volumes"
-                command.error_stack_trace = traceback.format_exc()
-                command.error_message = str(error)
-                command.message = "'Failed to encrypt data volumes' exception can be ignored"
+                except AzCommandError as azCommandError:
+                    command.error_message = str(azCommandError)
+                    if "type:part fstype:xfs mountpoint" in command.error_message:
+                        print("Encryption failed for data disk with XFS filesystem.But this can be ignored.\n")
+                    else:
+                        command.error_stack_trace = traceback.format_exc()
+                        raise
                 # Execute commands on repair VM through run command option to unlock the copy of encrypted disk and mount.
-            finally:
-                if encryption_type in ("single_with_kek", "single_without_kek"):
+                finally:
                     if is_linux:
-                        logger.info('unlocking and mounting the disk on repair VM...')
-                        REPAIR_DIR_NAME = 'azext_vm_repair'
-                        SCRIPTS_DIR_NAME = 'scripts'
-                        LINUX_RUN_SCRIPT_NAME = 'script.sh'
-                        command_id = 'RunShellScript'
-                        loader = pkgutil.get_loader(REPAIR_DIR_NAME)
-                        mod = loader.load_module(REPAIR_DIR_NAME)
-                        rootpath = os.path.dirname(mod.__file__)
-                        run_script = os.path.join(rootpath, SCRIPTS_DIR_NAME, LINUX_RUN_SCRIPT_NAME)
+                        command_id, run_script = _unlock_encrypted_disk()
                         repair_run_command = 'az vm run-command invoke -g {rg} -n {vm} --command-id {command_id} ' \
                                              '--scripts "@{run_script}" -o json' \
                                              .format(rg=repair_group_name, vm=repair_vm_name, command_id=command_id, run_script=run_script)
@@ -198,7 +184,6 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         command.set_status_success()
 
     # Some error happened. Stop command and clean-up resources.
-
     except KeyboardInterrupt:
         command.error_stack_trace = traceback.format_exc()
         command.error_message = "Command interrupted by user input."
@@ -229,7 +214,6 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             logger.debug(command.error_stack_trace)
 
     # Generate return results depending on command state
-
     if not command.is_status_success():
         command.set_status_error()
         return_dict = command.init_return_dict()

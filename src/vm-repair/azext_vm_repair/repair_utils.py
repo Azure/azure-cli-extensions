@@ -3,12 +3,13 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from json import loads
 import subprocess
 import shlex
 import os
 import re
+from json import loads
 import requests
+import pkgutil
 
 from knack.log import get_logger
 from knack.prompting import prompt_y_n, NoTTYException
@@ -177,30 +178,41 @@ def _list_resource_ids_in_rg(resource_group_name):
     return ids
 
 
-def _uses_encrypted_disk(source_vm):
+def _fetch_encryption_settings(source_vm):
+    key_vault = '""'
+    kekurl = '""'
     if source_vm.storage_profile.os_disk.encryption_settings is not None:
         encryption_type = "dual"
-        key_vault = "Null"
-        kekurl = "Null"
         return encryption_type, key_vault, kekurl
+
     else:
         disk_id = source_vm.storage_profile.os_disk.managed_disk.id
         show_disk_command = 'az disk show --id {i} --query [encryptionSettingsCollection,encryptionSettingsCollection.encryptionSettings[].diskEncryptionKey.sourceVault.id,encryptionSettingsCollection.encryptionSettings[].keyEncryptionKey.keyUrl] -o json'.format(i=disk_id)
         disk_info = loads(_call_az_command(show_disk_command))
         if disk_info == [None, None, None]:
             encryption_type = "not encrypted"
-            key_vault = "Null"
-            kekurl = "Null"
             return encryption_type, key_vault, kekurl
         elif disk_info[2] == []:
             encryption_type = "single_without_kek"
             key_vault = disk_info[1][0]
-            kekurl = "Null"
             return encryption_type, key_vault, kekurl
         else:
             key_vault, kekurl = disk_info[1][0], disk_info[2][0]
             encryption_type = "single_with_kek"
             return encryption_type, key_vault, kekurl
+
+
+def _unlock_encrypted_disk():
+    logger.info('unlocking and mounting the disk on repair VM...')
+    REPAIR_DIR_NAME = 'azext_vm_repair'
+    SCRIPTS_DIR_NAME = 'scripts'
+    LINUX_RUN_SCRIPT_NAME = 'script.sh'
+    command_id = 'RunShellScript'
+    loader = pkgutil.get_loader(REPAIR_DIR_NAME)
+    mod = loader.load_module(REPAIR_DIR_NAME)
+    rootpath = os.path.dirname(mod.__file__)
+    run_script = os.path.join(rootpath, SCRIPTS_DIR_NAME, LINUX_RUN_SCRIPT_NAME)
+    return command_id, run_script
 
 
 def _fetch_compatible_windows_os_urn(source_vm):
@@ -224,6 +236,17 @@ def _fetch_compatible_windows_os_urn(source_vm):
         return urns[1]
     logger.debug('Returning Urn 0: %s', urns[0])
     return urns[0]
+
+
+def _encryption_type():
+    from enum import Enum
+
+    class encryption_type(Enum):
+        Dual_with_kek = 1
+        Dual_without_kek = 2
+        single_with_kek = 3
+        single_without_kek = 4
+        not_encrypted = 5
 
 
 def _resolve_api_version(rcf, resource_provider_namespace, parent_resource_path, resource_type):

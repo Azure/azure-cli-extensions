@@ -18,7 +18,7 @@ from .exceptions import AzCommandError
 from .repair_utils import (
     _call_az_command,
     _get_repair_resource_tag,
-    _uses_encrypted_disk,
+    _fetch_encryption_settings,
     _resolve_api_version,
     check_extension_version
 )
@@ -59,15 +59,14 @@ def validate_create(cmd, namespace):
 
     # Check encrypted disk
     # TODO, validate this with encrypted VMs
-    check_encryption = _uses_encrypted_disk(source_vm)
+    check_encryption = _fetch_encryption_settings(source_vm)
     if check_encryption[0] != "not encrypted":
         logger.warning('The source VM\'s OS disk is encrypted.')
         if check_encryption[0] in ('single_with_kek', 'single_without_kek'):
-            if not namespace.unlock_encryption:
-                ask_user()
+            if not namespace.unlock_encrypted_vm in ("y", "yes"):
+                _prompt_encryptedvms()
         elif check_encryption[0] == "dual":
-            logger.warning('This script does not support VMs which were encrypted using dual pass')
-            exit(0)
+            raise CLIError('This script does not support VMs which were encrypted using dual pass.Stopping Execution.')
 
     # Validate Auth Params
     # Prompt vm username
@@ -165,22 +164,13 @@ def validate_run(cmd, namespace):
         raise CLIError('Repair resource id is not valid.')
 
 
-def ask_user():
-    check = str(input("VM is encrypted using single pass method, are we ok to unlock the disk and mount on repair VM ? (Y/N): ")).lower().strip()
+def _prompt_encryptedvms():
+    from knack.prompting import prompt_y_n, NoTTYException
     try:
-        if check[0] == 'y':
-            return True
-        elif check[0] == 'n':
-            print('Stopping the execution upon user input')
-            exit(0)
-            return False
-        else:
-            print('Invalid Input.valid inputs are "y" or "n"')
-            return ask_user()
-    except Exception as error:
-        print(error)
-        print('Invalid Input.valid inputs are "y" or "n"')
-        return ask_user()
+        if not prompt_y_n('The source VM is encrpyted. Do u want to attach the disk after unlocking?:'):
+            raise CLIError('Stopping the execution upon user input')
+    except NoTTYException:
+        raise CLIError('Stopping the execution.')
 
 
 def _prompt_repair_username(namespace):
