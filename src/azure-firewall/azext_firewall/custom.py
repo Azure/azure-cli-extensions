@@ -111,14 +111,13 @@ def list_azure_firewalls(cmd, resource_group_name=None):
 # pylint: disable=unused-argument
 def create_af_ip_configuration(cmd, resource_group_name, azure_firewall_name, item_name,
                                public_ip_address, virtual_network_name=None, subnet='AzureFirewallSubnet',
-                               private_ip_address=None, management_item_name=None, management_public_ip_address=None,
+                               management_item_name=None, management_public_ip_address=None,
                                management_virtual_network_name=None, management_subnet='AzureFirewallManagementSubnet'):
     AzureFirewallIPConfiguration, SubResource = cmd.get_models('AzureFirewallIPConfiguration', 'SubResource')
     client = network_client_factory(cmd.cli_ctx).azure_firewalls
     af = client.get(resource_group_name, azure_firewall_name)
     config = AzureFirewallIPConfiguration(
         name=item_name,
-        private_ip_address=private_ip_address,
         public_ip_address=SubResource(id=public_ip_address) if public_ip_address else None,
         subnet=SubResource(id=subnet) if subnet else None
     )
@@ -273,7 +272,7 @@ def _upsert_af_rule(cmd, resource_group_name, firewall_name, collection_param_na
 
 
 def create_af_network_rule(cmd, resource_group_name, azure_firewall_name, collection_name, item_name,
-                           source_addresses, destination_ports, protocols, destination_fqdns=None,
+                           destination_ports, protocols, destination_fqdns=None, source_addresses=None,
                            destination_addresses=None, description=None, priority=None, action=None,
                            source_ip_groups=None, destination_ip_groups=None):
     AzureFirewallNetworkRule, AzureFirewallNetworkRuleCollection = cmd.get_models(
@@ -300,7 +299,7 @@ def create_af_network_rule(cmd, resource_group_name, azure_firewall_name, collec
 
 
 def create_af_nat_rule(cmd, resource_group_name, azure_firewall_name, collection_name, item_name,
-                       source_addresses, destination_addresses, destination_ports, protocols, translated_port,
+                       destination_addresses, destination_ports, protocols, translated_port, source_addresses=None,
                        translated_address=None, translated_fqdn=None, description=None, priority=None, action=None,
                        source_ip_groups=None):
     AzureFirewallNatRule, AzureFirewallNatRuleCollection = cmd.get_models(
