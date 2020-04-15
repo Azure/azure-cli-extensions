@@ -201,8 +201,6 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
         c.argument('destination_resource_group', help="Azure Resource Group of the customer creating the event channel. The partner topic associated with the event channel will be created under this resource group.")
         c.argument('destination_subscription_id', help="Azure subscription Id of the customer creating the event channel. The partner topic associated with the event channel will be created under this Azure subscription.")
         c.argument('topic_type', help="Name of the topic type.", completer=get_resource_name_completion_list('Microsoft.EventGrid/topictypes'))
-        c.argument('approval_description', help="Comments for the approval.")
-        c.argument('rejection_description', help="Comments for the rejection.")
 
     with self.argument_context('eventgrid topic') as c:
         c.argument('topic_name', arg_type=name_type, help='Name of the topic.', id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/topics'))
@@ -222,11 +220,11 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
 
     with self.argument_context('eventgrid topic private-endpoint-connection approve') as c:
         c.argument('topic_name', arg_type=topic_name_type, id_part=None)
-        c.argument('approval_description', id_part=None)
+        c.argument('description', help="Comments for the approval.", id_part=None)
 
     with self.argument_context('eventgrid topic private-endpoint-connection reject') as c:
         c.argument('topic_name', arg_type=topic_name_type, id_part=None)
-        c.argument('rejections_description', id_part=None)
+        c.argument('description', help="Comments for the rejection.", id_part=None)
 
     with self.argument_context('eventgrid topic private-link-resource') as c:
         c.argument('topic_name', arg_type=topic_name_type, id_part='name')
@@ -261,11 +259,11 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
 
     with self.argument_context('eventgrid domain private-endpoint-connection approve') as c:
         c.argument('domain_name', arg_type=domain_name_type, id_part=None)
-        c.argument('approval_description', id_part=None)
+        c.argument('description', help="Comments for the approval.", id_part=None)
 
     with self.argument_context('eventgrid domain private-endpoint-connection reject') as c:
         c.argument('domain_name', arg_type=domain_name_type, id_part=None)
-        c.argument('rejection_description', id_part=None)
+        c.argument('description', help="Comments for the rejection.", id_part=None)
 
     with self.argument_context('eventgrid domain private-link-resource') as c:
         c.argument('domain_name', arg_type=domain_name_type, id_part='name')

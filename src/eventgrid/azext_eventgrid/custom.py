@@ -895,9 +895,9 @@ def cli_topic_private_endpoint_connection_approve(
         resource_group_name,
         topic_name,
         private_endpoint_connection_name,
-        approval_description=None):
+        description=None):
 
-    status = ConnectionState(description=approval_description, status='Approved')
+    status = ConnectionState(description=description, status='Approved')
     private_endpoint_conn = PrivateEndpointConnection(private_link_service_connection_state=status)
     return client.update(
         resource_group_name,
@@ -912,9 +912,9 @@ def cli_topic_private_endpoint_connection_reject(
         resource_group_name,
         topic_name,
         private_endpoint_connection_name,
-        rejection_description=None):
+        description=None):
 
-    status = ConnectionState(description=rejection_description, status='Rejected')
+    status = ConnectionState(description=description, status='Rejected')
     private_endpoint_conn = PrivateEndpointConnection(private_link_service_connection_state=status)
     return client.update(
         resource_group_name,
@@ -955,9 +955,9 @@ def cli_domain_private_endpoint_connection_approve(
         resource_group_name,
         domain_name,
         private_endpoint_connection_name,
-        approval_description=None):
+        description=None):
 
-    status = ConnectionState(description=approval_description, status='Approved')
+    status = ConnectionState(description=description, status='Approved')
     private_endpoint_conn = PrivateEndpointConnection(private_link_service_connection_state=status)
     return client.update(
         resource_group_name,
@@ -972,9 +972,9 @@ def cli_domain_private_endpoint_connection_reject(
         resource_group_name,
         domain_name,
         private_endpoint_connection_name,
-        rejection_description=None):
+        description=None):
 
-    status = ConnectionState(description=rejection_description, status='Rejected')
+    status = ConnectionState(description=description, status='Rejected')
     private_endpoint_conn = PrivateEndpointConnection(private_link_service_connection_state=status)
     return client.update(
         resource_group_name,
@@ -1501,8 +1501,6 @@ def _update_event_subscription_internal(  # pylint: disable=too-many-locals,too-
         delivery_with_resource_identity=delivery_with_resource_identity,
         dead_letter_with_resource_identity=deadletter_with_resource_identity)
 
-    print('====> params')
-    print(params)
     return params
 
 
