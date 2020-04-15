@@ -111,14 +111,13 @@ def list_azure_firewalls(cmd, resource_group_name=None):
 # pylint: disable=unused-argument
 def create_af_ip_configuration(cmd, resource_group_name, azure_firewall_name, item_name,
                                public_ip_address, virtual_network_name=None, subnet='AzureFirewallSubnet',
-                               private_ip_address=None, management_item_name=None, management_public_ip_address=None,
+                               management_item_name=None, management_public_ip_address=None,
                                management_virtual_network_name=None, management_subnet='AzureFirewallManagementSubnet'):
     AzureFirewallIPConfiguration, SubResource = cmd.get_models('AzureFirewallIPConfiguration', 'SubResource')
     client = network_client_factory(cmd.cli_ctx).azure_firewalls
     af = client.get(resource_group_name, azure_firewall_name)
     config = AzureFirewallIPConfiguration(
         name=item_name,
-        private_ip_address=private_ip_address,
         public_ip_address=SubResource(id=public_ip_address) if public_ip_address else None,
         subnet=SubResource(id=subnet) if subnet else None
     )
