@@ -273,7 +273,7 @@ def _upsert_af_rule(cmd, resource_group_name, firewall_name, collection_param_na
 
 
 def create_af_network_rule(cmd, resource_group_name, azure_firewall_name, collection_name, item_name,
-                           source_addresses, destination_ports, protocols, destination_fqdns=None,
+                           destination_ports, protocols, destination_fqdns=None, source_addresses=None,
                            destination_addresses=None, description=None, priority=None, action=None,
                            source_ip_groups=None, destination_ip_groups=None):
     AzureFirewallNetworkRule, AzureFirewallNetworkRuleCollection = cmd.get_models(
@@ -300,7 +300,7 @@ def create_af_network_rule(cmd, resource_group_name, azure_firewall_name, collec
 
 
 def create_af_nat_rule(cmd, resource_group_name, azure_firewall_name, collection_name, item_name,
-                       source_addresses, destination_addresses, destination_ports, protocols, translated_port,
+                       destination_addresses, destination_ports, protocols, translated_port, source_addresses=None,
                        translated_address=None, translated_fqdn=None, description=None, priority=None, action=None,
                        source_ip_groups=None):
     AzureFirewallNatRule, AzureFirewallNatRuleCollection = cmd.get_models(
