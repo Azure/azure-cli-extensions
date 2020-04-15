@@ -79,7 +79,7 @@ type: command
 short-summary: Approve a private endpoint connection request for a domain.
 examples:
   - name: Approve a private endpoint connection for a domain.
-    text: az eventgrid domain private-endpoint-connection approve -g rg1 --domain-name domain1 -n domain1-PrivateEndpoint.6d90cf76-a022-452c-9994-6dac62a50c99 --approval-description "Sample approval description"
+    text: az eventgrid domain private-endpoint-connection approve -g rg1 --domain-name domain1 -n domain1-PrivateEndpoint.6d90cf76-a022-452c-9994-6dac62a50c99 --description "Sample approval description"
 """
 
 helps['eventgrid domain private-endpoint-connection reject'] = """
@@ -87,7 +87,7 @@ type: command
 short-summary: Reject a private endpoint connection request for a domain.
 examples:
   - name: Reject a private endpoint connection for a domain.
-    text: az eventgrid domain private-endpoint-connection reject -g rg1 --domain-name domain1 -n domain1-PrivateEndpoint.6d90cf76-a022-452c-9994-6dac62a50c99 --rejection-description "Sample rejection description"
+    text: az eventgrid domain private-endpoint-connection reject -g rg1 --domain-name domain1 -n domain1-PrivateEndpoint.6d90cf76-a022-452c-9994-6dac62a50c99 --description "Sample rejection description"
 """
 
 helps['eventgrid domain private-link-resource'] = """
@@ -1211,7 +1211,7 @@ type: command
 short-summary: Approve a private endpoint connection request for a topic.
 examples:
   - name: Approve a private endpoint connection for a topic.
-    text: az eventgrid topic private-endpoint-connection approve -g rg1 --topic-name topic1 -n topic1-PrivateEndpoint.6d90cf76-a022-452c-9994-6dac62a50c99 --approval-description "Sample approval description"
+    text: az eventgrid topic private-endpoint-connection approve -g rg1 --topic-name topic1 -n topic1-PrivateEndpoint.6d90cf76-a022-452c-9994-6dac62a50c99 --description "Sample approval description"
 """
 
 helps['eventgrid topic private-endpoint-connection reject'] = """
@@ -1219,7 +1219,7 @@ type: command
 short-summary: Reject a private endpoint connection request for a topic.
 examples:
   - name: Reject a private endpoint connection for a topic.
-    text: az eventgrid topic private-endpoint-connection reject -g rg1 --topic-name topic1 -n topic1-PrivateEndpoint.6d90cf76-a022-452c-9994-6dac62a50c99 --rejection-description "Sample rejection description"
+    text: az eventgrid topic private-endpoint-connection reject -g rg1 --topic-name topic1 -n topic1-PrivateEndpoint.6d90cf76-a022-452c-9994-6dac62a50c99 --description "Sample rejection description"
 """
 
 helps['eventgrid topic private-link-resource'] = """
