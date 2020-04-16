@@ -21,6 +21,9 @@ def create_package(name, dest_folder=DEFAULT_DEST_FOLDER):
     check_call(['python', 'setup.py', "sdist", "--format", "zip", '-d', dest_folder], cwd=absdirpath)
 
 if __name__ == '__main__':
+    """
+    This file is used for Swagger CLI extension automation to build the wheel file and zip file
+    """
     parser = argparse.ArgumentParser(description='Build Azure package.')
     parser.add_argument('name', help='The package name')
     parser.add_argument('--dest', '-d', default=DEFAULT_DEST_FOLDER,
