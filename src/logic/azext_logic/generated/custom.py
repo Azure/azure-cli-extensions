@@ -38,28 +38,23 @@ def logic_workflow_create(cmd, client,
                           access_control=None,
                           integration_account=None,
                           integration_service_environment=None):
-    with open(definition) as json_file:
-        try:
-            workflow = json.load(json_file)
-        except json.decoder.JSONDecodeError as ex:
-            raise CLIError(
-                'JSON decode error for {}: {}'.format(json_file, str(ex)))
-        if 'definition' not in workflow:
-            raise CLIError(str(json_file) +
-                           " does not contain a 'definition' key")
 
-        return client.create_or_update(resource_group_name=resource_group_name,
-                                       workflow_name=name,
-                                       location=location,
-                                       tags=tags,
-                                       state=state,
-                                       endpoints_configuration=endpoints_configuration,
-                                       access_control=workflow.get(
-                                           'accessControl', access_control),
-                                       integration_account=integration_account,
-                                       integration_service_environment=integration_service_environment,
-                                       definition=workflow['definition'],
-                                       parameters=workflow.get('parameters', None))
+    if 'definition' not in definition:
+        raise CLIError(str(definition) +
+                       " does not contain a 'definition' key")
+
+    return client.create_or_update(resource_group_name=resource_group_name,
+                                   workflow_name=name,
+                                   location=location,
+                                   tags=tags,
+                                   state=state,
+                                   endpoints_configuration=endpoints_configuration,
+                                   access_control=definition.get(
+                                       'accessControl', access_control),
+                                   integration_account=integration_account,
+                                   integration_service_environment=integration_service_environment,
+                                   definition=definition['definition'],
+                                   parameters=definition.get('parameters', None))
 
 
 def logic_workflow_update(cmd, client,
@@ -135,28 +130,23 @@ def logic_integration_account_import(cmd, client,
                                      location=None,
                                      tags=None,
                                      sku=None,):
-    with open(input_path) as integrationJson:
-        try:
-            integration = json.load(integrationJson)
-        except json.decoder.JSONDecodeError as ex:
-            raise CLIError('JSON decode error for {}: {}'.format(
-                integrationJson, str(ex)))
-        if 'properties' not in integration:
-            raise CLIError(str(integrationJson) +
-                           " does not contain a 'properties' key")
 
-        integration_service_environment = integration['properties'].get(
-            'integrationServiceEnvironment', None)
-        return client.create_or_update(resource_group_name=resource_group_name,
-                                       integration_account_name=name,
-                                       location=integration.get(
-                                           'location', location),
-                                       tags=integration.get('tags', tags),
-                                       sku=integration.get('sku', sku),
-                                       integration_service_environment=integration_service_environment,
-                                       state=integration['properties'].get('state', 'Enabled'))
-        # TODO: Work around for empty property serialization issue.
-        # Remove after LogicApp deploy the service fix. Contact: Rama Rayud"
+    if 'properties' not in input_path:
+        raise CLIError(str(input_path) +
+                       " does not contain a 'properties' key")
+
+    integration_service_environment = input_path['properties'].get(
+        'integrationServiceEnvironment', None)
+    return client.create_or_update(resource_group_name=resource_group_name,
+                                   integration_account_name=name,
+                                   location=input_path.get(
+                                       'location', location),
+                                   tags=input_path.get('tags', tags),
+                                   sku=input_path.get('sku', sku),
+                                   integration_service_environment=integration_service_environment,
+                                   state=input_path['properties'].get('state', 'Enabled'))
+    # TODO: Work around for empty property serialization issue.
+    # Remove after LogicApp deploy the service fix. Contact: Rama Rayud"
 
 
 def logic_integration_account_update(cmd, client,

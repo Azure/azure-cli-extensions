@@ -8,6 +8,9 @@ from azure.cli.core.commands import CliCommandType
 
 def load_command_table(self, _):
 
+    with self.command_group('logic', is_experimental=True):
+        pass
+
     from azext_logic.generated._client_factory import cf_workflow
     logic_workflow = CliCommandType(
         operations_tmpl='azext_logic.vendored_sdks.logic.operations._workflow_operations#WorkflowOperations.{}',
@@ -30,5 +33,6 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'logic_integration_account_show')
         g.custom_command('create', 'logic_integration_account_create')
         g.custom_command('update', 'logic_integration_account_update')
-        g.custom_command('delete', 'logic_integration_account_delete', confirmation=True)
+        g.custom_command(
+            'delete', 'logic_integration_account_delete', confirmation=True)
         g.custom_command('import', 'logic_integration_account_import')

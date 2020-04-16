@@ -20,6 +20,9 @@ helps['logic workflow list'] = """
       - name: List all workflows in a resource group
         text: |-
                az logic workflow list --resource-group "test_resource_group"
+      - name: List all workflows in a subscription
+        text: |-
+               az logic workflow list
 """
 
 helps['logic workflow show'] = """
