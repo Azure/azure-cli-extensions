@@ -15,7 +15,8 @@ def load_command_table(self, _):
         client_factory=cf_k8sconfiguration)
 
 
-    with self.command_group('k8sconfiguration', k8sconfiguration_sdk, client_factory=cf_k8sconfiguration_operation) as g:
+    with self.command_group('k8sconfiguration', k8sconfiguration_sdk, client_factory=cf_k8sconfiguration_operation) \
+            as g:
         g.custom_command('create', 'create_k8sconfiguration')
         g.custom_command('update', 'update_k8sconfiguration')
         g.custom_command('delete', 'delete_k8sconfiguration')
@@ -26,4 +27,3 @@ def load_command_table(self, _):
 
     with self.command_group('k8sconfiguration', is_preview=True):
         pass
-

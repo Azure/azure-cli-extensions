@@ -8,12 +8,12 @@ from knack.util import CLIError
 from azext_k8sconfiguration.vendored_sdks.models.source_control_configuration_py3 import SourceControlConfiguration
 from azext_k8sconfiguration.vendored_sdks.models.helm_operator_properties import HelmOperatorProperties
 
-def show_k8sconfiguration(cmd, client, resource_group_name, cluster_name, name, cluster_type='connectedClusters',
-                          configuration_type='sourceControlConfiguration',  api_version='2019-11-01-preview'):
+def show_k8sconfiguration(client, resource_group_name, cluster_name, name, cluster_type='connectedClusters',
+                          configuration_type='sourceControlConfiguration', api_version='2019-11-01-preview'):
     # Determine ClusterRP
-    if 'connectedclusters' == cluster_type.lower():
+    if cluster_type.lower() == 'connectedclusters':
         cluster_rp = 'Microsoft.Kubernetes'
-    elif  'managedclusters' == cluster_type.lower():
+    elif cluster_type.lower() == 'managedclusters':
         cluster_rp = 'Microsoft.ContainerService'
     else:
         raise CLIError("Invalid cluster-type.  Supported values are 'connectedClusters' and 'managedClusters'.")
@@ -21,8 +21,8 @@ def show_k8sconfiguration(cmd, client, resource_group_name, cluster_name, name, 
     # Validate ConfigurationType
     if configuration_type.lower() != 'sourcecontrolconfiguration':
         raise CLIError('Invalid configuration_type.  Valid value is "sourceControlConfiguration"')
-    else:
-        source_control_configuration_name = name
+
+    source_control_configuration_name = name
 
     # Ensure apiVersion value
     if api_version is None:
@@ -31,15 +31,15 @@ def show_k8sconfiguration(cmd, client, resource_group_name, cluster_name, name, 
     return client.get(resource_group_name, cluster_rp, cluster_type, cluster_name, source_control_configuration_name,
                       api_version)
 
-def create_k8sconfiguration(cmd, client, resource_group_name, cluster_name, name, repository_url,
+def create_k8sconfiguration(client, resource_group_name, cluster_name, name, repository_url,
                             operator_instance_name=None, operator_namespace='default', cluster_type='connectedClusters',
                             configuration_type='sourceControlConfiguration', operator_params='', cluster_scoped=None,
                             operator_type='flux', enable_helm_operator=None, helm_operator_version='0.2.0',
                             helm_operator_params='', api_version='2019-11-01-preview'):
     # Determine ClusterRP
-    if cluster_type == 'connectedClusters':
+    if cluster_type.lower() == 'connectedclusters':
         cluster_rp = 'Microsoft.Kubernetes'
-    elif  cluster_type == 'managedClusters' == cluster_type:
+    elif cluster_type.lower() == 'managedclusters':
         cluster_rp = 'Microsoft.ContainerService'
     else:
         raise CLIError("Invalid cluster-type.  Supported values are 'connectedClusters' and 'managedClusters'.")
@@ -47,8 +47,8 @@ def create_k8sconfiguration(cmd, client, resource_group_name, cluster_name, name
     # Validate configurationType
     if configuration_type.lower() != 'sourcecontrolconfiguration':
         raise CLIError('Invalid configuration_type.  Valid value is "sourceControlConfiguration"')
-    else:
-        source_control_configuration_name = name.strip()
+
+    source_control_configuration_name = name.strip()
 
     # Ensure apiVersion value
     if api_version is None:
@@ -86,14 +86,14 @@ def create_k8sconfiguration(cmd, client, resource_group_name, cluster_name, name
     return client.create_or_update(resource_group_name, cluster_rp, cluster_type, cluster_name,
                                    source_control_configuration_name, api_version, source_control_configuration)
 
-def update_k8sconfiguration(cmd, client, resource_group_name, cluster_name, name,
+def update_k8sconfiguration(client, resource_group_name, cluster_name, name,
                             configuration_type='sourceControlConfiguration', cluster_type='connectedClusters',
                             repository_url=None, operator_params=None, enable_helm_operator=None,
                             helm_operator_version=None, helm_operator_params=None, api_version='2019-11-01-preview'):
     # Determine ClusterRP
-    if 'connectedclusters' == cluster_type.lower():
+    if cluster_type.lower() == 'connectedclusters':
         cluster_rp = 'Microsoft.Kubernetes'
-    elif  'managedclusters' == cluster_type.lower():
+    elif cluster_type.lower() == 'managedclusters':
         cluster_rp = 'Microsoft.ContainerService'
     else:
         raise CLIError("Invalid cluster-type.  Supported values are 'connectedClusters' and 'managedClusters'.")
@@ -101,15 +101,15 @@ def update_k8sconfiguration(cmd, client, resource_group_name, cluster_name, name
     # Validate configurationType
     if configuration_type.lower() != 'sourcecontrolconfiguration':
         raise CLIError('Invalid configuration_type.  Valid value is "sourceControlConfiguration"')
-    else:
-        source_control_configuration_name = name.strip()
+
+    source_control_configuration_name = name.strip()
 
     # Ensure apiVersion value
     if api_version is None:
         api_version = client.api_version
 
     config = client.get(resource_group_name, cluster_rp, cluster_type, cluster_name,
-                                source_control_configuration_name, api_version).as_dict()
+                        source_control_configuration_name, api_version).as_dict()
 
     updateYes = False
 
@@ -134,38 +134,36 @@ def update_k8sconfiguration(cmd, client, resource_group_name, cluster_name, name
         config['helm_operator_params'] = helm_operator_params
         updateYes = True
 
-    print ("#DEBUG#: updateYes b4 check", updateYes)
-
     if updateYes is False:
         raise CLIError('Invalid update.  No values to update!')
 
     return client.create_or_update(resource_group_name, cluster_rp, cluster_type, cluster_name,
                                    source_control_configuration_name, api_version, config)
 
-def list_k8sconfiguration(cmd, client, resource_group_name, cluster_name, cluster_type='connectedClusters',
+def list_k8sconfiguration(client, resource_group_name, cluster_name, cluster_type='connectedClusters',
                           api_version='2019-11-01-preview'):
-    if 'connectedclusters' == cluster_type.lower():
+    if cluster_type.lower() == 'connectedclusters':
         cluster_rp = 'Microsoft.Kubernetes'
-    elif  'managedclusters' == cluster_type.lower():
+    elif cluster_type.lower() == 'managedclusters':
         cluster_rp = 'Microsoft.ContainerService'
     else:
         raise CLIError("Invalid cluster-type.  Supported values are 'connectedClusters' and 'managedClusters'.")
 
     return client.list(resource_group_name, cluster_rp, cluster_type, cluster_name, api_version)
 
-def delete_k8sconfiguration(cmd, client, resource_group_name, cluster_name, name, cluster_type='connectedClusters',
+def delete_k8sconfiguration(client, resource_group_name, cluster_name, name, cluster_type='connectedClusters',
                             configuration_type='sourceControlConfiguration', api_version='2019-11-01-preview'):
-    if 'connectedclusters' == cluster_type.lower():
+    if cluster_type.lower() == 'connectedclusters':
         cluster_rp = 'Microsoft.Kubernetes'
-    elif  'managedclusters' == cluster_type.lower():
+    elif cluster_type.lower() == 'managedclusters':
         cluster_rp = 'Microsoft.ContainerService'
     else:
         raise CLIError("Invalid cluster-type.  Supported values are 'connectedClusters' and 'managedClusters'.")
 
     if configuration_type.lower() != 'sourcecontrolconfiguration':
         raise CLIError('Invalid configuration_type.  Valid value is "sourceControlConfiguration"')
-    else:
-        source_control_configuration_name = name
+
+    source_control_configuration_name = name
 
     custom_headers = {"x-ms-force": "true"}
 

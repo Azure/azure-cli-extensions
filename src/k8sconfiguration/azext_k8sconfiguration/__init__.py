@@ -17,7 +17,7 @@ class K8sconfigurationCommandsLoader(AzCommandsLoader):
             operations_tmpl='azext_k8sconfiguration.custom#{}',
             client_factory=cf_k8sconfiguration)
         super(K8sconfigurationCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                  custom_command_type=k8sconfiguration_custom)
+                                                             custom_command_type=k8sconfiguration_custom)
 
     def load_command_table(self, args):
         from azext_k8sconfiguration.commands import load_command_table
