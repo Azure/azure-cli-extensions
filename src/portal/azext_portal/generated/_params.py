@@ -23,8 +23,7 @@ def load_arguments(self, _):
                    help='The name of the resource group.')
 
     with self.argument_context('portal dashboard show') as c:
-        c.argument('resource_group_name', resource_group_name_type,
-                   help='The name of the resource group.')
+        c.argument('resource_group_name', resource_group_name_type)
         c.argument('name', options_list=[
                    '--name', '-n'], help='The name of the dashboard.')
 

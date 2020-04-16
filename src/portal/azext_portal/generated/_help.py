@@ -17,9 +17,12 @@ helps['portal dashboard list'] = """
     type: command
     short-summary: Lists the dashboards within a subscription or resource group.
     examples:
-      - name: List all dashboards in the resourceGroup
+      - name: List all dashboards in a resourceGroup
         text: |-
                az portal dashboard list --resource-group "testRG"
+      - name: List all dashboards in a subscription
+        text: |-
+               az portal dashboard list
 """
 
 helps['portal dashboard show'] = """
