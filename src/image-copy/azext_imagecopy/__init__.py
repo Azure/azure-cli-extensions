@@ -4,9 +4,9 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
+from azure.cli.core.commands.parameters import tags_type
 
 import azext_imagecopy._help  # pylint: disable=unused-import
-from azure.cli.core.commands.parameters import tags_type
 
 
 class ImageCopyCommandsLoader(AzCommandsLoader):
