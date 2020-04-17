@@ -19,6 +19,7 @@ from azure.cli.core.util import sdk_no_wait
 from ast import literal_eval
 from azure.cli.core.commands import cached_put
 from ._utils import _get_rg_location
+from ._utils import _get_sku_tier
 from six.moves.urllib import parse
 from threading import Thread
 from threading import Timer
@@ -37,15 +38,33 @@ NO_PRODUCTION_DEPLOYMENT_ERROR = "No production deployment found, use --deployme
 LOG_RUNNING_PROMPT = "This command usually takes minutes to run. Add '--verbose' parameter if needed."
 
 
-def spring_cloud_create(cmd, client, resource_group, name, location=None, no_wait=False):
+def spring_cloud_create(cmd, client, resource_group, name, location=None, sku=None, no_wait=False):
     rg_location = _get_rg_location(cmd.cli_ctx, resource_group)
     if location is None:
         location = rg_location
-    resource = models.ServiceResource(location=location)
+
+    if sku is None:
+        sku = "S0"
+
+    full_sku = models.Sku(
+        name=sku,
+        tier=_get_sku_tier(sku)
+    )
+
+    resource = models.ServiceResource(location=location, sku=full_sku)
 
     return sdk_no_wait(no_wait, client.create_or_update,
                        resource_group_name=resource_group, service_name=name, resource=resource)
 
+def spring_cloud_update(cmd, client, resource_group, name, sku=None, no_wait=False):
+    full_sku = models.Sku(
+        name=sku,
+        tier=_get_sku_tier(sku)
+    )
+    resource = models.ServiceResource(sku=full_sku)
+
+    return sdk_no_wait(no_wait, client.update,
+                       resource_group_name=resource_group, service_name=name, resource=resource)
 
 def spring_cloud_delete(cmd, client, resource_group, name, no_wait=False):
     return sdk_no_wait(no_wait, client.delete,

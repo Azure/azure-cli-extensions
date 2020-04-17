@@ -193,3 +193,11 @@ def _get_rg_location(ctx, resource_group_name, subscription_id=None):
     # Just do the get, we don't need the result, it will error out if the group doesn't exist.
     rg = groups.get(resource_group_name)
     return rg.location
+
+def _get_sku_tier(name):  # pylint: disable=too-many-return-statements
+    name = name.upper()
+    if name in ['B0']:
+        return 'Basic'
+    if name in ['S0']:
+        return 'Standard'
+    raise CLIError("Invalid sku(pricing tier), please refer to command help for valid values")

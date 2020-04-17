@@ -91,6 +91,9 @@ class AppResource(ProxyResource):
     :vartype type: str
     :param properties: Properties of the App resource
     :type properties: ~azure.mgmt.appplatform.models.AppResourceProperties
+    :param location: The GEO location of the application, always the same with
+     its parent resource
+    :type location: str
     """
 
     _validation = {
@@ -104,11 +107,13 @@ class AppResource(ProxyResource):
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
         'properties': {'key': 'properties', 'type': 'AppResourceProperties'},
+        'location': {'key': 'location', 'type': 'str'},
     }
 
-    def __init__(self, *, properties=None, **kwargs) -> None:
+    def __init__(self, *, properties=None, location: str=None, **kwargs) -> None:
         super(AppResource, self).__init__(**kwargs)
         self.properties = properties
+        self.location = location
 
 
 class AppResourceProperties(Model):
@@ -262,33 +267,43 @@ class BindingResourceProperties(Model):
 class CertificateProperties(Model):
     """Certificate resource payload.
 
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
     All required parameters must be populated in order to send to Azure.
 
-    :param thumbprint: The thumbprint of certificate.
-    :type thumbprint: str
+    :ivar thumbprint: The thumbprint of certificate.
+    :vartype thumbprint: str
     :param vault_uri: Required. The vault uri of user key vault.
     :type vault_uri: str
     :param key_vault_cert_name: Required. The certificate name of key vault.
     :type key_vault_cert_name: str
     :param cert_version: The certificate version of key vault.
     :type cert_version: str
-    :param issuer: The issuer of certificate.
-    :type issuer: str
-    :param issued_date: The issue date of certificate.
-    :type issued_date: str
-    :param expiration_date: The expiration date of certificate.
-    :type expiration_date: str
-    :param activate_date: The activate date of certificate.
-    :type activate_date: str
-    :param subject_name: The subject name of certificate.
-    :type subject_name: str
-    :param dns_names: The domain list of certificate.
-    :type dns_names: list[str]
+    :ivar issuer: The issuer of certificate.
+    :vartype issuer: str
+    :ivar issued_date: The issue date of certificate.
+    :vartype issued_date: str
+    :ivar expiration_date: The expiration date of certificate.
+    :vartype expiration_date: str
+    :ivar activate_date: The activate date of certificate.
+    :vartype activate_date: str
+    :ivar subject_name: The subject name of certificate.
+    :vartype subject_name: str
+    :ivar dns_names: The domain list of certificate.
+    :vartype dns_names: list[str]
     """
 
     _validation = {
+        'thumbprint': {'readonly': True},
         'vault_uri': {'required': True},
         'key_vault_cert_name': {'required': True},
+        'issuer': {'readonly': True},
+        'issued_date': {'readonly': True},
+        'expiration_date': {'readonly': True},
+        'activate_date': {'readonly': True},
+        'subject_name': {'readonly': True},
+        'dns_names': {'readonly': True},
     }
 
     _attribute_map = {
@@ -304,18 +319,18 @@ class CertificateProperties(Model):
         'dns_names': {'key': 'dnsNames', 'type': '[str]'},
     }
 
-    def __init__(self, *, vault_uri: str, key_vault_cert_name: str, thumbprint: str=None, cert_version: str=None, issuer: str=None, issued_date: str=None, expiration_date: str=None, activate_date: str=None, subject_name: str=None, dns_names=None, **kwargs) -> None:
+    def __init__(self, *, vault_uri: str, key_vault_cert_name: str, cert_version: str=None, **kwargs) -> None:
         super(CertificateProperties, self).__init__(**kwargs)
-        self.thumbprint = thumbprint
+        self.thumbprint = None
         self.vault_uri = vault_uri
         self.key_vault_cert_name = key_vault_cert_name
         self.cert_version = cert_version
-        self.issuer = issuer
-        self.issued_date = issued_date
-        self.expiration_date = expiration_date
-        self.activate_date = activate_date
-        self.subject_name = subject_name
-        self.dns_names = dns_names
+        self.issuer = None
+        self.issued_date = None
+        self.expiration_date = None
+        self.activate_date = None
+        self.subject_name = None
+        self.dns_names = None
 
 
 class CertificateResource(ProxyResource):
@@ -748,13 +763,13 @@ class DeploymentResourceProperties(Model):
     :type source: ~azure.mgmt.appplatform.models.UserSourceInfo
     :ivar app_name: App name of the deployment
     :vartype app_name: str
+    :param deployment_settings: Deployment settings of the Deployment
+    :type deployment_settings:
+     ~azure.mgmt.appplatform.models.DeploymentSettings
     :ivar provisioning_state: Provisioning state of the Deployment. Possible
      values include: 'Creating', 'Updating', 'Succeeded', 'Failed'
     :vartype provisioning_state: str or
      ~azure.mgmt.appplatform.models.DeploymentResourceProvisioningState
-    :param deployment_settings: Deployment settings of the Deployment
-    :type deployment_settings:
-     ~azure.mgmt.appplatform.models.DeploymentSettings
     :ivar status: Status of the Deployment. Possible values include:
      'Unknown', 'Stopped', 'Running', 'Failed', 'Allocating', 'Upgrading',
      'Compiling'
@@ -781,8 +796,8 @@ class DeploymentResourceProperties(Model):
     _attribute_map = {
         'source': {'key': 'source', 'type': 'UserSourceInfo'},
         'app_name': {'key': 'appName', 'type': 'str'},
-        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
         'deployment_settings': {'key': 'deploymentSettings', 'type': 'DeploymentSettings'},
+        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
         'status': {'key': 'status', 'type': 'str'},
         'active': {'key': 'active', 'type': 'bool'},
         'created_time': {'key': 'createdTime', 'type': 'iso-8601'},
@@ -793,8 +808,8 @@ class DeploymentResourceProperties(Model):
         super(DeploymentResourceProperties, self).__init__(**kwargs)
         self.source = source
         self.app_name = None
-        self.provisioning_state = None
         self.deployment_settings = deployment_settings
+        self.provisioning_state = None
         self.status = None
         self.active = None
         self.created_time = None
@@ -1310,6 +1325,8 @@ class ServiceResource(TrackedResource):
     :type tags: dict[str, str]
     :param properties: Properties of the Service resource
     :type properties: ~azure.mgmt.appplatform.models.ClusterResourceProperties
+    :param sku: Sku of the Service resource
+    :type sku: ~azure.mgmt.appplatform.models.Sku
     """
 
     _validation = {
@@ -1325,11 +1342,13 @@ class ServiceResource(TrackedResource):
         'location': {'key': 'location', 'type': 'str'},
         'tags': {'key': 'tags', 'type': '{str}'},
         'properties': {'key': 'properties', 'type': 'ClusterResourceProperties'},
+        'sku': {'key': 'sku', 'type': 'Sku'},
     }
 
-    def __init__(self, *, location: str=None, tags=None, properties=None, **kwargs) -> None:
+    def __init__(self, *, location: str=None, tags=None, properties=None, sku=None, **kwargs) -> None:
         super(ServiceResource, self).__init__(location=location, tags=tags, **kwargs)
         self.properties = properties
+        self.sku = sku
 
 
 class ServiceSpecification(Model):
@@ -1353,6 +1372,37 @@ class ServiceSpecification(Model):
         super(ServiceSpecification, self).__init__(**kwargs)
         self.log_specifications = log_specifications
         self.metric_specifications = metric_specifications
+
+
+class Sku(Model):
+    """Sku of Azure Spring Cloud.
+
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    :param name: Name of the Sku
+    :type name: str
+    :param tier: Tier of the Sku
+    :type tier: str
+    :ivar capacity: Current capacity of the target resource
+    :vartype capacity: int
+    """
+
+    _validation = {
+        'capacity': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
+        'tier': {'key': 'tier', 'type': 'str'},
+        'capacity': {'key': 'capacity', 'type': 'int'},
+    }
+
+    def __init__(self, *, name: str=None, tier: str=None, **kwargs) -> None:
+        super(Sku, self).__init__(**kwargs)
+        self.name = name
+        self.tier = tier
+        self.capacity = None
 
 
 class TemporaryDisk(Model):

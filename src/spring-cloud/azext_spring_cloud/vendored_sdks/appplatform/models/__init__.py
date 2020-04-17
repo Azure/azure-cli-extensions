@@ -46,6 +46,7 @@ try:
     from ._models_py3 import ResourceUploadDefinition
     from ._models_py3 import ServiceResource
     from ._models_py3 import ServiceSpecification
+    from ._models_py3 import Sku
     from ._models_py3 import TemporaryDisk
     from ._models_py3 import TestKeys
     from ._models_py3 import TraceProperties
@@ -88,6 +89,7 @@ except (SyntaxError, ImportError):
     from ._models import ResourceUploadDefinition
     from ._models import ServiceResource
     from ._models import ServiceSpecification
+    from ._models import Sku
     from ._models import TemporaryDisk
     from ._models import TestKeys
     from ._models import TraceProperties
@@ -107,8 +109,8 @@ from ._app_platform_management_client_enums import (
     TestKeyType,
     AppResourceProvisioningState,
     UserSourceType,
-    DeploymentResourceProvisioningState,
     RuntimeVersion,
+    DeploymentResourceProvisioningState,
     DeploymentResourceStatus,
 )
 
@@ -149,6 +151,7 @@ __all__ = [
     'ResourceUploadDefinition',
     'ServiceResource',
     'ServiceSpecification',
+    'Sku',
     'TemporaryDisk',
     'TestKeys',
     'TraceProperties',
@@ -167,7 +170,7 @@ __all__ = [
     'TestKeyType',
     'AppResourceProvisioningState',
     'UserSourceType',
-    'DeploymentResourceProvisioningState',
     'RuntimeVersion',
+    'DeploymentResourceProvisioningState',
     'DeploymentResourceStatus',
 ]
