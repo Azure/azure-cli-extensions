@@ -107,11 +107,12 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
             'kind': 'web',
             'application_type': 'web',
             'storage_account': storage_account,
+            'ws_1': self.create_random_name('clitest', 20),
             'storage_account_2': storage_account_2
         })
-
+        self.cmd('monitor log-analytics workspace create -g {resource_group} -n {ws_1}')
         self.cmd(
-            'monitor app-insights component create --app {name_a} --location {loc} --kind {kind} -g {resource_group} --application-type {application_type}',
+            'monitor app-insights component create --app {name_a} --location {loc} --kind {kind} -g {resource_group} --workspace {ws_1} --application-type {application_type}',
             checks=[
                 self.check('name', '{name_a}'),
                 self.check('location', '{loc}'),
