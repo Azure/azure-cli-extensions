@@ -9,7 +9,6 @@ import unittest
 from azure_devtools.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, record_only)
 
-
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
@@ -17,55 +16,60 @@ class K8sconfigurationScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_k8sconfiguration')
     @record_only()
-    def test_k8sconfiguration(self, resource_group):
-
-        # self.kwargs.update({
-        #     'name': 'azCliTest-testinghelminstallation-0108c',
-        #     'clusterName': 'testinghelminstallation',
-        #     'rg': 'haikudevtesting',
-        #     'repoUrl': 'git://github.com/anubhav929/flux-get-started',
-        #     'opInstanceName': 'azCliTest-testinghelminstallation-opInst',
-        #     'opNamespace': 'azCliTest-testinghelminstallation-opNS'
-        # })
-
+    def test_k8sconfiguration(self):
         self.kwargs.update({
-            'name': 'config225a',
+            'name': 'cliTestConfig0416A',
             'clusterName': 'matrived-tpcomi',
             'rg': 'haikudevtesting',
             'repoUrl': 'git://github.com/anubhav929/flux-get-started',
-            'opInstanceName': 'config225a-opin',
-            'opNamespace': 'config225a-opnsnew'
+            'opInstanceName': 'cliTestconfig0416A-opin',
+            'opNamespace': 'cliTestConfig0416A-opns'
         })
-        count = len(self.cmd('k8sconfiguration list -g {rg} --cluster-name {clusterName}').get_output_in_json())
 
-        self.greater_than(count, 7)
-        self.cmd(''' k8sconfiguration create -g {rg} 
-                 -n {name} 
-                 -c {clusterName} 
-                 -u {repoUrl} 
-                 --operator-instance-name {opInstanceName} 
-                 --operator-namespace {opNamespace} 
+        # List Configurations and get the count
+        configCount = len(self.cmd('k8sconfiguration list -g {rg} --cluster-name {clusterName}').get_output_in_json())
+        self.greater_than(configCount, 10)
+
+        # Create a configuration
+        self.cmd(''' k8sconfiguration create -g {rg}
+                 -n {name}
+                 -c {clusterName}
+                 -u {repoUrl}
+                 --operator-instance-name {opInstanceName}
+                 --operator-namespace {opNamespace}
                  --operator-params \"--git-readonly \"
-                 --enable-helm-operator 
-                 --helm-operator-chart-version 0.2.0 
-                 --helm-operator-chart-values \"--set git.ssh.secretName=flux-git-deploy --set tillerNamespace=kube-system\" ''',
-            checks=[
-                self.check('name', '{name}'),
-                self.check('resourceGroup', '{rg}'),
-                self.check('operatorInstanceName', '{opInstanceName}'),
-                self.check('operatorNamespace', '{opNamespace}'),
-                self.check('provisioningState', 'Succeeded'),
-                self.check('operatorScope', 'cluster'),
-                self.check('operatorType', 'Flux'),
-         ])
+                 --enable-helm-operator
+                 --helm-operator-version 0.6.0
+                 --helm-operator-params \"--set git.ssh.secretName=flux-git-deploy --set tillerNamespace=kube-system\" ''',
+                 checks=[
+                     self.check('name', '{name}'),
+                     self.check('resourceGroup', '{rg}'),
+                     self.check('operatorInstanceName', '{opInstanceName}'),
+                     self.check('operatorNamespace', '{opNamespace}'),
+                     self.check('provisioningState', 'Succeeded'),
+                     self.check('operatorScope', 'namespace'),
+                     self.check('operatorType', 'Flux')
+                 ])
 
-        # count = len(self.cmd('k8sconfiguration list -g {rg} --cluster-name {clusterName}').get_output_in_json())
-        # self.cmd('k8sconfiguration show -g {rg} --cluster-name {clusterName} --name {name}', checks=[
-        #     self.check('name', '{name}'),
-        #     self.check('resourceGroup', '{rg}'),
-        #     self.check('tags.foo', 'None')
-        # ])
-        #
-        # self.cmd('k8sconfiguration delete -g {rg} --cluster-name {clusterName} --name {name}')
-        # final_count = len(self.cmd('k8sconfiguration list -g {rg} --cluster-name {clusterName}').get_output_in_json())
-        # self.assertTrue(final_count, count - 1)
+        # List the configurations again to see if we have one additional
+        newCount = len(self.cmd('k8sconfiguration list -g {rg} --cluster-name {clusterName}').get_output_in_json())
+        self.assertEqual(newCount, configCount + 1)
+
+        # Get the configuration created
+        self.cmd('k8sconfiguration show -g {rg} -c {clusterName} -n {name}',
+                 checks=[
+                     self.check('name', '{name}'),
+                     self.check('resourceGroup', '{rg}'),
+                     self.check('operatorInstanceName', '{opInstanceName}'),
+                     self.check('operatorNamespace', '{opNamespace}'),
+                     self.check('provisioningState', 'Succeeded'),
+                     self.check('operatorScope', 'namespace'),
+                     self.check('operatorType', 'Flux')
+                 ])
+
+        # Delete the created configuration
+        self.cmd('k8sconfiguration delete -g {rg} -c {clusterName} -n {name}')
+
+        # List Configurations and confirm the count is the same as we started
+        newCount = len(self.cmd('k8sconfiguration list -g {rg} --cluster-name {clusterName}').get_output_in_json())
+        self.assertEqual(newCount, configCount)

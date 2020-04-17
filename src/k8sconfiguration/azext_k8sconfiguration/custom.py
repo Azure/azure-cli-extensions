@@ -8,6 +8,7 @@ from knack.util import CLIError
 from azext_k8sconfiguration.vendored_sdks.models.source_control_configuration_py3 import SourceControlConfiguration
 from azext_k8sconfiguration.vendored_sdks.models.helm_operator_properties import HelmOperatorProperties
 
+
 def show_k8sconfiguration(client, resource_group_name, cluster_name, name, cluster_type='connectedClusters',
                           configuration_type='sourceControlConfiguration', api_version='2019-11-01-preview'):
     # Determine ClusterRP
@@ -30,6 +31,7 @@ def show_k8sconfiguration(client, resource_group_name, cluster_name, name, clust
 
     return client.get(resource_group_name, cluster_rp, cluster_type, cluster_name, source_control_configuration_name,
                       api_version)
+
 
 def create_k8sconfiguration(client, resource_group_name, cluster_name, name, repository_url,
                             operator_instance_name=None, operator_namespace='default', cluster_type='connectedClusters',
@@ -86,6 +88,7 @@ def create_k8sconfiguration(client, resource_group_name, cluster_name, name, rep
     return client.create_or_update(resource_group_name, cluster_rp, cluster_type, cluster_name,
                                    source_control_configuration_name, api_version, source_control_configuration)
 
+
 def update_k8sconfiguration(client, resource_group_name, cluster_name, name,
                             configuration_type='sourceControlConfiguration', cluster_type='connectedClusters',
                             repository_url=None, operator_params=None, enable_helm_operator=None,
@@ -140,6 +143,7 @@ def update_k8sconfiguration(client, resource_group_name, cluster_name, name,
     return client.create_or_update(resource_group_name, cluster_rp, cluster_type, cluster_name,
                                    source_control_configuration_name, api_version, config)
 
+
 def list_k8sconfiguration(client, resource_group_name, cluster_name, cluster_type='connectedClusters',
                           api_version='2019-11-01-preview'):
     if cluster_type.lower() == 'connectedclusters':
@@ -150,6 +154,7 @@ def list_k8sconfiguration(client, resource_group_name, cluster_name, cluster_typ
         raise CLIError("Invalid cluster-type.  Supported values are 'connectedClusters' and 'managedClusters'.")
 
     return client.list(resource_group_name, cluster_rp, cluster_type, cluster_name, api_version)
+
 
 def delete_k8sconfiguration(client, resource_group_name, cluster_name, name, cluster_type='connectedClusters',
                             configuration_type='sourceControlConfiguration', api_version='2019-11-01-preview'):

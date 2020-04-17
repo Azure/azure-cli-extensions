@@ -14,7 +14,6 @@ def load_command_table(self, _):
         operations_tmpl='azext_k8sconfiguration.vendored_sdks.operations#SourceControlConfigurationsOperations.{}',
         client_factory=cf_k8sconfiguration)
 
-
     with self.command_group('k8sconfiguration', k8sconfiguration_sdk, client_factory=cf_k8sconfiguration_operation) \
             as g:
         g.custom_command('create', 'create_k8sconfiguration')
@@ -22,8 +21,6 @@ def load_command_table(self, _):
         g.custom_command('delete', 'delete_k8sconfiguration')
         g.custom_command('list', 'list_k8sconfiguration')
         g.custom_command('show', 'show_k8sconfiguration')
-        #g.generic_update_command('update', setter_name='update', custom_func_name='update_k8sconfiguration')
-
 
     with self.command_group('k8sconfiguration', is_preview=True):
         pass
