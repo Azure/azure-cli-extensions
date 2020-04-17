@@ -16,7 +16,7 @@ from azure.cli.core.commands.validators import get_default_location_from_resourc
 
 
 def load_arguments(self, _):
-    #sourcecontrolconfiguration_type = CLIArgumentType(options_list='--sourcecontrolconfiguration-name',
+    # sourcecontrolconfiguration_type = CLIArgumentType(options_list='--sourcecontrolconfiguration-name',
     # help='Name of the K8sconfiguration.', id_part='name')
     sourcecontrolconfiguration_type = CLIArgumentType(help='Name of the K8sconfiguration.')
 
