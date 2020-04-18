@@ -31,17 +31,20 @@ def transform_app_table_output(result):
         item['Public Url'] = item['properties']['url']
 
         if 'activeDeployment' in item['properties']:
-            item['Status'] = item['properties']['activeDeployment']['properties']['status']
-            item['Instance Count'] = item['properties']['activeDeployment']['properties']['deploymentSettings']['instanceCount']
-            item['CPU'] = item['properties']['activeDeployment']['properties']['deploymentSettings']['cpu']
-            item['Memory'] = item['properties']['activeDeployment']['properties']['deploymentSettings']['memoryInGb']
+            isStarted = item['properties']['activeDeployment']['properties']['status'].upper() == "RUNNING"
+            instance_count = item['properties']['activeDeployment']['properties']['deploymentSettings']['instanceCount']
             instances = item['properties']['activeDeployment']['properties']['instances']
             if instances is None:
                 instances = []
             up_number = len(
-                [x for x in instances if x['discoveryStatus'] == 'UP'])
-            item['Discovery Status'] = "UP( {} ), DOWN( {} )".format(
-                up_number, len(instances) - up_number)
+                [x for x in instances if x['discoveryStatus'].upper() == 'UP' or x['discoveryStatus'].upper() == 'OUT_OF_SERVICE'])
+            running_number = len(
+                [x for x in instances if x['status'].upper() == "RUNNING"])
+            item['Provisioning Status'] = item['properties']['activeDeployment']['properties']['provisioningState']
+            item['CPU'] = item['properties']['activeDeployment']['properties']['deploymentSettings']['cpu']
+            item['Memory'] = item['properties']['activeDeployment']['properties']['deploymentSettings']['memoryInGb']
+            item['Running Instance'] = "{}/{}".format(running_number, instance_count) if isStarted else "Stopped"
+            item['Registered Instance'] = "{}/{}".format(up_number, instance_count) if isStarted else "Stopped"
 
         persistentStorage = item['properties']['persistentDisk']
         item['Persistent Storage'] = "{}/{} Gb".format(
@@ -57,16 +60,19 @@ def transform_spring_cloud_deployment_output(result):
         result = [result]
 
     for item in result:
-        item['App Name'] = item['properties']["appName"]
-        item['Status'] = item['properties']['status']
-        item['Instance Count'] = item['properties']['deploymentSettings']['instanceCount']
-        item['CPU'] = item['properties']['deploymentSettings']['cpu']
-        item['Memory'] = item['properties']['deploymentSettings']['memoryInGb']
+        isStarted = item['properties']['status'].upper() == "RUNNING"
+        instance_count = item['properties']['deploymentSettings']['instanceCount']
         instances = item['properties']['instances']
         if instances is None:
             instances = []
-        up_number = len([x for x in instances if x['discoveryStatus'] == 'UP'])
-        item['Discovery Status'] = "UP( {} ), DOWN( {} )".format(
-            up_number, len(instances) - up_number)
+        up_number = len(
+            [x for x in instances if x['discoveryStatus'].upper() == 'UP' or x['discoveryStatus'].upper() == 'OUT_OF_SERVICE'])
+        running_number = len([x for x in instances if x['status'].upper() == "RUNNING"])
+        item['App Name'] = item['properties']["appName"]
+        item['Provisioning Status'] = item['properties']['provisioningState']
+        item['CPU'] = item['properties']['deploymentSettings']['cpu']
+        item['Memory'] = item['properties']['deploymentSettings']['memoryInGb']
+        item['Running Instance'] = "{}/{}".format(running_number, instance_count) if isStarted else "Stopped"
+        item['Registered Instance'] = "{}/{}".format(up_number, instance_count) if isStarted else "Stopped"
 
     return result if is_list else result[0]
