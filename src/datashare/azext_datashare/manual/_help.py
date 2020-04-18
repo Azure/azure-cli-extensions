@@ -96,16 +96,16 @@ helps['datashare consumer invitation show'] = """
     examples:
       - name: Show an invitation
         text: |-
-               az datashare consumer invitation show --invitation-id "dfbbc788-19eb-4607-a5a1-c74181bfff03" --location "East US 2"
+               az datashare consumer invitation show --invitation-id 00000000-0000-0000-0000-000000000000 --location "East US 2"
 """
 
-helps['datashare consumer invitation reject-invitation'] = """
+helps['datashare consumer invitation reject'] = """
     type: command
     short-summary: Reject an invitation
     examples:
       - name: Reject an invitation
         text: |-
-               az datashare consumer invitation reject-invitation --invitation-id "dfbbc788-19eb-4607-a5a1-c74181bfff03" --location "East US 2"
+               az datashare consumer invitation reject --invitation-id 00000000-0000-0000-0000-000000000000 --location "East US 2"
 """
 
 helps['datashare dataset'] = """
@@ -119,7 +119,7 @@ helps['datashare dataset list'] = """
     examples:
       - name: List datasets
         text: |-
-               az datashare dataset list --account-name MyAccount --resource-group MyResourceGroup --share-name "Share1"
+               az datashare dataset list --account-name MyAccount --resource-group MyResourceGroup --share-name MyShare
 """
 
 helps['datashare dataset show'] = """
@@ -128,7 +128,7 @@ helps['datashare dataset show'] = """
     examples:
       - name: Show a dataset
         text: |-
-               az datashare dataset show --account-name MyAccount --name "Dataset1" --resource-group MyResourceGroup --share-name "Share1"
+               az datashare dataset show --account-name MyAccount --name MyDataset --resource-group MyResourceGroup --share-name MyShare
 """
 
 helps['datashare dataset create'] = """
@@ -137,31 +137,31 @@ helps['datashare dataset create'] = """
     examples:
       - name: Create a Blob dataset
         text: |-
-               az datashare dataset create --account-name MyAccount --name "Dataset1" --resource-group MyResourceGroup --share-name "Share1" \
+               az datashare dataset create --account-name MyAccount --name MyDataset --resource-group MyResourceGroup --share-name MyShare \
 --dataset "{\\"kind\\":\\"Blob\\",\\"properties\\":{\\"containerName\\":\\"C1\\",\\"filePath\\":\\"file21\\",\\"resourceGroup\\": \
-\\"SampleResourceGroup\\",\\"storageAccountName\\":\\"storage2\\",\\"subscriptionId\\":\\"433a8dfd-e5d5-4e77-ad86-90acdc75eb1a\\"}}"
+\\"SampleResourceGroup\\",\\"storageAccountName\\":\\"storage2\\",\\"subscriptionId\\":\\"00000000-0000-0000-0000-000000000000\\"}}"
       - name: Create a KustoCluster dataset
         text: |-
-               az datashare dataset create --account-name MyAccount --name "Dataset1" --resource-group MyResourceGroup --share-name "Share1" \
+               az datashare dataset create --account-name MyAccount --name MyDataset --resource-group MyResourceGroup --share-name MyShare \
 --dataset "{\\"kind\\":\\"KustoCluster\\",\\"properties\\":{\\"kustoClusterResourceId\\": \
-\\"/subscriptions/433a8dfd-e5d5-4e77-ad86-90acdc75eb1a/resourceGroups/SampleResourceGroup/providers/Microsoft.Kusto/clusters/Cluster1\\"}}"
+\\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SampleResourceGroup/providers/Microsoft.Kusto/clusters/Cluster1\\"}}"
       - name: Create a KustoDatabase dataset
         text: |-
-               az datashare dataset create --account-name MyAccount --name "Dataset1" --resource-group MyResourceGroup --share-name "Share1" \
+               az datashare dataset create --account-name MyAccount --name MyDataset --resource-group MyResourceGroup --share-name MyShare \
 --dataset "{\\"kind\\":\\"KustoDatabase\\",\\"properties\\":{\\"kustoDatabaseResourceId\\": \
-\\"/subscriptions/433a8dfd-e5d5-4e77-ad86-90acdc75eb1a/resourceGroups/SampleResourceGroup/providers/Microsoft.Kusto/clusters/Cluster1/databases/Database1\\"}}"
+\\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SampleResourceGroup/providers/Microsoft.Kusto/clusters/Cluster1/databases/Database1\\"}}"
       - name: Create a SqlDBTable dataset
         text: |-
-               az datashare dataset create --account-name MyAccount --name "Dataset1" --resource-group MyResourceGroup --share-name "Share1" \
---dataset "{\\"kind\\":\\"SqlDBTable\\",\\"properties\\":{\\"databaseName\\":\\"SqlDB1\\",\\"schemaName\\":\\"dbo\\", \
-\\"sqlServerResourceId\\":\\"/subscriptions/433a8dfd-e5d5-4e77-ad86-90acdc75eb1a/resourceGroups/SampleResourceGroup/providers/Microsoft.Sql/servers/Server1\\", \
+               az datashare dataset create --account-name MyAccount --name MyDataset --resource-group MyResourceGroup --share-name MyShare \
+--dataset "{\\"kind\\":\\"SqlDBTable\\",\\"properties\\":{\\"databaseName\\":\\"MySqlDB\\",\\"schemaName\\":\\"dbo\\", \
+\\"sqlServerResourceId\\":\\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SampleResourceGroup/providers/Microsoft.Sql/servers/Server1\\", \
 \\"tableName\\":\\"Table1\\"}}"
       - name: Create a SqlDWTable dataset
         text: |-
-               az datashare dataset create --account-name MyAccount --name "Dataset1" --resource-group MyResourceGroup --share-name "Share1" \
---dataset "{\\"kind\\":\\"SqlDWTable\\",\\"properties\\":{\\"dataWarehouseName\\":\\"DataWarehouse1\\",\\"schemaName\\":\\"dbo\\", \
-\\"sqlServerResourceId\\":\\"/subscriptions/433a8dfd-e5d5-4e77-ad86-90acdc75eb1a/resourceGroups/SampleResourceGroup/providers/Microsoft.Sql/servers/Server1\
-\\",\\"tableName\\":\\"Table1\\"}}"
+               az datashare dataset create --account-name MyAccount --name MyDataset --resource-group MyResourceGroup --share-name MyShare \
+--dataset "{\\"kind\\":\\"SqlDWTable\\",\\"properties\\":{\\"dataWarehouseName\\":\\"MyDataWarehouse\\",\\"schemaName\\":\\"dbo\\", \
+\\"sqlServerResourceId\\":\\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Sql/servers/MyServer\
+\\",\\"tableName\\":\\"MyTable\\"}}"
 """
 
 helps['datashare dataset delete'] = """
@@ -170,7 +170,7 @@ helps['datashare dataset delete'] = """
     examples:
       - name: Delete a dataset
         text: |-
-               az datashare dataset delete --account-name MyAccount --name "Dataset1" --resource-group MyResourceGroup --share-name "Share1"
+               az datashare dataset delete --account-name MyAccount --name MyDataset --resource-group MyResourceGroup --share-name MyShare
 """
 
 helps['datashare dataset wait'] = """
@@ -178,7 +178,7 @@ helps['datashare dataset wait'] = """
     short-summary: Place the CLI in a waiting state until a condition of the datashare dataset is met.
     examples:
         - name: Pause executing next line of CLI script until the datashare dataset is successfully provisioned.
-          text: az datashare dataset wait --account-name MyAccount --share-name "Share1" --name "Dataset1" --resource-group MyResourceGroup --created
+          text: az datashare dataset wait --account-name MyAccount --share-name MyShare --name MyDataset --resource-group MyResourceGroup --created
 """
 
 helps['datashare consumer dataset-mapping'] = """
@@ -192,7 +192,7 @@ helps['datashare consumer dataset-mapping list'] = """
     examples:
       - name: List dataset mappings
         text: |-
-               az datashare consumer dataset-mapping list --account-name MyAccount --resource-group MyResourceGroup --share-subscription-name "ShareSubscription1"
+               az datashare consumer dataset-mapping list --account-name MyAccount --resource-group MyResourceGroup --share-subscription-name MyShareSubscription
 """
 
 helps['datashare consumer dataset-mapping show'] = """
@@ -201,7 +201,7 @@ helps['datashare consumer dataset-mapping show'] = """
     examples:
       - name: Show a dataset mapping
         text: |-
-               az datashare consumer dataset-mapping show --account-name MyAccount --name "DatasetMapping1" --resource-group MyResourceGroup --share-subscription-name "ShareSubscription1"
+               az datashare consumer dataset-mapping show --account-name MyAccount --name MyDatasetMapping --resource-group MyResourceGroup --share-subscription-name MyShareSubscription
 """
 
 helps['datashare consumer dataset-mapping create'] = """
@@ -210,24 +210,24 @@ helps['datashare consumer dataset-mapping create'] = """
     examples:
       - name: Create a Blob dataset mapping
         text: |-
-               az datashare consumer dataset-mapping create --account-name MyAccount --name "DatasetMapping1" --resource-group MyResourceGroup --share-subscription-name "ShareSubscription1" \
---mapping "{\\"kind\\":\\"Blob\\",\\"properties\\":{\\"containerName\\":\\"C1\\",\\"dataSetId\\":\\"a08f184b-0567-4b11-ba22-a1199336d226\\",\\"filePath\
-\\":\\"file21\\",\\"resourceGroup\\":\\"SampleResourceGroup\\",\\"storageAccountName\\":\\"storage2\\",\\"subscriptionId\\":\\"433a8dfd-e5d5-4e77-ad86-90acdc75eb1a\\"}}"
+               az datashare consumer dataset-mapping create --account-name MyAccount --name MyDatasetMapping --resource-group MyResourceGroup --share-subscription-name MyShareSubscription \
+--mapping "{\\"kind\\":\\"Blob\\",\\"properties\\":{\\"containerName\\":\\"C1\\",\\"dataSetId\\":\\"00000000-0000-0000-0000-000000000000\\",\\"filePath\
+\\":\\"file21\\",\\"resourceGroup\\":\\"SampleResourceGroup\\",\\"storageAccountName\\":\\"storage2\\",\\"subscriptionId\\":\\"00000000-0000-0000-0000-000000000000\\"}}"
       - name: Create a SqlDBTable dataset mapping
         text: |-
-               az datashare consumer dataset-mapping create --account-name MyAccount --name "DatasetMapping1" --resource-group MyResourceGroup --share-subscription-name "ShareSubscription1" \
---mapping "{\\"kind\\":\\"SqlDBTable\\",\\"properties\\":{\\"dataSetId\\":\\"a08f184b-0567-4b11-ba22-a1199336d226\\",\\"databaseName\\":\\"Database1\\"\
-,\\"schemaName\\":\\"dbo\\",\\"sqlServerResourceId\\":\\"/subscriptions/433a8dfd-e5d5-4e77-ad86-90acdc75eb1a/resourceGroups/SampleResourceGroup/providers/Microsoft.Sql/servers/Server1\\",\\"tableName\\":\\"Table1\\"}}"
+               az datashare consumer dataset-mapping create --account-name MyAccount --name MyDatasetMapping --resource-group MyResourceGroup --share-subscription-name MyShareSubscription \
+--mapping "{\\"kind\\":\\"SqlDBTable\\",\\"properties\\":{\\"dataSetId\\":\\"00000000-0000-0000-0000-000000000000\\",\\"databaseName\\":\\"Database1\\"\
+,\\"schemaName\\":\\"dbo\\",\\"sqlServerResourceId\\":\\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SampleResourceGroup/providers/Microsoft.Sql/servers/Server1\\",\\"tableName\\":\\"Table1\\"}}"
       - name: Create a AdlsGen2File dataset mapping
         text: |-
-               az datashare consumer dataset-mapping create --account-name MyAccount --name "DatasetMapping1" --resource-group MyResourceGroup --share-subscription-name "ShareSubscription1" \
---mapping "{\\"kind\\":\\"AdlsGen2File\\",\\"properties\\":{\\"dataSetId\\":\\"a08f184b-0567-4b11-ba22-a1199336d226\\",\\"filePath\\":\\"file21\\",\\"fileSystem\\": \
-\\"fileSystem\\",\\"outputType\\":\\"Csv\\",\\"resourceGroup\\":\\"SampleResourceGroup\\",\\"storageAccountName\\":\\"storage2\\",\\"subscriptionId\\":\\"433a8dfd-e5d5-4e77-ad86-90acdc75eb1a\\"}}"
+               az datashare consumer dataset-mapping create --account-name MyAccount --name MyDatasetMapping --resource-group MyResourceGroup --share-subscription-name MyShareSubscription \
+--mapping "{\\"kind\\":\\"AdlsGen2File\\",\\"properties\\":{\\"dataSetId\\":\\"00000000-0000-0000-0000-000000000000\\",\\"filePath\\":\\"file21\\",\\"fileSystem\\": \
+\\"fileSystem\\",\\"outputType\\":\\"Csv\\",\\"resourceGroup\\":\\"SampleResourceGroup\\",\\"storageAccountName\\":\\"storage2\\",\\"subscriptionId\\":\\"00000000-0000-0000-0000-000000000000\\"}}"
       - name: Create a SqlDWTable dataset mapping
         text: |-
-               az datashare consumer dataset-mapping create --account-name MyAccount --name "DatasetMapping1" --resource-group MyResourceGroup --share-subscription-name "ShareSubscription1" \
---mapping "{\\"kind\\":\\"SqlDWTable\\",\\"properties\\":{\\"dataSetId\\":\\"a08f184b-0567-4b11-ba22-a1199336d226\\",\\"dataWarehouseName\\":\\"DataWarehouse1\\",\
-\\"schemaName\\":\\"dbo\\",\\"sqlServerResourceId\\":\\"/subscriptions/433a8dfd-e5d5-4e77-ad86-90acdc75eb1a/resourceGroups/SampleResourceGroup/providers/Microsoft.Sql/servers/Server1\\",\\"tableName\\":\\"Table1\\"}}"
+               az datashare consumer dataset-mapping create --account-name MyAccount --name MyDatasetMapping --resource-group MyResourceGroup --share-subscription-name MyShareSubscription \
+--mapping "{\\"kind\\":\\"SqlDWTable\\",\\"properties\\":{\\"dataSetId\\":\\"00000000-0000-0000-0000-000000000000\\",\\"dataWarehouseName\\":\\"DataWarehouse1\\",\
+\\"schemaName\\":\\"dbo\\",\\"sqlServerResourceId\\":\\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SampleResourceGroup/providers/Microsoft.Sql/servers/Server1\\",\\"tableName\\":\\"Table1\\"}}"
 """
 
 helps['datashare consumer dataset-mapping delete'] = """
@@ -236,7 +236,7 @@ helps['datashare consumer dataset-mapping delete'] = """
     examples:
       - name: Delete a dataset mapping
         text: |-
-               az datashare consumer dataset-mapping delete --account-name MyAccount --name "DatasetMapping1" --resource-group MyResourceGroup --share-subscription-name "ShareSubscription1"
+               az datashare consumer dataset-mapping delete --account-name MyAccount --name MyDatasetMapping --resource-group MyResourceGroup --share-subscription-name MyShareSubscription
 """
 
 helps['datashare invitation'] = """
@@ -250,7 +250,7 @@ helps['datashare invitation list'] = """
     examples:
       - name: List invitations
         text: |-
-               az datashare invitation list --account-name MyAccount --resource-group MyResourceGroup --share-name "Share1"
+               az datashare invitation list --account-name MyAccount --resource-group MyResourceGroup --share-name MyShare
 """
 
 helps['datashare invitation show'] = """
@@ -259,7 +259,7 @@ helps['datashare invitation show'] = """
     examples:
       - name: Show an invitation
         text: |-
-               az datashare invitation show --account-name MyAccount --name "Invitation1" --resource-group MyResourceGroup --share-name "Share1"
+               az datashare invitation show --account-name MyAccount --name MyInvitation --resource-group MyResourceGroup --share-name MyShare
 """
 
 helps['datashare invitation create'] = """
@@ -268,7 +268,7 @@ helps['datashare invitation create'] = """
     examples:
       - name: Create an invitation
         text: |-
-               az datashare invitation create --account-name MyAccount --target-email "receiver@microsoft.com" --name "Invitation1" --resource-group MyResourceGroup --share-name "Share1"
+               az datashare invitation create --account-name MyAccount --target-email "receiver@microsoft.com" --name MyInvitation --resource-group MyResourceGroup --share-name MyShare
 """
 
 helps['datashare invitation delete'] = """
@@ -277,7 +277,7 @@ helps['datashare invitation delete'] = """
     examples:
       - name: Delete an invitation
         text: |-
-               az datashare invitation delete --account-name MyAccount --name "Invitation1" --resource-group MyResourceGroup --share-name "Share1"
+               az datashare invitation delete --account-name MyAccount --name MyInvitation --resource-group MyResourceGroup --share-name MyShare
 """
 
 helps['datashare'] = """
@@ -300,7 +300,7 @@ helps['datashare show'] = """
     examples:
       - name: Show a datashare
         text: |-
-               az datashare show --account-name MyAccount --resource-group MyResourceGroup --name "Share1"
+               az datashare show --account-name MyAccount --resource-group MyResourceGroup --name MyShare
 """
 
 helps['datashare create'] = """
@@ -309,7 +309,7 @@ helps['datashare create'] = """
     examples:
       - name: Create a datashare
         text: |-
-               az datashare create --account-name MyAccount --resource-group MyResourceGroup --description "share description" --share-kind "CopyBased" --terms "Confidential" --name "Share1"
+               az datashare create --account-name MyAccount --resource-group MyResourceGroup --description "share description" --share-kind "CopyBased" --terms "Confidential" --name MyShare
 """
 
 helps['datashare delete'] = """
@@ -318,7 +318,7 @@ helps['datashare delete'] = """
     examples:
       - name: Delete a datashare
         text: |-
-               az datashare delete --account-name MyAccount --resource-group MyResourceGroup --name "Share1"
+               az datashare delete --account-name MyAccount --resource-group MyResourceGroup --name MyShare
 """
 
 helps['datashare synchronization'] = """
@@ -332,7 +332,7 @@ helps['datashare synchronization list-detail'] = """
     examples:
       - name: List synchronization details
         text: |-
-               az datashare synchronization list-detail --account-name MyAccount --resource-group MyResourceGroup --share-name "Share1" --synchronization-id "7d0536a6-3fa5-43de-b152-3d07c4f6b2bb"
+               az datashare synchronization list-detail --account-name MyAccount --resource-group MyResourceGroup --share-name MyShare --synchronization-id 00000000-0000-0000-0000-000000000000
 """
 
 helps['datashare synchronization list'] = """
@@ -341,7 +341,7 @@ helps['datashare synchronization list'] = """
     examples:
       - name: List synchronizations
         text: |-
-               az datashare synchronization list --account-name MyAccount --resource-group MyResourceGroup --share-name "Share1"
+               az datashare synchronization list --account-name MyAccount --resource-group MyResourceGroup --share-name MyShare
 """
 
 helps['datashare wait'] = """
@@ -349,7 +349,7 @@ helps['datashare wait'] = """
     short-summary: Place the CLI in a waiting state until a condition of the datashare is met.
     examples:
         - name: Pause executing next line of CLI script until the datashare is successfully provisioned.
-          text: az datashare wait --account-name MyAccount --resource-group MyResourceGroup --name "Share1" --created
+          text: az datashare wait --account-name MyAccount --resource-group MyResourceGroup --name MyShare --created
 """
 
 helps['datashare provider-share-subscription'] = """
@@ -363,7 +363,7 @@ helps['datashare provider-share-subscription list'] = """
     examples:
       - name: List share subscriptions
         text: |-
-               az datashare provider-share-subscription list --account-name MyAccount --resource-group MyResourceGroup --share-name "Share1"
+               az datashare provider-share-subscription list --account-name MyAccount --resource-group MyResourceGroup --share-name MyShare
 """
 
 helps['datashare provider-share-subscription show'] = """
@@ -372,7 +372,7 @@ helps['datashare provider-share-subscription show'] = """
     examples:
       - name: Show a share subscription
         text: |-
-               az datashare provider-share-subscription show --account-name MyAccount --share-subscription "d5496da4-9c52-402f-b067-83cc9ddea888" --resource-group MyResourceGroup --share-name "Share1"
+               az datashare provider-share-subscription show --account-name MyAccount --share-subscription 00000000-0000-0000-0000-000000000000 --resource-group MyResourceGroup --share-name MyShare
 """
 
 helps['datashare provider-share-subscription revoke'] = """
@@ -381,7 +381,7 @@ helps['datashare provider-share-subscription revoke'] = """
     examples:
       - name: Revoke a share subscription
         text: |-
-               az datashare provider-share-subscription revoke --account-name MyAccount --share-subscription "d5496da4-9c52-402f-b067-83cc9ddea888" --resource-group MyResourceGroup --share-name "Share1"
+               az datashare provider-share-subscription revoke --account-name MyAccount --share-subscription 00000000-0000-0000-0000-000000000000 --resource-group MyResourceGroup --share-name MyShare
 """
 
 helps['datashare provider-share-subscription reinstate'] = """
@@ -390,7 +390,7 @@ helps['datashare provider-share-subscription reinstate'] = """
     examples:
       - name: Reinstate a share subscription
         text: |-
-               az datashare provider-share-subscription reinstate --account-name MyAccount --share-subscription "d5496da4-9c52-402f-b067-83cc9ddea888" --resource-group MyResourceGroup --share-name "Share1"
+               az datashare provider-share-subscription reinstate --account-name MyAccount --share-subscription 00000000-0000-0000-0000-000000000000 --resource-group MyResourceGroup --share-name MyShare
 """
 
 helps['datashare provider-share-subscription wait'] = """
@@ -398,7 +398,7 @@ helps['datashare provider-share-subscription wait'] = """
     short-summary: Place the CLI in a waiting state until a condition of the datashare provider share subscription is met.
     examples:
         - name: Pause executing next line of CLI script until the datashare provider share subscription is successfully provisioned.
-          text: az datashare provider-share-subscription wait --account-name MyAccount --share-subscription "d5496da4-9c52-402f-b067-83cc9ddea888" --resource-group MyResourceGroup --share-name "Share1" --created
+          text: az datashare provider-share-subscription wait --account-name MyAccount --share-subscription 00000000-0000-0000-0000-000000000000 --resource-group MyResourceGroup --share-name MyShare --created
 """
 
 helps['datashare consumer share-subscription'] = """
@@ -421,7 +421,7 @@ helps['datashare consumer share-subscription show'] = """
     examples:
       - name: Show a share subscription
         text: |-
-               az datashare consumer share-subscription show --account-name MyAccount --resource-group MyResourceGroup --name "ShareSubscription1"
+               az datashare consumer share-subscription show --account-name MyAccount --resource-group MyResourceGroup --name MyShareSubscription
 """
 
 helps['datashare consumer share-subscription create'] = """
@@ -430,7 +430,7 @@ helps['datashare consumer share-subscription create'] = """
     examples:
       - name: Create a share subscription
         text: |-
-               az datashare consumer share-subscription create --account-name MyAccount --resource-group MyResourceGroup --invitation-id "12345678-1234-1234-12345678abd" --source-share-location "eastus2" --name "ShareSubscription1"
+               az datashare consumer share-subscription create --account-name MyAccount --resource-group MyResourceGroup --invitation-id 00000000-0000-0000-0000-000000000000 --source-share-location "eastus2" --name MyShareSubscription
 """
 
 helps['datashare consumer share-subscription delete'] = """
@@ -439,7 +439,7 @@ helps['datashare consumer share-subscription delete'] = """
     examples:
       - name: Delete a share subscription
         text: |-
-               az datashare consumer share-subscription delete --account-name MyAccount --resource-group MyResourceGroup --name "ShareSubscription1"
+               az datashare consumer share-subscription delete --account-name MyAccount --resource-group MyResourceGroup --name MyShareSubscription
 """
 
 helps['datashare consumer share-subscription synchronization'] = """
@@ -453,7 +453,7 @@ helps['datashare consumer share-subscription synchronization list-detail'] = """
     examples:
       - name: List synchronization details
         text: |-
-               az datashare consumer share-subscription synchronization list-detail --account-name MyAccount --resource-group MyResourceGroup --share-subscription-name "ShareSub1" --synchronization-id "7d0536a6-3fa5-43de-b152-3d07c4f6b2bb"
+               az datashare consumer share-subscription synchronization list-detail --account-name MyAccount --resource-group MyResourceGroup --share-subscription-name MyShareSub --synchronization-id 00000000-0000-0000-0000-000000000000
 """
 
 helps['datashare consumer share-subscription synchronization start'] = """
@@ -462,7 +462,7 @@ helps['datashare consumer share-subscription synchronization start'] = """
     examples:
       - name: Initiate a dataset synchronization
         text: |-
-               az datashare consumer share-subscription synchronization start --account-name MyAccount --resource-group MyResourceGroup --share-subscription-name "ShareSubscription1" --synchronization-mode "Incremental"
+               az datashare consumer share-subscription synchronization start --account-name MyAccount --resource-group MyResourceGroup --share-subscription-name MyShareSubscription --synchronization-mode "Incremental"
 """
 
 helps['datashare consumer share-subscription synchronization cancel'] = """
@@ -471,7 +471,7 @@ helps['datashare consumer share-subscription synchronization cancel'] = """
     examples:
       - name: Request to cancel a synchronization
         text: |-
-               az datashare consumer share-subscription synchronization cancel --account-name MyAccount --resource-group MyResourceGroup --share-subscription-name "ShareSubscription1" --synchronization-id "7d0536a6-3fa5-43de-b152-3d07c4f6b2bb"
+               az datashare consumer share-subscription synchronization cancel --account-name MyAccount --resource-group MyResourceGroup --share-subscription-name MyShareSubscription --synchronization-id 00000000-0000-0000-0000-000000000000
 """
 
 helps['datashare consumer share-subscription synchronization wait'] = """
@@ -479,9 +479,9 @@ helps['datashare consumer share-subscription synchronization wait'] = """
     short-summary: Place the CLI in a waiting state until a condition of the datashare share subscription synchronization is met.
     examples:
         - name: Pause executing next line of CLI script until the datashare share subscription synchronization finishes successfully.
-          text: az datashare consumer share-subscription synchronization wait --custom "status=='Succeeded'" --account-name MyAccount --resource-group MyResourceGroup --share-subscription-name "ShareSubscription1" --synchronization-id "7d0536a6-3fa5-43de-b152-3d07c4f6b2bb"
+          text: az datashare consumer share-subscription synchronization wait --custom "status=='Succeeded'" --account-name MyAccount --resource-group MyResourceGroup --share-subscription-name MyShareSubscription --synchronization-id 00000000-0000-0000-0000-000000000000
         - name: Pause executing next line of CLI script until the datashare share subscription synchronization is cancelled.
-          text: az datashare consumer share-subscription synchronization wait --custom "status=='Cancelled'" --account-name MyAccount --resource-group MyResourceGroup --share-subscription-name "ShareSubscription1" --synchronization-id "7d0536a6-3fa5-43de-b152-3d07c4f6b2bb"
+          text: az datashare consumer share-subscription synchronization wait --custom "status=='Cancelled'" --account-name MyAccount --resource-group MyResourceGroup --share-subscription-name MyShareSubscription --synchronization-id 00000000-0000-0000-0000-000000000000
 """
 
 helps['datashare consumer share-subscription list-source-share-synchronization-setting'] = """
@@ -490,7 +490,7 @@ helps['datashare consumer share-subscription list-source-share-synchronization-s
     examples:
       - name: List synchronization settings
         text: |-
-               az datashare consumer share-subscription list-source-share-synchronization-setting --account-name MyAccount --resource-group MyResourceGroup --share-subscription-name "ShareSub1"
+               az datashare consumer share-subscription list-source-share-synchronization-setting --account-name MyAccount --resource-group MyResourceGroup --share-subscription-name MyShareSub
 """
 
 helps['datashare consumer share-subscription synchronization list'] = """
@@ -499,7 +499,7 @@ helps['datashare consumer share-subscription synchronization list'] = """
     examples:
       - name: List synchronizations
         text: |-
-               az datashare consumer share-subscription synchronization list --account-name MyAccount --resource-group MyResourceGroup --share-subscription-name "ShareSub1"
+               az datashare consumer share-subscription synchronization list --account-name MyAccount --resource-group MyResourceGroup --share-subscription-name MyShareSub
 """
 
 helps['datashare consumer share-subscription wait'] = """
@@ -507,7 +507,7 @@ helps['datashare consumer share-subscription wait'] = """
     short-summary: Place the CLI in a waiting state until a condition of the datashare share subscription is met.
     examples:
         - name: Pause executing next line of CLI script until the datashare share subscription is successfully provisioned.
-          text: az datashare consumer share-subscription wait --account-name MyAccount --resource-group MyResourceGroup --name "ShareSubscription1" --created
+          text: az datashare consumer share-subscription wait --account-name MyAccount --resource-group MyResourceGroup --name MyShareSubscription --created
 """
 
 helps['datashare consumer share-subscription list-source-dataset'] = """
@@ -516,7 +516,7 @@ helps['datashare consumer share-subscription list-source-dataset'] = """
     examples:
       - name: List source datasets
         text: |-
-               az datashare consumer share-subscription list-source-dataset --account-name MyAccount --resource-group MyResourceGroup --share-subscription-name "Share1"
+               az datashare consumer share-subscription list-source-dataset --account-name MyAccount --resource-group MyResourceGroup --share-subscription-name MyShare
 """
 
 helps['datashare synchronization-setting'] = """
@@ -530,7 +530,7 @@ helps['datashare synchronization-setting list'] = """
     examples:
       - name: List synchronization settings
         text: |-
-               az datashare synchronization-setting list --account-name MyAccount --resource-group MyResourceGroup --share-name "Share1"
+               az datashare synchronization-setting list --account-name MyAccount --resource-group MyResourceGroup --share-name MyShare
 """
 
 helps['datashare synchronization-setting show'] = """
@@ -539,7 +539,7 @@ helps['datashare synchronization-setting show'] = """
     examples:
       - name: Show a synchronization setting
         text: |-
-               az datashare synchronization-setting show --account-name MyAccount --resource-group MyResourceGroup --share-name "Share1" --name "SyncrhonizationSetting1"
+               az datashare synchronization-setting show --account-name MyAccount --resource-group MyResourceGroup --share-name MyShare --name MySyncrhonizationSetting
 """
 
 helps['datashare synchronization-setting create'] = """
@@ -548,7 +548,7 @@ helps['datashare synchronization-setting create'] = """
     examples:
       - name: Create a synchronization setting
         text: |-
-               az datashare synchronization-setting create --account-name MyAccount --resource-group MyResourceGroup --share-name "Share1" --name "Dataset1" --setting "{\"recurrenceInterval\":\"Day\",\"synchronizationTime\":\"2020-04-05T10:50:00Z\",\"kind\":\"ScheduleBased\"}"
+               az datashare synchronization-setting create --account-name MyAccount --resource-group MyResourceGroup --share-name MyShare --name MyDataset --setting "{\"recurrenceInterval\":\"Day\",\"synchronizationTime\":\"2020-04-05T10:50:00Z\",\"kind\":\"ScheduleBased\"}"
 """
 
 helps['datashare synchronization-setting delete'] = """
@@ -557,7 +557,7 @@ helps['datashare synchronization-setting delete'] = """
     examples:
       - name: Delete a synchronization setting
         text: |-
-               az datashare synchronization-setting delete --account-name MyAccount --resource-group MyResourceGroup --share-name "Share1" --name "SyncrhonizationSetting1"
+               az datashare synchronization-setting delete --account-name MyAccount --resource-group MyResourceGroup --share-name MyShare --name MySyncrhonizationSetting
 """
 
 helps['datashare synchronization-setting wait'] = """
@@ -565,7 +565,7 @@ helps['datashare synchronization-setting wait'] = """
     short-summary: Place the CLI in a waiting state until a condition of the datashare synchronization setting is met.
     examples:
         - name: Pause executing next line of CLI script until the datashare synchronization setting is successfully provisioned.
-          text: az datashare synchronization-setting wait --account-name MyAccount --resource-group MyResourceGroup --share-name "Share1" --name "SyncrhonizationSetting1" --created
+          text: az datashare synchronization-setting wait --account-name MyAccount --resource-group MyResourceGroup --share-name MyShare --name MySyncrhonizationSetting --created
 """
 
 helps['datashare consumer trigger'] = """
@@ -579,7 +579,7 @@ helps['datashare consumer trigger list'] = """
     examples:
       - name: List triggers
         text: |-
-               az datashare consumer trigger list --account-name MyAccount --resource-group MyResourceGroup --share-subscription-name "ShareSubscription1"
+               az datashare consumer trigger list --account-name MyAccount --resource-group MyResourceGroup --share-subscription-name MyShareSubscription
 """
 
 helps['datashare consumer trigger show'] = """
@@ -588,7 +588,7 @@ helps['datashare consumer trigger show'] = """
     examples:
       - name: Show a trigger
         text: |-
-               az datashare consumer trigger show --account-name MyAccount --resource-group MyResourceGroup --share-subscription-name "ShareSubscription1" --name "Trigger1"
+               az datashare consumer trigger show --account-name MyAccount --resource-group MyResourceGroup --share-subscription-name MyShareSubscription --name MyTrigger
 """
 
 helps['datashare consumer trigger create'] = """
@@ -597,7 +597,7 @@ helps['datashare consumer trigger create'] = """
     examples:
       - name: Create a trigger
         text: |-
-               az datashare consumer trigger create --account-name MyAccount --resource-group MyResourceGroup --share-subscription-name "ShareSubscription1" --name "Trigger1" --trigger "{\"kind\":\"ScheduleBased\",\"recurrenceInterval\":\"Day\",\"synchronizationTime\":\"2020-04-03T08:45:35+00:00\"}"
+               az datashare consumer trigger create --account-name MyAccount --resource-group MyResourceGroup --share-subscription-name MyShareSubscription --name MyTrigger --trigger "{\"kind\":\"ScheduleBased\",\"recurrenceInterval\":\"Day\",\"synchronizationTime\":\"2020-04-03T08:45:35+00:00\"}"
 """
 
 helps['datashare consumer trigger delete'] = """
@@ -606,7 +606,7 @@ helps['datashare consumer trigger delete'] = """
     examples:
       - name: Delete a trigger
         text: |-
-               az datashare consumer trigger delete --account-name MyAccount --resource-group MyResourceGroup --share-subscription-name "ShareSubscription1" --name "Trigger1"
+               az datashare consumer trigger delete --account-name MyAccount --resource-group MyResourceGroup --share-subscription-name MyShareSubscription --name MyTrigger
 """
 
 helps['datashare consumer trigger wait'] = """
@@ -614,5 +614,5 @@ helps['datashare consumer trigger wait'] = """
     short-summary: Place the CLI in a waiting state until a condition of the datashare trigger is met.
     examples:
         - name: Pause executing next line of CLI script until the datashare trigger is successfully provisioned.
-          text: az datashare consumer trigger wait --account-name MyAccount --resource-group MyResourceGroup --share-subscription-name "ShareSubscription1" --name "Trigger1" --created
+          text: az datashare consumer trigger wait --account-name MyAccount --resource-group MyResourceGroup --share-subscription-name MyShareSubscription --name MyTrigger --created
 """

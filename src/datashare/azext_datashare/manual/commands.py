@@ -29,7 +29,7 @@ def load_command_table(self, _):
     with self.command_group('datashare consumer invitation', datashare_consumer_invitation, client_factory=cf_consumer_invitation) as g:
         g.custom_command('list', 'datashare_consumer_invitation_list')
         g.custom_show_command('show', 'datashare_consumer_invitation_show')
-        g.custom_command('reject-invitation', 'datashare_consumer_invitation_reject_invitation')
+        g.custom_command('reject', 'datashare_consumer_invitation_reject_invitation')
 
     from azext_datashare.generated._client_factory import cf_data_set
     datashare_data_set = CliCommandType(

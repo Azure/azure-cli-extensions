@@ -299,8 +299,8 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
                          self.check('shareName', '{ProviderShare}'),
                          self.check('providerEmail', '{ProviderEmail}')])
 
-#         self.cmd('az datashare consumer invitation reject-invitation '
-#                  '--invitation-id "dfbbc788-19eb-4607-a5a1-c74181bfff03" '
+#         self.cmd('az datashare consumer invitation reject '
+#                  '--invitation-id 00000000-0000-0000-0000-000000000000 '
 #                  checks=[])
 
         self.cmd('az datashare account wait '

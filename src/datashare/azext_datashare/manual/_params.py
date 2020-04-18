@@ -204,7 +204,7 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx))  # modified
         c.argument('invitation_id', validator=invitation_id_validator, help='An invitation id')
 
-    with self.argument_context('datashare consumer invitation reject-invitation') as c:
+    with self.argument_context('datashare consumer invitation reject') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx))  # modified
         c.argument('invitation_id', validator=invitation_id_validator, help='An invitation id')  # modified
 

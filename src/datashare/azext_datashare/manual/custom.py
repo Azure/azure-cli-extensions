@@ -87,14 +87,6 @@ def datashare_data_set_show(cmd, client,
     return client.get(resource_group_name=resource_group_name, account_name=account_name, share_name=share_name, data_set_name=data_set_name)
 
 
-def _assign_owner_role_in_target_scope(cmd, role_scope, spn_object_id):
-    from azure.cli.command_modules.role.custom import list_role_assignments, create_role_assignment
-    role_assignments = list_role_assignments(cmd, assignee=spn_object_id, role='Owner', scope=role_scope)
-    if not role_assignments:
-        create_role_assignment(cmd, role='Owner', assignee_object_id=spn_object_id, scope=role_scope,
-                               assignee_principal_type='ServicePrincipal')
-
-
 def datashare_data_set_create(cmd, client,
                               resource_group_name,
                               account_name,
@@ -106,7 +98,6 @@ def datashare_data_set_create(cmd, client,
         data_set['resource_group'] = resource_group_name
     if 'subscription_id' not in data_set:
         data_set['subscription_id'] = get_subscription_id(cmd.cli_ctx)
-    # assign role
     return client.create(resource_group_name=resource_group_name,
                          account_name=account_name,
                          share_name=share_name,
