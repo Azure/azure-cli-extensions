@@ -14,6 +14,7 @@ from azure.cli.command_modules.resource._client_factory import _resource_client_
 from msrestazure.azure_exceptions import CloudError
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 
+from .encryption_type_enum import encryption
 from .exceptions import AzCommandError
 from .repair_utils import (
     _call_az_command,
@@ -59,13 +60,13 @@ def validate_create(cmd, namespace):
 
     # Check encrypted disk
     # TODO, validate this with encrypted VMs
-    check_encryption = _fetch_encryption_settings(source_vm)
-    if check_encryption[0] != "not encrypted":
+    encryption_type, key_vault, kekurl = _fetch_encryption_settings(source_vm)
+    if encryption_type is not encryption.not_encrypted:
         logger.warning('The source VM\'s OS disk is encrypted.')
-        if check_encryption[0] in ('single_with_kek', 'single_without_kek'):
-            if not namespace.unlock_encrypted_vm in ("y", "yes"):
+        if encryption_type in (encryption.single_with_kek, encryption.single_without_kek):
+            if namespace.unlock_encrypted_vm not in ("y", "yes"):
                 _prompt_encryptedvms()
-        elif check_encryption[0] == "dual":
+        elif encryption_type is encryption.dual:
             raise CLIError('This script does not support VMs which were encrypted using dual pass.Stopping Execution.')
 
     # Validate Auth Params

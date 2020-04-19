@@ -14,6 +14,9 @@ import pkgutil
 from knack.log import get_logger
 from knack.prompting import prompt_y_n, NoTTYException
 
+from azure.cli.command_modules.vm.custom import _is_linux_os
+from .encryption_type_enum import encryption
+
 from .exceptions import AzCommandError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError
 # pylint: disable=line-too-long, deprecated-method
 
@@ -179,40 +182,63 @@ def _list_resource_ids_in_rg(resource_group_name):
 
 
 def _fetch_encryption_settings(source_vm):
-    key_vault = '""'
-    kekurl = '""'
+    key_vault = "None"
+    kekurl = "None"
     if source_vm.storage_profile.os_disk.encryption_settings is not None:
-        encryption_type = "dual"
-        return encryption_type, key_vault, kekurl
+        return (encryption['dual']), key_vault, kekurl
+    disk_id = source_vm.storage_profile.os_disk.managed_disk.id
+    show_disk_command = 'az disk show --id {i} --query [encryptionSettingsCollection,encryptionSettingsCollection.encryptionSettings[].diskEncryptionKey.sourceVault.id,encryptionSettingsCollection.encryptionSettings[].keyEncryptionKey.keyUrl] -o json'.format(i=disk_id)
+    encryption_type, key_vault, kekurl = loads(_call_az_command(show_disk_command))
+    if [encryption_type, key_vault, kekurl] == [None, None, None]:
+        return (encryption['not_encrypted']), key_vault, kekurl
+    if kekurl == []:
+        key_vault = key_vault[0]
+        return (encryption['single_without_kek']), key_vault, kekurl
+    key_vault, kekurl = key_vault[0], kekurl[0]
+    return (encryption['single_with_kek']), key_vault, kekurl
 
-    else:
-        disk_id = source_vm.storage_profile.os_disk.managed_disk.id
-        show_disk_command = 'az disk show --id {i} --query [encryptionSettingsCollection,encryptionSettingsCollection.encryptionSettings[].diskEncryptionKey.sourceVault.id,encryptionSettingsCollection.encryptionSettings[].keyEncryptionKey.keyUrl] -o json'.format(i=disk_id)
-        disk_info = loads(_call_az_command(show_disk_command))
-        if disk_info == [None, None, None]:
-            encryption_type = "not encrypted"
-            return encryption_type, key_vault, kekurl
-        elif disk_info[2] == []:
-            encryption_type = "single_without_kek"
-            key_vault = disk_info[1][0]
-            return encryption_type, key_vault, kekurl
+
+def _install_extension(source_vm, repair_group_name, repair_vm_name):
+    encryption_type, key_vault, kekurl = _fetch_encryption_settings(source_vm)
+    if encryption_type is not encryption.not_encrypted:
+        if _is_linux_os(source_vm):
+            volume_type = 'DATA'
         else:
-            key_vault, kekurl = disk_info[1][0], disk_info[2][0]
-            encryption_type = "single_with_kek"
-            return encryption_type, key_vault, kekurl
+            volume_type = 'ALL'
+        try:
+            if encryption_type is encryption.single_with_kek:
+                install_ade_extension_command = 'az vm encryption enable --disk-encryption-keyvault {vault} --name {repair} --resource-group {g} --key-encryption-key {kek_url} --volume-type {volume}' \
+                                                .format(g=repair_group_name, repair=repair_vm_name, vault=key_vault, kek_url=kekurl, volume=volume_type)
+            elif encryption_type is encryption.single_without_kek:
+                install_ade_extension_command = 'az vm encryption enable --disk-encryption-keyvault {vault} --name {repair} --resource-group {g} --volume-type {volume}' \
+                                                .format(g=repair_group_name, repair=repair_vm_name, vault=key_vault, volume=volume_type)
+            logger.info('Installing extension on repair VM \'%s\'...', encryption_type)
+            _call_az_command(install_ade_extension_command)
+            if _is_linux_os(source_vm):
+                _unlock_encrypted_disk(repair_group_name, repair_vm_name)
+        except AzCommandError as azCommandError:
+            error_message = str(azCommandError)
+            if "type:part fstype:xfs mountpoint" in error_message:
+                print("Encryption failed for data disk with XFS filesystem.But this can be ignored.\n")
+                _unlock_encrypted_disk(repair_group_name, repair_vm_name)
+            else:
+                raise
 
 
-def _unlock_encrypted_disk():
+def _unlock_encrypted_disk(repair_group_name, repair_vm_name):
     logger.info('unlocking and mounting the disk on repair VM...')
     REPAIR_DIR_NAME = 'azext_vm_repair'
     SCRIPTS_DIR_NAME = 'scripts'
-    LINUX_RUN_SCRIPT_NAME = 'script.sh'
+    LINUX_RUN_SCRIPT_NAME = 'unlock_encrypted_disk.sh'
     command_id = 'RunShellScript'
     loader = pkgutil.get_loader(REPAIR_DIR_NAME)
     mod = loader.load_module(REPAIR_DIR_NAME)
     rootpath = os.path.dirname(mod.__file__)
     run_script = os.path.join(rootpath, SCRIPTS_DIR_NAME, LINUX_RUN_SCRIPT_NAME)
-    return command_id, run_script
+    unlock_disk_command = 'az vm run-command invoke -g {rg} -n {vm} --command-id {command_id} ' \
+                          '--scripts "@{run_script}" -o json' \
+                          .format(rg=repair_group_name, vm=repair_vm_name, command_id=command_id, run_script=run_script)
+    _call_az_command(unlock_disk_command)
 
 
 def _fetch_compatible_windows_os_urn(source_vm):
@@ -236,17 +262,6 @@ def _fetch_compatible_windows_os_urn(source_vm):
         return urns[1]
     logger.debug('Returning Urn 0: %s', urns[0])
     return urns[0]
-
-
-def _encryption_type():
-    from enum import Enum
-
-    class encryption_type(Enum):
-        Dual_with_kek = 1
-        Dual_without_kek = 2
-        single_with_kek = 3
-        single_without_kek = 4
-        not_encrypted = 5
 
 
 def _resolve_api_version(rcf, resource_provider_namespace, parent_resource_path, resource_type):

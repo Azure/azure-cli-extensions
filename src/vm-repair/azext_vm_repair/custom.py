@@ -32,8 +32,7 @@ from .repair_utils import (
     _parse_run_script_raw_logs,
     _check_script_succeeded,
     _fetch_disk_info,
-    _fetch_encryption_settings,
-    _unlock_encrypted_disk
+    _install_extension
 )
 
 
@@ -56,17 +55,14 @@ def create(cmd, vm_name, resource_group_name, unlock_encrypted_vm=None, repair_p
         copy_disk_id = None
         resource_tag = _get_repair_resource_tag(resource_group_name, vm_name)
         created_resources = []
-        encryption_type, key_vault, kekurl = _fetch_encryption_settings(source_vm)
 
         # Fetch OS image urn and set OS type for disk create
         if is_linux:
             os_image_urn = "UbuntuLTS"
             os_type = 'Linux'
-            volume_type = 'DATA'  # ( For Encrypted VMs )
         else:
             os_image_urn = _fetch_compatible_windows_os_urn(source_vm)
             os_type = 'Windows'
-            volume_type = 'ALL'  # ( For Encrypted VMs )
 
         # Set up base create vm command
         create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-username {username} --admin-password {password}' \
@@ -89,7 +85,7 @@ def create(cmd, vm_name, resource_group_name, unlock_encrypted_vm=None, repair_p
 
             # Copy OS disk command
             disk_sku, location, os_type, hyperV_generation = _fetch_disk_info(resource_group_name, target_disk_name)
-            copy_disk_command = 'az disk create -g {g} -n {n} --source {s} --sku {sku} --location {loc} --os-type {os_type} --query id -o tsv' \
+            copy_disk_command = 'az disk create -g {g} -n {n} --source {s} --sku {sku} --location {loc} --os-type {os_type} --hyper-v-generation {hyperV} --query id -o tsv' \
                                 .format(g=resource_group_name, n=copy_disk_name, s=target_disk_name, sku=disk_sku, loc=location, os_type=os_type, hyperV=hyperV_generation)
             # Validate create vm create command to validate parameters before runnning copy disk command
             validate_create_vm_command = create_repair_vm_command + ' --validate'
@@ -108,27 +104,7 @@ def create(cmd, vm_name, resource_group_name, unlock_encrypted_vm=None, repair_p
             _call_az_command(attach_disk_command)
 
             # Install extension in case of single pass encrypted VM
-            if encryption_type in ("single_with_kek", "single_without_kek"):
-                try:
-                    install_ade_extension_command = 'az vm encryption enable --disk-encryption-keyvault {vault} --name {repair} --resource-group {g} --key-encryption-key {kek_url} --volume-type {volume}' \
-                                                    .format(g=repair_group_name, repair=repair_vm_name, vault=key_vault, kek_url=kekurl, volume=volume_type)
-                    logger.info('Installing extension on repair VM \'%s\'...', encryption_type)
-                    _call_az_command(install_ade_extension_command)
-                except AzCommandError as azCommandError:
-                    command.error_message = str(azCommandError)
-                    if "type:part fstype:xfs mountpoint" in command.error_message:
-                        print("Encryption failed for data disk with XFS filesystem.But this can be ignored.\n")
-                    else:
-                        command.error_stack_trace = traceback.format_exc()
-                        raise
-                # Execute commands on repair VM through run command option to unlock the copy of encrypted disk and mount.
-                finally:
-                    if is_linux:
-                        command_id, run_script = _unlock_encrypted_disk()
-                        repair_run_command = 'az vm run-command invoke -g {rg} -n {vm} --command-id {command_id} ' \
-                                             '--scripts "@{run_script}" -o json' \
-                                             .format(rg=repair_group_name, vm=repair_vm_name, command_id=command_id, run_script=run_script)
-                        _call_az_command(repair_run_command)
+            _install_extension(source_vm, repair_group_name, repair_vm_name)
 
         # UNMANAGED DISK
         else:
@@ -212,7 +188,6 @@ def create(cmd, vm_name, resource_group_name, unlock_encrypted_vm=None, repair_p
     finally:
         if command.error_stack_trace:
             logger.debug(command.error_stack_trace)
-
     # Generate return results depending on command state
     if not command.is_status_success():
         command.set_status_error()
