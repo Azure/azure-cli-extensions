@@ -73,7 +73,6 @@ def update_k8sconfiguration(client, resource_group_name, cluster_name, name, clu
     # Determine ClusterRP
     cluster_rp = __get_cluster_type(cluster_type)
 
-
     source_control_configuration_name = name.strip()
 
     config = client.get(resource_group_name, cluster_rp, cluster_type, cluster_name,
@@ -132,7 +131,7 @@ def delete_k8sconfiguration(client, resource_group_name, cluster_name, name, clu
 def __get_cluster_type(cluster_type):
     if cluster_type.lower() == 'connectedclusters':
         return 'Microsoft.Kubernetes'
-    elif cluster_type.lower() == 'managedclusters':
-        return 'Microsoft.ContainerService'
     else:
-        raise CLIError("Invalid cluster-type.  Supported values are 'connectedClusters' and 'managedClusters'.")
+        # Since cluster_type is an enum of only two values, if not connectedClusters, it will be managedClusters.
+        return 'Microsoft.ContainerService'
+

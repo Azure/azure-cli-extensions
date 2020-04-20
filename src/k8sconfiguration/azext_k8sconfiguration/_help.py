@@ -62,7 +62,7 @@ helps['k8sconfiguration update'] = """
       - name: Update an existing k8sconfiguration
         text: |-
             az k8sconfiguration update --resource-group MyResourceGroup --cluster-name MyClusterName \\
-            --cluster-type 'connectedClusters' --name MyConfigurationName --enable-helm-operator \\ 
-            --repository-url git://github.com/fluxHowTo/flux-get-started --operator-params "'--git-readonly'" \\ 
+            --cluster-type 'connectedClusters' --name MyConfigurationName --enable-helm-operator \\
+            --repository-url git://github.com/fluxHowTo/flux-get-started --operator-params "'--git-readonly'" \\
             --helm-operator-version 0.6.0 --helm-operator-params '--set helm.versions=v3'
 """
