@@ -23,16 +23,6 @@ def example_name_or_id_validator(cmd, namespace):
             )
 
 
-def validate_configuration_type(namespace):
-    if namespace.configuration_type.lower() != 'sourcecontrolconfiguration':
+def validate_configuration_type(configuration_type):
+    if configuration_type.lower() != 'sourcecontrolconfiguration':
         raise CLIError('Invalid configuration-type.  Valid value is "sourceControlConfiguration"')
-
-
-def validate_operator_scope(namespace):
-    if namespace.cluster_scoped:
-        namespace.operator_scope = 'cluster'
-    else:
-        # Operator Namespace is mandatory if the Operator Scope is 'namespace'
-        if namespace.operator_namespace.string() is None:
-            raise CLIError('Invalid operator-namespace.  Namespace is mandatory if the scope is "namespace"')
-        namespace.operator_scope = 'namespace'
