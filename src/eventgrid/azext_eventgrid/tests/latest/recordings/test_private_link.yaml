@@ -1,5 +1,58 @@
 interactions:
 - request:
+    body: '{"location": "eastus"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - group create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '22'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -n -l
+      User-Agent:
+      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-resource/8.0.1 Azure-SDK-For-Python AZURECLI/2.4.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/DevExpRg?api-version=2019-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg","name":"DevExpRg","type":"Microsoft.Resources/resourceGroups","location":"eastus","properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '213'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 20 Apr 2020 09:16:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
     body: '{"location": "centraluseuap", "tags": {}, "properties": {"addressSpace":
       {"addressPrefixes": ["10.0.0.0/16"]}, "dhcpOptions": {}}}'
     headers:
@@ -18,19 +71,19 @@ interactions:
       ParameterSetName:
       - --resource-group --location --name --address-prefix
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-network/10.1.0 Azure-SDK-For-Python AZURECLI/2.4.0
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/virtualNetworks/cli000002?api-version=2019-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/virtualNetworks/cli000002?api-version=2020-03-01
   response:
     body:
       string: "{\r\n  \"name\": \"cli000002\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/virtualNetworks/cli000002\",\r\n
-        \ \"etag\": \"W/\\\"0e254a91-c214-4707-b480-a0177c5c3186\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"380ae047-8370-438e-af1e-430651d6db34\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"centraluseuap\",\r\n
         \ \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n
-        \   \"resourceGuid\": \"c5681ff1-4a7c-451e-96b2-2fa8baba604b\",\r\n    \"addressSpace\":
+        \   \"resourceGuid\": \"4c23701b-e244-41e5-b8b4-16d9d22ac5d6\",\r\n    \"addressSpace\":
         {\r\n      \"addressPrefixes\": [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n
         \   },\r\n    \"dhcpOptions\": {\r\n      \"dnsServers\": []\r\n    },\r\n
         \   \"subnets\": [],\r\n    \"virtualNetworkPeerings\": [],\r\n    \"enableDdosProtection\":
@@ -39,7 +92,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/302d462a-54ea-43d9-a702-c26181b03a6d?api-version=2019-11-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/61f7e7d1-4eef-4097-a7f8-3d285e6e6562?api-version=2020-03-01
       cache-control:
       - no-cache
       content-length:
@@ -47,7 +100,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 14 Apr 2020 09:50:51 GMT
+      - Mon, 20 Apr 2020 09:16:26 GMT
       expires:
       - '-1'
       pragma:
@@ -60,9 +113,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 0f80764d-0479-467c-8604-30350412d4a7
+      - 0ac116a5-0456-4f59-9fd0-b69a625ae9bc
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1197'
     status:
       code: 201
       message: Created
@@ -80,10 +133,10 @@ interactions:
       ParameterSetName:
       - --resource-group --location --name --address-prefix
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-network/10.1.0 Azure-SDK-For-Python AZURECLI/2.4.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/302d462a-54ea-43d9-a702-c26181b03a6d?api-version=2019-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/61f7e7d1-4eef-4097-a7f8-3d285e6e6562?api-version=2020-03-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -95,7 +148,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 14 Apr 2020 09:50:55 GMT
+      - Mon, 20 Apr 2020 09:16:31 GMT
       expires:
       - '-1'
       pragma:
@@ -112,7 +165,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 83c0c16d-9e5b-4621-97f9-bdb1f2486da9
+      - 837dcd80-ad16-428a-867d-01f644f16304
     status:
       code: 200
       message: OK
@@ -130,17 +183,17 @@ interactions:
       ParameterSetName:
       - --resource-group --location --name --address-prefix
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-network/10.1.0 Azure-SDK-For-Python AZURECLI/2.4.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/virtualNetworks/cli000002?api-version=2019-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/virtualNetworks/cli000002?api-version=2020-03-01
   response:
     body:
       string: "{\r\n  \"name\": \"cli000002\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/virtualNetworks/cli000002\",\r\n
-        \ \"etag\": \"W/\\\"de6746ff-d9f3-4204-9685-7cdd03ca7430\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"2199af5d-da6b-4e58-9588-33daf8f8d0a7\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"centraluseuap\",\r\n
         \ \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n
-        \   \"resourceGuid\": \"c5681ff1-4a7c-451e-96b2-2fa8baba604b\",\r\n    \"addressSpace\":
+        \   \"resourceGuid\": \"4c23701b-e244-41e5-b8b4-16d9d22ac5d6\",\r\n    \"addressSpace\":
         {\r\n      \"addressPrefixes\": [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n
         \   },\r\n    \"dhcpOptions\": {\r\n      \"dnsServers\": []\r\n    },\r\n
         \   \"subnets\": [],\r\n    \"virtualNetworkPeerings\": [],\r\n    \"enableDdosProtection\":
@@ -153,9 +206,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 14 Apr 2020 09:50:55 GMT
+      - Mon, 20 Apr 2020 09:16:31 GMT
       etag:
-      - W/"de6746ff-d9f3-4204-9685-7cdd03ca7430"
+      - W/"2199af5d-da6b-4e58-9588-33daf8f8d0a7"
       expires:
       - '-1'
       pragma:
@@ -172,7 +225,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 0f9c16e0-1703-4e7b-a2dd-d9c2147e3957
+      - fb4da87c-08a5-494b-8c1a-ca243de8a1ee
     status:
       code: 200
       message: OK
@@ -190,19 +243,19 @@ interactions:
       ParameterSetName:
       - --resource-group --vnet-name --name --address-prefixes
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-network/10.1.0 Azure-SDK-For-Python AZURECLI/2.4.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/virtualNetworks/cli000002?api-version=2019-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/virtualNetworks/cli000002?api-version=2020-03-01
   response:
     body:
       string: "{\r\n  \"name\": \"cli000002\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/virtualNetworks/cli000002\",\r\n
-        \ \"etag\": \"W/\\\"de6746ff-d9f3-4204-9685-7cdd03ca7430\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"2199af5d-da6b-4e58-9588-33daf8f8d0a7\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"centraluseuap\",\r\n
         \ \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n
-        \   \"resourceGuid\": \"c5681ff1-4a7c-451e-96b2-2fa8baba604b\",\r\n    \"addressSpace\":
+        \   \"resourceGuid\": \"4c23701b-e244-41e5-b8b4-16d9d22ac5d6\",\r\n    \"addressSpace\":
         {\r\n      \"addressPrefixes\": [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n
         \   },\r\n    \"dhcpOptions\": {\r\n      \"dnsServers\": []\r\n    },\r\n
         \   \"subnets\": [],\r\n    \"virtualNetworkPeerings\": [],\r\n    \"enableDdosProtection\":
@@ -215,9 +268,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 14 Apr 2020 09:50:56 GMT
+      - Mon, 20 Apr 2020 09:16:32 GMT
       etag:
-      - W/"de6746ff-d9f3-4204-9685-7cdd03ca7430"
+      - W/"2199af5d-da6b-4e58-9588-33daf8f8d0a7"
       expires:
       - '-1'
       pragma:
@@ -234,7 +287,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 4f71da04-66bf-4064-9826-aee03d1f0e27
+      - 4a75684d-31cd-4ac1-9258-11a35024fa7c
     status:
       code: 200
       message: OK
@@ -260,24 +313,24 @@ interactions:
       ParameterSetName:
       - --resource-group --vnet-name --name --address-prefixes
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-network/10.1.0 Azure-SDK-For-Python AZURECLI/2.4.0
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/virtualNetworks/cli000002?api-version=2019-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/virtualNetworks/cli000002?api-version=2020-03-01
   response:
     body:
       string: "{\r\n  \"name\": \"cli000002\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/virtualNetworks/cli000002\",\r\n
-        \ \"etag\": \"W/\\\"bb45024c-4d89-4b20-9e71-89b5cf038a43\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"f5537c21-9feb-428f-8a1e-1627d23c8dda\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"centraluseuap\",\r\n
         \ \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n
-        \   \"resourceGuid\": \"c5681ff1-4a7c-451e-96b2-2fa8baba604b\",\r\n    \"addressSpace\":
+        \   \"resourceGuid\": \"4c23701b-e244-41e5-b8b4-16d9d22ac5d6\",\r\n    \"addressSpace\":
         {\r\n      \"addressPrefixes\": [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n
         \   },\r\n    \"dhcpOptions\": {\r\n      \"dnsServers\": []\r\n    },\r\n
         \   \"subnets\": [\r\n      {\r\n        \"name\": \"cli000003\",\r\n        \"id\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/virtualNetworks/cli000002/subnets/cli000003\",\r\n
-        \       \"etag\": \"W/\\\"bb45024c-4d89-4b20-9e71-89b5cf038a43\\\"\",\r\n
+        \       \"etag\": \"W/\\\"f5537c21-9feb-428f-8a1e-1627d23c8dda\\\"\",\r\n
         \       \"properties\": {\r\n          \"provisioningState\": \"Updating\",\r\n
         \         \"addressPrefix\": \"10.0.0.0/24\",\r\n          \"delegations\":
         [],\r\n          \"privateEndpointNetworkPolicies\": \"Enabled\",\r\n          \"privateLinkServiceNetworkPolicies\":
@@ -286,7 +339,7 @@ interactions:
         false,\r\n    \"enableVmProtection\": false\r\n  }\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/17938c0b-43f6-4ab1-8c06-587fce1500d8?api-version=2019-11-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/c49abe18-fd58-4012-ba10-2d41c2f7e138?api-version=2020-03-01
       cache-control:
       - no-cache
       content-length:
@@ -294,7 +347,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 14 Apr 2020 09:50:57 GMT
+      - Mon, 20 Apr 2020 09:16:33 GMT
       expires:
       - '-1'
       pragma:
@@ -311,9 +364,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - fecdb32d-fcd7-41e0-bf23-6b88a9c69270
+      - c8dd72f8-e2b1-4324-938e-c589dd4f26bf
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1197'
     status:
       code: 200
       message: OK
@@ -331,10 +384,10 @@ interactions:
       ParameterSetName:
       - --resource-group --vnet-name --name --address-prefixes
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-network/10.1.0 Azure-SDK-For-Python AZURECLI/2.4.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/17938c0b-43f6-4ab1-8c06-587fce1500d8?api-version=2019-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/c49abe18-fd58-4012-ba10-2d41c2f7e138?api-version=2020-03-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -346,7 +399,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 14 Apr 2020 09:51:01 GMT
+      - Mon, 20 Apr 2020 09:16:38 GMT
       expires:
       - '-1'
       pragma:
@@ -363,7 +416,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 799e7eda-5aab-4cbd-9e67-6e027bb650e2
+      - b61233b0-cdea-4274-aad4-21b2f97e22c0
     status:
       code: 200
       message: OK
@@ -381,22 +434,22 @@ interactions:
       ParameterSetName:
       - --resource-group --vnet-name --name --address-prefixes
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-network/10.1.0 Azure-SDK-For-Python AZURECLI/2.4.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/virtualNetworks/cli000002?api-version=2019-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/virtualNetworks/cli000002?api-version=2020-03-01
   response:
     body:
       string: "{\r\n  \"name\": \"cli000002\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/virtualNetworks/cli000002\",\r\n
-        \ \"etag\": \"W/\\\"27f8b85d-a307-4d23-97c8-398e71b7138b\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"8d698c6c-83c6-4344-a836-2381ff9d9cf2\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"centraluseuap\",\r\n
         \ \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n
-        \   \"resourceGuid\": \"c5681ff1-4a7c-451e-96b2-2fa8baba604b\",\r\n    \"addressSpace\":
+        \   \"resourceGuid\": \"4c23701b-e244-41e5-b8b4-16d9d22ac5d6\",\r\n    \"addressSpace\":
         {\r\n      \"addressPrefixes\": [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n
         \   },\r\n    \"dhcpOptions\": {\r\n      \"dnsServers\": []\r\n    },\r\n
         \   \"subnets\": [\r\n      {\r\n        \"name\": \"cli000003\",\r\n        \"id\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/virtualNetworks/cli000002/subnets/cli000003\",\r\n
-        \       \"etag\": \"W/\\\"27f8b85d-a307-4d23-97c8-398e71b7138b\\\"\",\r\n
+        \       \"etag\": \"W/\\\"8d698c6c-83c6-4344-a836-2381ff9d9cf2\\\"\",\r\n
         \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
         \         \"addressPrefix\": \"10.0.0.0/24\",\r\n          \"delegations\":
         [],\r\n          \"privateEndpointNetworkPolicies\": \"Enabled\",\r\n          \"privateLinkServiceNetworkPolicies\":
@@ -411,9 +464,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 14 Apr 2020 09:51:01 GMT
+      - Mon, 20 Apr 2020 09:16:39 GMT
       etag:
-      - W/"27f8b85d-a307-4d23-97c8-398e71b7138b"
+      - W/"8d698c6c-83c6-4344-a836-2381ff9d9cf2"
       expires:
       - '-1'
       pragma:
@@ -430,7 +483,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 9e452e1a-7448-4aca-8218-926ced554cd6
+      - 21d72190-d054-4db1-bb6b-8ceef143d30d
     status:
       code: 200
       message: OK
@@ -448,16 +501,16 @@ interactions:
       ParameterSetName:
       - --resource-group --vnet-name --name --disable-private-endpoint-network-policies
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-network/10.1.0 Azure-SDK-For-Python AZURECLI/2.4.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/virtualNetworks/cli000002/subnets/cli000003?api-version=2019-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/virtualNetworks/cli000002/subnets/cli000003?api-version=2020-03-01
   response:
     body:
       string: "{\r\n  \"name\": \"cli000003\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/virtualNetworks/cli000002/subnets/cli000003\",\r\n
-        \ \"etag\": \"W/\\\"27f8b85d-a307-4d23-97c8-398e71b7138b\\\"\",\r\n  \"properties\":
+        \ \"etag\": \"W/\\\"8d698c6c-83c6-4344-a836-2381ff9d9cf2\\\"\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"addressPrefix\": \"10.0.0.0/24\",\r\n
         \   \"delegations\": [],\r\n    \"privateEndpointNetworkPolicies\": \"Enabled\",\r\n
         \   \"privateLinkServiceNetworkPolicies\": \"Enabled\"\r\n  },\r\n  \"type\":
@@ -470,9 +523,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 14 Apr 2020 09:51:01 GMT
+      - Mon, 20 Apr 2020 09:16:40 GMT
       etag:
-      - W/"27f8b85d-a307-4d23-97c8-398e71b7138b"
+      - W/"8d698c6c-83c6-4344-a836-2381ff9d9cf2"
       expires:
       - '-1'
       pragma:
@@ -489,7 +542,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 8bf6f1e5-5922-4fa3-b63f-59ac9862cd1f
+      - 39b7f11b-beb4-4063-91c9-a7c884235025
     status:
       code: 200
       message: OK
@@ -513,23 +566,23 @@ interactions:
       ParameterSetName:
       - --resource-group --vnet-name --name --disable-private-endpoint-network-policies
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-network/10.1.0 Azure-SDK-For-Python AZURECLI/2.4.0
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/virtualNetworks/cli000002/subnets/cli000003?api-version=2019-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/virtualNetworks/cli000002/subnets/cli000003?api-version=2020-03-01
   response:
     body:
       string: "{\r\n  \"name\": \"cli000003\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/virtualNetworks/cli000002/subnets/cli000003\",\r\n
-        \ \"etag\": \"W/\\\"9ceb4d0b-2737-4891-9960-9940bc97b0d7\\\"\",\r\n  \"properties\":
+        \ \"etag\": \"W/\\\"c5f9e251-cd6e-4300-910c-763bcfa0c31f\\\"\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Updating\",\r\n    \"addressPrefix\": \"10.0.0.0/24\",\r\n
         \   \"delegations\": [],\r\n    \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n
         \   \"privateLinkServiceNetworkPolicies\": \"Enabled\"\r\n  },\r\n  \"type\":
         \"Microsoft.Network/virtualNetworks/subnets\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/0451c6b7-4d5c-473d-ac95-cddb6ddedf35?api-version=2019-11-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/098ec9ce-d47d-4349-949c-9a83151c69d4?api-version=2020-03-01
       cache-control:
       - no-cache
       content-length:
@@ -537,7 +590,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 14 Apr 2020 09:51:02 GMT
+      - Mon, 20 Apr 2020 09:16:40 GMT
       expires:
       - '-1'
       pragma:
@@ -554,9 +607,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 6c4c13e9-9242-41a3-8880-0783bcdeb88d
+      - 2725a58b-8f7f-4024-883e-403cbc656d87
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1196'
     status:
       code: 200
       message: OK
@@ -574,10 +627,10 @@ interactions:
       ParameterSetName:
       - --resource-group --vnet-name --name --disable-private-endpoint-network-policies
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-network/10.1.0 Azure-SDK-For-Python AZURECLI/2.4.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/0451c6b7-4d5c-473d-ac95-cddb6ddedf35?api-version=2019-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/098ec9ce-d47d-4349-949c-9a83151c69d4?api-version=2020-03-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -589,7 +642,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 14 Apr 2020 09:51:06 GMT
+      - Mon, 20 Apr 2020 09:16:45 GMT
       expires:
       - '-1'
       pragma:
@@ -606,7 +659,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - ab18da4a-1bac-46e4-9f1a-3e5e70f9f4ea
+      - 7546fa02-21c6-4272-ab6b-d84c7ce4a92e
     status:
       code: 200
       message: OK
@@ -624,14 +677,14 @@ interactions:
       ParameterSetName:
       - --resource-group --vnet-name --name --disable-private-endpoint-network-policies
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-network/10.1.0 Azure-SDK-For-Python AZURECLI/2.4.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/virtualNetworks/cli000002/subnets/cli000003?api-version=2019-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/virtualNetworks/cli000002/subnets/cli000003?api-version=2020-03-01
   response:
     body:
       string: "{\r\n  \"name\": \"cli000003\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/virtualNetworks/cli000002/subnets/cli000003\",\r\n
-        \ \"etag\": \"W/\\\"424d31fe-0ca7-4199-ad75-eb2334ca3446\\\"\",\r\n  \"properties\":
+        \ \"etag\": \"W/\\\"a8047284-8eac-4c2a-865b-31886388629b\\\"\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"addressPrefix\": \"10.0.0.0/24\",\r\n
         \   \"delegations\": [],\r\n    \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n
         \   \"privateLinkServiceNetworkPolicies\": \"Enabled\"\r\n  },\r\n  \"type\":
@@ -644,9 +697,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 14 Apr 2020 09:51:06 GMT
+      - Mon, 20 Apr 2020 09:16:45 GMT
       etag:
-      - W/"424d31fe-0ca7-4199-ad75-eb2334ca3446"
+      - W/"a8047284-8eac-4c2a-865b-31886388629b"
       expires:
       - '-1'
       pragma:
@@ -663,7 +716,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - dd40060a-8b9b-44da-bc84-26dd96137246
+      - 91677ef4-1778-4ba3-899e-f294b99eb3de
     status:
       code: 200
       message: OK
@@ -687,18 +740,18 @@ interactions:
       ParameterSetName:
       - --name --resource-group --location --sku --public-network-access
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
+      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.4.0
       accept-language:
       - en-US
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000006?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"properties":{"provisioningState":"Creating","endpoint":null,"inputSchema":"EventGridSchema","publicNetworkAccess":"Disabled"},"sku":{"name":"Premium"},"identity":{"type":"None","principalId":null,"tenantId":null,"userAssignedIdentities":null},"location":"centraluseuap","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000006","name":"cli000006","type":"Microsoft.EventGrid/topics"}'
+      string: '{"properties":{"provisioningState":"Creating","endpoint":null,"inputSchema":"EventGridSchema","publicNetworkAccess":"Disabled"},"sku":{"name":"Premium"},"identity":{"type":"None","principalId":null,"tenantId":null,"UserAssignedIdentities":null},"location":"centraluseuap","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000006","name":"cli000006","type":"Microsoft.EventGrid/topics"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/750F03EA-BF25-47AC-A4B6-21102D89A545?api-version=2020-04-01-preview
+      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/9D6D6EDE-3800-49B1-820F-0346C00386DB?api-version=2020-04-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -706,7 +759,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 14 Apr 2020 09:51:07 GMT
+      - Mon, 20 Apr 2020 09:16:54 GMT
       expires:
       - '-1'
       pragma:
@@ -718,7 +771,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -736,13 +789,13 @@ interactions:
       ParameterSetName:
       - --name --resource-group --location --sku --public-network-access
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
+      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.4.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/750F03EA-BF25-47AC-A4B6-21102D89A545?api-version=2020-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/9D6D6EDE-3800-49B1-820F-0346C00386DB?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/750F03EA-BF25-47AC-A4B6-21102D89A545?api-version=2020-04-01-preview","name":"750f03ea-bf25-47ac-a4b6-21102d89a545","status":"Succeeded"}'
+      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/9D6D6EDE-3800-49B1-820F-0346C00386DB?api-version=2020-04-01-preview","name":"9d6d6ede-3800-49b1-820f-0346c00386db","status":"Succeeded"}'
     headers:
       cache-control:
       - no-cache
@@ -751,7 +804,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 14 Apr 2020 09:51:18 GMT
+      - Mon, 20 Apr 2020 09:17:07 GMT
       expires:
       - '-1'
       pragma:
@@ -783,13 +836,13 @@ interactions:
       ParameterSetName:
       - --name --resource-group --location --sku --public-network-access
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
+      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.4.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000006?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","endpoint":"https://cli000006.centraluseuap-1.eventgrid.azure.net/api/events","inputSchema":"EventGridSchema","metricResourceId":"4b5cb8f8-e1d4-4e7c-883c-d58f5e535cc0","publicNetworkAccess":"Disabled"},"sku":{"name":"Premium"},"identity":{"type":"None","principalId":null,"tenantId":null,"userAssignedIdentities":null},"location":"centraluseuap","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000006","name":"cli000006","type":"Microsoft.EventGrid/topics"}'
+      string: '{"properties":{"provisioningState":"Succeeded","endpoint":"https://cli000006.centraluseuap-1.eventgrid.azure.net/api/events","inputSchema":"EventGridSchema","metricResourceId":"ba9e315d-6299-4629-87c5-b3080f003d57","publicNetworkAccess":"Disabled"},"sku":{"name":"Premium"},"identity":{"type":"None","principalId":null,"tenantId":null,"UserAssignedIdentities":null},"location":"centraluseuap","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000006","name":"cli000006","type":"Microsoft.EventGrid/topics"}'
     headers:
       cache-control:
       - no-cache
@@ -798,7 +851,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 14 Apr 2020 09:51:18 GMT
+      - Mon, 20 Apr 2020 09:17:07 GMT
       expires:
       - '-1'
       pragma:
@@ -830,15 +883,15 @@ interactions:
       ParameterSetName:
       - --name --resource-group
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
+      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.4.0
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000006?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","endpoint":"https://cli000006.centraluseuap-1.eventgrid.azure.net/api/events","inputSchema":"EventGridSchema","metricResourceId":"4b5cb8f8-e1d4-4e7c-883c-d58f5e535cc0","publicNetworkAccess":"Disabled"},"sku":{"name":"Premium"},"identity":{"type":"None","principalId":null,"tenantId":null,"userAssignedIdentities":null},"location":"centraluseuap","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000006","name":"cli000006","type":"Microsoft.EventGrid/topics"}'
+      string: '{"properties":{"provisioningState":"Succeeded","endpoint":"https://cli000006.centraluseuap-1.eventgrid.azure.net/api/events","inputSchema":"EventGridSchema","metricResourceId":"ba9e315d-6299-4629-87c5-b3080f003d57","publicNetworkAccess":"Disabled"},"sku":{"name":"Premium"},"identity":{"type":"None","principalId":null,"tenantId":null,"UserAssignedIdentities":null},"location":"centraluseuap","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000006","name":"cli000006","type":"Microsoft.EventGrid/topics"}'
     headers:
       cache-control:
       - no-cache
@@ -847,7 +900,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 14 Apr 2020 09:51:18 GMT
+      - Mon, 20 Apr 2020 09:17:11 GMT
       expires:
       - '-1'
       pragma:
@@ -886,21 +939,21 @@ interactions:
       - --resource-group --name --vnet-name --subnet --private-connection-resource-id
         --location --group-ids --connection-name
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-network/10.1.0 Azure-SDK-For-Python AZURECLI/2.4.0
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/privateEndpoints/cli000004?api-version=2019-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/privateEndpoints/cli000004?api-version=2020-03-01
   response:
     body:
       string: "{\r\n  \"name\": \"cli000004\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/privateEndpoints/cli000004\",\r\n
-        \ \"etag\": \"W/\\\"7a05a471-9099-4aed-9bb0-7b338b1f6214\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"6647f8f4-7782-455c-b403-9aef680bc2d2\\\"\",\r\n  \"type\":
         \"Microsoft.Network/privateEndpoints\",\r\n  \"location\": \"centraluseuap\",\r\n
         \ \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n    \"resourceGuid\":
-        \"ce5be9fb-87ee-4c13-9082-71f22b475f64\",\r\n    \"privateLinkServiceConnections\":
+        \"aa818b7f-4fc5-4cf2-942b-67f19247d1b4\",\r\n    \"privateLinkServiceConnections\":
         [\r\n      {\r\n        \"name\": \"cli000005\",\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/privateEndpoints/cli000004/privateLinkServiceConnections/cli000005\",\r\n
-        \       \"etag\": \"W/\\\"7a05a471-9099-4aed-9bb0-7b338b1f6214\\\"\",\r\n
+        \       \"etag\": \"W/\\\"6647f8f4-7782-455c-b403-9aef680bc2d2\\\"\",\r\n
         \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
         \         \"privateLinkServiceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000006\",\r\n
         \         \"groupIds\": [\r\n            \"topic\"\r\n          ],\r\n          \"privateLinkServiceConnectionState\":
@@ -909,21 +962,21 @@ interactions:
         \       \"type\": \"Microsoft.Network/privateEndpoints/privateLinkServiceConnections\"\r\n
         \     }\r\n    ],\r\n    \"manualPrivateLinkServiceConnections\": [],\r\n
         \   \"subnet\": {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/virtualNetworks/cli000002/subnets/cli000003\"\r\n
-        \   },\r\n    \"networkInterfaces\": [\r\n      {\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/networkInterfaces/cli000004.nic.5c7e9dda-7ab2-4e11-826d-5e188736c483\"\r\n
-        \     }\r\n    ]\r\n  }\r\n}"
+        \   },\r\n    \"networkInterfaces\": [\r\n      {\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/networkInterfaces/cli000004.nic.9be99e75-0634-4eff-bf85-6e39701da5cc\"\r\n
+        \     }\r\n    ],\r\n    \"customDnsConfigs\": []\r\n  }\r\n}"
     headers:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/693f76bf-e2f7-411d-aad6-b290a3d43fc3?api-version=2019-11-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/a6541c1d-12a4-4f01-9726-f42872932aa5?api-version=2020-03-01
       cache-control:
       - no-cache
       content-length:
-      - '2001'
+      - '2030'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 14 Apr 2020 09:51:22 GMT
+      - Mon, 20 Apr 2020 09:17:23 GMT
       expires:
       - '-1'
       pragma:
@@ -936,9 +989,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 642c962d-cf82-4e9e-96b8-ac2647ced8d5
+      - 818ebd32-570f-4989-996c-4cdb8807a948
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -957,10 +1010,10 @@ interactions:
       - --resource-group --name --vnet-name --subnet --private-connection-resource-id
         --location --group-ids --connection-name
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-network/10.1.0 Azure-SDK-For-Python AZURECLI/2.4.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/693f76bf-e2f7-411d-aad6-b290a3d43fc3?api-version=2019-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/a6541c1d-12a4-4f01-9726-f42872932aa5?api-version=2020-03-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -972,7 +1025,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 14 Apr 2020 09:51:33 GMT
+      - Mon, 20 Apr 2020 09:17:34 GMT
       expires:
       - '-1'
       pragma:
@@ -989,7 +1042,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 6561c301-b5d4-4ab7-95be-0b9954bd66ff
+      - 80fd942e-7a3f-443d-a968-454f68f07870
     status:
       code: 200
       message: OK
@@ -1008,19 +1061,19 @@ interactions:
       - --resource-group --name --vnet-name --subnet --private-connection-resource-id
         --location --group-ids --connection-name
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-network/10.1.0 Azure-SDK-For-Python AZURECLI/2.4.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/privateEndpoints/cli000004?api-version=2019-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/privateEndpoints/cli000004?api-version=2020-03-01
   response:
     body:
       string: "{\r\n  \"name\": \"cli000004\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/privateEndpoints/cli000004\",\r\n
-        \ \"etag\": \"W/\\\"e87acbb8-e814-4179-b09c-dc07ee2ed005\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"52f152f9-677e-4f5b-ac41-3187f1b3bfd8\\\"\",\r\n  \"type\":
         \"Microsoft.Network/privateEndpoints\",\r\n  \"location\": \"centraluseuap\",\r\n
         \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"resourceGuid\":
-        \"ce5be9fb-87ee-4c13-9082-71f22b475f64\",\r\n    \"privateLinkServiceConnections\":
+        \"aa818b7f-4fc5-4cf2-942b-67f19247d1b4\",\r\n    \"privateLinkServiceConnections\":
         [\r\n      {\r\n        \"name\": \"cli000005\",\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/privateEndpoints/cli000004/privateLinkServiceConnections/cli000005\",\r\n
-        \       \"etag\": \"W/\\\"e87acbb8-e814-4179-b09c-dc07ee2ed005\\\"\",\r\n
+        \       \"etag\": \"W/\\\"52f152f9-677e-4f5b-ac41-3187f1b3bfd8\\\"\",\r\n
         \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
         \         \"privateLinkServiceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000006\",\r\n
         \         \"groupIds\": [\r\n            \"topic\"\r\n          ],\r\n          \"privateLinkServiceConnectionState\":
@@ -1029,19 +1082,19 @@ interactions:
         \       },\r\n        \"type\": \"Microsoft.Network/privateEndpoints/privateLinkServiceConnections\"\r\n
         \     }\r\n    ],\r\n    \"manualPrivateLinkServiceConnections\": [],\r\n
         \   \"subnet\": {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/virtualNetworks/cli000002/subnets/cli000003\"\r\n
-        \   },\r\n    \"networkInterfaces\": [\r\n      {\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/networkInterfaces/cli000004.nic.5c7e9dda-7ab2-4e11-826d-5e188736c483\"\r\n
-        \     }\r\n    ]\r\n  }\r\n}"
+        \   },\r\n    \"networkInterfaces\": [\r\n      {\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/networkInterfaces/cli000004.nic.9be99e75-0634-4eff-bf85-6e39701da5cc\"\r\n
+        \     }\r\n    ],\r\n    \"customDnsConfigs\": []\r\n  }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '2015'
+      - '2044'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 14 Apr 2020 09:51:33 GMT
+      - Mon, 20 Apr 2020 09:17:34 GMT
       etag:
-      - W/"e87acbb8-e814-4179-b09c-dc07ee2ed005"
+      - W/"52f152f9-677e-4f5b-ac41-3187f1b3bfd8"
       expires:
       - '-1'
       pragma:
@@ -1058,7 +1111,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 428cd5e5-ae97-4438-8a0f-1f3d99a30488
+      - dcd8ce98-3c61-4123-9900-39956d6f91dc
     status:
       code: 200
       message: OK
@@ -1076,15 +1129,15 @@ interactions:
       ParameterSetName:
       - --resource-group --topic-name
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
+      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.4.0
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000006/privateEndpointConnections?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"value":[{"properties":{"privateEndpoint":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/privateEndpoints/cli000004"},"groupIds":["topic"],"privateLinkServiceConnectionState":{"status":"Approved","description":"Auto-approved","actionsRequired":"None"},"provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000006/privateEndpointConnections/cli000004.ce5be9fb-87ee-4c13-9082-71f22b475f64","name":"cli000004.ce5be9fb-87ee-4c13-9082-71f22b475f64","type":"Microsoft.EventGrid/topics/privateEndpointConnections"}]}'
+      string: '{"value":[{"properties":{"privateEndpoint":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/privateEndpoints/cli000004"},"groupIds":["topic"],"privateLinkServiceConnectionState":{"status":"Approved","description":"Auto-approved","actionsRequired":"None"},"provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000006/privateEndpointConnections/cli000004.aa818b7f-4fc5-4cf2-942b-67f19247d1b4","name":"cli000004.aa818b7f-4fc5-4cf2-942b-67f19247d1b4","type":"Microsoft.EventGrid/topics/privateEndpointConnections"}]}'
     headers:
       cache-control:
       - no-cache
@@ -1093,7 +1146,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 14 Apr 2020 09:51:34 GMT
+      - Mon, 20 Apr 2020 09:17:37 GMT
       expires:
       - '-1'
       pragma:
@@ -1125,8 +1178,8 @@ interactions:
       ParameterSetName:
       - --resource-group --topic-name
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
+      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.4.0
       accept-language:
       - en-US
     method: GET
@@ -1143,7 +1196,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 14 Apr 2020 09:51:35 GMT
+      - Mon, 20 Apr 2020 09:17:40 GMT
       expires:
       - '-1'
       pragma:
@@ -1177,12 +1230,12 @@ interactions:
       ParameterSetName:
       - --resource-group --name
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-network/10.1.0 Azure-SDK-For-Python AZURECLI/2.4.0
       accept-language:
       - en-US
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/privateEndpoints/cli000004?api-version=2019-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/privateEndpoints/cli000004?api-version=2020-03-01
   response:
     body:
       string: ''
@@ -1190,17 +1243,17 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/80094565-e2ce-4c62-8ae8-0ae462f916ab?api-version=2019-11-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/58a7ea52-030f-48f0-9c16-8a0060ec976d?api-version=2020-03-01
       cache-control:
       - no-cache
       content-length:
       - '0'
       date:
-      - Tue, 14 Apr 2020 09:51:35 GMT
+      - Mon, 20 Apr 2020 09:17:42 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operationResults/80094565-e2ce-4c62-8ae8-0ae462f916ab?api-version=2019-11-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operationResults/58a7ea52-030f-48f0-9c16-8a0060ec976d?api-version=2020-03-01
       pragma:
       - no-cache
       server:
@@ -1211,617 +1264,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 25021103-bfa9-48cc-8e4e-5b0ddc43eb7c
-      x-ms-ratelimit-remaining-subscription-deletes:
-      - '14996'
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network private-endpoint delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name
-      User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/80094565-e2ce-4c62-8ae8-0ae462f916ab?api-version=2019-11-01
-  response:
-    body:
-      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '30'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 14 Apr 2020 09:51:46 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - 35019275-abe8-4cb8-b63d-c87e7442509a
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network private-endpoint delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name
-      User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/80094565-e2ce-4c62-8ae8-0ae462f916ab?api-version=2019-11-01
-  response:
-    body:
-      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '30'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 14 Apr 2020 09:51:56 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - 554ff075-569d-483a-b418-853b6d39fbb8
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network private-endpoint delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name
-      User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/80094565-e2ce-4c62-8ae8-0ae462f916ab?api-version=2019-11-01
-  response:
-    body:
-      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '30'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 14 Apr 2020 09:52:06 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - 3030311c-bb8c-4bb6-b088-bf06e18731be
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network private-endpoint delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name
-      User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/80094565-e2ce-4c62-8ae8-0ae462f916ab?api-version=2019-11-01
-  response:
-    body:
-      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '30'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 14 Apr 2020 09:52:16 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - e0d540c5-ff3d-489c-ba20-68b0f47bfc84
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network private-endpoint delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name
-      User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/80094565-e2ce-4c62-8ae8-0ae462f916ab?api-version=2019-11-01
-  response:
-    body:
-      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '30'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 14 Apr 2020 09:52:26 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - fa33e9e7-3f0d-4b4b-a559-ba7fa5dde965
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network private-endpoint delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name
-      User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/80094565-e2ce-4c62-8ae8-0ae462f916ab?api-version=2019-11-01
-  response:
-    body:
-      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '30'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 14 Apr 2020 09:52:36 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - 26217a1a-21f7-4570-b97b-906f3d61aa32
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network private-endpoint delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name
-      User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/80094565-e2ce-4c62-8ae8-0ae462f916ab?api-version=2019-11-01
-  response:
-    body:
-      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '30'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 14 Apr 2020 09:52:46 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - 106784a6-fd91-447a-a19d-c7f1cfedd22f
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network private-endpoint delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name
-      User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/80094565-e2ce-4c62-8ae8-0ae462f916ab?api-version=2019-11-01
-  response:
-    body:
-      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '30'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 14 Apr 2020 09:52:56 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - 86e60c0e-57ac-4586-83d7-86add7beca75
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network private-endpoint delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name
-      User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/80094565-e2ce-4c62-8ae8-0ae462f916ab?api-version=2019-11-01
-  response:
-    body:
-      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '29'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 14 Apr 2020 09:53:07 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - 329ddef6-94d3-44ee-a87a-004447067b5c
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network vnet subnet delete
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '0'
-      ParameterSetName:
-      - --resource-group --vnet-name --name
-      User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
-      accept-language:
-      - en-US
-    method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/virtualNetworks/cli000002/subnets/cli000003?api-version=2019-11-01
-  response:
-    body:
-      string: ''
-    headers:
-      azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/18617009-e242-4600-9c30-be811c20d3a0?api-version=2019-11-01
-      cache-control:
-      - no-cache
-      content-length:
-      - '0'
-      date:
-      - Tue, 14 Apr 2020 09:53:09 GMT
-      expires:
-      - '-1'
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operationResults/18617009-e242-4600-9c30-be811c20d3a0?api-version=2019-11-01
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - 1ff17fd7-ec31-4a17-8c44-4f2c5d073679
-      x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network vnet subnet delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --vnet-name --name
-      User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/18617009-e242-4600-9c30-be811c20d3a0?api-version=2019-11-01
-  response:
-    body:
-      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '29'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 14 Apr 2020 09:53:19 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - a61523ed-974d-4a6e-8f59-61c44a510f9d
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network vnet delete
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '0'
-      ParameterSetName:
-      - --resource-group --name
-      User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
-      accept-language:
-      - en-US
-    method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/virtualNetworks/cli000002?api-version=2019-11-01
-  response:
-    body:
-      string: ''
-    headers:
-      azure-asyncnotification:
-      - Enabled
-      azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/08284436-2928-4802-ba42-536b5e9c0f5a?api-version=2019-11-01
-      cache-control:
-      - no-cache
-      content-length:
-      - '0'
-      date:
-      - Tue, 14 Apr 2020 09:53:21 GMT
-      expires:
-      - '-1'
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operationResults/08284436-2928-4802-ba42-536b5e9c0f5a?api-version=2019-11-01
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - 2490fc1d-c2e9-4481-8ad1-51cfc6d6a01c
+      - 411f9a22-52bf-4029-bef6-fd05cf05317f
       x-ms-ratelimit-remaining-subscription-deletes:
       - '14998'
     status:
@@ -1835,28 +1278,28 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network vnet delete
+      - network private-endpoint delete
       Connection:
       - keep-alive
       ParameterSetName:
       - --resource-group --name
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-network/10.1.0 Azure-SDK-For-Python AZURECLI/2.4.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/08284436-2928-4802-ba42-536b5e9c0f5a?api-version=2019-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/58a7ea52-030f-48f0-9c16-8a0060ec976d?api-version=2020-03-01
   response:
     body:
-      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '29'
+      - '30'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 14 Apr 2020 09:53:31 GMT
+      - Mon, 20 Apr 2020 09:17:53 GMT
       expires:
       - '-1'
       pragma:
@@ -1873,7 +1316,267 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 9986f4a3-8c63-4a46-ad5d-aa6c56f47015
+      - a3bd8547-e77a-4fb1-94d5-cd8b6e34d827
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network private-endpoint delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name
+      User-Agent:
+      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-network/10.1.0 Azure-SDK-For-Python AZURECLI/2.4.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/58a7ea52-030f-48f0-9c16-8a0060ec976d?api-version=2020-03-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 20 Apr 2020 09:18:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - a53a17d8-9a23-423c-9dcc-c18efa1754f1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet subnet delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --vnet-name --name
+      User-Agent:
+      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-network/10.1.0 Azure-SDK-For-Python AZURECLI/2.4.0
+      accept-language:
+      - en-US
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/virtualNetworks/cli000002/subnets/cli000003?api-version=2020-03-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/0b72b2e6-5408-4dd3-b1a9-15f8f7228e13?api-version=2020-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 20 Apr 2020 09:18:05 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operationResults/0b72b2e6-5408-4dd3-b1a9-15f8f7228e13?api-version=2020-03-01
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 947462c4-f85c-48c2-b190-c164bb56e190
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14997'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet subnet delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --vnet-name --name
+      User-Agent:
+      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-network/10.1.0 Azure-SDK-For-Python AZURECLI/2.4.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/0b72b2e6-5408-4dd3-b1a9-15f8f7228e13?api-version=2020-03-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 20 Apr 2020 09:18:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 93162075-318d-4cd7-a7a3-2ea8324e5a39
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --name
+      User-Agent:
+      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-network/10.1.0 Azure-SDK-For-Python AZURECLI/2.4.0
+      accept-language:
+      - en-US
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Network/virtualNetworks/cli000002?api-version=2020-03-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/3722fad1-8317-4f7d-9678-f04ad91b499c?api-version=2020-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 20 Apr 2020 09:18:20 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operationResults/3722fad1-8317-4f7d-9678-f04ad91b499c?api-version=2020-03-01
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - cdf9c326-a606-4c49-ba67-80c95dd3ca55
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name
+      User-Agent:
+      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-network/10.1.0 Azure-SDK-For-Python AZURECLI/2.4.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/operations/3722fad1-8317-4f7d-9678-f04ad91b499c?api-version=2020-03-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 20 Apr 2020 09:18:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 50064edc-3b50-4b58-b664-06819c473829
     status:
       code: 200
       message: OK
@@ -1893,8 +1596,8 @@ interactions:
       ParameterSetName:
       - --name --resource-group
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
+      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.4.0
       accept-language:
       - en-US
     method: DELETE
@@ -1904,17 +1607,17 @@ interactions:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/52F0B2BA-E132-479A-9D72-9DFFD24D3DCA?api-version=2020-04-01-preview
+      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/EFD6366B-5DBD-4609-BFB8-F7694D2378F1?api-version=2020-04-01-preview
       cache-control:
       - no-cache
       content-length:
       - '0'
       date:
-      - Tue, 14 Apr 2020 09:53:33 GMT
+      - Mon, 20 Apr 2020 09:18:35 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationResults/52F0B2BA-E132-479A-9D72-9DFFD24D3DCA?api-version=2020-04-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationResults/EFD6366B-5DBD-4609-BFB8-F7694D2378F1?api-version=2020-04-01-preview
       pragma:
       - no-cache
       server:
@@ -1942,13 +1645,13 @@ interactions:
       ParameterSetName:
       - --name --resource-group
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.1.0
+      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-eventgrid/3.0.0rc6 Azure-SDK-For-Python AZURECLI/2.4.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/52F0B2BA-E132-479A-9D72-9DFFD24D3DCA?api-version=2020-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/EFD6366B-5DBD-4609-BFB8-F7694D2378F1?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/52F0B2BA-E132-479A-9D72-9DFFD24D3DCA?api-version=2020-04-01-preview","name":"52f0b2ba-e132-479a-9d72-9dffd24d3dca","status":"Succeeded"}'
+      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/EFD6366B-5DBD-4609-BFB8-F7694D2378F1?api-version=2020-04-01-preview","name":"efd6366b-5dbd-4609-bfb8-f7694d2378f1","status":"Succeeded"}'
     headers:
       cache-control:
       - no-cache
@@ -1957,7 +1660,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 14 Apr 2020 09:53:43 GMT
+      - Mon, 20 Apr 2020 09:18:47 GMT
       expires:
       - '-1'
       pragma:
