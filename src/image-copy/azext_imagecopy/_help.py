@@ -8,7 +8,7 @@ from knack.help_files import helps
 
 helps['image copy'] = """
     type: command
-    short-summary: Copy a managed image (or vm) to other regions
+    short-summary: Copy a managed image (or vm) to other regions. Keep in mind that it requires the source disk to be available.
     long-summary: >
         Allows to copy a managed image (or vm) to other regions.
         Keep in mind that it requires the source disk to be available.
