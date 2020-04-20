@@ -1082,6 +1082,7 @@ class EventGridTests(ScenarioTest):
             'topic_name': topic_name,
             'location': 'centraluseuap'
         })
+        self.cmd('group create -n {resource_group_net} -l eastus')
 
         self.cmd('az network vnet create --resource-group {resource_group_net} --location {location} --name {vnet_name} --address-prefix 10.0.0.0/16')
         self.cmd('az network vnet subnet create --resource-group {resource_group_net} --vnet-name {vnet_name} --name {subnet_name} --address-prefixes 10.0.0.0/24')
