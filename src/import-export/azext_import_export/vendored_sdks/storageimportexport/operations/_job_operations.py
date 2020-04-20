@@ -70,16 +70,17 @@ class JobOperations(object):
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
+
+                # Construct parameters
+                query_parameters = {}
+                if top is not None:
+                    query_parameters['$top'] = self._serialize.query("top", top, 'int')
+                if filter is not None:
+                    query_parameters['$filter'] = self._serialize.query("filter", filter, 'str')
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
             else:
                 url = next_link
-
-            # Construct parameters
-            query_parameters = {}
-            if top is not None:
-                query_parameters['$top'] = self._serialize.query("top", top, 'int')
-            if filter is not None:
-                query_parameters['$filter'] = self._serialize.query("filter", filter, 'str')
-            query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+                query_parameters = {}
 
             # Construct headers
             header_parameters = {}
@@ -151,16 +152,17 @@ class JobOperations(object):
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
+
+                # Construct parameters
+                query_parameters = {}
+                if top is not None:
+                    query_parameters['$top'] = self._serialize.query("top", top, 'int')
+                if filter is not None:
+                    query_parameters['$filter'] = self._serialize.query("filter", filter, 'str')
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
             else:
                 url = next_link
-
-            # Construct parameters
-            query_parameters = {}
-            if top is not None:
-                query_parameters['$top'] = self._serialize.query("top", top, 'int')
-            if filter is not None:
-                query_parameters['$filter'] = self._serialize.query("filter", filter, 'str')
-            query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+                query_parameters = {}
 
             # Construct headers
             header_parameters = {}

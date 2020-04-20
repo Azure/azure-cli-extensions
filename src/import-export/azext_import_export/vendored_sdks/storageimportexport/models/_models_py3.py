@@ -6,7 +6,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from typing import List, Optional, Union
+from typing import Dict, List, Optional, Union
 
 from azure.core.exceptions import HttpResponseError
 import msrest.serialization
@@ -478,7 +478,7 @@ class JobResponse(msrest.serialization.Model):
     :param location: Specifies the Azure location where the job is created.
     :type location: str
     :param tags: A set of tags. Specifies the tags that are assigned to the job.
-    :type tags: ~storage_import_export.models.JobResponseTags
+    :type tags: dict[str, str]
     :param properties: Specifies the job properties.
     :type properties: ~storage_import_export.models.JobDetails
     """
@@ -494,7 +494,7 @@ class JobResponse(msrest.serialization.Model):
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
         'location': {'key': 'location', 'type': 'str'},
-        'tags': {'key': 'tags', 'type': 'JobResponseTags'},
+        'tags': {'key': 'tags', 'type': '{str}'},
         'properties': {'key': 'properties', 'type': 'JobDetails'},
     }
 
@@ -502,7 +502,7 @@ class JobResponse(msrest.serialization.Model):
         self,
         *,
         location: Optional[str] = None,
-        tags: Optional["JobResponseTags"] = None,
+        tags: Optional[Dict[str, str]] = None,
         properties: Optional["JobDetails"] = None,
         **kwargs
     ):
@@ -897,7 +897,7 @@ class PutJobParameters(msrest.serialization.Model):
     :param location: Specifies the supported Azure location where the job should be created.
     :type location: str
     :param tags: A set of tags. Specifies the tags that will be assigned to the job.
-    :type tags: ~storage_import_export.models.PutJobParametersTags
+    :type tags: dict[str, str]
     :param storage_account_id: The resource identifier of the storage account where data will be
      imported to or exported from.
     :type storage_account_id: str
@@ -947,7 +947,7 @@ class PutJobParameters(msrest.serialization.Model):
 
     _attribute_map = {
         'location': {'key': 'location', 'type': 'str'},
-        'tags': {'key': 'tags', 'type': 'PutJobParametersTags'},
+        'tags': {'key': 'tags', 'type': '{str}'},
         'storage_account_id': {'key': 'properties.storageAccountId', 'type': 'str'},
         'job_type': {'key': 'properties.jobType', 'type': 'str'},
         'return_address': {'key': 'properties.returnAddress', 'type': 'ReturnAddress'},
@@ -971,7 +971,7 @@ class PutJobParameters(msrest.serialization.Model):
         self,
         *,
         location: Optional[str] = None,
-        tags: Optional["PutJobParametersTags"] = None,
+        tags: Optional[Dict[str, str]] = None,
         storage_account_id: Optional[str] = None,
         job_type: Optional[str] = None,
         return_address: Optional["ReturnAddress"] = None,
@@ -1209,7 +1209,7 @@ class UpdateJobParameters(msrest.serialization.Model):
     """Update Job parameters.
 
     :param tags: A set of tags. Specifies the tags that will be assigned to the job.
-    :type tags: ~storage_import_export.models.UpdateJobParametersTags
+    :type tags: dict[str, str]
     :param cancel_requested: If specified, the value must be true. The service will attempt to
      cancel the job.
     :type cancel_requested: bool
@@ -1235,7 +1235,7 @@ class UpdateJobParameters(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'tags': {'key': 'tags', 'type': 'UpdateJobParametersTags'},
+        'tags': {'key': 'tags', 'type': '{str}'},
         'cancel_requested': {'key': 'properties.cancelRequested', 'type': 'bool'},
         'state': {'key': 'properties.state', 'type': 'str'},
         'return_address': {'key': 'properties.returnAddress', 'type': 'ReturnAddress'},
@@ -1249,7 +1249,7 @@ class UpdateJobParameters(msrest.serialization.Model):
     def __init__(
         self,
         *,
-        tags: Optional["UpdateJobParametersTags"] = None,
+        tags: Optional[Dict[str, str]] = None,
         cancel_requested: Optional[bool] = None,
         state: Optional[str] = None,
         return_address: Optional["ReturnAddress"] = None,
