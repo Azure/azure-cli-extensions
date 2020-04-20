@@ -17,12 +17,20 @@ def import_export_job_show(cmd, client, name, resource_group_name):
 
 
 def import_export_job_create(cmd, client, name, resource_group_name, client_tenant_id=None, location=None, tags=None,
-                             storage_account_id=None, type=None, return_address=None, return_shipping=None,
+                             storage_account=None, type=None, return_address=None, return_shipping=None,
                              shipping_information=None, delivery_package=None,
                              return_package=None, diagnostics_path=None, log_level=None, backup_drive_manifest=None,
                              state=None, cancel_requested=None, percent_complete=None, incomplete_blob_list_uri=None,
-                             drive_list=None, export=None, provisioning_state=None):
+                             drive_list=None, export=None):
     # pylint: disable=redefined-builtin
+    from msrestazure.tools import resource_id, is_valid_resource_id
+    from azure.cli.core.commands.client_factory import get_subscription_id
+    storage_account_id = storage_account
+    if not is_valid_resource_id(storage_account_id):
+        storage_account_id = resource_id(
+            subscription=get_subscription_id(cmd.cli_ctx), resource_group=resource_group_name,
+            namespace='Microsoft.Storage', type='storageAccounts', name=storage_account)
+
     return client.create(job_name=name, resource_group_name=resource_group_name, client_tenant_id=client_tenant_id,
                          location=location, tags=tags, storage_account_id=storage_account_id, job_type=type,
                          return_address=return_address, return_shipping=return_shipping,
@@ -30,7 +38,7 @@ def import_export_job_create(cmd, client, name, resource_group_name, client_tena
                          return_package=return_package, diagnostics_path=diagnostics_path, log_level=log_level,
                          backup_drive_manifest=backup_drive_manifest, state=state, cancel_requested=cancel_requested,
                          percent_complete=percent_complete, incomplete_blob_list_uri=incomplete_blob_list_uri,
-                         drive_list=drive_list, export=export, provisioning_state=provisioning_state)
+                         drive_list=drive_list, export=export)
 
 
 def import_export_job_update(cmd, client, name, resource_group_name, tags=None, cancel_requested=None, state=None,

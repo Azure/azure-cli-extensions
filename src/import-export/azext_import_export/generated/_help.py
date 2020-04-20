@@ -47,7 +47,7 @@ helps['import-export create'] = """
                manifest-hash=109B21108597EF36D5785F08303F3638 --type "Import" --log-level "Verbose"
                --return-address city=Redmond country-or-region=USA email=Test@contoso.com phone=4250000000
                postal-code=98007 recipient-name=Tests state-or-province=wa street-address1=Street1
-               street-address2=street2 --storage-account-id "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-\\
+               street-address2=street2 --storage-account "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-\\
                xxxxxxxxxxxx/resourceGroups/myResourceGroup/providers/Microsoft.ClassicStorage/storageAccounts/test"
 """
 

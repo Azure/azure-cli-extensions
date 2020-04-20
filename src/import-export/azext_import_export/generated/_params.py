@@ -37,7 +37,7 @@ def load_arguments(self, _):
         c.argument('client_tenant_id', help='The tenant ID of the client making the request.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
-        c.argument('storage_account_id', help='The resource identifier of the storage account where data will be imported to or exported from.')
+        c.argument('storage_account', help='Name or ID of the storage account where data will be imported to or exported from.')
         c.argument('type', help='The type of job')
         c.argument('return_address', action=AddReturnAddress, nargs='+', help='Specifies the return address information for the job.')
         c.argument('return_shipping', action=AddReturnShipping, nargs='+', help='Specifies the return carrier and customer\'s account with the carrier.')
@@ -53,7 +53,6 @@ def load_arguments(self, _):
         c.argument('incomplete_blob_list_uri', help='A blob path that points to a block blob containing a list of blob names that were not exported due to insufficient drive space. If all blobs were exported successfully, then this element is not included in the response.')
         c.argument('drive_list', action=AddDriveList, nargs='+', help='List of up to ten drives that comprise the job. The drive list is a required element for an import job; it is not specified for export jobs.')
         c.argument('export', action=AddExport, nargs='+', help='A property containing information about the blobs to be exported for an export job. This property is required for export jobs, but must not be specified for import jobs.')
-        c.argument('provisioning_state', help='Specifies the provisioning state of the job.')
 
     with self.argument_context('import-export update') as c:
         c.argument('name', options_list=['--name', '-n'], help='The name of the import/export job.')
