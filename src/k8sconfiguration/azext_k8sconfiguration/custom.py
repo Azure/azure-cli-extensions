@@ -131,7 +131,5 @@ def delete_k8sconfiguration(client, resource_group_name, cluster_name, name, clu
 def __get_cluster_type(cluster_type):
     if cluster_type.lower() == 'connectedclusters':
         return 'Microsoft.Kubernetes'
-    else:
-        # Since cluster_type is an enum of only two values, if not connectedClusters, it will be managedClusters.
-        return 'Microsoft.ContainerService'
-
+    # Since cluster_type is an enum of only two values, if not connectedClusters, it will be managedClusters.
+    return 'Microsoft.ContainerService'
