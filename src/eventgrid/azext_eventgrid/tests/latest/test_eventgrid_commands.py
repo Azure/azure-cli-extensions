@@ -63,14 +63,20 @@ class EventGridTests(ScenarioTest):
             self.check('name', self.kwargs['domain_name']),
             self.check('provisioningState', 'Succeeded'),
             self.check('sku', {'name': 'Basic'}),
-            self.check('identity', None)
+            self.check('identity.type', 'None'),
+            self.check('identity.userAssignedIdentities', None),
+            self.check('identity.principalId', None),
+            self.check('identity.tenantId', None),
         ]).get_output_in_json()['id']
 
         self.cmd('az eventgrid domain show --name {domain_name} --resource-group {rg}', checks=[
             self.check('type', 'Microsoft.EventGrid/domains'),
             self.check('name', self.kwargs['domain_name']),
             self.check('sku', {'name': 'Basic'}),
-            self.check('identity', None)
+            self.check('identity.type', 'None'),
+            self.check('identity.userAssignedIdentities', None),
+            self.check('identity.principalId', None),
+            self.check('identity.tenantId', None),
         ])
 
         # Test various failure conditions
@@ -87,7 +93,10 @@ class EventGridTests(ScenarioTest):
             self.check('name', self.kwargs['domain_name2']),
             self.check('provisioningState', 'Succeeded'),
             self.check('sku', {'name': 'Basic'}),
-            self.check('identity', None)
+            self.check('identity.type', 'None'),
+            self.check('identity.userAssignedIdentities', None),
+            self.check('identity.principalId', None),
+            self.check('identity.tenantId', None),
         ])
 
         # Comment this test until we fix service side bug.
@@ -95,7 +104,10 @@ class EventGridTests(ScenarioTest):
         #    self.check('type', 'Microsoft.EventGrid/domains'),
         #    self.check('name', self.kwargs['domain_name3']),
         #    self.check('provisioningState', 'Succeeded'),
-        #    self.check('identity', None)
+        #    self.check('identity.type', 'None'),
+        #    self.check('identity.userAssignedIdentities', None),
+        #    self.check('identity.principalId', None),
+        #    self.check('identity.tenantId', None),
         # ])
 
         outputdomain = self.cmd('az eventgrid domain create --name {domain_name4} --resource-group {rg} --location {location} --inbound-ip-rules 19.12.43.90/102 allow --inbound-ip-rules 19.12.43.70/81 allow --public-network-access disabled --sku preMIum --identity systemassigned').get_output_in_json()
@@ -297,14 +309,20 @@ class EventGridTests(ScenarioTest):
             self.check('name', self.kwargs['topic_name']),
             self.check('provisioningState', 'Succeeded'),
             self.check('sku', {'name': 'Basic'}),
-            self.check('identity', None)
+            self.check('identity.type', 'None'),
+            self.check('identity.userAssignedIdentities', None),
+            self.check('identity.principalId', None),
+            self.check('identity.tenantId', None),
         ]).get_output_in_json()['id']
 
         self.cmd('az eventgrid topic show --name {topic_name} --resource-group {rg}', checks=[
             self.check('type', 'Microsoft.EventGrid/topics'),
             self.check('name', self.kwargs['topic_name']),
             self.check('sku', {'name': 'Basic'}),
-            self.check('identity', None)
+            self.check('identity.type', 'None'),
+            self.check('identity.userAssignedIdentities', None),
+            self.check('identity.principalId', None),
+            self.check('identity.tenantId', None),
         ])
 
         self.kwargs.update({
@@ -462,13 +480,13 @@ class EventGridTests(ScenarioTest):
             'endpoint_baseurl': endpoint_baseurl
         })
 
-        scope = self.cmd('az eventgrid system-topic create --name {system_topic_name} --resource-group {rg} --location {location} --topic-type microsoft.storage.storageaccounts --source /subscriptions/5b4b650e-28b9-4790-b3ab-ddbd88d727c4/resourceGroups/testtobedeleted/providers/Microsoft.Storage/storageAccounts/trackedsource2stg', checks=[
+        scope = self.cmd('az eventgrid system-topic create --name {system_topic_name} --resource-group devexprg --location {location} --topic-type microsoft.storage.storageaccounts --source /subscriptions/5b4b650e-28b9-4790-b3ab-ddbd88d727c4/resourceGroups/devexprg/providers/Microsoft.Storage/storageAccounts/clistgaccount', checks=[
             self.check('type', 'Microsoft.EventGrid/systemTopics'),
             self.check('name', self.kwargs['system_topic_name']),
             self.check('provisioningState', 'Succeeded')
         ]).get_output_in_json()['id']
 
-        self.cmd('az eventgrid system-topic show --name {system_topic_name} --resource-group {rg}', checks=[
+        self.cmd('az eventgrid system-topic show --name {system_topic_name} --resource-group devexprg', checks=[
             self.check('type', 'Microsoft.EventGrid/systemTopics'),
             self.check('name', self.kwargs['system_topic_name'])
         ])
@@ -477,53 +495,59 @@ class EventGridTests(ScenarioTest):
             'scope': scope,
         })
 
-        self.cmd('az eventgrid system-topic update --name {system_topic_name} --resource-group {rg} --tags Dept=IT', checks=[
+        self.cmd('az eventgrid system-topic update --name {system_topic_name} --resource-group devexprg --tags Dept=IT', checks=[
             self.check('name', self.kwargs['system_topic_name']),
             self.check('tags', {'Dept': 'IT'}),
             self.check('type', 'Microsoft.EventGrid/systemTopics'),
             self.check('provisioningState', 'Succeeded')
         ])
 
-        self.cmd('az eventgrid system-topic list --resource-group {rg}', checks=[
+        self.cmd('az eventgrid system-topic list --resource-group devexprg', checks=[
             self.check('[0].type', 'Microsoft.EventGrid/systemTopics')
         ])
 
-        self.cmd('az eventgrid system-topic list --resource-group {rg} --odata-query "name eq \'{system_topic_name}\'"', checks=[
+        self.cmd('az eventgrid system-topic list --resource-group devexprg', checks=[
             self.check('[0].type', 'Microsoft.EventGrid/systemTopics'),
             self.check('[0].name', self.kwargs['system_topic_name']),
         ])
 
-        self.cmd('az eventgrid system-topic event-subscription create --resource-group {rg} --system-topic-name {system_topic_name} --name {event_subscription_name} --endpoint \"{endpoint_url}\" --endpoint-type webhook', checks=[
+        # Disable until service fix is availabler
+        # self.cmd('az eventgrid system-topic list --resource-group devexprg --odata-query "name eq \'{system_topic_name}\'"', checks=[
+        #     self.check('[0].type', 'Microsoft.EventGrid/systemTopics'),
+        #     self.check('[0].name', self.kwargs['system_topic_name']),
+        # ])
+
+        self.cmd('az eventgrid system-topic event-subscription create --resource-group devexprg --system-topic-name {system_topic_name} --name {event_subscription_name} --endpoint \"{endpoint_url}\" --endpoint-type webhook', checks=[
             self.check('type', 'Microsoft.EventGrid/systemTopics/eventSubscriptions'),
             self.check('provisioningState', 'Succeeded'),
             self.check('name', self.kwargs['event_subscription_name']),
             self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
         ])
 
-        self.cmd('az eventgrid system-topic event-subscription create --resource-group {rg} --system-topic-name {system_topic_name} --name {event_subscription_name} --endpoint \"{endpoint_url}\" --endpoint-type webhook --labels label_1 label_2', checks=[
+        self.cmd('az eventgrid system-topic event-subscription create --resource-group devexprg --system-topic-name {system_topic_name} --name {event_subscription_name} --endpoint \"{endpoint_url}\" --endpoint-type webhook --labels label_1 label_2', checks=[
             self.check('type', 'Microsoft.EventGrid/systemTopics/eventSubscriptions'),
             self.check('provisioningState', 'Succeeded'),
             self.check('name', self.kwargs['event_subscription_name'])
         ])
 
-        self.cmd('az eventgrid system-topic event-subscription show --resource-group {rg} --system-topic-name {system_topic_name} --name {event_subscription_name} --include-full-endpoint-url', checks=[
+        self.cmd('az eventgrid system-topic event-subscription show --resource-group devexprg --system-topic-name {system_topic_name} --name {event_subscription_name} --include-full-endpoint-url', checks=[
             self.check('destination.endpointUrl', self.kwargs['endpoint_url']),
             self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
         ])
 
-        self.cmd('az eventgrid system-topic event-subscription show --resource-group {rg} --system-topic-name {system_topic_name} --name {event_subscription_name}', checks=[
+        self.cmd('az eventgrid system-topic event-subscription show --resource-group devexprg --system-topic-name {system_topic_name} --name {event_subscription_name}', checks=[
             self.check('destination.endpointUrl', None),
             self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
         ])
 
-        self.cmd('az eventgrid system-topic event-subscription update -g {rg} --system-topic-name {system_topic_name} -n {event_subscription_name} --endpoint \"{endpoint_url}\" --endpoint-type webhook --labels label11 label22', checks=[
+        self.cmd('az eventgrid system-topic event-subscription update -g devexprg --system-topic-name {system_topic_name} -n {event_subscription_name} --endpoint \"{endpoint_url}\" --endpoint-type webhook --labels label11 label22', checks=[
             self.check('type', 'Microsoft.EventGrid/systemTopics/eventSubscriptions'),
             self.check('provisioningState', 'Succeeded'),
             self.check('name', self.kwargs['event_subscription_name']),
             self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
         ])
 
-        self.cmd('az eventgrid system-topic event-subscription list --resource-group {rg} --system-topic-name {system_topic_name}', checks=[
+        self.cmd('az eventgrid system-topic event-subscription list --resource-group devexprg --system-topic-name {system_topic_name}', checks=[
             self.check('[0].type', 'Microsoft.EventGrid/systemTopics/eventSubscriptions'),
             self.check('[0].provisioningState', 'Succeeded'),
         ])
@@ -534,9 +558,9 @@ class EventGridTests(ScenarioTest):
         #    self.check('[0].provisioningState', 'Succeeded'),
         # ])
 
-        self.cmd('az eventgrid system-topic event-subscription delete -g {rg} --name {event_subscription_name}  --system-topic-name {system_topic_name} ')
+        self.cmd('az eventgrid system-topic event-subscription delete -g devexprg --name {event_subscription_name}  --system-topic-name {system_topic_name} ')
 
-        self.cmd('az eventgrid system-topic delete -n {system_topic_name} -g {rg}')
+        self.cmd('az eventgrid system-topic delete -n {system_topic_name} -g devexprg')
 
     @ResourceGroupPreparer()
     @unittest.skip('Will be re-enabled once global operations are enabled for 2020-01-01-preview API version')
@@ -764,17 +788,27 @@ class EventGridTests(ScenarioTest):
         event_subscription_name1 = 'CliTestEventsubscription1'
         event_subscription_name2 = 'CliTestEventsubscription2'
         event_subscription_name3 = 'CliTestEventsubscription3'
+        event_subscription_name4 = 'CliTestEventsubscription4'
+        event_subscription_name5 = 'CliTestEventsubscription5'
         storagequeue_endpoint_id = '/subscriptions/5b4b650e-28b9-4790-b3ab-ddbd88d727c4/resourceGroups/DevExpRg/providers/Microsoft.Storage/storageAccounts/devexpstg/queueServices/default/queues/stogqueuedestination'
         deadletter_endpoint_id = '/subscriptions/5b4b650e-28b9-4790-b3ab-ddbd88d727c4/resourceGroups/DevExpRg/providers/Microsoft.Storage/storageAccounts/devexpstg/blobServices/default/containers/dlq'
         hybridconnection_endpoint_id = '/subscriptions/5b4b650e-28b9-4790-b3ab-ddbd88d727c4/resourceGroups/DevExpRg/providers/Microsoft.Relay/namespaces/DevExpRelayNamespace/hybridConnections/hydbridconnectiondestination'
         servicebusqueue_endpoint_id = '/subscriptions/5b4b650e-28b9-4790-b3ab-ddbd88d727c4/resourceGroups/DevExpRg/providers/Microsoft.ServiceBus/namespaces/devexpservicebus/queues/devexpdestination'
+        eventhub_with_identity_endpoint_id = '/subscriptions/5b4b650e-28b9-4790-b3ab-ddbd88d727c4/resourceGroups/DevExpRg/providers/Microsoft.eventhub/namespaces/devexpeh/eventhubs/eventhub1'
+        source_resource_id_with_identity = '/subscriptions/5b4b650e-28b9-4790-b3ab-ddbd88d727c4/resourceGroups/amh/providers/Microsoft.EventGrid/topics/tpoicWithNoIdentity2'
+        deadletter_endpoint_id_with_identity = '/subscriptions/5b4b650e-28b9-4790-b3ab-ddbd88d727c4/resourceGroups/DevExpRg/providers/Microsoft.Storage/storageAccounts/devexpstg/blobServices/default/containers/dlqwithidentity'
 
         self.kwargs.update({
             'event_subscription_name1': event_subscription_name1,
             'event_subscription_name2': event_subscription_name2,
             'event_subscription_name3': event_subscription_name3,
+            'event_subscription_name4': event_subscription_name4,
+            'event_subscription_name5': event_subscription_name5,
             'storagequeue_endpoint_id': storagequeue_endpoint_id,
+            'source_resource_id_with_identity': source_resource_id_with_identity,
+            'eventhub_with_identity_endpoint_id': eventhub_with_identity_endpoint_id,
             'deadletter_endpoint_id': deadletter_endpoint_id,
+            'deadletter_endpoint_id_with_identity': deadletter_endpoint_id_with_identity,
             'hybridconnection_endpoint_id': hybridconnection_endpoint_id,
             'location': 'centraluseuap',
             'servicebusqueue_endpoint_id': servicebusqueue_endpoint_id,
@@ -816,9 +850,30 @@ class EventGridTests(ScenarioTest):
             self.check('provisioningState', 'Succeeded'),
         ])
 
+        # Create an event hub destination based event subscription with default eventgrid event schema as the delivery schema and with system assigned identity and systemassigned deadletter destination
+        # self.cmd('az eventgrid event-subscription create --source-resource-id {source_resource_id_with_identity} --delivery-identity-endpoint-type eventhub --delivery-identity systemassigned --delivery-identity-endpoint {eventhub_with_identity_endpoint_id} -n {event_subscription_name4} --deadletter-identity-endpoint {deadletter_endpoint_id_with_identity} --deadletter-identity systemassigned')
+
+        # self.cmd('az eventgrid event-subscription show --source-resource-id {source_resource_id_with_identity} --name {event_subscription_name4}', checks=[
+        #    self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
+        #    self.check('provisioningState', 'Succeeded'),
+        #    self.check('destination', None),
+        #    self.check('deliveryWithResourceIdentity.identity.userAssignedIdentity', None),
+        #    self.check('deliveryWithResourceIdentity.identity.type', 'SystemAssigned'),
+        #    self.check('deliveryWithResourceIdentity.destination.endpointType', 'EventHub'),
+        #    self.check('deliveryWithResourceIdentity.destination.resourceId', self.kwargs['eventhub_with_identity_endpoint_id']),
+        #    self.check('deadLetterDestination', None),
+        #    self.check('deadLetterWithResourceIdentity.identity.userAssignedIdentity', None),
+        #    self.check('deadLetterWithResourceIdentity.identity.type', 'SystemAssigned'),
+        #    self.check('deadLetterWithResourceIdentity.deadLetterDestination.endpointType', 'StorageBlob')
+        # ])
+
+        # Update an event hub destination based event subscription with default eventgrid event schema as the delivery schema and with system assigned identity
+        # self.cmd('az eventgrid event-subscription update --source-resource-id {source_resource_id_with_identity} -n {event_subscription_name4} --deadletter-endpoint {deadletter_endpoint_id}')
+
         self.cmd('az eventgrid event-subscription delete  --source-resource-id {source_resource_id} --name {event_subscription_name1}')
         self.cmd('az eventgrid event-subscription delete  --source-resource-id {source_resource_id} --name {event_subscription_name2}')
         self.cmd('az eventgrid event-subscription delete  --source-resource-id {source_resource_id} --name {event_subscription_name3}')
+        # self.cmd('az eventgrid event-subscription delete  --source-resource-id {source_resource_id} --name {event_subscription_name4}')
         self.cmd('az storage account delete -y -g {rg} -n {sa}')
 
     @ResourceGroupPreparer(name_prefix='clieventgridrg', location='centraluseuap')
@@ -854,7 +909,7 @@ class EventGridTests(ScenarioTest):
             'endpoint_baseurl_for_validation': endpoint_baseurl_for_validation,
             'azure_active_directory_tenant_id': azure_active_directory_tenant_id,
             'azure_active_directory_application_id_or_uri': azure_active_directory_application_id_or_uri,
-            'location': 'centraluseuap',
+            'location': 'centraluseuap'
         })
 
         self.kwargs['source_resource_id'] = self.cmd('storage account create -g {rg} -n {sa} --sku Standard_LRS -l {location}').get_output_in_json()['id']
@@ -862,41 +917,73 @@ class EventGridTests(ScenarioTest):
 
         # Create a servicebustopic destination based event subscription with CloudEvent 1.0 as the delivery schema
         self.cmd('az eventgrid event-subscription create --source-resource-id {source_resource_id} --name {event_subscription_name1} --endpoint-type SErvIcEBusTOPic --endpoint {servicebustopic_endpoint_id} --subject-begins-with SomeRandomText1 --event-delivery-schema CloudEVENTSchemaV1_0')
-
-        # Create an AzureFunction destination based event subscription with additional batching parameters
-        self.cmd('az eventgrid event-subscription create --source-resource-id {source_resource_id} --name {event_subscription_name2} --endpoint-type azUREFunction --endpoint {azurefunction_endpoint_id_cloudevent} --subject-begins-with SomeRandomText1 --max-events-per-batch 10 --preferred-batch-size-in-kilobytes 128')
-
-        # Create an AzureFunction destination based event subscription with additional batching parameters for destination type webhook.
-        self.cmd('az eventgrid event-subscription create --source-resource-id {source_resource_id} --name {event_subscription_name4} --endpoint-type webhook --endpoint \"{endpoint_url_for_validation}\" --subject-begins-with SomeRandomText1 --max-events-per-batch 10 --preferred-batch-size-in-kilobytes 128')
-
-        # Create an Webhook destination based event subscription with azure active directory settings
-        self.cmd('az eventgrid event-subscription create --source-resource-id {source_resource_id} --name {event_subscription_name3} --endpoint-type webhook --endpoint \"{endpoint_url_for_validation}\" --subject-begins-with SomeRandomText1 --max-events-per-batch 10 --preferred-batch-size-in-kilobytes 128 --azure-active-directory-tenant-id \"{azure_active_directory_tenant_id}\" --azure-active-directory-application-id-or-uri \"{azure_active_directory_application_id_or_uri}\"')
-
-        # Update a servicebustopic destination based event subscription with CloudEvent 1.0 as the delivery schema
-        self.cmd('az eventgrid event-subscription update --source-resource-id {source_resource_id} --name {event_subscription_name1} --subject-begins-with SomeRandomText1234')
-
-        # Update an AzureFunction destination based event subscription with additional batching parameters
-        self.cmd('az eventgrid event-subscription update --source-resource-id {source_resource_id} --name {event_subscription_name2} --endpoint-type azUREFunction --endpoint {azurefunction_endpoint_id_cloudevent} --subject-begins-with SomeRandomText2234431')
-
-        # Update an AzureFunction destination based event subscription with additional batching parameters for destination type webhook.
-        self.cmd('az eventgrid event-subscription update --source-resource-id {source_resource_id} --name {event_subscription_name4} --endpoint-type webhook --endpoint \"{endpoint_url_for_validation}\" --subject-begins-with SomeRandomText112341')
-
-        # Update an Webhook destination based event subscription with azure active directory settings
-        self.cmd('az eventgrid event-subscription update --source-resource-id {source_resource_id} --name {event_subscription_name3} --endpoint \"{endpoint_url_for_validation}\" --subject-begins-with SomeRandomText123412')
-
         self.cmd('az eventgrid event-subscription show --source-resource-id {source_resource_id} --name {event_subscription_name1}', checks=[
             self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
             self.check('provisioningState', 'Succeeded'),
         ])
 
-        self.cmd('az eventgrid event-subscription show  --source-resource-id {source_resource_id} --name {event_subscription_name2}', checks=[
+        # Create an AzureFunction destination based event subscription with additional batching parameters
+        self.cmd('az eventgrid event-subscription create --source-resource-id {source_resource_id} --name {event_subscription_name2} --endpoint-type azUREFunction --endpoint {azurefunction_endpoint_id_cloudevent} --subject-begins-with SomeRandomText1 --max-events-per-batch 10 --preferred-batch-size-in-kilobytes 128')
+        self.cmd('az eventgrid event-subscription show --source-resource-id {source_resource_id} --name {event_subscription_name2}', checks=[
             self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
             self.check('provisioningState', 'Succeeded'),
         ])
 
-        self.cmd('az eventgrid event-subscription show  --source-resource-id {source_resource_id} --name {event_subscription_name3}', checks=[
+        # Create an AzureFunction destination based event subscription with additional batching parameters for destination type webhook.
+        self.cmd('az eventgrid event-subscription create --source-resource-id {source_resource_id} --name {event_subscription_name4} --endpoint-type webhook --endpoint \"{endpoint_url_for_validation}\" --subject-begins-with SomeRandomText1 --max-events-per-batch 10 --preferred-batch-size-in-kilobytes 128')
+        self.cmd('az eventgrid event-subscription show --source-resource-id {source_resource_id} --name {event_subscription_name4}', checks=[
             self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
-            self.check('provisioningState', 'Succeeded'),
+            self.check('provisioningState', 'Succeeded')
+        ])
+
+        # Create an Webhook destination based event subscription with azure active directory settings
+        self.cmd('az eventgrid event-subscription create --source-resource-id {source_resource_id} --name {event_subscription_name3} --endpoint-type webhook --endpoint \"{endpoint_url_for_validation}\" --subject-begins-with SomeRandomText1 --max-events-per-batch 10 --preferred-batch-size-in-kilobytes 128 --azure-active-directory-tenant-id \"{azure_active_directory_tenant_id}\" --azure-active-directory-application-id-or-uri \"{azure_active_directory_application_id_or_uri}\"')
+        self.cmd('az eventgrid event-subscription show --source-resource-id {source_resource_id} --name {event_subscription_name3}', checks=[
+            self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('provisioningState', 'Succeeded')
+        ])
+
+        # Update a servicebustopic destination based event subscription with CloudEvent 1.0 as the delivery schema
+        self.cmd('az eventgrid event-subscription update --source-resource-id {source_resource_id} --name {event_subscription_name1} --subject-begins-with SomeRandomText1234')
+        self.cmd('az eventgrid event-subscription show --source-resource-id {source_resource_id} --name {event_subscription_name1}', checks=[
+            self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('provisioningState', 'Succeeded')
+        ])
+
+        # Update an AzureFunction destination based event subscription
+        self.cmd('az eventgrid event-subscription update --source-resource-id {source_resource_id} --name {event_subscription_name2} --endpoint-type azUREFunction --endpoint {azurefunction_endpoint_id_cloudevent} --subject-begins-with SomeRandomText2234431')
+        self.cmd('az eventgrid event-subscription show --source-resource-id {source_resource_id} --name {event_subscription_name2}', checks=[
+            self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('provisioningState', 'Succeeded')
+        ])
+
+        # Update an AzureFunction destination based event subscription with additional batching parameters for destination type webhook.
+        self.cmd('az eventgrid event-subscription update --source-resource-id {source_resource_id} --name {event_subscription_name4} --endpoint-type webhook --endpoint \"{endpoint_url_for_validation}\" --subject-begins-with SomeRandomText112341')
+        self.cmd('az eventgrid event-subscription show --source-resource-id {source_resource_id} --name {event_subscription_name4}', checks=[
+            self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('provisioningState', 'Succeeded')
+        ])
+
+        # Update an Webhook destination based event subscription with azure active directory settings
+        self.cmd('az eventgrid event-subscription update --source-resource-id {source_resource_id} --name {event_subscription_name3} --endpoint \"{endpoint_url_for_validation}\" --subject-begins-with SomeRandomText123412')
+        self.cmd('az eventgrid event-subscription show --source-resource-id {source_resource_id} --name {event_subscription_name3}', checks=[
+            self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('provisioningState', 'Succeeded')
+        ])
+
+        self.cmd('az eventgrid event-subscription show --source-resource-id {source_resource_id} --name {event_subscription_name1}', checks=[
+            self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('provisioningState', 'Succeeded')
+        ])
+
+        self.cmd('az eventgrid event-subscription show --source-resource-id {source_resource_id} --name {event_subscription_name2}', checks=[
+            self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('provisioningState', 'Succeeded')
+        ])
+
+        self.cmd('az eventgrid event-subscription show --source-resource-id {source_resource_id} --name {event_subscription_name3}', checks=[
+            self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('provisioningState', 'Succeeded')
         ])
 
         self.cmd('az eventgrid event-subscription delete --source-resource-id {source_resource_id} --name {event_subscription_name1}')
@@ -1006,7 +1093,10 @@ class EventGridTests(ScenarioTest):
             self.check('provisioningState', 'Succeeded'),
             self.check('sku', {'name': 'Premium'}),
             self.check('publicNetworkAccess', 'Disabled'),
-            self.check('identity', None)
+            self.check('identity.principalId', None),
+            self.check('identity.tenantId', None),
+            self.check('identity.type', None),
+            self.check('identity.userAssignedIdentities', None)
         ]).get_output_in_json()['id']
 
         self.cmd('az eventgrid topic show --name {topic_name} --resource-group {rg}', checks=[
@@ -1014,7 +1104,10 @@ class EventGridTests(ScenarioTest):
             self.check('name', self.kwargs['topic_name']),
             self.check('sku', {'name': 'Premium'}),
             self.check('publicNetworkAccess', 'Disabled'),
-            self.check('identity', None)
+            self.check('identity.principalId', None),
+            self.check('identity.tenantId', None),
+            self.check('identity.type', None),
+            self.check('identity.userAssignedIdentities', None)
         ])
 
         self.kwargs.update({
@@ -1024,8 +1117,8 @@ class EventGridTests(ScenarioTest):
         # Create private endpoint
         self.cmd('az network private-endpoint create --resource-group {resource_group_net} --name {private_endpoint_name} --vnet-name {vnet_name} --subnet {subnet_name} --private-connection-resource-id {scope} --location {location} --group-ids topic --connection-name {connection_name}')
 
-        self.cmd('az eventgrid topic private-endpoint-connection list --resource-group {rg} --name {topic_name}')
-        self.cmd('az eventgrid topic private-link-resource list --resource-group {rg} --name {topic_name}')
+        self.cmd('az eventgrid topic private-endpoint-connection list --resource-group {rg} --topic-name {topic_name}')
+        self.cmd('az eventgrid topic private-link-resource list --resource-group {rg} --topic-name {topic_name}')
 
         self.cmd('az network private-endpoint delete --resource-group {resource_group_net} --name {private_endpoint_name}')
         self.cmd('az network vnet subnet delete --resource-group {resource_group_net} --vnet-name {vnet_name} --name {subnet_name}')
