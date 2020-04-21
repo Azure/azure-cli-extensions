@@ -5,7 +5,11 @@
 # pylint: disable=wildcard-import
 # pylint: disable=unused-wildcard-import
 
-from .generated._params import *  # noqa: F403
+try:
+    from .generated._params import *  # noqa: F403
+except ImportError:
+    pass
+
 try:
     from .manual._params import *  # noqa: F403
 except ImportError:

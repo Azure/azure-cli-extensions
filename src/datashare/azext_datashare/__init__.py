@@ -21,8 +21,11 @@ class DataShareManagementClientCommandsLoader(AzCommandsLoader):
                                                                       custom_command_type=datashare_custom)
 
     def load_command_table(self, args):
-        from azext_datashare.generated.commands import load_command_table
-        load_command_table(self, args)
+        try:
+            from azext_datashare.generated.commands import load_command_table
+            load_command_table(self, args)
+        except ImportError:
+            pass
         try:
             from azext_datashare.manual.commands import load_command_table as load_command_table_manual
             load_command_table_manual(self, args)
@@ -31,8 +34,11 @@ class DataShareManagementClientCommandsLoader(AzCommandsLoader):
         return self.command_table
 
     def load_arguments(self, command):
-        from azext_datashare.generated._params import load_arguments
-        load_arguments(self, command)
+        try:
+            from azext_datashare.generated._params import load_arguments
+            load_arguments(self, command)
+        except ImportError:
+            pass
         try:
             from azext_datashare.manual._params import load_arguments as load_arguments_manual
             load_arguments_manual(self, command)

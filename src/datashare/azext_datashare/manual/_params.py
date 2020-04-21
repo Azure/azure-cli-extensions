@@ -16,7 +16,6 @@ from azure.cli.core.commands.parameters import (
     get_datetime_type
 )
 from azure.cli.core.commands.validators import get_default_location_from_resource_group, validate_file_or_dict
-from azext_datashare.action import AddIdentity
 from azext_datashare.vendored_sdks.datashare.models._data_share_management_client_enums import ShareKind, Kind, SynchronizationMode, SynchronizationKind, RecurrenceInterval
 from azext_datashare.manual._validators import invitation_id_validator
 
