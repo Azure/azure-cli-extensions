@@ -402,7 +402,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name, kube_con
     try:
         configmap = api_instance.read_namespaced_config_map('azure-clusterconfig', 'azure-arc')
     except ApiException as e:
-        print("Exception when calling CoreV1Api->read_namespaced_config_map: %s\n" % e)
+        print("Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: %s\n" % e)
 
     if (configmap.data["AZURE_RESOURCE_GROUP"].lower() == resource_group_name.lower() and configmap.data["AZURE_RESOURCE_NAME"].lower() == cluster_name.lower()):
         delete_cc_resource(client, resource_group_name, cluster_name)
