@@ -407,7 +407,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name, kube_con
     if (configmap.data["AZURE_RESOURCE_GROUP"].lower() == resource_group_name.lower() and configmap.data["AZURE_RESOURCE_NAME"].lower() == cluster_name.lower()):
         delete_cc_resource(client, resource_group_name, cluster_name)
     else:
-        raise CLIError("The kube config does not correspond to the connected cluster resource provided. Agents installed on this cluster correspond to the resource group name '{}' and resource name '{}'.".format(configmap.data["AZURE_RESOURCE_GROUP"], configmap.data["AZURE_RESOURCE_NAME"]))
+        raise CLIError("The current context in the kubeconfig file does not correspond to the connected cluster resource specified. Agents installed on this cluster correspond to the resource group name '{}' and resource name '{}'.".format(configmap.data["AZURE_RESOURCE_GROUP"], configmap.data["AZURE_RESOURCE_NAME"]))
 
     # Deleting the azure-arc agents
     delete_arc_agents(release_namespace, kube_config, kube_context, configuration)
