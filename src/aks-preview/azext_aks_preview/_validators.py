@@ -3,16 +3,20 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from __future__ import unicode_literals
 import os
 import os.path
 import re
-from math import ceil
+from math import ceil, isnan, isclose
 from ipaddress import ip_network
 
 from knack.log import get_logger
 
+from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.util import CLIError
 import azure.cli.core.keys as keys
+
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterPropertiesAutoScalerProfile
 
 logger = get_logger(__name__)
 
@@ -76,7 +80,8 @@ def validate_linux_host_name(namespace):
     in the CLI pre-flight.
     """
     # https://stackoverflow.com/questions/106179/regular-expression-to-match-dns-hostname-or-ip-address
-    rfc1123_regex = re.compile(r'^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9]))*$')  # pylint:disable=line-too-long
+    rfc1123_regex = re.compile(
+        r'^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9]))*$')  # pylint:disable=line-too-long
     found = rfc1123_regex.findall(namespace.name)
     if not found:
         raise CLIError('--name cannot exceed 63 characters and can only contain '
@@ -104,14 +109,31 @@ def validate_nodes_count(namespace):
 
 
 def validate_ip_ranges(namespace):
-    if namespace.api_server_authorized_ip_ranges is not None:
-        if namespace.api_server_authorized_ip_ranges == '':
-            return
-        for ip in namespace.api_server_authorized_ip_ranges.split(','):
-            try:
-                ip_network(ip)
-            except ValueError:
-                raise CLIError("--api-server-authorized-ip-ranges should be list of IPv4 addresses or CIDRs")
+    if not namespace.api_server_authorized_ip_ranges:
+        return
+
+    restrict_traffic_to_agentnodes = "0.0.0.0/32"
+    allow_all_traffic = ""
+    ip_ranges = [ip.strip() for ip in namespace.api_server_authorized_ip_ranges.split(",")]
+
+    if restrict_traffic_to_agentnodes in ip_ranges and len(ip_ranges) > 1:
+        raise CLIError(("Setting --api-server-authorized-ip-ranges to 0.0.0.0/32 is not allowed with other IP ranges."
+                        "Refer to https://aka.ms/aks/whitelist for more details"))
+
+    if allow_all_traffic in ip_ranges and len(ip_ranges) > 1:
+        raise CLIError("--api-server-authorized-ip-ranges cannot be disabled and simultaneously enabled")
+
+    for ip in ip_ranges:
+        if ip in [restrict_traffic_to_agentnodes, allow_all_traffic]:
+            continue
+        try:
+            ip = ip_network(ip)
+            if not ip.is_global:
+                raise CLIError("--api-server-authorized-ip-ranges must be global non-reserved addresses or CIDRs")
+            if ip.version == 6:
+                raise CLIError("--api-server-authorized-ip-ranges cannot be IPv6 addresses")
+        except ValueError:
+            raise CLIError("--api-server-authorized-ip-ranges should be a list of IPv4 addresses or CIDRs")
 
 
 def validate_nodepool_name(namespace):
@@ -161,7 +183,8 @@ def validate_load_balancer_outbound_ip_prefixes(namespace):
 def validate_taints(namespace):
     """Validates that provided taint is a valid format"""
 
-    regex = re.compile(r"^[a-zA-Z\d][\w\-\.\/]{0,252}=[a-zA-Z\d][\w\-\.]{0,62}:(NoSchedule|PreferNoSchedule|NoExecute)$")  # pylint: disable=line-too-long
+    regex = re.compile(
+        r"^[a-zA-Z\d][\w\-\.\/]{0,252}=[a-zA-Z\d][\w\-\.]{0,62}:(NoSchedule|PreferNoSchedule|NoExecute)$")  # pylint: disable=line-too-long
 
     if namespace.node_taints is not None and namespace.node_taints != '':
         for taint in namespace.node_taints.split(','):
@@ -177,9 +200,9 @@ def validate_priority(namespace):
     if namespace.priority is not None:
         if namespace.priority == '':
             return
-        if namespace.priority != "Low" and \
+        if namespace.priority != "Spot" and \
                 namespace.priority != "Regular":
-            raise CLIError("--priority can only be Low or Regular")
+            raise CLIError("--priority can only be Spot or Regular")
 
 
 def validate_eviction_policy(namespace):
@@ -190,3 +213,162 @@ def validate_eviction_policy(namespace):
         if namespace.eviction_policy != "Delete" and \
                 namespace.eviction_policy != "Deallocate":
             raise CLIError("--eviction-policy can only be Delete or Deallocate")
+
+
+def validate_spot_max_price(namespace):
+    """Validates the spot node pool max price."""
+    if not isnan(namespace.spot_max_price):
+        if namespace.priority != "Spot":
+            raise CLIError("--spot_max_price can only be set when --priority is Spot")
+        if namespace.spot_max_price * 100000 % 1 != 0:
+            raise CLIError("--spot_max_price can only include up to 5 decimal places")
+        if namespace.spot_max_price <= 0 and not isclose(namespace.spot_max_price, -1.0, rel_tol=1e-06):
+            raise CLIError(
+                "--spot_max_price can only be any decimal value greater than zero, or -1 which indicates "
+                "default price to be up-to on-demand")
+
+
+def validate_acr(namespace):
+    if namespace.attach_acr and namespace.detach_acr:
+        raise CLIError('Cannot specify "--attach-acr" and "--detach-acr" at the same time.')
+
+
+def validate_user(namespace):
+    if namespace.user.lower() != "clusteruser" and \
+            namespace.user.lower() != "clustermonitoringuser":
+        raise CLIError("--user can only be clusterUser or clusterMonitoringUser")
+
+
+def validate_vnet_subnet_id(namespace):
+    if namespace.vnet_subnet_id is not None:
+        if namespace.vnet_subnet_id == '':
+            return
+        from msrestazure.tools import is_valid_resource_id
+        if not is_valid_resource_id(namespace.vnet_subnet_id):
+            raise CLIError("--vnet-subnet-id is not a valid Azure resource ID.")
+
+
+def validate_load_balancer_outbound_ports(namespace):
+    """validate load balancer profile outbound allocated ports"""
+    if namespace.load_balancer_outbound_ports is not None:
+        if namespace.load_balancer_outbound_ports % 8 != 0:
+            raise CLIError("--load-balancer-allocated-ports must be a multiple of 8")
+        if namespace.load_balancer_outbound_ports < 0 or namespace.load_balancer_outbound_ports > 64000:
+            raise CLIError("--load-balancer-allocated-ports must be in the range [0,64000]")
+
+
+def validate_load_balancer_idle_timeout(namespace):
+    """validate load balancer profile idle timeout"""
+    if namespace.load_balancer_idle_timeout is not None:
+        if namespace.load_balancer_idle_timeout < 4 or namespace.load_balancer_idle_timeout > 120:
+            raise CLIError("--load-balancer-idle-timeout must be in the range [4,120]")
+
+
+def validate_nodepool_tags(ns):
+    """ Extracts multiple space-separated tags in key[=value] format """
+    if isinstance(ns.nodepool_tags, list):
+        tags_dict = {}
+        for item in ns.nodepool_tags:
+            tags_dict.update(validate_tag(item))
+        ns.nodepool_tags = tags_dict
+
+
+def validate_cluster_autoscaler_profile(namespace):
+    """ Validates that cluster autoscaler profile is acceptable by:
+        1. Extracting the key[=value] format to map
+        2. Validating that the key isn't empty and that the key is valid
+        Empty strings pass validation
+    """
+    _extract_cluster_autoscaler_params(namespace)
+    if namespace.cluster_autoscaler_profile is not None:
+        for key in namespace.cluster_autoscaler_profile.keys():
+            _validate_cluster_autoscaler_key(key)
+
+
+def _validate_cluster_autoscaler_key(key):
+    if not key:
+        raise CLIError('Empty key specified for cluster-autoscaler-profile')
+    valid_keys = list(k.replace("_", "-") for k, v in ManagedClusterPropertiesAutoScalerProfile._attribute_map.items())  # pylint: disable=protected-access
+    if key not in valid_keys:
+        raise CLIError('Invalid key specified for cluster-autoscaler-profile: %s' % key)
+
+
+def _extract_cluster_autoscaler_params(namespace):
+    """ Extracts multiple space-separated cluster autoscaler parameters in key[=value] format """
+    if isinstance(namespace.cluster_autoscaler_profile, list):
+        params_dict = {}
+        for item in namespace.cluster_autoscaler_profile:
+            params_dict.update(validate_tag(item))
+        namespace.cluster_autoscaler_profile = params_dict
+
+
+def validate_nodepool_labels(namespace):
+    """Validates that provided node labels is a valid format"""
+
+    if hasattr(namespace, 'nodepool_labels'):
+        labels = namespace.nodepool_labels
+    else:
+        labels = namespace.labels
+
+    if labels is None:
+        return
+
+    if isinstance(labels, list):
+        labels_dict = {}
+        for item in labels:
+            labels_dict.update(validate_label(item))
+        after_validation_labels = labels_dict
+    else:
+        after_validation_labels = validate_label(labels)
+
+    if hasattr(namespace, 'nodepool_labels'):
+        namespace.nodepool_labels = after_validation_labels
+    else:
+        namespace.labels = after_validation_labels
+
+
+def validate_label(label):
+    """Validates that provided label is a valid format"""
+    prefix_regex = re.compile(r"^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$")
+    name_regex = re.compile(r"^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$")
+    value_regex = re.compile(r"^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$")
+
+    if label == "":
+        return {}
+    kv = label.split('=')
+    if len(kv) != 2:
+        raise CLIError("Invalid label: %s. Label definition must be of format name=value." % label)
+    name_parts = kv[0].split('/')
+    if len(name_parts) == 1:
+        name = name_parts[0]
+    elif len(name_parts) == 2:
+        prefix = name_parts[0]
+        if not prefix or len(prefix) > 253:
+            raise CLIError("Invalid label: %s. Label prefix can't be empty or more than 253 chars." % label)
+        if not prefix_regex.match(prefix):
+            raise CLIError("Invalid label: %s. Prefix part a DNS-1123 label must consist of lower case alphanumeric "
+                           "characters or '-', and must start and end with an alphanumeric character" % label)
+        name = name_parts[1]
+    else:
+        raise CLIError("Invalid label: %s. A qualified name must consist of alphanumeric characters, '-', '_' "
+                       "or '.', and must start and end with an alphanumeric character (e.g. 'MyName',  or "
+                       "'my.name',  or '123-abc') with an optional DNS subdomain prefix and '/' "
+                       "(e.g. 'example.com/MyName')" % label)
+
+    # validate label name
+    if not name or len(name) > 63:
+        raise CLIError("Invalid label: %s. Label name can't be empty or more than 63 chars." % label)
+    if not name_regex.match(name):
+        raise CLIError("Invalid label: %s. A qualified name must consist of alphanumeric characters, '-', '_' "
+                       "or '.', and must start and end with an alphanumeric character (e.g. 'MyName',  or "
+                       "'my.name',  or '123-abc') with an optional DNS subdomain prefix and '/' (e.g. "
+                       "'example.com/MyName')" % label)
+
+    # validate label value
+    if len(kv[1]) > 63:
+        raise CLIError("Invalid label: %s. Label must be more than 63 chars." % label)
+    if not value_regex.match(kv[1]):
+        raise CLIError("Invalid label: %s. A valid label must be an empty string or consist of alphanumeric "
+                       "characters, '-', '_' or '.', and must start and end with an alphanumeric character" % label)
+
+    return {kv[0]: kv[1]}

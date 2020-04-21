@@ -15,6 +15,12 @@ import sys
 from threading import Thread
 
 from six.moves import configparser
+from knack.log import get_logger
+from knack.util import CLIError
+from azure.cli.core._profile import _SUBSCRIPTION_NAME, Profile
+from azure.cli.core._session import ACCOUNT, CONFIG, SESSION
+from azure.cli.core.api import get_config_dir
+from azure.cli.core.util import handle_exception
 
 # pylint: disable=import-error
 import jmespath
@@ -27,15 +33,6 @@ from prompt_toolkit.history import FileHistory
 from prompt_toolkit.interface import Application, CommandLineInterface
 from prompt_toolkit.shortcuts import create_eventloop
 # pylint: enable=import-error
-
-from azure.cli.core.commands.client_factory import ENV_ADDITIONAL_USER_AGENT
-from azure.cli.core._profile import _SUBSCRIPTION_NAME, Profile
-from azure.cli.core._session import ACCOUNT, CONFIG, SESSION
-from azure.cli.core.api import get_config_dir
-from azure.cli.core.util import handle_exception
-
-from knack.log import get_logger
-from knack.util import CLIError
 
 from . import VERSION
 from .az_completer import AzCompleter
@@ -55,6 +52,7 @@ NOTIFICATIONS = ""
 PART_SCREEN_EXAMPLE = .3
 START_TIME = datetime.datetime.utcnow()
 CLEAR_WORD = get_os_clear_screen_word()
+_ENV_ADDITIONAL_USER_AGENT = 'AZURE_HTTP_USER_AGENT'
 
 logger = get_logger(__name__)
 
@@ -100,7 +98,10 @@ class AzInteractiveShell(object):
             self.completer = AzCompleter(self, None)
             self.lexer = None
         self.history = history or FileHistory(os.path.join(self.config.get_config_dir(), self.config.get_history()))
-        os.environ[ENV_ADDITIONAL_USER_AGENT] = 'AZURECLISHELL/' + VERSION
+        if os.environ.get(_ENV_ADDITIONAL_USER_AGENT):
+            os.environ[_ENV_ADDITIONAL_USER_AGENT] += ' AZURECLISHELL/' + VERSION
+        else:
+            os.environ[_ENV_ADDITIONAL_USER_AGENT] = 'AZURECLISHELL/' + VERSION
 
         # OH WHAT FUN TO FIGURE OUT WHAT THESE ARE!
         self._cli = None

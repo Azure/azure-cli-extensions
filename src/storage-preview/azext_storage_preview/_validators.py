@@ -3,17 +3,21 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=protected-access
+# pylint: disable=protected-access, logging-format-interpolation
 import os
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.commands.validators import validate_key_value_pairs
 from azure.cli.core.profiles import get_sdk
 from knack.util import CLIError
+from knack.log import get_logger
 from ._client_factory import get_storage_data_service_client, blob_data_service_factory
 from .util import guess_content_type
 from .oauth_token_util import TokenUpdater
 from .profiles import CUSTOM_MGMT_STORAGE
+
+logger = get_logger(__name__)
+
 
 storage_account_key_options = {'primary': 'key1', 'secondary': 'key2'}
 
@@ -94,9 +98,6 @@ def validate_client_parameters(cmd, namespace):
             account_key_args = [arg for arg in account_key_args if arg]
 
             if account_key_args:
-                from knack.log import get_logger
-
-                logger = get_logger(__name__)
                 logger.warning('In "login" auth mode, the following arguments are ignored: %s',
                                ' ,'.join(account_key_args))
             return
@@ -173,11 +174,25 @@ def validate_blob_directory_download_source_url(cmd, namespace):
 
 
 def validate_blob_directory_upload_destination_url(cmd, namespace):
-    client = blob_data_service_factory(cmd.cli_ctx, {
-        'account_name': namespace.account_name})
-    destination_path = namespace.destination_path
-    url = client.make_blob_url(namespace.destination_container, destination_path)
-    namespace.destination = url + '/'
+    ns = vars(namespace)
+    destination = ns.get('destination_path')
+    container = ns.get('destination_container')
+    client = get_blob_client(cmd, ns)
+    destination = destination[1:] if destination.startswith('/') else destination
+    from azure.common import AzureException
+    try:
+        props = client.get_blob_properties(container, destination)
+        if not is_directory(props):
+            raise ValueError('usage error: You are specifying --destination-path with a blob name, not directory name. '
+                             'Please change to a valid blob directory name. If you want to upload to a blob file, '
+                             'please use `az storage blob upload` command.')
+    except AzureException:
+        pass
+
+    if not destination.endswith('/'):
+        destination += '/'
+    url = client.make_blob_url(container, destination)
+    namespace.destination = url
     del namespace.destination_container
     del namespace.destination_path
 
@@ -447,3 +462,80 @@ def validate_included_datasets(cmd, namespace):
             raise ValueError('valid values are {} or a combination thereof.'.format(help_string))
         t_blob_include = cmd.get_models('blob#Include')
         namespace.include = t_blob_include('s' in include, 'm' in include, False, 'c' in include, 'd' in include)
+
+
+def validate_storage_data_plane_list(namespace):
+    if namespace.num_results == '*':
+        namespace.num_results = None
+    else:
+        namespace.num_results = int(namespace.num_results)
+
+
+def get_blob_client(cmd, ns):
+    t_base_blob_service = cmd.get_models('blob.baseblobservice#BaseBlobService')
+    account = ns.get('account_name')
+    key = ns.get('account_key')
+    cs = ns.get('connection_string')
+    sas = ns.get('sas_token')
+    client = get_storage_data_service_client(cmd.cli_ctx,
+                                             t_base_blob_service,
+                                             account,
+                                             key,
+                                             cs,
+                                             sas)
+    return client
+
+
+def is_directory(props):
+    return 'hdi_isfolder' in props.metadata.keys() and props.metadata['hdi_isfolder'] == 'true'
+
+
+def validate_move_file(cmd, namespace):
+    ns = vars(namespace)
+    client = get_blob_client(cmd, ns)
+    source = ns.get('source_path')
+    container = ns.get('container_name')
+    lease_id = ns.get('lease_id')
+    # Check Source
+    props = client.get_blob_properties(container, source, lease_id=lease_id)
+    if is_directory(props):
+        raise ValueError('usage error: You are specifying --source-blob with a blob directory name. '
+                         'Please change to a valid blob name. If you want to move a blob directory, '
+                         'please use `az storage blob directory move` command.')
+    # Check Destination
+    destination = ns.get('new_path')
+    if client.exists(container, destination):
+        logger.warning('The destination blob name already exists in current container. '
+                       'The existing blob "{}" will be overwritten.'.format(destination))
+
+
+def validate_move_directory(cmd, namespace):
+    ns = vars(namespace)
+    client = get_blob_client(cmd, ns)
+    source = ns.get('source_path')
+    container = ns.get('container_name')
+    lease_id = ns.get('lease_id')
+    # Check Source
+    props = client.get_blob_properties(container, source, lease_id=lease_id)
+    if not is_directory(props):
+        raise ValueError('usage error: You are specifying --source-path with a blob name, not directory name. '
+                         'Please change to a valid blob directory name. If you want to move a blob file, '
+                         'please use `az storage blob move` command.')
+    # Check Destination
+    destination = ns.get('new_path')
+    if client.exists(container, destination):
+        logger.warning('The destination directory already exists in current container. If continue, '
+                       'the existing directory "{}" will be overwritten.'.format(destination))
+
+
+def validate_directory_name(cmd, namespace):
+    ns = vars(namespace)
+    client = get_blob_client(cmd, ns)
+    source = ns.get('directory_path')
+    container = ns.get('container_name')
+
+    # Check Source
+    if client.exists(container, source):
+        raise ValueError('usage error: The specified --directory-path already exists in current container. '
+                         'Please change to a valid blob directory name. If you want to rename a directory, '
+                         'please use `az storage blob directory move` command.')

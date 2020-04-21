@@ -215,6 +215,11 @@ helps['network front-door routing-rule create'] = """
         -n redirectRouteRule1 --patterns /redirect1 --custom-query-string querystring
 """
 
+helps['network front-door routing-rule update'] = """
+    type: command
+    short-summary: Update a Front Door routing rule.
+"""
+
 helps['network front-door routing-rule list'] = """
     type: command
     short-summary: List Front Door routing rules.
@@ -228,6 +233,87 @@ helps['network front-door routing-rule show'] = """
 helps['network front-door routing-rule delete'] = """
     type: command
     short-summary: Delete a Front Door routing rule.
+"""
+# endregion
+
+# region FrontDoor RulesEngine
+helps['network front-door rules-engine'] = """
+    type: group
+    short-summary: Manage Front Door rules engines.
+"""
+
+helps['network front-door rules-engine rule'] = """
+    type: group
+    short-summary: Manage Rules Engine rules.
+"""
+
+helps['network front-door rules-engine rule create'] = """
+    type: command
+    short-summary: Create a Rules Engine rule for a Front Door.
+    long-summary: >
+        This command allows creating Rules Engine configuration with Header
+        action type. To add additional actions like Route overrides,
+        use the `az network front-door rules-engine rule action add` command.
+"""
+
+helps['network front-door rules-engine rule update'] = """
+    type: command
+    short-summary: Update Rules Engine configuration of a rule.
+"""
+
+helps['network front-door rules-engine rule delete'] = """
+    type: command
+    short-summary: Delete a Rules Engine rule.
+"""
+
+helps['network front-door rules-engine rule show'] = """
+    type: command
+    short-summary: Get the details of a Rules Engine rule.
+"""
+
+helps['network front-door rules-engine rule list'] = """
+    type: command
+    short-summary: List rules of a Rules Engine configuration.
+"""
+
+helps['network front-door rules-engine rule action'] = """
+    type: group
+    short-summary: Manage Rules Engine actions for Front Door.
+"""
+
+helps['network front-door rules-engine rule action add'] = """
+    type: command
+    short-summary: Add an action to a Rules Engine rule.
+"""
+
+helps['network front-door rules-engine rule action list'] = """
+    type: command
+    short-summary: Show all actions that apply for a Rules Engine rule.
+"""
+
+helps['network front-door rules-engine rule action remove'] = """
+    type: command
+    short-summary: Remove an action from a Rules Engine rule.
+"""
+
+helps['network front-door rules-engine rule condition'] = """
+    type: group
+    short-summary: Manage Rules Engine match conditions for Front Door.
+"""
+
+helps['network front-door rules-engine rule condition add'] = """
+    type: command
+    short-summary: Add a match condition to a Rules Engine rule.
+"""
+
+helps['network front-door rules-engine rule condition list'] = """
+    type: command
+    short-summary: Show all match conditions associated with a Rules Engine rule.
+"""
+
+helps['network front-door rules-engine rule condition remove'] = """
+    type: command
+    short-summary: Remove a match condition from a Rules Engine rule.
 """
 # endregion
 
@@ -369,6 +455,35 @@ helps['network front-door waf-policy managed-rules override'] = """
     type: group
     short-summary: View and alter overrides on managed rules within a managed rule set.
     long-summary: >
+        Use 'az network front-door waf-policy managed-rule-definition list' to see the available rules.
+"""
+
+helps['network front-door waf-policy managed-rules exclusion add'] = """
+    type: command
+    short-summary: Add an exclusion on a managed rule set, rule group, or rule within a managed rule set.
+    long-summary: >
+        Prevents the rule set, rule group, or rule from being applied to the content of the specified variable.
+        Use 'az network front-door waf-policy managed-rule-definition list' to see the available rules.
+"""
+
+helps['network front-door waf-policy managed-rules exclusion remove'] = """
+    type: command
+    short-summary: Remove an exclusion on a managed rule set, rule group, or rule within a managed rule set.
+    long-summary: >
+        After this command, the standard behavior for the rule within the managed rule set will apply.
+        Use 'az network front-door waf-policy managed-rule-definition list' to see the available rules.
+"""
+
+helps['network front-door waf-policy managed-rules exclusion list'] = """
+    type: command
+    short-summary: List the exclusions on managed rule set, rule group, or rule within a managed rule set.
+"""
+
+helps['network front-door waf-policy managed-rules exclusion'] = """
+    type: group
+    short-summary: View and alter exclusions on a managed rule set, rule group, or rule within a managed rule set.
+    long-summary: >
+        Exclusions prevent the rule set, rule group, or rule from being applied to the content of the specified variable.
         Use 'az network front-door waf-policy managed-rule-definition list' to see the available rules.
 """
 

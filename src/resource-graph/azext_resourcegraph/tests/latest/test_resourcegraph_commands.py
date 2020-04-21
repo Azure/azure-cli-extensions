@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
-from azure.cli.testsdk import ScenarioTest
+from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from azure_devtools.scenario_tests.const import MOCKED_SUBSCRIPTION_ID
 from knack.util import CLIError
 from six import string_types
@@ -31,7 +31,6 @@ class ResourceGraphTests(ScenarioTest):
         self.assertIsInstance(query_response[1]['id'], string_types)
         self.assertIsInstance(query_response[1]['tags'], dict)
         self.assertIsInstance(query_response[1]['properties'], dict)
-        self.assertTrue(len(query_response[1]['properties']) > 3)
 
     def test_paged_query(self):
         # Page size was artificially set to 2 rows
@@ -57,22 +56,6 @@ class ResourceGraphTests(ScenarioTest):
         self.assertTrue(len(query_response[1]['id']) > 0)
         self.assertTrue(len(query_response[2]['id']) > 0)
 
-    def test_subscriptions(self):
-        test_sub_id1 = '11111111-1111-1111-1111-111111111111'
-        test_sub_id2 = '22222222-2222-2222-2222-222222222222'
-        command_no_subs = 'az graph query -q "distinct subscriptionId | order by subscriptionId asc"'
-        command_with_subs = command_no_subs + ' --subscriptions {} {}'.format(test_sub_id1, test_sub_id2)
-
-        query_response_no_subs = self.cmd(command_no_subs).get_output_in_json()
-        query_response_with_subs = self.cmd(command_with_subs).get_output_in_json()
-
-        self.assertTrue(len(query_response_no_subs) == 1)
-        self.assertEqual(query_response_no_subs[0]['subscriptionId'], MOCKED_SUBSCRIPTION_ID)
-
-        self.assertTrue(len(query_response_with_subs) == 2)
-        self.assertEqual(query_response_with_subs[0]['subscriptionId'], test_sub_id1)
-        self.assertEqual(query_response_with_subs[1]['subscriptionId'], test_sub_id2)
-
     def test_query_error(self):
         command = 'az graph query -q "where where"'
 
@@ -91,14 +74,46 @@ class ResourceGraphTests(ScenarioTest):
         self.assertIsInstance(error_response['error']['details'], list)
         self.assertTrue(len(error_response['error']['code']) > 0)
         self.assertTrue(len(error_response['error']['message']) > 0)
-        self.assertTrue(len(error_response['error']['details']) == 1)
+        self.assertTrue(len(error_response['error']['details']) == 2)
 
         self.assertIsInstance(error_response['error']['details'][0], dict)
-        self.assertTrue(len(error_response['error']['details'][0]) == 3)
+        self.assertTrue(len(error_response['error']['details'][0]) == 2)
 
         self.assertIsInstance(error_response['error']['details'][0]['code'], string_types)
         self.assertIsInstance(error_response['error']['details'][0]['message'], string_types)
-        self.assertIsInstance(error_response['error']['details'][0]['additionalProperties'], dict)
+        self.assertIsInstance(error_response['error']['details'][1]['additionalProperties'], dict)
         self.assertTrue(len(error_response['error']['details'][0]['code']) > 0)
         self.assertTrue(len(error_response['error']['details'][0]['message']) > 0)
-        self.assertTrue(len(error_response['error']['details'][0]['additionalProperties']) == 4)
+        self.assertTrue(len(error_response['error']['details'][1]['additionalProperties']) == 4)
+
+    @ResourceGroupPreparer(location='eastus')
+    def test_shared_query_scenario(self, resource_group):
+        self.kwargs.update({
+            'name': self.create_random_name('clitest', 20),
+            'query': "project id, name, type, location, tags",
+            'description': "AzureCliTest",
+            'rg': resource_group
+        })
+
+        self.cmd('graph shared-query create -g {rg} -n {name} -q "{query}" -d {description} --tags a=b', checks=[
+            self.check('location', 'global'),
+            self.check('name', '{name}'),
+            self.check('description', '{description}'),
+            self.check('query', '{query}')
+        ])
+
+        self.cmd('graph shared-query show -g {rg} -n {name}', checks=[
+            self.check('location', 'global'),
+            self.check('name', '{name}'),
+            self.check('description', '{description}'),
+            self.check('query', '{query}')
+        ])
+
+        self.cmd('graph shared-query list -g {rg}', checks=[
+            self.check('length(@)', 1)
+        ])
+
+        self.cmd('graph shared-query delete -g {rg} -n {name}')
+
+        with self.assertRaises(SystemExit):
+            self.cmd('graph shared-query show -g {rg} -n {name}')

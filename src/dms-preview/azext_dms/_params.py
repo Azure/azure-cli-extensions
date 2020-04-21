@@ -5,11 +5,21 @@
 
 from knack.arguments import CLIArgumentType
 
-from azure.cli.core.commands.parameters import tags_type
+from azure.cli.core.commands.parameters import resource_group_name_type, tags_type
 
 
 def load_arguments(self, _):
     name_arg_type = CLIArgumentType(options_list=['--name', '-n'], metavar='NAME')
+
+    with self.argument_context('dms task') as c:
+        c.argument('group_name', resource_group_name_type)
+        c.argument('service_name', options_list=['--service-name'], help="The name of the Service.")
+        c.argument('task_name', name_arg_type,
+                   help='The name of the Task. A DMS Task is the activity that performs service-level \
+related work. There could be multiple Tasks associated with a service. ')
+
+    with self.argument_context('dms task list') as c:
+        c.argument('service_name', name_arg_type, help='The name of the Service.')
 
     with self.argument_context('dms project') as c:
         c.argument('service_name', options_list=['--service-name'],
@@ -23,5 +33,5 @@ source database connection, target database connection and a list of databases t
         c.argument('service_name', options_list=['--service-name'])
         c.argument('project_name', options_list=['--project-name'])
         c.argument('task_name', name_arg_type,
-                   help='The name of the Task. DMS Task is the activity that performs a migration \
-related task. There could be multiple Tasks associated to a Project. ')
+                   help='The name of the Task. A DMS Project Task is the activity that performs migration \
+related work. There could be multiple Tasks associated with a Project. ')

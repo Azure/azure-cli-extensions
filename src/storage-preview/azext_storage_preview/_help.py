@@ -207,6 +207,8 @@ helps['storage blob directory create'] = """
     examples:
         - name: Create a storage blob directory in a storage container.
           text: az storage blob directory create -c MyContainer -d MyDirectoryPath --account-name MyStorageAccount
+        - name: Create a storage blob directory with permissions and umask.
+          text: az storage blob directory create -c MyContainer -d MyDirectoryPath --account-name MyStorageAccount --permissions rwxrwxrwx --umask 0000
 """
 
 helps['storage blob directory delete'] = """
@@ -280,7 +282,9 @@ helps['storage blob directory move'] = """
         performed in batches and a continuation token could be returned.
     examples:
         - name: Move a storage directory to another storage blob directory in a storage container.
-          text: az storage blob directory move -c MyContainer -d DestinationDirectoryPath -s SourceDirectoryPath --account-name MyStorageAccount
+          text: az storage blob directory move -c MyContainer -d my-new-directory -s dir --account-name MyStorageAccount
+        - name: Move a storage subdirectory to another storage blob directory in a storage container.
+          text: az storage blob directory move -c MyContainer -d my-new-directory -s dir/subdirectory --account-name MyStorageAccount
 """
 
 helps['storage blob directory show'] = """
@@ -293,7 +297,7 @@ helps['storage blob directory show'] = """
 
 helps['storage blob directory upload'] = """
     type: command
-    short-summary: Upload blobs to a storage blob directory.
+    short-summary: Upload blobs or subdirectories to a storage blob directory.
     examples:
         - name: Upload a single blob to a storage blob directory.
           text: az storage blob directory upload -c MyContainer --account-name MyStorageAccount -s "path/to/file" -d directory

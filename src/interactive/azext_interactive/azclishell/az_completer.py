@@ -6,12 +6,15 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import os
-from prompt_toolkit.completion import Completer, Completion  # pylint: disable=import-error
+
 from azure.cli.core.parser import AzCliCommandParser
 from azure.cli.core.commands.events import (
     EVENT_INTERACTIVE_PRE_COMPLETER_TEXT_PARSING,
     EVENT_INTERACTIVE_POST_SUB_TREE_CREATE
 )
+
+from prompt_toolkit.completion import Completer, Completion  # pylint: disable=import-error
+
 from . import configuration
 from .argfinder import ArgsFinder
 from .util import parse_quotes

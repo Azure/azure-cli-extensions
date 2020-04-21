@@ -42,6 +42,14 @@ class TraceProxyState(str, Enum):
     updating = "Updating"
 
 
+class ManagedIdentityType(str, Enum):
+
+    none = "None"
+    system_assigned = "SystemAssigned"
+    user_assigned = "UserAssigned"
+    system_assigned_user_assigned = "SystemAssigned,UserAssigned"
+
+
 class TestKeyType(str, Enum):
 
     primary = "Primary"
@@ -62,18 +70,18 @@ class UserSourceType(str, Enum):
     source = "Source"
 
 
+class RuntimeVersion(str, Enum):
+
+    java_8 = "Java_8"
+    java_11 = "Java_11"
+
+
 class DeploymentResourceProvisioningState(str, Enum):
 
     creating = "Creating"
     updating = "Updating"
     succeeded = "Succeeded"
     failed = "Failed"
-
-
-class RuntimeVersion(str, Enum):
-
-    java_8 = "Java_8"
-    java_11 = "Java_11"
 
 
 class DeploymentResourceStatus(str, Enum):
