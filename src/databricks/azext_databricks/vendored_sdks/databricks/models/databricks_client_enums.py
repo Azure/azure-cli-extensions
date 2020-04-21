@@ -31,8 +31,3 @@ class ProvisioningState(str, Enum):
     failed = "Failed"
     succeeded = "Succeeded"
     updating = "Updating"
-<<<<<<< HEAD:src/connectedk8s/azext_connectedk8s/vendored_sdks/models/kubernetes_connect_rp_client_enums.py
-    deleting = "Deleting"
-    accepted = "Accepted"
-=======
->>>>>>> master:src/databricks/azext_databricks/vendored_sdks/databricks/models/databricks_client_enums.py
