@@ -28,7 +28,7 @@ class ImportExportScenarioTest(ScenarioTest):
         })
 
         self.cmd('import-export create -g {rg} -n {job_name} --location "West US" --type Import --log-level Verbose '
-                 '--storage-account-id {storage_account_id} --backup-drive-manifest true '
+                 '--storage-account {storage_account_id} --backup-drive-manifest true '
                  '--diagnostics-path waimportexport --drive-list drive-id={driver_id} bit-locker-key={bit_locker_key} '
                  'drive-header-hash=""  manifest-file=\\\\DriveManifest.xml '
                  'manifest-hash=109B21108597EF36D5785F08303F3638 --return-address city=Redmond country-or-region=USA '

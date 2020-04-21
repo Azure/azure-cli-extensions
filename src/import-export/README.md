@@ -21,7 +21,7 @@ az import-export create \
     --location localtionName \
     --type Import \
     --log-level Verbose \
-    --storage-account-id storageAccountID \
+    --storage-account storageAccountID \
     --backup-drive-manifest true \
     --diagnostics-path waimportexport \
     --drive-list \
