@@ -22,7 +22,6 @@ def load_command_table(self, _):
         g.custom_command('delete', 'delete_connectedk8s', confirmation=True)
         g.custom_command('list', 'list_connectedk8s', table_transformer=connectedk8s_list_table_format)
         g.custom_command('show', 'get_connectedk8s', table_transformer=connectedk8s_show_table_format)
-        #g.generic_update_command('update', setter_name='update', custom_func_name='update_connectedk8s')
 
     with self.command_group('connectedk8s', is_preview=True):
         pass

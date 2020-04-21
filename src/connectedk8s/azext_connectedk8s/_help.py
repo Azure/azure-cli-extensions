@@ -52,7 +52,7 @@ helps['connectedk8s delete'] = """
       type: string
       short-summary: Kubconfig context from current machine
     examples:
-    - name: Delete a connected kubernetes cluster and connected cluster agents with default kubeconfig and kubecontext. 
+    - name: Delete a connected kubernetes cluster and connected cluster agents with default kubeconfig and kubecontext.
       text: az connectedk8s delete -g resourceGroupName -n connectedClusterName
     - name: Delete a connected kubernetes cluster by specifying the kubeconfig and kubecontext for connected cluster agents deletion.
       text: az connectedk8s delete -g resourceGroupName -n connectedClusterName --kube-config /path/to/kubeconfig --kube-context kubeContextName

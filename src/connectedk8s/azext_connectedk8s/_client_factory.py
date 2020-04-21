@@ -7,7 +7,6 @@ from azure.cli.core.profiles import ResourceType
 from azure.cli.core._profile import Profile
 from azure.cli.core.commands.client_factory import configure_common_settings
 from azure.graphrbac import GraphRbacManagementClient
-import re
 
 
 def cf_connectedk8s(cli_ctx, *_):
