@@ -126,7 +126,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
         try:
             resourceClient.resource_groups.create_or_update(resource_group_name, resource_group_params)
         except Exception as e:
-            raise CLIError("Resource Group Creation Failed." + str(e.message))  
+            raise CLIError("Failed to create the resource group {} :".format(resource_group_name) + str(e.message))  
     
     # Adding helm repo
     repo_name = os.getenv('HELMREPONAME') if os.getenv('HELMREPONAME') else "azurearcfork8s"
