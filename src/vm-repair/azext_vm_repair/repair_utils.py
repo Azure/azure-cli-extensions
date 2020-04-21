@@ -15,7 +15,7 @@ from knack.log import get_logger
 from knack.prompting import prompt_y_n, NoTTYException
 
 from azure.cli.command_modules.vm.custom import _is_linux_os
-from .encryption_type_enum import encryption
+from .encryption_types import encryption
 
 from .exceptions import AzCommandError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError
 # pylint: disable=line-too-long, deprecated-method
@@ -198,7 +198,7 @@ def _fetch_encryption_settings(source_vm):
     return (encryption['single_with_kek']), key_vault, kekurl
 
 
-def _install_extension(source_vm, repair_group_name, repair_vm_name):
+def _unlock_singlepass_encrypted_disk(source_vm, repair_group_name, repair_vm_name):
     encryption_type, key_vault, kekurl = _fetch_encryption_settings(source_vm)
     if encryption_type is not encryption.not_encrypted:
         if _is_linux_os(source_vm):
@@ -215,30 +215,30 @@ def _install_extension(source_vm, repair_group_name, repair_vm_name):
             logger.info('Installing extension on repair VM \'%s\'...', encryption_type)
             _call_az_command(install_ade_extension_command)
             if _is_linux_os(source_vm):
-                _unlock_encrypted_disk(repair_group_name, repair_vm_name)
+                _mount_encrypted_disk(repair_group_name, repair_vm_name)
         except AzCommandError as azCommandError:
             error_message = str(azCommandError)
             if "type:part fstype:xfs mountpoint" in error_message:
-                print("Encryption failed for data disk with XFS filesystem.But this can be ignored.\n")
-                _unlock_encrypted_disk(repair_group_name, repair_vm_name)
+                logger.info("Encryption failed for data disk with XFS filesystem.But this can be ignored.\n")
+                _mount_encrypted_disk(repair_group_name, repair_vm_name)
             else:
                 raise
 
 
-def _unlock_encrypted_disk(repair_group_name, repair_vm_name):
+def _mount_encrypted_disk(repair_group_name, repair_vm_name):
     logger.info('unlocking and mounting the disk on repair VM...')
     REPAIR_DIR_NAME = 'azext_vm_repair'
     SCRIPTS_DIR_NAME = 'scripts'
-    LINUX_RUN_SCRIPT_NAME = 'unlock_encrypted_disk.sh'
+    LINUX_RUN_SCRIPT_NAME = 'mount_encrypted_disk.sh'
     command_id = 'RunShellScript'
     loader = pkgutil.get_loader(REPAIR_DIR_NAME)
     mod = loader.load_module(REPAIR_DIR_NAME)
     rootpath = os.path.dirname(mod.__file__)
     run_script = os.path.join(rootpath, SCRIPTS_DIR_NAME, LINUX_RUN_SCRIPT_NAME)
-    unlock_disk_command = 'az vm run-command invoke -g {rg} -n {vm} --command-id {command_id} ' \
+    mount_disk_command = 'az vm run-command invoke -g {rg} -n {vm} --command-id {command_id} ' \
                           '--scripts "@{run_script}" -o json' \
                           .format(rg=repair_group_name, vm=repair_vm_name, command_id=command_id, run_script=run_script)
-    _call_az_command(unlock_disk_command)
+    _call_az_command(mount_disk_command)
 
 
 def _fetch_compatible_windows_os_urn(source_vm):

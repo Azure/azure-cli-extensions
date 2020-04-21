@@ -32,7 +32,7 @@ from .repair_utils import (
     _parse_run_script_raw_logs,
     _check_script_succeeded,
     _fetch_disk_info,
-    _install_extension
+    _unlock_singlepass_encrypted_disk
 )
 
 
@@ -104,7 +104,7 @@ def create(cmd, vm_name, resource_group_name, unlock_encrypted_vm=None, repair_p
             _call_az_command(attach_disk_command)
 
             # Install extension in case of single pass encrypted VM
-            _install_extension(source_vm, repair_group_name, repair_vm_name)
+            _unlock_singlepass_encrypted_disk(source_vm, repair_group_name, repair_vm_name)
 
         # UNMANAGED DISK
         else:
