@@ -3,6 +3,14 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import os
+import json
+import uuid
+import time
+import subprocess
+from subprocess import Popen, PIPE
+from base64 import b64encode
+
 from knack.util import CLIError
 from knack.log import get_logger
 from azure.cli.core.commands.client_factory import get_subscription_id
@@ -11,21 +19,13 @@ from azext_connectedk8s._client_factory import _graph_client_factory
 from azext_connectedk8s._client_factory import cf_resource_groups
 from azext_connectedk8s._client_factory import _resource_client_factory
 from msrestazure.azure_exceptions import CloudError
-from kubernetes import client as kube_client, config, watch
-from kubernetes.client.rest import ApiException
+from kubernetes import client as kube_client, config, watch  # pylint: disable=import-error
+from kubernetes.client.rest import ApiException  # pylint: disable=import-error
+from Crypto.IO import PEM  # pylint: disable=import-error
+from Crypto.PublicKey import RSA  # pylint: disable=import-error
+from Crypto.Util import asn1  # pylint: disable=import-error
 
 from .vendored_sdks.models import ConnectedCluster, ConnectedClusterAADProfile, ConnectedClusterIdentity
-
-import os
-import subprocess
-from subprocess import Popen, PIPE
-import json
-import uuid
-import time
-from Crypto.IO import PEM
-from Crypto.PublicKey import RSA
-from Crypto.Util import asn1
-from base64 import b64encode
 
 logger = get_logger(__name__)
 
