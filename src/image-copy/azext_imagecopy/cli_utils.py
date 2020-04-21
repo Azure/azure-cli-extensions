@@ -38,8 +38,7 @@ def run_cli_command(cmd, return_as_json=False):
                 return json_output
 
             raise CLIError("Command returned an unexpected empty string.")
-        else:
-            return cmd_output
+        return cmd_output
     except CalledProcessError as ex:
         logger.error('command failed: %s', cmd)
         logger.error('output: %s', ex.output)
@@ -69,3 +68,21 @@ def prepare_cli_command(cmd, output_as_json=True, tags=None, subscription=None):
             full_cmd += tags.split()
 
     return full_cmd
+
+
+def get_storage_account_id_from_blob_path(cmd, blob_path, resource_group, subscription_id=None):
+    from msrestazure.tools import resource_id
+    from azure.cli.core.commands.client_factory import get_subscription_id
+
+    logger.debug('Getting storage account id for blob: %s', blob_path)
+
+    storage_account_name = blob_path.split('.')[0].split('/')[-1]
+
+    if not subscription_id:
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+
+    storage_account_id = resource_id(
+        subscription=subscription_id, resource_group=resource_group,
+        namespace='Microsoft.Storage', type='storageAccounts', name=storage_account_name)
+
+    return storage_account_id
