@@ -34,6 +34,15 @@ helps['databricks workspace update'] = """
       - name: Clean the workspace's tags.
         text: |-
                az databricks workspace update --resource-group MyResourceGroup --name MyWorkspace --tags ""
+      - name: Assign identity for storage account.
+        text: |-
+               az databricks workspace update --resource-group MyResourceGroup --name MyWorkspace --assign-identity
+      - name: Configure CMK encryption
+        text: |-
+               az databricks workspace update --resource-group MyResourceGroup --name MyWorkspace --key-source Microsoft.KeyVault --key-name MyKey --key-vault https://myKeyVault.vault.azure.net/ --key-version 00
+      - name: Revert encryption to Microsoft Managed Keys
+        text: |-
+               az databricks workspace update --resource-group MyResourceGroup --name MyWorkspace --key-source Default
 """
 
 helps['databricks workspace delete'] = """
