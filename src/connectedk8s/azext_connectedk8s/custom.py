@@ -118,7 +118,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
             delete_arc_agents(release_namespace, kube_config, kube_context, configuration)
     else:
         if connected_cluster_exists(client, resource_group_name, cluster_name):
-            raise CLIError("The connected cluster resource already exists and correspods to a different kubernetes cluster. To onboard this kubernetes cluster to azure, please provide a different resource name or resource group name.")
+            raise CLIError("The connected cluster resource {} already exists in the resource group {} and corresponds to a different Kubernetes cluster. To onboard this Kubernetes cluster to Azure, specify different resource name or resource group name.".format(cluster_name, resource_group_name))
     
     # Resource group Creation
     if (resource_group_exists(cmd.cli_ctx, resource_group_name, subscription_id) is False):
