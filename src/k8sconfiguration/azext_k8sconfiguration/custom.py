@@ -5,8 +5,8 @@
 
 from knack.util import CLIError
 
-from azext_k8sconfiguration.vendored_sdks.models.source_control_configuration_py3 import SourceControlConfiguration
-from azext_k8sconfiguration.vendored_sdks.models.helm_operator_properties import HelmOperatorProperties
+from azext_k8sconfiguration.vendored_sdks.models import SourceControlConfiguration
+from azext_k8sconfiguration.vendored_sdks.models import HelmOperatorProperties
 
 
 def show_k8sconfiguration(client, resource_group_name, cluster_name, name, cluster_type='connectedClusters'):

@@ -10,30 +10,30 @@
 # --------------------------------------------------------------------------
 
 try:
-    from .resource_py3 import Resource
-    from .proxy_resource_py3 import ProxyResource
-    from .result_py3 import Result
-    from .error_definition_py3 import ErrorDefinition
-    from .error_response_py3 import ErrorResponse, ErrorResponseException
-    from .compliance_status_py3 import ComplianceStatus
-    from .helm_operator_properties_py3 import HelmOperatorProperties
-    from .source_control_configuration_py3 import SourceControlConfiguration
-    from .resource_provider_operation_display_py3 import ResourceProviderOperationDisplay
-    from .resource_provider_operation_py3 import ResourceProviderOperation
+    from ._models_py3 import ComplianceStatus
+    from ._models_py3 import ErrorDefinition
+    from ._models_py3 import ErrorResponse, ErrorResponseException
+    from ._models_py3 import HelmOperatorProperties
+    from ._models_py3 import ProxyResource
+    from ._models_py3 import Resource
+    from ._models_py3 import ResourceProviderOperation
+    from ._models_py3 import ResourceProviderOperationDisplay
+    from ._models_py3 import Result
+    from ._models_py3 import SourceControlConfiguration
 except (SyntaxError, ImportError):
-    from .resource import Resource
-    from .proxy_resource import ProxyResource
-    from .result import Result
-    from .error_definition import ErrorDefinition
-    from .error_response import ErrorResponse, ErrorResponseException
-    from .compliance_status import ComplianceStatus
-    from .helm_operator_properties import HelmOperatorProperties
-    from .source_control_configuration import SourceControlConfiguration
-    from .resource_provider_operation_display import ResourceProviderOperationDisplay
-    from .resource_provider_operation import ResourceProviderOperation
-from .source_control_configuration_paged import SourceControlConfigurationPaged
-from .resource_provider_operation_paged import ResourceProviderOperationPaged
-from .source_control_configuration_client_enums import (
+    from ._models import ComplianceStatus
+    from ._models import ErrorDefinition
+    from ._models import ErrorResponse, ErrorResponseException
+    from ._models import HelmOperatorProperties
+    from ._models import ProxyResource
+    from ._models import Resource
+    from ._models import ResourceProviderOperation
+    from ._models import ResourceProviderOperationDisplay
+    from ._models import Result
+    from ._models import SourceControlConfiguration
+from ._paged_models import ResourceProviderOperationPaged
+from ._paged_models import SourceControlConfigurationPaged
+from ._source_control_configuration_client_enums import (
     ComplianceState,
     MessageLevel,
     OperatorType,
@@ -43,16 +43,16 @@ from .source_control_configuration_client_enums import (
 )
 
 __all__ = [
-    'Resource',
-    'ProxyResource',
-    'Result',
+    'ComplianceStatus',
     'ErrorDefinition',
     'ErrorResponse', 'ErrorResponseException',
-    'ComplianceStatus',
     'HelmOperatorProperties',
-    'SourceControlConfiguration',
-    'ResourceProviderOperationDisplay',
+    'ProxyResource',
+    'Resource',
     'ResourceProviderOperation',
+    'ResourceProviderOperationDisplay',
+    'Result',
+    'SourceControlConfiguration',
     'SourceControlConfigurationPaged',
     'ResourceProviderOperationPaged',
     'ComplianceState',

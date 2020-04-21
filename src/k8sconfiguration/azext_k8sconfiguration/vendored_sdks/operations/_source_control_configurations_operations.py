@@ -13,13 +13,14 @@ import uuid
 from msrest.pipeline import ClientRawResponse
 from msrest.polling import LROPoller, NoPolling
 from msrestazure.polling.arm_polling import ARMPolling
-from msrestazure.azure_exceptions import CloudError
 
 from .. import models
 
 
 class SourceControlConfigurationsOperations(object):
     """SourceControlConfigurationsOperations operations.
+
+    You should not instantiate directly this class, but create a Client instance that will create it for you and attach it as attribute.
 
     :param client: Client for service requests.
     :param config: Configuration of service client.
@@ -67,10 +68,10 @@ class SourceControlConfigurationsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: SourceControlConfiguration or ClientRawResponse if raw=true
         :rtype:
-         ~azure.mgmt.k8sconfiguration.models.SourceControlConfiguration
+         ~azure.mgmt.kubernetesconfiguration.models.SourceControlConfiguration
          or ~msrest.pipeline.ClientRawResponse
         :raises:
-         :class:`ErrorResponseException<azure.mgmt.k8sconfiguration.models.ErrorResponseException>`
+         :class:`ErrorResponseException<azure.mgmt.kubernetesconfiguration.models.ErrorResponseException>`
         """
         # Construct URL
         url = self.get.metadata['url']
@@ -103,12 +104,9 @@ class SourceControlConfigurationsOperations(object):
         response = self._client.send(request, stream=False, **operation_config)
 
         if response.status_code not in [200]:
-            exp = CloudError(response)
-            exp.request_id = response.headers.get('x-ms-request-id')
-            raise exp
+            raise models.ErrorResponseException(self._deserialize, response)
 
         deserialized = None
-
         if response.status_code == 200:
             deserialized = self._deserialize('SourceControlConfiguration', response)
 
@@ -143,9 +141,9 @@ class SourceControlConfigurationsOperations(object):
         :param api_version: The API version to be used with the HTTP request.
         :type api_version: str
         :param source_control_configuration: Properties necessary to Create
-         K8sConfiguration.
+         KubernetesConfiguration.
         :type source_control_configuration:
-         ~azure.mgmt.k8sconfiguration.models.SourceControlConfiguration
+         ~azure.mgmt.kubernetesconfiguration.models.SourceControlConfiguration
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
@@ -153,10 +151,10 @@ class SourceControlConfigurationsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: SourceControlConfiguration or ClientRawResponse if raw=true
         :rtype:
-         ~azure.mgmt.k8sconfiguration.models.SourceControlConfiguration
+         ~azure.mgmt.kubernetesconfiguration.models.SourceControlConfiguration
          or ~msrest.pipeline.ClientRawResponse
         :raises:
-         :class:`ErrorResponseException<azure.mgmt.k8sconfiguration.models.ErrorResponseException>`
+         :class:`ErrorResponseException<azure.mgmt.kubernetesconfiguration.models.ErrorResponseException>`
         """
         # Construct URL
         url = self.create_or_update.metadata['url']
@@ -193,12 +191,9 @@ class SourceControlConfigurationsOperations(object):
         response = self._client.send(request, stream=False, **operation_config)
 
         if response.status_code not in [200, 201]:
-            exp = CloudError(response)
-            exp.request_id = response.headers.get('x-ms-request-id')
-            raise exp
+            raise models.ErrorResponseException(self._deserialize, response)
 
         deserialized = None
-
         if response.status_code == 200:
             deserialized = self._deserialize('SourceControlConfiguration', response)
         if response.status_code == 201:
@@ -243,10 +238,8 @@ class SourceControlConfigurationsOperations(object):
         request = self._client.delete(url, query_parameters, header_parameters)
         response = self._client.send(request, stream=False, **operation_config)
 
-        if response.status_code not in [200, 202, 204]:
-            exp = CloudError(response)
-            exp.request_id = response.headers.get('x-ms-request-id')
-            raise exp
+        if response.status_code not in [200, 204]:
+            raise models.ErrorResponseException(self._deserialize, response)
 
         if raw:
             client_raw_response = ClientRawResponse(None, response)
@@ -286,7 +279,7 @@ class SourceControlConfigurationsOperations(object):
         :rtype: ~msrestazure.azure_operation.AzureOperationPoller[None] or
          ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[None]]
         :raises:
-         :class:`ErrorResponseException<azure.mgmt.k8sconfiguration.models.ErrorResponseException>`
+         :class:`ErrorResponseException<azure.mgmt.kubernetesconfiguration.models.ErrorResponseException>`
         """
         raw_result = self._delete_initial(
             resource_group_name=resource_group_name,
@@ -341,12 +334,11 @@ class SourceControlConfigurationsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of SourceControlConfiguration
         :rtype:
-         ~azure.mgmt.k8sconfiguration.models.SourceControlConfigurationPaged[~azure.mgmt.k8sconfiguration.models.SourceControlConfiguration]
+         ~azure.mgmt.kubernetesconfiguration.models.SourceControlConfigurationPaged[~azure.mgmt.kubernetesconfiguration.models.SourceControlConfiguration]
         :raises:
-         :class:`ErrorResponseException<azure.mgmt.k8sconfiguration.models.ErrorResponseException>`
+         :class:`ErrorResponseException<azure.mgmt.kubernetesconfiguration.models.ErrorResponseException>`
         """
-        def internal_paging(next_link=None, raw=False):
-
+        def prepare_request(next_link=None):
             if not next_link:
                 # Construct URL
                 url = self.list.metadata['url']
@@ -379,22 +371,23 @@ class SourceControlConfigurationsOperations(object):
 
             # Construct and send request
             request = self._client.get(url, query_parameters, header_parameters)
+            return request
+
+        def internal_paging(next_link=None):
+            request = prepare_request(next_link)
+
             response = self._client.send(request, stream=False, **operation_config)
 
             if response.status_code not in [200]:
-                exp = CloudError(response)
-                exp.request_id = response.headers.get('x-ms-request-id')
-                raise exp
+                raise models.ErrorResponseException(self._deserialize, response)
 
             return response
 
         # Deserialize response
-        deserialized = models.SourceControlConfigurationPaged(internal_paging, self._deserialize.dependencies)
-
+        header_dict = None
         if raw:
             header_dict = {}
-            client_raw_response = models.SourceControlConfigurationPaged(internal_paging, self._deserialize.dependencies, header_dict)
-            return client_raw_response
+        deserialized = models.SourceControlConfigurationPaged(internal_paging, self._deserialize.dependencies, header_dict)
 
         return deserialized
     list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{clusterRp}/{clusterResourceName}/{clusterName}/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations'}

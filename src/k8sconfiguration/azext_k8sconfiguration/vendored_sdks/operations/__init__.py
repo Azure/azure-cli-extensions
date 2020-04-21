@@ -9,8 +9,8 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .source_control_configurations_operations import SourceControlConfigurationsOperations
-from .operations import Operations
+from ._source_control_configurations_operations import SourceControlConfigurationsOperations
+from ._operations import Operations
 
 __all__ = [
     'SourceControlConfigurationsOperations',

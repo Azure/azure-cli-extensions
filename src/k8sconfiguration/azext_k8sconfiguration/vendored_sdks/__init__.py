@@ -9,11 +9,11 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .source_control_configuration_client import SourceControlConfigurationClient
-from .source_control_configuration_client import SourceControlConfigurationClientConfiguration
-from .version import VERSION
-
+from ._configuration import SourceControlConfigurationClientConfiguration
+from ._source_control_configuration_client import SourceControlConfigurationClient
 __all__ = ['SourceControlConfigurationClient', 'SourceControlConfigurationClientConfiguration']
+
+from .version import VERSION
 
 __version__ = VERSION
 
