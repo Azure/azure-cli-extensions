@@ -88,7 +88,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
         if resourceTypes.resource_type == 'connectedClusters':
             rp_locations = [location.replace(" ", "").lower() for location in resourceTypes.locations]
             if location.lower() not in rp_locations:
-                raise CLIError("The connected cluster resource creation is supported only in the following locations: " + ', '.join(map(str, rp_locations)) + ". Please use the --location flag to specify right location.")
+                raise CLIError("Connected cluster resource creation is supported only in the following locations: " + ', '.join(map(str, rp_locations)) + ". Use the --location flag to specify one of these locations.")
             break
 
     # Check Release Existance
