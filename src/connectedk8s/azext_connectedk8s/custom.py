@@ -194,7 +194,7 @@ def check_kube_connection(configuration):
         api_response = api_instance.get_api_resources()
     except ApiException as e:
         print("Unable to verify connectivity to the Kubernetes cluster: %s\n" % e)
-        raise CLIError("If you are using AAD Enabled cluster, check if you have logged in to the cluster properly and try again")
+        raise CLIError("If you are using AAD Enabled cluster, verify that you are able to access the cluster. Learn more at https://aka.ms/arc/k8s/onboarding-aad-enabled-clusters")
 
 
 def check_helm_install(kube_config, kube_context):
