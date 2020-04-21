@@ -186,16 +186,13 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
                          self.check('[0].kind', 'Container'),
                          self.check('[0].name', '{ProviderDataset}')])
 
-        syncSettingContent = {"recurrenceInterval": "Day", "synchronizationTime": "2020-04-05T10:50:00Z", "kind": "ScheduleBased"}
-        self.kwargs.update({
-            'ProviderSyncSettingContent': syncSettingContent
-        })
         self.cmd('az datashare synchronization-setting create '
                  '--account-name "{ProviderAccount}" '
                  '--resource-group "{ProviderResourceGroup}" '
                  '--share-name "{ProviderShare}" '
                  '--name "{ProviderSynchronizationSetting}" '
-                 '--setting "{ProviderSyncSettingContent}"',
+                 '--recurrence-interval "Day" '
+                 '--synchronization-time "2020-04-05 10:50:00 +00:00"',
                  checks=[self.check('kind', 'ScheduleBased'),
                          self.check('name', '{ProviderSynchronizationSetting}'),
                          self.check('recurrenceInterval', 'Day'),

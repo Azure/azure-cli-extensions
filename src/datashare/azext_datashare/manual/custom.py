@@ -423,13 +423,13 @@ def datashare_synchronization_setting_show(cmd, client,
     return client.get(resource_group_name=resource_group_name, account_name=account_name, share_name=share_name, synchronization_setting_name=synchronization_setting_name)
 
 
-def _format_datetime(date_string):
-    from dateutil.parser import parse
-    try:
-        return parse(date_string).strftime("%Y-%m-%dT%H:%M:%SZ")
-    except ValueError:
-        # logger.debug("Unable to parse date_string '%s'", date_string)
-        return date_string or ' '
+# def _format_datetime(date_string):
+#     from dateutil.parser import parse
+#     try:
+#         return parse(date_string).strftime("%Y-%m-%dT%H:%M:%SZ")
+#     except ValueError:
+#         # logger.debug("Unable to parse date_string '%s'", date_string)
+#         return date_string or ' '
 
 
 def datashare_synchronization_setting_create(cmd, client,
@@ -437,8 +437,14 @@ def datashare_synchronization_setting_create(cmd, client,
                                              account_name,
                                              share_name,
                                              synchronization_setting_name,
-                                             synchronization_setting):
-    synchronization_setting['synchronizationTime'] = _format_datetime(synchronization_setting['synchronizationTime'])
+                                             recurrence_interval,
+                                             synchronization_time,
+                                             kind=None):
+    synchronization_setting = {
+        'synchronizationTime': synchronization_time,
+        'recurrenceInterval': recurrence_interval,
+        'kind': kind
+    }
     return client.create(resource_group_name=resource_group_name,
                          account_name=account_name,
                          share_name=share_name,

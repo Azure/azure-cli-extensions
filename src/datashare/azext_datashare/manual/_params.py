@@ -12,11 +12,12 @@ from azure.cli.core.commands.parameters import (
     tags_type,
     get_enum_type,
     resource_group_name_type,
-    get_location_type
+    get_location_type,
+    get_datetime_type
 )
 from azure.cli.core.commands.validators import get_default_location_from_resource_group, validate_file_or_dict
 from azext_datashare.action import AddIdentity
-from azext_datashare.vendored_sdks.datashare.models._data_share_management_client_enums import ShareKind, Kind, SynchronizationMode
+from azext_datashare.vendored_sdks.datashare.models._data_share_management_client_enums import ShareKind, Kind, SynchronizationMode, SynchronizationKind, RecurrenceInterval
 from azext_datashare.manual._validators import invitation_id_validator
 
 
@@ -145,7 +146,10 @@ def load_arguments(self, _):
         c.argument('account_name', help='The name of the share account.')
         c.argument('share_name', help='The name of the share.')
         c.argument('synchronization_setting_name', options_list=['--name', '-n'], help='The name of the synchronizationSetting.')  # modified
-        c.argument('synchronization_setting', options_list=['--setting'], type=validate_file_or_dict, help='Synchronization settings in JSON string or path to JSON file.')
+        # c.argument('synchronization_setting', options_list=['--setting'], type=validate_file_or_dict, help='Synchronization settings in JSON string or path to JSON file.')
+        c.argument('recurrence_interval', arg_type=get_enum_type(RecurrenceInterval), arg_group='Synchronization Setting', help='Synchronization Recurrence Interval.')
+        c.argument('synchronization_time', arg_group='Synchronization Setting', arg_type=get_datetime_type(help='Synchronization time.'))
+        c.argument('kind', arg_type=get_enum_type(SynchronizationKind), arg_group='Synchronization Setting', default='ScheduleBased', help='Kind of synchronization.')
 
     with self.argument_context('datashare synchronization-setting delete') as c:
         c.argument('resource_group_name', resource_group_name_type)  # modified

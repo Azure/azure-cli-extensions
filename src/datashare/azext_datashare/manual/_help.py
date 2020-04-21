@@ -543,7 +543,7 @@ helps['datashare synchronization-setting create'] = """
     examples:
       - name: Create a synchronization setting
         text: |-
-               az datashare synchronization-setting create --account-name MyAccount --resource-group MyResourceGroup --share-name MyShare --name MyDataset --setting "{\"recurrenceInterval\":\"Day\",\"synchronizationTime\":\"2020-04-05T10:50:00Z\",\"kind\":\"ScheduleBased\"}"
+               az datashare synchronization-setting create --account-name MyAccount --resource-group MyResourceGroup --share-name MyShare --name MyDataset --recurrence-interval Day --synchronization-time "2020-04-05 10:50:00 +00:00" --kind ScheduleBased
 """
 
 helps['datashare synchronization-setting delete'] = """

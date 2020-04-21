@@ -43,6 +43,8 @@ class Kind(str, Enum):
     kusto_database = "KustoDatabase"
     sql_db_table = "SqlDBTable"
     sql_dw_table = "SqlDWTable"
+
+class SynchronizationKind(str, Enum):
     schedule_based = "ScheduleBased"
 
 class ShareKind(str, Enum):
