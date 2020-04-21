@@ -51,6 +51,9 @@ def load_command_table(self, _):
                          confirmation='Kubernetes may be unavailable during cluster upgrades.\n' +
                          'Are you sure you want to perform this operation?')
         g.command('get-upgrades', 'get_upgrade_profile', table_transformer=aks_upgrades_table_format)
+        g.custom_command('rotate-certs', 'aks_rotate_certs', supports_no_wait=True,
+                         confirmation='Kubernetes will be unavailable during certificate rotation process.\n' +
+                         'Are you sure you want to perform this operation?')
         g.wait_command('wait')
 
     # AKS container service commands

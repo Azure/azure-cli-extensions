@@ -18,7 +18,7 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_hack')
         # g.command('delete', 'delete')
         # g.custom_command('list', 'list_hack')
-        # g.show_command('show', 'get')
+        g.custom_command('show', 'show_hack')
         # g.generic_update_command('update', setter_name='update', custom_func_name='update_hack')
 
     with self.command_group('hack', is_preview=True):

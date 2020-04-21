@@ -144,7 +144,7 @@ def _fetch_compatible_sku(source_vm):
                        '"[?capabilities[?name==\'vCPUs\' && to_number(value)<= to_number(\'4\')] && ' \
                        'capabilities[?name==\'MemoryGB\' && to_number(value)<=to_number(\'16\')] && ' \
                        'capabilities[?name==\'MaxDataDiskCount\' && to_number(value)>to_number(\'0\')] && ' \
-                       'capabilities[?name==\'PremiumIO\' && value==\'True\']].name"'\
+                       'capabilities[?name==\'PremiumIO\' && value==\'True\']].name" -o json'\
                        .format(loc=location)
 
     logger.info('Fetching available VM sizes for repair VM...')
@@ -156,10 +156,13 @@ def _fetch_compatible_sku(source_vm):
     return None
 
 
-def _fetch_disk_sku(resource_group_name, disk_name):
-    show_disk_command = 'az disk show -g {g} -n {name}'.format(g=resource_group_name, name=disk_name)
-    disk_sku = loads(_call_az_command(show_disk_command))['sku']['name']
-    return disk_sku
+def _fetch_disk_info(resource_group_name, disk_name):
+    """ Returns sku, location, os_type, hyperVgeneration as tuples """
+    show_disk_command = 'az disk show -g {g} -n {name} --query [sku.name,location,osType,hyperVgeneration] -o json'.format(g=resource_group_name, name=disk_name)
+    disk_info = loads(_call_az_command(show_disk_command))
+    # Note that disk_info will always have 4 elements if the command succeeded, if it fails it will cause an exception
+    sku, location, os_type, hyper_v_version = disk_info[0], disk_info[1], disk_info[2], disk_info[3]
+    return (sku, location, os_type, hyper_v_version)
 
 
 def _get_repair_resource_tag(resource_group_name, source_vm_name):
@@ -167,7 +170,7 @@ def _get_repair_resource_tag(resource_group_name, source_vm_name):
 
 
 def _list_resource_ids_in_rg(resource_group_name):
-    get_resources_command = 'az resource list --resource-group {rg} --query [].id' \
+    get_resources_command = 'az resource list --resource-group {rg} --query [].id -o json' \
                             .format(rg=resource_group_name)
     logger.debug('Fetching resources in resource group...')
     ids = loads(_call_az_command(get_resources_command))
@@ -180,7 +183,8 @@ def _uses_encrypted_disk(vm):
 
 def _fetch_compatible_windows_os_urn(source_vm):
 
-    fetch_urn_command = 'az vm image list -s "2016-Datacenter" -f WindowsServer -p MicrosoftWindowsServer -l westus2 --verbose --all --query "[?sku==\'2016-Datacenter\'].urn | reverse(sort(@))"'
+    location = source_vm.location
+    fetch_urn_command = 'az vm image list -s "2016-Datacenter" -f WindowsServer -p MicrosoftWindowsServer -l {loc} --verbose --all --query "[?sku==\'2016-Datacenter\'].urn | reverse(sort(@))" -o json'.format(loc=location)
     logger.info('Fetching compatible Windows OS images from gallery...')
     urns = loads(_call_az_command(fetch_urn_command))
 
@@ -188,12 +192,16 @@ def _fetch_compatible_windows_os_urn(source_vm):
     if not urns:
         raise WindowsOsNotAvailableError()
 
+    logger.debug('Fetched Urns:\n%s', urns)
     # temp fix to mitigate Windows disk signature collision error
-    if source_vm.storage_profile.image_reference and source_vm.storage_profile.image_reference.version in urns[0]:
+    os_image_ref = source_vm.storage_profile.image_reference
+    if os_image_ref and isinstance(os_image_ref.version, str) and os_image_ref.version in urns[0]:
         if len(urns) < 2:
             logger.debug('Avoiding Win2016 latest image due to expected disk collision. But no other image available.')
             raise WindowsOsNotAvailableError()
+        logger.debug('Returning Urn 1 to avoid disk collision error: %s', urns[1])
         return urns[1]
+    logger.debug('Returning Urn 0: %s', urns[0])
     return urns[0]
 
 
@@ -304,19 +312,6 @@ def _check_script_succeeded(log_string):
     # status_failure = '[STATUS]::ERROR'
 
     return status_success in log_string
-
-
-def _handle_command_error(return_error_detail, return_message):
-    """Output the right error message and reuturn error return dict"""
-    return_dict = {}
-    if return_error_detail:
-        logger.error(return_error_detail)
-    if return_message:
-        logger.error(return_message)
-    return_dict['status'] = 'ERROR'
-    return_dict['message'] = return_message
-    return_dict['errorDetail'] = return_error_detail
-    return return_dict
 
 
 def _get_function_param_dict(frame):

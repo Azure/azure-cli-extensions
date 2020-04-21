@@ -1,67 +1,70 @@
 interactions:
 - request:
-    body: '{"subscriptions": ["00000000-0000-0000-0000-000000000000"],
-      "query": "project id", "options": {"$top": 2, "$skip": 2}}'
+    body: '{"subscriptions": ["a18897a6-7e44-457d-9260-f2854c0aca42", "e01de573-132a-42ac-9ee2-f9dea9dd2717",
+      "d21a0e9f-5e29-4b39-8ba5-0e189bc5fe2d", "c59ea945-6d69-43cb-8cf5-7674fc245c37",
+      "d03b04c7-d1d4-467b-aaaa-87b6fcb38b38", "26b9b438-7fe8-482f-b732-ea99c70f2abb",
+      "8bc2f89b-c4f6-4559-ad6a-4f2cfa6ccc49", "eb87f285-893a-4f0f-8c55-7b4f67b1d097",
+      "52a442a2-31e9-42f9-8e3e-4b27dbf82673", "bead59b7-f469-4601-803a-790729c5213d",
+      "33b1bf3d-53dc-432d-ac1c-ae964ceb1c9b", "979523fb-a19c-4bb0-a8ee-cef29597b0a4",
+      "bd62906c-0a81-43c3-a2f8-126e4cf66ada", "ac073789-bf4e-4438-a70d-fe98276e2771",
+      "00c06639-6ee4-454e-8058-8d8b1703bd87", "ae4fd9c1-f57f-4077-8cb5-e9c0a1bb8796",
+      "6b085460-5f21-477e-ba44-1035046e9101", "0b1f6471-1bf0-4dda-aec3-cb9272f09590"],
+      "query": "project id", "options": {"$top": 3, "$skip": 2, "resultFormat": "objectArray"}}'
     headers:
-      Accept: [application/json]
-      Accept-Encoding: ['gzip, deflate']
-      CommandName: [graph query]
-      Connection: [keep-alive]
-      Content-Length: ['958']
-      Content-Type: [application/json; charset=utf-8]
-      User-Agent: [python/3.6.3 (Windows-10-10.0.17134-SP0) requests/2.19.1 msrest/0.5.5
-          msrest_azure/0.4.34 azure-mgmt-resourcegraph/0.6.0 Azure-SDK-For-Python
-          AZURECLI/2.0.46]
-      accept-language: [en-US]
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - graph query
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '829'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -q --first --skip
+      User-Agent:
+      - python/3.6.8 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-resourcegraph/2.0.0 Azure-SDK-For-Python AZURECLI/2.0.77
+      accept-language:
+      - en-US
     method: POST
-    uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2018-09-01-preview
+    uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2019-04-01
   response:
-    body: {string: '{"totalRecords":9969,"count":2,"data":{"columns":[{"name":"id","type":"string"}],"rows":[["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AaaaaAaaaaaaaaAaaaaAaaaaaaaaaaa-AAA-a/providers/Microsoft.EventHub/namespaces/eventhub-local-aaaaaaa"],["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AaaaaAaaaaaaaaAaaaaAaaaaaaaaaaa-AAA-a/providers/Microsoft.Network/loadBalancers/LB-aaa-aaa-aaa-aa-a-aa"]]},"facets":[],"resultTruncated":"false","$skipToken":"82aw3vQlArEastJ24LABY8oPgQLesIyAyzYs2g6/aOOOmJHSYFj39fODurJV5e2tTFFebWcfxn7n5edicA8u6HgSJe1GCEk5HjxwLkeJiye2LVZDC7TaValkJbsk9JqY4yv5c7iRiLqgO34RbHEeVfLJpa56u4RZu0K+GpQvnBRPyAhy3KbwhZWpU5Nnqnud2whGb5WKdlL8xF7wnQaUnUN2lns8WwqwM4rc0VK4BbQt/WfWWcYJivSAyB3m4Z5g73df1KiU4C+K8auvUMpLPYVxxnKC/YZz42YslVAWXXUmuGOaM2SfLHRO6o4O9DgXlUgYjeFWqIbAkmMiVEqU"}'}
+    body:
+      string: '{"totalRecords":353,"count":3,"data":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/1210test/providers/Microsoft.Compute/virtualMachines/clivm/extensions/DependencyAgentLinux"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/1210test/providers/Microsoft.Compute/virtualMachines/clivm/extensions/OMSExtension"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/1210test/providers/Microsoft.Insights/metricalerts/1211mytest"}],"facets":[],"resultTruncated":"false","$skipToken":"ew0KICAiJGlkIjogIjEiLA0KICAiTWF4Um93cyI6IDMsDQogICJSb3dzVG9Ta2lwIjogNSwNCiAgIkt1c3RvQ2x1c3RlclVybCI6ICJodHRwczovL2dvdi1hcnQtZXVzLXNhaWxmaXNoLW9uZS5lYXN0dXMuY2xvdWRhcHAuYXp1cmUuY29tIg0KfQ=="}'
     headers:
-      cache-control: [no-cache]
-      content-length: ['773']
-      content-type: [application/json; charset=utf-8]
-      date: ['Tue, 11 Sep 2018 18:28:34 GMT']
-      expires: ['-1']
-      pragma: [no-cache]
-      server: [Microsoft-HTTPAPI/2.0]
-      strict-transport-security: [max-age=31536000; includeSubDomains]
-      transfer-encoding: [chunked]
-      vary: [Accept-Encoding]
-      x-content-type-options: [nosniff]
-      x-ms-ratelimit-remaining-tenant-writes: ['1199']
-    status: {code: 200, message: OK}
-- request:
-    body: '{"subscriptions": ["00000000-0000-0000-0000-000000000000"],
-      "query": "project id", "options": {"$skipToken": "82aw3vQlArEastJ24LABY8oPgQLesIyAyzYs2g6/aOOOmJHSYFj39fODurJV5e2tTFFebWcfxn7n5edicA8u6HgSJe1GCEk5HjxwLkeJiye2LVZDC7TaValkJbsk9JqY4yv5c7iRiLqgO34RbHEeVfLJpa56u4RZu0K+GpQvnBRPyAhy3KbwhZWpU5Nnqnud2whGb5WKdlL8xF7wnQaUnUN2lns8WwqwM4rc0VK4BbQt/WfWWcYJivSAyB3m4Z5g73df1KiU4C+K8auvUMpLPYVxxnKC/YZz42YslVAWXXUmuGOaM2SfLHRO6o4O9DgXlUgYjeFWqIbAkmMiVEqU",
-      "$top": 1, "$skip": 4}}'
-    headers:
-      Accept: [application/json]
-      Accept-Encoding: ['gzip, deflate']
-      CommandName: [graph query]
-      Connection: [keep-alive]
-      Content-Length: ['1256']
-      Content-Type: [application/json; charset=utf-8]
-      User-Agent: [python/3.6.3 (Windows-10-10.0.17134-SP0) requests/2.19.1 msrest/0.5.5
-          msrest_azure/0.4.34 azure-mgmt-resourcegraph/0.6.0 Azure-SDK-For-Python
-          AZURECLI/2.0.46]
-      accept-language: [en-US]
-    method: POST
-    uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2018-09-01-preview
-  response:
-    body: {string: '{"totalRecords":9969,"count":1,"data":{"columns":[{"name":"id","type":"string"}],"rows":[["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AaaaaAaaaaaaaaAaaaaAaaaaaaaaaaa-AAA-a/providers/Microsoft.Network/networkSecurityGroups/nsgSubnet-0"]]},"facets":[],"resultTruncated":"false","$skipToken":"ceXHDV/5yajn1stYtSCyQ32ULLF0jGv9oazG14qvdgwdAQNDUPHjt6MIlJZ2Y/K8z7fb+qo9wguegf8QYW0c7rqwtXUghJvKkPBENcn1O17nQxtjXeq6s8sD64D8t5P9NIHntl70D95yuVUjHF6/dsvVK33wKyvORwPTCbZrSj+pfz2yd5spa93izzOu06PcyFvcvCJAzZ5scImnVDqS700hR63izVwyETJtQluoqSPYkhxAOVk/+ThWlN0DKy9OfUE34M9PZSQz2QTWXKpUK1+okRfH/B2RVdXro60ZnNMrdPtglA5w7oEs5Ivq20IE4RtPfg97UEbkfyMP9huC="}'}
-    headers:
-      cache-control: [no-cache]
-      content-length: ['597']
-      content-type: [application/json; charset=utf-8]
-      date: ['Tue, 11 Sep 2018 18:28:33 GMT']
-      expires: ['-1']
-      pragma: [no-cache]
-      server: [Microsoft-HTTPAPI/2.0]
-      strict-transport-security: [max-age=31536000; includeSubDomains]
-      transfer-encoding: [chunked]
-      vary: [Accept-Encoding]
-      x-content-type-options: [nosniff]
-      x-ms-ratelimit-remaining-tenant-writes: ['1197']
-    status: {code: 200, message: OK}
+      cache-control:
+      - no-cache
+      content-length:
+      - '745'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 12 Dec 2019 03:02:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '14'
+      x-ms-user-quota-remaining:
+      - '14'
+      x-ms-user-quota-resets-after:
+      - 00:00:05
+    status:
+      code: 200
+      message: OK
 version: 1
