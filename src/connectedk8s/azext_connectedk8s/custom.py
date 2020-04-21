@@ -137,7 +137,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
     response_helm_repo = subprocess.Popen(cmd_helm_repo, stdout=PIPE, stderr=PIPE)
     output_helm_repo, error_helm_repo = response_helm_repo.communicate()
     if response_helm_repo.returncode != 0:
-        raise CLIError("Helm unable to add repository: " + error_helm_repo.decode("ascii"))
+        raise CLIError("Unable to add repository {} to helm: ".format(repo_url) + error_helm_repo.decode("ascii"))
 
     # Generate public-private key pair
     key_pair = RSA.generate(4096)
