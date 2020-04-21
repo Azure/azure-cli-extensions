@@ -52,7 +52,12 @@ def update_databricks_workspace(cmd, client,  # pylint: disable=too-many-branche
                                 resource_group_name,
                                 workspace_name,
                                 tags=None,
-                                no_wait=False):
+                                no_wait=False,
+                                assign_identity=None,
+                                encryption_key_source=None,
+                                encryption_key_name=None,
+                                encryption_key_version=None,
+                                encryption_key_vault=None):
     return sdk_no_wait(no_wait, client.update,
                        resource_group_name=resource_group_name,
                        workspace_name=workspace_name,
