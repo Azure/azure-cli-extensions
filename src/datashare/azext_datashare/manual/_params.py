@@ -34,7 +34,7 @@ def load_arguments(self, _):
         c.argument('account_name', options_list=['--name', '-n'], help='The name of the share account.')  # modified
         c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)  # modified
         c.argument('tags', tags_type)  # modified
-        c.argument('identity', action=AddIdentity, nargs='+', help='Identity of resource')
+        c.ignore('identity')  # Only system assigned identity is supported, we can omit this option
 
     with self.argument_context('datashare account update') as c:
         c.argument('resource_group_name', resource_group_name_type)  # modified

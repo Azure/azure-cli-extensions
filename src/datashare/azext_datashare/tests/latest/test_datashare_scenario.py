@@ -40,7 +40,6 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
 
         # Provider commands
         datashareAccount = self.cmd('az datashare account create '
-                                    '--identity type=SystemAssigned '
                                     '--location "West US 2" '
                                     '--tags tag1=Red tag2=White '
                                     '--name "{ProviderAccount}" '
@@ -269,7 +268,6 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
 
         # Consumer commands
         datashareConsumerAccount = self.cmd('az datashare account create '
-                                            '--identity type=SystemAssigned '
                                             '--location "West US 2" '
                                             '--name "{ConsumerAccount}" '
                                             '--resource-group "{ConsumerResourceGroup}" '

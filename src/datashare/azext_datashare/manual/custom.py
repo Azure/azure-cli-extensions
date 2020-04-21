@@ -24,10 +24,12 @@ def datashare_account_show(cmd, client,
 def datashare_account_create(cmd, client,
                              resource_group_name,
                              account_name,
-                             identity,
+                             identity=None,
                              location=None,
                              tags=None,
                              no_wait=False):
+    if identity is None:
+        identity = {'type': 'SystemAssigned'}
     return sdk_no_wait(no_wait,
                        client.begin_create,
                        resource_group_name=resource_group_name,

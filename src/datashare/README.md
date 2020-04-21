@@ -20,7 +20,6 @@ az provider register -n "Microsoft.DataShare"
 
 ```
 az datashare account create \
---identity type=SystemAssigned \
 --location "West US 2" \
 --tags tag1=Red tag2=White \
 --name "cli_test_account" \

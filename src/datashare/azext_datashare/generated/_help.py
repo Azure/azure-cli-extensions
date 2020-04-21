@@ -38,7 +38,7 @@ helps['datashare account create'] = """
     examples:
       - name: Accounts_Create
         text: |-
-               az datashare account create --identity type=SystemAssigned --location "West US 2" --tags
+               az datashare account create --location "West US 2" --tags
                tag1=Red tag2=White --account-name "Account1" --resource-group "SampleResourceGroup"
 """
 
