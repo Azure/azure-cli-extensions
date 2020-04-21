@@ -56,3 +56,11 @@ def import_export_job_delete(cmd, client, name, resource_group_name):
 
 def import_export_bit_locker_key_list(cmd, client, job_name, resource_group_name):
     return client.list(job_name=job_name, resource_group_name=resource_group_name)
+
+
+def import_export_location_list(cmd, client):
+    return client.list()
+
+
+def import_export_location_show(cmd, client, location):
+    return client.get(location_name=location)

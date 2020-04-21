@@ -71,3 +71,6 @@ def load_arguments(self, _):
 
     with self.argument_context('import-export bit-locker-key list') as c:
         c.argument('job_name', help='The name of the import/export job.')
+
+    with self.argument_context('import-export location show') as c:
+        c.argument('location', help='Location. Values from: `az import-export location list`.')

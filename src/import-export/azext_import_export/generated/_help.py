@@ -83,3 +83,26 @@ helps['import-export bit-locker-key list'] = """
         text: |-
                az import-export bit-locker-key list --resource-group "myResourceGroup" --job-name "myJob"
 """
+
+helps['import-export location'] = """
+    type: group
+    short-summary: import-export location
+"""
+
+helps['import-export location list'] = """
+    type: command
+    short-summary: Returns a list of locations to which you can ship the disks associated with an import or export job. A location is a Microsoft data center region.
+    examples:
+      - name: List locations to which you can ship the disks
+        text: |-
+               az import-export location list
+"""
+
+helps['import-export location show'] = """
+    type: command
+    short-summary: Returns the details about a location to which you can ship the disks associated with an import or export job. A location is an Azure region.
+    examples:
+      - name: Show details about a location
+        text: |-
+               az import-export location show --location "West US 2"
+"""

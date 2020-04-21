@@ -16,3 +16,7 @@ def cf_job(cli_ctx, *_):
 
 def cf_bit_locker_key(cli_ctx, *_):
     return cf_import_export(cli_ctx).bit_locker_key
+
+
+def cf_location(cli_ctx, *_):
+    return cf_import_export(cli_ctx).location

@@ -27,6 +27,13 @@ class ImportExportScenarioTest(ScenarioTest):
             'storage_account_id': storage_account_id
         })
 
+        self.cmd('import-export location list', checks=[
+            self.greater_than('length(@)', 0)
+        ])
+        self.cmd('import-export location show --location "West US 2"', checks=[
+            self.check('name', 'West US 2')
+        ])
+
         self.cmd('import-export create -g {rg} -n {job_name} --location "West US" --type Import --log-level Verbose '
                  '--storage-account {storage_account_id} --backup-drive-manifest true '
                  '--diagnostics-path waimportexport --drive-list drive-id={driver_id} bit-locker-key={bit_locker_key} '
