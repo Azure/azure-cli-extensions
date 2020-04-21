@@ -193,7 +193,7 @@ def check_kube_connection(configuration):
     try:
         api_response = api_instance.get_api_resources()
     except ApiException as e:
-        print("Exception when calling NetworkingV1Api->get_api_resources: %s\n" % e)
+        print("Unable to verify connectivity to the Kubernetes cluster: %s\n" % e)
         raise CLIError("If you are using AAD Enabled cluster, check if you have logged in to the cluster properly and try again")
 
 
