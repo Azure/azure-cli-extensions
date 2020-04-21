@@ -225,7 +225,7 @@ def check_helm_version(kube_config, kube_context):
         raise CLIError("Unable to determine helm version: " + error_helm_version.decode("ascii"))
     else:
         if "v2" in output_helm_version.decode("ascii"):
-            raise CLIError("Please install the latest version of helm and then try again")
+            raise CLIError("Helm version 3+ is required. Ensure that you have installed the latest version of Helm. Learn more at https://aka.ms/arc/k8s/onboarding-helm-install")
 
 
 def resource_group_exists(ctx, resource_group_name, subscription_id=None):
