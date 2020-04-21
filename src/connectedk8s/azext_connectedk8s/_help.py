@@ -65,8 +65,3 @@ helps['connectedk8s show'] = """
     - name: Show the details for a connected kubernetes cluster
       text: az connectedk8s show -g resourceGroupName -n connectedClusterName
 """
-
-helps['connectedk8s update'] = """
-    type: command
-    short-summary: Update a connected kubernetes cluster.
-"""

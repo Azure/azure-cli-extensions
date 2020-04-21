@@ -80,7 +80,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
         try:
             location = resourceClient.resource_groups.get(resource_group_name).location
         except:
-            raise CLIError("The provided resource group does not exist. Please provide location to create the Resource Group")
+            raise CLIError("The resource group '{}' does not exist and has to be created. Connected cluster resource creation is supported only in the locations:  ".format(resource_group_name)  + ', '.join(map(str, rp_locations)) + ". Use the --location flag to specify one of these locations.")
 
     rp_locations = []
     providerDetails = resourceClient.providers.get('Microsoft.Kubernetes')
@@ -88,7 +88,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
         if resourceTypes.resource_type == 'connectedClusters':
             rp_locations = [location.replace(" ", "").lower() for location in resourceTypes.locations]
             if location.lower() not in rp_locations:
-                raise CLIError("The connected cluster resource creation is supported only in the following locations: " + ', '.join(map(str, rp_locations)) + ". Please use the --location flag to specify right location.")
+                raise CLIError("Connected cluster resource creation is supported only in the following locations: " + ', '.join(map(str, rp_locations)) + ". Use the --location flag to specify one of these locations.")
             break
 
     # Check Release Existance
@@ -99,7 +99,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
         try:
             configmap = api_instance.read_namespaced_config_map('azure-clusterconfig', 'azure-arc')
         except ApiException as e:
-            raise CLIError("Exception when calling CoreV1Api->read_namespaced_config_map: %s\n" % e)
+            raise CLIError("Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: %s\n" % e)
         configmap_resource_group_name = configmap.data["AZURE_RESOURCE_GROUP"]
         configmap_cluster_name = configmap.data["AZURE_RESOURCE_NAME"]
         if connected_cluster_exists(client, configmap_resource_group_name, configmap_cluster_name):
@@ -118,7 +118,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
             delete_arc_agents(release_namespace, kube_config, kube_context, configuration)
     else:
         if connected_cluster_exists(client, resource_group_name, cluster_name):
-            raise CLIError("The connected cluster resource already exists and correspods to a different kubernetes cluster. To onboard this kubernetes cluster to azure, please provide a different resource name or resource group name.")
+            raise CLIError("The connected cluster resource {} already exists in the resource group {} and corresponds to a different Kubernetes cluster. To onboard this Kubernetes cluster to Azure, specify different resource name or resource group name.".format(cluster_name, resource_group_name))
     
     # Resource group Creation
     if (resource_group_exists(cmd.cli_ctx, resource_group_name, subscription_id) is False):
@@ -126,7 +126,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
         try:
             resourceClient.resource_groups.create_or_update(resource_group_name, resource_group_params)
         except Exception as e:
-            raise CLIError("Resource Group Creation Failed." + str(e.message))  
+            raise CLIError("Failed to create the resource group {} :".format(resource_group_name) + str(e.message))
     
     # Adding helm repo
     repo_name = os.getenv('HELMREPONAME') if os.getenv('HELMREPONAME') else "azurearcfork8s"
@@ -137,12 +137,21 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
     response_helm_repo = subprocess.Popen(cmd_helm_repo, stdout=PIPE, stderr=PIPE)
     output_helm_repo, error_helm_repo = response_helm_repo.communicate()
     if response_helm_repo.returncode != 0:
-        raise CLIError("Helm unable to add repository: " + error_helm_repo.decode("ascii"))
+        raise CLIError("Unable to add repository {} to helm: ".format(repo_url) + error_helm_repo.decode("ascii"))
 
     # Generate public-private key pair
-    key_pair = RSA.generate(4096)
-    public_key = get_public_key(key_pair)
-    private_key_pem = get_private_key(key_pair)
+    try:
+        key_pair = RSA.generate(4096)
+    except Exception as e:
+        raise CLIError("Failed to generate public-private key pair. " + str(e))
+    try:
+        public_key = get_public_key(key_pair)
+    except Exception as e:
+        raise CLIError("Failed to generate public key." + str(e))
+    try:
+        private_key_pem = get_private_key(key_pair)
+    except Exception as e:
+        raise CLIError("Failed to generate private key." + str(e))
 
     # Helm Install
     chart_path = os.getenv('HELMCHART') if  os.getenv('HELMCHART') else "azurearcfork8s/azure-arc-k8sagents"
@@ -193,8 +202,8 @@ def check_kube_connection(configuration):
     try:
         api_response = api_instance.get_api_resources()
     except ApiException as e:
-        print("Exception when calling NetworkingV1Api->get_api_resources: %s\n" % e)
-        raise CLIError("If you are using AAD Enabled cluster, check if you have logged in to the cluster properly and try again")
+        print("Unable to verify connectivity to the Kubernetes cluster: %s\n" % e)
+        raise CLIError("If you are using AAD Enabled cluster, verify that you are able to access the cluster. Learn more at https://aka.ms/arc/k8s/onboarding-aad-enabled-clusters")
 
 
 def check_helm_install(kube_config, kube_context):
@@ -206,10 +215,10 @@ def check_helm_install(kube_config, kube_context):
         output_helm_installed, error_helm_installed = response_helm_installed.communicate()
         if response_helm_installed.returncode != 0:
             if "unknown flag" in error_helm_installed.decode("ascii"):
-                raise CLIError("Please install the latest version of helm")
+                raise CLIError("Please install the latest version of Helm. Learn more at https://aka.ms/arc/k8s/onboarding-helm-install")
             raise CLIError(error_helm_installed.decode("ascii"))
     except FileNotFoundError:
-        raise CLIError("Helm is not installed or requires elevated permissions. Please ensure that you have the latest version of helm installed on your machine.")
+        raise CLIError("Helm is not installed or requires elevated permissions. Ensure that you have the latest version of Helm installed on your machine. Learn more at https://aka.ms/arc/k8s/onboarding-helm-install")
     except subprocess.CalledProcessError as e2:
         e2.output = e2.output.decode("ascii")
         print(e2.output)
@@ -225,7 +234,7 @@ def check_helm_version(kube_config, kube_context):
         raise CLIError("Unable to determine helm version: " + error_helm_version.decode("ascii"))
     else:
         if "v2" in output_helm_version.decode("ascii"):
-            raise CLIError("Please install the latest version of helm and then try again")
+            raise CLIError("Helm version 3+ is required. Ensure that you have installed the latest version of Helm. Learn more at https://aka.ms/arc/k8s/onboarding-helm-install")
 
 
 def resource_group_exists(ctx, resource_group_name, subscription_id=None):
@@ -283,7 +292,7 @@ def get_agent_version(configuration):
         api_response = api_instance.read_namespaced_config_map('azure-clusterconfig', 'azure-arc')
         return api_response.data["AZURE_ARC_AGENT_VERSION"]
     except ApiException as e:
-        print("Exception when calling CoreV1Api->read_namespaced_config_map: %s\n" % e)
+        print("Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: %s\n" % e)
 
 
 def generate_request_payload(configuration, location, public_key, tags):
@@ -326,7 +335,7 @@ def get_pod_dict(api_instance):
                 pod_dict[pod.metadata.name] = 0
             return pod_dict
         except ApiException as e:
-            logger.warning("Exception when calling get pods: %s\n" % e)
+            logger.warning("Error occurred when retrieving pod information: %s\n" % e)
             time.sleep(5)
         if time.time()>timeout:
             logger.warning("Unable to fetch azure-arc agent pods.")
@@ -407,7 +416,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name, kube_con
     if (configmap.data["AZURE_RESOURCE_GROUP"].lower() == resource_group_name.lower() and configmap.data["AZURE_RESOURCE_NAME"].lower() == cluster_name.lower()):
         delete_cc_resource(client, resource_group_name, cluster_name)
     else:
-        raise CLIError("The kube config does not correspond to the connected cluster resource provided. Agents installed on this cluster correspond to the resource group name '{}' and resource name '{}'.".format(configmap.data["AZURE_RESOURCE_GROUP"], configmap.data["AZURE_RESOURCE_NAME"]))
+        raise CLIError("The current context in the kubeconfig file does not correspond to the connected cluster resource specified. Agents installed on this cluster correspond to the resource group name '{}' and resource name '{}'.".format(configmap.data["AZURE_RESOURCE_GROUP"], configmap.data["AZURE_RESOURCE_NAME"]))
 
     # Deleting the azure-arc agents
     delete_arc_agents(release_namespace, kube_config, kube_context, configuration)
