@@ -99,7 +99,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
         try:
             configmap = api_instance.read_namespaced_config_map('azure-clusterconfig', 'azure-arc')
         except ApiException as e:
-            raise CLIError("Exception when calling CoreV1Api->read_namespaced_config_map: %s\n" % e)
+            raise CLIError("Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: %s\n" % e)
         configmap_resource_group_name = configmap.data["AZURE_RESOURCE_GROUP"]
         configmap_cluster_name = configmap.data["AZURE_RESOURCE_NAME"]
         if connected_cluster_exists(client, configmap_resource_group_name, configmap_cluster_name):
