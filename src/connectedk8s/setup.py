@@ -36,7 +36,7 @@ CLASSIFIERS = [
 DEPENDENCIES = [
     'azure-cli-core',
     'kubernetes~=11.0.0b2',
-    'knack==0.7.0rc3',
+    'knack==0.7.0rc4',
     'pycryptodome',
     'websocket-client~=0.56.0'
 ]
