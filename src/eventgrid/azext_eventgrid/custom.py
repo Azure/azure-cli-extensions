@@ -39,8 +39,12 @@ from azext_eventgrid.vendored_sdks.eventgrid.models import (
     PartnerTopic,
     EventChannelSource,
     EventChannelDestination,
-    SystemTopic
-)
+    SystemTopic,
+    PrivateEndpointConnection,
+    ConnectionState,
+    EventSubscriptionIdentity,
+    DeliveryWithResourceIdentity,
+    DeadLetterWithResourceIdentity)
 
 logger = get_logger(__name__)
 
@@ -127,6 +131,8 @@ def cli_topic_create_or_update(
     if (identity is not None and identity.lower() != IDENTITY_NONE.lower()):
         identity_type_name = _get_identity_type(identity)
         identity_info = IdentityInfo(type=identity_type_name)
+    else:
+        identity_info = IdentityInfo(type=IDENTITY_NONE)
 
     topic_info = Topic(
         location=location,
@@ -153,8 +159,10 @@ def cli_topic_update(
         inbound_ip_rules=None,
         sku=None,
         identity=None):
-    sku_name = _get_sku(sku)
-    sku_info = ResourceSku(name=sku_name)
+    sku_info = None
+    if sku is not None:
+        sku_name = _get_sku(sku)
+        sku_info = ResourceSku(name=sku_name)
 
     identity_info = None
 
@@ -184,9 +192,10 @@ def cli_domain_update(
         inbound_ip_rules=None,
         sku=None,
         identity=None):
-    sku_name = _get_sku(sku)
-    sku_info = ResourceSku(
-        name=sku_name)
+    sku_info = None
+    if sku is not None:
+        sku_name = _get_sku(sku)
+        sku_info = ResourceSku(name=sku_name)
 
     identity_info = None
     if (identity is not None and identity.lower() != IDENTITY_NONE.lower()):
@@ -242,6 +251,8 @@ def cli_domain_create_or_update(
     if (identity is not None and identity.lower() != IDENTITY_NONE.lower()):
         identity_type_name = _get_identity_type(identity)
         identity_info = IdentityInfo(type=identity_type_name)
+    else:
+        identity_info = IdentityInfo(type=IDENTITY_NONE)
 
     domain_info = Domain(
         location=location,
@@ -523,7 +534,12 @@ def cli_partner_topic_event_subscription_create_or_update(    # pylint: disable=
         expiration_date=expiration_date,
         advanced_filter=advanced_filter,
         azure_active_directory_tenant_id=azure_active_directory_tenant_id,
-        azure_active_directory_application_id_or_uri=azure_active_directory_application_id_or_uri)
+        azure_active_directory_application_id_or_uri=azure_active_directory_application_id_or_uri,
+        delivery_identity=None,
+        delivery_identity_endpoint=None,
+        delivery_identity_endpoint_type=None,
+        deadletter_identity=None,
+        deadletter_identity_endpoint=None)
 
     return client.create_or_update(
         resource_group_name,
@@ -641,7 +657,12 @@ def cli_system_topic_event_subscription_create_or_update(    # pylint: disable=t
         expiration_date=expiration_date,
         advanced_filter=advanced_filter,
         azure_active_directory_tenant_id=azure_active_directory_tenant_id,
-        azure_active_directory_application_id_or_uri=azure_active_directory_application_id_or_uri)
+        azure_active_directory_application_id_or_uri=azure_active_directory_application_id_or_uri,
+        delivery_identity=None,
+        delivery_identity_endpoint=None,
+        delivery_identity_endpoint_type=None,
+        deadletter_identity=None,
+        deadletter_identity_endpoint=None)
 
     return client.create_or_update(
         resource_group_name,
@@ -689,7 +710,7 @@ def cli_system_topic_event_subscription_list(   # pylint: disable=too-many-retur
 def cli_eventgrid_event_subscription_create(   # pylint: disable=too-many-locals
         client,
         event_subscription_name,
-        endpoint,
+        endpoint=None,
         source_resource_id=None,
         endpoint_type=WEBHOOK_DESTINATION,
         included_event_types=None,
@@ -706,7 +727,12 @@ def cli_eventgrid_event_subscription_create(   # pylint: disable=too-many-locals
         expiration_date=None,
         advanced_filter=None,
         azure_active_directory_tenant_id=None,
-        azure_active_directory_application_id_or_uri=None):
+        azure_active_directory_application_id_or_uri=None,
+        delivery_identity=None,
+        delivery_identity_endpoint=None,
+        delivery_identity_endpoint_type=None,
+        deadletter_identity=None,
+        deadletter_identity_endpoint=None):
 
     event_subscription_info = _get_event_subscription_info(
         endpoint=endpoint,
@@ -725,7 +751,12 @@ def cli_eventgrid_event_subscription_create(   # pylint: disable=too-many-locals
         expiration_date=expiration_date,
         advanced_filter=advanced_filter,
         azure_active_directory_tenant_id=azure_active_directory_tenant_id,
-        azure_active_directory_application_id_or_uri=azure_active_directory_application_id_or_uri)
+        azure_active_directory_application_id_or_uri=azure_active_directory_application_id_or_uri,
+        delivery_identity=delivery_identity,
+        delivery_identity_endpoint=delivery_identity_endpoint,
+        delivery_identity_endpoint_type=delivery_identity_endpoint_type,
+        deadletter_identity=deadletter_identity,
+        deadletter_identity_endpoint=deadletter_identity_endpoint)
 
     return client.create_or_update(
         source_resource_id,
@@ -859,6 +890,40 @@ def cli_topic_private_endpoint_connection_list(
     return client.list_by_resource(resource_group_name, EVENTGRID_TOPICS, topic_name)
 
 
+def cli_topic_private_endpoint_connection_approve(
+        client,
+        resource_group_name,
+        topic_name,
+        private_endpoint_connection_name,
+        description=None):
+
+    status = ConnectionState(description=description, status='Approved')
+    private_endpoint_conn = PrivateEndpointConnection(private_link_service_connection_state=status)
+    return client.update(
+        resource_group_name,
+        EVENTGRID_TOPICS,
+        topic_name,
+        private_endpoint_connection_name,
+        private_endpoint_conn)
+
+
+def cli_topic_private_endpoint_connection_reject(
+        client,
+        resource_group_name,
+        topic_name,
+        private_endpoint_connection_name,
+        description=None):
+
+    status = ConnectionState(description=description, status='Rejected')
+    private_endpoint_conn = PrivateEndpointConnection(private_link_service_connection_state=status)
+    return client.update(
+        resource_group_name,
+        EVENTGRID_TOPICS,
+        topic_name,
+        private_endpoint_connection_name,
+        private_endpoint_conn)
+
+
 def cli_domain_private_endpoint_connection_get(
         client,
         resource_group_name,
@@ -883,6 +948,40 @@ def cli_domain_private_endpoint_connection_delete(
         private_endpoint_connection_name):
 
     return client.delete(resource_group_name, EVENTGRID_DOMAINS, domain_name, private_endpoint_connection_name)
+
+
+def cli_domain_private_endpoint_connection_approve(
+        client,
+        resource_group_name,
+        domain_name,
+        private_endpoint_connection_name,
+        description=None):
+
+    status = ConnectionState(description=description, status='Approved')
+    private_endpoint_conn = PrivateEndpointConnection(private_link_service_connection_state=status)
+    return client.update(
+        resource_group_name,
+        EVENTGRID_DOMAINS,
+        domain_name,
+        private_endpoint_connection_name,
+        private_endpoint_conn)
+
+
+def cli_domain_private_endpoint_connection_reject(
+        client,
+        resource_group_name,
+        domain_name,
+        private_endpoint_connection_name,
+        description=None):
+
+    status = ConnectionState(description=description, status='Rejected')
+    private_endpoint_conn = PrivateEndpointConnection(private_link_service_connection_state=status)
+    return client.update(
+        resource_group_name,
+        EVENTGRID_DOMAINS,
+        domain_name,
+        private_endpoint_connection_name,
+        private_endpoint_conn)
 
 
 def cli_topic_private_link_resource_get(
@@ -919,8 +1018,8 @@ def cli_domain_private_link_resource_list(
     return client.list_by_resource(resource_group_name, EVENTGRID_DOMAINS, domain_name)
 
 
-def _get_event_subscription_info(    # pylint: disable=too-many-locals
-        endpoint,
+def _get_event_subscription_info(    # pylint: disable=too-many-locals,too-many-statements,too-many-branches
+        endpoint=None,
         endpoint_type=WEBHOOK_DESTINATION,
         included_event_types=None,
         subject_begins_with=None,
@@ -936,7 +1035,21 @@ def _get_event_subscription_info(    # pylint: disable=too-many-locals
         expiration_date=None,
         advanced_filter=None,
         azure_active_directory_tenant_id=None,
-        azure_active_directory_application_id_or_uri=None):
+        azure_active_directory_application_id_or_uri=None,
+        delivery_identity=None,
+        delivery_identity_endpoint=None,
+        delivery_identity_endpoint_type=None,
+        deadletter_identity=None,
+        deadletter_identity_endpoint=None):
+
+    if endpoint is None and delivery_identity_endpoint is None or \
+       endpoint is not None and delivery_identity_endpoint is not None:
+        raise CLIError('usage error: either --endpoint or --delivery-identity-endpoint should '
+                       'be specified at one time, not both.')
+
+    if deadletter_endpoint is not None and deadletter_identity_endpoint is not None:
+        raise CLIError('usage error: either --deadletter_endpoint or --deadletter_identity_endpoint '
+                       'should be specified at one time, not both')
 
     if included_event_types is not None and len(included_event_types) == 1 and included_event_types[0].lower() == 'all':
         logger.warning('The usage of \"All\" for --included-event-types is not allowed starting from Azure Event Grid'
@@ -985,20 +1098,56 @@ def _get_event_subscription_info(    # pylint: disable=too-many-locals
             raise CLIError('usage error: azure-active-directory-tenant-id is missing. '
                            'It should include an Azure Active Directory Tenant Id.')
 
+    condition1 = delivery_identity is not None and \
+        (delivery_identity_endpoint is None or delivery_identity_endpoint_type is None)
+    condition2 = delivery_identity is None and \
+        (delivery_identity_endpoint is not None or delivery_identity_endpoint_type is not None)
+    if endpoint is None and (condition1 or condition2):
+        raise CLIError('usage error: one or more delivery identity information is missing. '
+                       'If delivery_identity is specified, both delivery_identity_endpoint and '
+                       'delivery_identity_endpoint_type should be specified.')
+
+    condition1 = deadletter_identity is not None and deadletter_identity_endpoint is None
+    condition2 = deadletter_identity is None and deadletter_identity_endpoint is not None
+    if condition1 or condition2:
+        raise CLIError('usage error: one or more deadletter identity information is missing. If '
+                       'deadletter_identity is specified, deadletter_identity_endpoint should be specified.')
+
     tennant_id = None
     application_id = None
 
-    if endpoint_type.lower() == WEBHOOK_DESTINATION.lower():
+    condition1 = endpoint_type is not None and endpoint_type.lower() == WEBHOOK_DESTINATION.lower()
+    condition2 = delivery_identity_endpoint_type is not None and \
+        delivery_identity_endpoint_type.lower() == WEBHOOK_DESTINATION.lower()   # pylint: line-too-long
+    if condition1 or condition2:
         tennant_id = azure_active_directory_tenant_id
         application_id = azure_active_directory_application_id_or_uri
 
-    destination = _get_endpoint_destination(
-        endpoint_type,
-        endpoint,
-        max_events_per_batch,
-        preferred_batch_size_in_kilobytes,
-        tennant_id,
-        application_id)
+    destination = None
+    if endpoint is not None:
+        destination = _get_endpoint_destination(
+            endpoint_type,
+            endpoint,
+            max_events_per_batch,
+            preferred_batch_size_in_kilobytes,
+            tennant_id,
+            application_id)
+
+    delivery_with_resource_identity = None
+
+    if delivery_identity_endpoint is not None:
+        identity_type_name = _get_event_subscription_identity_type(delivery_identity)
+        delivery_identity_info = EventSubscriptionIdentity(type=identity_type_name)
+        destination_with_identity = _get_endpoint_destination(
+            delivery_identity_endpoint_type,
+            delivery_identity_endpoint,
+            max_events_per_batch,
+            preferred_batch_size_in_kilobytes,
+            tennant_id,
+            application_id)
+        delivery_with_resource_identity = DeliveryWithResourceIdentity(
+            identity=delivery_identity_info,
+            destination=destination_with_identity)
 
     event_subscription_filter = EventSubscriptionFilter(
         subject_begins_with=subject_begins_with,
@@ -1011,6 +1160,16 @@ def _get_event_subscription_info(    # pylint: disable=too-many-locals
     if deadletter_endpoint is not None:
         deadletter_destination = _get_deadletter_destination(deadletter_endpoint)
 
+    deadletter_with_resource_identity = None
+
+    if deadletter_identity_endpoint is not None:
+        deadletter_destination_with_identity = _get_deadletter_destination(deadletter_identity_endpoint)
+        deadletter_identity_type_name = _get_event_subscription_identity_type(deadletter_identity)
+        deadletter_delivery_identity_info = EventSubscriptionIdentity(type=deadletter_identity_type_name)
+        deadletter_with_resource_identity = DeadLetterWithResourceIdentity(
+            identity=deadletter_delivery_identity_info,
+            dead_letter_destination=deadletter_destination_with_identity)
+
     if expiration_date is not None:
         expiration_date = parse(expiration_date)
 
@@ -1021,7 +1180,9 @@ def _get_event_subscription_info(    # pylint: disable=too-many-locals
         event_delivery_schema=_get_event_delivery_schema(event_delivery_schema),
         retry_policy=retry_policy,
         expiration_time_utc=expiration_date,
-        dead_letter_destination=deadletter_destination)
+        dead_letter_destination=deadletter_destination,
+        delivery_with_resource_identity=delivery_with_resource_identity,
+        dead_letter_with_resource_identity=deadletter_with_resource_identity)
 
     _warn_if_manual_handshake_needed(endpoint_type, endpoint)
 
@@ -1110,7 +1271,12 @@ def cli_system_topic_event_subscription_update(
         included_event_types=included_event_types,
         advanced_filter=advanced_filter,
         labels=labels,
-        deadletter_endpoint=deadletter_endpoint)
+        deadletter_endpoint=deadletter_endpoint,
+        delivery_identity=None,
+        delivery_identity_endpoint=None,
+        delivery_identity_endpoint_type=None,
+        deadletter_identity=None,
+        deadletter_identity_endpoint=None)
 
     return client.update(
         resource_group_name,
@@ -1144,7 +1310,12 @@ def cli_partner_topic_event_subscription_update(
         included_event_types=included_event_types,
         advanced_filter=advanced_filter,
         labels=labels,
-        deadletter_endpoint=deadletter_endpoint)
+        deadletter_endpoint=deadletter_endpoint,
+        delivery_identity=None,
+        delivery_identity_endpoint=None,
+        delivery_identity_endpoint_type=None,
+        deadletter_identity=None,
+        deadletter_identity_endpoint=None)
 
     return client.update(
         resource_group_name,
@@ -1162,7 +1333,12 @@ def update_event_subscription(
         included_event_types=None,
         advanced_filter=None,
         labels=None,
-        deadletter_endpoint=None):
+        deadletter_endpoint=None,
+        delivery_identity=None,
+        delivery_identity_endpoint=None,
+        delivery_identity_endpoint_type=None,
+        deadletter_identity=None,
+        deadletter_identity_endpoint=None):
     return _update_event_subscription_internal(
         instance=instance,
         endpoint=endpoint,
@@ -1172,10 +1348,15 @@ def update_event_subscription(
         included_event_types=included_event_types,
         advanced_filter=advanced_filter,
         labels=labels,
-        deadletter_endpoint=deadletter_endpoint)
+        deadletter_endpoint=deadletter_endpoint,
+        delivery_identity=delivery_identity,
+        delivery_identity_endpoint=delivery_identity_endpoint,
+        delivery_identity_endpoint_type=delivery_identity_endpoint_type,
+        deadletter_identity=deadletter_identity,
+        deadletter_identity_endpoint=deadletter_identity_endpoint)
 
 
-def _update_event_subscription_internal(
+def _update_event_subscription_internal(  # pylint: disable=too-many-locals,too-many-statements
         instance,
         endpoint=None,
         endpoint_type=WEBHOOK_DESTINATION,
@@ -1184,8 +1365,34 @@ def _update_event_subscription_internal(
         included_event_types=None,
         advanced_filter=None,
         labels=None,
-        deadletter_endpoint=None):
+        deadletter_endpoint=None,
+        delivery_identity=None,
+        delivery_identity_endpoint=None,
+        delivery_identity_endpoint_type=None,
+        deadletter_identity=None,
+        deadletter_identity_endpoint=None):
+
+    condition1 = delivery_identity is not None and \
+        (delivery_identity_endpoint is None or delivery_identity_endpoint_type is None)
+    condition2 = delivery_identity is None and \
+        (delivery_identity_endpoint is not None or delivery_identity_endpoint_type is not None)
+    if endpoint is None and (condition1 or condition2):
+        raise CLIError('usage error: one or more delivery identity information is missing. '
+                       'If delivery_identity is specified, both delivery_identity_endpoint and '
+                       'delivery_identity_endpoint_type should be specified.')
+
+    condition1 = deadletter_identity is not None and deadletter_identity_endpoint is None
+    condition2 = deadletter_identity is None and deadletter_identity_endpoint is not None
+    if condition1 or condition2:
+        raise CLIError('usage error: one or more deadletter identity information is missing. If '
+                       'deadletter_identity is specified, deadletter_identity_endpoint should be specified.')
+
     event_subscription_destination = instance.destination
+    event_subscription_destination_with_resource_identity = None
+
+    if instance.delivery_with_resource_identity is not None:
+        event_subscription_destination_with_resource_identity = instance.delivery_with_resource_identity.destination
+
     deadletter_destination = None
     event_subscription_labels = instance.labels
     event_subscription_filter = instance.filter
@@ -1209,17 +1416,65 @@ def _update_event_subscription_internal(
        hasattr(event_subscription_destination, 'azure_active_directory_application_id_or_uri'):
         application_id = event_subscription_destination.azure_active_directory_application_id_or_uri
 
+    if event_subscription_destination_with_resource_identity is not None and \
+       hasattr(event_subscription_destination_with_resource_identity, 'azure_active_directory_tenant_id'):
+        tennant_id = event_subscription_destination_with_resource_identity.azure_active_directory_tenant_id
+
+    if event_subscription_destination_with_resource_identity is not None and \
+       hasattr(event_subscription_destination_with_resource_identity, 'azure_active_directory_application_id_or_uri'):
+        application_id = \
+            event_subscription_destination_with_resource_identity.azure_active_directory_application_id_or_uri
+
+    max_events_per_batch = 0
+    preferred_batch_size_in_kilobytes = 0
+
+    if event_subscription_destination is not None and \
+       event_subscription_destination.endpoint_type is not None and (event_subscription_destination.endpoint_type.lower() == WEBHOOK_DESTINATION.lower() or event_subscription_destination.endpoint_type.lower() == AZUREFUNCTION_DESTINATION.lower()):  # pylint: disable=line-too-long
+        max_events_per_batch = event_subscription_destination.max_events_per_batch
+        preferred_batch_size_in_kilobytes = event_subscription_destination.preferred_batch_size_in_kilobytes
+
+    if event_subscription_destination_with_resource_identity is not None and \
+       event_subscription_destination_with_resource_identity.endpoint_type is not None and (event_subscription_destination_with_resource_identity.endpoint_type.lower() == WEBHOOK_DESTINATION.lower() or event_subscription_destination_with_resource_identity.endpoint_type.lower() == AZUREFUNCTION_DESTINATION.lower()):  # pylint: disable=line-too-long
+        max_events_per_batch = event_subscription_destination_with_resource_identity.max_events_per_batch
+        preferred_batch_size_in_kilobytes = event_subscription_destination_with_resource_identity.preferred_batch_size_in_kilobytes   # pylint: disable=line-too-long
+
     if endpoint is not None:
         event_subscription_destination = _get_endpoint_destination(
             endpoint_type,
             endpoint,
-            event_subscription_destination.max_events_per_batch,
-            event_subscription_destination.preferred_batch_size_in_kilobytes,
+            max_events_per_batch,
+            preferred_batch_size_in_kilobytes,
             tennant_id,
             application_id)
 
+    delivery_with_resource_identity = None
+
+    if delivery_identity_endpoint is not None:
+        identity_type_name = _get_event_subscription_identity_type(delivery_identity)
+        delivery_identity_info = EventSubscriptionIdentity(type=identity_type_name)
+        destination_with_identity = _get_endpoint_destination(
+            delivery_identity_endpoint_type,
+            delivery_identity_endpoint,
+            0,
+            0,
+            tennant_id,
+            application_id)
+        delivery_with_resource_identity = DeliveryWithResourceIdentity(
+            identity=delivery_identity_info,
+            destination=destination_with_identity)
+
     if deadletter_endpoint is not None:
         deadletter_destination = _get_deadletter_destination(deadletter_endpoint)
+
+    deadletter_with_resource_identity = None
+
+    if deadletter_identity_endpoint is not None:
+        deadletter_destination_with_identity = _get_deadletter_destination(deadletter_identity_endpoint)
+        deadletter_identity_type_name = _get_event_subscription_identity_type(deadletter_identity)
+        deadletter_delivery_identity_info = EventSubscriptionIdentity(type=deadletter_identity_type_name)
+        deadletter_with_resource_identity = DeadLetterWithResourceIdentity(
+            identity=deadletter_delivery_identity_info,
+            dead_letter_destination=deadletter_destination_with_identity)
 
     if subject_begins_with is not None:
         event_subscription_filter.subject_begins_with = subject_begins_with
@@ -1242,8 +1497,9 @@ def _update_event_subscription_internal(
         labels=event_subscription_labels,
         retry_policy=retry_policy,
         dead_letter_destination=deadletter_destination,
-        event_delivery_schema=event_delivery_schema
-    )
+        event_delivery_schema=event_delivery_schema,
+        delivery_with_resource_identity=delivery_with_resource_identity,
+        dead_letter_with_resource_identity=deadletter_with_resource_identity)
 
     return params
 
@@ -1366,6 +1622,14 @@ def _get_identity_type(identity_type_name=IDENTITY_NONE):
     if identity_type_name.lower() == IDENTITY_NO_IDENTITY.lower():
         result = IDENTITY_NONE
     elif identity_type_name.lower() == IDENTITY_SYSTEM_ASSIGNED.lower():
+        result = IDENTITY_SYSTEM_ASSIGNED
+
+    return result
+
+
+def _get_event_subscription_identity_type(identity_type_name):
+    result = None
+    if identity_type_name.lower() == IDENTITY_SYSTEM_ASSIGNED.lower():
         result = IDENTITY_SYSTEM_ASSIGNED
 
     return result
