@@ -13,6 +13,9 @@ from ._validators import validate_streaming_job_start
 
 def load_command_table(self, _):
 
+    with self.command_group('stream-analytics', is_experimental=True):
+        pass
+
     from ._client_factory import cf_jobs
     stream_analytics_jobs = CliCommandType(
         operations_tmpl='azext_stream_analytics.vendored_sdks.streamanalytics.operations._streaming_jobs_operations#StreamingJobsOperations.{}',

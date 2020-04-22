@@ -28,12 +28,6 @@ def validate_workspace_values(cmd, namespace):
             subscription=subscription_id,
             resource_group=namespace.managed_resource_group)
 
-    # set default values similar to portal
-    if not namespace.relay_namespace_name:
-        namespace.relay_namespace_name = 'dbrelay{}'.format(random_id)
-    if not namespace.storage_account_name:
-        namespace.storage_account_name = 'dbstorage{}'.format(random_id)
-
     # name to resource id for virtual-network
     if namespace.custom_virtual_network_id is not None \
        and not is_valid_resource_id(namespace.custom_virtual_network_id):
@@ -43,12 +37,3 @@ def validate_workspace_values(cmd, namespace):
             namespace='Microsoft.Network',
             type='virtualNetworks',
             name=namespace.custom_virtual_network_id)
-
-    # name to resource id for load-balancer
-    if namespace.load_balancer_id is not None and not is_valid_resource_id(namespace.load_balancer_id):
-        namespace.load_balancer_id = resource_id(
-            subscription=subscription_id,
-            resource_group=namespace.resource_group_name,
-            namespace='Microsoft.Network',
-            type='loadBalancers',
-            name=namespace.load_balancer_id)

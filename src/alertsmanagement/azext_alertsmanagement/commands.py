@@ -18,7 +18,7 @@ def load_command_table(self, _):
                         '#ActionRulesOperations.{}',
         client_factory=cf_action_rules)
     with self.command_group('monitor action-rule', alertsmanagement_action_rules, client_factory=cf_action_rules,
-                            is_preview=True) as g:
+                            is_experimental=True) as g:
         g.custom_command('create', 'create_alertsmanagement_action_rule')
         g.generic_update_command('update', custom_func_name='update_alertsmanagement_action_rule',
                                  setter_arg_name='action_rule', getter_name='get_by_name',

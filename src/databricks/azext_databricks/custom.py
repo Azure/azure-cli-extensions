@@ -18,17 +18,9 @@ def create_databricks_workspace(cmd, client,
                                 location,
                                 sku_name,
                                 managed_resource_group=None,
-                                aml_workspace_id=None,
                                 custom_virtual_network_id=None,
                                 custom_public_subnet_name=None,
                                 custom_private_subnet_name=None,
-                                enable_no_public_ip=False,
-                                load_balancer_backend_pool_name=None,
-                                load_balancer_id=None,
-                                relay_namespace_name=None,
-                                storage_account_name=None,
-                                storage_account_sku_name=None,
-                                vnet_address_prefix=None,
                                 tags=None,
                                 no_wait=False):
     body = {}
@@ -38,24 +30,12 @@ def create_databricks_workspace(cmd, client,
     body.setdefault('sku', {})['name'] = sku_name  # str
 
     parameters = {}
-    _set_parameter_value(parameters, 'enable_no_public_ip', enable_no_public_ip)  # boolean
-    if aml_workspace_id is not None:
-        _set_parameter_value(parameters, 'aml_workspace_id', aml_workspace_id)  # str
     if custom_virtual_network_id is not None:
         _set_parameter_value(parameters, 'custom_virtual_network_id', custom_virtual_network_id)  # str
     if custom_public_subnet_name is not None:
         _set_parameter_value(parameters, 'custom_public_subnet_name', custom_public_subnet_name)  # str
     if custom_private_subnet_name is not None:
         _set_parameter_value(parameters, 'custom_private_subnet_name', custom_private_subnet_name)  # str
-    if load_balancer_backend_pool_name is not None:
-        _set_parameter_value(parameters, 'load_balancer_backend_pool_name', load_balancer_backend_pool_name)  # str
-    if load_balancer_id is not None:
-        _set_parameter_value(parameters, 'load_balancer_id', load_balancer_id)  # str
-
-    _set_parameter_value(parameters, 'relay_namespace_name', relay_namespace_name)  # str
-    _set_parameter_value(parameters, 'storage_account_name', storage_account_name)  # str
-    _set_parameter_value(parameters, 'storage_account_sku_name', storage_account_sku_name)  # str
-    _set_parameter_value(parameters, 'vnet_address_prefix', vnet_address_prefix)  # str
     body['parameters'] = parameters
 
     return sdk_no_wait(no_wait, client.create_or_update,
