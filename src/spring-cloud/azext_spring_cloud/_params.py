@@ -47,7 +47,7 @@ def load_arguments(self, _):
         c.argument('assign_identity', arg_type=get_three_state_flag(), help='If true, assign managed service identity.')
 
     with self.argument_context('spring-cloud app update') as c:
-        c.argument('is_public', arg_type=get_three_state_flag(),  help='If true, assign endpoint')
+        c.argument('is_public', arg_type=get_three_state_flag(), help='If true, assign endpoint')
         c.argument('https_only', arg_type=get_three_state_flag(), help='If true, access app via https', default=False)
 
     for scope in ['spring-cloud app update', 'spring-cloud app start', 'spring-cloud app stop', 'spring-cloud app restart', 'spring-cloud app deploy', 'spring-cloud app scale', 'spring-cloud app set-deployment', 'spring-cloud app show-deploy-log']:

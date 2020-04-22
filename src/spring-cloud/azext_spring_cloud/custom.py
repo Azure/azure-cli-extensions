@@ -1230,4 +1230,3 @@ def domain_update(cmd, client, resource_group, service, app,
 def domain_unbind(cmd, client, resource_group, service, app, domain_name):
     client.custom_domains.get(resource_group, service, app, domain_name)
     return client.custom_domains.delete(resource_group, service, app, domain_name)
-    
