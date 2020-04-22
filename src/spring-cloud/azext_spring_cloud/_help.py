@@ -339,7 +339,7 @@ helps['spring-cloud certificate remove'] = """
 
 helps['spring-cloud app custom-domain bind'] = """
     type: command
-    short-summary: Bind a custom domain with an app.
+    short-summary: Bind a custom domain with the app.
 """
 
 helps['spring-cloud app custom-domain show'] = """
@@ -349,12 +349,12 @@ helps['spring-cloud app custom-domain show'] = """
 
 helps['spring-cloud app custom-domain list'] = """
     type: command
-    short-summary: List all custom domains of an app.
+    short-summary: List all custom domains of the app.
 """
 
 helps['spring-cloud app custom-domain update'] = """
     type: command
-    short-summary: Update a custom domain of an app.
+    short-summary: Update a custom domain of the app.
 """
 
 helps['spring-cloud app custom-domain delete'] = """
