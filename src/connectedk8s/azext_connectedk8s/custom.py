@@ -36,8 +36,8 @@ logger = get_logger(__name__)
 # pylint: disable=too-many-statements
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location=None,
                         kube_config=None, kube_context=None, no_wait=False, tags=None):
-    print("Ensure that you have the latest helm version installed before proceeding to avoid unexpected errors.")
-    print("This operation might take a while...\n")
+    logger.warning("Ensure that you have the latest helm version installed before proceeding.")
+    logger.warning("This operation might take a while...\n")
 
     # Setting subscription id
     subscription_id = get_subscription_id(cmd.cli_ctx)

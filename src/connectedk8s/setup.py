@@ -36,8 +36,9 @@ CLASSIFIERS = [
 DEPENDENCIES = [
     'azure-cli-core',
     'kubernetes~=11.0.0b2',
-    'knack',
-    'pycryptodome'
+    'knack~=0.7.0rc3',
+    'pycryptodome',
+    'websocket-client~=0.56.0'
 ]
 
 with open('README.rst', 'r', encoding='utf-8') as f:

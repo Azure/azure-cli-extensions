@@ -4,19 +4,24 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
-from knack.arguments import CLIArgumentType
-
 
 def load_arguments(self, _):
 
     from azure.cli.core.commands.parameters import tags_type
 
-    cluster_name_type = CLIArgumentType(options_list='--cluster-name-name', help='Name of the Connectedk8s.', id_part='name')
-
-    with self.argument_context('connectedk8s') as c:
+    with self.argument_context('connectedk8s connect') as c:
         c.argument('tags', tags_type)
-        # c.argument('location', validator=get_default_location_from_resource_group)
-        c.argument('cluster_name', cluster_name_type, options_list=['--name', '-n'])
+        c.argument('cluster_name', options_list=['--name', '-n'], help='The name of the connected cluster.')
+        c.argument('kube_config', options_list=['--kube-config'], help='Path to the kube config file.')
+        c.argument('kube_context', options_list=['--kube-context'], help='Kubconfig context from current machine.')
 
     with self.argument_context('connectedk8s list') as c:
-        c.argument('cluster_name', cluster_name_type, id_part=None)
+        pass
+
+    with self.argument_context('connectedk8s show') as c:
+        c.argument('cluster_name', options_list=['--name', '-n'], help='The name of the connected cluster.')
+
+    with self.argument_context('connectedk8s delete') as c:
+        c.argument('cluster_name', options_list=['--name', '-n'], help='The name of the connected cluster.')
+        c.argument('kube_config', options_list=['--kube-config'], help='Path to the kube config file.')
+        c.argument('kube_context', options_list=['--kube-context'], help='Kubconfig context from current machine.')
