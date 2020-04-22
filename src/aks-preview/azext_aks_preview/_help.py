@@ -206,6 +206,9 @@ helps['aks create'] = """
         - name: --enable-private-cluster
           type: string
           short-summary: Enable private cluster.
+        - name: --enable-node-public-ip
+          type: bool
+          short-summary: Enable VMSS node public IP.
         - name: --enable-managed-identity
           type: bool
           short-summary: (PREVIEW) Using a system assigned managed identity to manage cluster resource group.
@@ -499,9 +502,9 @@ helps['aks nodepool add'] = """
         - name: --spot-max-price
           type: float
           short-summary: It can only be set when --priority is Spot. Specify the maximum price you are willing to pay in US Dollars. Possible values are any decimal value greater than zero or -1 which indicates default price to be up-to on-demand. It can only include up to 5 decimal places.
-        - name: --public-ip-per-vm
+        - name: --enable-node-public-ip
           type: bool
-          short-summary: Each node will have a public ip.
+          short-summary: Enable VMSS node public IP.
         - name: --labels
           type: string
           short-summary: The node labels for the node pool. You can't change the node labels through CLI after the node pool is created. See https://aka.ms/node-labels for syntax of labels.
