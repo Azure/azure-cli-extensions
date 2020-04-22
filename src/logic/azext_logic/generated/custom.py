@@ -72,7 +72,7 @@ def logic_workflow_update(cmd, client,
     return logic_workflow_create(cmd, client, resource_group_name, name,
                                  definition, workflow.location,
                                  tags if tags else workflow.tags,
-                                 state,
+                                 state if state else workflow.state,
                                  workflow.endpoints_configuration,
                                  workflow.integration_account,
                                  workflow.integration_service_environment)
