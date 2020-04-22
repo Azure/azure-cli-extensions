@@ -12,6 +12,18 @@ az extension add --name import-export
 Manage Import Export: [more info](https://docs.microsoft.com/en-us/azure/storage/common/storage-import-export-service)\
 *Examples:*
 
+##### List locations to which you can ship the disks
+
+```
+az import-export location list
+```
+
+##### Show locations to which you can ship the disks
+
+```
+az import-export location show --location "West US"
+```
+
 ##### Create an Import Job
 
 ```
