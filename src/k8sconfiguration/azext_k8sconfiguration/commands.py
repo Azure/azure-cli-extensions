@@ -19,6 +19,6 @@ def load_command_table(self, _):
             as g:
         g.custom_command('create', 'create_k8sconfiguration')
         g.custom_command('update', 'update_k8sconfiguration')
-        g.custom_command('delete', 'delete_k8sconfiguration')
+        g.custom_command('delete', 'delete_k8sconfiguration', confirmation=True)
         g.custom_command('list', 'list_k8sconfiguration')
         g.custom_command('show', 'show_k8sconfiguration')
