@@ -735,6 +735,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                aad_tenant_id=None,
                tags=None,
                node_zones=None,
+               enable_node_public_ip=False,
                generate_ssh_keys=False,  # pylint: disable=unused-argument
                enable_pod_security_policy=False,
                node_resource_group=None,
@@ -793,6 +794,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         mode="System",
         vnet_subnet_id=vnet_subnet_id,
         availability_zones=node_zones,
+        enable_node_public_ip=enable_node_public_ip,
         max_pods=int(max_pods) if max_pods else None,
         type=vm_set_type
     )
@@ -2057,6 +2059,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       tags=None,
                       kubernetes_version=None,
                       node_zones=None,
+                      enable_node_public_ip=False,
                       node_vm_size=None,
                       node_osdisk_size=0,
                       node_count=3,
@@ -2070,7 +2073,6 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       priority=CONST_SCALE_SET_PRIORITY_REGULAR,
                       eviction_policy=CONST_SPOT_EVICTION_POLICY_DELETE,
                       spot_max_price=float('nan'),
-                      public_ip_per_vm=False,
                       labels=None,
                       mode="User",
                       no_wait=False):
@@ -2109,9 +2111,9 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         max_pods=int(max_pods) if max_pods else None,
         orchestrator_version=kubernetes_version,
         availability_zones=node_zones,
+        enable_node_public_ip=enable_node_public_ip,
         node_taints=taints_array,
         scale_set_priority=priority,
-        enable_node_public_ip=public_ip_per_vm,
         mode=mode
     )
 
