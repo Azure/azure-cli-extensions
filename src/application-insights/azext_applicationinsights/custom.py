@@ -40,17 +40,46 @@ def get_metrics_metadata(cmd, client, application, resource_group_name=None):
     return client.metrics.get_metadata(get_id_from_azure_resource(cmd.cli_ctx, application, resource_group=resource_group_name))
 
 
-def create_or_update_component(client, application, resource_group_name, location, tags=None, kind="web", application_type='web'):
-    from .vendored_sdks.mgmt_applicationinsights.models import ApplicationInsightsComponent
-    component = ApplicationInsightsComponent(location, kind, application_type=application_type, tags=tags)
+def create_or_update_component(cmd, client, application, resource_group_name, location, tags=None,
+                               kind="web", application_type='web', workspace_resource_id=None,
+                               public_network_access_for_ingestion=None, public_network_access_for_query=None):
+    # due to service limitation, we have to do such a hack. We must refract the logic later.
+    if workspace_resource_id is None:
+        from .vendored_sdks.mgmt_applicationinsights.v2018_05_01_preview.models import ApplicationInsightsComponent
+        from ._client_factory import applicationinsights_mgmt_plane_client
+        client = applicationinsights_mgmt_plane_client(cmd.cli_ctx, api_version='2018-05-01-preview').components
+        component = ApplicationInsightsComponent(location=location, kind=kind, application_type=application_type, tags=tags,
+                                                 public_network_access_for_ingestion=public_network_access_for_ingestion,
+                                                 public_network_access_for_query=public_network_access_for_query)
+        return client.create_or_update(resource_group_name, application, component)
+
+    from .vendored_sdks.mgmt_applicationinsights.v2020_02_02_preview.models import ApplicationInsightsComponent
+    component = ApplicationInsightsComponent(location=location, kind=kind, application_type=application_type,
+                                             tags=tags, workspace_resource_id=workspace_resource_id,
+                                             public_network_access_for_ingestion=public_network_access_for_ingestion,
+                                             public_network_access_for_query=public_network_access_for_query)
     return client.create_or_update(resource_group_name, application, component)
 
 
-def update_component(client, application, resource_group_name, kind=None):
+def update_component(cmd, client, application, resource_group_name, kind=None, workspace_resource_id=None,
+                     public_network_access_for_ingestion=None, public_network_access_for_query=None):
     existing_component = client.get(resource_group_name, application)
     if kind:
         existing_component.kind = kind
-    return client.create_or_update(resource_group_name, application, existing_component)
+    if workspace_resource_id is not None:
+        existing_component.workspace_resource_id = workspace_resource_id or None
+    if public_network_access_for_ingestion is not None:
+        existing_component.public_network_access_for_ingestion = public_network_access_for_ingestion
+    if public_network_access_for_query is not None:
+        existing_component.public_network_access_for_query = public_network_access_for_query
+    if hasattr(existing_component, 'workspace_resource_id') and existing_component.workspace_resource_id is not None:
+        return client.create_or_update(resource_group_name, application, existing_component)
+
+    from .vendored_sdks.mgmt_applicationinsights.v2018_05_01_preview.models import ApplicationInsightsComponent
+    from ._client_factory import applicationinsights_mgmt_plane_client
+    client = applicationinsights_mgmt_plane_client(cmd.cli_ctx, api_version='2018-05-01-preview').components
+    component = ApplicationInsightsComponent(**(vars(existing_component)))
+    return client.create_or_update(resource_group_name, application, component)
 
 
 def update_component_tags(client, application, resource_group_name, tags):
@@ -82,7 +111,9 @@ def create_api_key(cmd, client, application, resource_group_name, api_key, read_
     if write_properties is None:
         write_properties = ['WriteAnnotations']
     linked_read_properties, linked_write_properties = get_linked_properties(cmd.cli_ctx, application, resource_group_name, read_properties, write_properties)
-    api_key_request = APIKeyRequest(api_key, linked_read_properties, linked_write_properties)
+    api_key_request = APIKeyRequest(name=api_key,
+                                    linked_read_properties=linked_read_properties,
+                                    linked_write_properties=linked_write_properties)
     return client.create(resource_group_name, application, api_key_request)
 
 
@@ -118,3 +149,19 @@ def update_component_billing(client, application, resource_group_name, cap=None,
                          resource_name=application,
                          data_volume_cap=billing_features.data_volume_cap,
                          current_billing_features=billing_features.current_billing_features)
+
+
+def get_component_linked_storage_account(client, resource_group_name, application):
+    return client.get(resource_group_name=resource_group_name, resource_name=application)
+
+
+def create_component_linked_storage_account(client, resource_group_name, application, storage_account_id):
+    return client.create_and_update(resource_group_name=resource_group_name, resource_name=application, linked_storage_account=storage_account_id)
+
+
+def update_component_linked_storage_account(client, resource_group_name, application, storage_account_id):
+    return client.update(resource_group_name=resource_group_name, resource_name=application, linked_storage_account=storage_account_id)
+
+
+def delete_component_linked_storage_account(client, resource_group_name, application):
+    return client.delete(resource_group_name=resource_group_name, resource_name=application)
