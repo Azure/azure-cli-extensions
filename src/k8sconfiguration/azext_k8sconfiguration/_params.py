@@ -47,8 +47,6 @@ def load_arguments(self, _):
                    help='Namespace in which to install the Operator.')
         c.argument('operator_type',
                    help='''Optional. Type of the operator. Valid value is 'flux'.''')
-        c.argument('',
-                   help='')
 
     with self.argument_context('k8sconfiguration list') as c:
         c.argument('sourcecontrolconfiguration', sourcecontrolconfiguration_type, id_part=None)
