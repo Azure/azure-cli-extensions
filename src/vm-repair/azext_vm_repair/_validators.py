@@ -168,7 +168,7 @@ def validate_run(cmd, namespace):
 def _prompt_encryptedvms():
     from knack.prompting import prompt_y_n, NoTTYException
     try:
-        if not prompt_y_n('The source VM is encrpyted. Do u want to attach the disk after unlocking?:'):
+        if not prompt_y_n('The source VM is encrpyted. Do u want to attach & mount the copy of disk after unlocking?:'):
             raise CLIError('Stopping the execution upon user input')
     except NoTTYException:
         raise CLIError('Stopping the execution.')

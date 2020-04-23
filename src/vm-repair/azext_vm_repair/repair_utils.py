@@ -219,7 +219,7 @@ def _unlock_singlepass_encrypted_disk(source_vm, repair_group_name, repair_vm_na
         except AzCommandError as azCommandError:
             error_message = str(azCommandError)
             if "type:part fstype:xfs mountpoint" in error_message:
-                logger.info("Encryption failed for data disk with XFS filesystem.But this can be ignored.\n")
+                logger.warning("Encryption failed for data disk with XFS filesystem.But this can be ignored.\n")
                 _mount_encrypted_disk(repair_group_name, repair_vm_name)
             else:
                 raise
@@ -236,8 +236,8 @@ def _mount_encrypted_disk(repair_group_name, repair_vm_name):
     rootpath = os.path.dirname(mod.__file__)
     run_script = os.path.join(rootpath, SCRIPTS_DIR_NAME, LINUX_RUN_SCRIPT_NAME)
     mount_disk_command = 'az vm run-command invoke -g {rg} -n {vm} --command-id {command_id} ' \
-                          '--scripts "@{run_script}" -o json' \
-                          .format(rg=repair_group_name, vm=repair_vm_name, command_id=command_id, run_script=run_script)
+                         '--scripts "@{run_script}" -o json' \
+                         .format(rg=repair_group_name, vm=repair_vm_name, command_id=command_id, run_script=run_script)
     _call_az_command(mount_disk_command)
 
 

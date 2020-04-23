@@ -32,7 +32,7 @@ from .repair_utils import (
     _parse_run_script_raw_logs,
     _check_script_succeeded,
     _fetch_disk_info,
-    _unlock_singlepass_encrypted_disk
+    _unlock_singlepass_encrypted_disk,
 )
 
 
