@@ -41,13 +41,12 @@ def create_k8sconfiguration(client, resource_group_name, cluster_name, name, rep
         operator_instance_name = name
 
     # Create helmOperatorProperties object
-    helm_operator_properties = HelmOperatorProperties()
+    helm_operator_properties = None
 
     if enable_helm_operator:
+        helm_operator_properties = HelmOperatorProperties()
         helm_operator_properties.chart_version = helm_operator_version.strip()
         helm_operator_properties.chart_values = helm_operator_params.strip()
-    else:
-        helm_operator_properties = None
 
     # Create sourceControlConfiguration object
     source_control_configuration = SourceControlConfiguration(repository_url=repository_url,
