@@ -16,12 +16,12 @@ class K8sconfigurationScenarioTest(ScenarioTest):
     @record_only()
     def test_k8sconfiguration(self):
         self.kwargs.update({
-            'name': 'cliTestConfig0416A',
+            'name': 'cliTestConfig0422A',
             'cluster_name': 'matrived-tpcomi',
             'rg': 'haikudevtesting',
             'repo_url': 'git://github.com/anubhav929/flux-get-started',
-            'operator_instance_name': 'cliTestconfig0416A-opin',
-            'operator_namespace': 'cliTestConfig0416A-opns'
+            'operator_instance_name': 'cliTestconfig0422A-opin',
+            'operator_namespace': 'cliTestConfig0422A-opns'
         })
 
         # List Configurations and get the count
@@ -50,8 +50,8 @@ class K8sconfigurationScenarioTest(ScenarioTest):
                  ])
 
         # List the configurations again to see if we have one additional
-        newCount = len(self.cmd('k8sconfiguration list -g {rg} --cluster-name {cluster_name}').get_output_in_json())
-        self.assertEqual(newCount, config_count + 1)
+        new_count = len(self.cmd('k8sconfiguration list -g {rg} --cluster-name {cluster_name}').get_output_in_json())
+        self.assertEqual(new_count, config_count + 1)
 
         # Get the configuration created
         self.cmd('k8sconfiguration show -g {rg} -c {cluster_name} -n {name}',
@@ -66,8 +66,8 @@ class K8sconfigurationScenarioTest(ScenarioTest):
                  ])
 
         # Delete the created configuration
-        self.cmd('k8sconfiguration delete -g {rg} -c {cluster_name} -n {name}')
+        self.cmd('k8sconfiguration delete -g {rg} -c {cluster_name} -n {name} -y')
 
         # List Configurations and confirm the count is the same as we started
-        newCount = len(self.cmd('k8sconfiguration list -g {rg} --cluster-name {cluster_name}').get_output_in_json())
-        self.assertEqual(newCount, config_count)
+        new_count = len(self.cmd('k8sconfiguration list -g {rg} --cluster-name {cluster_name}').get_output_in_json())
+        self.assertEqual(new_count, config_count)

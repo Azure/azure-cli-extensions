@@ -14,7 +14,7 @@ interactions:
       - -g --cluster-name
       User-Agent:
       - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.13 msrest_azure/0.6.3
-        azure-mgmt-k8sconfiguration/2019-11-01-preview Azure-SDK-For-Python AZURECLI/2.3.1
+        azure-mgmt-kubernetesconfiguration/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
       accept-language:
       - en-US
     method: GET
@@ -31,18 +31,18 @@ interactions:
         git.ssh.secretName=flux-git-deploy --set tillerNamespace=kube-system"},"repositoryUrl":"git://github.com/anubhav929/flux-get-started","operatorInstanceName":"cfg0219a-opin","operatorType":"Flux","operatorScope":"cluster","operatorParams":"--git-readonly
         ","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cfg0207i","name":"cfg0207i","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"default","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"git://github.com/anubhav929/flux-get-started","operatorInstanceName":"cfg0219a-opin","operatorType":"Flux","operatorScope":"cluster","operatorParams":"--git-readonly
         ","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cfg0207g","name":"cfg0207g","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"cfg0207g-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.2.0","chartValues":"--set
-        git.ssh.secretName=flux-git-deploy --set tillerNamespace=kube-system"},"repositoryUrl":"git://github.com/cfg0207g/flux-get-started","operatorInstanceName":"cfg0207g-opin","operatorType":"Flux","operatorScope":"cluster","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/testconfig0207c","name":"testconfig0207c","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"testconfig0207c-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"repositoryUrl":"git://github.com/testconfig0207c/flux-get-started","operatorInstanceName":"testconfig0207c-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/testconfig0207b","name":"testconfig0207b","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"testconfig0207b-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"repositoryUrl":"git://github.com/testconfig0207b/flux-get-started","operatorInstanceName":"testconfig0207b-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}}],"nextLink":null}'
+        git.ssh.secretName=flux-git-deploy --set tillerNamespace=kube-system"},"repositoryUrl":"git://github.com/cfg0207g/flux-get-started","operatorInstanceName":"cfg0207g-opin","operatorType":"Flux","operatorScope":"cluster","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}}],"nextLink":null}'
     headers:
       api-supported-versions:
       - 2019-11-01-Preview
       cache-control:
       - no-cache
       content-length:
-      - '13097'
+      - '11187'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 17 Apr 2020 00:28:12 GMT
+      - Thu, 23 Apr 2020 01:24:54 GMT
       expires:
       - '-1'
       pragma:
@@ -62,7 +62,7 @@ interactions:
       message: OK
 - request:
     body: '{"properties": {"repositoryUrl": "git://github.com/anubhav929/flux-get-started",
-      "operatorNamespace": "cliTestConfig0416A-opns", "operatorInstanceName": "cliTestconfig0416A-opin",
+      "operatorNamespace": "cliTestConfig0422A-opns", "operatorInstanceName": "cliTestconfig0422A-opin",
       "operatorType": "flux", "operatorParams": "--git-readonly ", "operatorScope":
       "namespace", "enableHelmOperator": "True", "helmOperatorProperties": {"chartVersion":
       "0.6.0", "chartValues": "--set git.ssh.secretName=flux-git-deploy --set tillerNamespace=kube-system"}}}'
@@ -85,15 +85,15 @@ interactions:
         --set git.ssh.secretName
       User-Agent:
       - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.13 msrest_azure/0.6.3
-        azure-mgmt-k8sconfiguration/2019-11-01-preview Azure-SDK-For-Python AZURECLI/2.3.1
+        azure-mgmt-kubernetesconfiguration/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cliTestConfig0416A?api-version=2019-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cliTestConfig0422A?api-version=2019-11-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cliTestConfig0416A","name":"cliTestConfig0416A","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"cliTestConfig0416A-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.6.0","chartValues":"--set
-        git.ssh.secretName=flux-git-deploy --set tillerNamespace=kube-system"},"repositoryUrl":"git://github.com/anubhav929/flux-get-started","operatorInstanceName":"cliTestconfig0416A-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cliTestConfig0422A","name":"cliTestConfig0422A","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"cliTestConfig0422A-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.6.0","chartValues":"--set
+        git.ssh.secretName=flux-git-deploy --set tillerNamespace=kube-system"},"repositoryUrl":"git://github.com/anubhav929/flux-get-started","operatorInstanceName":"cliTestconfig0422A-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly
         ","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}}'
     headers:
       api-supported-versions:
@@ -105,11 +105,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 17 Apr 2020 00:28:14 GMT
+      - Thu, 23 Apr 2020 01:24:54 GMT
       expires:
       - '-1'
       location:
-      - /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cliTestConfig0416A
+      - /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cliTestConfig0422A
       pragma:
       - no-cache
       server:
@@ -138,15 +138,15 @@ interactions:
       - -g --cluster-name
       User-Agent:
       - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.13 msrest_azure/0.6.3
-        azure-mgmt-k8sconfiguration/2019-11-01-preview Azure-SDK-For-Python AZURECLI/2.3.1
+        azure-mgmt-kubernetesconfiguration/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations?api-version=2019-11-01-preview
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/clitestconfig0416a","name":"clitestconfig0416a","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"cliTestConfig0416A-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.6.0","chartValues":"--set
-        git.ssh.secretName=flux-git-deploy --set tillerNamespace=kube-system"},"repositoryUrl":"git://github.com/anubhav929/flux-get-started","operatorInstanceName":"cliTestconfig0416A-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/clitestconfig0422a","name":"clitestconfig0422a","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"cliTestConfig0422A-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.6.0","chartValues":"--set
+        git.ssh.secretName=flux-git-deploy --set tillerNamespace=kube-system"},"repositoryUrl":"git://github.com/anubhav929/flux-get-started","operatorInstanceName":"cliTestconfig0422A-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly
         ","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/config0406a","name":"config0406a","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"config0406a-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.6.0","chartValues":"--set
         helm.versions=v3"},"repositoryUrl":"git://github.com/config0406a/flux-get-started","operatorInstanceName":"config0406a-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/config0403d","name":"config0403d","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"config0403d-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.6.0","chartValues":"--set
         helm.versions=v3"},"repositoryUrl":"git://github.com/config0403d/flux-get-started","operatorInstanceName":"config0403d-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/config0403c","name":"config0403c","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"config0403c-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.6.0","chartValues":"--set
@@ -157,18 +157,18 @@ interactions:
         git.ssh.secretName=flux-git-deploy --set tillerNamespace=kube-system"},"repositoryUrl":"git://github.com/anubhav929/flux-get-started","operatorInstanceName":"cfg0219a-opin","operatorType":"Flux","operatorScope":"cluster","operatorParams":"--git-readonly
         ","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cfg0207i","name":"cfg0207i","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"default","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"git://github.com/anubhav929/flux-get-started","operatorInstanceName":"cfg0219a-opin","operatorType":"Flux","operatorScope":"cluster","operatorParams":"--git-readonly
         ","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cfg0207g","name":"cfg0207g","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"cfg0207g-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.2.0","chartValues":"--set
-        git.ssh.secretName=flux-git-deploy --set tillerNamespace=kube-system"},"repositoryUrl":"git://github.com/cfg0207g/flux-get-started","operatorInstanceName":"cfg0207g-opin","operatorType":"Flux","operatorScope":"cluster","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/testconfig0207c","name":"testconfig0207c","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"testconfig0207c-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"repositoryUrl":"git://github.com/testconfig0207c/flux-get-started","operatorInstanceName":"testconfig0207c-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/testconfig0207b","name":"testconfig0207b","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"testconfig0207b-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"repositoryUrl":"git://github.com/testconfig0207b/flux-get-started","operatorInstanceName":"testconfig0207b-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}}],"nextLink":null}'
+        git.ssh.secretName=flux-git-deploy --set tillerNamespace=kube-system"},"repositoryUrl":"git://github.com/cfg0207g/flux-get-started","operatorInstanceName":"cfg0207g-opin","operatorType":"Flux","operatorScope":"cluster","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}}],"nextLink":null}'
     headers:
       api-supported-versions:
       - 2019-11-01-Preview
       cache-control:
       - no-cache
       content-length:
-      - '14199'
+      - '12289'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 17 Apr 2020 00:28:15 GMT
+      - Thu, 23 Apr 2020 01:24:55 GMT
       expires:
       - '-1'
       pragma:
@@ -201,15 +201,15 @@ interactions:
       - -g -c -n
       User-Agent:
       - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.13 msrest_azure/0.6.3
-        azure-mgmt-k8sconfiguration/2019-11-01-preview Azure-SDK-For-Python AZURECLI/2.3.1
+        azure-mgmt-kubernetesconfiguration/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cliTestConfig0416A?api-version=2019-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cliTestConfig0422A?api-version=2019-11-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cliTestConfig0416A","name":"cliTestConfig0416A","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"cliTestConfig0416A-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.6.0","chartValues":"--set
-        git.ssh.secretName=flux-git-deploy --set tillerNamespace=kube-system"},"repositoryUrl":"git://github.com/anubhav929/flux-get-started","operatorInstanceName":"cliTestconfig0416A-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cliTestConfig0422A","name":"cliTestConfig0422A","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"cliTestConfig0422A-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.6.0","chartValues":"--set
+        git.ssh.secretName=flux-git-deploy --set tillerNamespace=kube-system"},"repositoryUrl":"git://github.com/anubhav929/flux-get-started","operatorInstanceName":"cliTestconfig0422A-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly
         ","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}}'
     headers:
       api-supported-versions:
@@ -221,7 +221,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 17 Apr 2020 00:28:17 GMT
+      - Thu, 23 Apr 2020 01:24:56 GMT
       expires:
       - '-1'
       pragma:
@@ -253,16 +253,16 @@ interactions:
       Content-Length:
       - '0'
       ParameterSetName:
-      - -g -c -n
+      - -g -c -n -y
       User-Agent:
       - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.13 msrest_azure/0.6.3
-        azure-mgmt-k8sconfiguration/2019-11-01-preview Azure-SDK-For-Python AZURECLI/2.3.1
+        azure-mgmt-kubernetesconfiguration/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
       accept-language:
       - en-US
       x-ms-force:
       - 'true'
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cliTestConfig0416A?api-version=2019-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cliTestConfig0422A?api-version=2019-11-01-preview
   response:
     body:
       string: '{"version":"1.1","content":null,"statusCode":200,"reasonPhrase":"OK","headers":[],"trailingHeaders":[],"requestMessage":null,"isSuccessStatusCode":true}'
@@ -276,7 +276,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 17 Apr 2020 00:28:18 GMT
+      - Thu, 23 Apr 2020 01:24:59 GMT
       expires:
       - '-1'
       pragma:
@@ -311,7 +311,7 @@ interactions:
       - -g --cluster-name
       User-Agent:
       - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.13 msrest_azure/0.6.3
-        azure-mgmt-k8sconfiguration/2019-11-01-preview Azure-SDK-For-Python AZURECLI/2.3.1
+        azure-mgmt-kubernetesconfiguration/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
       accept-language:
       - en-US
     method: GET
@@ -328,18 +328,18 @@ interactions:
         git.ssh.secretName=flux-git-deploy --set tillerNamespace=kube-system"},"repositoryUrl":"git://github.com/anubhav929/flux-get-started","operatorInstanceName":"cfg0219a-opin","operatorType":"Flux","operatorScope":"cluster","operatorParams":"--git-readonly
         ","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cfg0207i","name":"cfg0207i","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"default","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"git://github.com/anubhav929/flux-get-started","operatorInstanceName":"cfg0219a-opin","operatorType":"Flux","operatorScope":"cluster","operatorParams":"--git-readonly
         ","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cfg0207g","name":"cfg0207g","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"cfg0207g-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.2.0","chartValues":"--set
-        git.ssh.secretName=flux-git-deploy --set tillerNamespace=kube-system"},"repositoryUrl":"git://github.com/cfg0207g/flux-get-started","operatorInstanceName":"cfg0207g-opin","operatorType":"Flux","operatorScope":"cluster","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/testconfig0207c","name":"testconfig0207c","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"testconfig0207c-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"repositoryUrl":"git://github.com/testconfig0207c/flux-get-started","operatorInstanceName":"testconfig0207c-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/testconfig0207b","name":"testconfig0207b","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"testconfig0207b-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"repositoryUrl":"git://github.com/testconfig0207b/flux-get-started","operatorInstanceName":"testconfig0207b-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}}],"nextLink":null}'
+        git.ssh.secretName=flux-git-deploy --set tillerNamespace=kube-system"},"repositoryUrl":"git://github.com/cfg0207g/flux-get-started","operatorInstanceName":"cfg0207g-opin","operatorType":"Flux","operatorScope":"cluster","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}}],"nextLink":null}'
     headers:
       api-supported-versions:
       - 2019-11-01-Preview
       cache-control:
       - no-cache
       content-length:
-      - '13097'
+      - '11187'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 17 Apr 2020 00:28:19 GMT
+      - Thu, 23 Apr 2020 01:25:00 GMT
       expires:
       - '-1'
       pragma:
