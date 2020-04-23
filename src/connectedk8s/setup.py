@@ -35,7 +35,7 @@ CLASSIFIERS = [
 # TODO: Add any additional SDK dependencies here
 DEPENDENCIES = [
     'azure-cli-core',
-    'kubernetes~=11.0.0b2',
+    'kubernetes',
     'knack==0.7.0rc4',
     'pycryptodome',
     'websocket-client~=0.56.0'
