@@ -13,16 +13,21 @@ from azure_devtools.scenario_tests import AllowLargeResponse  # pylint: disable=
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
+def _get_test_data_file(filename):
+    curr_dir = os.path.dirname(os.path.realpath(__file__))
+    return os.path.join(curr_dir, 'data', filename).replace('\\', '\\\\')
+
+
 class Connectedk8sScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_connectedk8s')
     def test_connectedk8s(self, resource_group):
 
         self.kwargs.update({
-            'name': 'test1'
+            'name': 'test1',
+            'kubeconfig': "%s" % (_get_test_data_file('config.yaml'))
         })
-
-        self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus2euap --tags foo=doo', checks=[
+        self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus2euap --tags foo=doo --kube-config {kubeconfig}', checks=[
             self.check('tags.foo', 'doo'),
             self.check('name', '{name}')
         ])
