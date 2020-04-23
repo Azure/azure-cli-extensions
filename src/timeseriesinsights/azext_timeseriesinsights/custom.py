@@ -118,9 +118,12 @@ def update_timeseriesinsights_event_source_eventhub(cmd, client, resource_group_
                                                     timestamp_property_name=None,
                                                     local_timestamp_format=None, time_zone_offset_property_name=None,
                                                     shared_access_key=None, tags=None):
-    from .vendored_sdks.timeseriesinsights.models import EventHubEventSourceUpdateParameters, LocalTimestamp, LocalTimestampTimeZoneOffset
+    from .vendored_sdks.timeseriesinsights.models import EventHubEventSourceUpdateParameters, LocalTimestamp, \
+        LocalTimestampTimeZoneOffset, LocalTimestampFormat
     local_timestamp = None
-    if local_timestamp_format and time_zone_offset_property_name:
+    if local_timestamp_format == LocalTimestampFormat.embedded:
+        local_timestamp = LocalTimestamp(format=local_timestamp_format)
+    elif local_timestamp_format and time_zone_offset_property_name:
         local_timestamp = LocalTimestamp(format=local_timestamp_format,
                                          time_zone_offset=LocalTimestampTimeZoneOffset(property_name=time_zone_offset_property_name))
     parameters = EventHubEventSourceUpdateParameters(tags=tags,
@@ -161,9 +164,11 @@ def update_timeseriesinsights_event_source_iothub(cmd, client,
                                                   shared_access_key=None,
                                                   tags=None):
     from .vendored_sdks.timeseriesinsights.models import IoTHubEventSourceUpdateParameters, LocalTimestamp, \
-        LocalTimestampTimeZoneOffset
+        LocalTimestampTimeZoneOffset, LocalTimestampFormat
     local_timestamp = None
-    if local_timestamp_format and time_zone_offset_property_name:
+    if local_timestamp_format == LocalTimestampFormat.embedded:
+        local_timestamp = LocalTimestamp(format=local_timestamp_format)
+    elif local_timestamp_format and time_zone_offset_property_name:
         local_timestamp = LocalTimestamp(format=local_timestamp_format,
                                          time_zone_offset=LocalTimestampTimeZoneOffset(property_name=time_zone_offset_property_name))
     parameters = IoTHubEventSourceUpdateParameters(

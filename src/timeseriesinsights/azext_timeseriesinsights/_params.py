@@ -57,8 +57,9 @@ def load_arguments(self, _):
         from .vendored_sdks.timeseriesinsights.models import LocalTimestampFormat
         c.argument('environment_name', arg_type=environment_name_type)
         c.argument('event_source_name', arg_type=name_type, id_part='child_name_1', help='The name of the Time Series Insights event source associated with the specified environment.')
-        c.argument('local_timestamp_format', arg_group="Local Timestamp", arg_type=get_enum_type(LocalTimestampFormat), help='An enum that represents the format of the local timestamp property that needs to be set.')
-        c.argument('time_zone_offset_property_name', arg_group="Local Timestamp", help='The event property that will be contain the offset information to calculate the local timestamp. When the LocalTimestampFormat is Iana, the property name will contain the name of the column which contains IANA Timezone Name (eg: Americas/Los Angeles). When LocalTimestampFormat is Timespan, it contains the name of property which contains values representing the offset (eg: P1D or 1.00:00:00)')
+        c.argument('local_timestamp_format', arg_group="Local Timestamp", arg_type=get_enum_type(LocalTimestampFormat), help='An enum that represents the format of the local timestamp property that needs to be set. Currently only Embedded is supported.')
+        c.ignore('time_zone_offset_property_name')
+        # c.argument('time_zone_offset_property_name', arg_group="Local Timestamp", help='The event property that will be contain the offset information to calculate the local timestamp. When the LocalTimestampFormat is Iana, the property name will contain the name of the column which contains IANA Timezone Name (eg: Americas/Los Angeles). When LocalTimestampFormat is Timespan, it contains the name of property which contains values representing the offset (eg: P1D or 1.00:00:00)')
     # endregion
 
     # region reference-data-set

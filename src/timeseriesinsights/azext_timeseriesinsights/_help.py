@@ -82,7 +82,7 @@ short-summary: Update a longterm environment in the specified subscription and r
 examples:
   - name: Update dataRetention
     text: az timeseriesinsights environment longterm update -g {rg} -n {env} --data-retention 8
-  - name: Update storageManagementKey (not working yet)
+  - name: Update storageManagementKey
     text: az timeseriesinsights environment longterm update -g {rg} -n {env} --storage-management-key xxx
 """
 
@@ -147,8 +147,8 @@ short-summary: Create or update an event source under the specified environment.
 examples:
   - name: Update timestampPropertyName
     text: az timeseriesinsights event-source eventhub update -g {rg} --environment-name {env} -n {es} --timestamp-property-name DeviceId1
-  - name: Update localTimestamp (not working yet)
-    text: az timeseriesinsights event-source eventhub update -g {rg} --environment-name {env} -n {es} --local-timestamp-format Timespan --time-zone-offset-property-name OffsetDeviceId1
+  - name: Update localTimestamp (Currently only Embedded is supported)
+    text: az timeseriesinsights event-source eventhub update -g {rg} --environment-name {env} -n {es} --local-timestamp-format Embedded
   - name: Update sharedAccessKey
     text: az timeseriesinsights event-source eventhub update -g {rg} --environment-name {env} -n {es} --shared-access-key {shared_access_key}
 """
@@ -177,8 +177,8 @@ short-summary: Create or update an event source under the specified environment.
 examples:
   - name: Update timestampPropertyName
     text: az timeseriesinsights event-source iothub update -g {rg} --environment-name {env} -n {es} --timestamp-property-name DeviceId1
-  - name: Update localTimestamp (not working yet)
-    text: az timeseriesinsights event-source iothub update -g {rg} --environment-name {env} -n {es} --local-timestamp-format Timespan --time-zone-offset-property-name OffsetDeviceId1
+  - name: Update localTimestamp (Currently only Embedded is supported)
+    text: az timeseriesinsights event-source iothub update -g {rg} --environment-name {env} -n {es} --local-timestamp-format Embedded
   - name: Update sharedAccessKey
     text: az timeseriesinsights event-source iothub update -g {rg} --environment-name {env} -n {es} --shared-access-key {shared_access_key}
 """

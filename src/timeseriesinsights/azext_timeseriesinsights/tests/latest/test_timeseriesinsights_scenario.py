@@ -102,6 +102,7 @@ class TimeSeriesInsightsClientScenarioTest(ScenarioTest):
 
         time.sleep(60)
         key = self.cmd('az storage account keys renew -g {rg} -n {sa} --key primary  --query "[0].value" --output tsv').output
+        time.sleep(15)
         self.cmd('az timeseriesinsights environment longterm update --resource-group {rg} --name {env} --storage-management-key ' + key,
                  checks=[])
 
@@ -134,7 +135,11 @@ class TimeSeriesInsightsClientScenarioTest(ScenarioTest):
         self.cmd('az timeseriesinsights event-source eventhub update -g {rg} --environment-name {env} --name {es} '
                  '--timestamp-property-name DeviceId1')
 
-        # This doesn't work, due to error "The request body is not valid to update the event source's properties."
+        # Currently only Embedded is supported
+        self.cmd('az timeseriesinsights event-source eventhub update -g {rg} --environment-name {env} --name {es} '
+                 '--local-timestamp-format Embedded')
+
+        # Iana, TimeSpan
         # self.cmd('az timeseriesinsights event-source eventhub update -g {rg} --environment-name {env} --name {es} '
         #          '--local-timestamp-format Timespan --time-zone-offset-property-name Offset')
 
@@ -178,8 +183,12 @@ class TimeSeriesInsightsClientScenarioTest(ScenarioTest):
         self.cmd('az timeseriesinsights event-source iothub update -g {rg} --environment-name {env} --name {es} '
                  '--timestamp-property-name DeviceId1')
 
-        # # This doesn't work, due to error "The request body is not valid to update the event source's properties."
-        # self.cmd('az timeseriesinsights event-source list -g {rg} --environment-name {env} '
+        # Currently only Embedded is supported
+        self.cmd('az timeseriesinsights event-source iothub update -g {rg} --environment-name {env} --name {es} '
+                 '--local-timestamp-format Embedded')
+
+        # Iana, TimeSpan
+        # self.cmd('az timeseriesinsights event-source iothub update -g {rg} --environment-name {env} --name {es} '
         #          '--local-timestamp-format Timespan --time-zone-offset-property-name Offset')
 
         self.kwargs["shared_access_key"] = self.cmd('az iot hub policy renew-key -g {rg} --hub-name {iothub} -n {key_name} --renew-key primary --query primaryKey --output tsv').output
