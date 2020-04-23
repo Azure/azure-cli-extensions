@@ -17,7 +17,6 @@ from azure.cli.core.commands.parameters import (
 from azext_logic.action import AddIntegrationAccount
 
 
-
 def load_arguments(self, _):
 
     with self.argument_context('logic workflow list') as c:
