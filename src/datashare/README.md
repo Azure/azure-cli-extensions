@@ -71,11 +71,13 @@ az role assignment create \
 ##### Create a Synchronization Setting
 ```
 az datashare synchronization-setting create \
---account-name "cli_test_account" \
---resource-group "datashare_provider_rg" \
---share-name "cli_test_share" \
---name "cli_test_synchronization_setting" \
---setting "{\"recurrenceInterval\":\"Day\",\"synchronizationTime\":\"2020-04-05T10:50:00Z\",\"kind\":\"ScheduleBased\"}"
+--account-name cli_test_account \
+--resource-group datashare_provider_rg \
+--share-name cli_test_share \
+--name cli_test_synchronization_setting \
+--recurrence-interval Day \
+--synchronization-time "2020-04-05 10:50:00 +00:00" \
+--kind ScheduleBased
 ```
 
 ##### List Synchronization History
