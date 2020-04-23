@@ -592,7 +592,7 @@ helps['datashare consumer trigger create'] = """
     examples:
       - name: Create a trigger
         text: |-
-               az datashare consumer trigger create --account-name MyAccount --resource-group MyResourceGroup --share-subscription-name MyShareSubscription --name MyTrigger --trigger "{\"kind\":\"ScheduleBased\",\"recurrenceInterval\":\"Day\",\"synchronizationTime\":\"2020-04-03T08:45:35+00:00\"}"
+               az datashare consumer trigger create --account-name MyAccount --resource-group MyResourceGroup --share-subscription-name MyShareSubscription --name MyTrigger --recurrence-interval Day --synchronization-time "2020-04-05 10:50:00 +00:00" --kind ScheduleBased
 """
 
 helps['datashare consumer trigger delete'] = """

@@ -186,8 +186,9 @@ az datashare consumer trigger create \
 --resource-group "datashare_consumer_rg" \
 --share-subscription-name "cli_test_share_subscription" \
 --name "cli_test_trigger" \
---trigger "{\"kind\":\"ScheduleBased\",\"recurrenceInterval\":\"Day\", \
-\"synchronizationTime\":\"2020-04-03T08:45:35+00:00\"}"
+--recurrence-interval Day \
+--synchronization-time "2020-04-05 10:50:00 +00:00" \
+--kind ScheduleBased
 ```
 
 ##### Start a synchronization for the Share Subscription

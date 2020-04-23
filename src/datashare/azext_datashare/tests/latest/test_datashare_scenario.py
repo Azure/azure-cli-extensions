@@ -452,14 +452,13 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
                  checks=[self.check('[0].recurrenceInterval', 'Day'),
                          self.check('[0].kind', 'ScheduleBased')])
 
-        triggerContent = {"kind": "ScheduleBased", "recurrenceInterval": "Day", "synchronizationTime": "2020-04-05T10:50:00+00:00"}
-        self.kwargs.update({'TriggerContent': triggerContent})
         self.cmd('az datashare consumer trigger create '
                  '--account-name "{ConsumerAccount}" '
                  '--resource-group "{ConsumerResourceGroup}" '
                  '--share-subscription-name "{ConsumerShareSubscription}" '
                  '--name "{ConsumerTrigger}" '
-                 '--trigger "{TriggerContent}" '
+                 '--recurrence-interval "Day" '
+                 '--synchronization-time "2020-04-05 10:50:00 +00:00" '
                  '--subscription "{ConsumerSubscription}"',
                  checks=[self.check('properties.recurrenceInterval', 'Day'),  # TODO properties is not removed in the response structure
                          self.check('properties.synchronizationMode', 'Incremental')])

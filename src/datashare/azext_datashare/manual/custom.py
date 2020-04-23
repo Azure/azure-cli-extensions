@@ -488,15 +488,22 @@ def datashare_trigger_create(cmd, client,
                              account_name,
                              share_subscription_name,
                              trigger_name,
-                             trigger,
+                             recurrence_interval,
+                             synchronization_time,
+                             kind=None,
                              no_wait=False):
+    synchronization_setting = {
+        'synchronizationTime': synchronization_time,
+        'recurrenceInterval': recurrence_interval,
+        'kind': kind
+    }
     return sdk_no_wait(no_wait,
                        client.begin_create,
                        resource_group_name=resource_group_name,
                        account_name=account_name,
                        share_subscription_name=share_subscription_name,
                        trigger_name=trigger_name,
-                       trigger=trigger)
+                       trigger=synchronization_setting)
 
 
 def datashare_trigger_delete(cmd, client,
