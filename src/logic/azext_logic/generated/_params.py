@@ -14,10 +14,8 @@ from azure.cli.core.commands.parameters import (
     resource_group_name_type,
     get_location_type
 )
-from azext_logic.action import (
-    AddIntegrationAccount,
-    AddSku
-)
+from azext_logic.action import AddIntegrationAccount
+
 
 
 def load_arguments(self, _):
@@ -94,7 +92,7 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(
             self.cli_ctx), validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type, help='The resource tags.')
-        c.argument('sku', action=AddSku, nargs='+', help='The sku.')
+        c.argument('sku', type=str, help='The integration account sku.')
         c.argument('integration_service_environment', arg_type=CLIArgumentType(options_list=['--integration-service-env'
                                                                                              'ironment'], help='The integration se'
                                                                                'rvice environment. See README.md For more information'))
@@ -107,7 +105,7 @@ def load_arguments(self, _):
         c.argument('name', options_list=[
                    '--name', '-n'], help='The integration account name.')
         c.argument('tags', tags_type, help='The resource tags.')
-        c.argument('sku', action=AddSku, nargs='+', help='The sku.')
+        c.argument('sku', type=str, help='The integration account sku.')
         c.argument('integration_service_environment', arg_type=CLIArgumentType(options_list=['--integration-service-env'
                                                                                              'ironment'], help='The integration se'
                                                                                'rvice environment. See README.md For more information'))

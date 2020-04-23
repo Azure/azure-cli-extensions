@@ -116,7 +116,7 @@ def logic_integration_account_create(cmd, client,
                                    integration_account_name=name,
                                    location=location,
                                    tags=tags,
-                                   sku=sku,
+                                   sku={'name': sku},
                                    integration_service_environment=integration_service_environment,
                                    state=state if state else 'Enabled')
     # TODO: Work around for empty property serialization issue.
@@ -142,7 +142,7 @@ def logic_integration_account_import(cmd, client,
                                    location=input_path.get(
                                        'location', location),
                                    tags=input_path.get('tags', tags),
-                                   sku=input_path.get('sku', sku),
+                                   sku=input_path.get('sku', {'name': sku}),
                                    integration_service_environment=integration_service_environment,
                                    state=input_path['properties'].get('state', 'Enabled'))
     # TODO: Work around for empty property serialization issue.
@@ -164,7 +164,7 @@ def logic_integration_account_update(cmd, client,
                          integration_account_name=name,
                          location=None,
                          tags=tags,
-                         sku=sku,
+                         sku={'name': sku},
                          integration_service_environment=integration_service_environment,
                          state=state)
 

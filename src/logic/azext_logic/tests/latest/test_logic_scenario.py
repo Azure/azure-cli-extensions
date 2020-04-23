@@ -39,7 +39,7 @@ class LogicManagementClientScenarioTest(ScenarioTest):
 
         self.cmd('az logic integration-account create '
                  '--location "centralus" '
-                 '--sku name=Standard '
+                 '--sku Standard '
                  '--name "{IntegrationAccounts_2}" '
                  '--resource-group "{rg_2}" ',
                  checks=[JMESPathCheck('name', self.kwargs.get('IntegrationAccounts_2', ''))])
@@ -83,7 +83,7 @@ class LogicManagementClientScenarioTest(ScenarioTest):
                  checks=[JMESPathCheck('[0].name', self.kwargs.get('testWorkflow', ''))])
 
         self.cmd('az logic integration-account update '
-                 '--sku name=Basic '
+                 '--sku Basic '
                  '--name "{IntegrationAccounts_2}" '
                  '--resource-group "{rg_2}"',
                  checks=[JMESPathCheck('sku.name', 'Basic')])

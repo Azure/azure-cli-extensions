@@ -17,32 +17,14 @@ class AddIntegrationAccount(argparse.Action):
         try:
             properties = dict(x.split('=', 1) for x in values)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
             v = properties[k]
             if kl == 'id':
                 d['id'] = v
-        return d
-
-
-class AddSku(argparse.Action):
-    def __call__(self, parser, namespace, values, option_string=None):
-        action = self.get_action(values, option_string)
-        namespace.sku = action
-
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
-        try:
-            properties = dict(x.split('=', 1) for x in values)
-        except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
-        d = {}
-        for k in properties:
-            kl = k.lower()
-            v = properties[k]
-            if kl == 'name':
-                d['name'] = v
         return d
 
 
@@ -55,7 +37,8 @@ class AddKeyVault(argparse.Action):
         try:
             properties = dict(x.split('=', 1) for x in values)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
