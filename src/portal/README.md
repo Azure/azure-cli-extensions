@@ -15,7 +15,7 @@ Manage Azure portal dashboards: [more info](https://docs.microsoft.com/en-us/azu
 
 
 #### Import a portal dashboard ####
-You should have a dashboard json template before using this operation, the file can be downloaded from Azure portal website.
+You should have a dashboard json template ready before using this operation, the file can be downloaded from Azure portal website.
 More info can be found [here](https://docs.microsoft.com/en-us/azure/azure-portal/azure-portal-dashboards-create-programmatically#fetch-the-json-representation-of-the-dashboard)
 Example:
 ```
@@ -25,7 +25,7 @@ az portal dashboard import \
 --input-path "/path/to/dashboard/template/file/directory"
 ```
 An example dashboard JSON template may look like:
-[dashboard.json](https://github.com/Azure/azure-cli-extensions/tree/master/src/portal/azext_portal/tests/latest/dashboard.json)
+[dashboard.json](https://github.com/Azure/azure-cli-extensions/blob/master/src/portal/azext_portal/tests/latest/dashboard.json)
 
 #### Create a portal dashboard ####
 Example:
@@ -38,7 +38,7 @@ az portal dashboard create \
 --tags aKey=aValue anotherKey=anotherValue
 ```
 An example propeties JSON file may look like:
-[properties.json](https://github.com/Azure/azure-cli-extensions/tree/master/src/portal/azext_portal/tests/latest/properties.json)
+[properties.json](https://github.com/Azure/azure-cli-extensions/blob/master/src/portal/azext_portal/tests/latest/properties.json)
 
 #### List all portal dashboards ####
 Example:
@@ -72,7 +72,9 @@ az portal dashboard update \
 #### Delete a dashboard ####
 Example:
 ```
-az portal dashboard update \
+az portal dashboard delete \
 --name dashboardName \
 --resource-group groupName \
 ```
+
+If you have issues, please give feedback by opening an issue at https://github.com/Azure/azure-cli-extensions/issues.
