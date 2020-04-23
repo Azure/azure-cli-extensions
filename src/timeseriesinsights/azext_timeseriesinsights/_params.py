@@ -27,7 +27,6 @@ def load_arguments(self, _):
         pass
 
     with self.argument_context('timeseriesinsights') as c:
-        c.argument('resource_group_name', resource_group_name_type)
         c.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
 
