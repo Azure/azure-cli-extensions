@@ -1,9 +1,14 @@
 Release History
 ===============
 
+1.0.2
+-----
+* Removed custom error message in lieu of error message coming from backend.
+* Added missing condition for quota change request payload.
+
 1.0.1
 -----
-* Remove resource id existence check in liue of backend based check
+* Remove resource id existence check in lieu of backend based check
 
 1.0.0
 -----
