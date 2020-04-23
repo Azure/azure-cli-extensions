@@ -18,7 +18,7 @@ from azure.cli.core.commands.validators import get_default_location_from_resourc
 from knack.arguments import CLIArgumentType
 from ._validators import iso_8601_timespace
 
-environment_name_type = CLIArgumentType(help='The name of the Time Series Insights environment associated with the specified resource group.')
+environment_name_type = CLIArgumentType(id_part='name', help='The name of the Time Series Insights environment associated with the specified resource group.')
 
 
 def load_arguments(self, _):
@@ -34,11 +34,10 @@ def load_arguments(self, _):
     # region environment
     with self.argument_context('timeseriesinsights environment') as c:
         from .vendored_sdks.timeseriesinsights.models import SkuName
-        c.argument('resource_group', resource_group_name_type)
-        c.argument('environment_name', arg_type=name_type, id_part=None, help='The name of the Time Series Insights environment associated with the specified resource group.')
+        c.argument('environment_name', arg_type=name_type, id_part='name', help='The name of the Time Series Insights environment associated with the specified resource group.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('sku_name', arg_group="SKU", arg_type=get_enum_type(SkuName), help='The sku determines the type of environment, either standard (S1 or S2) or long-term (L1). For standard environments the sku determines the capacity of the environment, the ingress rate, and the billing rate.')
-        c.argument('sku_capacity', arg_group="SKU", help='The capacity of the sku. For standard environments, this value can be changed to support scale out of environments after they have been created.')
+        c.argument('sku_capacity', type=int, arg_group="SKU", help='The capacity of the sku. For standard environments, this value can be changed to support scale out of environments after they have been created.')
 
     with self.argument_context('timeseriesinsights environment standard') as c:
         from .vendored_sdks.timeseriesinsights.models import StorageLimitExceededBehavior
@@ -57,11 +56,7 @@ def load_arguments(self, _):
     with self.argument_context('timeseriesinsights event-source') as c:
         from .vendored_sdks.timeseriesinsights.models import LocalTimestampFormat
         c.argument('environment_name', arg_type=environment_name_type)
-        c.argument('event_source_name', arg_type=name_type, help='The name of the Time Series Insights event source associated with the specified environment.')
-
-    # timeseriesinsights event-source eventhub update
-    # timeseriesinsights event-source iothub update
-    with self.argument_context('timeseriesinsights event-source') as c:
+        c.argument('event_source_name', arg_type=name_type, id_part='child_name_1', help='The name of the Time Series Insights event source associated with the specified environment.')
         c.argument('local_timestamp_format', arg_group="Local Timestamp", arg_type=get_enum_type(LocalTimestampFormat), help='An enum that represents the format of the local timestamp property that needs to be set.')
         c.argument('time_zone_offset_property_name', arg_group="Local Timestamp", help='The event property that will be contain the offset information to calculate the local timestamp. When the LocalTimestampFormat is Iana, the property name will contain the name of the column which contains IANA Timezone Name (eg: Americas/Los Angeles). When LocalTimestampFormat is Timespan, it contains the name of property which contains values representing the offset (eg: P1D or 1.00:00:00)')
     # endregion
@@ -69,7 +64,7 @@ def load_arguments(self, _):
     # region reference-data-set
     with self.argument_context('timeseriesinsights reference-data-set') as c:
         c.argument('environment_name', arg_type=environment_name_type)
-        c.argument('reference_data_set_name', arg_type=name_type, help='Name of the reference data set.')
+        c.argument('reference_data_set_name', arg_type=name_type, id_part='child_name_1', help='Name of the reference data set.')
 
     with self.argument_context('timeseriesinsights reference-data-set create') as c:
         from .vendored_sdks.timeseriesinsights.models import DataStringComparisonBehavior
@@ -82,7 +77,7 @@ def load_arguments(self, _):
         from .vendored_sdks.timeseriesinsights.models import AccessPolicyRole
         c.argument('resource_group', resource_group_name_type)
         c.argument('environment_name', arg_type=environment_name_type)
-        c.argument('access_policy_name', arg_type=name_type, id_part=None, help='The name of the Time Series Insights access policy associated with the specified environment.')
+        c.argument('access_policy_name', arg_type=name_type, id_part='child_name_1', help='The name of the Time Series Insights access policy associated with the specified environment.')
         c.argument('principal_object_id', help='The objectId of the principal in Azure Active Directory.')
         c.argument('description', help='An description of the access policy.')
         c.argument('roles', arg_type=get_enum_type(AccessPolicyRole), nargs='+')
