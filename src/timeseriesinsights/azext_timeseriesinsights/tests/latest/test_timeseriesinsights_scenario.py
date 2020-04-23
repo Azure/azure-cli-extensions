@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+import time
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccountPreparer)
 
 
@@ -83,7 +84,7 @@ class TimeSeriesInsightsClientScenarioTest(ScenarioTest):
         })
 
         # Test environment longterm create
-        key = self.cmd('az storage account keys list -g {rg} -n {sa}').get_output_in_json()[0]['value']
+        key = self.cmd('az storage account keys list -g {rg} -n {sa}  --query "[0].value" --output tsv').output
 
         self.cmd('az timeseriesinsights environment longterm create '
                  '--resource-group {rg} '
@@ -99,10 +100,10 @@ class TimeSeriesInsightsClientScenarioTest(ScenarioTest):
         self.cmd('az timeseriesinsights environment longterm update --resource-group {rg} --name {env} --data-retention 8',
                  checks=[self.check('dataRetention', '8 days, 0:00:00')])
 
-        # This is broken, because --data-retention is required, but "Only a single environment property can be updated
-        # per PATCH request."
-        # self.cmd('az timeseriesinsights environment standard update --resource-group {rg} --name {env} --storage-management-key xxx',
-        #          checks=[self.check('storageLimitExceededBehavior', 'PurgeOldData')])
+        time.sleep(60)
+        key = self.cmd('az storage account keys renew -g {rg} -n {sa} --key primary  --query "[0].value" --output tsv').output
+        self.cmd('az timeseriesinsights environment longterm update --resource-group {rg} --name {env} --storage-management-key ' + key,
+                 checks=[])
 
     @ResourceGroupPreparer(name_prefix='cli_test_timeseriesinsights')
     def test_timeseriesinsights_event_source_eventhub(self, resource_group):

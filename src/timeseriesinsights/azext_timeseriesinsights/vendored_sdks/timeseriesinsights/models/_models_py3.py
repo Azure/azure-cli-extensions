@@ -1604,10 +1604,6 @@ class LongTermEnvironmentUpdateParameters(EnvironmentUpdateParameters):
     :type data_retention: timedelta
     """
 
-    _validation = {
-        'data_retention': {'required': True},
-    }
-
     _attribute_map = {
         'tags': {'key': 'tags', 'type': '{str}'},
         'storage_configuration': {'key': 'properties.storageConfiguration', 'type': 'LongTermStorageConfigurationMutableProperties'},
