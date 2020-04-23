@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+from .util import categorized_files
 from azure.cli.core.util import sdk_no_wait, read_file_content
 from knack.log import get_logger  # pylint: disable=unused-import
 from knack.util import CLIError
@@ -14,6 +15,9 @@ from azext_synapse.vendored_sdks.azure_mgmt_synapse.models import Workspace, Wor
     BigDataPoolResourceInfo, AutoScaleProperties, AutoPauseProperties, LibraryRequirements, NodeSize, NodeSizeFamily, \
     SqlPool, SqlPoolPatchInfo, Sku
 
+from .constant import DOTNET_CLASS, DOTNET_FILE, SPARK_DOTNET_UDFS_FOLDER_NAME, EXECUTOR_SIZE, \
+    SPARK_DOTNET_ASSEMBLY_SEARCH_PATHS_KEY, SparkBatchLanguage, SynapseSqlCreateMode
+
 from ._client_factory import cf_synapse_client_workspace_factory
 
 
@@ -22,28 +26,46 @@ def list_spark_batch_jobs(cmd, client, workspace_name, spark_pool_name, from_ind
     return client.list(workspace_name, spark_pool_name, from_index, size, detailed)
 
 
-def create_spark_batch_job(cmd, client, workspace_name, spark_pool_name, job_name, args, driver_memory, driver_cores,
-                           executor_memory, executor_cores, num_executors, language="SCALA",
-                           file=None, class_name=None, jars=None, files=None,
-                           archives=None, conf=None,
+def create_spark_batch_job(cmd, client, workspace_name, spark_pool_name, job_name, main_definition_file,
+                           main_class_name, executor_size, executors, language=SparkBatchLanguage.Scala,
+                           command_line_arguments=None,
+                           reference_files=None, archives=None, configuration=None,
                            tags=None, detailed=True):
-    dotnet_file = "local:///usr/hdp/current/spark2-client/jars/microsoft-spark.jar"
-    dotnet_class = "org.apache.spark.deploy.dotnet.DotnetRunner"
+    file = main_definition_file
+    class_name = main_class_name
+    args = command_line_arguments
+    conf = configuration
+    if language.upper() == SparkBatchLanguage.SparkDotNet.value.upper() or \
+            language.upper() == SparkBatchLanguage.CSharp.value.upper():
+        file = DOTNET_FILE
+        class_name = DOTNET_CLASS
 
-    if language.upper() != "DOTNET" and (not file or not class_name):
-        raise CLIError('Scala and Python spark batch job must provide value for parameter file and class_name.'
-                       'If you want to create a DotNet spark batch job please add `--language DOTNET`.')
+        args = [main_definition_file, main_class_name]
+        if command_line_arguments:
+            args = args + command_line_arguments
 
-    if language.upper() == "DOTNET":
-        file = dotnet_file
-        class_name = dotnet_class
+        archives = ["{}#{}".format(main_definition_file, SPARK_DOTNET_UDFS_FOLDER_NAME)] + archives if archives \
+            else ["{}#{}".format(main_definition_file, SPARK_DOTNET_UDFS_FOLDER_NAME)]
+
+        if not conf:
+            conf = {SPARK_DOTNET_ASSEMBLY_SEARCH_PATHS_KEY: './{}'.format(SPARK_DOTNET_UDFS_FOLDER_NAME)}
+        else:
+            conf[SPARK_DOTNET_ASSEMBLY_SEARCH_PATHS_KEY] = './{}'.format(SPARK_DOTNET_UDFS_FOLDER_NAME)
+
+    files = None
+    jars = None
+    if reference_files:
+        files, jars = categorized_files(reference_files)
+    driver_cores = EXECUTOR_SIZE[executor_size]['Cores']
+    driver_memory = EXECUTOR_SIZE[executor_size]['Memory']
+    executor_cores = EXECUTOR_SIZE[executor_size]['Cores']
+    executor_memory = EXECUTOR_SIZE[executor_size]['Memory']
 
     livy_batch_request = ExtendedLivyBatchRequest(
-        tags=tags,
-        name=job_name, file=file, class_name=class_name, args=args, jars=jars, files=files, archives=archives,
-        conf=conf, driver_memory=driver_memory, driver_cores=driver_cores, executor_memory=executor_memory,
-        executor_cores=executor_cores, num_executors=num_executors)
-
+        tags=tags, name=job_name, file=file, class_name=class_name, args=args, jars=jars,
+        files=files, archives=archives, conf=conf, driver_memory=driver_memory, driver_cores=driver_cores,
+        executor_memory=executor_memory, executor_cores=executor_cores, num_executors=executors)
+    print(str(livy_batch_request))
     return client.create(workspace_name, spark_pool_name, livy_batch_request, detailed)
 
 
@@ -60,15 +82,20 @@ def list_spark_session_jobs(cmd, client, workspace_name, spark_pool_name, from_i
     return client.list(workspace_name, spark_pool_name, from_index, size, detailed)
 
 
-def create_spark_session_job(cmd, client, workspace_name, spark_pool_name, driver_memory, driver_cores,
-                             executor_memory, executor_cores, num_executors, job_name=None, file=None, class_name=None,
-                             args=None, jars=None, files=None, archives=None, conf=None,
-                             tags=None, detailed=True):
+def create_spark_session_job(cmd, client, workspace_name, spark_pool_name, job_name, executor_size, executors,
+                             reference_files=None, configuration=None, tags=None, detailed=True):
+    files = None
+    jars = None
+    if reference_files:
+        files, jars = categorized_files(reference_files)
+    driver_cores = EXECUTOR_SIZE[executor_size]['Cores']
+    driver_memory = EXECUTOR_SIZE[executor_size]['Memory']
+    executor_cores = EXECUTOR_SIZE[executor_size]['Cores']
+    executor_memory = EXECUTOR_SIZE[executor_size]['Memory']
     livy_session_request = ExtendedLivySessionRequest(
-        tags=tags,
-        name=job_name, file=file, class_name=class_name, args=args, jars=jars, files=files, archives=archives,
-        conf=conf, driver_memory=driver_memory, driver_cores=driver_cores, executor_memory=executor_memory,
-        executor_cores=executor_cores, num_executors=num_executors)
+        tags=tags, name=job_name, jars=jars, files=files,
+        conf=configuration, driver_memory=driver_memory, driver_cores=driver_cores,
+        executor_memory=executor_memory, executor_cores=executor_cores, num_executors=executors)
     return client.create(workspace_name, spark_pool_name, livy_session_request, detailed)
 
 
@@ -88,8 +115,16 @@ def list_spark_session_statements(cmd, client, workspace_name, spark_pool_name, 
     return client.list_statements(workspace_name, spark_pool_name, session_id)
 
 
-def create_spark_session_statement(cmd, client, workspace_name, spark_pool_name, session_id, code, kind):
-    livy_statement_request = LivyStatementRequestBody(code=code, kind=kind)
+def create_spark_session_statement(cmd, client, workspace_name, spark_pool_name, session_id, language, code=None,
+                                   code_file=None):
+    if code is None and code_file is None:
+        raise CLIError('Please provide a value for parameter code or code_file by using --code or --code-file.')
+
+    if code is not None and code_file is not None:
+        raise CLIError('This command does not support using --code and --code-file at the same time.')
+    if code_file is not None:
+        code = read_file_content(code_file)
+    livy_statement_request = LivyStatementRequestBody(code=code, kind=language)
     return client.create_statement(workspace_name, spark_pool_name, session_id, livy_statement_request)
 
 
@@ -142,8 +177,9 @@ def create_spark_pool(cmd, client, resource_group_name, workspace_name, spark_po
                       node_count=None, min_node_count=None, max_node_count=None,
                       enable_auto_pause=None, delay_in_minutes=None, spark_events_folder="/events",
                       library_requirements_file=None,
-                      default_spark_log_folder="/logs", force=False, tags=None, no_wait=False):
+                      default_spark_log_folder="/logs", tags=None, no_wait=False):
     # get the location of the workspace
+
     workspace_client = cf_synapse_client_workspace_factory(cmd.cli_ctx)
     workspace_object = workspace_client.get(resource_group_name, workspace_name)
     location = workspace_object.location
@@ -164,7 +200,7 @@ def create_spark_pool(cmd, client, resource_group_name, workspace_name, spark_po
         big_data_pool_info.library_requirements = LibraryRequirements(filename=library_requirements_file,
                                                                       content=library_requirements_content)
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, workspace_name, spark_pool_name,
-                       big_data_pool_info, force)
+                       big_data_pool_info)
 
 
 def update_spark_pool(cmd, client, resource_group_name, workspace_name, spark_pool_name,
@@ -173,9 +209,6 @@ def update_spark_pool(cmd, client, resource_group_name, workspace_name, spark_po
                       enable_auto_pause=None, delay_in_minutes=None,
                       library_requirements_file=None, tags=None, force=False, no_wait=False):
     existing_spark_pool = client.get(resource_group_name, workspace_name, spark_pool_name)
-
-    if not existing_spark_pool:
-        raise CLIError("Failed to discover the spark pool {}".format(spark_pool_name))
 
     if node_size:
         existing_spark_pool.node_size = node_size
@@ -195,7 +228,7 @@ def update_spark_pool(cmd, client, resource_group_name, workspace_name, spark_po
         if min_node_count:
             existing_spark_pool.auto_scale.min_node_count = min_node_count
         if max_node_count:
-            existing_spark_pool.auto_scale.min_node_count = max_node_count
+            existing_spark_pool.auto_scale.max_node_count = max_node_count
     else:
         existing_spark_pool.auto_scale = AutoScaleProperties(enabled=enable_auto_scale, min_node_count=min_node_count,
                                                              max_node_count=max_node_count)
@@ -228,9 +261,8 @@ def create_sql_pool(cmd, client, resource_group_name, workspace_name, sql_pool_n
     sku_tier = None
     sku = Sku(tier=sku_tier, name=sku_name)
 
-    create_mode = 'Default'
-
-    sql_pool_info = SqlPool(sku=sku, location=location, max_size_bytes=max_size_bytes, create_mode=create_mode,
+    sql_pool_info = SqlPool(sku=sku, location=location, max_size_bytes=max_size_bytes,
+                            create_mode=SynapseSqlCreateMode.Default,
                             tags=tags)
 
     return sdk_no_wait(no_wait, client.create, resource_group_name, workspace_name, sql_pool_name, sql_pool_info)

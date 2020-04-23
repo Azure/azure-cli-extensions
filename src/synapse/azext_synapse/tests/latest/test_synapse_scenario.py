@@ -175,26 +175,22 @@ class SynapseScenarioTests(ScenarioTest):
     def test_spark_batch(self, resource_group):
         self.kwargs.update({
             'spark-pool': 'testsparkpool',
-            'workspace': 'testsynapseworkspace1234',
+            'workspace': 'testsynapseworkspace',
             'job': 'WordCount_Java',
-            'file': 'abfss://testfilesystem@adlsgen2account.dfs.core.windows.net/samples/java/wordcount/wordcount.jar',
-            'class-name': 'WordCount',
-            'args': [
-                'abfss://testfilesystem@adlsgen2account.dfs.core.windows.net/samples/java/wordcount/shakespeare.txt',
-                'abfss://testfilesystem@adlsgen2account.dfs.core.windows.net/samples/java/wordcount/result/'],
-            'driver-memory': '4g',
-            'driver-cores': 4,
-            'executor-memory': '4g',
-            'executor-cores': 4,
-            'num-executors': 2
+            'main-definition-file': 'abfss://testfilesystem@adlsgen2account.dfs.core.windows.net/samples/java/wordcount/wordcount.jar',
+            'main-class-name': 'WordCount',
+            'command-line-arguments': [
+                'abfss://testfilesystem@newzzyadlsgen2.dfs.core.windows.net/samples/java/wordcount/shakespeare.txt',
+                'abfss://testfilesystem@newzzyadlsgen2.dfs.core.windows.net/samples/java/wordcount/result/'],
+            'executors': 2,
+            'executor-size': 'Medium'
         })
 
         # create a spark batch job
         batch_job = self.cmd('az synapse spark batch create --name {job} --workspace-name {workspace} '
-                             '--spark-pool-name {spark-pool} --file {file} --class-name {class-name} --args {args} '
-                             '--driver-memory {driver-memory} --driver-cores {driver-cores} '
-                             '--executor-memory {executor-memory} --executor-cores {executor-cores} '
-                             '--num-executors {num-executors}',
+                             '--spark-pool-name {spark-pool} --main-definition-file {main-definition-file} '
+                             '--main-class-name {main-class-name} --command-line-arguments {command-line-arguments} '
+                             '--executors {executors} --executor-size {executor-size}',
                              checks=[self.check('name', self.kwargs['job']),
                                      self.check('jobType', 'SparkBatch'),
                                      self.check('state', 'not_started')
@@ -228,22 +224,18 @@ class SynapseScenarioTests(ScenarioTest):
     def test_spark_session_and_statements(self, resource_group):
         self.kwargs.update({
             'spark-pool': 'testsparkpool',
-            'workspace': 'testsynapseworkspace1234',
-            'job': 'session_job',
-            'driver-memory': '4g',
-            'driver-cores': 4,
-            'executor-memory': '4g',
-            'executor-cores': 4,
-            'num-executors': 2,
+            'workspace': 'testsynapseworkspace',
+            'job': self.create_random_name(prefix='clisession', length=14),
+            'executor-size': 'Small',
+            'executors': 2,
             'code': "\"import time\ntime.sleep(10)\nprint('hello from cli')\"",
-            'kind': 'pyspark'
+            'language': 'pyspark'
         })
 
         # create a spark session
         create_result = self.cmd('az synapse spark session create --name {job} --workspace-name {workspace} '
-                                 '--spark-pool-name {spark-pool} --driver-memory {driver-memory} --driver-cores {driver-cores} '
-                                 '--executor-memory {executor-memory} --executor-cores {executor-cores} '
-                                 '--num-executors {num-executors}',
+                                 '--spark-pool-name {spark-pool} --executor-size {executor-size} '
+                                 '--executors {executors}',
                                  checks=[
                                      self.check('jobType', 'SparkSession'),
                                      self.check('name', self.kwargs['job']),
@@ -278,7 +270,7 @@ class SynapseScenarioTests(ScenarioTest):
         # create a spark session statement job
         statement = self.cmd('az synapse spark session-statement create --session-id {session-id} '
                              '--workspace-name {workspace} --spark-pool-name {spark-pool} '
-                             '--code {code} --kind {kind}',
+                             '--code {code} --language {language}',
                              checks=[
                                  self.check('state', 'waiting')
                              ]).get_output_in_json()

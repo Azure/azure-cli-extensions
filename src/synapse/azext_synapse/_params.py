@@ -3,8 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
+from azext_synapse.constant import SparkBatchLanguage, SparkStatementLanguage
 from azure.cli.core.commands.parameters import name_type, tags_type, get_three_state_flag, get_enum_type, \
     resource_group_name_type
+from azure.cli.core.util import get_json_object
 from ._validators import validate_storage_account
 
 
@@ -19,18 +21,10 @@ def load_arguments(self, _):
     for scope in ['synapse spark batch', 'synapse spark session']:
         with self.argument_context(scope + ' create') as c:
             c.argument('job_name', arg_type=name_type, help='The spark batch or session job name.')
-            c.argument('file', help='The URI of file.')
-            c.argument('class_name', help='The class name.')
-            c.argument('args', nargs='+', help='The arguments of the job.')
-            c.argument('jars', nargs='+', help='The array of jar files.')
-            c.argument('files', nargs='+', help='The array of files URI.')
-            c.argument('archives', nargs='+', help='The array of archives.')
-            c.argument('conf', help='The configuration of spark batch job.')
-            c.argument('driver_memory', help='The memory of driver.')
-            c.argument('driver_cores', help='The number of cores in driver.')
-            c.argument('executor_memory', help='The memory of executor.')
-            c.argument('executor_cores', help='The number of cores in each executor.')
-            c.argument('num_executors', help='The number of executors.')
+            c.argument('reference_files', nargs='+', help='The array of files URI.')
+            c.argument('configuration', type=get_json_object, help='The configuration of spark batch job.')
+            c.argument('executors', help='The number of executors.')
+            c.argument('executor_size', arg_type=get_enum_type(['Small', 'Medium']), help='The executor size')
             c.argument('tags', arg_type=tags_type)
             c.argument('detailed', action='store_true',
                        help='Optional query parameter specifying whether detailed response is returned beyond plain livy.')
@@ -43,7 +37,13 @@ def load_arguments(self, _):
                        help='The size of the returned list.By default it is 20 and that is the maximum.')
 
     with self.argument_context('synapse spark batch create') as c:
-        c.argument('language', arg_type=get_enum_type(['SCALA', 'PYTHON', 'DOTNET'], default='SCALA'),
+        c.argument('main_definition_file', help='The URI of file.')
+        c.argument('main_class_name', help='The class name.')
+        c.argument('command_line_arguments', nargs='+', help='The arguments of the job.')
+        c.argument('archives', nargs='+', help='The array of archives.')
+
+    with self.argument_context('synapse spark batch create') as c:
+        c.argument('language', arg_type=get_enum_type(SparkBatchLanguage, default=SparkBatchLanguage.Scala),
                    help='The spark batch job language.')
 
     for scope in ['show', 'cancel']:
@@ -74,7 +74,8 @@ def load_arguments(self, _):
 
     with self.argument_context('synapse spark session-statement create') as c:
         c.argument('code', help='The code of spark statement.')
-        c.argument('kind', help='The kind of spark statement.')
+        c.argument('code_file', help='The file that contains the code.')
+        c.argument('language', arg_type=get_enum_type(SparkStatementLanguage), help='The language of spark statement.')
 
     # synapse workspace
     for scope in ['synapse workspace', 'synapse spark pool', 'synapse sql pool', 'synapse workspace firewall-rule']:
@@ -142,7 +143,6 @@ def load_arguments(self, _):
         # Component Version
         c.argument('spark_version', arg_group='Component Version', help='The supported spark version is 2.4 now.')
 
-        c.argument('force', arg_type=get_three_state_flag(), help='The flag of force operation.')
         c.argument('tags', arg_type=tags_type)
 
     with self.argument_context('synapse spark pool update') as c:
