@@ -54,6 +54,10 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         apps = self.cmd('az monitor app-insights component show -g {resource_group}').get_output_in_json()
         assert len(apps) == 2
 
+        self.cmd('az monitor app-insights component show -g {resource_group} --app {name_b}', checks=[
+            self.check('name', '{name_b}')
+        ])
+
         self.cmd('az monitor app-insights component delete --app {name_a} -g {resource_group}', checks=[self.is_empty()])
         return
 
