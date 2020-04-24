@@ -82,3 +82,7 @@ def load_arguments(self, _):
         c.argument('description', help='An description of the access policy.')
         c.argument('roles', arg_type=get_enum_type(AccessPolicyRole), nargs='+')
     # endregion
+
+    for item in ['event-source', 'reference-data-set', 'access-policy']:
+        with self.argument_context('timeseriesinsights {} list'.format(item)) as c:
+            c.argument('environment_name', arg_type=environment_name_type, id_part=None)
