@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=line-too-long
+# pylint: disable=line-too-long, protected-access
 
 from knack.util import CLIError
 from knack.log import get_logger
@@ -116,7 +116,7 @@ def show_components(cmd, client, application=None, resource_group_name=None):
                                                                   api_version='2020-02-02-preview').components
             try:
                 return latest_client.get(resource_group_name, application)
-            except CloudError as ex:
+            except CloudError:
                 message = " Please use `az feature register " \
                           "--name AIWorkspacePreview --namespace microsoft.insights` to register the feature"
                 logger.warning(message)
