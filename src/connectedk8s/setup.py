@@ -34,11 +34,8 @@ CLASSIFIERS = [
 
 # TODO: Add any additional SDK dependencies here
 DEPENDENCIES = [
-    'azure-cli-core',
     'kubernetes',
-    'knack==0.7.0rc4',
-    'pycryptodome',
-    'websocket-client~=0.56.0'
+    'pycryptodome'
 ]
 
 with open('README.md', 'r', encoding='utf-8') as f:

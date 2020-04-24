@@ -197,7 +197,10 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
     pod_dict = get_pod_dict(api_instance)
 
     # Checking azure-arc pod statuses
-    check_pod_status(pod_dict)
+    try:
+        check_pod_status(pod_dict)
+    except Exception as e:  # pylint: disable=broad-except
+        logger.warning("Failed to check arc agent pods statuses: %s", e)
 
     return put_cc_response
 
@@ -401,7 +404,8 @@ def list_connectedk8s(cmd, client, resource_group_name=None):
     return client.list_by_resource_group(resource_group_name)
 
 
-def delete_connectedk8s(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None):
+def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
+                        kube_config=None, kube_context=None, no_wait=False):
     print("Ensure that you have the latest helm version installed before proceeding to avoid unexpected errors.")
     print("This operation might take a while ...\n")
 
@@ -433,7 +437,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name, kube_con
     # Check Release Existance
     release_namespace = get_release_namespace(kube_config, kube_context)
     if release_namespace is None:
-        delete_cc_resource(client, resource_group_name, cluster_name)
+        delete_cc_resource(client, resource_group_name, cluster_name, no_wait)
         return
 
     # Loading config map
@@ -445,7 +449,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name, kube_con
 
     if (configmap.data["AZURE_RESOURCE_GROUP"].lower() == resource_group_name.lower() and
             configmap.data["AZURE_RESOURCE_NAME"].lower() == cluster_name.lower()):
-        delete_cc_resource(client, resource_group_name, cluster_name)
+        delete_cc_resource(client, resource_group_name, cluster_name, no_wait)
     else:
         raise CLIError("The current context in the kubeconfig file does not correspond " +
                        "to the connected cluster resource specified. Agents installed on this cluster correspond " +
@@ -472,9 +476,11 @@ def get_release_namespace(kube_config, kube_context):
     return None
 
 
-def delete_cc_resource(client, resource_group_name, cluster_name):
+def delete_cc_resource(client, resource_group_name, cluster_name, no_wait):
     try:
-        client.delete(resource_group_name, cluster_name)
+        sdk_no_wait(no_wait, client.delete,
+                    resource_group_name=resource_group_name,
+                    cluster_name=cluster_name)
     except CloudError as ex:
         raise CLIError(ex)
 
