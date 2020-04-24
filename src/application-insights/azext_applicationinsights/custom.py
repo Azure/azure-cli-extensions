@@ -8,8 +8,8 @@
 from knack.util import CLIError
 from knack.log import get_logger
 from azext_applicationinsights.vendored_sdks.applicationinsights.models import ErrorResponseException
-from .util import get_id_from_azure_resource, get_query_targets, get_timespan, get_linked_properties
 from msrestazure.azure_exceptions import CloudError
+from .util import get_id_from_azure_resource, get_query_targets, get_timespan, get_linked_properties
 
 logger = get_logger(__name__)
 
