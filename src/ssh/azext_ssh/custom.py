@@ -5,9 +5,10 @@
 
 import functools
 import os
+import hashlib
+import json
 
 from knack import util
-from azure.cli.core.commands import ssh_credential_factory
 
 from . import ip_utils
 from . import rsa_parser
@@ -33,11 +34,35 @@ def _do_ssh_op(cmd, resource_group, vm_name, ssh_ip, public_key_file, private_ke
     if not ssh_ip:
         raise util.CLIError(f"VM '{vm_name}' does not have a public IP address to SSH to")
 
-    modulus, exponent = _get_modulus_exponent(public_key_file)
-    credentials = ssh_credential_factory.get_ssh_credentials(cmd.cli_ctx, modulus, exponent)
+    scopes = ["https://pas.windows.net/CheckMyAccess/Linux/user_impersonation"]
+    data = _prepare_jwk_data(public_key_file)
+    from azure.cli.core._profile import Profile
+    profile = Profile(cli_ctx=cmd.cli_ctx)
+    username, certificate = profile.get_msal_token(scopes, data)
 
-    cert_file = _write_cert_file(public_key_file, credentials.certificate)
-    op_call(ssh_ip, credentials.username, cert_file, private_key_file)
+    cert_file = _write_cert_file(public_key_file, username, certificate)
+    op_call(ssh_ip, username, cert_file, private_key_file)
+
+
+def _prepare_jwk_data(public_key_file):
+    modulus, exponent = _get_modulus_exponent(public_key_file)
+    key_hash = hashlib.sha256()
+    key_hash.update(modulus.encode('utf-8'))
+    key_hash.update(exponent.encode('utf-8'))
+    key_id = key_hash.hexdigest()
+    jwk = {
+        "kty": "RSA",
+        "n": modulus,
+        "e": exponent,
+        "kid": key_id
+    }
+    json_jwk = json.dumps(jwk)
+    data = {
+        "token_type": "ssh-cert",
+        "req_cnf": json_jwk,
+        "key_id": key_id
+    }
+    return data
 
 
 def _assert_args(resource_group, vm_name, ssh_ip):
@@ -64,10 +89,10 @@ def _check_public_private_files(public_key_file, private_key_file):
     return public_key_file, private_key_file
 
 
-def _write_cert_file(public_key_file, certificate_contents):
+def _write_cert_file(public_key_file, username, certificate_contents):
     cert_file = os.path.join(*os.path.split(public_key_file)[:-1], "id_rsa-cert.pub")
     with open(cert_file, 'w') as f:
-        f.write(certificate_contents)
+        f.write(f"{username} {certificate_contents}")
 
     return cert_file
 
