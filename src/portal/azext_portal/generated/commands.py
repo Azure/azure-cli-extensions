@@ -8,7 +8,7 @@ from azure.cli.core.commands import CliCommandType
 
 def load_command_table(self, _):
 
-    with self.command_group('stream-analytics', is_experimental=True):
+    with self.command_group('portal', is_experimental=True):
         pass
 
     from azext_portal.generated._client_factory import cf_dashboard
