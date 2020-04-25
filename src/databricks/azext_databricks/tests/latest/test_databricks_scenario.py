@@ -18,10 +18,9 @@ class DatabricksClientScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_databricks')
     def test_databricks(self, resource_group):
-
+        subscription_id = self.get_subscription_id()
         self.kwargs.update({
             'workspace_name': 'my-test-workspace',
-            'subscription': '00000000-0000-0000-0000-000000000000',
             'custom_workspace_name': 'my-custom-workspace',
             'managed_resource_group': 'custom-managed-rg'
         })
@@ -34,7 +33,7 @@ class DatabricksClientScenarioTest(ScenarioTest):
                  checks=[self.check('name', '{workspace_name}'),
                          self.check('sku.name', 'standard')])
 
-        managed_resource_group_id = '/subscriptions/{}/resourceGroups/{}'.format(self.kwargs.get('subscription', ''), self.kwargs.get('managed_resource_group', ''))
+        managed_resource_group_id = '/subscriptions/{}/resourceGroups/{}'.format(subscription_id, self.kwargs.get('managed_resource_group', ''))
         self.cmd('az databricks workspace create '
                  '--resource-group {rg} '
                  '--name {custom_workspace_name} '
@@ -56,7 +55,7 @@ class DatabricksClientScenarioTest(ScenarioTest):
                  checks=[self.check('name', '{workspace_name}')])
 
         workspace_resource_id = resource_id(
-            subscription=self.kwargs.get('subscription', ''),
+            subscription=subscription_id,
             resource_group=resource_group,
             namespace='Microsoft.Databricks',
             type='workspaces',

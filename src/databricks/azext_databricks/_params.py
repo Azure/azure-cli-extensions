@@ -13,7 +13,7 @@ from azure.cli.core.commands.parameters import (
 )
 
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
-from azext_databricks.action import AddStorageAccountIdentity
+from ._validators import validate_encryption_values
 
 
 def load_arguments(self, _):
@@ -31,8 +31,8 @@ def load_arguments(self, _):
     with self.argument_context('databricks workspace update') as c:
         c.argument('workspace_name', options_list=['--name', '-n'], id_part='name', help='The name of the workspace.')
         c.argument('tags', tags_type)
-        c.extra('assign_identity', action=AddStorageAccountIdentity, nargs='+', help='Enable the Managed Identity for managed storage account.')
-        c.argument('encryption_key_source', options_list=['--key-source'], arg_group='Encryption', help='The encryption keySource (provider). Possible values (case-insensitive):  Default, Microsoft.Keyvault')
+        c.extra('assign_identity', action='store_true', help='Enable the Managed Identity for managed storage account.')
+        c.argument('encryption_key_source', options_list=['--key-source'], arg_group='Encryption', arg_type=get_enum_type(['Default', 'Microsoft.Keyvault']), validator=validate_encryption_values, help='The encryption key source (provider).')
         c.argument('encryption_key_name', options_list=['--key-name'], arg_group='Encryption', help='The name of KeyVault key.')
         c.argument('encryption_key_version', options_list=['--key-version'], arg_group='Encryption', help='The version of KeyVault key.')
         c.argument('encryption_key_vault', options_list=['--key-vault'], arg_group='Encryption', help='The Uri of KeyVault.')
