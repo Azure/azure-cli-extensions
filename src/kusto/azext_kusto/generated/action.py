@@ -13,12 +13,10 @@ import argparse
 from knack.util import CLIError
 from collections import defaultdict
 
-
 class AddSku(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
         namespace.sku = action
-
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -40,12 +38,10 @@ class AddSku(argparse.Action):
                 d['tier'] = v[0]
         return d
 
-
 class AddTrustedExternalTenants(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
         super(AddTrustedExternalTenants, self).__call__(parser, namespace, action, option_string)
-
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -63,12 +59,10 @@ class AddTrustedExternalTenants(argparse._AppendAction):
                 d['value'] = v[0]
         return d
 
-
 class AddOptimizedAutoscale(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
         namespace.optimized_autoscale = action
-
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -91,7 +85,6 @@ class AddOptimizedAutoscale(argparse.Action):
             elif kl == 'maximum':
                 d['maximum'] = v[0]
         return d
-
 
 class AddVirtualNetworkConfiguration(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
@@ -119,12 +112,10 @@ class AddVirtualNetworkConfiguration(argparse.Action):
                 d['data_management_public_ip_id'] = v[0]
         return d
 
-
 class AddKeyVaultProperties(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
         namespace.key_vault_properties = action
-
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -146,12 +137,10 @@ class AddKeyVaultProperties(argparse.Action):
                 d['key_vault_uri'] = v[0]
         return d
 
-
 class AddLanguageExtensionsValue(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
         super(AddLanguageExtensionsValue, self).__call__(parser, namespace, action, option_string)
-
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -169,12 +158,10 @@ class AddLanguageExtensionsValue(argparse._AppendAction):
                 d['language_extension_name'] = v[0]
         return d
 
-
 class AddReadWriteDatabase(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
         namespace.read_write_database = action
-
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -197,12 +184,10 @@ class AddReadWriteDatabase(argparse.Action):
         d['kind'] = 'ReadWrite'
         return d
 
-
 class AddReadOnlyFollowingDatabase(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
         namespace.read_only_following_database = action
-
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -223,12 +208,10 @@ class AddReadOnlyFollowingDatabase(argparse.Action):
         d['kind'] = 'ReadOnlyFollowing'
         return d
 
-
 class AddValue(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
         super(AddValue, self).__call__(parser, namespace, action, option_string)
-
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
