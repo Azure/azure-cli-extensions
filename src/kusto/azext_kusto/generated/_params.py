@@ -72,7 +72,10 @@ def load_arguments(self, _):
                    'e extensions. Expect value: language-extension-name=xx.')
         c.argument('identity_type', arg_type=get_enum_type(['None', 'SystemAssigned']), help='The identity type.')
         c.argument('identity_user_assigned_identities', arg_type=CLIArgumentType(options_list=['--identity-user-assigne'
-                                                                                               'd-identities']))
+                   'd-identities'], help='The list of user identities associated with the Kusto cluster. The user ident'
+                   'ity dictionary key references will be ARM resource ids in the form: \'/subscriptions/{subscriptionI'
+                   'd}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{i'
+                   'dentityName}\'. Expected value: json-string/@json-file.'))
 
     with self.argument_context('kusto cluster update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -102,11 +105,11 @@ def load_arguments(self, _):
         c.argument('language_extensions_value', action=AddLanguageExtensionsValue, nargs='+', help='The list of languag'
                    'e extensions. Expect value: language-extension-name=xx.')
         c.argument('identity_type', arg_type=get_enum_type(['None', 'SystemAssigned']), help='The identity type.')
-        c.argument('identity_user_assigned_identities', arg_type=CLIArgumentType(options_list=[
-            '--identity-user-assigned-identities'], help='The list of user identities associated with the Kusto'
-            'cluster.The user identity dictionary key references will be ARM resource ids in the form:\'/subscr'
-            'iptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/us'
-            'erAssignedIdentities/{identityName/}\'. Expected value: json-string/@json-file.'))
+        c.argument('identity_user_assigned_identities', arg_type=CLIArgumentType(options_list=['--identity-user-assigne'
+                   'd-identities'], help='The list of user identities associated with the Kusto cluster. The user ident'
+                   'ity dictionary key references will be ARM resource ids in the form: \'/subscriptions/{subscriptionI'
+                   'd}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{i'
+                   'dentityName}\'. Expected value: json-string/@json-file.'))
 
     with self.argument_context('kusto cluster delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -307,7 +310,8 @@ def load_arguments(self, _):
                    ' follow all current and future databases.')
         c.argument('cluster_resource_id', help='The resource id of the cluster where the databases you would like to at'
                    'tach reside.')
-        c.argument('default_principals_modification_kind', arg_type=get_enum_type(['Union', 'Replace', 'None']), help='The default principals modification kind')
+        c.argument('default_principals_modification_kind', arg_type=get_enum_type(['Union', 'Replace', 'None']), help=
+                   'The default principals modification kind')
 
     with self.argument_context('kusto attached-database-configuration update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -319,7 +323,8 @@ def load_arguments(self, _):
                    ' follow all current and future databases.')
         c.argument('cluster_resource_id', help='The resource id of the cluster where the databases you would like to at'
                    'tach reside.')
-        c.argument('default_principals_modification_kind', arg_type=get_enum_type(['Union', 'Replace', 'None']), help='The default principals modification kind')
+        c.argument('default_principals_modification_kind', arg_type=get_enum_type(['Union', 'Replace', 'None']), help=
+                   'The default principals modification kind')
 
     with self.argument_context('kusto attached-database-configuration delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -352,9 +357,9 @@ def load_arguments(self, _):
                    'n be added to each message.')
         c.argument('mapping_rule_name', help='The mapping rule to be used to ingest the data. Optionally the mapping in'
                    'formation can be added to each message.')
-        c.argument('data_format', arg_type=get_enum_type(
-            ['MULTIJSON', 'JSON', 'CSV', 'TSV', 'SCSV', 'SOHSV', 'PSV', 'TXT', 'RAW',
-             'SINGLEJSON', 'AVRO', 'TSVE', 'PARQUET', 'ORC']), help='The data format of the message. Optionally the data format can be added to each message.')
+        c.argument('data_format', arg_type=get_enum_type(['MULTIJSON', 'JSON', 'CSV', 'TSV', 'SCSV', 'SOHSV', 'PSV', 'T'
+                   'XT', 'RAW', 'SINGLEJSON', 'AVRO', 'TSVE', 'PARQUET', 'ORC']), help='The data format of the message.'
+                   ' Optionally the data format can be added to each message.')
 
     with self.argument_context('kusto data-connection event-hub create') as c:
         c.argument('resource_group_name', resource_group_name_type)
