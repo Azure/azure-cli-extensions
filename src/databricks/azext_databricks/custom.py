@@ -63,12 +63,14 @@ def update_databricks_workspace(cmd, client,  # pylint: disable=too-many-branche
         body['tags'] = tags
     if assign_identity:
         _set_parameter_value(parameters, 'prepare_encryption', True)
-    _set_parameter_value(parameters, 'encryption_key_source', encryption_key_source)
-    _set_parameter_value(parameters, 'encryption_key_name', encryption_key_name)
-    _set_parameter_value(parameters, 'encryption_key_version', encryption_key_version)
-    _set_parameter_value(parameters, 'encryption_key_vault', encryption_key_vault)
-    print(tags)
-    print(body)
+    if encryption_key_source is not None:
+        encryption = {}
+        _set_parameter_value(encryption, 'key_source', encryption_key_source)
+        _set_parameter_value(encryption, 'key_name', encryption_key_name)
+        _set_parameter_value(encryption, 'key_version', encryption_key_version)
+        _set_parameter_value(encryption, 'key_vault_uri', encryption_key_vault)
+        _set_parameter_value(parameters, 'encryption', encryption)
+
     return sdk_no_wait(no_wait, client.create_or_update,
                        resource_group_name=resource_group_name,
                        workspace_name=workspace_name,
