@@ -314,7 +314,7 @@ class KustoManagementClientScenarioTest(ScenarioTest):
             'AttachedDatabaseConfigurations_3': 'AttachedDatabaseConfigurations_3',
             'leader4': 'leader4',
             'Clusters_2': 'testcli2',
-            'Clusters_3': 'clitestcluster',
+            'Clusters_3': 'clitestcluster1',
             'Clusters_4': 'Clusters_4',
             'attachedDatabaseConfigurations_1': 'attachedDatabaseConfigurations2',
             'AttachedDatabaseConfigurations_2': 'AttachedDatabaseConfigurations_2',
