@@ -10,38 +10,6 @@ from azure.cli.core.util import get_file_json, shell_safe_json_parse
 from .._client_factory import storage_client_factory
 
 
-# pylint: disable=too-many-locals
-def create_storage_account(cmd, resource_group_name, account_name, sku=None, location=None, kind=None,
-                           tags=None, custom_domain=None, encryption_services=None, access_tier=None, https_only=None,
-                           hierarchical_namespace=None, bypass=None, default_action=None, assign_identity=False):
-    StorageAccountCreateParameters, Kind, Sku, CustomDomain, AccessTier, Identity, Encryption, NetworkRuleSet = \
-        cmd.get_models('StorageAccountCreateParameters', 'Kind', 'Sku', 'CustomDomain', 'AccessTier', 'Identity',
-                       'Encryption', 'NetworkRuleSet')
-    scf = storage_client_factory(cmd.cli_ctx)
-    params = StorageAccountCreateParameters(sku=Sku(name=sku), kind=Kind(kind), location=location, tags=tags)
-    if custom_domain:
-        params.custom_domain = CustomDomain(name=custom_domain, use_sub_domain_name=None)
-    if encryption_services:
-        params.encryption = Encryption(services=encryption_services)
-    if access_tier:
-        params.access_tier = AccessTier(access_tier)
-    if assign_identity:
-        params.identity = Identity()
-    if https_only:
-        params.enable_https_traffic_only = https_only
-    if hierarchical_namespace:
-        params.is_hns_enabled = hierarchical_namespace
-
-    if NetworkRuleSet and (bypass or default_action):
-        if bypass and not default_action:
-            from knack.util import CLIError
-            raise CLIError('incorrect usage: --default-action ACTION [--bypass SERVICE ...]')
-        params.network_rule_set = NetworkRuleSet(bypass=bypass, default_action=default_action, ip_rules=None,
-                                                 virtual_network_rules=None)
-
-    return scf.storage_accounts.create(resource_group_name, account_name, params)
-
-
 def list_storage_accounts(cmd, resource_group_name=None):
     scf = storage_client_factory(cmd.cli_ctx)
     if resource_group_name:

@@ -3,6 +3,12 @@
  Release History
 ===============
 
+0.2.11 (2020-04-26)
+++++++++++++++++
+* Because the command `storage account create` had been migrated to azure-cli repository, \
+  and its parameters are not synchronized with the commands in azure-cli repository, \
+  the @StorageAccountPreparer will make an error in the test, so remove it.
+
 0.2.10 (2019-11-25)
 ++++++++++++++++
 * Fix bugs for ADLS Gen2
