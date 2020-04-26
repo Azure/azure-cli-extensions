@@ -1136,8 +1136,6 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
         raise CLIError('There is more than one node pool in the cluster. Please use "az aks nodepool" command '
                        'to update per node pool auto scaler settings')
 
-    node_count = instance.agent_pool_profiles[0].count
-
     if min_count is None or max_count is None:
         if enable_cluster_autoscaler or update_cluster_autoscaler:
             raise CLIError('Please specify both min-count and max-count when --enable-cluster-autoscaler or '
@@ -2181,7 +2179,6 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
                        '"--tags" or "--mode"')
 
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
-    node_count = instance.count
 
     if min_count is None or max_count is None:
         if enable_cluster_autoscaler or update_cluster_autoscaler:
