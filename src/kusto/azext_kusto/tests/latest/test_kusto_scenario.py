@@ -19,7 +19,6 @@ from azure.cli.testsdk import ResourceGroupPreparer
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
-
 @try_manual
 def setup(test, rg):
     pass
@@ -55,14 +54,12 @@ def step_kustoclusterscreateorupdate(test, rg):
              '--cluster-name "{Clusters_3}" '
              '--resource-group "{rg}"',
              checks=[])
-
-
+    
 # EXAMPLE: kustoclusterschecknameavailability
 @try_manual
 def step_kustoclusterschecknameavailability(test, rg):
     # EXAMPLE NOT FOUND!
     pass
-
 
 # EXAMPLE: kustoclustersget
 @try_manual
@@ -72,13 +69,11 @@ def step_kustoclustersget(test, rg):
              '--resource-group "{rg}"',
              checks=[])
 
-
 # EXAMPLE: kustoclusterslist
 @try_manual
 def step_kustoclusterslist(test, rg):
     test.cmd('az kusto cluster list',
              checks=[])
-
 
 # EXAMPLE: kustoclusterslistbyresourcegroup
 @try_manual
@@ -86,7 +81,6 @@ def step_kustoclusterslistbyresourcegroup(test, rg):
     test.cmd('az kusto cluster list '
              '--resource-group "{rg}"',
              checks=[])
-
 
 # EXAMPLE: kustoclustersstop
 @try_manual
@@ -96,7 +90,6 @@ def step_kustoclustersstop(test, rg):
              '--resource-group "{rg}"',
              checks=[])
 
-
 # EXAMPLE: kustoclustersstart
 @try_manual
 def step_kustoclustersstart(test, rg):
@@ -104,7 +97,6 @@ def step_kustoclustersstart(test, rg):
              '--cluster-name "{Clusters_3}" '
              '--resource-group "{rg}"',
              checks=[])
-
 
 # EXAMPLE: kustoclusterslistresourceskus
 @try_manual
@@ -114,13 +106,11 @@ def step_kustoclusterslistresourceskus(test, rg):
              '--resource-group "{rg}"',
              checks=[])
 
-
 # EXAMPLE: kustoclusterslistskus
 @try_manual
 def step_kustoclusterslistskus(test, rg):
     test.cmd('az kusto cluster list-sku',
              checks=[])
-
 
 # EXAMPLE: kustodatabasescreateorupdate
 @try_manual
@@ -132,13 +122,11 @@ def step_kustodatabasescreateorupdate(test, rg):
              '--resource-group "{rg}"',
              checks=[])
 
-
 # EXAMPLE: kustodatabasechecknameavailability
 @try_manual
 def step_kustodatabasechecknameavailability(test, rg):
     # EXAMPLE NOT FOUND!
     pass
-
 
 # EXAMPLE: kustodatabaseslistbycluster
 @try_manual
@@ -147,7 +135,6 @@ def step_kustodatabaseslistbycluster(test, rg):
              '--cluster-name "{Clusters_3}" '
              '--resource-group "{rg}"',
              checks=[])
-
 
 # EXAMPLE: kustodatabasesget
 @try_manual
@@ -158,7 +145,6 @@ def step_kustodatabasesget(test, rg):
              '--resource-group "{rg}"',
              checks=[])
 
-
 # EXAMPLE: kustodatabasesupdate
 @try_manual
 def step_kustodatabasesupdate(test, rg):
@@ -168,7 +154,6 @@ def step_kustodatabasesupdate(test, rg):
              '--read-write-database soft-delete-period="P1D" '
              '--resource-group "{rg}"',
              checks=[])
-
 
 # EXAMPLE: kustodatabaseprincipalassignmentscreateorupdate
 @try_manual
@@ -190,7 +175,6 @@ def step_kustodatabaseprincipalassignmentscreateorupdate(test, rg):
              '--resource-group "{rg}"',
              checks=[])
 
-
 # EXAMPLE: kustodatabaselistprincipals
 @try_manual
 def step_kustodatabaselistprincipals(test, rg):
@@ -199,7 +183,6 @@ def step_kustodatabaselistprincipals(test, rg):
              '--database-name "Kustodatabase8" '
              '--resource-group "{rg}"',
              checks=[])
-
 
 # EXAMPLE: kustodatabaseprincipalassignmentsget
 @try_manual
@@ -211,7 +194,6 @@ def step_kustodatabaseprincipalassignmentsget(test, rg):
              '--resource-group "{rg}"',
              checks=[])
 
-
 # EXAMPLE: kustodatabaseprincipalassignmentsdelete
 @try_manual
 def step_kustodatabaseprincipalassignmentsdelete(test, rg):
@@ -221,7 +203,6 @@ def step_kustodatabaseprincipalassignmentsdelete(test, rg):
              '--principal-assignment-name "kustoprincipal1" '
              '--resource-group "{rg}"',
              checks=[])
-
 
 # EXAMPLE: kustoclusterprincipalassignmentscreateorupdate
 @try_manual
@@ -241,7 +222,6 @@ def step_kustoclusterprincipalassignmentscreateorupdate(test, rg):
              '--resource-group "{rg}"',
              checks=[])
 
-
 # EXAMPLE: kustoclusterprincipalassignmentsget
 @try_manual
 def step_kustoclusterprincipalassignmentsget(test, rg):
@@ -250,7 +230,6 @@ def step_kustoclusterprincipalassignmentsget(test, rg):
              '--principal-assignment-name "kustoprincipal1" '
              '--resource-group "{rg}"',
              checks=[])
-
 
 # EXAMPLE: attacheddatabaseconfigurationscreateorupdate
 @try_manual
@@ -271,7 +250,6 @@ def step_attacheddatabaseconfigurationscreateorupdate(test, rg):
              '--resource-group "{rg}"',
              checks=[])
 
-
 # EXAMPLE: attacheddatabaseconfigurationsget
 @try_manual
 def step_attacheddatabaseconfigurationsget(test, rg):
@@ -281,7 +259,6 @@ def step_attacheddatabaseconfigurationsget(test, rg):
              '--resource-group "{rg}"',
              checks=[])
 
-
 # EXAMPLE: kustoattacheddatabaseconfigurationslistbycluster
 @try_manual
 def step_kustoattacheddatabaseconfigurationslistbycluster(test, rg):
@@ -290,7 +267,6 @@ def step_kustoattacheddatabaseconfigurationslistbycluster(test, rg):
              '--resource-group "{rg}"',
              checks=[])
 
-
 # EXAMPLE: kustoclusterlistfollowerdatabases
 @try_manual
 def step_kustoclusterlistfollowerdatabases(test, rg):
@@ -298,7 +274,6 @@ def step_kustoclusterlistfollowerdatabases(test, rg):
              '--cluster-name "{Clusters_3}" '
              '--resource-group "{rg}"',
              checks=[])
-
 
 # EXAMPLE: kustoclusterdetachfollowerdatabases
 @try_manual
@@ -311,13 +286,11 @@ def step_kustoclusterdetachfollowerdatabases(test, rg):
              '--resource-group "{rg}"',
              checks=[])
 
-
 # EXAMPLE: kustooperationslist
 @try_manual
 def step_kustooperationslist(test, rg):
     # EXAMPLE NOT FOUND!
     pass
-
 
 # EXAMPLE: kustodatabasesdelete
 @try_manual
@@ -328,7 +301,6 @@ def step_kustodatabasesdelete(test, rg):
              '--resource-group "{rg}"',
              checks=[])
 
-
 # EXAMPLE: kustoclustersdelete
 @try_manual
 def step_kustoclustersdelete(test, rg):
@@ -336,12 +308,10 @@ def step_kustoclustersdelete(test, rg):
              '--cluster-name "{Clusters_3}" '
              '--resource-group "{rg}"',
              checks=[])
-
-
+    
 @try_manual
 def cleanup(test, rg):
     pass
-
 
 @try_manual
 def call_scenario(test, rg):
@@ -377,7 +347,6 @@ def call_scenario(test, rg):
     step_kustoclustersdelete(test, rg)
     cleanup(test, rg)
 
-
 @try_manual
 class KustoManagementClientScenarioTest(ScenarioTest):
 
@@ -399,54 +368,4 @@ class KustoManagementClientScenarioTest(ScenarioTest):
             'AttachedDatabaseConfigurations_2': 'AttachedDatabaseConfigurations_2',
         })
 
-        call_scenario(self, rg)
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+        call_scenario(self, rg)      
