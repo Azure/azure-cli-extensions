@@ -321,4 +321,3 @@ class KustoManagementClientScenarioTest(ScenarioTest):
         })
 
         call_scenario(self, rg)
- 
