@@ -29,11 +29,11 @@ $mount_cmd $boot_part /investigateboot
 
 #unlocking the root partition using passphrase
 
-cryptsetup luksOpen --key-file /mnt/azure_bek_disk/LinuxPassPhraseFileName_1_0 --header /investigateboot/luks/osluksheader $root_part investigateosencrypt
+cryptsetup luksOpen --key-file /mnt/azure_bek_disk/LinuxPassPhraseFileName_1_0 --header /investigateboot/luks/osluksheader $root_part osencrypt
 
 #mounting the unlocked root partition
 
-$mount_cmd /dev/mapper/investigateosencrypt /investigateroot
+$mount_cmd /dev/mapper/osencrypt /investigateroot
 
 #nmounting boot and mounting it inside rootpartition.
 
