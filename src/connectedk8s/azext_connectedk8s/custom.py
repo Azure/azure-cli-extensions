@@ -242,7 +242,7 @@ def check_kube_connection(configuration):
     try:
         api_instance.get_api_resources()
     except ApiException as e:
-        print("Unable to verify connectivity to the Kubernetes cluster: %s\n" % e)
+        logger.warning("Unable to verify connectivity to the Kubernetes cluster: %s\n" % e)
         raise CLIError("If you are using AAD Enabled cluster, " +
                        "verify that you are able to access the cluster. Learn more at " +
                        "https://aka.ms/arc/k8s/onboarding-aad-enabled-clusters")
@@ -369,7 +369,7 @@ def get_server_version(configuration):
         api_response = api_instance.get_code()
         return api_response.git_version
     except ApiException as e:
-        print("Exception when calling VersionApi->get_code: %s\n" % e)
+        logger.warning("Unable to fetch kubernetes version->get_code: %s\n" % e)
 
 
 def get_agent_version(configuration):
