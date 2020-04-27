@@ -463,8 +463,8 @@ def list_connectedk8s(cmd, client, resource_group_name=None):
 
 def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
                         kube_config=None, kube_context=None, no_wait=False):
-    print("Ensure that you have the latest helm version installed before proceeding to avoid unexpected errors.")
-    print("This operation might take a while ...\n")
+    logger.warning("Ensure that you have the latest helm version installed before proceeding to avoid unexpected errors.")
+    logger.warning("This operation might take a while ...\n")
 
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
@@ -476,8 +476,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
     try:
         config.load_kube_config(config_file=kube_config, context=kube_context)
     except Exception as e:
-        print("Problem loading the kubeconfig file." + str(e))
-        raise CLIError(e)
+        raise CLIError("Problem loading the kubeconfig file." + str(e))
     configuration = kube_client.Configuration()
 
     # Checking the connection to kubernetes cluster.
