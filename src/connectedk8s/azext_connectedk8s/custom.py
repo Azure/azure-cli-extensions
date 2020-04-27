@@ -182,7 +182,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
     # Helm Install
     helm_chart_path = os.path.join(chart_export_path, 'azure-arc-k8sagents')
     chart_path = os.getenv('HELMCHART') if os.getenv('HELMCHART') else helm_chart_path
-    cmd_helm_install = ["helm", "install", "azure-arc", chart_path,
+    cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
                         "--set", "global.subscriptionId={}".format(subscription_id),
                         "--set", "global.resourceGroupName={}".format(resource_group_name),
                         "--set", "global.resourceName={}".format(cluster_name),
