@@ -54,7 +54,7 @@ class SshCustomCommandTest(unittest.TestCase):
         mock_check_files.assert_called_once_with("publicfile", "privatefile")
         mock_ip.assert_not_called()
         mock_get_mod_exp.assert_called_once_with("public")
-        mock_write_cert.assert_called_once_with("public", "username", "certificate")
+        mock_write_cert.assert_called_once_with("public", "certificate")
         mock_op.assert_called_once_with(
             "1.2.3.4", "username", mock_write_cert.return_value, "private")
 
@@ -149,13 +149,13 @@ class SshCustomCommandTest(unittest.TestCase):
         mock_open.return_value.__enter__.return_value = mock_file
         mock_split.return_value = ["path", "to", "publickey"]
 
-        file_name = custom._write_cert_file("public", "username", "cert")
+        file_name = custom._write_cert_file("public", "cert")
 
         self.assertEqual(mock_join.return_value, file_name)
         mock_split.assert_called_once_with("public")
         mock_join.assert_called_once_with("path", "to", "id_rsa-cert.pub")
         mock_open.assert_called_once_with(mock_join.return_value, 'w')
-        mock_file.write.assert_called_once_with("username cert")
+        mock_file.write.assert_called_once_with("ssh-rsa-cert-v01@openssh.com cert")
 
     @mock.patch('azext_ssh.rsa_parser.RSAParser')
     @mock.patch('os.path.isfile')

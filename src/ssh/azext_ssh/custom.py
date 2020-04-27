@@ -40,7 +40,7 @@ def _do_ssh_op(cmd, resource_group, vm_name, ssh_ip, public_key_file, private_ke
     profile = Profile(cli_ctx=cmd.cli_ctx)
     username, certificate = profile.get_msal_token(scopes, data)
 
-    cert_file = _write_cert_file(public_key_file, username, certificate)
+    cert_file = _write_cert_file(public_key_file, certificate)
     op_call(ssh_ip, username, cert_file, private_key_file)
 
 
@@ -89,10 +89,10 @@ def _check_public_private_files(public_key_file, private_key_file):
     return public_key_file, private_key_file
 
 
-def _write_cert_file(public_key_file, username, certificate_contents):
+def _write_cert_file(public_key_file, certificate_contents):
     cert_file = os.path.join(*os.path.split(public_key_file)[:-1], "id_rsa-cert.pub")
     with open(cert_file, 'w') as f:
-        f.write(f"{username} {certificate_contents}")
+        f.write(f"ssh-rsa-cert-v01@openssh.com {certificate_contents}")
 
     return cert_file
 
