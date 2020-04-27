@@ -27,16 +27,14 @@ class Connectedk8sScenarioTest(ScenarioTest):
             'name': 'test1',
             'kubeconfig': "%s" % (_get_test_data_file('config.yaml'))
         })
+        os.environ['HELMCHART'] = _get_test_data_file('setupChart-0.1.19.tgz')
         self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus2euap --tags foo=doo --kube-config {kubeconfig}', checks=[
             self.check('tags.foo', 'doo'),
             self.check('name', '{name}')
         ])
-        count = len(self.cmd('connectedk8s list').get_output_in_json())
         self.cmd('connectedk8s show -g {rg} -n {name}', checks=[
             self.check('name', '{name}'),
             self.check('resourceGroup', '{rg}'),
-            self.check('tags.foo', 'boo')
+            self.check('tags.foo', 'doo')
         ])
-        self.cmd('connectedk8s delete -g {rg} -n {name} -y')
-        final_count = len(self.cmd('connectedk8s list').get_output_in_json())
-        self.assertTrue(final_count, count - 1)
+        self.cmd('connectedk8s delete -g {rg} -n {name} --kube-config {kubeconfig} -y')
