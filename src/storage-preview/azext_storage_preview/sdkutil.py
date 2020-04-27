@@ -7,7 +7,7 @@
 
 from azure.cli.core.profiles import get_sdk, supported_api_version, ResourceType
 from azure.cli.core.profiles._shared import APIVersionException
-from .profiles import CUSTOM_DATA_STORAGE
+from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_DATA_STORAGE_ADLS
 
 
 def cosmosdb_table_exists(cli_ctx):
@@ -29,6 +29,19 @@ def get_blob_service_by_type(cli_ctx, blob_type):
         'block': lambda ctx: get_sdk(ctx, CUSTOM_DATA_STORAGE, 'BlockBlobService', mod='blob'),
         'page': lambda ctx: get_sdk(ctx, CUSTOM_DATA_STORAGE, 'PageBlobService', mod='blob'),
         'append': lambda ctx: get_sdk(ctx, CUSTOM_DATA_STORAGE, 'AppendBlobService', mod='blob')
+    }
+
+    try:
+        return type_to_service[blob_type](cli_ctx)
+    except KeyError:
+        return None
+
+
+def get_adls_blob_service_by_type(cli_ctx, blob_type):
+    type_to_service = {
+        'block': lambda ctx: get_sdk(ctx, CUSTOM_DATA_STORAGE_ADLS, 'BlockBlobService', mod='blob'),
+        'page': lambda ctx: get_sdk(ctx, CUSTOM_DATA_STORAGE_ADLS, 'PageBlobService', mod='blob'),
+        'append': lambda ctx: get_sdk(ctx, CUSTOM_DATA_STORAGE_ADLS, 'AppendBlobService', mod='blob')
     }
 
     try:

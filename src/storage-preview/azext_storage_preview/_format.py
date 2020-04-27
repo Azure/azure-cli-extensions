@@ -52,6 +52,7 @@ def transform_container_show(result):
 def transform_blob_output(result):
     return build_table_output(result, [
         ('Name', 'name'),
+        ('IsDirectory', 'metadata.hdi_isfolder'),
         ('Blob Type', 'properties.blobType'),
         ('Blob Tier', 'properties.blobTier'),
         ('Length', 'properties.contentLength'),

@@ -8,7 +8,7 @@ from knack.log import get_logger
 
 from azure.cli.core.util import sdk_no_wait
 
-from ._client_factory import network_client_factory
+from ._client_factory import network_client_factory, network_client_route_table_factory
 from ._util import _get_property
 
 
@@ -45,8 +45,7 @@ def _get_property(items, name):
     result = next((x for x in items if x.name.lower() == name.lower()), None)
     if not result:
         raise CLIError("Property '{}' does not exist".format(name))
-    else:
-        return result
+    return result
 
 
 def _upsert(parent, collection_name, obj_to_add, key_name, warn=True):
@@ -86,7 +85,8 @@ def _find_item_at_path(instance, path):
 # region VirtualWAN
 def create_virtual_wan(cmd, resource_group_name, virtual_wan_name, tags=None, location=None,
                        security_provider_name=None, branch_to_branch_traffic=None,
-                       vnet_to_vnet_traffic=None, office365_category=None, disable_vpn_encryption=None):
+                       vnet_to_vnet_traffic=None, office365_category=None, disable_vpn_encryption=None,
+                       vwan_type=None):
     client = network_client_factory(cmd.cli_ctx).virtual_wans
     VirtualWAN = cmd.get_models('VirtualWAN')
     wan = VirtualWAN(
@@ -96,13 +96,15 @@ def create_virtual_wan(cmd, resource_group_name, virtual_wan_name, tags=None, lo
         security_provider_name=security_provider_name,
         allow_branch_to_branch_traffic=branch_to_branch_traffic,
         allow_vnet_to_vnet_traffic=vnet_to_vnet_traffic,
-        office365_local_breakout_category=office365_category
+        office365_local_breakout_category=office365_category,
+        type=vwan_type
     )
     return client.create_or_update(resource_group_name, virtual_wan_name, wan)
 
 
 def update_virtual_wan(instance, tags=None, security_provider_name=None, branch_to_branch_traffic=None,
-                       vnet_to_vnet_traffic=None, office365_category=None, disable_vpn_encryption=None):
+                       vnet_to_vnet_traffic=None, office365_category=None, disable_vpn_encryption=None,
+                       vwan_type=None):
     with UpdateContext(instance) as c:
         c.update_param('tags', tags, True)
         c.update_param('security_provider_name', security_provider_name, False)
@@ -110,6 +112,7 @@ def update_virtual_wan(instance, tags=None, security_provider_name=None, branch_
         c.update_param('allow_vnet_to_vnet_traffic', vnet_to_vnet_traffic, False)
         c.update_param('office365_local_breakout_category', office365_category, False)
         c.update_param('disable_vpn_encryption', disable_vpn_encryption, False)
+        c.update_param('type', vwan_type, False)
     return instance
 
 
@@ -120,25 +123,27 @@ def list_virtual_wans(cmd, resource_group_name=None):
 
 # region VirtualHubs
 def create_virtual_hub(cmd, resource_group_name, virtual_hub_name, address_prefix, virtual_wan,
-                       location=None, tags=None, no_wait=False):
+                       location=None, tags=None, no_wait=False, sku=None):
     client = network_client_factory(cmd.cli_ctx).virtual_hubs
     VirtualHub, SubResource = cmd.get_models('VirtualHub', 'SubResource')
     hub = VirtualHub(
         tags=tags,
         location=location,
         address_prefix=address_prefix,
-        virtual_wan=SubResource(id=virtual_wan)
+        virtual_wan=SubResource(id=virtual_wan),
+        sku=sku
     )
     return sdk_no_wait(no_wait, client.create_or_update,
                        resource_group_name, virtual_hub_name, hub)
 
 
-def update_virtual_hub(instance, cmd, address_prefix=None, virtual_wan=None, tags=None):
+def update_virtual_hub(instance, cmd, address_prefix=None, virtual_wan=None, tags=None, sku=None):
     SubResource = cmd.get_models('SubResource')
     with UpdateContext(instance) as c:
         c.update_param('tags', tags, True)
         c.update_param('address_prefix', address_prefix, False)
         c.update_param('virtual_wan', SubResource(id=virtual_wan) if virtual_wan else None, False)
+        c.update_param('sku', sku, False)
     return instance
 
 
@@ -162,7 +167,11 @@ def create_hub_vnet_connection(cmd, resource_group_name, virtual_hub_name, conne
     )
     _upsert(hub, 'virtual_network_connections', connection, 'name', warn=True)
     poller = sdk_no_wait(no_wait, client.create_or_update, resource_group_name, virtual_hub_name, hub)
-    return _get_property(poller.result().virtual_network_connections, connection_name)
+    if no_wait:
+        return poller
+
+    from azure.cli.core.commands import LongRunningOperation
+    return _get_property(LongRunningOperation(cmd.cli_ctx)(poller).virtual_network_connections, connection_name)
 
 
 # pylint: disable=inconsistent-return-statements
@@ -198,6 +207,78 @@ def remove_hub_route(cmd, resource_group_name, virtual_hub_name, index, no_wait=
                          resource_group_name, virtual_hub_name, hub)
     try:
         return poller.result().route_table.routes
+    except AttributeError:
+        return
+
+
+# pylint: disable=inconsistent-return-statements
+def create_vhub_route_table(cmd, resource_group_name, virtual_hub_name, route_table_name,
+                            attached_connections, destination_type, destinations,
+                            next_hop_type, next_hops,
+                            tags=None, no_wait=False, location=None):
+    VirtualHubRouteTableV2, VirtualHubRouteV2 = cmd.get_models('VirtualHubRouteTableV2', 'VirtualHubRouteV2')
+    client = network_client_route_table_factory(cmd.cli_ctx).virtual_hub_route_table_v2s
+    route = VirtualHubRouteV2(destination_type=destination_type,
+                              destinations=destinations,
+                              next_hop_type=next_hop_type,
+                              next_hops=next_hops)
+    route_table = VirtualHubRouteTableV2(location=location,
+                                         tags=tags,
+                                         attached_connections=attached_connections,
+                                         routes=[route])
+    poller = sdk_no_wait(no_wait, client.create_or_update,
+                         resource_group_name, virtual_hub_name, route_table_name, route_table)
+    try:
+        return poller.result()
+    except AttributeError:
+        return
+
+
+def update_vhub_route_table(instance, attached_connections=None, tags=None):
+    with UpdateContext(instance) as c:
+        c.update_param('tags', tags, True)
+        c.update_param('attached_connections', attached_connections, False)
+    return instance
+
+
+# pylint: disable=inconsistent-return-statements
+def add_hub_routetable_route(cmd, resource_group_name, virtual_hub_name, route_table_name,
+                             destination_type, destinations,
+                             next_hop_type, next_hops, no_wait=False):
+    VirtualHubRouteV2 = cmd.get_models('VirtualHubRouteV2')
+    client = network_client_route_table_factory(cmd.cli_ctx).virtual_hub_route_table_v2s
+    route_table = client.get(resource_group_name, virtual_hub_name, route_table_name)
+    route = VirtualHubRouteV2(destination_type=destination_type,
+                              destinations=destinations,
+                              next_hop_type=next_hop_type,
+                              next_hops=next_hops)
+    route_table.routes.append(route)
+    poller = sdk_no_wait(no_wait, client.create_or_update,
+                         resource_group_name, virtual_hub_name, route_table_name, route_table)
+    try:
+        return poller.result().routes
+    except AttributeError:
+        return
+
+
+def list_hub_routetable_route(cmd, resource_group_name, virtual_hub_name, route_table_name):
+    client = network_client_route_table_factory(cmd.cli_ctx).virtual_hub_route_table_v2s
+    route_table = client.get(resource_group_name, virtual_hub_name, route_table_name)
+    return route_table.routes
+
+
+# pylint: disable=inconsistent-return-statements
+def remove_hub_routetable_route(cmd, resource_group_name, virtual_hub_name, route_table_name, index, no_wait=False):
+    client = network_client_route_table_factory(cmd.cli_ctx).virtual_hub_route_table_v2s
+    route_table = client.get(resource_group_name, virtual_hub_name, route_table_name)
+    try:
+        route_table.routes.pop(index - 1)
+    except IndexError:
+        raise CLIError('invalid index: {}. Index can range from 1 to {}'.format(index, len(route_table.routes)))
+    poller = sdk_no_wait(no_wait, client.create_or_update,
+                         resource_group_name, virtual_hub_name, route_table_name, route_table)
+    try:
+        return poller.result().routes
     except AttributeError:
         return
 # endregion

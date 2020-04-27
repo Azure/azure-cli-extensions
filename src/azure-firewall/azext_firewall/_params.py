@@ -14,7 +14,10 @@ from knack.arguments import CLIArgumentType
 
 from ._completers import get_af_subresource_completion_list
 from ._validators import (
-    get_public_ip_validator, get_subnet_validator, validate_application_rule_protocols)
+    get_public_ip_validator, get_subnet_validator, validate_application_rule_protocols,
+    validate_firewall_policy, validate_rule_group_collection, process_private_ranges,
+    process_threat_intel_whitelist_ip_addresses, process_threat_intel_whitelist_fqdns,
+    validate_virtual_hub, get_management_subnet_validator, get_management_public_ip_validator)
 
 
 # pylint: disable=too-many-locals, too-many-branches, too-many-statements
@@ -33,12 +36,29 @@ def load_arguments(self, _):
         c.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
         c.argument('description', help='Rule description.')
         c.argument('destination_addresses', nargs='+', help="Space-separated list of destination IP addresses. Use '*' to match all.")
+        c.argument('destination_fqdns', nargs='+', help="Space-separated list of destination FQDNs.")
         c.argument('source_addresses', nargs='+', help="Space-separated list of source IP addresses. Use '*' to match all.")
         c.argument('destination_ports', nargs='+', help="Space-separated list of destination ports. Use '*' to match all.")
+        c.argument('source_ip_groups', nargs='+', help='Space-separated list of name or resource id of source IpGroups.')
+        c.argument('destination_ip_groups', nargs='+', help='Space-separated list of name or resource id of destination IpGroups')
         c.argument('translated_address', help='Translated address for this NAT rule.')
         c.argument('translated_port', help='Translated port for this NAT rule.')
+        c.argument('translated_fqdn', help='Translated FQDN for this NAT rule.')
         c.argument('tags', tags_type)
         c.argument('zones', zones_type)
+        c.argument('firewall_policy', options_list=['--firewall-policy', '--policy'],
+                   help='Name or ID of the firewallPolicy associated with this azure firewall.',
+                   validator=validate_firewall_policy)
+        c.argument('virtual_hub', options_list=['--virtual-hub', '--vhub'],
+                   help='Name or ID of the virtualHub to which the firewall belongs.',
+                   validator=validate_virtual_hub)
+        c.argument('sku', arg_type=get_enum_type(['AZFW_VNet', 'AZFW_Hub']), help='SKU of Azure firewall. This field cannot be updated after the creation. '
+                                                                                  'The default sku in server end is AZFW_VNet. '
+                                                                                  'If you want to attach azure firewall to vhub, you should set sku to AZFW_Hub.')
+        c.argument('private_ranges', nargs='+', validator=process_private_ranges, help='Space-separated list of SNAT private range. Validate values are single Ip, Ip prefixes or a single special value "IANAPrivateRanges"')
+    with self.argument_context('network firewall threat-intel-whitelist') as c:
+        c.argument('ip_addresses', nargs='+', validator=process_threat_intel_whitelist_ip_addresses, help='Space-separated list of IPv4 addresses.')
+        c.argument('fqdns', nargs='+', validator=process_threat_intel_whitelist_fqdns, help='Space-separated list of FQDNs.')
 
     for scope in ['network-rule', 'nat-rule']:
         with self.argument_context('network firewall {}'.format(scope)) as c:
@@ -89,10 +109,66 @@ def load_arguments(self, _):
         c.argument('resource_name', firewall_name_type)
         c.argument('azure_firewall_name', firewall_name_type)
         c.argument('subnet', validator=get_subnet_validator(), help=argparse.SUPPRESS)
-        c.argument('virtual_network_name', virtual_network_name_type)
+        c.argument('virtual_network_name', virtual_network_name_type, help='The virtual network (VNet) name. It should contain one subnet called "AzureFirewallSubnet".')
         c.argument('public_ip_address', help='Name or ID of the public IP to use.', validator=get_public_ip_validator())
-        c.argument('private_ip_address', help='IP address used by the Firewall ILB as the next hop in User Defined Routes.')
+        c.argument('private_ip_address', deprecate_info=c.deprecate(expiration='2.3.0'), help='IP address used by the Firewall ILB as the next hop in User Defined Routes.')
+
+    with self.argument_context('network firewall ip-config', arg_group="Management Ip Config") as c:
+        c.argument('management_item_name', options_list=['--m-name'],
+                   help='Name of the management IP configuration.', is_preview=True)
+        c.argument('management_subnet', validator=get_management_subnet_validator(), help=argparse.SUPPRESS, is_preview=True)
+        c.argument('management_virtual_network_name', virtual_network_name_type, options_list=['--m-vnet-name'],
+                   help='The virtual network (VNet) name for management ip configuation. '
+                        'It should contain one subnet called "AzureFirewallManagementSubnet".', is_preview=True)
+        c.argument('management_public_ip_address', help='Name or ID of the public IP to use for management ip configuation.',
+                   options_list=['--m-public-ip-address'], validator=get_management_public_ip_validator(), is_preview=True)
+
+    with self.argument_context('network firewall management-ip-config') as c:
+        c.argument('item_name', options_list=['--name', '-n'], help='Name of the management IP configuration.', id_part='child_name_2')
+        c.argument('resource_name', firewall_name_type)
+        c.argument('azure_firewall_name', firewall_name_type)
+        c.argument('subnet', validator=get_subnet_validator(), help=argparse.SUPPRESS)
+        c.argument('virtual_network_name', virtual_network_name_type,
+                   help='The virtual network (VNet) name. It should contain one subnet called "AzureFirewallManagementSubnet".')
+        c.argument('public_ip_address', help='Name or ID of the public IP to use.', validator=get_public_ip_validator())
 
     with self.argument_context('network firewall ip-config list') as c:
         c.argument('resource_name', firewall_name_type, id_part=None)
+
+    with self.argument_context('network firewall policy') as c:
+        c.argument('firewall_policy_name', options_list=['--name', '-n'], help='The name of the Firewall Policy.')
+        c.argument('base_policy', validator=validate_firewall_policy, help='The name or ID of parent firewall policy from which rules are inherited.')
+        c.argument('threat_intel_mode', arg_type=get_enum_type(['Alert', 'Deny', 'Off']), help='The operation mode for Threat Intelligence.')
+
+    with self.argument_context('network firewall policy rule-collection-group') as c:
+        c.argument('firewall_policy_name', options_list=['--policy-name'], help='The name of the Firewall Policy.')
+        c.argument('rule_group_name', options_list=['--name', '-n'], help='The name of the Firewall Policy Rule Collection Group.')
+        c.argument('priority', type=int, help='Priority of the Firewall Policy Rule Collection Group')
+
+    with self.argument_context('network firewall policy rule-collection-group collection') as c:
+        c.argument('rule_group_name', options_list=['--rule-collection-group-name'], help='The name of the Firewall Policy Rule Collection Group.')
+        c.argument('rule_name', options_list=['--name', '-n'], help='The name of the collection in Firewall Policy Rule Collection Group.')
+        c.argument('rule_priority', options_list=['--collection-priority'], type=int, help='The priority of the rule in Firewall Policy Rule Collection Group')
+        c.argument('description', arg_group='Common Rule', help='The description of rule.')
+        c.argument('destination_addresses', arg_group='Common Rule', nargs='+', help="Space-separated list of destination IP addresses.")
+        c.argument('source_addresses', arg_group='Common Rule', nargs='+', help="Space-separated list of source IP addresses.")
+        c.argument('condition_name', options_list=['--rule-name'], arg_group='Common Rule', help='The name of rule')
+        c.argument('condition_type', options_list=['--rule-type'], arg_group='Common Rule', arg_type=get_enum_type(["ApplicationRule", "NetworkRule"]), help='The type of rule')
+        c.argument('translated_address', arg_group='Nat Collection', help='Translated address for this NAT rule collection.')
+        c.argument('translated_port', arg_group='Nat Collection', help='Translated port for this NAT rule collection.')
+        c.argument('destination_ports', arg_group='Network Rule', nargs='+', help="Space-separated list of destination ports.")
+        c.argument('ip_protocols', arg_group='Network Rule', nargs='+', arg_type=get_enum_type(["TCP", "UDP", "Any", "ICMP"]), help="Space-separated list of IP protocols")
+        c.argument('target_fqdns', nargs='+', arg_group='Application Rule', help='Space-separated list of FQDNs for this rule.', validator=validate_rule_group_collection)
+        c.argument('fqdn_tags', nargs='+', arg_group='Application Rule', help='Space-separated list of FQDN tags for this rule.', validator=validate_rule_group_collection)
+        c.argument('protocols', nargs='+', arg_group='Application Rule', validator=validate_application_rule_protocols, help='Space-separated list of protocols and port numbers to use, in PROTOCOL=PORT format. Valid protocols are Http, Https.')
+
+    with self.argument_context('network firewall policy rule-collection-group collection add-filter-collection') as c:
+        c.argument('filter_action', options_list=['--action'], arg_type=get_enum_type(['Allow', 'Deny']), help='The action type of a rule collection.')
+
+    with self.argument_context('network firewall policy rule-collection-group collection add-nat-collection') as c:
+        c.argument('nat_action', options_list=['--action'], arg_type=get_enum_type(['DNAT', 'SNAT']), help='The action type of a rule collection.')
+
+    with self.argument_context('network firewall policy rule-collection-group collection rule') as c:
+        c.argument('rule_name', options_list=['--collection-name'], help='The name of the rule collection in Firewall Policy Rule Collection Group.')
+        c.argument('condition_name', options_list=['--name', '-n'], arg_group='Common Rule', help='The name of rule')
     # endregion

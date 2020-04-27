@@ -5,4 +5,5 @@
 
 from azure.cli.core.profiles import CustomResourceType
 
-CUSTOM_VWAN = CustomResourceType('azext_vwan.vendored_sdks', 'NetworkManagementClient')
+CUSTOM_VWAN = CustomResourceType('azext_vwan.vendored_sdks.v2018_08_01', 'NetworkManagementClient')
+CUSTOM_VHUB_ROUTE_TABLE = CustomResourceType('azext_vwan.vendored_sdks.v2019_09_01', 'NetworkManagementClient')

@@ -237,7 +237,7 @@ def _invoke_mergeutil(input_yaml_files=None, parameters=None):
 
 def _generate_arm_template_core(input_yaml_files=None, parameters=None):
     output_file_path = _invoke_mergeutil(input_yaml_files, parameters)
-    logger.warning("Generated ARM template file at {0}.".format(output_file_path))
+    logger.warning("Generated ARM template file at %s.", output_file_path)
 
 
 def _deploy_arm_template_core(cli_ctx, resource_group_name,  # pylint: disable=too-many-arguments
@@ -279,7 +279,7 @@ def _deploy_arm_template_core(cli_ctx, resource_group_name,  # pylint: disable=t
 
     logger.warning("Deploying . . .")
     logger.warning("You can get the state of the deployment with the cmd")
-    logger.warning("az group deployment show --name {0} --resource-group {1}".format(deployment_name, resource_group_name))
+    logger.warning("az group deployment show --name %s --resource-group %s", deployment_name, resource_group_name)
     if validate_only:
         return sdk_no_wait(no_wait, smc.deployments.validate, resource_group_name, deployment_name, properties)
 
