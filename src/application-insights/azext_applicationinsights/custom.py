@@ -14,6 +14,7 @@ from .util import get_id_from_azure_resource, get_query_targets, get_timespan, g
 logger = get_logger(__name__)
 HELP_MESSAGE = " Please use `az feature register --name AIWorkspacePreview --namespace microsoft.insights` to register the feature"
 
+
 def execute_query(cmd, client, application, analytics_query, start_time=None, end_time=None, offset='1h', resource_group_name=None):
     """Executes a query against the provided Application Insights application."""
     from .vendored_sdks.applicationinsights.models import QueryBody
