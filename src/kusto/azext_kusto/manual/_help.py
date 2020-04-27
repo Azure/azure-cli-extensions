@@ -1,3 +1,5 @@
+from knack.help_files import helps
+
 helps['kusto attached-database-configuration wait'] = """
 type: command
 short-summary: Wait for a managed Kusto cluster to reach a desired state.
