@@ -360,7 +360,7 @@ def get_node_count(configuration):
         api_response = api_instance.list_node()
         return len(api_response.items)
     except ApiException as e:
-        print("Exception when calling CoreV1Api->list_node: %s\n" % e)
+        logger.warning("Exception when calling CoreV1Api->list_node: %s\n" % e)
 
 
 def get_server_version(configuration):
