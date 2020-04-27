@@ -12,7 +12,7 @@ from msrestazure.azure_exceptions import CloudError
 from .util import get_id_from_azure_resource, get_query_targets, get_timespan, get_linked_properties
 
 logger = get_logger(__name__)
-
+HELP_MESSAGE = " Please use `az feature register --name AIWorkspacePreview --namespace microsoft.insights` to register the feature"
 
 def execute_query(cmd, client, application, analytics_query, start_time=None, end_time=None, offset='1h', resource_group_name=None):
     """Executes a query against the provided Application Insights application."""
@@ -62,9 +62,7 @@ def create_or_update_component(cmd, client, application, resource_group_name, lo
     try:
         return client.create_or_update(resource_group_name, application, component)
     except CloudError as ex:
-        message = " Please use `az feature register " \
-                  "--name AIWorkspacePreview --namespace microsoft.insights` to register the feature"
-        ex.error._message = ex.error._message + message
+        ex.error._message = ex.error._message + HELP_MESSAGE
         raise ex
 
 
@@ -77,9 +75,7 @@ def update_component(cmd, client, application, resource_group_name, kind=None, w
         try:
             existing_component = latest_client.get(resource_group_name, application)
         except CloudError as ex:
-            message = " Please use `az feature register " \
-                      "--name AIWorkspacePreview --namespace microsoft.insights` to register the feature"
-            ex.error._message = ex.error._message + message
+            ex.error._message = ex.error._message + HELP_MESSAGE
             raise ex
         existing_component.workspace_resource_id = workspace_resource_id or None
     else:
@@ -117,9 +113,7 @@ def show_components(cmd, client, application=None, resource_group_name=None):
             try:
                 return latest_client.get(resource_group_name, application)
             except CloudError:
-                message = " Please use `az feature register " \
-                          "--name AIWorkspacePreview --namespace microsoft.insights` to register the feature"
-                logger.warning(message)
+                logger.warning(HELP_MESSAGE)
                 return client.get(resource_group_name, application)
         raise CLIError("Application provided without resource group. Either specify app with resource group, or remove app.")
     if resource_group_name:
