@@ -7,9 +7,7 @@ import os
 import unittest
 
 from azure_devtools.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer,
-                               JMESPathCheck, JMESPathCheckExists,
-                               NoneCheck)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from msrestazure.tools import resource_id
 
 
@@ -33,8 +31,8 @@ class DatabricksClientScenarioTest(ScenarioTest):
                  '--name {workspace_name} '
                  '--location "westus" '
                  '--sku standard',
-                 checks=[JMESPathCheck('name', self.kwargs.get('workspace_name', '')),
-                         JMESPathCheck('sku.name', self.kwargs.get('sku.name', 'standard'))])
+                 checks=[self.check('name', '{workspace_name}'),
+                         self.check('sku.name', 'standard')])
 
         managed_resource_group_id = '/subscriptions/{}/resourceGroups/{}'.format(self.kwargs.get('subscription', ''), self.kwargs.get('managed_resource_group', ''))
         self.cmd('az databricks workspace create '
@@ -42,26 +40,20 @@ class DatabricksClientScenarioTest(ScenarioTest):
                  '--name {custom_workspace_name} '
                  '--location "westus" '
                  '--sku standard '
-                 '--managed-resource-group {managed_resource_group} '
-                 '--relay-namespace-name custom-relay-space '
-                 '--storage-account-name customdbstorage '
-                 '--storage-account-sku Standard_LRS',
-                 checks=[JMESPathCheck('name', self.kwargs.get('custom_workspace_name', '')),
-                         JMESPathCheck('parameters.relayNamespaceName.value', 'custom-relay-space'),
-                         JMESPathCheck('parameters.storageAccountName.value', 'customdbstorage'),
-                         JMESPathCheck('parameters.storageAccountSkuName.value', 'Standard_LRS'),
-                         JMESPathCheck('managedResourceGroupId', managed_resource_group_id)])
+                 '--managed-resource-group {managed_resource_group}',
+                 checks=[self.check('name', '{custom_workspace_name}'),
+                         self.check('managedResourceGroupId', managed_resource_group_id)])
 
         self.cmd('az databricks workspace update '
                  '--resource-group {rg} '
                  '--name {workspace_name} '
                  '--tags type=test',
-                 checks=[JMESPathCheck('tags.type', 'test')])
+                 checks=[self.check('tags.type', 'test')])
 
         self.cmd('az databricks workspace show '
                  '--resource-group {rg} '
                  '--name {workspace_name}',
-                 checks=[JMESPathCheck('name', self.kwargs.get('workspace_name', ''))])
+                 checks=[self.check('name', '{workspace_name}')])
 
         workspace_resource_id = resource_id(
             subscription=self.kwargs.get('subscription', ''),
@@ -72,12 +64,7 @@ class DatabricksClientScenarioTest(ScenarioTest):
 
         self.cmd('az databricks workspace show '
                  '--ids {}'.format(workspace_resource_id),
-                 checks=[JMESPathCheck('name', self.kwargs.get('workspace_name', ''))])
-
-        # todo service 502
-        # self.cmd('az databricks workspace list',
-        #          '--resource-group='
-        #          checks=[])
+                 checks=[self.check('name', '{workspace_name}')])
 
         self.cmd('az databricks workspace list '
                  '--resource-group {rg} ',

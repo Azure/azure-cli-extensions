@@ -1,10 +1,7 @@
 interactions:
 - request:
-    body: '{"location": "westus", "properties": {"managedResourceGroupId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/databricks-rg-my-test-workspace-6m4koqadkewk0",
-      "parameters": {"enableNoPublicIp": {"value": false}, "relayNamespaceName": {"value":
-      "dbrelay6m4koqadkewk0"}, "storageAccountName": {"value": "dbstorage6m4koqadkewk0"},
-      "storageAccountSkuName": {"value": "Standard_GRS"}, "vnetAddressPrefix": {"value":
-      "10.139"}}}, "sku": {"name": "standard"}}'
+    body: '{"location": "westus", "properties": {"managedResourceGroupId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/databricks-rg-my-test-workspace-kagj8ao0n6tvy",
+      "parameters": {}}, "sku": {"name": "standard"}}'
     headers:
       Accept:
       - application/json
@@ -15,24 +12,24 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '473'
+      - '227'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
       - --resource-group --name --location --sku
       User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
       accept-language:
       - en-US
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/workspaces/my-test-workspace?api-version=2018-04-01
   response:
     body:
-      string: '{"properties":{"managedResourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/databricks-rg-my-test-workspace-6m4koqadkewk0","provisioningState":"Accepted","authorizations":[{"principalId":"9a74af6f-d153-4348-988a-e2672920bee9","roleDefinitionId":"8e3af657-a8ff-443c-a75c-2fe8c4bcb635"}],"createdBy":{"oid":"31e600e0-d7ce-4e98-a927-19bb30042e44","puid":"1003200069544A27","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"updatedBy":{"oid":"31e600e0-d7ce-4e98-a927-19bb30042e44","puid":"1003200069544A27","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"createdDateTime":"2020-03-12T08:49:38.9954664Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/workspaces/my-test-workspace","name":"my-test-workspace","type":"Microsoft.Databricks/workspaces","sku":{"name":"standard"},"location":"westus"}'
+      string: '{"properties":{"managedResourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/databricks-rg-my-test-workspace-kagj8ao0n6tvy","provisioningState":"Accepted","authorizations":[{"principalId":"9a74af6f-d153-4348-988a-e2672920bee9","roleDefinitionId":"8e3af657-a8ff-443c-a75c-2fe8c4bcb635"}],"createdBy":{"oid":"31e600e0-d7ce-4e98-a927-19bb30042e44","puid":"1003200069544A27","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"updatedBy":{"oid":"31e600e0-d7ce-4e98-a927-19bb30042e44","puid":"1003200069544A27","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"createdDateTime":"2020-04-13T05:30:57.8485625Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/workspaces/my-test-workspace","name":"my-test-workspace","type":"Microsoft.Databricks/workspaces","sku":{"name":"standard"},"location":"westus"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlUHJvdmlzaW9uaW5nSm9iOjJEUkdBOjJEQ0xJOjNBNUZURVNUOjNBNUZEQVRBQlJJQ0tTWTNIVzQ3UzZXRVY0RURSTjU0WVpCVk40OjdDMEI5NEQ5QTRCMTMzNTBGMzoyRE1ZOjNBfEVGREZGMzYzQjdCRkY2NTIifQ?api-version=2018-04-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlUHJvdmlzaW9uaW5nSm9iOjJEUkdBOjJEQ0xJOjNBNUZURVNUOjNBNUZEQVRBQlJJQ0tTNFlaN1ZIV0pPVzdNWktKUTJMTDNPSkhaOjdDQ0JEMTg1QzQwMkIyRDM3MDoyRE1ZOjNBfDJFOTg1RDkyQTYwQ0JFOUMifQ?api-version=2018-04-01
       cache-control:
       - no-cache
       content-length:
@@ -40,7 +37,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Mar 2020 08:49:40 GMT
+      - Mon, 13 Apr 2020 05:30:59 GMT
       expires:
       - '-1'
       pragma:
@@ -68,10 +65,10 @@ interactions:
       ParameterSetName:
       - --resource-group --name --location --sku
       User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlUHJvdmlzaW9uaW5nSm9iOjJEUkdBOjJEQ0xJOjNBNUZURVNUOjNBNUZEQVRBQlJJQ0tTWTNIVzQ3UzZXRVY0RURSTjU0WVpCVk40OjdDMEI5NEQ5QTRCMTMzNTBGMzoyRE1ZOjNBfEVGREZGMzYzQjdCRkY2NTIifQ?api-version=2018-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlUHJvdmlzaW9uaW5nSm9iOjJEUkdBOjJEQ0xJOjNBNUZURVNUOjNBNUZEQVRBQlJJQ0tTNFlaN1ZIV0pPVzdNWktKUTJMTDNPSkhaOjdDQ0JEMTg1QzQwMkIyRDM3MDoyRE1ZOjNBfDJFOTg1RDkyQTYwQ0JFOUMifQ?api-version=2018-04-01
   response:
     body:
       string: '{"status":"Accepted"}'
@@ -83,7 +80,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Mar 2020 08:49:55 GMT
+      - Mon, 13 Apr 2020 05:31:15 GMT
       expires:
       - '-1'
       pragma:
@@ -109,10 +106,10 @@ interactions:
       ParameterSetName:
       - --resource-group --name --location --sku
       User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlUHJvdmlzaW9uaW5nSm9iOjJEUkdBOjJEQ0xJOjNBNUZURVNUOjNBNUZEQVRBQlJJQ0tTWTNIVzQ3UzZXRVY0RURSTjU0WVpCVk40OjdDMEI5NEQ5QTRCMTMzNTBGMzoyRE1ZOjNBfEVGREZGMzYzQjdCRkY2NTIifQ?api-version=2018-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlUHJvdmlzaW9uaW5nSm9iOjJEUkdBOjJEQ0xJOjNBNUZURVNUOjNBNUZEQVRBQlJJQ0tTNFlaN1ZIV0pPVzdNWktKUTJMTDNPSkhaOjdDQ0JEMTg1QzQwMkIyRDM3MDoyRE1ZOjNBfDJFOTg1RDkyQTYwQ0JFOUMifQ?api-version=2018-04-01
   response:
     body:
       string: '{"status":"Accepted"}'
@@ -124,7 +121,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Mar 2020 08:50:26 GMT
+      - Mon, 13 Apr 2020 05:31:46 GMT
       expires:
       - '-1'
       pragma:
@@ -150,10 +147,10 @@ interactions:
       ParameterSetName:
       - --resource-group --name --location --sku
       User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlUHJvdmlzaW9uaW5nSm9iOjJEUkdBOjJEQ0xJOjNBNUZURVNUOjNBNUZEQVRBQlJJQ0tTWTNIVzQ3UzZXRVY0RURSTjU0WVpCVk40OjdDMEI5NEQ5QTRCMTMzNTBGMzoyRE1ZOjNBfEVGREZGMzYzQjdCRkY2NTIifQ?api-version=2018-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlUHJvdmlzaW9uaW5nSm9iOjJEUkdBOjJEQ0xJOjNBNUZURVNUOjNBNUZEQVRBQlJJQ0tTNFlaN1ZIV0pPVzdNWktKUTJMTDNPSkhaOjdDQ0JEMTg1QzQwMkIyRDM3MDoyRE1ZOjNBfDJFOTg1RDkyQTYwQ0JFOUMifQ?api-version=2018-04-01
   response:
     body:
       string: '{"status":"Accepted"}'
@@ -165,7 +162,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Mar 2020 08:50:56 GMT
+      - Mon, 13 Apr 2020 05:32:16 GMT
       expires:
       - '-1'
       pragma:
@@ -191,10 +188,10 @@ interactions:
       ParameterSetName:
       - --resource-group --name --location --sku
       User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlUHJvdmlzaW9uaW5nSm9iOjJEUkdBOjJEQ0xJOjNBNUZURVNUOjNBNUZEQVRBQlJJQ0tTWTNIVzQ3UzZXRVY0RURSTjU0WVpCVk40OjdDMEI5NEQ5QTRCMTMzNTBGMzoyRE1ZOjNBfEVGREZGMzYzQjdCRkY2NTIifQ?api-version=2018-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlUHJvdmlzaW9uaW5nSm9iOjJEUkdBOjJEQ0xJOjNBNUZURVNUOjNBNUZEQVRBQlJJQ0tTNFlaN1ZIV0pPVzdNWktKUTJMTDNPSkhaOjdDQ0JEMTg1QzQwMkIyRDM3MDoyRE1ZOjNBfDJFOTg1RDkyQTYwQ0JFOUMifQ?api-version=2018-04-01
   response:
     body:
       string: '{"status":"Accepted"}'
@@ -206,7 +203,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Mar 2020 08:51:27 GMT
+      - Mon, 13 Apr 2020 05:32:46 GMT
       expires:
       - '-1'
       pragma:
@@ -232,10 +229,51 @@ interactions:
       ParameterSetName:
       - --resource-group --name --location --sku
       User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlUHJvdmlzaW9uaW5nSm9iOjJEUkdBOjJEQ0xJOjNBNUZURVNUOjNBNUZEQVRBQlJJQ0tTWTNIVzQ3UzZXRVY0RURSTjU0WVpCVk40OjdDMEI5NEQ5QTRCMTMzNTBGMzoyRE1ZOjNBfEVGREZGMzYzQjdCRkY2NTIifQ?api-version=2018-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlUHJvdmlzaW9uaW5nSm9iOjJEUkdBOjJEQ0xJOjNBNUZURVNUOjNBNUZEQVRBQlJJQ0tTNFlaN1ZIV0pPVzdNWktKUTJMTDNPSkhaOjdDQ0JEMTg1QzQwMkIyRDM3MDoyRE1ZOjNBfDJFOTg1RDkyQTYwQ0JFOUMifQ?api-version=2018-04-01
+  response:
+    body:
+      string: '{"status":"Accepted"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Apr 2020 05:33:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --sku
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlUHJvdmlzaW9uaW5nSm9iOjJEUkdBOjJEQ0xJOjNBNUZURVNUOjNBNUZEQVRBQlJJQ0tTNFlaN1ZIV0pPVzdNWktKUTJMTDNPSkhaOjdDQ0JEMTg1QzQwMkIyRDM3MDoyRE1ZOjNBfDJFOTg1RDkyQTYwQ0JFOUMifQ?api-version=2018-04-01
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -247,7 +285,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Mar 2020 08:51:58 GMT
+      - Mon, 13 Apr 2020 05:33:47 GMT
       expires:
       - '-1'
       pragma:
@@ -277,22 +315,22 @@ interactions:
       ParameterSetName:
       - --resource-group --name --location --sku
       User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/workspaces/my-test-workspace?api-version=2018-04-01
   response:
     body:
-      string: '{"properties":{"managedResourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/databricks-rg-my-test-workspace-6m4koqadkewk0","parameters":{"customPrivateSubnetName":{"type":"String","value":""},"customPublicSubnetName":{"type":"String","value":""},"customVirtualNetworkId":{"type":"String","value":""},"enableNoPublicIp":{"type":"Bool","value":false},"loadBalancerBackendPoolName":{"type":"String","value":""},"loadBalancerId":{"type":"String","value":""},"relayNamespaceName":{"type":"String","value":"dbrelay6m4koqadkewk0"},"storageAccountName":{"type":"String","value":"dbstorage6m4koqadkewk0"},"storageAccountSkuName":{"type":"String","value":"Standard_GRS"},"vnetAddressPrefix":{"type":"String","value":"10.139"},"resourceTags":{"type":"Object","value":{"application":"databricks","databricks-environment":"true"}},"amlWorkspaceId":{"type":"String","value":""}},"provisioningState":"Succeeded","authorizations":[{"principalId":"9a74af6f-d153-4348-988a-e2672920bee9","roleDefinitionId":"8e3af657-a8ff-443c-a75c-2fe8c4bcb635"}],"createdBy":{"oid":"31e600e0-d7ce-4e98-a927-19bb30042e44","puid":"1003200069544A27","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"updatedBy":{"oid":"31e600e0-d7ce-4e98-a927-19bb30042e44","puid":"1003200069544A27","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"workspaceId":"8075394944208041","workspaceUrl":"adb-8075394944208041.1.azuredatabricks.net","createdDateTime":"2020-03-12T08:49:38.9954664Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/workspaces/my-test-workspace","name":"my-test-workspace","type":"Microsoft.Databricks/workspaces","sku":{"name":"standard"},"location":"westus"}'
+      string: '{"properties":{"managedResourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/databricks-rg-my-test-workspace-kagj8ao0n6tvy","parameters":{"amlWorkspaceId":{"type":"String","value":""},"customPrivateSubnetName":{"type":"String","value":""},"customPublicSubnetName":{"type":"String","value":""},"customVirtualNetworkId":{"type":"String","value":""},"enableFedRampCertification":{"type":"Bool","value":false},"enableNoPublicIp":{"type":"Bool","value":false},"loadBalancerBackendPoolName":{"type":"String","value":""},"loadBalancerId":{"type":"String","value":""},"relayNamespaceName":{"type":"String","value":"dbrelaybi77pgjkssqlw"},"resourceTags":{"type":"Object","value":{"application":"databricks","databricks-environment":"true"}},"storageAccountName":{"type":"String","value":"dbstoragebi77pgjkssqlw"},"storageAccountSkuName":{"type":"String","value":"Standard_GRS"},"vnetAddressPrefix":{"type":"String","value":"10.139"}},"provisioningState":"Succeeded","authorizations":[{"principalId":"9a74af6f-d153-4348-988a-e2672920bee9","roleDefinitionId":"8e3af657-a8ff-443c-a75c-2fe8c4bcb635"}],"createdBy":{"oid":"31e600e0-d7ce-4e98-a927-19bb30042e44","puid":"1003200069544A27","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"updatedBy":{"oid":"31e600e0-d7ce-4e98-a927-19bb30042e44","puid":"1003200069544A27","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"workspaceId":"7643643742160867","workspaceUrl":"adb-7643643742160867.7.azuredatabricks.net","createdDateTime":"2020-04-13T05:30:57.8485625Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/workspaces/my-test-workspace","name":"my-test-workspace","type":"Microsoft.Databricks/workspaces","sku":{"name":"standard"},"location":"westus"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1808'
+      - '1867'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Mar 2020 08:51:58 GMT
+      - Mon, 13 Apr 2020 05:33:48 GMT
       expires:
       - '-1'
       pragma:
@@ -310,10 +348,7 @@ interactions:
       message: OK
 - request:
     body: '{"location": "westus", "properties": {"managedResourceGroupId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/custom-managed-rg",
-      "parameters": {"enableNoPublicIp": {"value": false}, "relayNamespaceName": {"value":
-      "custom-relay-space"}, "storageAccountName": {"value": "customdbstorage"}, "storageAccountSkuName":
-      {"value": "Standard_LRS"}, "vnetAddressPrefix": {"value": "10.139"}}}, "sku":
-      {"name": "standard"}}'
+      "parameters": {}}, "sku": {"name": "standard"}}'
     headers:
       Accept:
       - application/json
@@ -324,33 +359,32 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '436'
+      - '199'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
-      - --resource-group --name --location --sku --managed-resource-group --relay-namespace-name
-        --storage-account-name --storage-account-sku
+      - --resource-group --name --location --sku --managed-resource-group
       User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
       accept-language:
       - en-US
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/workspaces/my-custom-workspace?api-version=2018-04-01
   response:
     body:
-      string: '{"properties":{"managedResourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/custom-managed-rg","provisioningState":"Accepted","authorizations":[{"principalId":"9a74af6f-d153-4348-988a-e2672920bee9","roleDefinitionId":"8e3af657-a8ff-443c-a75c-2fe8c4bcb635"}],"createdBy":{"oid":"31e600e0-d7ce-4e98-a927-19bb30042e44","puid":"1003200069544A27","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"updatedBy":{"oid":"31e600e0-d7ce-4e98-a927-19bb30042e44","puid":"1003200069544A27","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"createdDateTime":"2020-03-12T08:52:04.365053Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/workspaces/my-custom-workspace","name":"my-custom-workspace","type":"Microsoft.Databricks/workspaces","sku":{"name":"standard"},"location":"westus"}'
+      string: '{"properties":{"managedResourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/custom-managed-rg","provisioningState":"Accepted","authorizations":[{"principalId":"9a74af6f-d153-4348-988a-e2672920bee9","roleDefinitionId":"8e3af657-a8ff-443c-a75c-2fe8c4bcb635"}],"createdBy":{"oid":"31e600e0-d7ce-4e98-a927-19bb30042e44","puid":"1003200069544A27","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"updatedBy":{"oid":"31e600e0-d7ce-4e98-a927-19bb30042e44","puid":"1003200069544A27","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"createdDateTime":"2020-04-13T05:33:55.96612Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/workspaces/my-custom-workspace","name":"my-custom-workspace","type":"Microsoft.Databricks/workspaces","sku":{"name":"standard"},"location":"westus"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VQcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1NZM0hXNDdTNldFVjRFRFJONTRZWkJWTjQ6N0MwQjk0RDlBNEIxMzM1MEYzOjJETVk6M0F8RDE1NEQyNDFDMDEwREFBMiJ9?api-version=2018-04-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VQcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M0WVo3VkhXSk9XN01aS0pRMkxMM09KSFo6N0NDQkQxODVDNDAyQjJEMzcwOjJETVk6M0F8NzgzREQyRjlBRDFDQ0ZBOCJ9?api-version=2018-04-01
       cache-control:
       - no-cache
       content-length:
-      - '947'
+      - '946'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Mar 2020 08:52:05 GMT
+      - Mon, 13 Apr 2020 05:33:57 GMT
       expires:
       - '-1'
       pragma:
@@ -376,13 +410,12 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --location --sku --managed-resource-group --relay-namespace-name
-        --storage-account-name --storage-account-sku
+      - --resource-group --name --location --sku --managed-resource-group
       User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VQcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1NZM0hXNDdTNldFVjRFRFJONTRZWkJWTjQ6N0MwQjk0RDlBNEIxMzM1MEYzOjJETVk6M0F8RDE1NEQyNDFDMDEwREFBMiJ9?api-version=2018-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VQcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M0WVo3VkhXSk9XN01aS0pRMkxMM09KSFo6N0NDQkQxODVDNDAyQjJEMzcwOjJETVk6M0F8NzgzREQyRjlBRDFDQ0ZBOCJ9?api-version=2018-04-01
   response:
     body:
       string: '{"status":"Accepted"}'
@@ -394,7 +427,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Mar 2020 08:52:21 GMT
+      - Mon, 13 Apr 2020 05:34:12 GMT
       expires:
       - '-1'
       pragma:
@@ -418,13 +451,12 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --location --sku --managed-resource-group --relay-namespace-name
-        --storage-account-name --storage-account-sku
+      - --resource-group --name --location --sku --managed-resource-group
       User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VQcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1NZM0hXNDdTNldFVjRFRFJONTRZWkJWTjQ6N0MwQjk0RDlBNEIxMzM1MEYzOjJETVk6M0F8RDE1NEQyNDFDMDEwREFBMiJ9?api-version=2018-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VQcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M0WVo3VkhXSk9XN01aS0pRMkxMM09KSFo6N0NDQkQxODVDNDAyQjJEMzcwOjJETVk6M0F8NzgzREQyRjlBRDFDQ0ZBOCJ9?api-version=2018-04-01
   response:
     body:
       string: '{"status":"Accepted"}'
@@ -436,7 +468,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Mar 2020 08:52:51 GMT
+      - Mon, 13 Apr 2020 05:34:43 GMT
       expires:
       - '-1'
       pragma:
@@ -460,13 +492,12 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --location --sku --managed-resource-group --relay-namespace-name
-        --storage-account-name --storage-account-sku
+      - --resource-group --name --location --sku --managed-resource-group
       User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VQcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1NZM0hXNDdTNldFVjRFRFJONTRZWkJWTjQ6N0MwQjk0RDlBNEIxMzM1MEYzOjJETVk6M0F8RDE1NEQyNDFDMDEwREFBMiJ9?api-version=2018-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VQcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M0WVo3VkhXSk9XN01aS0pRMkxMM09KSFo6N0NDQkQxODVDNDAyQjJEMzcwOjJETVk6M0F8NzgzREQyRjlBRDFDQ0ZBOCJ9?api-version=2018-04-01
   response:
     body:
       string: '{"status":"Accepted"}'
@@ -478,7 +509,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Mar 2020 08:53:22 GMT
+      - Mon, 13 Apr 2020 05:35:14 GMT
       expires:
       - '-1'
       pragma:
@@ -502,13 +533,12 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --location --sku --managed-resource-group --relay-namespace-name
-        --storage-account-name --storage-account-sku
+      - --resource-group --name --location --sku --managed-resource-group
       User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VQcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1NZM0hXNDdTNldFVjRFRFJONTRZWkJWTjQ6N0MwQjk0RDlBNEIxMzM1MEYzOjJETVk6M0F8RDE1NEQyNDFDMDEwREFBMiJ9?api-version=2018-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VQcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M0WVo3VkhXSk9XN01aS0pRMkxMM09KSFo6N0NDQkQxODVDNDAyQjJEMzcwOjJETVk6M0F8NzgzREQyRjlBRDFDQ0ZBOCJ9?api-version=2018-04-01
   response:
     body:
       string: '{"status":"Accepted"}'
@@ -520,7 +550,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Mar 2020 08:53:52 GMT
+      - Mon, 13 Apr 2020 05:35:44 GMT
       expires:
       - '-1'
       pragma:
@@ -544,13 +574,12 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --location --sku --managed-resource-group --relay-namespace-name
-        --storage-account-name --storage-account-sku
+      - --resource-group --name --location --sku --managed-resource-group
       User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VQcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1NZM0hXNDdTNldFVjRFRFJONTRZWkJWTjQ6N0MwQjk0RDlBNEIxMzM1MEYzOjJETVk6M0F8RDE1NEQyNDFDMDEwREFBMiJ9?api-version=2018-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VQcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M0WVo3VkhXSk9XN01aS0pRMkxMM09KSFo6N0NDQkQxODVDNDAyQjJEMzcwOjJETVk6M0F8NzgzREQyRjlBRDFDQ0ZBOCJ9?api-version=2018-04-01
   response:
     body:
       string: '{"status":"Accepted"}'
@@ -562,7 +591,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Mar 2020 08:54:24 GMT
+      - Mon, 13 Apr 2020 05:36:15 GMT
       expires:
       - '-1'
       pragma:
@@ -586,13 +615,12 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --location --sku --managed-resource-group --relay-namespace-name
-        --storage-account-name --storage-account-sku
+      - --resource-group --name --location --sku --managed-resource-group
       User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VQcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1NZM0hXNDdTNldFVjRFRFJONTRZWkJWTjQ6N0MwQjk0RDlBNEIxMzM1MEYzOjJETVk6M0F8RDE1NEQyNDFDMDEwREFBMiJ9?api-version=2018-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VQcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M0WVo3VkhXSk9XN01aS0pRMkxMM09KSFo6N0NDQkQxODVDNDAyQjJEMzcwOjJETVk6M0F8NzgzREQyRjlBRDFDQ0ZBOCJ9?api-version=2018-04-01
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -604,7 +632,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Mar 2020 08:54:54 GMT
+      - Mon, 13 Apr 2020 05:36:45 GMT
       expires:
       - '-1'
       pragma:
@@ -632,25 +660,24 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --location --sku --managed-resource-group --relay-namespace-name
-        --storage-account-name --storage-account-sku
+      - --resource-group --name --location --sku --managed-resource-group
       User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/workspaces/my-custom-workspace?api-version=2018-04-01
   response:
     body:
-      string: '{"properties":{"managedResourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/custom-managed-rg","parameters":{"customPrivateSubnetName":{"type":"String","value":""},"customPublicSubnetName":{"type":"String","value":""},"customVirtualNetworkId":{"type":"String","value":""},"enableNoPublicIp":{"type":"Bool","value":false},"loadBalancerBackendPoolName":{"type":"String","value":""},"loadBalancerId":{"type":"String","value":""},"relayNamespaceName":{"type":"String","value":"custom-relay-space"},"storageAccountName":{"type":"String","value":"customdbstorage"},"storageAccountSkuName":{"type":"String","value":"Standard_LRS"},"vnetAddressPrefix":{"type":"String","value":"10.139"},"resourceTags":{"type":"Object","value":{"application":"databricks","databricks-environment":"true"}},"amlWorkspaceId":{"type":"String","value":""}},"provisioningState":"Succeeded","authorizations":[{"principalId":"9a74af6f-d153-4348-988a-e2672920bee9","roleDefinitionId":"8e3af657-a8ff-443c-a75c-2fe8c4bcb635"}],"createdBy":{"oid":"31e600e0-d7ce-4e98-a927-19bb30042e44","puid":"1003200069544A27","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"updatedBy":{"oid":"31e600e0-d7ce-4e98-a927-19bb30042e44","puid":"1003200069544A27","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"workspaceId":"8331080537640658","workspaceUrl":"adb-8331080537640658.18.azuredatabricks.net","createdDateTime":"2020-03-12T08:52:04.365053Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/workspaces/my-custom-workspace","name":"my-custom-workspace","type":"Microsoft.Databricks/workspaces","sku":{"name":"standard"},"location":"westus"}'
+      string: '{"properties":{"managedResourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/custom-managed-rg","parameters":{"amlWorkspaceId":{"type":"String","value":""},"customPrivateSubnetName":{"type":"String","value":""},"customPublicSubnetName":{"type":"String","value":""},"customVirtualNetworkId":{"type":"String","value":""},"enableFedRampCertification":{"type":"Bool","value":false},"enableNoPublicIp":{"type":"Bool","value":false},"loadBalancerBackendPoolName":{"type":"String","value":""},"loadBalancerId":{"type":"String","value":""},"relayNamespaceName":{"type":"String","value":"dbrelaykdp7jidvgdcuc"},"resourceTags":{"type":"Object","value":{"application":"databricks","databricks-environment":"true"}},"storageAccountName":{"type":"String","value":"dbstoragekdp7jidvgdcuc"},"storageAccountSkuName":{"type":"String","value":"Standard_GRS"},"vnetAddressPrefix":{"type":"String","value":"10.139"}},"provisioningState":"Succeeded","authorizations":[{"principalId":"9a74af6f-d153-4348-988a-e2672920bee9","roleDefinitionId":"8e3af657-a8ff-443c-a75c-2fe8c4bcb635"}],"createdBy":{"oid":"31e600e0-d7ce-4e98-a927-19bb30042e44","puid":"1003200069544A27","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"updatedBy":{"oid":"31e600e0-d7ce-4e98-a927-19bb30042e44","puid":"1003200069544A27","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"workspaceId":"1444185497755338","workspaceUrl":"adb-1444185497755338.18.azuredatabricks.net","createdDateTime":"2020-04-13T05:33:55.96612Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/workspaces/my-custom-workspace","name":"my-custom-workspace","type":"Microsoft.Databricks/workspaces","sku":{"name":"standard"},"location":"westus"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1775'
+      - '1842'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Mar 2020 08:54:54 GMT
+      - Mon, 13 Apr 2020 05:36:46 GMT
       expires:
       - '-1'
       pragma:
@@ -684,24 +711,24 @@ interactions:
       ParameterSetName:
       - --resource-group --name --tags
       User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
       accept-language:
       - en-US
     method: PATCH
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/workspaces/my-test-workspace?api-version=2018-04-01
   response:
     body:
-      string: '{"properties":{"managedResourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/databricks-rg-my-test-workspace-6m4koqadkewk0","publisherPackageId":"databricks.databricks-workspace-previewdatabricks-workspace.0.0.2","parameters":{"customPrivateSubnetName":{"type":"String","value":""},"customPublicSubnetName":{"type":"String","value":""},"customVirtualNetworkId":{"type":"String","value":""},"enableNoPublicIp":{"type":"Bool","value":false},"loadBalancerBackendPoolName":{"type":"String","value":""},"loadBalancerId":{"type":"String","value":""},"relayNamespaceName":{"type":"String","value":"dbrelay6m4koqadkewk0"},"storageAccountName":{"type":"String","value":"dbstorage6m4koqadkewk0"},"storageAccountSkuName":{"type":"String","value":"Standard_GRS"},"vnetAddressPrefix":{"type":"String","value":"10.139"},"resourceTags":{"type":"Object","value":{"application":"databricks","databricks-environment":"true"}},"amlWorkspaceId":{"type":"String","value":""}},"provisioningState":"Succeeded","authorizations":[{"principalId":"9a74af6f-d153-4348-988a-e2672920bee9","roleDefinitionId":"8e3af657-a8ff-443c-a75c-2fe8c4bcb635"}],"createdBy":{"oid":"31e600e0-d7ce-4e98-a927-19bb30042e44","puid":"1003200069544A27","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"updatedBy":{"oid":"31e600e0-d7ce-4e98-a927-19bb30042e44","puid":"1003200069544A27","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"workspaceId":"8075394944208041","workspaceUrl":"adb-8075394944208041.1.azuredatabricks.net","createdDateTime":"2020-03-12T08:49:38.9954664Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/workspaces/my-test-workspace","name":"my-test-workspace","type":"Microsoft.Databricks/workspaces","sku":{"name":"standard"},"kind":"MarketPlace","location":"westus","tags":{"type":"test"}}'
+      string: '{"properties":{"managedResourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/databricks-rg-my-test-workspace-kagj8ao0n6tvy","publisherPackageId":"databricks.databricks-workspace-previewdatabricks-workspace.0.0.2","parameters":{"amlWorkspaceId":{"type":"String","value":""},"customPrivateSubnetName":{"type":"String","value":""},"customPublicSubnetName":{"type":"String","value":""},"customVirtualNetworkId":{"type":"String","value":""},"enableFedRampCertification":{"type":"Bool","value":false},"enableNoPublicIp":{"type":"Bool","value":false},"loadBalancerBackendPoolName":{"type":"String","value":""},"loadBalancerId":{"type":"String","value":""},"relayNamespaceName":{"type":"String","value":"dbrelaybi77pgjkssqlw"},"resourceTags":{"type":"Object","value":{"application":"databricks","databricks-environment":"true"}},"storageAccountName":{"type":"String","value":"dbstoragebi77pgjkssqlw"},"storageAccountSkuName":{"type":"String","value":"Standard_GRS"},"vnetAddressPrefix":{"type":"String","value":"10.139"}},"provisioningState":"Succeeded","authorizations":[{"principalId":"9a74af6f-d153-4348-988a-e2672920bee9","roleDefinitionId":"8e3af657-a8ff-443c-a75c-2fe8c4bcb635"}],"createdBy":{"oid":"31e600e0-d7ce-4e98-a927-19bb30042e44","puid":"1003200069544A27","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"updatedBy":{"oid":"31e600e0-d7ce-4e98-a927-19bb30042e44","puid":"1003200069544A27","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"workspaceId":"7643643742160867","workspaceUrl":"adb-7643643742160867.7.azuredatabricks.net","createdDateTime":"2020-04-13T05:30:57.8485625Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/workspaces/my-test-workspace","name":"my-test-workspace","type":"Microsoft.Databricks/workspaces","sku":{"name":"standard"},"kind":"MarketPlace","location":"westus","tags":{"type":"test"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1941'
+      - '2000'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Mar 2020 08:55:05 GMT
+      - Mon, 13 Apr 2020 05:36:55 GMT
       expires:
       - '-1'
       pragma:
@@ -715,7 +742,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -733,24 +760,24 @@ interactions:
       ParameterSetName:
       - --resource-group --name
       User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/workspaces/my-test-workspace?api-version=2018-04-01
   response:
     body:
-      string: '{"properties":{"managedResourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/databricks-rg-my-test-workspace-6m4koqadkewk0","parameters":{"customPrivateSubnetName":{"type":"String","value":""},"customPublicSubnetName":{"type":"String","value":""},"customVirtualNetworkId":{"type":"String","value":""},"enableNoPublicIp":{"type":"Bool","value":false},"loadBalancerBackendPoolName":{"type":"String","value":""},"loadBalancerId":{"type":"String","value":""},"relayNamespaceName":{"type":"String","value":"dbrelay6m4koqadkewk0"},"storageAccountName":{"type":"String","value":"dbstorage6m4koqadkewk0"},"storageAccountSkuName":{"type":"String","value":"Standard_GRS"},"vnetAddressPrefix":{"type":"String","value":"10.139"},"resourceTags":{"type":"Object","value":{"application":"databricks","databricks-environment":"true"}},"amlWorkspaceId":{"type":"String","value":""}},"provisioningState":"Succeeded","authorizations":[{"principalId":"9a74af6f-d153-4348-988a-e2672920bee9","roleDefinitionId":"8e3af657-a8ff-443c-a75c-2fe8c4bcb635"}],"createdBy":{"oid":"31e600e0-d7ce-4e98-a927-19bb30042e44","puid":"1003200069544A27","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"updatedBy":{"oid":"31e600e0-d7ce-4e98-a927-19bb30042e44","puid":"1003200069544A27","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"workspaceId":"8075394944208041","workspaceUrl":"adb-8075394944208041.1.azuredatabricks.net","createdDateTime":"2020-03-12T08:49:38.9954664Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/workspaces/my-test-workspace","name":"my-test-workspace","type":"Microsoft.Databricks/workspaces","sku":{"name":"standard"},"location":"westus","tags":{"type":"test"}}'
+      string: '{"properties":{"managedResourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/databricks-rg-my-test-workspace-kagj8ao0n6tvy","parameters":{"amlWorkspaceId":{"type":"String","value":""},"customPrivateSubnetName":{"type":"String","value":""},"customPublicSubnetName":{"type":"String","value":""},"customVirtualNetworkId":{"type":"String","value":""},"enableFedRampCertification":{"type":"Bool","value":false},"enableNoPublicIp":{"type":"Bool","value":false},"loadBalancerBackendPoolName":{"type":"String","value":""},"loadBalancerId":{"type":"String","value":""},"relayNamespaceName":{"type":"String","value":"dbrelaybi77pgjkssqlw"},"resourceTags":{"type":"Object","value":{"application":"databricks","databricks-environment":"true"}},"storageAccountName":{"type":"String","value":"dbstoragebi77pgjkssqlw"},"storageAccountSkuName":{"type":"String","value":"Standard_GRS"},"vnetAddressPrefix":{"type":"String","value":"10.139"}},"provisioningState":"Succeeded","authorizations":[{"principalId":"9a74af6f-d153-4348-988a-e2672920bee9","roleDefinitionId":"8e3af657-a8ff-443c-a75c-2fe8c4bcb635"}],"createdBy":{"oid":"31e600e0-d7ce-4e98-a927-19bb30042e44","puid":"1003200069544A27","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"updatedBy":{"oid":"31e600e0-d7ce-4e98-a927-19bb30042e44","puid":"1003200069544A27","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"workspaceId":"7643643742160867","workspaceUrl":"adb-7643643742160867.7.azuredatabricks.net","createdDateTime":"2020-04-13T05:30:57.8485625Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/workspaces/my-test-workspace","name":"my-test-workspace","type":"Microsoft.Databricks/workspaces","sku":{"name":"standard"},"location":"westus","tags":{"type":"test"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1831'
+      - '1890'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Mar 2020 08:55:07 GMT
+      - Mon, 13 Apr 2020 05:36:57 GMT
       expires:
       - '-1'
       pragma:
@@ -780,24 +807,24 @@ interactions:
       ParameterSetName:
       - --ids
       User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/workspaces/my-test-workspace?api-version=2018-04-01
   response:
     body:
-      string: '{"properties":{"managedResourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/databricks-rg-my-test-workspace-6m4koqadkewk0","parameters":{"customPrivateSubnetName":{"type":"String","value":""},"customPublicSubnetName":{"type":"String","value":""},"customVirtualNetworkId":{"type":"String","value":""},"enableNoPublicIp":{"type":"Bool","value":false},"loadBalancerBackendPoolName":{"type":"String","value":""},"loadBalancerId":{"type":"String","value":""},"relayNamespaceName":{"type":"String","value":"dbrelay6m4koqadkewk0"},"storageAccountName":{"type":"String","value":"dbstorage6m4koqadkewk0"},"storageAccountSkuName":{"type":"String","value":"Standard_GRS"},"vnetAddressPrefix":{"type":"String","value":"10.139"},"resourceTags":{"type":"Object","value":{"application":"databricks","databricks-environment":"true"}},"amlWorkspaceId":{"type":"String","value":""}},"provisioningState":"Succeeded","authorizations":[{"principalId":"9a74af6f-d153-4348-988a-e2672920bee9","roleDefinitionId":"8e3af657-a8ff-443c-a75c-2fe8c4bcb635"}],"createdBy":{"oid":"31e600e0-d7ce-4e98-a927-19bb30042e44","puid":"1003200069544A27","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"updatedBy":{"oid":"31e600e0-d7ce-4e98-a927-19bb30042e44","puid":"1003200069544A27","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"workspaceId":"8075394944208041","workspaceUrl":"adb-8075394944208041.1.azuredatabricks.net","createdDateTime":"2020-03-12T08:49:38.9954664Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/workspaces/my-test-workspace","name":"my-test-workspace","type":"Microsoft.Databricks/workspaces","sku":{"name":"standard"},"location":"westus","tags":{"type":"test"}}'
+      string: '{"properties":{"managedResourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/databricks-rg-my-test-workspace-kagj8ao0n6tvy","parameters":{"amlWorkspaceId":{"type":"String","value":""},"customPrivateSubnetName":{"type":"String","value":""},"customPublicSubnetName":{"type":"String","value":""},"customVirtualNetworkId":{"type":"String","value":""},"enableFedRampCertification":{"type":"Bool","value":false},"enableNoPublicIp":{"type":"Bool","value":false},"loadBalancerBackendPoolName":{"type":"String","value":""},"loadBalancerId":{"type":"String","value":""},"relayNamespaceName":{"type":"String","value":"dbrelaybi77pgjkssqlw"},"resourceTags":{"type":"Object","value":{"application":"databricks","databricks-environment":"true"}},"storageAccountName":{"type":"String","value":"dbstoragebi77pgjkssqlw"},"storageAccountSkuName":{"type":"String","value":"Standard_GRS"},"vnetAddressPrefix":{"type":"String","value":"10.139"}},"provisioningState":"Succeeded","authorizations":[{"principalId":"9a74af6f-d153-4348-988a-e2672920bee9","roleDefinitionId":"8e3af657-a8ff-443c-a75c-2fe8c4bcb635"}],"createdBy":{"oid":"31e600e0-d7ce-4e98-a927-19bb30042e44","puid":"1003200069544A27","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"updatedBy":{"oid":"31e600e0-d7ce-4e98-a927-19bb30042e44","puid":"1003200069544A27","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"workspaceId":"7643643742160867","workspaceUrl":"adb-7643643742160867.7.azuredatabricks.net","createdDateTime":"2020-04-13T05:30:57.8485625Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/workspaces/my-test-workspace","name":"my-test-workspace","type":"Microsoft.Databricks/workspaces","sku":{"name":"standard"},"location":"westus","tags":{"type":"test"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1831'
+      - '1890'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Mar 2020 08:55:09 GMT
+      - Mon, 13 Apr 2020 05:37:00 GMT
       expires:
       - '-1'
       pragma:
@@ -827,24 +854,24 @@ interactions:
       ParameterSetName:
       - --resource-group
       User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/workspaces?api-version=2018-04-01
   response:
     body:
-      string: '{"value":[{"properties":{"managedResourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/custom-managed-rg","parameters":{"customPrivateSubnetName":{"type":"String","value":""},"customPublicSubnetName":{"type":"String","value":""},"customVirtualNetworkId":{"type":"String","value":""},"enableNoPublicIp":{"type":"Bool","value":false},"loadBalancerBackendPoolName":{"type":"String","value":""},"loadBalancerId":{"type":"String","value":""},"relayNamespaceName":{"type":"String","value":"custom-relay-space"},"storageAccountName":{"type":"String","value":"customdbstorage"},"storageAccountSkuName":{"type":"String","value":"Standard_LRS"},"vnetAddressPrefix":{"type":"String","value":"10.139"},"resourceTags":{"type":"Object","value":{"application":"databricks","databricks-environment":"true"}},"amlWorkspaceId":{"type":"String","value":""}},"provisioningState":"Succeeded","authorizations":[{"principalId":"9a74af6f-d153-4348-988a-e2672920bee9","roleDefinitionId":"8e3af657-a8ff-443c-a75c-2fe8c4bcb635"}],"createdBy":{"oid":"31e600e0-d7ce-4e98-a927-19bb30042e44","puid":"1003200069544A27","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"updatedBy":{"oid":"31e600e0-d7ce-4e98-a927-19bb30042e44","puid":"1003200069544A27","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"workspaceId":"8331080537640658","workspaceUrl":"adb-8331080537640658.18.azuredatabricks.net","createdDateTime":"2020-03-12T08:52:04.365053Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/workspaces/my-custom-workspace","name":"my-custom-workspace","type":"Microsoft.Databricks/workspaces","sku":{"name":"standard"},"location":"westus"},{"properties":{"managedResourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/databricks-rg-my-test-workspace-6m4koqadkewk0","parameters":{"customPrivateSubnetName":{"type":"String","value":""},"customPublicSubnetName":{"type":"String","value":""},"customVirtualNetworkId":{"type":"String","value":""},"enableNoPublicIp":{"type":"Bool","value":false},"loadBalancerBackendPoolName":{"type":"String","value":""},"loadBalancerId":{"type":"String","value":""},"relayNamespaceName":{"type":"String","value":"dbrelay6m4koqadkewk0"},"storageAccountName":{"type":"String","value":"dbstorage6m4koqadkewk0"},"storageAccountSkuName":{"type":"String","value":"Standard_GRS"},"vnetAddressPrefix":{"type":"String","value":"10.139"},"resourceTags":{"type":"Object","value":{"application":"databricks","databricks-environment":"true"}},"amlWorkspaceId":{"type":"String","value":""}},"provisioningState":"Succeeded","authorizations":[{"principalId":"9a74af6f-d153-4348-988a-e2672920bee9","roleDefinitionId":"8e3af657-a8ff-443c-a75c-2fe8c4bcb635"}],"createdBy":{"oid":"31e600e0-d7ce-4e98-a927-19bb30042e44","puid":"1003200069544A27","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"updatedBy":{"oid":"31e600e0-d7ce-4e98-a927-19bb30042e44","puid":"1003200069544A27","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"workspaceId":"8075394944208041","workspaceUrl":"adb-8075394944208041.1.azuredatabricks.net","createdDateTime":"2020-03-12T08:49:38.9954664Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/workspaces/my-test-workspace","name":"my-test-workspace","type":"Microsoft.Databricks/workspaces","sku":{"name":"standard"},"location":"westus","tags":{"type":"test"}}]}'
+      string: '{"value":[{"properties":{"managedResourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/custom-managed-rg","parameters":{"amlWorkspaceId":{"type":"String","value":""},"customPrivateSubnetName":{"type":"String","value":""},"customPublicSubnetName":{"type":"String","value":""},"customVirtualNetworkId":{"type":"String","value":""},"enableFedRampCertification":{"type":"Bool","value":false},"enableNoPublicIp":{"type":"Bool","value":false},"loadBalancerBackendPoolName":{"type":"String","value":""},"loadBalancerId":{"type":"String","value":""},"relayNamespaceName":{"type":"String","value":"dbrelaykdp7jidvgdcuc"},"resourceTags":{"type":"Object","value":{"application":"databricks","databricks-environment":"true"}},"storageAccountName":{"type":"String","value":"dbstoragekdp7jidvgdcuc"},"storageAccountSkuName":{"type":"String","value":"Standard_GRS"},"vnetAddressPrefix":{"type":"String","value":"10.139"}},"provisioningState":"Succeeded","authorizations":[{"principalId":"9a74af6f-d153-4348-988a-e2672920bee9","roleDefinitionId":"8e3af657-a8ff-443c-a75c-2fe8c4bcb635"}],"createdBy":{"oid":"31e600e0-d7ce-4e98-a927-19bb30042e44","puid":"1003200069544A27","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"updatedBy":{"oid":"31e600e0-d7ce-4e98-a927-19bb30042e44","puid":"1003200069544A27","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"workspaceId":"1444185497755338","workspaceUrl":"adb-1444185497755338.18.azuredatabricks.net","createdDateTime":"2020-04-13T05:33:55.96612Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/workspaces/my-custom-workspace","name":"my-custom-workspace","type":"Microsoft.Databricks/workspaces","sku":{"name":"standard"},"location":"westus"},{"properties":{"managedResourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/databricks-rg-my-test-workspace-kagj8ao0n6tvy","parameters":{"amlWorkspaceId":{"type":"String","value":""},"customPrivateSubnetName":{"type":"String","value":""},"customPublicSubnetName":{"type":"String","value":""},"customVirtualNetworkId":{"type":"String","value":""},"enableFedRampCertification":{"type":"Bool","value":false},"enableNoPublicIp":{"type":"Bool","value":false},"loadBalancerBackendPoolName":{"type":"String","value":""},"loadBalancerId":{"type":"String","value":""},"relayNamespaceName":{"type":"String","value":"dbrelaybi77pgjkssqlw"},"resourceTags":{"type":"Object","value":{"application":"databricks","databricks-environment":"true"}},"storageAccountName":{"type":"String","value":"dbstoragebi77pgjkssqlw"},"storageAccountSkuName":{"type":"String","value":"Standard_GRS"},"vnetAddressPrefix":{"type":"String","value":"10.139"}},"provisioningState":"Succeeded","authorizations":[{"principalId":"9a74af6f-d153-4348-988a-e2672920bee9","roleDefinitionId":"8e3af657-a8ff-443c-a75c-2fe8c4bcb635"}],"createdBy":{"oid":"31e600e0-d7ce-4e98-a927-19bb30042e44","puid":"1003200069544A27","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"updatedBy":{"oid":"31e600e0-d7ce-4e98-a927-19bb30042e44","puid":"1003200069544A27","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"workspaceId":"7643643742160867","workspaceUrl":"adb-7643643742160867.7.azuredatabricks.net","createdDateTime":"2020-04-13T05:30:57.8485625Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/workspaces/my-test-workspace","name":"my-test-workspace","type":"Microsoft.Databricks/workspaces","sku":{"name":"standard"},"location":"westus","tags":{"type":"test"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '3619'
+      - '3745'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Mar 2020 08:55:11 GMT
+      - Mon, 13 Apr 2020 05:37:01 GMT
       expires:
       - '-1'
       pragma:
@@ -876,8 +903,8 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
       accept-language:
       - en-US
     method: DELETE
@@ -891,513 +918,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Thu, 12 Mar 2020 08:55:12 GMT
+      - Mon, 13 Apr 2020 05:37:04 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlRGVwcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1NZM0hXNDdTNldFVjRFRFJONTRZWkJWTjQ6N0MwQjk0RDlBNEIxMzM1MEYzOjJETVk6fDVFMTJGQzkwQUM0OUJCNkQifQ?api-version=2018-04-01
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-deletes:
-      - '14998'
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - databricks workspace delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name -y
-      User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlRGVwcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1NZM0hXNDdTNldFVjRFRFJONTRZWkJWTjQ6N0MwQjk0RDlBNEIxMzM1MEYzOjJETVk6fDVFMTJGQzkwQUM0OUJCNkQifQ?api-version=2018-04-01
-  response:
-    body:
-      string: '{"status":"Accepted"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '21'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 12 Mar 2020 08:55:28 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - databricks workspace delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name -y
-      User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlRGVwcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1NZM0hXNDdTNldFVjRFRFJONTRZWkJWTjQ6N0MwQjk0RDlBNEIxMzM1MEYzOjJETVk6fDVFMTJGQzkwQUM0OUJCNkQifQ?api-version=2018-04-01
-  response:
-    body:
-      string: '{"status":"Accepted"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '21'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 12 Mar 2020 08:55:59 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - databricks workspace delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name -y
-      User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlRGVwcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1NZM0hXNDdTNldFVjRFRFJONTRZWkJWTjQ6N0MwQjk0RDlBNEIxMzM1MEYzOjJETVk6fDVFMTJGQzkwQUM0OUJCNkQifQ?api-version=2018-04-01
-  response:
-    body:
-      string: '{"status":"Accepted"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '21'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 12 Mar 2020 08:56:30 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - databricks workspace delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name -y
-      User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlRGVwcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1NZM0hXNDdTNldFVjRFRFJONTRZWkJWTjQ6N0MwQjk0RDlBNEIxMzM1MEYzOjJETVk6fDVFMTJGQzkwQUM0OUJCNkQifQ?api-version=2018-04-01
-  response:
-    body:
-      string: '{"status":"Accepted"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '21'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 12 Mar 2020 08:57:00 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - databricks workspace delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name -y
-      User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlRGVwcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1NZM0hXNDdTNldFVjRFRFJONTRZWkJWTjQ6N0MwQjk0RDlBNEIxMzM1MEYzOjJETVk6fDVFMTJGQzkwQUM0OUJCNkQifQ?api-version=2018-04-01
-  response:
-    body:
-      string: '{"status":"Accepted"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '21'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 12 Mar 2020 08:57:30 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - databricks workspace delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name -y
-      User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlRGVwcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1NZM0hXNDdTNldFVjRFRFJONTRZWkJWTjQ6N0MwQjk0RDlBNEIxMzM1MEYzOjJETVk6fDVFMTJGQzkwQUM0OUJCNkQifQ?api-version=2018-04-01
-  response:
-    body:
-      string: '{"status":"Accepted"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '21'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 12 Mar 2020 08:58:02 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - databricks workspace delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name -y
-      User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlRGVwcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1NZM0hXNDdTNldFVjRFRFJONTRZWkJWTjQ6N0MwQjk0RDlBNEIxMzM1MEYzOjJETVk6fDVFMTJGQzkwQUM0OUJCNkQifQ?api-version=2018-04-01
-  response:
-    body:
-      string: '{"status":"Accepted"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '21'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 12 Mar 2020 08:58:32 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - databricks workspace delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name -y
-      User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlRGVwcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1NZM0hXNDdTNldFVjRFRFJONTRZWkJWTjQ6N0MwQjk0RDlBNEIxMzM1MEYzOjJETVk6fDVFMTJGQzkwQUM0OUJCNkQifQ?api-version=2018-04-01
-  response:
-    body:
-      string: '{"status":"Accepted"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '21'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 12 Mar 2020 08:59:02 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - databricks workspace delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name -y
-      User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlRGVwcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1NZM0hXNDdTNldFVjRFRFJONTRZWkJWTjQ6N0MwQjk0RDlBNEIxMzM1MEYzOjJETVk6fDVFMTJGQzkwQUM0OUJCNkQifQ?api-version=2018-04-01
-  response:
-    body:
-      string: '{"status":"Accepted"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '21'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 12 Mar 2020 08:59:33 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - databricks workspace delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name -y
-      User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlRGVwcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1NZM0hXNDdTNldFVjRFRFJONTRZWkJWTjQ6N0MwQjk0RDlBNEIxMzM1MEYzOjJETVk6fDVFMTJGQzkwQUM0OUJCNkQifQ?api-version=2018-04-01
-  response:
-    body:
-      string: '{"status":"Accepted"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '21'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 12 Mar 2020 09:00:04 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - databricks workspace delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name -y
-      User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlRGVwcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1NZM0hXNDdTNldFVjRFRFJONTRZWkJWTjQ6N0MwQjk0RDlBNEIxMzM1MEYzOjJETVk6fDVFMTJGQzkwQUM0OUJCNkQifQ?api-version=2018-04-01
-  response:
-    body:
-      string: '{"status":"Succeeded"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '22'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 12 Mar 2020 09:00:34 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding,Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - databricks workspace delete
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '0'
-      ParameterSetName:
-      - --resource-group --name -y
-      User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
-      accept-language:
-      - en-US
-    method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/workspaces/my-custom-workspace?api-version=2018-04-01
-  response:
-    body:
-      string: ''
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '0'
-      date:
-      - Thu, 12 Mar 2020 09:00:38 GMT
-      expires:
-      - '-1'
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLU1kzSFc0N1M2V0VWNEVEUk41NFlaQlZONDo3QzBCOTREOUE0QjEzMzUwRjM6MkRNWTp8MzFCOTc3QkRDNDM4Q0IwRiJ9?api-version=2018-04-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlRGVwcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M0WVo3VkhXSk9XN01aS0pRMkxMM09KSFo6N0NDQkQxODVDNDAyQjJEMzcwOjJETVk6fEM0Njc2RUI4MkVBNDQ5NEEifQ?api-version=2018-04-01
       pragma:
       - no-cache
       strict-transport-security:
@@ -1423,10 +948,10 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLU1kzSFc0N1M2V0VWNEVEUk41NFlaQlZONDo3QzBCOTREOUE0QjEzMzUwRjM6MkRNWTp8MzFCOTc3QkRDNDM4Q0IwRiJ9?api-version=2018-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlRGVwcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M0WVo3VkhXSk9XN01aS0pRMkxMM09KSFo6N0NDQkQxODVDNDAyQjJEMzcwOjJETVk6fEM0Njc2RUI4MkVBNDQ5NEEifQ?api-version=2018-04-01
   response:
     body:
       string: '{"status":"Accepted"}'
@@ -1438,7 +963,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Mar 2020 09:00:55 GMT
+      - Mon, 13 Apr 2020 05:37:21 GMT
       expires:
       - '-1'
       pragma:
@@ -1464,10 +989,10 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLU1kzSFc0N1M2V0VWNEVEUk41NFlaQlZONDo3QzBCOTREOUE0QjEzMzUwRjM6MkRNWTp8MzFCOTc3QkRDNDM4Q0IwRiJ9?api-version=2018-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlRGVwcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M0WVo3VkhXSk9XN01aS0pRMkxMM09KSFo6N0NDQkQxODVDNDAyQjJEMzcwOjJETVk6fEM0Njc2RUI4MkVBNDQ5NEEifQ?api-version=2018-04-01
   response:
     body:
       string: '{"status":"Accepted"}'
@@ -1479,7 +1004,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Mar 2020 09:01:25 GMT
+      - Mon, 13 Apr 2020 05:37:51 GMT
       expires:
       - '-1'
       pragma:
@@ -1505,10 +1030,10 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLU1kzSFc0N1M2V0VWNEVEUk41NFlaQlZONDo3QzBCOTREOUE0QjEzMzUwRjM6MkRNWTp8MzFCOTc3QkRDNDM4Q0IwRiJ9?api-version=2018-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlRGVwcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M0WVo3VkhXSk9XN01aS0pRMkxMM09KSFo6N0NDQkQxODVDNDAyQjJEMzcwOjJETVk6fEM0Njc2RUI4MkVBNDQ5NEEifQ?api-version=2018-04-01
   response:
     body:
       string: '{"status":"Accepted"}'
@@ -1520,7 +1045,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Mar 2020 09:01:55 GMT
+      - Mon, 13 Apr 2020 05:38:22 GMT
       expires:
       - '-1'
       pragma:
@@ -1546,10 +1071,10 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLU1kzSFc0N1M2V0VWNEVEUk41NFlaQlZONDo3QzBCOTREOUE0QjEzMzUwRjM6MkRNWTp8MzFCOTc3QkRDNDM4Q0IwRiJ9?api-version=2018-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlRGVwcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M0WVo3VkhXSk9XN01aS0pRMkxMM09KSFo6N0NDQkQxODVDNDAyQjJEMzcwOjJETVk6fEM0Njc2RUI4MkVBNDQ5NEEifQ?api-version=2018-04-01
   response:
     body:
       string: '{"status":"Accepted"}'
@@ -1561,7 +1086,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Mar 2020 09:02:26 GMT
+      - Mon, 13 Apr 2020 05:38:53 GMT
       expires:
       - '-1'
       pragma:
@@ -1587,10 +1112,10 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLU1kzSFc0N1M2V0VWNEVEUk41NFlaQlZONDo3QzBCOTREOUE0QjEzMzUwRjM6MkRNWTp8MzFCOTc3QkRDNDM4Q0IwRiJ9?api-version=2018-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlRGVwcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M0WVo3VkhXSk9XN01aS0pRMkxMM09KSFo6N0NDQkQxODVDNDAyQjJEMzcwOjJETVk6fEM0Njc2RUI4MkVBNDQ5NEEifQ?api-version=2018-04-01
   response:
     body:
       string: '{"status":"Accepted"}'
@@ -1602,7 +1127,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Mar 2020 09:02:56 GMT
+      - Mon, 13 Apr 2020 05:39:23 GMT
       expires:
       - '-1'
       pragma:
@@ -1628,10 +1153,10 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLU1kzSFc0N1M2V0VWNEVEUk41NFlaQlZONDo3QzBCOTREOUE0QjEzMzUwRjM6MkRNWTp8MzFCOTc3QkRDNDM4Q0IwRiJ9?api-version=2018-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlRGVwcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M0WVo3VkhXSk9XN01aS0pRMkxMM09KSFo6N0NDQkQxODVDNDAyQjJEMzcwOjJETVk6fEM0Njc2RUI4MkVBNDQ5NEEifQ?api-version=2018-04-01
   response:
     body:
       string: '{"status":"Accepted"}'
@@ -1643,7 +1168,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Mar 2020 09:03:26 GMT
+      - Mon, 13 Apr 2020 05:39:53 GMT
       expires:
       - '-1'
       pragma:
@@ -1669,10 +1194,10 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLU1kzSFc0N1M2V0VWNEVEUk41NFlaQlZONDo3QzBCOTREOUE0QjEzMzUwRjM6MkRNWTp8MzFCOTc3QkRDNDM4Q0IwRiJ9?api-version=2018-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlRGVwcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M0WVo3VkhXSk9XN01aS0pRMkxMM09KSFo6N0NDQkQxODVDNDAyQjJEMzcwOjJETVk6fEM0Njc2RUI4MkVBNDQ5NEEifQ?api-version=2018-04-01
   response:
     body:
       string: '{"status":"Accepted"}'
@@ -1684,7 +1209,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Mar 2020 09:03:57 GMT
+      - Mon, 13 Apr 2020 05:40:24 GMT
       expires:
       - '-1'
       pragma:
@@ -1710,10 +1235,10 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLU1kzSFc0N1M2V0VWNEVEUk41NFlaQlZONDo3QzBCOTREOUE0QjEzMzUwRjM6MkRNWTp8MzFCOTc3QkRDNDM4Q0IwRiJ9?api-version=2018-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlRGVwcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M0WVo3VkhXSk9XN01aS0pRMkxMM09KSFo6N0NDQkQxODVDNDAyQjJEMzcwOjJETVk6fEM0Njc2RUI4MkVBNDQ5NEEifQ?api-version=2018-04-01
   response:
     body:
       string: '{"status":"Accepted"}'
@@ -1725,7 +1250,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Mar 2020 09:04:27 GMT
+      - Mon, 13 Apr 2020 05:40:55 GMT
       expires:
       - '-1'
       pragma:
@@ -1751,10 +1276,10 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLU1kzSFc0N1M2V0VWNEVEUk41NFlaQlZONDo3QzBCOTREOUE0QjEzMzUwRjM6MkRNWTp8MzFCOTc3QkRDNDM4Q0IwRiJ9?api-version=2018-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlRGVwcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M0WVo3VkhXSk9XN01aS0pRMkxMM09KSFo6N0NDQkQxODVDNDAyQjJEMzcwOjJETVk6fEM0Njc2RUI4MkVBNDQ5NEEifQ?api-version=2018-04-01
   response:
     body:
       string: '{"status":"Accepted"}'
@@ -1766,7 +1291,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Mar 2020 09:04:58 GMT
+      - Mon, 13 Apr 2020 05:41:25 GMT
       expires:
       - '-1'
       pragma:
@@ -1792,10 +1317,10 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLU1kzSFc0N1M2V0VWNEVEUk41NFlaQlZONDo3QzBCOTREOUE0QjEzMzUwRjM6MkRNWTp8MzFCOTc3QkRDNDM4Q0IwRiJ9?api-version=2018-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlRGVwcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M0WVo3VkhXSk9XN01aS0pRMkxMM09KSFo6N0NDQkQxODVDNDAyQjJEMzcwOjJETVk6fEM0Njc2RUI4MkVBNDQ5NEEifQ?api-version=2018-04-01
   response:
     body:
       string: '{"status":"Accepted"}'
@@ -1807,7 +1332,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Mar 2020 09:05:29 GMT
+      - Mon, 13 Apr 2020 05:41:56 GMT
       expires:
       - '-1'
       pragma:
@@ -1833,10 +1358,10 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLU1kzSFc0N1M2V0VWNEVEUk41NFlaQlZONDo3QzBCOTREOUE0QjEzMzUwRjM6MkRNWTp8MzFCOTc3QkRDNDM4Q0IwRiJ9?api-version=2018-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlRGVwcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M0WVo3VkhXSk9XN01aS0pRMkxMM09KSFo6N0NDQkQxODVDNDAyQjJEMzcwOjJETVk6fEM0Njc2RUI4MkVBNDQ5NEEifQ?api-version=2018-04-01
   response:
     body:
       string: '{"status":"Accepted"}'
@@ -1848,7 +1373,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Mar 2020 09:05:59 GMT
+      - Mon, 13 Apr 2020 05:42:26 GMT
       expires:
       - '-1'
       pragma:
@@ -1874,10 +1399,10 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLU1kzSFc0N1M2V0VWNEVEUk41NFlaQlZONDo3QzBCOTREOUE0QjEzMzUwRjM6MkRNWTp8MzFCOTc3QkRDNDM4Q0IwRiJ9?api-version=2018-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlRGVwcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M0WVo3VkhXSk9XN01aS0pRMkxMM09KSFo6N0NDQkQxODVDNDAyQjJEMzcwOjJETVk6fEM0Njc2RUI4MkVBNDQ5NEEifQ?api-version=2018-04-01
   response:
     body:
       string: '{"status":"Accepted"}'
@@ -1889,7 +1414,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Mar 2020 09:06:29 GMT
+      - Mon, 13 Apr 2020 05:42:57 GMT
       expires:
       - '-1'
       pragma:
@@ -1915,10 +1440,51 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.2.0
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3N5M2h3NDdzNndldjRlZHJuNTR5emJ2bjQyMmFocW51bGxmbjJhb2N2d29jaHZ6NnE2dHFoeGt6ai9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLU1kzSFc0N1M2V0VWNEVEUk41NFlaQlZONDo3QzBCOTREOUE0QjEzMzUwRjM6MkRNWTp8MzFCOTc3QkRDNDM4Q0IwRiJ9?api-version=2018-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlRGVwcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M0WVo3VkhXSk9XN01aS0pRMkxMM09KSFo6N0NDQkQxODVDNDAyQjJEMzcwOjJETVk6fEM0Njc2RUI4MkVBNDQ5NEEifQ?api-version=2018-04-01
+  response:
+    body:
+      string: '{"status":"Accepted"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Apr 2020 05:43:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS10ZXN0LXdvcmtzcGFjZSIsImpvYklkIjoiQXBwbGlhbmNlRGVwcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M0WVo3VkhXSk9XN01aS0pRMkxMM09KSFo6N0NDQkQxODVDNDAyQjJEMzcwOjJETVk6fEM0Njc2RUI4MkVBNDQ5NEEifQ?api-version=2018-04-01
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -1930,7 +1496,550 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Mar 2020 09:07:01 GMT
+      - Mon, 13 Apr 2020 05:43:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
+      accept-language:
+      - en-US
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/workspaces/my-custom-workspace?api-version=2018-04-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 13 Apr 2020 05:44:02 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzRZWjdWSFdKT1c3TVpLSlEyTEwzT0pIWjo3Q0NCRDE4NUM0MDJCMkQzNzA6MkRNWTp8OEY2Q0Q3QjExMjMyNjY4MCJ9?api-version=2018-04-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzRZWjdWSFdKT1c3TVpLSlEyTEwzT0pIWjo3Q0NCRDE4NUM0MDJCMkQzNzA6MkRNWTp8OEY2Q0Q3QjExMjMyNjY4MCJ9?api-version=2018-04-01
+  response:
+    body:
+      string: '{"status":"Accepted"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Apr 2020 05:44:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzRZWjdWSFdKT1c3TVpLSlEyTEwzT0pIWjo3Q0NCRDE4NUM0MDJCMkQzNzA6MkRNWTp8OEY2Q0Q3QjExMjMyNjY4MCJ9?api-version=2018-04-01
+  response:
+    body:
+      string: '{"status":"Accepted"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Apr 2020 05:44:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzRZWjdWSFdKT1c3TVpLSlEyTEwzT0pIWjo3Q0NCRDE4NUM0MDJCMkQzNzA6MkRNWTp8OEY2Q0Q3QjExMjMyNjY4MCJ9?api-version=2018-04-01
+  response:
+    body:
+      string: '{"status":"Accepted"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Apr 2020 05:45:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzRZWjdWSFdKT1c3TVpLSlEyTEwzT0pIWjo3Q0NCRDE4NUM0MDJCMkQzNzA6MkRNWTp8OEY2Q0Q3QjExMjMyNjY4MCJ9?api-version=2018-04-01
+  response:
+    body:
+      string: '{"status":"Accepted"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Apr 2020 05:45:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzRZWjdWSFdKT1c3TVpLSlEyTEwzT0pIWjo3Q0NCRDE4NUM0MDJCMkQzNzA6MkRNWTp8OEY2Q0Q3QjExMjMyNjY4MCJ9?api-version=2018-04-01
+  response:
+    body:
+      string: '{"status":"Accepted"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Apr 2020 05:46:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzRZWjdWSFdKT1c3TVpLSlEyTEwzT0pIWjo3Q0NCRDE4NUM0MDJCMkQzNzA6MkRNWTp8OEY2Q0Q3QjExMjMyNjY4MCJ9?api-version=2018-04-01
+  response:
+    body:
+      string: '{"status":"Accepted"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Apr 2020 05:46:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzRZWjdWSFdKT1c3TVpLSlEyTEwzT0pIWjo3Q0NCRDE4NUM0MDJCMkQzNzA6MkRNWTp8OEY2Q0Q3QjExMjMyNjY4MCJ9?api-version=2018-04-01
+  response:
+    body:
+      string: '{"status":"Accepted"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Apr 2020 05:47:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzRZWjdWSFdKT1c3TVpLSlEyTEwzT0pIWjo3Q0NCRDE4NUM0MDJCMkQzNzA6MkRNWTp8OEY2Q0Q3QjExMjMyNjY4MCJ9?api-version=2018-04-01
+  response:
+    body:
+      string: '{"status":"Accepted"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Apr 2020 05:47:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzRZWjdWSFdKT1c3TVpLSlEyTEwzT0pIWjo3Q0NCRDE4NUM0MDJCMkQzNzA6MkRNWTp8OEY2Q0Q3QjExMjMyNjY4MCJ9?api-version=2018-04-01
+  response:
+    body:
+      string: '{"status":"Accepted"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Apr 2020 05:48:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzRZWjdWSFdKT1c3TVpLSlEyTEwzT0pIWjo3Q0NCRDE4NUM0MDJCMkQzNzA6MkRNWTp8OEY2Q0Q3QjExMjMyNjY4MCJ9?api-version=2018-04-01
+  response:
+    body:
+      string: '{"status":"Accepted"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Apr 2020 05:48:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzRZWjdWSFdKT1c3TVpLSlEyTEwzT0pIWjo3Q0NCRDE4NUM0MDJCMkQzNzA6MkRNWTp8OEY2Q0Q3QjExMjMyNjY4MCJ9?api-version=2018-04-01
+  response:
+    body:
+      string: '{"status":"Accepted"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Apr 2020 05:49:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-databricks/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks000001/providers/Microsoft.Databricks/locations/westus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3M0eXo3dmh3am93N216a2pxMmxsM29qaHo0MmN3NXBqZ3hqaTNjcGZjeHQ3cmh6bGMybXNoN3llMi9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy9teS1jdXN0b20td29ya3NwYWNlIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzRZWjdWSFdKT1c3TVpLSlEyTEwzT0pIWjo3Q0NCRDE4NUM0MDJCMkQzNzA6MkRNWTp8OEY2Q0Q3QjExMjMyNjY4MCJ9?api-version=2018-04-01
+  response:
+    body:
+      string: '{"status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Apr 2020 05:49:56 GMT
       expires:
       - '-1'
       pragma:

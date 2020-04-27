@@ -91,6 +91,8 @@ class AppResource(ProxyResource):
     :vartype type: str
     :param properties: Properties of the App resource
     :type properties: ~azure.mgmt.appplatform.models.AppResourceProperties
+    :param identity: The Managed Identity type of the app resource
+    :type identity: ~azure.mgmt.appplatform.models.ManagedIdentityProperties
     :param location: The GEO location of the application, always the same with
      its parent resource
     :type location: str
@@ -107,12 +109,14 @@ class AppResource(ProxyResource):
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
         'properties': {'key': 'properties', 'type': 'AppResourceProperties'},
+        'identity': {'key': 'identity', 'type': 'ManagedIdentityProperties'},
         'location': {'key': 'location', 'type': 'str'},
     }
 
-    def __init__(self, *, properties=None, location: str=None, **kwargs) -> None:
+    def __init__(self, *, properties=None, identity=None, location: str=None, **kwargs) -> None:
         super(AppResource, self).__init__(**kwargs)
         self.properties = properties
+        self.identity = identity
         self.location = location
 
 
@@ -776,6 +780,31 @@ class LogSpecification(Model):
         self.name = name
         self.display_name = display_name
         self.blob_duration = blob_duration
+
+
+class ManagedIdentityProperties(Model):
+    """Managed identity properties retrieved from ARM request headers.
+
+    :param type: Possible values include: 'None', 'SystemAssigned',
+     'UserAssigned', 'SystemAssigned,UserAssigned'
+    :type type: str or ~azure.mgmt.appplatform.models.ManagedIdentityType
+    :param principal_id:
+    :type principal_id: str
+    :param tenant_id:
+    :type tenant_id: str
+    """
+
+    _attribute_map = {
+        'type': {'key': 'type', 'type': 'str'},
+        'principal_id': {'key': 'principalId', 'type': 'str'},
+        'tenant_id': {'key': 'tenantId', 'type': 'str'},
+    }
+
+    def __init__(self, *, type=None, principal_id: str=None, tenant_id: str=None, **kwargs) -> None:
+        super(ManagedIdentityProperties, self).__init__(**kwargs)
+        self.type = type
+        self.principal_id = principal_id
+        self.tenant_id = tenant_id
 
 
 class MetricDimension(Model):

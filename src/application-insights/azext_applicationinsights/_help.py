@@ -242,3 +242,28 @@ helps['monitor app-insights events show'] = """
         text: |
           az monitor app-insights events show --app 578f0e27-12e9-4631-bc02-50b965da2633 --type availabilityResults --offset 24h
 """
+
+helps['monitor app-insights component linked-storage'] = """
+    type: group
+    short-summary: Manage linked storage account for an Application Insights component.
+"""
+
+helps['monitor app-insights component linked-storage show'] = """
+    type: command
+    short-summary: Show the details of linked storage account for an Application Insights component.
+"""
+
+helps['monitor app-insights component linked-storage link'] = """
+    type: command
+    short-summary: Link a storage account with an Application Insights component.
+"""
+
+helps['monitor app-insights component linked-storage update'] = """
+    type: command
+    short-summary: Update the linked storage account for an Application Insights component.
+"""
+
+helps['monitor app-insights component linked-storage unlink'] = """
+    type: command
+    short-summary: Unlink a storage account with an Application Insights component.
+"""
