@@ -71,11 +71,7 @@ def load_arguments(self, _):
         c.argument('language_extensions_value', action=AddLanguageExtensionsValue, nargs='+', help='The list of languag'
                    'e extensions. Expect value: language-extension-name=xx.')
         c.argument('identity_type', arg_type=get_enum_type(['None', 'SystemAssigned']), help='The identity type.')
-        c.argument('identity_user_assigned_identities', arg_type=CLIArgumentType(options_list=['--identity-user-assigne'
-                   'd-identities'], help='The list of user identities associated with the Kusto cluster. The user ident'
-                   'ity dictionary key references will be ARM resource ids in the form: \'/subscriptions/{subscriptionI'
-                   'd}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{i'
-                   'dentityName}\'. Expected value: json-string/@json-file.'))
+        c.argument('identity_user_assigned_identities', arg_type=CLIArgumentType(options_list=['--identity-user-assigned-identities'], help='The list of user identities associated with the Kusto cluster. The user identity dictionary key references will be ARM resource ids in the form: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}\'. Expected value: json-string/@json-file.'))
 
     with self.argument_context('kusto cluster update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -105,11 +101,7 @@ def load_arguments(self, _):
         c.argument('language_extensions_value', action=AddLanguageExtensionsValue, nargs='+', help='The list of languag'
                    'e extensions. Expect value: language-extension-name=xx.')
         c.argument('identity_type', arg_type=get_enum_type(['None', 'SystemAssigned']), help='The identity type.')
-        c.argument('identity_user_assigned_identities', arg_type=CLIArgumentType(options_list=['--identity-user-assigne'
-                   'd-identities'], help='The list of user identities associated with the Kusto cluster. The user ident'
-                   'ity dictionary key references will be ARM resource ids in the form: \'/subscriptions/{subscriptionI'
-                   'd}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{i'
-                   'dentityName}\'. Expected value: json-string/@json-file.'))
+        c.argument('identity_user_assigned_identities', arg_type=CLIArgumentType(options_list=['--identity-user-assigned-identities'], help='The list of user identities associated with the Kusto cluster. The user identity dictionary key references will be ARM resource ids in the form: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}\'. Expected value: json-string/@json-file.'))
 
     with self.argument_context('kusto cluster delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
