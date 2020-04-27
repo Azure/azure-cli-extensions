@@ -3,14 +3,16 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=line-too-long
+# pylint: disable=line-too-long, protected-access
 
 from knack.util import CLIError
 from knack.log import get_logger
 from azext_applicationinsights.vendored_sdks.applicationinsights.models import ErrorResponseException
+from msrestazure.azure_exceptions import CloudError
 from .util import get_id_from_azure_resource, get_query_targets, get_timespan, get_linked_properties
 
 logger = get_logger(__name__)
+HELP_MESSAGE = " Please use `az feature register --name AIWorkspacePreview --namespace microsoft.insights` to register the feature"
 
 
 def execute_query(cmd, client, application, analytics_query, start_time=None, end_time=None, offset='1h', resource_group_name=None):
@@ -46,8 +48,6 @@ def create_or_update_component(cmd, client, application, resource_group_name, lo
     # due to service limitation, we have to do such a hack. We must refract the logic later.
     if workspace_resource_id is None:
         from .vendored_sdks.mgmt_applicationinsights.v2018_05_01_preview.models import ApplicationInsightsComponent
-        from ._client_factory import applicationinsights_mgmt_plane_client
-        client = applicationinsights_mgmt_plane_client(cmd.cli_ctx, api_version='2018-05-01-preview').components
         component = ApplicationInsightsComponent(location=location, kind=kind, application_type=application_type, tags=tags,
                                                  public_network_access_for_ingestion=public_network_access_for_ingestion,
                                                  public_network_access_for_query=public_network_access_for_query)
@@ -58,26 +58,41 @@ def create_or_update_component(cmd, client, application, resource_group_name, lo
                                              tags=tags, workspace_resource_id=workspace_resource_id,
                                              public_network_access_for_ingestion=public_network_access_for_ingestion,
                                              public_network_access_for_query=public_network_access_for_query)
-    return client.create_or_update(resource_group_name, application, component)
+    from ._client_factory import applicationinsights_mgmt_plane_client
+    client = applicationinsights_mgmt_plane_client(cmd.cli_ctx, api_version='2020-02-02-preview').components
+    try:
+        return client.create_or_update(resource_group_name, application, component)
+    except CloudError as ex:
+        ex.error._message = ex.error._message + HELP_MESSAGE
+        raise ex
 
 
 def update_component(cmd, client, application, resource_group_name, kind=None, workspace_resource_id=None,
                      public_network_access_for_ingestion=None, public_network_access_for_query=None):
-    existing_component = client.get(resource_group_name, application)
+    from ._client_factory import applicationinsights_mgmt_plane_client
+    existing_component = None
+    if workspace_resource_id is not None:
+        latest_client = applicationinsights_mgmt_plane_client(cmd.cli_ctx, api_version='2020-02-02-preview').components
+        try:
+            existing_component = latest_client.get(resource_group_name, application)
+        except CloudError as ex:
+            ex.error._message = ex.error._message + HELP_MESSAGE
+            raise ex
+        existing_component.workspace_resource_id = workspace_resource_id or None
+    else:
+        existing_component = client.get(resource_group_name, application)
     if kind:
         existing_component.kind = kind
-    if workspace_resource_id is not None:
-        existing_component.workspace_resource_id = workspace_resource_id or None
     if public_network_access_for_ingestion is not None:
         existing_component.public_network_access_for_ingestion = public_network_access_for_ingestion
     if public_network_access_for_query is not None:
         existing_component.public_network_access_for_query = public_network_access_for_query
+
     if hasattr(existing_component, 'workspace_resource_id') and existing_component.workspace_resource_id is not None:
+        client = applicationinsights_mgmt_plane_client(cmd.cli_ctx, api_version='2020-02-02-preview').components
         return client.create_or_update(resource_group_name, application, existing_component)
 
     from .vendored_sdks.mgmt_applicationinsights.v2018_05_01_preview.models import ApplicationInsightsComponent
-    from ._client_factory import applicationinsights_mgmt_plane_client
-    client = applicationinsights_mgmt_plane_client(cmd.cli_ctx, api_version='2018-05-01-preview').components
     component = ApplicationInsightsComponent(**(vars(existing_component)))
     return client.create_or_update(resource_group_name, application, component)
 
@@ -90,10 +105,17 @@ def get_component(client, application, resource_group_name):
     return client.get(resource_group_name, application)
 
 
-def show_components(client, application=None, resource_group_name=None):
+def show_components(cmd, client, application=None, resource_group_name=None):
+    from ._client_factory import applicationinsights_mgmt_plane_client
     if application:
         if resource_group_name:
-            return client.get(resource_group_name, application)
+            latest_client = applicationinsights_mgmt_plane_client(cmd.cli_ctx,
+                                                                  api_version='2020-02-02-preview').components
+            try:
+                return latest_client.get(resource_group_name, application)
+            except CloudError:
+                logger.warning(HELP_MESSAGE)
+                return client.get(resource_group_name, application)
         raise CLIError("Application provided without resource group. Either specify app with resource group, or remove app.")
     if resource_group_name:
         return client.list_by_resource_group(resource_group_name)
