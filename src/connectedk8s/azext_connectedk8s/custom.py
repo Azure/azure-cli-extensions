@@ -7,6 +7,7 @@ import os
 import json
 import uuid
 import time
+import requests
 import subprocess
 from subprocess import Popen, PIPE
 from base64 import b64encode
@@ -15,6 +16,7 @@ from knack.util import CLIError
 from knack.log import get_logger
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import sdk_no_wait
+from azure.cli.core._profile import Profile
 from azext_connectedk8s._client_factory import _graph_client_factory
 from azext_connectedk8s._client_factory import cf_resource_groups
 from azext_connectedk8s._client_factory import _resource_client_factory
@@ -34,6 +36,7 @@ logger = get_logger(__name__)
 # pylint: disable=too-many-locals
 # pylint: disable=too-many-branches
 # pylint: disable=too-many-statements
+# pylint: disable=line-too-long
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location=None,
                         kube_config=None, kube_context=None, no_wait=False, tags=None):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
@@ -41,6 +44,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
 
     # Setting subscription id
     subscription_id = get_subscription_id(cmd.cli_ctx)
+
+    # Setting user profile
+    profile = Profile(cli_ctx=cmd.cli_ctx)
 
     # Fetching Tenant Id
     graph_client = _graph_client_factory(cmd.cli_ctx)
@@ -137,17 +143,27 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
             raise CLIError("Failed to create the resource group {} :".format(resource_group_name) + str(e))
 
     # Adding helm repo
-    repo_name = os.getenv('HELMREPONAME') if os.getenv('HELMREPONAME') else "azurearcfork8s"
-    repo_url = "https://azurearcfork8s.azurecr.io/helm/v1/repo"
-    if os.getenv('HELMREPOURL'):
+    if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
+        repo_name = os.getenv('HELMREPONAME')
         repo_url = os.getenv('HELMREPOURL')
-    cmd_helm_repo = ["helm", "repo", "add", repo_name, repo_url, "--kubeconfig", kube_config]
-    if kube_context:
-        cmd_helm_repo.extend(["--kube-context", kube_context])
-    response_helm_repo = Popen(cmd_helm_repo, stdout=PIPE, stderr=PIPE)
-    _, error_helm_repo = response_helm_repo.communicate()
-    if response_helm_repo.returncode != 0:
-        raise CLIError("Unable to add repository {} to helm: ".format(repo_url) + error_helm_repo.decode("ascii"))
+        cmd_helm_repo = ["helm", "repo", "add", repo_name, repo_url, "--kubeconfig", kube_config]
+        if kube_context:
+            cmd_helm_repo.extend(["--kube-context", kube_context])
+        response_helm_repo = Popen(cmd_helm_repo, stdout=PIPE, stderr=PIPE)
+        _, error_helm_repo = response_helm_repo.communicate()
+        if response_helm_repo.returncode != 0:
+            raise CLIError("Unable to add repository {} to helm: ".format(repo_url) + error_helm_repo.decode("ascii"))
+
+    # Retrieving Helm chart OCI Artifact location
+    registery_path = get_helm_registery(profile, location)
+
+    # Pulling helm chart from registery
+    os.environ['HELM_EXPERIMENTAL_OCI'] = '1'
+    pull_helm_chart(registery_path, kube_config, kube_context)
+
+    # Exporting helm chart
+    chart_export_path = os.path.join(os.path.expanduser('~'), '.azure', 'AzureArcCharts')
+    export_helm_chart(registery_path, chart_export_path, kube_config, kube_context)
 
     # Generate public-private key pair
     try:
@@ -164,7 +180,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
         raise CLIError("Failed to generate private key." + str(e))
 
     # Helm Install
-    chart_path = os.getenv('HELMCHART') if os.getenv('HELMCHART') else "azurearcfork8s/azure-arc-k8sagents"
+    helm_chart_path = os.path.join(chart_export_path, 'azure-arc-k8sagents')
+    chart_path = os.getenv('HELMCHART') if os.getenv('HELMCHART') else helm_chart_path
     cmd_helm_install = ["helm", "install", "azure-arc", chart_path,
                         "--set", "global.subscriptionId={}".format(subscription_id),
                         "--set", "global.resourceGroupName={}".format(resource_group_name),
@@ -283,6 +300,46 @@ def connected_cluster_exists(client, resource_group_name, cluster_name):
             return False
         raise CLIError("Unable to determine if the connected cluster resource exists. " + str(ex))
     return True
+
+
+def get_helm_registery(profile, location):
+    cred, _, _ = profile.get_login_credentials(
+        resource='https://management.core.windows.net/')
+    token = cred._token_retriever()[2].get('accessToken')  # pylint: disable=protected-access
+
+    get_chart_location_url = "https://{}.dp.kubernetesconfiguration.azure.com/{}/GetLatestHelmPackagePath?api-version=2019-11-01-preview".format(location, 'azure-arc-k8sagents')
+    query_parameters = {}
+    query_parameters['releaseTrain'] = 'stable'
+    header_parameters = {}
+    header_parameters['Authorization'] = "Bearer {}".format(str(token))
+    try:
+        response = requests.post(get_chart_location_url, params=query_parameters, headers=header_parameters)
+    except Exception as e:
+        raise CLIError("Error while fetching helm chart registery path: " + str(e))
+    if response.status_code == 200:
+        return response.json().get('repositoryPath')
+    raise CLIError("Error while fetching helm chart registery path: {}".format(str(response.json())))
+
+
+def pull_helm_chart(registery_path, kube_config, kube_context):
+    cmd_helm_chart_pull = ["helm", "chart", "pull", registery_path, "--kubeconfig", kube_config]
+    if kube_context:
+        cmd_helm_chart_pull.extend(["--kube-context", kube_context])
+    response_helm_chart_pull = subprocess.Popen(cmd_helm_chart_pull, stdout=PIPE, stderr=PIPE)
+    _, error_helm_chart_pull = response_helm_chart_pull.communicate()
+    if response_helm_chart_pull.returncode != 0:
+        raise CLIError("Unable to pull helm chart from the registery '{}': ".format(registery_path) + error_helm_chart_pull.decode("ascii"))
+
+
+def export_helm_chart(registery_path, chart_export_path, kube_config, kube_context):
+    chart_export_path = os.path.join(os.path.expanduser('~'), '.azure', 'AzureArcCharts')
+    cmd_helm_chart_export = ["helm", "chart", "export", registery_path, "--destination", chart_export_path, "--kubeconfig", kube_config]
+    if kube_context:
+        cmd_helm_chart_export.extend(["--kube-context", kube_context])
+    response_helm_chart_export = subprocess.Popen(cmd_helm_chart_export, stdout=PIPE, stderr=PIPE)
+    _, error_helm_chart_export = response_helm_chart_export.communicate()
+    if response_helm_chart_export.returncode != 0:
+        raise CLIError("Unable to export helm chart from the registery '{}': ".format(registery_path) + error_helm_chart_export.decode("ascii"))
 
 
 def get_public_key(key_pair):
