@@ -15,9 +15,7 @@ logger = log.get_logger(__name__)
 
 
 def start_ssh_connection(ip, username, cert_file, private_key_file):
-    command = []
-    command.append(_get_ssh_path())
-    command.append(_get_host(username, ip))
+    command = [_get_ssh_path(), _get_host(username, ip)]
     command = command + _build_args(cert_file, private_key_file)
     logger.debug("Running ssh command %s", ' '.join(command))
     subprocess.call(command, shell=True)
