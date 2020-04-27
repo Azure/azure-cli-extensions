@@ -7,10 +7,10 @@ import os
 import json
 import uuid
 import time
-import requests
 import subprocess
 from subprocess import Popen, PIPE
 from base64 import b64encode
+import requests
 
 from knack.util import CLIError
 from knack.log import get_logger
