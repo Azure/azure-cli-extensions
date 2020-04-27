@@ -532,27 +532,3 @@ helps['kusto data-connection iot-hub data-connection-validation'] = """
     type: command
     short-summary: Checks that the data connection parameters are valid.
 """
-
-helps['kusto attached-database-configuration wait'] = """
-type: command
-short-summary: Wait for a managed Kusto cluster to reach a desired state.
-long-summary: If an operation on a cluster was interrupted or was started with `--no-wait`, use this command to wait for it to complete.
-"""
-
-helps['kusto cluster-principal-assignment wait'] = """
-type: command
-short-summary: Wait for a managed Kusto cluster to reach a desired state.
-long-summary: If an operation on a cluster was interrupted or was started with `--no-wait`, use this command to wait for it to complete.
-"""
-
-helps['kusto data-connection wait'] = """
-type: command
-short-summary: Wait for a managed Kusto cluster to reach a desired state.
-long-summary: If an operation on a cluster was interrupted or was started with `--no-wait`, use this command to wait for it to complete.
-"""
-
-helps['kusto database-principal-assignment wait'] = """
-type: command
-short-summary: Wait for a managed Kusto cluster to reach a desired state.
-long-summary: If an operation on a cluster was interrupted or was started with `--no-wait`, use this command to wait for it to complete.
-"""
