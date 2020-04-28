@@ -5,12 +5,12 @@
 # pylint: disable=line-too-long
 from azure.cli.core.commands.parameters import name_type, tags_type, get_three_state_flag, get_enum_type, \
     resource_group_name_type
+from ._validators import validate_storage_account
 
 
 # pylint: disable=too-many-statements
 def load_arguments(self, _):
     # synapse spark
-
     for scope in ['batch', 'session', 'session-statement']:
         with self.argument_context('synapse spark ' + scope) as c:
             c.argument('workspace_name', help='The name of the workspace.')
@@ -77,58 +77,63 @@ def load_arguments(self, _):
         c.argument('kind', help='The kind of spark statement.')
 
     # synapse workspace
-    for scope in ['synapse workspace', 'synapse spark pool', 'synapse sql pool']:
+    for scope in ['synapse workspace', 'synapse spark pool', 'synapse sql pool', 'synapse workspace firewall-rule']:
         with self.argument_context(scope) as c:
-            c.argument('resource_group_name', arg_type=resource_group_name_type, help='The resource group name.')
+            c.argument('resource_group_name', arg_type=resource_group_name_type, id_part='resource_group')
 
     for scope in ['show', 'create', 'update', 'delete']:
         with self.argument_context('synapse workspace ' + scope) as c:
-            c.argument('workspace_name', arg_type=name_type, help='The workspace name.')
+            c.argument('workspace_name', arg_type=name_type, id_part='name', help='The workspace name.')
 
     for scope in ['create', 'update']:
         with self.argument_context('synapse workspace ' + scope) as c:
-            c.argument('sql_admin_login_password', help='The sql administrator login password.')
+            c.argument('sql_admin_login_password', options_list=['--sql-admin-login-password', '-p'],
+                       help='The sql administrator login password.')
             c.argument('tags', arg_type=tags_type)
-            c.argument('identity_type', help='The type of managed identity.')
 
     with self.argument_context('synapse workspace create') as c:
-        c.argument("account_url", help='The data lake storage account url.')
+        c.argument("storage_account", validator=validate_storage_account,
+                   help='The data lake storage account name or resource id.')
         c.argument('file_system', help='The file system of the data lake storage account.')
-        c.argument('sql_admin_login_user', help='The sql administrator login user name.')
+        c.argument('sql_admin_login_user', options_list=['--sql-admin-login-user', '-u'],
+                   help='The sql administrator login user name.')
 
-    with self.argument_context('synapse workspace update') as c:
-        c.argument('principal_id', help='The principal id of managed identity.')
+    with self.argument_context('synapse workspace check-name') as c:
+        c.argument('name', arg_type=name_type, help='The name you wanted to check.')
 
     # synapse spark pool
     with self.argument_context('synapse spark pool') as c:
-        c.argument('workspace_name', help='The name of the workspace.')
+        c.argument('workspace_name', id_part='name', help='The workspace name.')
+
+    with self.argument_context('synapse spark pool list') as c:
+        c.argument('workspace_name', id_part=None, help='The workspace name.')
 
     for scope in ['show', 'create', 'update', 'delete']:
         with self.argument_context('synapse spark pool ' + scope) as c:
-            c.argument('spark_pool_name', arg_type=name_type, help='The name of the spark pool.')
+            c.argument('spark_pool_name', arg_type=name_type, id_part='child_name_1',
+                       help='The name of the spark pool.')
 
     with self.argument_context('synapse spark pool create') as c:
         # Node
         c.argument('node_count', arg_group='Node', help='The number of node.')
         c.argument('node_size_family', arg_group='Node', help='The node size family.')
-        c.argument('node_size', arg_group='Node', help='The node size.')
+        c.argument('node_size', arg_group='Node', arg_type=get_enum_type(['Small', 'Medium', 'Large']),
+                   help='The node size.')
 
         # AutoScale
-        c.argument('auto_scale_enabled', arg_type=get_three_state_flag(), arg_group='AutoScale',
+        c.argument('enable_auto_scale', arg_type=get_three_state_flag(), arg_group='AutoScale',
                    help='The flag of enabling auto scale.')
         c.argument('max_node_count', arg_group='AutoScale', help='The max node count.')
         c.argument('min_node_count', arg_group='AutoScale', help='The min node count.')
 
         # AutoPause
-        c.argument('auto_pause_enabled', arg_type=get_three_state_flag(), arg_group='AutoPause',
+        c.argument('enable_auto_pause', arg_type=get_three_state_flag(), arg_group='AutoPause',
                    help='The flag of enabling auto pause.')
         c.argument('delay_in_minutes', arg_group='AutoPause', help='The delay time.')
 
         # Environment Configuration
-        c.argument('library_requirements_content', arg_group='Environment Configuration',
-                   help='The library requirements content.')
-        c.argument('library_requirements_filename', arg_group='Environment Configuration',
-                   help='The library requirements file name.')
+        c.argument('library_requirements_file', arg_group='Environment Configuration',
+                   help='The library requirements file.')
 
         # Default Folder
         c.argument('spark_events_folder', arg_group='Default Folder', help='The spark events folder.')
@@ -137,25 +142,68 @@ def load_arguments(self, _):
         # Component Version
         c.argument('spark_version', arg_group='Component Version', help='The supported spark version is 2.4 now.')
 
-        c.argument('force', help='The flag of force operation.')
+        c.argument('force', arg_type=get_three_state_flag(), help='The flag of force operation.')
         c.argument('tags', arg_type=tags_type)
 
     with self.argument_context('synapse spark pool update') as c:
         c.argument('tags', arg_type=tags_type)
+        # Node
+        c.argument('node_count', arg_group='Node', help='The number of node.')
+        c.argument('node_size_family', arg_group='Node', help='The node size family.')
+
+        c.argument('node_size', arg_group='Node', arg_type=get_enum_type(['Small', 'Medium', 'Large']),
+                   help='The node size.')
+        # AutoScale
+        c.argument('enable_auto_scale', arg_type=get_three_state_flag(), arg_group='AutoScale',
+                   help='The flag of enabling auto scale.')
+        c.argument('max_node_count', arg_group='AutoScale', help='The max node count.')
+        c.argument('min_node_count', arg_group='AutoScale', help='The min node count.')
+
+        # AutoPause
+        c.argument('enable_auto_pause', arg_type=get_three_state_flag(), arg_group='AutoPause',
+                   help='The flag of enabling auto pause.')
+        c.argument('delay_in_minutes', arg_group='AutoPause', help='The delay time.')
+
+        # Environment Configuration
+        c.argument('library_requirements_file', arg_group='Environment Configuration',
+                   help='The library requirements file.')
+        c.argument('force', arg_type=get_three_state_flag(), help='The flag of force operation.')
 
     # synapse sql pool
     with self.argument_context('synapse sql pool') as c:
-        c.argument('workspace_name', help='The name of the workspace.')
+        c.argument('workspace_name', id_part='name', help='The workspace name.')
 
-    for scope in ['show', 'create', 'delete', 'pause', 'resume']:
+    with self.argument_context('synapse sql pool list') as c:
+        c.argument('workspace_name', id_part=None, help='The workspace name.')
+
+    for scope in ['show', 'create', 'delete', 'update', 'pause', 'resume']:
         with self.argument_context('synapse sql pool ' + scope) as c:
-            c.argument('sql_pool_name', arg_type=name_type, help='The sql pool name.')
+            c.argument('sql_pool_name', arg_type=name_type, id_part='child_name_1', help='The SQL pool name.')
 
     with self.argument_context('synapse sql pool create') as c:
         c.argument('max_size_bytes', help='The max size bytes.')
-        c.argument('sku_name', help='The sku name.')
+        c.argument('sku_name', options_list=['--performance-level'], help='The performance level.')
         c.argument('sku_tier', help='The sku tier.')
         c.argument('source_database_id', help='The source database id.')
         c.argument('recoverable_database_id', help='The recoverable database id.')
-        c.argument('create_mode', help='The create mode.')
         c.argument('tags', arg_type=tags_type)
+
+    with self.argument_context('synapse sql pool update') as c:
+        c.argument('sku_name', options_list=['--performance-level'], help='The performance level.')
+        c.argument('tags', arg_type=tags_type)
+
+    # synapse workspace firewall-rule
+    with self.argument_context('synapse workspace firewall-rule') as c:
+        c.argument('workspace_name', id_part='name', help='The workspace name.')
+
+    with self.argument_context('synapse workspace firewall-rule list') as c:
+        c.argument('workspace_name', id_part=None, help='The workspace name.')
+
+    for scope in ['show', 'create', 'delete']:
+        with self.argument_context('synapse workspace firewall-rule ' + scope) as c:
+            c.argument('rule_name', arg_type=name_type, id_part='child_name_1', help='The IP firewall rule name')
+
+    with self.argument_context('synapse workspace firewall-rule create') as c:
+        c.argument('start_ip_address', help='The start IP address of the firewall rule. Must be IPv4 format.')
+        c.argument('end_ip_address', help='The end IP address of the firewall rule. Must be IPv4 format. '
+                                          'Must be greater than or equal to startIpAddress.')

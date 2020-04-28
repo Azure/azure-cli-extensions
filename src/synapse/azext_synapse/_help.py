@@ -26,13 +26,13 @@ examples:
   - name: Create a Synapse workspace
     text: |-
         az synapse workspace create --name fromcli4 --resource-group rg \\
-          --account-url https://testadlsgen2.dfs.core.windows.net --file-system testfilesystem \\
+          --storage-account testadlsgen2 --file-system testfilesystem \\
           --sql-admin-login-user cliuser1 --sql-admin-login-password Password123! --location "East US"
 """
 
 helps['synapse workspace list'] = """
 type: command
-short-summary: List all Synapse workspaces under a subscription or under a specific resource group.
+short-summary: List all Synapse workspaces.
 examples:
   - name: List all Synapse workspaces under a subscription
     text: |-
@@ -44,9 +44,9 @@ examples:
 
 helps['synapse workspace show'] = """
 type: command
-short-summary: Get a Synapse workspaces with workspace name.
+short-summary: Get a Synapse workspace.
 examples:
-  - name: Get a Synapse workspaces with workspace name.
+  - name: Get a Synapse workspace.
     text: |-
         az synapse workspace show --name testsynapseworkspace --resource-group rg
 """
@@ -63,77 +63,86 @@ examples:
 
 helps['synapse workspace delete'] = """
 type: command
-short-summary: Delete a Synapse workspaces with workspace name.
+short-summary: Delete a Synapse workspace.
 examples:
-  - name: Delete a Synapse workspaces with workspace name.
+  - name: Delete a Synapse workspace.
     text: |-
         az synapse workspace delete --name testsynapseworkspace --resource-group rg
 """
 
+helps['synapse workspace check-name'] = """
+type: command
+short-summary: Check if a Synapse workspace name is available or not.
+examples:
+  - name: Check if a Synapse workspace name is available or not.
+    text: |-
+        az synapse workspace check-name --name testsynapseworkspace
+"""
+
 helps['synapse workspace wait'] = """
 type: command
-short-summary: Place the CLI in a waiting state a condition of a workspace is met.
+short-summary: Place the CLI in a waiting state until a condition of the workspace is met.
 """
 
 helps['synapse spark'] = """
 type: group
-short-summary: Manage Spark pool and submit Spark Batch, Session, Statement job.
+short-summary: Manage Spark pool and submit Spark Batch, Session, Statement.
 """
 
 helps['synapse spark pool'] = """
 type: group
-short-summary: Manage Spark pool including Create, Get, List, Delete Spark pool.
+short-summary: Manage Spark pools.
 """
 
 helps['synapse spark pool create'] = """
 type: command
 short-summary: Create a Spark pool.
-long-summary: Create a Spark pool with default configuration.
 examples:
   - name: Create a Spark pool.
     text: |-
-        az synapse spark pool create --name testpool --resource-group rg --workspace-name \\
-        testsynapseworkspace --location "East US" --spark-version 2.4
+        az synapse spark pool create --name testpool --workspace-name testsynapseworkspace --resource-group rg \\
+        --spark-version 2.4 --node-count 3
 """
 
 helps['synapse spark pool list'] = """
 type: command
 short-summary: List all Spark pools.
-long-summary: List all Spark pools under a workspace.
 examples:
-  - name: List all Spark pools under a workspace.
+  - name: List all Spark pools.
     text: |-
         az synapse spark pool list --workspace-name testsynapseworkspace --resource-group rg
 """
 
 helps['synapse spark pool show'] = """
 type: command
-short-summary: Get a specific Spark pool with Spark pool name.
+short-summary: Get a specific Spark pool.
 examples:
-  - name: Get a specific Spark pools with Spark pool name.
+  - name: Get a specific Spark pools.
     text: |-
-        az synapse spark pool show --name testpool  --workspace-name testsynapseworkspace \\
-        --resource-group rg
+        az synapse spark pool show --name testpool --workspace-name testsynapseworkspace --resource-group rg
 """
 
 helps['synapse spark pool update'] = """
 type: command
-short-summary: Update the Spark pool's tags.
+short-summary: Update the Spark pool.
 examples:
   - name: Update the Spark pool's tags.
     text: |-
-        az synapse spark pool update --name testpool  --workspace-name testsynapseworkspace --resource-group rg \\
+        az synapse spark pool update --name testpool --workspace-name testsynapseworkspace --resource-group rg \\
         --tags key1=value1
+  - name: Update the Spark pool's auto scale configuration.
+    text: |-
+        az synapse spark pool update --name testpool --workspace-name testsynapseworkspace --resource-group rg \\
+        --enable-auto-scale --min-node-count 3 --max-node-count 100
 """
 
 helps['synapse spark pool delete'] = """
 type: command
-short-summary: Delete a specific Spark pool with Spark pool name.
+short-summary: Delete a Spark pool.
 examples:
-  - name: Delete a specific big Spark pool with Spark pool name.
+  - name: Delete a Spark pool.
     text: |-
-        az synapse spark pool delete --name testpool --workspace-name testsynapseworkspace \\
-        --resource-group rg
+        az synapse spark pool delete --name testpool --workspace-name testsynapseworkspace --resource-group rg
 """
 
 helps['synapse spark pool wait'] = """
@@ -143,7 +152,7 @@ short-summary: Place the CLI in a waiting state until a condition of a Spark poo
 
 helps['synapse sql'] = """
 type: group
-short-summary: Manage SQL pool.
+short-summary: Manage SQL pools.
 """
 
 helps['synapse sql pool'] = """
@@ -154,72 +163,119 @@ short-summary: Manage SQL pool including Create, Get, List, Delete, Pause, Resum
 helps['synapse sql pool create'] = """
 type: command
 short-summary: Create a SQL pool.
-long-summary: Create a SQL pool with default configuration.
 examples:
   - name: Create SQL pool.
     text: |-
-        az synapse sql pool create --name sqlpoolcli1 --sku-name "DW1000c" --resource-group rg --workspace-name \\
-        testsynapseworkspace --location "East US"
+        az synapse sql pool create --name sqlpoolcli1 --performance-level "DW1000c" \\
+        --workspace-name testsynapseworkspace --resource-group rg
 """
 
 helps['synapse sql pool show'] = """
 type: command
 short-summary: Get a SQL pool.
-long-summary: Get a SQL pool with SQL pool name.
 examples:
   - name: Get SQL pool.
     text: |-
-        az synapse sql pool show --name sqlpoolcli1 --resource-group rg --workspace-name \\
-        testsynapseworkspace
+        az synapse sql pool show --name sqlpoolcli1 --workspace-name testsynapseworkspace --resource-group rg
 """
 
 helps['synapse sql pool list'] = """
 type: command
 short-summary: List all SQL pools.
-long-summary: List all SQL pools under a specific workspace.
 examples:
   - name: List SQL pools.
     text: |-
-        az synapse sql pool list --resource-group rg \\
-        --workspace-name testsynapseworkspace
+        az synapse sql pool list --workspace-name testsynapseworkspace --resource-group rg
+"""
+
+helps['synapse sql pool update'] = """
+type: command
+short-summary: Update SQL pool.
+examples:
+  - name: Update SQL pool.
+    text: |-
+        az synapse sql pool update --name sqlpoolcli1 --workspace-name testsynapseworkspace --resource-group rg \\
+        --tags key1=value1
 """
 
 helps['synapse sql pool pause'] = """
 type: command
 short-summary: Pause a SQL pool.
-long-summary: Pause a SQL pool with SQL pool name.
 examples:
   - name: Pause SQL pool.
     text: |-
-        az synapse sql pool pause --name sqlpoolcli1 --resource-group rg --workspace-name \\
-        testsynapseworkspace
+        az synapse sql pool pause --name sqlpoolcli1 --workspace-name testsynapseworkspace --resource-group rg
 """
 
 helps['synapse sql pool resume'] = """
 type: command
 short-summary: Resume a SQL pool.
-long-summary: Resume a SQL pool with SQL pool name.
 examples:
   - name: Resume SQL pool.
     text: |-
-        az synapse sql pool resume --name sqlpoolcli1 --resource-group rg --workspace-name \\
-        testsynapseworkspace
+        az synapse sql pool resume --name sqlpoolcli1 --workspace-name testsynapseworkspace --resource-group rg
 """
 
 helps['synapse sql pool delete'] = """
 type: command
 short-summary: Delete a SQL pool.
-long-summary: Delete a SQL pool with SQL pool name.
 examples:
   - name: Delete SQL pool.
     text: |-
-        az synapse sql pool delete --name sqlpoolcli1 --resource-group rg --workspace-name \\
-        testsynapseworkspace
+        az synapse sql pool delete --name sqlpoolcli1 --workspace-name testsynapseworkspace --resource-group rg
 """
 
 helps['synapse sql pool wait'] = """
 type: command
 short-summary: Place the CLI in a waiting state until a condition of a SQL pool is met.
+"""
+
+helps['synapse workspace firewall-rule'] = """
+type: group
+short-summary:  Manage a workspace's firewall rules.
+"""
+
+helps['synapse workspace firewall-rule create'] = """
+type: command
+short-summary: Create a Firewall Rule.
+examples:
+  - name: Create a Firewall Rule.
+    text: |-
+        az synapse workspace firewall-rule create --name allowAll --workspace-name testsynapseworkspace \\
+        --resource-group rg --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255
+"""
+
+helps['synapse workspace firewall-rule show'] = """
+type: command
+short-summary: Get a Firewall Rule.
+long-summary: Get a Firewall Rule with Firewall Rule name.
+examples:
+  - name: Get a Firewall Rule.
+    text: |-
+        az synapse workspace firewall-rule show --name rule1 --workspace-name testsynapseworkspace --resource-group rg
+"""
+
+helps['synapse workspace firewall-rule list'] = """
+type: command
+short-summary: List all Firewall Rules.
+examples:
+  - name: List all Firewall Rules.
+    text: |-
+        az synapse workspace firewall-rule list --workspace-name testsynapseworkspace --resource-group rg
+"""
+
+helps['synapse workspace firewall-rule delete'] = """
+type: command
+short-summary: Delete a Firewall Rule.
+examples:
+  - name: Delete a Firewall Rule.
+    text: |-
+        az synapse workspace firewall-rule delete --name rule1 --workspace-name testsynapseworkspace --resource-group rg
+"""
+
+helps['synapse workspace firewall-rule wait'] = """
+type: command
+short-summary: Place the CLI in a waiting state until a condition of a Firewall Rule is met.
 """
 
 helps['synapse spark batch'] = """
