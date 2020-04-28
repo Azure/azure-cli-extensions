@@ -22,12 +22,12 @@ from azext_connectedk8s._client_factory import cf_resource_groups
 from azext_connectedk8s._client_factory import _resource_client_factory
 from msrestazure.azure_exceptions import CloudError
 from kubernetes import client as kube_client, config, watch  # pylint: disable=import-error
-from kubernetes.client.rest import ApiException  # pylint: disable=import-error
 from Crypto.IO import PEM  # pylint: disable=import-error
 from Crypto.PublicKey import RSA  # pylint: disable=import-error
 from Crypto.Util import asn1  # pylint: disable=import-error
 
 from .vendored_sdks.models import ConnectedCluster, ConnectedClusterAADProfile, ConnectedClusterIdentity
+
 
 logger = get_logger(__name__)
 
@@ -104,7 +104,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
         api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
         try:
             configmap = api_instance.read_namespaced_config_map('azure-clusterconfig', 'azure-arc')
-        except ApiException as e:
+        except Exception as e:
             raise CLIError("Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: %s\n" % e)
         configmap_rg_name = configmap.data["AZURE_RESOURCE_GROUP"]
         configmap_cluster_name = configmap.data["AZURE_RESOURCE_NAME"]
@@ -188,7 +188,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
                         "--set", "global.resourceName={}".format(cluster_name),
                         "--set", "global.location={}".format(location),
                         "--set", "global.tenantId={}".format(onboarding_tenant_id),
-                        "--set", "global.connectPrivateKey={}".format(private_key_pem),
+                        "--set", "global.onboardingPrivateKey={}".format(private_key_pem),
                         "--set", "systemDefaultValues.spnOnboarding=false",
                         "--kubeconfig", kube_config, "--output", "json"]
     if kube_context:
@@ -241,7 +241,7 @@ def check_kube_connection(configuration):
     api_instance = kube_client.NetworkingV1Api(kube_client.ApiClient(configuration))
     try:
         api_instance.get_api_resources()
-    except ApiException as e:
+    except Exception as e:
         logger.warning("Unable to verify connectivity to the Kubernetes cluster: %s\n" % e)
         raise CLIError("If you are using AAD Enabled cluster, " +
                        "verify that you are able to access the cluster. Learn more at " +
@@ -359,8 +359,8 @@ def get_node_count(configuration):
     try:
         api_response = api_instance.list_node()
         return len(api_response.items)
-    except ApiException as e:
-        logger.warning("Exception when calling CoreV1Api->list_node: %s\n" % e)
+    except Exception as e:
+        logger.warning("Exception while fetching nodes: %s\n" % e)
 
 
 def get_server_version(configuration):
@@ -368,8 +368,8 @@ def get_server_version(configuration):
     try:
         api_response = api_instance.get_code()
         return api_response.git_version
-    except ApiException as e:
-        logger.warning("Unable to fetch kubernetes version->get_code: %s\n" % e)
+    except Exception as e:
+        logger.warning("Unable to fetch kubernetes version: %s\n" % e)
 
 
 def get_agent_version(configuration):
@@ -377,7 +377,7 @@ def get_agent_version(configuration):
     try:
         api_response = api_instance.read_namespaced_config_map('azure-clusterconfig', 'azure-arc')
         return api_response.data["AZURE_ARC_AGENT_VERSION"]
-    except ApiException as e:
+    except Exception as e:
         print("Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: %s\n" % e)
 
 
@@ -420,7 +420,7 @@ def get_pod_dict(api_instance):
             for pod in api_response.items:
                 pod_dict[pod.metadata.name] = 0
             return pod_dict
-        except ApiException as e:
+        except Exception as e:
             logger.warning("Error occurred when retrieving pod information: %s", e)
             time.sleep(5)
         if time.time() > timeout:
@@ -500,7 +500,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
     api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
     try:
         configmap = api_instance.read_namespaced_config_map('azure-clusterconfig', 'azure-arc')
-    except ApiException as e:
+    except Exception as e:
         print("Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: %s\n" % e)
 
     if (configmap.data["AZURE_RESOURCE_GROUP"].lower() == resource_group_name.lower() and
@@ -565,8 +565,8 @@ def ensure_namespace_cleanup(configuration):
             if api_response.items:
                 return
             time.sleep(5)
-        except ApiException as e:
-            print("Exception when calling CoreV1Api->list_namespaced_pod: %s\n" % e)
+        except Exception as e:
+            print("Exception while retrieving 'azure-arc' namespace: %s\n" % e)
 
 
 def update_connectedk8s(cmd, instance, tags=None):
