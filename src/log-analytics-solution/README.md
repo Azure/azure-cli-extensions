@@ -18,7 +18,6 @@ az monitor log-analytics solution create \
     --resource-group MyResourceGroup \
     --name Containers({SolutionName}) \
     --location "East US" \
-    --plan-name Containers({PlanName}) \
     --plan-publisher Microsoft \
     --plan-product "OMSGallery/Containers" \
     --workspace-resource-id "/subscriptions/{SubID}/resourceGroups/{ResourceGroup}/providers/ \

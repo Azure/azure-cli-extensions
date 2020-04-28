@@ -15,7 +15,10 @@ from azure.cli.core.commands.validators import get_default_location_from_resourc
 from ._validators import validate_workspace_resource_id
 from knack.arguments import CLIArgumentType
 
-solution_name = CLIArgumentType(options_list=['--name', '-n'], help='Name of the log-analytics solution.')
+solution_name = CLIArgumentType(options_list=['--name', '-n'],
+                                 help='Name of the log-analytics solution. For Microsoft published solution it '
+                                      'should be in the format of solutionType(workspaceName). SolutionType part is '
+                                      'case sensitive. For third party solution, it can be anything.')
 
 
 def load_arguments(self, _):
@@ -25,8 +28,6 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
-        c.argument('plan_name', help='Name of the plan for solution. For Microsoft published solution it should be in the format of solutionType(workspaceName). '
-                                     'SolutionType part is case sensitive. For third party solution, it can be anything.')
         c.argument('plan_publisher', help='Publisher name of the plan for solution. For gallery solution, it is Microsoft.')
         c.argument('plan_product', help='Product name of the plan for solution. '
                                         'For Microsoft published gallery solution it should be in the format of OMSGallery/<solutionType>. This is case sensitive.')

@@ -45,7 +45,6 @@ class OperationsScenarioTest(ScenarioTest):
                      '--resource-group {rg} '
                      '--name {solution_name} '
                      '--location {loc} '
-                     '--plan-name {solution_name} '
                      '--plan-publisher "Microsoft" '
                      '--plan-product "OMSGallery/Containers" ')
             self.assertTrue(
@@ -56,7 +55,6 @@ class OperationsScenarioTest(ScenarioTest):
                      '--resource-group {rg} '
                      '--name {solution_name} '
                      '--location {loc} '
-                     '--plan-name {solution_name} '
                      '--plan-publisher "Microsoft" '
                      '--plan-product "OMSGallery/Containers" '
                      '--workspace-resource-id "{wrong_workspace_resource_id}" ',
@@ -69,7 +67,6 @@ class OperationsScenarioTest(ScenarioTest):
                      '--resource-group {rg} '
                      '--name {solution_name} '
                      '--location {loc} '
-                     '--plan-name {solution_name} '
                      '--plan-publisher "Microsoft" '
                      '--plan-product "OMSGallery/Containers" '
                      '--workspace-resource-id "{wrong_workspace_resource_id}" ')
@@ -80,7 +77,6 @@ class OperationsScenarioTest(ScenarioTest):
                      '--resource-group {rg} '
                      '--name {solution_name} '
                      '--location {loc2} '
-                     '--plan-name {solution_name} '
                      '--plan-publisher "Microsoft" '
                      '--plan-product "OMSGallery/Containers" '
                      '--workspace-resource-id "{wrong_workspace_resource_id}" ')
@@ -90,7 +86,6 @@ class OperationsScenarioTest(ScenarioTest):
                  '--resource-group {rg} '
                  '--name {solution_name} '
                  '--location {loc} '
-                 '--plan-name {solution_name} '
                  '--plan-publisher "Microsoft" '
                  '--plan-product "OMSGallery/Containers" '
                  '--workspace-resource-id "{workspace_resource_id}" '
@@ -99,7 +94,6 @@ class OperationsScenarioTest(ScenarioTest):
 
         self.cmd('az monitor log-analytics solution show --resource-group {rg} --name {solution_name}',
                  checks=[self.check('name', '{solution_name}'),
-                         self.check('plan.name', '{solution_name}'),
                          self.check('plan.publisher', 'Microsoft'),
                          self.check('plan.product', 'OMSGallery/Containers'),
                          self.check('tags', {'key1': 'value1'})])
@@ -111,7 +105,6 @@ class OperationsScenarioTest(ScenarioTest):
 
         self.cmd('az monitor log-analytics solution show --resource-group {rg} --name {solution_name}',
                  checks=[self.check('name', '{solution_name}'),
-                         self.check('plan.name', '{solution_name}'),
                          self.check('plan.publisher', 'Microsoft'),
                          self.check('plan.product', 'OMSGallery/Containers'),
                          self.check('tags', {'key2': 'value2'})])
@@ -124,7 +117,6 @@ class OperationsScenarioTest(ScenarioTest):
         self.cmd('az monitor log-analytics solution create '
                  '--resource-group {rg2} '
                  '--name {solution_name2} '
-                 '--plan-name {solution_name2} '
                  '--plan-publisher "Microsoft" '
                  '--plan-product "OMSGallery/Containers" '
                  '--workspace-name "{workspace_name2}" '

@@ -15,7 +15,6 @@ def create_monitor_log_analytics_solution(cmd,
                                           client,
                                           resource_group_name,
                                           solution_name,
-                                          plan_name,
                                           plan_publisher,
                                           plan_product,
                                           location=None,
@@ -36,7 +35,7 @@ def create_monitor_log_analytics_solution(cmd,
             "workspace_resource_id": reference_workspace
         },
         "plan": {
-            "name": plan_name,
+            "name": solution_name,
             "product": plan_product,
             "publisher": plan_publisher,
             "promotion_code": ""

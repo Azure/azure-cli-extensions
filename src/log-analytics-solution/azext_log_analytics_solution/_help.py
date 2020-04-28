@@ -22,7 +22,7 @@ helps['monitor log-analytics solution create'] = """
         text: |-
                az monitor log-analytics solution create --resource-group MyResourceGroup \\
                --name Containers({SolutionName}) --location "East US" --tags key=value \\
-               --plan-name Containers({PlanName}) --plan-publisher Microsoft --plan-product "OMSGallery/Containers" \\
+               --plan-publisher Microsoft --plan-product "OMSGallery/Containers" \\
                --workspace-resource-id "/subscriptions/{SubID}/resourceGroups/{ResourceGroup}/providers/ \\
                Microsoft.OperationalInsights/workspaces/{WorkspaceName}"
 """
