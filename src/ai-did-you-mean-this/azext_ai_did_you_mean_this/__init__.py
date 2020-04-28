@@ -3,15 +3,24 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import threading
+
 from azure.cli.core import AzCommandsLoader
 
 from azext_ai_did_you_mean_this._help import helps  # pylint: disable=unused-import
+from azext_ai_did_you_mean_this._check_for_updates import is_cli_up_to_date
 
 
 def inject_functions_into_core():
     from azure.cli.core.parser import AzCliCommandParser
     from azext_ai_did_you_mean_this.custom import recommend_recovery_options
     AzCliCommandParser.recommendation_provider = recommend_recovery_options
+
+
+def check_if_up_to_date_in_background(*args, **kwargs):
+    worker = threading.Thread(target=is_cli_up_to_date, args=args, kwargs=kwargs)
+    worker.daemon = True
+    worker.start()
 
 
 class AiDidYouMeanThisCommandsLoader(AzCommandsLoader):

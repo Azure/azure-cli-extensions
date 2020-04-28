@@ -4,53 +4,38 @@
 # --------------------------------------------------------------------------------------------
 
 import json
-import os
-import sys
+from http import HTTPStatus
+from pkg_resources import parse_version
 
-from enum import Enum, auto
+import requests
 
-import colorama
-
-import azure.cli.core.telemetry as telemetry
+import azure.cli.core.telemetry as telemetry_core
 
 from knack.log import get_logger
 from knack.util import CLIError  # pylint: disable=unused-import
 
+from azext_ai_did_you_mean_this.failure_recovery_recommendation import FailureRecoveryRecommendation
+from azext_ai_did_you_mean_this._style import style_message
+from azext_ai_did_you_mean_this._check_for_updates import CliStatus, async_is_cli_up_to_date
+
 logger = get_logger(__name__)
-
-EXTENSION_DIR = os.path.dirname(os.path.realpath(__file__))
-RECOMMENDATION_FILE_PATH = os.path.join(
-    EXTENSION_DIR,
-    'data/top_3_recommendations.json'
-)
-
-RECOMMENDATIONS = None
 
 UPDATE_RECOMMENDATION_STR = (
     "Better failure recovery recommendations are available from the latest version of the CLI. "
     "Please update for the best experience.\n"
 )
 
-with open(RECOMMENDATION_FILE_PATH) as recommendation_file:
-    RECOMMENDATIONS = json.load(recommendation_file)
+UNABLE_TO_HELP_FMT_STR = (
+    '\nSorry I am not able to help with [{command}]'
+    '\nTry running [az find "az {command}"] to see examples of [{command}] from other users.'
+)
 
+RECOMMENDATION_HEADER_FMT_STR = (
+    '\nHere are the most common ways users succeeded after [{command}] failed:'
+)
 
-def style_message(msg):
-    if should_enable_styling():
-        try:
-            msg = colorama.Style.BRIGHT + msg + colorama.Style.RESET_ALL
-        except KeyError:
-            pass
-    return msg
-
-
-def should_enable_styling():
-    try:
-        if sys.stdout.isatty():
-            return True
-    except AttributeError:
-        pass
-    return False
+CLI_UPDATE_STATUS_CHECK_TIMEOUT = 1  # seconds
+CLI_CHECK_IF_UP_TO_DATE = False
 
 
 # Commands
@@ -58,118 +43,120 @@ def show_extension_version():
     print(f'Current version: 0.1.0')
 
 
-def get_values(comma_separated_values):
-    if not comma_separated_values:
-        return []
-    return comma_separated_values.split(',')
-
-
-def parse_recommendation(recommendation):
-    success_command = recommendation['SuccessCommand']
-    success_command_parameters = recommendation['SuccessCommand_Parameters']
-    success_command_argument_placeholders = recommendation['SuccessCommand_ArgumentPlaceholders']
-
-    if not success_command_parameters:
-        success_command_argument_placeholders = ''
-
-    parameter_buffer = get_values(success_command_parameters)
-    placeholder_buffer = get_values(success_command_argument_placeholders)
-
-    return success_command, parameter_buffer, placeholder_buffer
-
-
-def log_debug(msg):
+def _log_debug(msg, *args, **kwargs):
     # TODO: see if there's a way to change the log formatter locally without printing to stdout
-    prefix = '[Thoth]'
-    logger.debug('%s: %s', prefix, msg)
+    msg = f'[Thoth]: {msg}'
+    logger.debug(msg, *args, **kwargs)
 
 
-class RecommendationStatus(Enum):
-    RECOMMENDATIONS_AVAILABLE = auto()
-    NO_RECOMMENDATIONS_AVAILABLE = auto()
-    UNKNOWN_VERSION = auto()
-
-
-def try_get_recommendations(version, command, parameters):
-    recommendations = RECOMMENDATIONS
-    status = RecommendationStatus.NO_RECOMMENDATIONS_AVAILABLE
-
-    # if the specified CLI version doesn't have recommendations...
-    if version not in RECOMMENDATIONS:
-        # CLI version may be invalid or too old.
-        return RecommendationStatus.UNKNOWN_VERSION, None, None
-
-    recommendations = recommendations[version]
-
-    # if there are no recommendations for the specified command...
-    if command not in recommendations or not recommendations[command]:
-        return RecommendationStatus.NO_RECOMMENDATIONS_AVAILABLE, None, None
-
-    recommendations = recommendations[command]
-
-    # try getting a comma-separated parameter list
-    try:
-        parameters = ','.join(parameters)
-    # assume the parameters are already in the correct format.
-    except TypeError:
-        pass
-
-    # use recommendations for a specific parameter set where applicable.
-    parameters = parameters if parameters in recommendations else ''
-
-    # if there are no recommendations for the specified parameters...
-    if parameters in recommendations and recommendations[parameters]:
-        status = RecommendationStatus.RECOMMENDATIONS_AVAILABLE
-        recommendations = recommendations[parameters]
-
-    # return status and processed list of parameters
-    return status, parameters, recommendations
+def normalize_and_sort_parameters(parameters):
+    # When an error occurs, global parameters are not filtered out. Repeat that logic here.
+    # TODO: Consider moving this list to a connstant in azure.cli.core.commands
+    parameters = [param for param in parameters if param not in ['--debug', '--verbose']]
+    return ','.join(sorted(parameters))
 
 
 def recommend_recovery_options(version, command, parameters, extension):
     result = []
+    _log_debug('recommend_recovery_options: version: "%s", command: "%s", parameters: "%s", extension: "%s"',
+               version, command, parameters, extension)
 
     # if the command is empty...
     if not command:
         # try to get the raw command field from telemetry.
-        session = telemetry._session  # pylint: disable=protected-access
+        session = telemetry_core._session  # pylint: disable=protected-access
         # get the raw command parsed by the CommandInvoker object.
         command = session.raw_command
         if command:
-            log_debug(f'Setting command to [{command}] from telemtry.')
+            _log_debug(f'Setting command to [{command}] from telemtry.')
 
     def append(line):
         result.append(line)
 
     def unable_to_help(command):
-        append(f'\nSorry I am not able to help with [{command}]'
-               f'\nTry running [az find "{command}"] to see examples of [{command}] from other users.')
+        msg = UNABLE_TO_HELP_FMT_STR.format(command=command)
+        append(msg)
+
+    def show_recommendation_header(command):
+        msg = RECOMMENDATION_HEADER_FMT_STR.format(command=command)
+        append(style_message(msg))
 
     if extension:
-        log_debug('Detected extension. No action to perform.')
+        _log_debug('Detected extension. No action to perform.')
     if not command:
-        log_debug('Command is empty. No action to perform.')
+        _log_debug('Command is empty. No action to perform.')
 
     # if an extension is in-use or the command is empty...
     if extension or not command:
         return result
 
-    status, parameters, recommendations = try_get_recommendations(version, command, parameters)
+    parameters = normalize_and_sort_parameters(parameters)
+    response = call_aladdin_service(command, parameters, '2.3.1')
 
-    if status == RecommendationStatus.RECOMMENDATIONS_AVAILABLE:
-        append(f'\nHere are the most common ways users succeeded after [{command}] failed:')
+    if response.status_code == HTTPStatus.OK:
+        recommendations = get_recommendations_from_http_response(response)
 
-        for recommendation in recommendations:
-            command, parameters, placeholders = parse_recommendation(recommendation)
-            parameter_and_argument_buffer = []
+        if recommendations:
+            show_recommendation_header(command)
 
-            for pair in zip(parameters, placeholders):
-                parameter_and_argument_buffer.append(' '.join(pair))
-
-            append(f"\taz {command} {' '.join(parameter_and_argument_buffer)}")
-    elif status == RecommendationStatus.NO_RECOMMENDATIONS_AVAILABLE:
+            for recommendation in recommendations:
+                append(f"\t{recommendation}")
+        else:
+            unable_to_help(command)
+    else:
         unable_to_help(command)
-    elif status == RecommendationStatus.UNKNOWN_VERSION:
-        append(style_message(UPDATE_RECOMMENDATION_STR))
+
+    if CLI_CHECK_IF_UP_TO_DATE:
+        if async_is_cli_up_to_date.cached:
+            _log_debug('Retrieving CLI update status from cache.')
+        else:
+            _log_debug('Retrieving CLI update status from PyPi')
+
+        cli_status = async_is_cli_up_to_date(timeout=CLI_UPDATE_STATUS_CHECK_TIMEOUT)
+
+        if cli_status == CliStatus.OUTDATED:
+            append(style_message(UPDATE_RECOMMENDATION_STR))
+    else:
+        _log_debug('Skipping CLI version check.')
 
     return result
+
+
+def get_recommendations_from_http_response(response):
+    recommendations = []
+
+    for suggestion in json.loads(response.content):
+        recommendations.append(FailureRecoveryRecommendation(suggestion))
+
+    return recommendations
+
+
+def call_aladdin_service(command, parameters, core_version):
+    session_id = telemetry_core._session._get_base_properties()['Reserved.SessionId']  # pylint: disable=protected-access
+    subscription_id = telemetry_core._get_azure_subscription_id()  # pylint: disable=protected-access
+    version = str(parse_version(core_version))
+
+    context = {
+        "sessionId": session_id,
+        "subscriptionId": subscription_id,
+        "versionNumber": version
+    }
+
+    query = {
+        "command": command,
+        "parameters": parameters
+    }
+
+    api_url = 'https://app.aladdindev.microsoft.com/api/v1.0/suggestions'
+    headers = {'Content-Type': 'application/json'}
+
+    response = requests.get(
+        api_url,
+        params={
+            'query': json.dumps(query),
+            'clientType': 'AzureCli',
+            'context': json.dumps(context)
+        },
+        headers=headers)
+
+    return response
