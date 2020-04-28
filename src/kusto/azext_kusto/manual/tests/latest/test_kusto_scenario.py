@@ -24,6 +24,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 def setup(test, rg):
     pass
 
+
 # EXAMPLE: kustoclusterscreateorupdate
 @try_manual
 def step_kustoclusterscreateorupdate2(test, rg):
@@ -37,7 +38,8 @@ def step_kustoclusterscreateorupdate2(test, rg):
              '--sku name="Standard_L8s" capacity=2 tier="Standard" '
              '--resource-group "{rg}"',
              checks=[])
-             
+
+
 # EXAMPLE: kustoclusterscreateorupdate
 @try_manual
 def step_kustoclusterscreateorupdate(test, rg):
@@ -336,7 +338,8 @@ def step_kustoclustersdelete(test, rg):
              '--cluster-name "{Clusters_3}" '
              '--resource-group "{rg}"',
              checks=[])
-			 
+
+
 # EXAMPLE: KustoDataConnectionValidation
 @try_manual
 def step_kustodataconnectionvalidation(test, rg):
@@ -348,6 +351,7 @@ def step_kustodataconnectionvalidation(test, rg):
              '--event-hub-resource-id "/subscriptions/fbccad30-f0ed-4ac4-9497-93bf6141062f/resourceGroups/cliautogeneration-rg/providers/Microsoft.EventHub/namespaces/cliautogeneration/eventhubs/cliautogeneration-evenhub" '
              '--resource-group "{rg}"',
              checks=[])
+
 
 # EXAMPLE: KustoDataConnectionsCreateOrUpdate
 @try_manual
@@ -361,7 +365,8 @@ def step_kustodataconnectionscreateorupdate(test, rg):
              '--event-hub-resource-id "/subscriptions/fbccad30-f0ed-4ac4-9497-93bf6141062f/resourceGroups/cliautogeneration-rg/providers/Microsoft.EventHub/namespaces/cliautogeneration/eventhubs/cliautogeneration-evenhub" '
              '--resource-group "{rg}"',
              checks=[])
-			 
+
+
 # EXAMPLE: KustoDataConnectionsGet
 @try_manual
 def step_kustodataconnectionsget(test, rg):
@@ -371,7 +376,8 @@ def step_kustodataconnectionsget(test, rg):
              '--database-name "KustoDatabase8" '
              '--resource-group "{rg}"',
              checks=[])
-			 
+
+
 # EXAMPLE: KustoDataConnectionsUpdate
 @try_manual
 def step_kustodataconnectionsupdate(test, rg):
@@ -384,7 +390,8 @@ def step_kustodataconnectionsupdate(test, rg):
              '--event-hub-resource-id "/subscriptions/fbccad30-f0ed-4ac4-9497-93bf6141062f/resourceGroups/cliautogeneration-rg/providers/Microsoft.EventHub/namespaces/cliautogeneration/eventhubs/cliautogeneration-evenhub" '
              '--resource-group "{rg}"',
              checks=[])
-			 
+
+
 # EXAMPLE: KustoDataConnectionsDelete
 @try_manual
 def step_kustodataconnectionsdelete(test, rg):
@@ -394,6 +401,7 @@ def step_kustodataconnectionsdelete(test, rg):
              '--database-name "KustoDatabase8" '
              '--resource-group "{rg}"',
              checks=[])
+
 
 @try_manual
 def cleanup(test, rg):
@@ -458,4 +466,3 @@ class KustoManagementClientScenarioTest(ScenarioTest):
         })
 
         call_scenario(self, rg)
- 
