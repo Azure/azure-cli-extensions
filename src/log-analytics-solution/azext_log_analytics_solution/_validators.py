@@ -2,11 +2,10 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-from msrestazure.tools import is_valid_resource_id, parse_resource_id
+from msrestazure.tools import is_valid_resource_id, parse_resource_id, resource_id
 from knack.util import CLIError
 from azure.mgmt.loganalytics import LogAnalyticsManagementClient
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
-from msrestazure.tools import resource_id
 
 
 def validate_workspace_resource_id(cmd, namespace):

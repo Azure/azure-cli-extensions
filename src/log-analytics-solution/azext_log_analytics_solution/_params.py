@@ -6,17 +6,14 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
-from azure.cli.core.commands.parameters import (
-    tags_type,
-    resource_group_name_type
-)
-from ._validators import validate_workspace_resource_id
+from azure.cli.core.commands.parameters import tags_type
 from knack.arguments import CLIArgumentType
+from ._validators import validate_workspace_resource_id
 
 solution_name = CLIArgumentType(options_list=['--name', '-n'],
-                                 help='Name of the log-analytics solution. For Microsoft published solution it '
-                                      'should be in the format of solutionType(workspaceName). SolutionType part is '
-                                      'case sensitive. For third party solution, it can be anything.')
+                                help='Name of the log-analytics solution. For Microsoft published solution it '
+                                     'should be in the format of solutionType(workspaceName). SolutionType part is '
+                                     'case sensitive. For third party solution, it can be anything.')
 
 
 def load_arguments(self, _):
