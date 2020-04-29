@@ -8,7 +8,6 @@ import unittest
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)  # pylint: disable=import-error
 from azure_devtools.scenario_tests import AllowLargeResponse  # pylint: disable=import-error
-from .preparers import ManagedClusterPreparer  # pylint: disable=import-error
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
