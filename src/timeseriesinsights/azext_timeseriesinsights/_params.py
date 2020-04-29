@@ -10,7 +10,6 @@ from azure.cli.core.commands.parameters import (
     name_type,
     tags_type,
     get_enum_type,
-    resource_group_name_type,
     get_location_type
 )
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
