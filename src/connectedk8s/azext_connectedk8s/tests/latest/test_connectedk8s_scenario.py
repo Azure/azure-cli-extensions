@@ -28,7 +28,7 @@ class Connectedk8sScenarioTest(ScenarioTest):
             'kubeconfig': "%s" % (_get_test_data_file('config.yaml')),
             'managed_cluster_name': managed_cluster_name
         })
-        self.cmd('aks create -g akkeshar-test2 -n {} -s Standard_B2s -l westeurope -c 1'.format(managed_cluster_name))
+        self.cmd('aks create -g akkeshar-test2 -n {} -s Standard_B2s -l westeurope -c 1 --generate-ssh-keys'.format(managed_cluster_name))
         self.cmd('aks get-credentials -g akkeshar-test2 -n {managed_cluster_name} -f {kubeconfig}')
         os.environ['HELMCHART'] = _get_test_data_file('setupChart.tgz')
         self.cmd('connectedk8s connect -g akkeshar-test2 -n {name} -l eastus2euap --tags foo=doo --kube-config {kubeconfig}', checks=[
@@ -41,3 +41,4 @@ class Connectedk8sScenarioTest(ScenarioTest):
             self.check('tags.foo', 'doo')
         ])
         self.cmd('connectedk8s delete -g akkeshar-test2 -n {name} --kube-config {kubeconfig} -y')
+        self.cmd('aks delete -g akkeshar-test2 -n {} -y'.format(managed_cluster_name))
