@@ -25,7 +25,7 @@ class Connectedk8sScenarioTest(ScenarioTest):
         managed_cluster_name = self.create_random_name(prefix='cli-test-aks-', length=24)
         self.kwargs.update({
             'name': self.create_random_name(prefix='cc-', length=12),
-            'kubeconfig': "%s" % (_get_test_data_file('config.yaml')),
+            'kubeconfig': "%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')),
             'managed_cluster_name': managed_cluster_name
         })
         self.cmd('aks create -g akkeshar-test2 -n {} -s Standard_B2s -l westeurope -c 1 --generate-ssh-keys'.format(managed_cluster_name))
@@ -41,4 +41,3 @@ class Connectedk8sScenarioTest(ScenarioTest):
             self.check('tags.foo', 'doo')
         ])
         self.cmd('connectedk8s delete -g akkeshar-test2 -n {name} --kube-config {kubeconfig} -y')
-        self.cmd('aks delete -g akkeshar-test2 -n {} -y'.format(managed_cluster_name))
