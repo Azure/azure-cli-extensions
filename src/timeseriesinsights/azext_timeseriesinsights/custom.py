@@ -8,6 +8,8 @@
 # pylint: disable=too-many-locals
 # pylint: disable=unused-argument
 
+from azure.cli.core.util import sdk_no_wait
+
 
 def create_timeseriesinsights_environment_standard(cmd, client,
                                                    resource_group_name, environment_name,
@@ -15,7 +17,7 @@ def create_timeseriesinsights_environment_standard(cmd, client,
                                                    data_retention_time,
                                                    storage_limit_exceeded_behavior=None,
                                                    partition_key_properties=None,
-                                                   location=None, tags=None):
+                                                   location=None, tags=None, no_wait=False):
     from .vendored_sdks.timeseriesinsights.models import StandardEnvironmentCreateOrUpdateParameters, Sku, \
         TimeSeriesIdProperty
 
@@ -28,14 +30,14 @@ def create_timeseriesinsights_environment_standard(cmd, client,
         # Need to confirm whether multiple key properties are supported
         partition_key_properties=[TimeSeriesIdProperty(name=id_property, type="String") for id_property in partition_key_properties]
     )
-    return client.create_or_update(resource_group_name=resource_group_name, environment_name=environment_name, parameters=parameters)
+    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name=resource_group_name, environment_name=environment_name, parameters=parameters)
 
 
 def update_timeseriesinsights_environment_standard(cmd, client,
                                                    resource_group_name, environment_name,
                                                    sku_name=None, sku_capacity=None,
                                                    data_retention_time=None, storage_limit_exceeded_behavior=None,
-                                                   partition_key_properties=None, tags=None):
+                                                   partition_key_properties=None, tags=None, no_wait=False):
     from .vendored_sdks.timeseriesinsights.models import StandardEnvironmentUpdateParameters, Sku, TimeSeriesIdProperty
 
     parameters = StandardEnvironmentUpdateParameters(
@@ -45,7 +47,7 @@ def update_timeseriesinsights_environment_standard(cmd, client,
         storage_limit_exceeded_behavior=storage_limit_exceeded_behavior,
         partition_key_properties=[TimeSeriesIdProperty(name=id_property, type="String") for id_property in partition_key_properties] if partition_key_properties else None
     )
-    return client.update(resource_group_name=resource_group_name, environment_name=environment_name, parameters=parameters)
+    return sdk_no_wait(no_wait, client.update, resource_group_name=resource_group_name, environment_name=environment_name, parameters=parameters)
 
 
 def create_timeseriesinsights_environment_longterm(cmd, client,
@@ -55,7 +57,7 @@ def create_timeseriesinsights_environment_longterm(cmd, client,
                                                    storage_account_name,
                                                    storage_management_key,
                                                    data_retention,
-                                                   location=None, tags=None):
+                                                   location=None, tags=None, no_wait=False):
     from .vendored_sdks.timeseriesinsights.models import LongTermEnvironmentCreateOrUpdateParameters, Sku, \
         TimeSeriesIdProperty, LongTermStorageConfigurationInput
     parameters = LongTermEnvironmentCreateOrUpdateParameters(
@@ -65,21 +67,21 @@ def create_timeseriesinsights_environment_longterm(cmd, client,
         time_series_id_properties=[TimeSeriesIdProperty(name=time_series_id_properties, type="String")],
         storage_configuration=LongTermStorageConfigurationInput(account_name=storage_account_name, management_key=storage_management_key),
         data_retention=data_retention)
-    return client.create_or_update(resource_group_name=resource_group_name, environment_name=environment_name, parameters=parameters)
+    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name=resource_group_name, environment_name=environment_name, parameters=parameters)
 
 
 def update_timeseriesinsights_environment_longterm(cmd, client,
                                                    resource_group_name, environment_name,
                                                    storage_management_key=None,
                                                    data_retention=None,
-                                                   tags=None):
+                                                   tags=None, no_wait=False):
     from .vendored_sdks.timeseriesinsights.models import LongTermEnvironmentUpdateParameters, \
         LongTermStorageConfigurationMutableProperties
     parameters = LongTermEnvironmentUpdateParameters(
         tags=tags,
         storage_configuration=LongTermStorageConfigurationMutableProperties(management_key=storage_management_key) if storage_management_key else None,
         data_retention=data_retention)
-    return client.update(resource_group_name=resource_group_name, environment_name=environment_name, parameters=parameters)
+    return sdk_no_wait(no_wait, client.update, resource_group_name=resource_group_name, environment_name=environment_name, parameters=parameters)
 
 
 def list_timeseriesinsights_environment(cmd, client, resource_group_name=None):
