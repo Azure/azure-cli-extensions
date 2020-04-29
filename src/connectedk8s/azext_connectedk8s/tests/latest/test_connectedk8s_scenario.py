@@ -6,7 +6,7 @@
 import os
 import unittest
 
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)  # pylint: disable=import-error
+from azure.cli.testsdk import (LiveScenarioTest, ResourceGroupPreparer)  # pylint: disable=import-error
 from azure_devtools.scenario_tests import AllowLargeResponse  # pylint: disable=import-error
 
 
@@ -18,7 +18,7 @@ def _get_test_data_file(filename):
     return os.path.join(curr_dir, 'data', filename).replace('\\', '\\\\')
 
 
-class Connectedk8sScenarioTest(ScenarioTest):
+class Connectedk8sScenarioTest(LiveScenarioTest):
 
     def test_connectedk8s(self):
 
@@ -41,3 +41,4 @@ class Connectedk8sScenarioTest(ScenarioTest):
             self.check('tags.foo', 'doo')
         ])
         self.cmd('connectedk8s delete -g akkeshar-test2 -n {name} --kube-config {kubeconfig} -y')
+        self.cmd('aks delete -g akkeshar-test2 -n {} -y'.format(managed_cluster_name))
