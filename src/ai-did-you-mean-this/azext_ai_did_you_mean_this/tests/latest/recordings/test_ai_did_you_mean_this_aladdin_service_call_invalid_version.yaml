@@ -1,0 +1,42 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python-requests/2.23.0
+    method: GET
+    uri: https://app.aladdindev.microsoft.com/api/v1.0/suggestions?query=%7B%22command%22%3A+%22account%22%2C+%22parameters%22%3A+%22%22%7D&clientType=AzureCli&context=%7B%22sessionId%22%3A+%2200000000-0000-0000-0000-000000000000%22%2C+%22subscriptionId%22%3A+%2200000000-0000-0000-0000-000000000000%22%2C+%22versionNumber%22%3A+%223.5.0%22%7D
+  response:
+    body:
+      string: '[]'
+    headers:
+      content-length:
+      - '2'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 29 Apr 2020 05:44:28 GMT
+      server:
+      - Kestrel
+      set-cookie:
+      - ARRAffinity=3c5a4fd8cf65c15694a0e005871dcde2afa78eabab0e0f0d5ce5a9bf59f48f2b;Path=/;HttpOnly;Domain=app.aladdindev.microsoft.com
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1

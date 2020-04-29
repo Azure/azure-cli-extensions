@@ -8,7 +8,7 @@ def cached(cache_if=None):
             use_cache = kwargs.pop('use_cache', True)
 
             if wrapper.cached and use_cache:
-                return func.cached_result
+                return wrapper.cached_result
 
             value = func(*args, **kwargs)
             should_cache = True

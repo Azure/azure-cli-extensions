@@ -3,24 +3,20 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import threading
-
 from azure.cli.core import AzCommandsLoader
 
+from knack.events import (
+    EVENT_INVOKER_CMD_TBL_LOADED
+)
+
 from azext_ai_did_you_mean_this._help import helps  # pylint: disable=unused-import
-from azext_ai_did_you_mean_this._check_for_updates import is_cli_up_to_date
+from azext_ai_did_you_mean_this._cmd_table import on_command_table_loaded
 
 
 def inject_functions_into_core():
     from azure.cli.core.parser import AzCliCommandParser
     from azext_ai_did_you_mean_this.custom import recommend_recovery_options
     AzCliCommandParser.recommendation_provider = recommend_recovery_options
-
-
-def check_if_up_to_date_in_background(*args, **kwargs):
-    worker = threading.Thread(target=is_cli_up_to_date, args=args, kwargs=kwargs)
-    worker.daemon = True
-    worker.start()
 
 
 class AiDidYouMeanThisCommandsLoader(AzCommandsLoader):
@@ -30,9 +26,9 @@ class AiDidYouMeanThisCommandsLoader(AzCommandsLoader):
 
         ai_did_you_mean_this_custom = CliCommandType(
             operations_tmpl='azext_ai_did_you_mean_this.custom#{}')
-        super(AiDidYouMeanThisCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                             custom_command_type=ai_did_you_mean_this_custom)
-
+        super().__init__(cli_ctx=cli_ctx,
+                         custom_command_type=ai_did_you_mean_this_custom)
+        self.cli_ctx.register_event(EVENT_INVOKER_CMD_TBL_LOADED, on_command_table_loaded)
         inject_functions_into_core()
 
     def load_command_table(self, args):

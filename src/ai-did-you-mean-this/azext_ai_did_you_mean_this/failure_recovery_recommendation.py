@@ -8,12 +8,10 @@ class FailureRecoveryRecommendation():
         data['SuccessCommand'] = data.get('SuccessCommand', '')
         data['SuccessCommand_Parameters'] = data.get('SuccessCommand_Parameters', '')
         data['SuccessCommand_ArgumentPlaceholders'] = data.get('SuccessCommand_ArgumentPlaceholders', '')
-        data['NumberOfPairs'] = data.get('NumberOfPairs', 0)
 
         self._command = data['SuccessCommand']
         self._parameters = data['SuccessCommand_Parameters']
         self._placeholders = data['SuccessCommand_ArgumentPlaceholders']
-        self._number_of_pairs = data['NumberOfPairs']
 
         for attr in ('_parameters', '_placeholders'):
             value = getattr(self, attr)
@@ -46,14 +44,6 @@ class FailureRecoveryRecommendation():
         assert_has_split_method('placeholders', value)
         self._placeholders = value
 
-    @property
-    def number_of_pairs(self):
-        return self._number_of_pairs
-
-    @number_of_pairs.setter
-    def number_of_pairs(self, value):
-        self._number_of_pairs = value
-
     def __str__(self):
         parameter_and_argument_buffer = []
 
@@ -61,3 +51,8 @@ class FailureRecoveryRecommendation():
             parameter_and_argument_buffer.append(' '.join(pair))
 
         return f"az {self.command} {' '.join(parameter_and_argument_buffer)}"
+
+    def __eq__(self, value):
+        return (self.command == value.command and
+                self.parameters == value.parameters and
+                self.placeholders == value.placeholders)

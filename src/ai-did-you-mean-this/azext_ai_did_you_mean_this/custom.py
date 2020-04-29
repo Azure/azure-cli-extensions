@@ -16,7 +16,7 @@ from knack.util import CLIError  # pylint: disable=unused-import
 
 from azext_ai_did_you_mean_this.failure_recovery_recommendation import FailureRecoveryRecommendation
 from azext_ai_did_you_mean_this._style import style_message
-from azext_ai_did_you_mean_this._check_for_updates import CliStatus, async_is_cli_up_to_date
+from azext_ai_did_you_mean_this._check_for_updates import CliStatus, is_cli_up_to_date
 
 logger = get_logger(__name__)
 
@@ -34,7 +34,6 @@ RECOMMENDATION_HEADER_FMT_STR = (
     '\nHere are the most common ways users succeeded after [{command}] failed:'
 )
 
-CLI_UPDATE_STATUS_CHECK_TIMEOUT = 1  # seconds
 CLI_CHECK_IF_UP_TO_DATE = False
 
 
@@ -107,12 +106,7 @@ def recommend_recovery_options(version, command, parameters, extension):
         unable_to_help(command)
 
     if CLI_CHECK_IF_UP_TO_DATE:
-        if async_is_cli_up_to_date.cached:
-            _log_debug('Retrieving CLI update status from cache.')
-        else:
-            _log_debug('Retrieving CLI update status from PyPi')
-
-        cli_status = async_is_cli_up_to_date(timeout=CLI_UPDATE_STATUS_CHECK_TIMEOUT)
+        cli_status = is_cli_up_to_date()
 
         if cli_status == CliStatus.OUTDATED:
             append(style_message(UPDATE_RECOMMENDATION_STR))
@@ -132,6 +126,9 @@ def get_recommendations_from_http_response(response):
 
 
 def call_aladdin_service(command, parameters, core_version):
+    _log_debug('call_aladdin_service: version: "%s", command: "%s", parameters: "%s"',
+               core_version, command, parameters)
+
     session_id = telemetry_core._session._get_base_properties()['Reserved.SessionId']  # pylint: disable=protected-access
     subscription_id = telemetry_core._get_azure_subscription_id()  # pylint: disable=protected-access
     version = str(parse_version(core_version))
