@@ -75,8 +75,8 @@ def load_arguments(self, _):
         from .vendored_sdks.timeseriesinsights.models import AccessPolicyRole
         c.argument('environment_name', arg_type=environment_name_type)
         c.argument('access_policy_name', arg_type=name_type, id_part='child_name_1', help='The name of the Time Series Insights access policy associated with the specified environment.')
-        c.argument('principal_object_id', help='The objectId of the principal in Azure Active Directory.')
-        c.argument('description', help='An description of the access policy.')
+        c.argument('principal_object_id')
+        c.argument('description', help='A description of the access policy.')
         c.argument('roles', arg_type=get_enum_type(AccessPolicyRole), nargs='+')
     # endregion
 
