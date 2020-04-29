@@ -17,10 +17,9 @@ Manage Log Analytics Solution: [more info](https://docs.microsoft.com/en-us/azur
 az monitor log-analytics solution create \
     --resource-group MyResourceGroup \
     --name Containers({SolutionName}) \
-    --location "East US" \
     --plan-publisher Microsoft \
     --plan-product "OMSGallery/Containers" \
-    --workspace-resource-id "/subscriptions/{SubID}/resourceGroups/{ResourceGroup}/providers/ \
+    --workspace "/subscriptions/{SubID}/resourceGroups/{ResourceGroup}/providers/ \
     Microsoft.OperationalInsights/workspaces/{WorkspaceName}" \
     --tags key=value
 ```

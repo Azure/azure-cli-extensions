@@ -8,31 +8,24 @@
 # pylint: disable=too-many-locals
 # pylint: disable=unused-argument
 
-from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.cli.core.util import sdk_no_wait
 
 
-def create_monitor_log_analytics_solution(cmd,
-                                          client,
+def create_monitor_log_analytics_solution(client,
                                           resource_group_name,
                                           solution_name,
                                           plan_publisher,
                                           plan_product,
-                                          location=None,
-                                          workspace_resource_id=None,
-                                          workspace_name=None,
-                                          tags=None):
-    if workspace_name:
-        reference_workspace = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.OperationalInsights/' \
-                              'workspaces/{2}'.format(get_subscription_id(cmd.cli_ctx), resource_group_name,
-                                                      workspace_name)
-    else:
-        reference_workspace = workspace_resource_id
+                                          workspace_resource_id,
+                                          location,
+                                          tags=None,
+                                          no_wait=False):
 
     body = {
         'location': location,
         'tags': tags,
         'properties': {
-            "workspace_resource_id": reference_workspace
+            "workspace_resource_id": workspace_resource_id
         },
         "plan": {
             "name": solution_name,
@@ -42,21 +35,25 @@ def create_monitor_log_analytics_solution(cmd,
         }
     }
 
-    return client.create_or_update(resource_group_name=resource_group_name, solution_name=solution_name, parameters=body)
+    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name=resource_group_name,
+                       solution_name=solution_name, parameters=body)
 
 
 def update_monitor_log_analytics_solution(client,
                                           resource_group_name,
                                           solution_name,
-                                          tags=None):
+                                          tags=None,
+                                          no_wait=False):
 
-    return client.update(resource_group_name=resource_group_name, solution_name=solution_name, tags=tags)
+    return sdk_no_wait(no_wait, client.update, resource_group_name=resource_group_name,
+                       solution_name=solution_name, tags=tags)
 
 
 def delete_monitor_log_analytics_solution(client,
                                           resource_group_name,
-                                          solution_name):
-    return client.delete(resource_group_name=resource_group_name, solution_name=solution_name)
+                                          solution_name,
+                                          no_wait=False):
+    return sdk_no_wait(no_wait, client.delete, resource_group_name=resource_group_name, solution_name=solution_name)
 
 
 def get_monitor_log_analytics_solution(client,

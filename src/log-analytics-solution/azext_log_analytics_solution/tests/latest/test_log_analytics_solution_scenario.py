@@ -18,13 +18,11 @@ class OperationsScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(parameter_name='resource_group_1')
     @ResourceGroupPreparer(parameter_name='resource_group_2')
-    @ResourceGroupPreparer(parameter_name_for_location='location1')
-    @ResourceGroupPreparer(parameter_name_for_location='location2')
-    def test_log_analytics_solution(self, resource_group_1, resource_group_2, location1, location2):
+    @ResourceGroupPreparer(parameter_name_for_location='location')
+    def test_log_analytics_solution(self, resource_group_1, resource_group_2, location):
 
         self.kwargs.update({
-            'loc': location1,
-            'loc2': location2,
+            'loc': location,
             'workspace_name': self.create_random_name('workspace', 20),
             'rg': resource_group_1,
             'rg2': resource_group_2,
@@ -44,51 +42,26 @@ class OperationsScenarioTest(ScenarioTest):
             self.cmd('az monitor log-analytics solution create '
                      '--resource-group {rg} '
                      '--name {solution_name} '
-                     '--location {loc} '
                      '--plan-publisher "Microsoft" '
-                     '--plan-product "OMSGallery/Containers" ')
-            self.assertTrue(
-                "usage error: please specify only one of --workspace-resource-id and --workspace-name" == err.exception)
+                     '--plan-product "OMSGallery/Containers" '
+                     '--workspace "{wrong_workspace_resource_id}" ')
+            self.assertTrue("usage error: --workspace is invalid" == err.exception)
 
         with self.assertRaises(CLIError) as err:
             self.cmd('az monitor log-analytics solution create '
-                     '--resource-group {rg} '
+                     '--resource-group {rg2} '
                      '--name {solution_name} '
-                     '--location {loc} '
                      '--plan-publisher "Microsoft" '
                      '--plan-product "OMSGallery/Containers" '
-                     '--workspace-resource-id "{wrong_workspace_resource_id}" ',
-                     '--workspace-name "{workspace_name}" ')
-            self.assertTrue(
-                "usage error: please specify only one of --workspace-resource-id and --workspace-name, not both" == err.exception)
-
-        with self.assertRaises(CLIError) as err:
-            self.cmd('az monitor log-analytics solution create '
-                     '--resource-group {rg} '
-                     '--name {solution_name} '
-                     '--location {loc} '
-                     '--plan-publisher "Microsoft" '
-                     '--plan-product "OMSGallery/Containers" '
-                     '--workspace-resource-id "{wrong_workspace_resource_id}" ')
-            self.assertTrue("usage error: --workspace-resource-id is invalid" == err.exception)
-
-        with self.assertRaises(CLIError) as err:
-            self.cmd('az monitor log-analytics solution create '
-                     '--resource-group {rg} '
-                     '--name {solution_name} '
-                     '--location {loc2} '
-                     '--plan-publisher "Microsoft" '
-                     '--plan-product "OMSGallery/Containers" '
-                     '--workspace-resource-id "{wrong_workspace_resource_id}" ')
-            self.assertTrue("usage error: workspace and solution must be under the same location" == err.exception)
+                     '--workspace "{workspace_resource_id}" ')
+            self.assertTrue("usage error: workspace and solution must be under the same resource group" == err.exception)
 
         self.cmd('az monitor log-analytics solution create '
                  '--resource-group {rg} '
                  '--name {solution_name} '
-                 '--location {loc} '
                  '--plan-publisher "Microsoft" '
                  '--plan-product "OMSGallery/Containers" '
-                 '--workspace-resource-id "{workspace_resource_id}" '
+                 '--workspace "{workspace_resource_id}" '
                  '--tags key1=value1',
                  checks=[self.check('name', '{solution_name}')])
 
@@ -119,7 +92,7 @@ class OperationsScenarioTest(ScenarioTest):
                  '--name {solution_name2} '
                  '--plan-publisher "Microsoft" '
                  '--plan-product "OMSGallery/Containers" '
-                 '--workspace-name "{workspace_name2}" '
+                 '--workspace "{workspace_name2}" '
                  '--tags key3=value3',
                  checks=[self.check('name', '{solution_name2}')])
 
