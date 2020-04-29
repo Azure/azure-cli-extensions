@@ -8,6 +8,7 @@ import unittest
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)  # pylint: disable=import-error
 from azure_devtools.scenario_tests import AllowLargeResponse  # pylint: disable=import-error
+from .preparers import ManagedClusterPreparer  # pylint: disable=import-error
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -20,21 +21,24 @@ def _get_test_data_file(filename):
 
 class Connectedk8sScenarioTest(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix='cli_test_connectedk8s')
-    def test_connectedk8s(self, resource_group):
+    def test_connectedk8s(self):
 
+        managed_cluster_name = self.create_random_name(prefix='cli-test-aks-', length=24)
         self.kwargs.update({
-            'name': 'test1',
-            'kubeconfig': "%s" % (_get_test_data_file('config.yaml'))
+            'name': self.create_random_name(prefix='cc-', length=12),
+            'kubeconfig': "%s" % (_get_test_data_file('config.yaml')),
+            'managed_cluster_name': managed_cluster_name
         })
-        os.environ['HELMCHART'] = _get_test_data_file('setupChart-0.1.19.tgz')
-        self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus2euap --tags foo=doo --kube-config {kubeconfig}', checks=[
+        self.cmd('aks create -g akkeshar-test2 -n {} -s Standard_B2s -l westeurope -c 1'.format(managed_cluster_name))
+        self.cmd('aks get-credentials -g akkeshar-test2 -n {managed_cluster_name} -f {kubeconfig}')
+        os.environ['HELMCHART'] = _get_test_data_file('setupChart.tgz')
+        self.cmd('connectedk8s connect -g akkeshar-test2 -n {name} -l eastus2euap --tags foo=doo --kube-config {kubeconfig}', checks=[
             self.check('tags.foo', 'doo'),
             self.check('name', '{name}')
         ])
-        self.cmd('connectedk8s show -g {rg} -n {name}', checks=[
+        self.cmd('connectedk8s show -g akkeshar-test2 -n {name}', checks=[
             self.check('name', '{name}'),
-            self.check('resourceGroup', '{rg}'),
+            self.check('resourceGroup', 'akkeshar-test2'),
             self.check('tags.foo', 'doo')
         ])
-        self.cmd('connectedk8s delete -g {rg} -n {name} --kube-config {kubeconfig} -y')
+        self.cmd('connectedk8s delete -g akkeshar-test2 -n {name} --kube-config {kubeconfig} -y')
