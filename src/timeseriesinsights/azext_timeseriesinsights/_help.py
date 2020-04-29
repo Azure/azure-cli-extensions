@@ -14,20 +14,6 @@ type: group
 short-summary: Manage Azure Time Series Insights.
 """
 
-helps['timeseriesinsights operation'] = """
-type: group
-short-summary: Commands to manage timeseriesinsights operation.
-"""
-
-helps['timeseriesinsights operation list'] = """
-type: command
-short-summary: List all of the available Time Series Insights related operations.
-examples:
-  - name: List available operations for the Time Series Insights resource provider
-    text: |-
-           az timeseriesinsights operation list
-"""
-
 helps['timeseriesinsights environment'] = """
 type: group
 short-summary: Commands to manage timeseriesinsights environment.

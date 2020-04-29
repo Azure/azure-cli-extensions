@@ -4,5 +4,5 @@
 # --------------------------------------------------------------------------------------------
 
 
-def iso_8601_timespace(string):
+def iso_8601_timespan(string):
     return "P{}D".format(string)

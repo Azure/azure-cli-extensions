@@ -16,13 +16,6 @@ def load_command_table(self, _):
     with self.command_group('timeseriesinsights', is_experimental=True) as g:
         pass
 
-    from ._client_factory import cf_operations
-    timeseriesinsights_operations = CliCommandType(
-        operations_tmpl='azext_timeseriesinsights.vendored_sdks.timeseriesinsights.operations._operations_operations#OperationsOperations.{}',
-        client_factory=cf_operations)
-    with self.command_group('timeseriesinsights operation', timeseriesinsights_operations, client_factory=cf_operations) as g:
-        g.custom_command('list', 'list_timeseriesinsights_operation')
-
     # region environment
     from ._client_factory import cf_environments
     timeseriesinsights_environments = CliCommandType(
@@ -31,18 +24,22 @@ def load_command_table(self, _):
 
     with self.command_group('timeseriesinsights environment standard', timeseriesinsights_environments, client_factory=cf_environments) as g:
         g.custom_command('create', 'create_timeseriesinsights_environment_standard',
-                         doc_string_source="azext_timeseriesinsights.vendored_sdks.timeseriesinsights.models#StandardEnvironmentCreateOrUpdateParameters")
+                         doc_string_source="azext_timeseriesinsights.vendored_sdks.timeseriesinsights.models#StandardEnvironmentCreateOrUpdateParameters",
+                         supports_no_wait=True)
         g.custom_command('update', 'update_timeseriesinsights_environment_standard',
-                         doc_string_source="azext_timeseriesinsights.vendored_sdks.timeseriesinsights.models#StandardEnvironmentCreateOrUpdateParameters")
+                         doc_string_source="azext_timeseriesinsights.vendored_sdks.timeseriesinsights.models#StandardEnvironmentCreateOrUpdateParameters",
+                         supports_no_wait=True)
 
     with self.command_group('timeseriesinsights environment longterm', timeseriesinsights_environments, client_factory=cf_environments) as g:
         g.custom_command('create', 'create_timeseriesinsights_environment_longterm',
-                         doc_string_source="azext_timeseriesinsights.vendored_sdks.timeseriesinsights.models#LongTermEnvironmentCreateOrUpdateParameters")
+                         doc_string_source="azext_timeseriesinsights.vendored_sdks.timeseriesinsights.models#LongTermEnvironmentCreateOrUpdateParameters",
+                         supports_no_wait=True)
         g.custom_command('update', 'update_timeseriesinsights_environment_longterm',
-                         doc_string_source="azext_timeseriesinsights.vendored_sdks.timeseriesinsights.models#LongTermEnvironmentUpdateParameters")
+                         doc_string_source="azext_timeseriesinsights.vendored_sdks.timeseriesinsights.models#LongTermEnvironmentUpdateParameters",
+                         supports_no_wait=True)
 
     with self.command_group('timeseriesinsights environment', timeseriesinsights_environments, client_factory=cf_environments) as g:
-        g.command('delete', 'delete')
+        g.command('delete', 'delete', confirmation=True)
         g.show_command('show', 'get')
         g.custom_command('list', 'list_timeseriesinsights_environment', transform=gen_dict_to_list_transform(key='value'))
     # endregion
@@ -58,8 +55,6 @@ def load_command_table(self, _):
                          doc_string_source="azext_timeseriesinsights.vendored_sdks.timeseriesinsights.models#EventHubEventSourceCreateOrUpdateParameters")
         g.custom_command('update', 'update_timeseriesinsights_event_source_eventhub',
                          doc_string_source="azext_timeseriesinsights.vendored_sdks.timeseriesinsights.models#EventHubEventSourceUpdateParameters")
-        # g.generic_update_command('update', custom_func_name='update_timeseriesinsights_event_source_eventhub_generic',
-        #                  doc_string_source="azext_timeseriesinsights.vendored_sdks.timeseriesinsights.models#EventHubEventSourceUpdateParameters")
 
     with self.command_group('timeseriesinsights event-source iothub', timeseriesinsights_event_sources, client_factory=cf_event_sources) as g:
         g.custom_command('create', 'create_timeseriesinsights_event_source_iothub',
@@ -68,7 +63,7 @@ def load_command_table(self, _):
                          doc_string_source="azext_timeseriesinsights.vendored_sdks.timeseriesinsights.models#IoTHubEventSourceUpdateParameters")
 
     with self.command_group('timeseriesinsights event-source', timeseriesinsights_event_sources, client_factory=cf_event_sources) as g:
-        g.command('delete', 'delete')
+        g.command('delete', 'delete', confirmation=True)
         g.show_command('show', 'get')
         g.command('list', 'list_by_environment')
     # endregion
@@ -83,7 +78,7 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_timeseriesinsights_reference_data_set',
                          doc_string_source="azext_timeseriesinsights.vendored_sdks.timeseriesinsights.models#ReferenceDataSetCreateOrUpdateParameters")
         g.custom_command('update', 'update_timeseriesinsights_reference_data_set')
-        g.command('delete', 'delete')
+        g.command('delete', 'delete', confirmation=True)
         g.show_command('show', 'get')
         g.command('list', 'list_by_environment')
     # endregion
@@ -98,7 +93,7 @@ def load_command_table(self, _):
                          doc_string_source="azext_timeseriesinsights.vendored_sdks.timeseriesinsights.models#AccessPolicyCreateOrUpdateParameters")
         g.custom_command('update', 'update_timeseriesinsights_access_policy',
                          doc_string_source="azext_timeseriesinsights.vendored_sdks.timeseriesinsights.models#AccessPolicyUpdateParameters")
-        g.command('delete', 'delete')
+        g.command('delete', 'delete', confirmation=True)
         g.show_command('show', 'get')
         g.command('list', 'list_by_environment')
     # endregion

@@ -68,7 +68,7 @@ class TimeSeriesInsightsClientScenarioTest(ScenarioTest):
 
         self.cmd('az timeseriesinsights environment delete '
                  '--resource-group {rg} '
-                 '--name {env}',
+                 '--name {env} --yes',
                  checks=[])
 
         self.cmd('az timeseriesinsights environment list '
@@ -156,7 +156,7 @@ class TimeSeriesInsightsClientScenarioTest(ScenarioTest):
         self.cmd('az timeseriesinsights event-source show -g {rg} --environment-name {env} -n {es}')
 
         # Delete
-        self.cmd('az timeseriesinsights event-source delete -g {rg} --environment-name {env} -n {es}')
+        self.cmd('az timeseriesinsights event-source delete -g {rg} --environment-name {env} -n {es} --yes')
 
     @ResourceGroupPreparer(name_prefix='cli_test_timeseriesinsights')
     def test_timeseriesinsights_event_source_iothub(self):
@@ -204,7 +204,7 @@ class TimeSeriesInsightsClientScenarioTest(ScenarioTest):
         self.cmd('az timeseriesinsights event-source show -g {rg} --environment-name {env} -n {es}')
 
         # Delete
-        self.cmd('az timeseriesinsights event-source delete -g {rg} --environment-name {env} -n {es}')
+        self.cmd('az timeseriesinsights event-source delete -g {rg} --environment-name {env} -n {es} --yes')
 
     @ResourceGroupPreparer(name_prefix='cli_test_timeseriesinsights')
     def test_timeseriesinsights_reference_data_set(self):
@@ -230,7 +230,7 @@ class TimeSeriesInsightsClientScenarioTest(ScenarioTest):
         self.cmd('az timeseriesinsights reference-data-set show -g {rg} --environment-name {env} -n {rds}')
 
         # Delete
-        self.cmd('az timeseriesinsights reference-data-set delete -g {rg} --environment-name {env} -n {rds}')
+        self.cmd('az timeseriesinsights reference-data-set delete -g {rg} --environment-name {env} -n {rds} --yes')
 
     @ResourceGroupPreparer(name_prefix='cli_test_timeseriesinsights')
     def test_timeseriesinsights_access_policy(self):
@@ -258,5 +258,5 @@ class TimeSeriesInsightsClientScenarioTest(ScenarioTest):
                  checks=[self.check('length(@)', 1)])
 
         # Delete
-        self.cmd('az timeseriesinsights access-policy delete -g {rg} --environment-name {env} --name ap1',
+        self.cmd('az timeseriesinsights access-policy delete -g {rg} --environment-name {env} --name ap1 --yes',
                  checks=[])

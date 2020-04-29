@@ -16,7 +16,7 @@ from azure.cli.core.commands.parameters import (
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 
 from knack.arguments import CLIArgumentType
-from ._validators import iso_8601_timespace
+from ._validators import iso_8601_timespan
 
 environment_name_type = CLIArgumentType(id_part='name', help='The name of the Time Series Insights environment associated with the specified resource group.')
 
@@ -34,21 +34,20 @@ def load_arguments(self, _):
     with self.argument_context('timeseriesinsights environment') as c:
         from .vendored_sdks.timeseriesinsights.models import SkuName
         c.argument('environment_name', arg_type=name_type, id_part='name', help='The name of the Time Series Insights environment associated with the specified resource group.')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('sku_name', arg_group="SKU", arg_type=get_enum_type(SkuName), help='The sku determines the type of environment, either standard (S1 or S2) or long-term (L1). For standard environments the sku determines the capacity of the environment, the ingress rate, and the billing rate.')
         c.argument('sku_capacity', type=int, arg_group="SKU", help='The capacity of the sku. For standard environments, this value can be changed to support scale out of environments after they have been created.')
 
     with self.argument_context('timeseriesinsights environment standard') as c:
         from .vendored_sdks.timeseriesinsights.models import StorageLimitExceededBehavior
         c.argument('storage_limit_exceeded_behavior', arg_type=get_enum_type(StorageLimitExceededBehavior))
-        c.argument('data_retention_time', type=iso_8601_timespace, help='The minimum number of days the environment\'s events will be available for query.')
+        c.argument('data_retention_time', type=iso_8601_timespan, help='The minimum number of days the environment\'s events will be available for query.')
         c.argument('partition_key_properties', nargs='+')
 
     with self.argument_context('timeseriesinsights environment longterm') as c:
         c.argument('storage_account_name', arg_group="Storage Configuration", help='The name of the storage account that will hold the environment\'s long term data.')
         c.argument('storage_management_key', arg_group="Storage Configuration", help='The value of the management key that grants the Time Series Insights service write access to the storage account. This property is not shown in environment responses.')
         c.argument('time_series_id_properties', nargs='+')
-        c.argument('data_retention', type=iso_8601_timespace, help='The number of days the environment\'s events will be available for query from the warm store.')
+        c.argument('data_retention', type=iso_8601_timespan, help='The number of days the environment\'s events will be available for query from the warm store.')
     # endregion
 
     # region event-source
@@ -75,7 +74,6 @@ def load_arguments(self, _):
     # region access-policy
     with self.argument_context('timeseriesinsights access-policy') as c:
         from .vendored_sdks.timeseriesinsights.models import AccessPolicyRole
-        c.argument('resource_group', resource_group_name_type)
         c.argument('environment_name', arg_type=environment_name_type)
         c.argument('access_policy_name', arg_type=name_type, id_part='child_name_1', help='The name of the Time Series Insights access policy associated with the specified environment.')
         c.argument('principal_object_id', help='The objectId of the principal in Azure Active Directory.')

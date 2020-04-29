@@ -10,10 +10,6 @@ def cf_timeseriesinsights(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, TimeSeriesInsightsClient)
 
 
-def cf_operations(cli_ctx, *_):
-    return cf_timeseriesinsights(cli_ctx).operations
-
-
 def cf_environments(cli_ctx, *_):
     return cf_timeseriesinsights(cli_ctx).environments
 
