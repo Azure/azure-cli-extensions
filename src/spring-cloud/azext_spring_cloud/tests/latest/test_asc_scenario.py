@@ -8,7 +8,7 @@ import unittest
 
 from knack.util import CLIError
 from azure_devtools.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, record_only)
 
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
