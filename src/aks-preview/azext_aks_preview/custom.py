@@ -74,7 +74,8 @@ from ._client_factory import cf_storage
 
 
 from ._helpers import (_populate_api_server_access_profile, _set_vm_set_type,
-                       _set_outbound_type, _parse_comma_separated_list)
+                       _set_outbound_type, _parse_comma_separated_list,
+                       _trim_fqdn_name_containing_hcp)
 from ._loadbalancer import (set_load_balancer_sku, is_load_balancer_profile_provided,
                             update_load_balancer_profile, create_load_balancer_profile)
 from ._consts import CONST_INGRESS_APPGW_ADDON_NAME
@@ -734,6 +735,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                aad_tenant_id=None,
                tags=None,
                node_zones=None,
+               enable_node_public_ip=False,
                generate_ssh_keys=False,  # pylint: disable=unused-argument
                enable_pod_security_policy=False,
                node_resource_group=None,
@@ -792,6 +794,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         mode="System",
         vnet_subnet_id=vnet_subnet_id,
         availability_zones=node_zones,
+        enable_node_public_ip=enable_node_public_ip,
         max_pods=int(max_pods) if max_pods else None,
         type=vm_set_type
     )
@@ -834,9 +837,6 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             if no_wait:
                 raise CLIError('When --attach-acr and --enable-managed-identity are both specified, '
                                '--no-wait is not allowed, please wait until the whole operation succeeds.')
-            else:
-                # Attach acr operation will be handled after the cluster is created
-                pass
         else:
             _ensure_aks_acr(cmd.cli_ctx,
                             client_id=service_principal_profile.client_id,
@@ -1175,9 +1175,11 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
         instance.agent_pool_profiles[0].min_count = None
         instance.agent_pool_profiles[0].max_count = None
 
-    if not cluster_autoscaler_profile:
+    # if intention is to clear profile
+    if cluster_autoscaler_profile == {}:
         instance.auto_scaler_profile = {}
-    else:
+    # else profile is provided, update instance profile if it exists
+    elif cluster_autoscaler_profile:
         instance.auto_scaler_profile = _update_dict(instance.auto_scaler_profile.__dict__,
                                                     dict((key.replace("-", "_"), value)
                                                          for (key, value) in cluster_autoscaler_profile.items())) \
@@ -1483,7 +1485,7 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
     normalized_fqdn = mc.fqdn.replace('.', '-')
     token_in_storage_account_url = readonly_sas_token if readonly_sas_token is not None else sas_token
     log_storage_account_url = f"https://{storage_account_name}.blob.core.windows.net/" \
-                              f"{normalized_fqdn}?{token_in_storage_account_url}"
+                              f"{_trim_fqdn_name_containing_hcp(normalized_fqdn)}?{token_in_storage_account_url}"
 
     print(f'{colorama.Fore.GREEN}Your logs are being uploaded to storage account {format_bright(storage_account_name)}')
 
@@ -1499,8 +1501,6 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
               f"anytime to check the analysis results.")
     else:
         display_diagnostics_report(temp_kubeconfig_path)
-
-    return
 
 
 def aks_kanalyze(cmd, client, resource_group_name, name):
@@ -2059,6 +2059,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       tags=None,
                       kubernetes_version=None,
                       node_zones=None,
+                      enable_node_public_ip=False,
                       node_vm_size=None,
                       node_osdisk_size=0,
                       node_count=3,
@@ -2072,7 +2073,6 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       priority=CONST_SCALE_SET_PRIORITY_REGULAR,
                       eviction_policy=CONST_SPOT_EVICTION_POLICY_DELETE,
                       spot_max_price=float('nan'),
-                      public_ip_per_vm=False,
                       labels=None,
                       mode="User",
                       no_wait=False):
@@ -2111,9 +2111,9 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         max_pods=int(max_pods) if max_pods else None,
         orchestrator_version=kubernetes_version,
         availability_zones=node_zones,
+        enable_node_public_ip=enable_node_public_ip,
         node_taints=taints_array,
         scale_set_priority=priority,
-        enable_node_public_ip=public_ip_per_vm,
         mode=mode
     )
 

@@ -73,3 +73,19 @@ def _parse_comma_separated_list(text):
     if text == "":
         return []
     return text.split(",")
+
+
+def _trim_fqdn_name_containing_hcp(normalized_fqdn: str) -> str:
+    """
+    Trims the storage blob name and takes everything prior to "-hcp-".
+    Currently it is displayed wrong: i.e. at time of creation cli has
+    following limitation:
+    https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/
+    error-storage-account-name
+
+    :param normalized_fqdn: storage blob name
+    :return: storage_name_without_hcp: Storage name without the hcp value
+    attached
+    """
+    storage_name_without_hcp, _, _ = normalized_fqdn.partition('-hcp-')
+    return storage_name_without_hcp
