@@ -52,6 +52,7 @@ def step__dedicatedhsm_put_create_a_new_or_update_an_existing_dedicated_hsm(test
              '--resource-group "{rg}"',
              checks=[])
 
+
 # EXAMPLE: /DedicatedHsm/get/Get a dedicated HSM
 @try_manual
 def step__dedicatedhsm_get_get_a_dedicated_hsm(test, rg):
@@ -60,12 +61,14 @@ def step__dedicatedhsm_get_get_a_dedicated_hsm(test, rg):
              '--resource-group "{rg}"',
              checks=[])
 
+
 # EXAMPLE: /DedicatedHsm/get/List dedicated HSM devices in a resource group
 @try_manual
 def step__dedicatedhsm_get_list_dedicated_hsm_devices_in_a_resource_group(test, rg):
     test.cmd('az hardwaresecuritymodules dedicated-hsm list '
              '--resource-group "{rg}"',
              checks=[])
+
 
 # EXAMPLE: /DedicatedHsm/get/List dedicated HSM devices in a subscription
 @try_manual
