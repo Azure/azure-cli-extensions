@@ -15,6 +15,7 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
+
 class CustomDomainTests(ScenarioTest):
     def bind_cert_to_domain_tests(self):
         self.kwargs.update({
