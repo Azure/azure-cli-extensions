@@ -428,15 +428,15 @@ def check_pod_status(pod_dict):
         pod_name = event['object'].metadata.name
         if pod_status.get('containerStatuses'):
             for container in pod_status.get('containerStatuses'):
-                if container.get('name') in pod_name:
-                    if container.get('state').get('running') is None:
-                        pod_dict[pod_name] = 0
-                    else:
-                        pod_dict[pod_name] = 1
-                    if container.get('state').get('terminated') is not None:
-                        logger.warning("%s%s%s", "The pod {} was terminated. ".format(container.get('name')),
-                                       "Please ensure it is in running state once the operation completes. ",
-                                       "Run 'kubectl get pods -n azure-arc' to check the pod status.")
+                if container.get('state').get('running') is None:
+                    pod_dict[pod_name] = 0
+                    break
+                else:
+                    pod_dict[pod_name] = 1
+                if container.get('state').get('terminated') is not None:
+                    logger.warning("%s%s%s", "The pod {} was terminated. ".format(container.get('name')),
+                                    "Please ensure it is in running state once the operation completes. ",
+                                    "Run 'kubectl get pods -n azure-arc' to check the pod status.")
         if all(ele == 1 for ele in list(pod_dict.values())):
             return
     logger.warning("%s%s", 'The pods were unable to start before timeout. ',
