@@ -370,7 +370,7 @@ def get_agent_version(configuration):
         api_response = api_instance.read_namespaced_config_map('azure-clusterconfig', 'azure-arc')
         return api_response.data["AZURE_ARC_AGENT_VERSION"]
     except Exception as e:  # pylint: disable=broad-except
-        print("Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: %s\n" % e)
+        logger.warning("Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: %s\n", e)
 
 
 def generate_request_payload(configuration, location, public_key, tags):
@@ -493,7 +493,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
     try:
         configmap = api_instance.read_namespaced_config_map('azure-clusterconfig', 'azure-arc')
     except Exception as e:  # pylint: disable=broad-except
-        print("Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: %s\n" % e)
+        logger.warning("Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: %s\n", e)
 
     if (configmap.data["AZURE_RESOURCE_GROUP"].lower() == resource_group_name.lower() and
             configmap.data["AZURE_RESOURCE_NAME"].lower() == cluster_name.lower()):
@@ -558,7 +558,7 @@ def ensure_namespace_cleanup(configuration):
                 return
             time.sleep(5)
         except Exception as e:  # pylint: disable=broad-except
-            print("Exception while retrieving 'azure-arc' namespace: %s\n" % e)
+            logger.warning("Exception while retrieving 'azure-arc' namespace: %s\n", e)
 
 
 def update_connectedk8s(cmd, instance, tags=None):
