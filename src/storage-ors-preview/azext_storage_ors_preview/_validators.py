@@ -37,10 +37,7 @@ def validate_or_policy(namespace):
             namespace.destination_account = or_policy["destinationAccount"]
         except KeyError:
             namespace.destination_account = or_policy["destination_account"]
-            """
-        if namespace.destination_account is None:
-            error_elements.append("destination_account")
-"""
+
         if "rules" not in or_policy.keys() or not or_policy["rules"]:
             error_elements.append("rules")
         error_msg = "Missing input parameters: "

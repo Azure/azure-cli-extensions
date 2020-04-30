@@ -83,7 +83,7 @@ class StorageTestFilesPreparer(AbstractPreparer):
     def remove_resource(self, name, **kwargs):
         temp_dir = self.get_temp_dir()
         if temp_dir:
-            shutil.rmtree(temp_dir, ignore_error=True)
+            shutil.rmtree(temp_dir, ignore_errors=True)
 
     def get_temp_dir(self):
         return getattr(self, '_temp_dir', None)
