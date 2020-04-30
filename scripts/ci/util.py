@@ -19,6 +19,7 @@ WHEEL_INFO_RE = re.compile(
     \.whl|\.dist-info)$""",
     re.VERBOSE).match
 
+
 def get_repo_root():
     current_dir = os.path.dirname(os.path.abspath(__file__))
     while not os.path.exists(os.path.join(current_dir, 'CONTRIBUTING.rst')):
