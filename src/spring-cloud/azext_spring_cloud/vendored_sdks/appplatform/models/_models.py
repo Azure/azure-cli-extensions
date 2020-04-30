@@ -91,8 +91,6 @@ class AppResource(ProxyResource):
     :vartype type: str
     :param properties: Properties of the App resource
     :type properties: ~azure.mgmt.appplatform.models.AppResourceProperties
-    :param identity: The Managed Identity type of the app resource
-    :type identity: ~azure.mgmt.appplatform.models.ManagedIdentityProperties
     :param location: The GEO location of the application, always the same with
      its parent resource
     :type location: str
@@ -109,14 +107,12 @@ class AppResource(ProxyResource):
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
         'properties': {'key': 'properties', 'type': 'AppResourceProperties'},
-        'identity': {'key': 'identity', 'type': 'ManagedIdentityProperties'},
         'location': {'key': 'location', 'type': 'str'},
     }
 
     def __init__(self, **kwargs):
         super(AppResource, self).__init__(**kwargs)
         self.properties = kwargs.get('properties', None)
-        self.identity = kwargs.get('identity', None)
         self.location = kwargs.get('location', None)
 
 
@@ -780,31 +776,6 @@ class LogSpecification(Model):
         self.name = kwargs.get('name', None)
         self.display_name = kwargs.get('display_name', None)
         self.blob_duration = kwargs.get('blob_duration', None)
-
-
-class ManagedIdentityProperties(Model):
-    """Managed identity properties retrieved from ARM request headers.
-
-    :param type: Possible values include: 'None', 'SystemAssigned',
-     'UserAssigned', 'SystemAssigned,UserAssigned'
-    :type type: str or ~azure.mgmt.appplatform.models.ManagedIdentityType
-    :param principal_id:
-    :type principal_id: str
-    :param tenant_id:
-    :type tenant_id: str
-    """
-
-    _attribute_map = {
-        'type': {'key': 'type', 'type': 'str'},
-        'principal_id': {'key': 'principalId', 'type': 'str'},
-        'tenant_id': {'key': 'tenantId', 'type': 'str'},
-    }
-
-    def __init__(self, **kwargs):
-        super(ManagedIdentityProperties, self).__init__(**kwargs)
-        self.type = kwargs.get('type', None)
-        self.principal_id = kwargs.get('principal_id', None)
-        self.tenant_id = kwargs.get('tenant_id', None)
 
 
 class MetricDimension(Model):
