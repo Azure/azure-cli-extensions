@@ -199,6 +199,7 @@ def _fetch_encryption_settings(source_vm):
 
 
 def _unlock_singlepass_encrypted_disk(source_vm, repair_group_name, repair_vm_name):
+    # Installs the extension on repair VM and mounts the disk after unlocking.
     encryption_type, key_vault, kekurl = _fetch_encryption_settings(source_vm)
     if encryption_type is not encryption.not_encrypted:
         if _is_linux_os(source_vm):
@@ -220,14 +221,15 @@ def _unlock_singlepass_encrypted_disk(source_vm, repair_group_name, repair_vm_na
             error_message = str(azCommandError)
             if _is_linux_os(source_vm):
                 if "Failed to encrypt data volumes with error" in error_message:
-                    logger.warning("Encryption failed for data disk.But this can be ignored.\n")
+                    logger.debug("Encryption failed for data disk. But this can be ignored.\n")
                     _mount_encrypted_disk(repair_group_name, repair_vm_name)
                 else:
                     raise
 
 
 def _mount_encrypted_disk(repair_group_name, repair_vm_name):
-    logger.info('unlocking and mounting the disk on repair VM...')
+    # unlocks the disk using the phasephrase and mounts it on the repair VM.
+    logger.info('Unlocking and Mounting the disk on repair VM...')
     REPAIR_DIR_NAME = 'azext_vm_repair'
     SCRIPTS_DIR_NAME = 'scripts'
     LINUX_RUN_SCRIPT_NAME = 'mount_encrypted_disk.sh'

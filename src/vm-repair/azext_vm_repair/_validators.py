@@ -62,12 +62,16 @@ def validate_create(cmd, namespace):
     # TODO, validate this with encrypted VMs
     encryption_type, _, _ = _fetch_encryption_settings(source_vm)
     if encryption_type is not encryption.not_encrypted:
-        logger.warning('The source VM\'s OS disk is encrypted.')
         if encryption_type in (encryption.single_with_kek, encryption.single_without_kek):
-            if namespace.unlock_encrypted_vm not in ("y", "yes"):
+            if not namespace.unlock_encrypted_vm:
                 _prompt_encryptedvms()
         elif encryption_type is encryption.dual:
-            raise CLIError('This script does not support VMs which were encrypted using dual pass.Stopping Execution.')
+            message = 'The source VM\'s OS disk is encrypted using dual pass method.'
+            logger.warning(message)
+            raise CLIError('The current command does not support VMs which were encrypted using dual pass.Stopping Execution.')
+    else:
+        message = 'The source VM\'s OS disk is not encrypted'
+        logger.info(message)
 
     # Validate Auth Params
     # Prompt vm username
@@ -168,7 +172,9 @@ def validate_run(cmd, namespace):
 def _prompt_encryptedvms():
     from knack.prompting import prompt_y_n, NoTTYException
     try:
-        if not prompt_y_n('The source VM is encrpyted. Do u want to attach & mount the copy of disk after unlocking?:'):
+        message = 'The source VM\'s OS disk is encrypted. Current command will attach the copy of OS disk to repair vm and mount it after unlocking'
+        logger.warning(message)
+        if not prompt_y_n('Continue with the execution?'):
             raise CLIError('Stopping the execution upon user input')
     except NoTTYException:
         raise CLIError('Stopping the execution.')

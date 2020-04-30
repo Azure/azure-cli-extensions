@@ -40,7 +40,7 @@ from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyE
 logger = get_logger(__name__)
 
 
-def create(cmd, vm_name, resource_group_name, unlock_encrypted_vm=None, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None):
+def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False):
 
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair create')
