@@ -15,7 +15,7 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
-
+@record_only()
 class CustomDomainTests(ScenarioTest):
     def test_bind_cert_to_domain(self):
         self.kwargs.update({
@@ -49,7 +49,7 @@ class CustomDomainTests(ScenarioTest):
         result = self.cmd('spring-cloud app custom-domain list --app {app}').get_output_in_json()
         self.assertTrue(len(result) > 0)
 
-        self.cmd('spring-cloud app custom-domain update --domain-name cli.asc-test.net --certificate test-cert --app test-app', checks=[
+        self.cmd('spring-cloud app custom-domain update --domain-name {domain} --certificate {cert} --app {app}', checks=[
             self.check('name', '{domain}'),
             self.check('properties.appName', '{app}'),
             self.check('properties.certName', '{cert}')
