@@ -14,8 +14,8 @@ logger = get_logger(__name__)
 
 
 def create_or_policy(cmd, client, resource_group_name, account_name, properties=None, source_account=None,
-                      destination_account=None, policy_id="default", rule_id=None, source_container=None,
-                      destination_container=None, min_creation_time=None, prefix_match=None):
+                     destination_account=None, policy_id="default", rule_id=None, source_container=None,
+                     destination_container=None, min_creation_time=None, prefix_match=None):
 
     ObjectReplicationPolicy = cmd.get_models('ObjectReplicationPolicy')
 
@@ -32,8 +32,8 @@ def create_or_policy(cmd, client, resource_group_name, account_name, properties=
             )
             rules.append(rule)
         or_policy = ObjectReplicationPolicy(source_account=source_account,
-                                             destination_account=destination_account,
-                                             rules=rules)
+                                            destination_account=destination_account,
+                                            rules=rules)
     else:
         or_policy = properties
 
@@ -42,7 +42,7 @@ def create_or_policy(cmd, client, resource_group_name, account_name, properties=
 
 
 def update_or_policy(client, parameters, resource_group_name, account_name, object_replication_policy_id=None,
-                      properties=None, source_account=None, destination_account=None, ):
+                     properties=None, source_account=None, destination_account=None, ):
 
     if source_account is not None:
         parameters.source_account = source_account
@@ -64,7 +64,7 @@ def get_or_policy(client, resource_group_name, account_name, policy_id='default'
 
 
 def add_or_rule(cmd, client, resource_group_name, account_name, policy_id,
-                 source_container, destination_container, min_creation_time=None, prefix_match=None):
+                source_container, destination_container, min_creation_time=None, prefix_match=None):
 
     """
     Initialize rule for or policy
@@ -85,8 +85,8 @@ def add_or_rule(cmd, client, resource_group_name, account_name, policy_id,
 def remove_or_rule(client, resource_group_name, account_name, policy_id, rule_id):
 
     or_policy = client.get(resource_group_name=resource_group_name,
-                            account_name=account_name,
-                            object_replication_policy_id=policy_id)
+                           account_name=account_name,
+                           object_replication_policy_id=policy_id)
 
     rule = find_child_item(or_policy, rule_id, path='rules', key_path='rule_id')
     or_policy.rules.remove(rule)
@@ -108,7 +108,7 @@ def list_or_rules(client, resource_group_name, account_name, policy_id):
 
 
 def update_or_rule(client, resource_group_name, account_name, policy_id, rule_id, source_container=None,
-                    destination_container=None, min_creation_time=None, prefix_match=None):
+                   destination_container=None, min_creation_time=None, prefix_match=None):
 
     policy_properties = client.get(resource_group_name, account_name, policy_id)
 
@@ -127,4 +127,4 @@ def update_or_rule(client, resource_group_name, account_name, policy_id, rule_id
                             object_replication_policy_id=policy_id, properties=policy_properties)
 
     return get_or_rule(client, resource_group_name=resource_group_name, account_name=account_name,
-                        policy_id=policy_id, rule_id=rule_id)
+                       policy_id=policy_id, rule_id=rule_id)
