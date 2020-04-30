@@ -63,7 +63,7 @@ class SynapseScenarioTests(ScenarioTest):
         })
         # create spark pool
         spark_pool = self.cmd('az synapse spark pool create --name {spark-pool} --spark-version {spark-version}'
-                              ' --workspace {workspace} --resource-group {rg} --node-count 3',
+                              ' --workspace {workspace} --resource-group {rg} --node-count 3 --node-size Medium',
                               checks=[
                                   self.check('name', self.kwargs['spark-pool']),
                                   self.check('type', 'Microsoft.Synapse/workspaces/bigDataPools'),
@@ -268,7 +268,7 @@ class SynapseScenarioTests(ScenarioTest):
                  '--spark-pool-name {spark-pool}')
 
         # create a spark session statement job
-        statement = self.cmd('az synapse spark session-statement create --session-id {session-id} '
+        statement = self.cmd('az synapse spark statement create --session-id {session-id} '
                              '--workspace-name {workspace} --spark-pool-name {spark-pool} '
                              '--code {code} --language {language}',
                              checks=[
@@ -277,21 +277,21 @@ class SynapseScenarioTests(ScenarioTest):
         self.kwargs['statement-id'] = statement['id']
 
         # get a spark session statement
-        self.cmd('az synapse spark session-statement show --id {statement-id} --session-id {session-id} '
+        self.cmd('az synapse spark statement show --id {statement-id} --session-id {session-id} '
                  '--workspace-name {workspace} --spark-pool-name {spark-pool}',
                  checks=[
                      self.check('state', 'running')
                  ])
 
         # list all spark session statements under a specific spark session
-        self.cmd('az synapse spark session-statement list --session-id {session-id} '
+        self.cmd('az synapse spark statement list --session-id {session-id} '
                  '--workspace-name {workspace} --spark-pool-name {spark-pool}',
                  checks=[
                      self.check('statements[0].state', 'running')
                  ])
 
         # cancel a spark session statement
-        self.cmd('az synapse spark session-statement cancel --id {statement-id} --session-id {session-id} '
+        self.cmd('az synapse spark statement cancel --id {statement-id} --session-id {session-id} '
                  '--workspace-name {workspace} --spark-pool-name {spark-pool}  --yes',
                  checks=[
                      self.check('msg', 'canceled')

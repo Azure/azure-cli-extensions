@@ -105,7 +105,7 @@ def load_command_table(self, _):
         g.custom_command('reset-timeout', 'reset_timeout')
 
     # Spark session statements operations
-    with self.command_group('synapse spark session-statement', synapse_spark_session_sdk,
+    with self.command_group('synapse spark statement', synapse_spark_session_sdk,
                             client_factory=cf_synapse_spark_session) as g:
         g.custom_command('create', 'create_spark_session_statement')
         g.custom_command('list', 'list_spark_session_statements')

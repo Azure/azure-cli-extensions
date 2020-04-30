@@ -2,7 +2,6 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-from .util import categorized_files
 from azure.cli.core.util import sdk_no_wait, read_file_content
 from knack.log import get_logger  # pylint: disable=unused-import
 from knack.util import CLIError
@@ -12,9 +11,10 @@ from azext_synapse.vendored_sdks.azure_synapse.models import ExtendedLivyBatchRe
 
 from azext_synapse.vendored_sdks.azure_mgmt_synapse.models import Workspace, WorkspacePatchInfo, ManagedIdentity, \
     DataLakeStorageAccountDetails, \
-    BigDataPoolResourceInfo, AutoScaleProperties, AutoPauseProperties, LibraryRequirements, NodeSize, NodeSizeFamily, \
+    BigDataPoolResourceInfo, AutoScaleProperties, AutoPauseProperties, LibraryRequirements, NodeSizeFamily, \
     SqlPool, SqlPoolPatchInfo, Sku
 
+from .util import categorized_files, check_udfs_folder
 from .constant import DOTNET_CLASS, DOTNET_FILE, SPARK_DOTNET_UDFS_FOLDER_NAME, EXECUTOR_SIZE, \
     SPARK_DOTNET_ASSEMBLY_SEARCH_PATHS_KEY, SparkBatchLanguage, SynapseSqlCreateMode
 
@@ -50,7 +50,7 @@ def create_spark_batch_job(cmd, client, workspace_name, spark_pool_name, job_nam
         if not conf:
             conf = {SPARK_DOTNET_ASSEMBLY_SEARCH_PATHS_KEY: './{}'.format(SPARK_DOTNET_UDFS_FOLDER_NAME)}
         else:
-            conf[SPARK_DOTNET_ASSEMBLY_SEARCH_PATHS_KEY] = './{}'.format(SPARK_DOTNET_UDFS_FOLDER_NAME)
+            check_udfs_folder(conf)
 
     files = None
     jars = None
@@ -65,7 +65,6 @@ def create_spark_batch_job(cmd, client, workspace_name, spark_pool_name, job_nam
         tags=tags, name=job_name, file=file, class_name=class_name, args=args, jars=jars,
         files=files, archives=archives, conf=conf, driver_memory=driver_memory, driver_cores=driver_cores,
         executor_memory=executor_memory, executor_cores=executor_cores, num_executors=executors)
-    print(str(livy_batch_request))
     return client.create(workspace_name, spark_pool_name, livy_batch_request, detailed)
 
 
@@ -115,15 +114,10 @@ def list_spark_session_statements(cmd, client, workspace_name, spark_pool_name, 
     return client.list_statements(workspace_name, spark_pool_name, session_id)
 
 
-def create_spark_session_statement(cmd, client, workspace_name, spark_pool_name, session_id, language, code=None,
-                                   code_file=None):
-    if code is None and code_file is None:
-        raise CLIError('Please provide a value for parameter code or code_file by using --code or --code-file.')
-
-    if code is not None and code_file is not None:
-        raise CLIError('This command does not support using --code and --code-file at the same time.')
-    if code_file is not None:
-        code = read_file_content(code_file)
+def create_spark_session_statement(cmd, client, workspace_name, spark_pool_name, session_id, code, language):
+    if not code:
+        raise CLIError(
+            'Could not read code content from the supplied --code parameter. It is either empty or an invalid file.')
     livy_statement_request = LivyStatementRequestBody(code=code, kind=language)
     return client.create_statement(workspace_name, spark_pool_name, session_id, livy_statement_request)
 
@@ -172,9 +166,9 @@ def get_spark_pool(cmd, client, resource_group_name, workspace_name, spark_pool_
 
 
 def create_spark_pool(cmd, client, resource_group_name, workspace_name, spark_pool_name,
-                      spark_version, node_size=NodeSize.medium.value,
+                      spark_version, node_size, node_count,
                       node_size_family=NodeSizeFamily.memory_optimized.value, enable_auto_scale=None,
-                      node_count=None, min_node_count=None, max_node_count=None,
+                      min_node_count=None, max_node_count=None,
                       enable_auto_pause=None, delay_in_minutes=None, spark_events_folder="/events",
                       library_requirements_file=None,
                       default_spark_log_folder="/logs", tags=None, no_wait=False):
