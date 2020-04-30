@@ -6,7 +6,6 @@ Release History
 0.2.3
 ++++++
 * Add command "az spring-cloud app custom-domain" and "az spring-cloud certificate" to support Custom Domain feature.
-* Add command "az spring-cloud app identity"  to support Managed Identity feature
 
 0.2.2
 ++++++
