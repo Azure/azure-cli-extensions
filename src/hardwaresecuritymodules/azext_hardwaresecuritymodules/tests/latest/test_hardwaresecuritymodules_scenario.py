@@ -89,7 +89,8 @@ def step__dedicatedhsm_patch_update_an_existing_dedicated_hsm(test, rg):
 def step__dedicatedhsm_delete_delete_a_dedicated_hsm(test, rg):
     test.cmd('az hardwaresecuritymodules dedicated-hsm delete '
              '--name "hsm1" '
-             '--resource-group "{rg}"',
+             '--resource-group "{rg}" '
+             '-y',
              checks=[])
 
 
