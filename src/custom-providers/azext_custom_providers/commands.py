@@ -16,7 +16,7 @@ def load_command_table(self, _):
     custom_providers_custom_resource_provider = CliCommandType(
         operations_tmpl='azext_custom_providers.vendored_sdks.customproviders.operations._custom_resource_provider_operations#CustomResourceProviderOperations.{}',
         client_factory=cf_custom_resource_provider)
-    with self.command_group('custom-providers resource-provider', custom_providers_custom_resource_provider, client_factory=cf_custom_resource_provider) as g:
+    with self.command_group('custom-providers resource-provider', custom_providers_custom_resource_provider, client_factory=cf_custom_resource_provider, is_experimental=True) as g:
         g.custom_command('create', 'create_custom_providers_custom_resource_provider', supports_no_wait=True)
         g.custom_command('update', 'update_custom_providers_custom_resource_provider')
         g.custom_command('delete', 'delete_custom_providers_custom_resource_provider', supports_no_wait=True, confirmation=True)

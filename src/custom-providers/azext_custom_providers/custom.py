@@ -19,12 +19,9 @@ def create_custom_providers_custom_resource_provider(client,
                                                      resource_types=None,
                                                      validations=None,
                                                      no_wait=False):
-    body = {}
-    body['location'] = location  # str
-    body['tags'] = tags  # dictionary
-    body['actions'] = actions
-    body['resource_types'] = resource_types
-    body['validations'] = validations
+    body = {'location': location, 'tags': tags,
+            'actions': actions, 'resource_types': resource_types,
+            'validations': validations}
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name=resource_group_name, resource_provider_name=resource_provider_name, resource_provider=body)
 
 

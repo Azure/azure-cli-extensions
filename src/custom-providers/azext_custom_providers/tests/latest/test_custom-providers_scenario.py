@@ -3,68 +3,80 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import os
-import unittest
-
-from azure_devtools.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
 
-TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
-
-
-class CustomprovidersScenarioTest(ScenarioTest):
+class CustomProvidersScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_custom_providers')
-    def test_custom_providers(self, resource_group):
+    def test_custom_providers_common_scenario(self):
 
-        self.cmd('az custom-providers association create '
-                 '--scope "scope" '
-                 '--name "associationName" '
-                 '--target-resource-id "/subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.Solutions/applications/{{ application_name }}"',
-                 checks=[])
+        rp_name = self.create_random_name('clitest-crp', 20)
+        self.kwargs.update({
+            'rp_name': rp_name
+        })
 
-        self.cmd('az custom-providers custom-resource-provider create '
+        self.cmd('az custom-providers resource-provider create '
                  '--resource-group {rg} '
-                 '--name "newrp" '
-                 '--location "eastus"',
-                 checks=[])
+                 '--name {rp_name} '
+                 '--location westus2 '
+                 '--action '
+                 'name=ping '
+                 'endpoint=https://ayniadjso4lay.azurewebsites.net/api '
+                 'routing_type=Proxy '
+                 '--resource-type '
+                 'name=users '
+                 'endpoint=https://ayniadjso4lay.azurewebsites.net/api '
+                 'routing_type="Proxy, Cache" '
+                 '--validation '
+                 'validation_type=swagger '
+                 'specification=https://raw.githubusercontent.com/jsntcy/TestFixDelete/master/test.json',
+                 checks=[
+                     self.check('provisioningState', 'Succeeded'),
+                     self.check('name', rp_name),
+                     self.check('actions[0].name', 'ping'),
+                     self.check('resourceTypes[0].name', 'users'),
+                     self.check('validations[0].validationType', 'Swagger')
+                 ])
 
-        self.cmd('az custom-providers custom-resource-provider show '
+        self.cmd('az custom-providers resource-provider show '
                  '--resource-group {rg} '
-                 '--name "newrp"',
-                 checks=[])
+                 '--name {rp_name}',
+                 checks=[
+                     self.check('provisioningState', 'Succeeded'),
+                     self.check('name', rp_name),
+                     self.check('actions[0].name', 'ping'),
+                     self.check('actions[0].endpoint', 'https://ayniadjso4lay.azurewebsites.net/api'),
+                     self.check('actions[0].routingType', 'Proxy'),
+                     self.check('resourceTypes[0].name', 'users'),
+                     self.check('resourceTypes[0].endpoint', 'https://ayniadjso4lay.azurewebsites.net/api'),
+                     self.check('resourceTypes[0].routingType', 'Proxy, Cache'),
+                     self.check('validations[0].validationType', 'Swagger'),
+                     self.check('validations[0].specification',
+                                'https://raw.githubusercontent.com/jsntcy/TestFixDelete/master/test.json')
+                 ])
 
-        self.cmd('az custom-providers custom-resource-provider list '
+        self.cmd('az custom-providers resource-provider list '
                  '--resource-group {rg}',
-                 checks=[])
+                 checks=[
+                     self.check('length(@)', 1)
+                 ])
 
-        self.cmd('az custom-providers custom-resource-provider list',
-                 checks=[])
-
-        self.cmd('az custom-providers association show '
-                 '--scope "scope" '
-                 '--name "associationName"',
-                 checks=[])
-
-        self.cmd('az custom-providers association list '
-                 '--scope "scope"',
-                 checks=[])
-
-        self.cmd('az custom-providers operation list',
-                 checks=[])
-
-        self.cmd('az custom-providers custom-resource-provider update '
+        self.cmd('az custom-providers resource-provider update '
                  '--resource-group {rg} '
-                 '--name "newrp"',
-                 checks=[])
+                 '--name {rp_name} '
+                 '--tags a=b',
+                 checks=[
+                     self.check('tags.a', 'b'),
+                 ])
 
-        self.cmd('az custom-providers custom-resource-provider delete '
+        self.cmd('az custom-providers resource-provider delete '
                  '--resource-group {rg} '
-                 '--name "newrp"',
+                 '--name {rp_name} '
+                 '-y',
                  checks=[])
 
-        self.cmd('az custom-providers association delete '
-                 '--scope "scope" '
-                 '--name "associationName"',
-                 checks=[])
+        self.cmd('az custom-providers resource-provider show '
+                 '--resource-group {rg} '
+                 '--name {rp_name}',
+                 expect_failure=True)
