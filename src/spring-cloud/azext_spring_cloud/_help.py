@@ -403,7 +403,7 @@ helps['spring-cloud app custom-domain update'] = """
       text: az spring-cloud app custom-domain update --domain-name MyDomainName --certificate MCertName --app MyAppName
 """
 
-helps['spring-cloud app custom-domain delete'] = """
+helps['spring-cloud app custom-domain unbind'] = """
     type: command
-    short-summary: Delete a custom-domain of the app.
+    short-summary: Unbind a custom-domain of the app.
 """
