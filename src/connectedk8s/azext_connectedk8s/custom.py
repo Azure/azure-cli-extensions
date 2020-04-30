@@ -435,8 +435,8 @@ def check_pod_status(pod_dict):
                     pod_dict[pod_name] = 1
                 if container.get('state').get('terminated') is not None:
                     logger.warning("%s%s%s", "The pod {} was terminated. ".format(container.get('name')),
-                                    "Please ensure it is in running state once the operation completes. ",
-                                    "Run 'kubectl get pods -n azure-arc' to check the pod status.")
+                                   "Please ensure it is in running state once the operation completes. ",
+                                   "Run 'kubectl get pods -n azure-arc' to check the pod status.")
         if all(ele == 1 for ele in list(pod_dict.values())):
             return
     logger.warning("%s%s", 'The pods were unable to start before timeout. ',
