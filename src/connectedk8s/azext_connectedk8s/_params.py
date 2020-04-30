@@ -4,6 +4,9 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
+from azure.cli.core.commands.parameters import get_location_type
+from azure.cli.core.commands.validators import get_default_location_from_resource_group
+
 
 def load_arguments(self, _):
 
@@ -11,6 +14,7 @@ def load_arguments(self, _):
 
     with self.argument_context('connectedk8s connect') as c:
         c.argument('tags', tags_type)
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
         c.argument('cluster_name', options_list=['--name', '-n'], help='The name of the connected cluster.')
         c.argument('kube_config', options_list=['--kube-config'], help='Path to the kube config file.')
         c.argument('kube_context', options_list=['--kube-context'], help='Kubconfig context from current machine.')
@@ -19,9 +23,9 @@ def load_arguments(self, _):
         pass
 
     with self.argument_context('connectedk8s show') as c:
-        c.argument('cluster_name', options_list=['--name', '-n'], help='The name of the connected cluster.')
+        c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')
 
     with self.argument_context('connectedk8s delete') as c:
-        c.argument('cluster_name', options_list=['--name', '-n'], help='The name of the connected cluster.')
+        c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')
         c.argument('kube_config', options_list=['--kube-config'], help='Path to the kube config file.')
         c.argument('kube_context', options_list=['--kube-context'], help='Kubconfig context from current machine.')

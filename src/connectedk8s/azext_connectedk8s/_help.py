@@ -15,14 +15,6 @@ helps['connectedk8s'] = """
 helps['connectedk8s connect'] = """
     type: command
     short-summary: Onboard a connected kubernetes cluster to azure.
-    parameters:
-    - name: --kube-config
-      type: string
-      short-summary: Path to the kube config file
-    - name: --kube-context
-      type: string
-      short-summary: Kubconfig context from current machine
-
     examples:
     - name: Onboard a connected kubernetes cluster with default kube config and kube context.
       text: az connectedk8s connect -g resourceGroupName -n connectedClusterName
@@ -44,13 +36,6 @@ helps['connectedk8s list'] = """
 helps['connectedk8s delete'] = """
     type: command
     short-summary: Delete a connected kubernetes cluster along with connected cluster agents.
-    parameters:
-    - name: --kube-config
-      type: string
-      short-summary: Path to the kube config file
-    - name: --kube-context
-      type: string
-      short-summary: Kubconfig context from current machine
     examples:
     - name: Delete a connected kubernetes cluster and connected cluster agents with default kubeconfig and kubecontext.
       text: az connectedk8s delete -g resourceGroupName -n connectedClusterName

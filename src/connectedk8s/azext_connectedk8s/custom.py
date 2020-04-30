@@ -77,16 +77,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
     check_helm_version(kube_config, kube_context)
 
     # Validate location
-    resourceClient = _resource_client_factory(cmd.cli_ctx, subscription_id=subscription_id)
-    if location is None:
-        try:
-            location = resourceClient.resource_groups.get(resource_group_name).location
-        except:
-            raise CLIError("The resource group '{}' does not exist and has to be created. "
-                           .format(resource_group_name) +
-                           "Use the --location flag to specify the location to create the resource group.")
-
     rp_locations = []
+    resourceClient = _resource_client_factory(cmd.cli_ctx, subscription_id=subscription_id)
     providerDetails = resourceClient.providers.get('Microsoft.Kubernetes')
     for resourceTypes in providerDetails.resource_types:
         if resourceTypes.resource_type == 'connectedClusters':
@@ -456,7 +448,7 @@ def get_connectedk8s(cmd, client, resource_group_name, cluster_name):
 
 
 def list_connectedk8s(cmd, client, resource_group_name=None):
-    if resource_group_name is None:
+    if not resource_group_name:
         return client.list_by_subscription()
     return client.list_by_resource_group(resource_group_name)
 
