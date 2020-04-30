@@ -1,0 +1,178 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Charset:
+      - utf-8
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+      return-client-request-id:
+      - 'true'
+      x-client-CPU:
+      - x86
+      x-client-OS:
+      - win32
+      x-client-SKU:
+      - Python
+      x-client-Ver:
+      - 1.2.2
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body:
+      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
+    headers:
+      access-control-allow-methods:
+      - GET, OPTIONS
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - private, max-age=86400
+      content-length:
+      - '131'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 30 Apr 2020 06:37:05 GMT
+      p3p:
+      - CP="DSP CUR OTPi IND OTRi ONL FIN"
+      set-cookie:
+      - fpc=AjSIQNb0LsdKlCFg1VY5weY; expires=Sat, 30-May-2020 06:37:05 GMT; path=/;
+        secure; HttpOnly; SameSite=None
+      - esctx=AQABAAAAAAAm-06blBE1TpVMil8KPQ41_gVV--unLqeJD9U9rdotRfJT5TCQDZ5eiInirDPazPuMBZNgz61PwmULcaouq1YryOF9yWq5v1DOLpuwnSAwpm7DmtXZDukgRZs0PS9xjM4asGv5DqLGQSjZVRStVmWNY9m5JvT4SCpibuwcgF2HpWaQsnX-CGxygdP-t0d5bQggAA;
+        domain=.login.windows.net; path=/; secure; HttpOnly; SameSite=None
+      - x-ms-gateway-slice=corp; path=/; SameSite=None; secure; HttpOnly
+      - stsservicecookie=estscorp; path=/; SameSite=None; secure; HttpOnly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ests-server:
+      - 2.1.10476.10 - HKG1 ProdSlices
+    status:
+      code: 200
+      message: OK
+- request:
+    body: grant_type=refresh_token&client_id=04b07795-8ddb-461a-bbee-02f9e1bf7b46&resource=https%3A%2F%2Fmanagement.core.windows.net%2F&refresh_token=AgABAAAAAAAyagmN4QTbSbbgOeeNZhrvAQDs_wIA7__SkT3YDt71F2VgUeWoo3a3CAuLSh25li662NIAeWgnv1kRfaY5aL1CdtdDAittCAZyxKFStf4NzKN8po50RxCY_7nJbwruzcqDj58otafff3qdFSy3TxkV0iaxXss24fgXMLKodXll7MTnrTQ1NUevjnzimCe00d7znyU9IE8UwRAL-9EkDgscUpYr5Z8tR4xZWziCfjar9zKmuK-YTQd5ohL_y92VQ2Csm86sztHFaC8wnserbFdkfIZLd0xeORPgUfLCuYqNi9KPOmY24ldPJwnD47QgWpRY255CJaf7KGIdifzC188cZXGDO8OtCjA506OUSgxPyuOFaQU_BzV5Ukoq-xZuBsU6WwZvjQaTbUPwjQHjw1SWIXV_tzHyNqALw4baat95wFJdPCao_ZIVBOLTrAHoneKMhDrS4ue4WV6bn0_9QW8rOCDfugbcfnUHE7ZlKm1yfTTUJORn_u3_Tahv2J3y9vMZ8O02o8QXX7zS7WsgreexYhaiNmd0h__XJwVzlKit7Y9OSHEyTG3gxXpJycuLxYoKPoZ4nq4mXnpKOzEvTFGhrx3VjKkrGuRS24yTjq67uay7aEJ0FV5oCeamvNAJnHpW-Mm9Xat-l5ailYoPLUiU67pok5i6EVjzzUu8amtLwbKFh4CcxmzoZIuNJcoJdYopIvmpGAMp7hz_7VS087YPKD3w98I5kFyMlMb3dZ-qic4gvfmRMVtdR_sdin5GpmmGXppZM0uU0R7c37twHM5AmdVy7p0Mbpnb-PwCnKBiIgSYM6IWV_CnUQmpYdlz00ATS0lzzJ47Fl8Ve5-HDqzXnSAqh-yik5_v2m96HISfJGuOrtHWg9-bvjEftGZMe8lYWWIunqtCsTSxXlAqweAN3EDriQ9ws3hyyS4gmG1Yg_wCirr1G3tGmsBkxzIVNNGTA8fYwRZOGnabYHBdEU8waIJpatdACzF2aHXLHLwAeCLIv2zX9-ZQr5w
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Charset:
+      - utf-8
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1167'
+      User-Agent:
+      - python-requests/2.22.0
+      content-type:
+      - application/x-www-form-urlencoded
+      return-client-request-id:
+      - 'true'
+      x-client-CPU:
+      - x86
+      x-client-OS:
+      - win32
+      x-client-SKU:
+      - Python
+      x-client-Ver:
+      - 1.2.2
+    method: POST
+    uri: https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/oauth2/token
+  response:
+    body:
+      string: '{"token_type":"Bearer","scope":"user_impersonation","expires_in":"3598","ext_expires_in":"3598","expires_on":"1588232227","not_before":"1588228327","resource":"https://management.core.windows.net/","access_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6InVmbkMtb2ZGX3FfQ0NTaVFMb2M5a1FLcVowQSIsImtpZCI6InVmbkMtb2ZGX3FfQ0NTaVFMb2M5a1FLcVowQSJ9.eyJhdWQiOiJodHRwczovL21hbmFnZW1lbnQuY29yZS53aW5kb3dzLm5ldC8iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLXBwZS5uZXQvZjY4NmQ0MjYtOGQxNi00MmRiLTgxYjctYWI1NzhlMTEwY2NkLyIsImlhdCI6MTU4ODIyODMyNywibmJmIjoxNTg4MjI4MzI3LCJleHAiOjE1ODgyMzIyMjcsIl9jbGFpbV9uYW1lcyI6eyJncm91cHMiOiJzcmMxIn0sIl9jbGFpbV9zb3VyY2VzIjp7InNyYzEiOnsiZW5kcG9pbnQiOiJodHRwczovL2dyYXBoLnBwZS53aW5kb3dzLm5ldC9mNjg2ZDQyNi04ZDE2LTQyZGItODFiNy1hYjU3OGUxMTBjY2QvdXNlcnMvNWRkMmNlNWMtNjUwNi00MzRkLTk1MmEtMDAwZjkyYjU2NjZiL2dldE1lbWJlck9iamVjdHMifX0sImFjciI6IjEiLCJhaW8iOiJBU1FBMi84U0FBQUFSS0hrMVY0WWYyOVBuOGkrOS8rZ0dRTXV2UTBhUTF0c3U1SGxOdEc3eHBBPSIsImFtciI6WyJwd2QiXSwiYXBwaWQiOiIwNGIwNzc5NS04ZGRiLTQ2MWEtYmJlZS0wMmY5ZTFiZjdiNDYiLCJhcHBpZGFjciI6IjAiLCJmYW1pbHlfbmFtZSI6IkNoZW4iLCJnaXZlbl9uYW1lIjoiWmlob25nIiwiaXBhZGRyIjoiMTY3LjIyMC4yMzIuMjIzIiwibmFtZSI6IlppaG9uZyBDaGVuIiwib2lkIjoiNWRkMmNlNWMtNjUwNi00MzRkLTk1MmEtMDAwZjkyYjU2NjZiIiwib25wcmVtX3NpZCI6IlMtMS01LTIxLTIxNDY3NzMwODUtOTAzMzYzMjg1LTcxOTM0NDcwNy0yMDQyNjI5IiwicHVpZCI6IjEwMDNCRkZEOTU1QzNGMzEiLCJzY3AiOiJ1c2VyX2ltcGVyc29uYXRpb24iLCJzdWIiOiJzQ0REMFJ1X1VnYnhfTUxKWHVWRXBCaUlUcE1scGpRTmszMUxMZ1BURTRZIiwidGlkIjoiZjY4NmQ0MjYtOGQxNi00MmRiLTgxYjctYWI1NzhlMTEwY2NkIiwidW5pcXVlX25hbWUiOiJ6aWhjaEBtaWNyb3NvZnQuY29tIiwidXBuIjoiemloY2hAbWljcm9zb2Z0LmNvbSIsInV0aSI6IjBvam5LYVNtYUVxZVVEN09oZmdKQUEiLCJ2ZXIiOiIxLjAifQ.CjhLzj4UJTx9k-jDzngNCo9A5tNUkfYYhCjAUXNi3cpsSWKrEVYu6GUmsK1_0Q5xP_2zABQZXKmVmYiO9Ha-POinEOtvLbAQ4mz2Y0aUKJs4FW7uvVewQVfUTkaCYJj4UHOUm24sjIxVH8TEqc5qFMhh88eupCWxVU8X8YqmK5v_I3SujDG-RAHIM0nF6yO_09nzxJQ7PADqa2o8O7bivd7tdHXLASlHZWmh0qf2wN7nbUkrCMVFTLcl55GRrSjWT9moR7zjoyqRarJhsiI-_xyP4OfzZFNyEKqJQDHOHHOnZwdreDyN3s-e1wtc40BKPj7lTtcg_sqrtGbKdhhWrA","refresh_token":"AgABAAAAAAAyagmN4QTbSbbgOeeNZhrvAQDs_wIA7_9i-Uu6bbQWOXjrHMZJ2PyVgIFtLjYTbF-uWIqG4oyjcd9E7yl19AEqFqka73s2NLofMVpDZeNAiH6xHnk2VlsUc4Ky9bAJ8TFUbVv5JTppPtrcQ94UMpxkYkvcPY351LwtFWJOfZ0pz6oV9FizQM19ws5-JFG0xJ3sYjxTkEE9VSegkx-xeAwXMOyDo8QWMM7LR3xrFLjMdR4WfEwAQnHQ06PSohI8zdUFIHYCo43k7u5stVamtSN9qOzX2Bay6UEYJyEqdZQYjx6UdwX0E6CDXdaUTILLxCGuBr71US41cJzT2Wz8fXGEVN9ygQK2V6NT9bpk3qW1Qxs4QpWi2oFvdgDjNzvUWtkFrFWpqdkG4VrnTiWarfqWmxBYnGYKDHLA1N5rV3x-9pwsAN-M00bW5dxD8EK2MymCVNangWuemcLxLioIMasGM6t6dwQH6k4KprYI-g-FN1TFuzRdsMfI1ZfcAjCZMVVvOZyqh_uHkh3BOTMOcuwomJndtd_SaV5WaDmoHhG2JlUD33dNuNuW5a3o2tkDx2Vsezy1yRftqCrdRVjXWEuo5IVubQSzcWlWi5Yb8izm1Ve-cJTGzlI2bT0Hoi61_351I_B22xlFpAomGAkwFzoOu2ikFwbPwaKvL9lGCRK_zAP_IuzzUknF-eNfuCnugYnlBjhA0HE6lRLXBAPChKm63XHRkwLJuhsFKufW9tBdqH_m8ppsFZBFZ5Y2Cts9qxRIOeB_EnnB98qu_y5pSZaVXroY04N7D9fa0LDKxkdoLbXKxhGOanC8htNUTJ2KgPVT1Bki8ncQHhbzxG9fROo-Mvg_ngt4pRjodO9OnR-UihnE789KJd1_efKrBvhX2YuxF38NRCMcLCn4gnAV_QU4vMbgi9xoHI6XnRdtOZTW0rGfwNib_Ac0dLQ4yUqiGI39ldxpnG8aI-ycvLn12undNeDCCD-kjP1VT9A3N43J7xdPSmg4e2EnHTqJ","foci":"1"}'
+    headers:
+      cache-control:
+      - no-cache, no-store
+      content-length:
+      - '3056'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 30 Apr 2020 06:37:08 GMT
+      expires:
+      - '-1'
+      p3p:
+      - CP="DSP CUR OTPi IND OTRi ONL FIN"
+      pragma:
+      - no-cache
+      set-cookie:
+      - fpc=Atyn_xlL7wJOhMyE8sSLBELvn4zaAQAAABJpPNYOAAAA; expires=Sat, 30-May-2020
+        06:37:08 GMT; path=/; secure; HttpOnly; SameSite=None
+      - stsservicecookie=estsppe; path=/; SameSite=None; secure; HttpOnly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-clitelem:
+      - 1,0,0,99568554.4824,
+      x-ms-ests-server:
+      - 2.1.10543.0 - CHY PPE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"vaultUri": "https://integration-test.vault-int.azure-int.net/",
+      "keyVaultCertName": "cli-ut"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud certificate add
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '111'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --name --vault-uri --vault-certificate-name
+      User-Agent:
+      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-appplatform/0.1.0 Azure-SDK-For-Python AZURECLI/2.5.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unit-test/certificates/test-cert?api-version=2019-05-01-preview
+  response:
+    body:
+      string: '{"error":{"code":"EntityExisted","message":"CertificateName ''test-cert''
+        already existed","target":null,"details":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '119'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 30 Apr 2020 06:37:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-rp-server-mvid:
+      - 1ae75300-f110-4bbe-b685-ee89f5593139
+    status:
+      code: 409
+      message: Conflict
+version: 1

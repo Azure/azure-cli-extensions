@@ -17,7 +17,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class CustomDomainTests(ScenarioTest):
-    def bind_cert_to_domain_tests(self):
+    def test_bind_cert_to_domain(self):
         self.kwargs.update({
             'cert': 'test-cert',
             'keyVaultUri': 'https://integration-test.vault-int.azure-int.net/',
@@ -56,7 +56,7 @@ class CustomDomainTests(ScenarioTest):
         ])
 
         self.cmd('spring-cloud app custom-domain unbind --domain-name {domain} --app {app}')
-        self.cmd('spring-cloud app custom-domain remove --domain-name {domain} --app {app}', expect_failure=True)
+        self.cmd('spring-cloud app custom-domain show --domain-name {domain} --app {app}', expect_failure=True)
 
         self.cmd('spring-cloud certificate remove --name {cert}')
         self.cmd('spring-cloud certificate show --name {cert}', expect_failure=True)
