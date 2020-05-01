@@ -19,7 +19,6 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 @record_only()
 class CustomDomainTests(ScenarioTest):
 
-    @ResourceGroupPreparer()
     def test_bind_cert_to_domain(self):
         self.kwargs.update({
             'cert': 'test-cert',
@@ -27,7 +26,8 @@ class CustomDomainTests(ScenarioTest):
             'KeyVaultCertName': 'cli-ut',
             'domain': 'cli.asc-test.net',
             'app': 'test-app',
-            'serviceName': 'cli-ut'
+            'serviceName': 'cli-ut',
+            'rg': 'cli'
         })
 
         self.cmd('spring-cloud certificate add --name {cert} --vault-uri {keyVaultUri} --vault-certificate-name {KeyVaultCertName} -g {rg} -s {serviceName}', checks=[
