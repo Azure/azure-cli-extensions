@@ -50,8 +50,8 @@ helps['hardwaresecuritymodules dedicated-hsm create'] = """
     examples:
       - name: Create a new dedicated HSM
         text: |-
-               az hardwaresecuritymodules dedicated-hsm create -n "hsm1" -l "japanwest" -interfaces private-ip-address="1.0.0.1" \
--subnet id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hsm-group/providers/Microsoft.Network/virtualNetworks/hsm/subnets/hsm" \
+               az hardwaresecuritymodules dedicated-hsm create -n "hsm1" -l "japanwest" -i private-ip-address="1.0.0.1" \
+-s id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hsm-group/providers/Microsoft.Network/virtualNetworks/hsm/subnets/hsm" \
 --stamp-id "stamp1" --sku name="SafeNet Luna Network HSM A790" --tags Dept="hsm" Environment="dogfood" -g "hsm-group"
 """
 
@@ -72,4 +72,13 @@ helps['hardwaresecuritymodules dedicated-hsm delete'] = """
       - name: Delete a dedicated HSM
         text: |-
                az hardwaresecuritymodules dedicated-hsm delete -n "hsm1" -g "hsm-group"
+"""
+
+helps['hardwaresecuritymodules dedicated-hsm wait'] = """
+    type: command
+    short-summary: Waits for operation to complete
+    examples:
+      - name: Delete a dedicated HSM
+        text: |-
+               az hardwaresecuritymodules dedicated-hsm wait --created -g "hsm-group"
 """

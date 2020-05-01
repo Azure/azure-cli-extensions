@@ -15,7 +15,7 @@ import json
 def hardwaresecuritymodules_dedicated_hsm_list(cmd, client,
                                                resource_group_name=None,
                                                top=None):
-    if resource_group_name is not None:
+    if resource_group_name:
         return client.list_by_resource_group(resource_group_name=resource_group_name,
                                              top=top)
     return client.list_by_subscription(top=top)

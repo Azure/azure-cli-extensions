@@ -47,9 +47,9 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument(
             'stamp_id', help='This field will be used when RP does not support Availability zones.')
-        c.argument('network_profile_subnet', options_list=['--network-profile-subnet', '-subnet'], action=AddNetworkProfileSubnet, nargs='+', help='Specifies the identifier '
+        c.argument('network_profile_subnet', options_list=['--network-profile-subnet', '-s'], action=AddNetworkProfileSubnet, nargs='+', help='Specifies the identifier '
                    'of the subnet. Expected value: id=xx.')
-        c.argument('network_profile_network_interfaces', options_list=['--network-profile-network-interfaces', '-interfaces'], action=AddNetworkProfileNetworkInterfaces, nargs='+', help='Sp'
+        c.argument('network_profile_network_interfaces', options_list=['--network-profile-network-interfaces', '-i'], action=AddNetworkProfileNetworkInterfaces, nargs='+', help='Sp'
                    'ecifies the list of resource Ids for the network interfaces associated with the dedicated HSM. Expe'
                    'cted value: -interfaces private-ip-address=xx.')
 

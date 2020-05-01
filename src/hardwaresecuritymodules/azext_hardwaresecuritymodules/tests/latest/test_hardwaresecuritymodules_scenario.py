@@ -10,12 +10,14 @@
 
 import os
 import unittest
+import sys
 
 from azure_devtools.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import ScenarioTest
 from .. import try_manual
 from azure.cli.testsdk import ResourceGroupPreparer
 from .preparers import VirtualNetworkPreparer
+from azure.cli.testsdk import JMESPathCheck
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -50,7 +52,7 @@ def step__dedicatedhsm_put_create_a_new_or_update_an_existing_dedicated_hsm(test
              '--sku name="SafeNet Luna Network HSM A790" '
              '--tags Dept="hsm" Environment="dogfood" '
              '--resource-group "{rg}"',
-             checks=[])
+             checks=[JMESPathCheck('name', 'hsm1')])
 
 
 # EXAMPLE: /DedicatedHsm/get/Get a dedicated HSM
@@ -59,7 +61,7 @@ def step__dedicatedhsm_get_get_a_dedicated_hsm(test, rg):
     test.cmd('az hardwaresecuritymodules dedicated-hsm show '
              '--name "hsm1" '
              '--resource-group "{rg}"',
-             checks=[])
+             checks=[JMESPathCheck('name', 'hsm1')])
 
 
 # EXAMPLE: /DedicatedHsm/get/List dedicated HSM devices in a resource group
@@ -67,14 +69,15 @@ def step__dedicatedhsm_get_get_a_dedicated_hsm(test, rg):
 def step__dedicatedhsm_get_list_dedicated_hsm_devices_in_a_resource_group(test, rg):
     test.cmd('az hardwaresecuritymodules dedicated-hsm list '
              '--resource-group "{rg}"',
-             checks=[])
+             checks=[JMESPathCheck('[0].name', 'hsm1')])
 
 
 # EXAMPLE: /DedicatedHsm/get/List dedicated HSM devices in a subscription
 @try_manual
 def step__dedicatedhsm_get_list_dedicated_hsm_devices_in_a_subscription(test, rg):
-    test.cmd('az hardwaresecuritymodules dedicated-hsm list',
-             checks=[])
+    test.cmd('az hardwaresecuritymodules dedicated-hsm list '
+             '-g=',
+             checks=[JMESPathCheck('[0].name', 'hsm1')])
 
 
 # EXAMPLE: /DedicatedHsm/patch/Update an existing dedicated HSM
@@ -84,7 +87,7 @@ def step__dedicatedhsm_patch_update_an_existing_dedicated_hsm(test, rg):
              '--name "hsm1" '
              '--tags Dept="hsm" Environment="dogfood" Slice="A" '
              '--resource-group "{rg}"',
-             checks=[])
+             checks=[JMESPathCheck('tags.Slice', "A")])
 
 
 # EXAMPLE: /DedicatedHsm/delete/Delete a dedicated HSM
