@@ -80,5 +80,5 @@ helps['hardwaresecuritymodules dedicated-hsm wait'] = """
     examples:
       - name: Delete a dedicated HSM
         text: |-
-               az hardwaresecuritymodules dedicated-hsm wait --created -g "hsm-group"
+               az hardwaresecuritymodules dedicated-hsm wait --created -g "hsm-group" --name "hsm1"
 """
