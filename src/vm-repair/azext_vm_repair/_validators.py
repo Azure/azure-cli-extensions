@@ -14,7 +14,7 @@ from azure.cli.command_modules.resource._client_factory import _resource_client_
 from msrestazure.azure_exceptions import CloudError
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 
-from .encryption_types import encryption
+from .encryption_types import Encryption
 from .exceptions import AzCommandError
 from .repair_utils import (
     _call_az_command,
@@ -59,19 +59,16 @@ def validate_create(cmd, namespace):
         namespace.repair_group_name = 'repair-' + namespace.vm_name + '-' + timestamp
 
     # Check encrypted disk
-    # TODO, validate this with encrypted VMs
     encryption_type, _, _ = _fetch_encryption_settings(source_vm)
-    if encryption_type is not encryption.not_encrypted:
-        if encryption_type in (encryption.single_with_kek, encryption.single_without_kek):
-            if not namespace.unlock_encrypted_vm:
-                _prompt_encryptedvms()
-        elif encryption_type is encryption.dual:
-            message = 'The source VM\'s OS disk is encrypted using dual pass method.'
-            logger.warning(message)
-            raise CLIError('The current command does not support VMs which were encrypted using dual pass.Stopping Execution.')
+    # Currently only supporting single pass 
+    if encryption_type in (Encryption.SINGLE_WITH_KEK, Encryption.SINGLE_WITHOUT_KEK):
+        if not namespace.unlock_encrypted_vm:
+            _prompt_encrypted_vm(namespace)
+    elif encryption_type is Encryption.DUAL:
+        logger.warning('The source VM\'s OS disk is encrypted using dual pass method.')
+        raise CLIError('The current command does not support VMs which were encrypted using dual pass.')
     else:
-        message = 'The source VM\'s OS disk is not encrypted'
-        logger.info(message)
+        logger.debug('The source VM\'s OS disk is not encrypted')
 
     # Validate Auth Params
     # Prompt vm username
@@ -169,15 +166,18 @@ def validate_run(cmd, namespace):
         raise CLIError('Repair resource id is not valid.')
 
 
-def _prompt_encryptedvms():
+def _prompt_encrypted_vm(namespace):
     from knack.prompting import prompt_y_n, NoTTYException
     try:
-        message = 'The source VM\'s OS disk is encrypted. Current command will attach the copy of OS disk to repair vm and mount it after unlocking'
+        message = 'The source VM\'s OS disk is encrypted. The current command will unlock the copied OS disk within the repair VM.'
         logger.warning(message)
-        if not prompt_y_n('Continue with the execution?'):
-            raise CLIError('Stopping the execution upon user input')
+        if  prompt_y_n('Continue?'):
+            namespace.unlock_encrypted_vm = True;
+        else:
+            raise CLIError('Stopping execution upon user input.')
+
     except NoTTYException:
-        raise CLIError('Stopping the execution.')
+        raise CLIError('Please specify the unlock_encrypted_vm parameter in non-interactive mode.')
 
 
 def _prompt_repair_username(namespace):

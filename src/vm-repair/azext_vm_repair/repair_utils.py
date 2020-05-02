@@ -14,8 +14,7 @@ import pkgutil
 from knack.log import get_logger
 from knack.prompting import prompt_y_n, NoTTYException
 
-from azure.cli.command_modules.vm.custom import _is_linux_os
-from .encryption_types import encryption
+from .encryption_types import Encryption
 
 from .exceptions import AzCommandError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError
 # pylint: disable=line-too-long, deprecated-method
@@ -185,51 +184,51 @@ def _fetch_encryption_settings(source_vm):
     key_vault = "None"
     kekurl = "None"
     if source_vm.storage_profile.os_disk.encryption_settings is not None:
-        return (encryption['dual']), key_vault, kekurl
+        return Encryption.DUAL, key_vault, kekurl
     disk_id = source_vm.storage_profile.os_disk.managed_disk.id
     show_disk_command = 'az disk show --id {i} --query [encryptionSettingsCollection,encryptionSettingsCollection.encryptionSettings[].diskEncryptionKey.sourceVault.id,encryptionSettingsCollection.encryptionSettings[].keyEncryptionKey.keyUrl] -o json'.format(i=disk_id)
     encryption_type, key_vault, kekurl = loads(_call_az_command(show_disk_command))
     if [encryption_type, key_vault, kekurl] == [None, None, None]:
-        return (encryption['not_encrypted']), key_vault, kekurl
+        return Encryption.NONE, key_vault, kekurl
     if kekurl == []:
         key_vault = key_vault[0]
-        return (encryption['single_without_kek']), key_vault, kekurl
+        return Encryption.SINGLE_WITHOUT_KEK, key_vault, kekurl
     key_vault, kekurl = key_vault[0], kekurl[0]
-    return (encryption['single_with_kek']), key_vault, kekurl
+    return Encryption.SINGLE_WITH_KEK, key_vault, kekurl
 
 
-def _unlock_singlepass_encrypted_disk(source_vm, repair_group_name, repair_vm_name):
+def _unlock_singlepass_encrypted_disk(source_vm, is_linux, repair_group_name, repair_vm_name):
     # Installs the extension on repair VM and mounts the disk after unlocking.
     encryption_type, key_vault, kekurl = _fetch_encryption_settings(source_vm)
-    if encryption_type is not encryption.not_encrypted:
-        if _is_linux_os(source_vm):
-            volume_type = 'DATA'
+    if is_linux:
+        volume_type = 'DATA'
+    else:
+        volume_type = 'ALL'
+
+    try:
+        if encryption_type is Encryption.SINGLE_WITH_KEK:
+            install_ade_extension_command = 'az vm encryption enable --disk-encryption-keyvault {vault} --name {repair} --resource-group {g} --key-encryption-key {kek_url} --volume-type {volume}' \
+                                            .format(g=repair_group_name, repair=repair_vm_name, vault=key_vault, kek_url=kekurl, volume=volume_type)
+        elif encryption_type is Encryption.SINGLE_WITHOUT_KEK:
+            install_ade_extension_command = 'az vm encryption enable --disk-encryption-keyvault {vault} --name {repair} --resource-group {g} --volume-type {volume}' \
+                                            .format(g=repair_group_name, repair=repair_vm_name, vault=key_vault, volume=volume_type)
+        logger.info('Unlocking attached copied disk...')
+        _call_az_command(install_ade_extension_command)
+        # Linux VM encryption extension has a bug and we need to manually unlock and mount its disk
+        if is_linux:
+             logger.debug("Manually unlocking and mounting disk for Linux VMs.")
+            _manually_mount_encrypted_disk(repair_group_name, repair_vm_name)
+    except AzCommandError as azCommandError:
+        error_message = str(azCommandError)
+        if is_linux and "Failed to encrypt data volumes with error" in error_message:
+                logger.debug("Expected bug for linux VMs. Ignoring error.")
+                _manually_mount_encrypted_disk(repair_group_name, repair_vm_name)
         else:
-            volume_type = 'ALL'
-        try:
-            if encryption_type is encryption.single_with_kek:
-                install_ade_extension_command = 'az vm encryption enable --disk-encryption-keyvault {vault} --name {repair} --resource-group {g} --key-encryption-key {kek_url} --volume-type {volume}' \
-                                                .format(g=repair_group_name, repair=repair_vm_name, vault=key_vault, kek_url=kekurl, volume=volume_type)
-            elif encryption_type is encryption.single_without_kek:
-                install_ade_extension_command = 'az vm encryption enable --disk-encryption-keyvault {vault} --name {repair} --resource-group {g} --volume-type {volume}' \
-                                                .format(g=repair_group_name, repair=repair_vm_name, vault=key_vault, volume=volume_type)
-            logger.info('Installing extension on repair VM \'%s\'...', encryption_type)
-            _call_az_command(install_ade_extension_command)
-            if _is_linux_os(source_vm):
-                _mount_encrypted_disk(repair_group_name, repair_vm_name)
-        except AzCommandError as azCommandError:
-            error_message = str(azCommandError)
-            if _is_linux_os(source_vm):
-                if "Failed to encrypt data volumes with error" in error_message:
-                    logger.debug("Encryption failed for data disk. But this can be ignored.\n")
-                    _mount_encrypted_disk(repair_group_name, repair_vm_name)
-                else:
-                    raise
+            raise
 
 
-def _mount_encrypted_disk(repair_group_name, repair_vm_name):
-    # unlocks the disk using the phasephrase and mounts it on the repair VM.
-    logger.info('Unlocking and Mounting the disk on repair VM...')
+def _manually_unlock_mount_encrypted_disk(repair_group_name, repair_vm_name):
+    # Unlocks the disk using the phasephrase and mounts it on the repair VM.
     REPAIR_DIR_NAME = 'azext_vm_repair'
     SCRIPTS_DIR_NAME = 'scripts'
     LINUX_RUN_SCRIPT_NAME = 'mount_encrypted_disk.sh'
