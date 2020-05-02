@@ -4,6 +4,10 @@ Release History
 ===============
 0.4.43
 +++++
+* Fix issues with monitoring addon enabling with CLI versions 2.4.0+
+
+0.4.43
++++++
 * Add support for VMSS node public IP.
 
 0.4.38
