@@ -17,24 +17,15 @@ from knack.util import CLIError  # pylint: disable=unused-import
 from azext_ai_did_you_mean_this.failure_recovery_recommendation import FailureRecoveryRecommendation
 from azext_ai_did_you_mean_this._style import style_message
 from azext_ai_did_you_mean_this._check_for_updates import CliStatus, is_cli_up_to_date
+from azext_ai_did_you_mean_this._const import (
+    RECOMMENDATION_HEADER_FMT_STR,
+    UNABLE_TO_HELP_FMT_STR,
+    UPDATE_RECOMMENDATION_STR,
+    CLI_CHECK_IF_UP_TO_DATE
+)
+from azext_ai_did_you_mean_this._cmd_table import CommandTable
 
 logger = get_logger(__name__)
-
-UPDATE_RECOMMENDATION_STR = (
-    "Better failure recovery recommendations are available from the latest version of the CLI. "
-    "Please update for the best experience.\n"
-)
-
-UNABLE_TO_HELP_FMT_STR = (
-    '\nSorry I am not able to help with [{command}]'
-    '\nTry running [az find "az {command}"] to see examples of [{command}] from other users.'
-)
-
-RECOMMENDATION_HEADER_FMT_STR = (
-    '\nHere are the most common ways users succeeded after [{command}] failed:'
-)
-
-CLI_CHECK_IF_UP_TO_DATE = False
 
 
 # Commands
@@ -48,11 +39,56 @@ def _log_debug(msg, *args, **kwargs):
     logger.debug(msg, *args, **kwargs)
 
 
-def normalize_and_sort_parameters(parameters):
-    # When an error occurs, global parameters are not filtered out. Repeat that logic here.
-    # TODO: Consider moving this list to a connstant in azure.cli.core.commands
-    parameters = [param for param in parameters if param not in ['--debug', '--verbose']]
-    return ','.join(sorted(parameters))
+def get_parameter_table(cmd_table, command, recurse=True):
+    az_cli_command = cmd_table.get(command, None)
+    parameter_table = az_cli_command.arguments if az_cli_command else None
+
+    if not az_cli_command and recurse:
+        last_delim_idx = command.rfind(' ')
+        _log_debug('Removing unknown token "%s" from command.', command[last_delim_idx + 1:])
+        if last_delim_idx != -1:
+            parameter_table, command = get_parameter_table(cmd_table, command[:last_delim_idx], recurse=False)
+
+    return parameter_table, command
+
+
+def normalize_and_sort_parameters(cmd_table, command, parameters):
+    if not parameters:
+        return ''
+
+    # TODO: Avoid setting rules for global parameters manually.
+    rules = {
+        '-h': '--help',
+        '--only-show-errors': None,
+        '-o': '--output',
+        '--query': None
+    }
+
+    parameter_set = set()
+    parameter_table, command = get_parameter_table(cmd_table, command)
+
+    if parameter_table:
+        for argument in parameter_table.values():
+            options = argument.type.settings['options_list']
+            sorted_options = sorted(options, key=len, reverse=True)
+            standard_form = sorted_options[0]
+
+            for option in sorted_options[1:]:
+                rules[option] = standard_form
+
+            rules[standard_form] = None
+
+        for parameter in parameters:
+            if parameter in rules:
+                normalized_form = rules[parameter] or parameter
+                if normalized_form:
+                    parameter_set.add(normalized_form)
+            else:
+                _log_debug('"%s" is an invalid parameter for command "%s".', command, parameters)
+    else:
+        parameter_set = set(parameters)
+
+    return ','.join(sorted(parameter_set))
 
 
 def recommend_recovery_options(version, command, parameters, extension):
@@ -89,7 +125,7 @@ def recommend_recovery_options(version, command, parameters, extension):
     if extension or not command:
         return result
 
-    parameters = normalize_and_sort_parameters(parameters)
+    parameters = normalize_and_sort_parameters(CommandTable.CMD_TBL, command, parameters)
     response = call_aladdin_service(command, parameters, '2.3.1')
 
     if response.status_code == HTTPStatus.OK:
@@ -102,8 +138,6 @@ def recommend_recovery_options(version, command, parameters, extension):
                 append(f"\t{recommendation}")
         else:
             unable_to_help(command)
-    else:
-        unable_to_help(command)
 
     if CLI_CHECK_IF_UP_TO_DATE:
         cli_status = is_cli_up_to_date()
