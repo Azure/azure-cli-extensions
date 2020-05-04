@@ -216,13 +216,13 @@ def _unlock_singlepass_encrypted_disk(source_vm, is_linux, repair_group_name, re
         _call_az_command(install_ade_extension_command)
         # Linux VM encryption extension has a bug and we need to manually unlock and mount its disk
         if is_linux:
-             logger.debug("Manually unlocking and mounting disk for Linux VMs.")
-            _manually_mount_encrypted_disk(repair_group_name, repair_vm_name)
+            logger.debug("Manually unlocking and mounting disk for Linux VMs.")
+            _manually_unlock_mount_encrypted_disk(repair_group_name, repair_vm_name)
     except AzCommandError as azCommandError:
         error_message = str(azCommandError)
         if is_linux and "Failed to encrypt data volumes with error" in error_message:
-                logger.debug("Expected bug for linux VMs. Ignoring error.")
-                _manually_mount_encrypted_disk(repair_group_name, repair_vm_name)
+            logger.debug("Expected bug for linux VMs. Ignoring error.")
+            _manually_unlock_mount_encrypted_disk(repair_group_name, repair_vm_name)
         else:
             raise
 

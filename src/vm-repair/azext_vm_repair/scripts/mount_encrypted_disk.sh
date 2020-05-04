@@ -4,15 +4,16 @@
 mkdir /{investigateboot,investigateroot}
 
 #Getting boot and root partition info
+mounted_disks=`df -Ph | awk '{print $1}' | egrep -iv "filesystem|tmpfs|udev" | sed 's/[0-9]//g' | xargs | sed 's/ /|/g'`
 
-root=`fdisk -l | grep -i sdd | grep -iv disk | sed -n 1p | awk '$4 > 60000000{print $1}'`
+root=`fdisk -l | egrep -iv "$mounted_disks" | grep -i sd | grep -iv disk | sed -n 1p | awk '$4 > 60000000{print $1}'`
 if [ -z $root ]
 then
-        boot_part=`fdisk -l | grep -i sdd | grep -iv disk | awk '{print $1}' | sed -n 1p`
-        root_part=`fdisk -l | grep -i sdd | grep -iv disk | awk '{print $1}' | sed -n 2p`
+        boot_part=`fdisk -l | egrep -iv "$mounted_disks" | grep -i sd | grep -iv disk | awk '{print $1}' | sed -n 1p`
+        root_part=`fdisk -l | egrep -iv "$mounted_disks" | grep -i sd | grep -iv disk | awk '{print $1}' | sed -n 2p`
 else
         root_part="$root"
-        boot_part=`fdisk -l | grep -i sdd | grep -iv disk | awk '{print $1}' | sed -n 2p`
+        boot_part=`fdisk -l | egrep -iv "$mounted_disks" | grep -i sd | grep -iv disk | awk '{print $1}' | sed -n 2p`
 fi
 
 mount_cmd=`mount -o nouuid 2> /dev/null`

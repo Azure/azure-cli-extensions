@@ -60,7 +60,7 @@ def validate_create(cmd, namespace):
 
     # Check encrypted disk
     encryption_type, _, _ = _fetch_encryption_settings(source_vm)
-    # Currently only supporting single pass 
+    # Currently only supporting single pass
     if encryption_type in (Encryption.SINGLE_WITH_KEK, Encryption.SINGLE_WITHOUT_KEK):
         if not namespace.unlock_encrypted_vm:
             _prompt_encrypted_vm(namespace)
@@ -171,8 +171,8 @@ def _prompt_encrypted_vm(namespace):
     try:
         message = 'The source VM\'s OS disk is encrypted. The current command will unlock the copied OS disk within the repair VM.'
         logger.warning(message)
-        if  prompt_y_n('Continue?'):
-            namespace.unlock_encrypted_vm = True;
+        if prompt_y_n('Continue?'):
+            namespace.unlock_encrypted_vm = True
         else:
             raise CLIError('Stopping execution upon user input.')
 
