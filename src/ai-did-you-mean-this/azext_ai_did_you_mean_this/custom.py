@@ -53,6 +53,9 @@ def get_parameter_table(cmd_table, command, recurse=True):
 
 
 def normalize_and_sort_parameters(cmd_table, command, parameters):
+    from knack.deprecation import Deprecated
+    _log_debug('normalize_and_sort_parameters: command: "%s", parameters: "%s"', command, parameters)
+
     if not parameters:
         return ''
 
@@ -61,8 +64,12 @@ def normalize_and_sort_parameters(cmd_table, command, parameters):
         '-h': '--help',
         '--only-show-errors': None,
         '-o': '--output',
-        '--query': None
+        '--query': None,
+        '--debug': None,
+        '--verbose': None
     }
+
+    blacklisted = {'--debug', '--verbose'}
 
     parameter_set = set()
     parameter_table, command = get_parameter_table(cmd_table, command)
@@ -70,28 +77,37 @@ def normalize_and_sort_parameters(cmd_table, command, parameters):
     if parameter_table:
         for argument in parameter_table.values():
             options = argument.type.settings['options_list']
-            sorted_options = sorted(options, key=len, reverse=True)
-            standard_form = sorted_options[0]
+            # remove deprecated arguments.
+            options = (option for option in options if not isinstance(option, Deprecated))
 
-            for option in sorted_options[1:]:
-                rules[option] = standard_form
+            try:
+                sorted_options = sorted(options, key=len, reverse=True)
+                standard_form = sorted_options[0]
 
-            rules[standard_form] = None
+                for option in sorted_options[1:]:
+                    rules[option] = standard_form
 
-        for parameter in parameters:
-            if parameter in rules:
-                normalized_form = rules[parameter] or parameter
-                if normalized_form:
-                    parameter_set.add(normalized_form)
-            else:
-                _log_debug('"%s" is an invalid parameter for command "%s".', command, parameters)
-    else:
-        parameter_set = set(parameters)
+                rules[standard_form] = None
+            except TypeError:
+                _log_debug('Unexpected argument options `%s` of type `%s`.', options, type(options).__name__)
+
+    for parameter in parameters:
+        if parameter in rules:
+            normalized_form = rules.get(parameter, None) or parameter
+            parameter_set.add(normalized_form)
+        else:
+            _log_debug('"%s" is an invalid parameter for command "%s".', parameter, command)
+
+    parameter_set.difference_update(blacklisted)
 
     return ','.join(sorted(parameter_set))
 
 
 def recommend_recovery_options(version, command, parameters, extension):
+    from timeit import default_timer as timer
+    start_time = timer()
+    elapsed_time = None
+
     result = []
     _log_debug('recommend_recovery_options: version: "%s", command: "%s", parameters: "%s", extension: "%s"',
                version, command, parameters, extension)
@@ -146,6 +162,9 @@ def recommend_recovery_options(version, command, parameters, extension):
             append(style_message(UPDATE_RECOMMENDATION_STR))
     else:
         _log_debug('Skipping CLI version check.')
+
+    elapsed_time = timer() - start_time
+    _log_debug('The overall time it took to process failure recovery recommendations was %.2fms.', elapsed_time * 1000)
 
     return result
 

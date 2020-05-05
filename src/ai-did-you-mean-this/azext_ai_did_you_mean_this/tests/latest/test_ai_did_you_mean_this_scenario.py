@@ -34,19 +34,19 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 def get_mock_recommendations():
     recommendation_data = [
         {
-            "SuccessCommand": "account get-access-token",
-            "SuccessCommand_Parameters": "--output,--resource,--subscription",
-            "SuccessCommand_ArgumentPlaceholders": "json,{resource},00000000-0000-0000-0000-000000000000",
-        },
-        {
             "SuccessCommand": "account list",
             "SuccessCommand_Parameters": "",
             "SuccessCommand_ArgumentPlaceholders": "",
         },
         {
-            "SuccessCommand": "ad signed-in-user show",
-            "SuccessCommand_Parameters": "--output",
-            "SuccessCommand_ArgumentPlaceholders": "json",
+            "SuccessCommand": "account show",
+            "SuccessCommand_Parameters": "",
+            "SuccessCommand_ArgumentPlaceholders": "",
+        },
+        {
+            "SuccessCommand": "account set",
+            "SuccessCommand_Parameters": "--subscription",
+            "SuccessCommand_ArgumentPlaceholders": "Subscription",
         }
     ]
 
