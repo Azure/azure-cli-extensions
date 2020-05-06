@@ -1412,7 +1412,7 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
 
     sas_token = sas_token.strip('?')
     deployment_yaml = urlopen(
-        "https://raw.githubusercontent.com/Azure/aks-periscope/v0.2/deployment/aks-periscope.yaml").read().decode()
+        "https://raw.githubusercontent.com/Azure/aks-periscope/latest/deployment/aks-periscope.yaml").read().decode()
     deployment_yaml = deployment_yaml.replace("# <accountName, base64 encoded>",
                                               (base64.b64encode(bytes(storage_account_name, 'ascii'))).decode('ascii'))
     deployment_yaml = deployment_yaml.replace("# <saskey, base64 encoded>",
