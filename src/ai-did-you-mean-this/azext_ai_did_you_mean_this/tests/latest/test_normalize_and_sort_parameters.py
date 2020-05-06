@@ -8,9 +8,11 @@ from azext_ai_did_you_mean_this.custom import normalize_and_sort_parameters
 from azext_ai_did_you_mean_this.tests.latest._commands import get_commands, AzCommandType
 
 
-class AiDidYouMeanThisCustomScenarioTest(unittest.TestCase):
+class TestNormalizeAndSortParameters(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        super(TestNormalizeAndSortParameters, cls).setUpClass()
+
         from knack.events import EVENT_INVOKER_POST_CMD_TBL_CREATE
         from azure.cli.core.commands.events import EVENT_INVOKER_PRE_LOAD_ARGUMENTS, EVENT_INVOKER_POST_LOAD_ARGUMENTS
         from azure.cli.core.commands.arm import register_global_subscription_argument, register_ids_argument

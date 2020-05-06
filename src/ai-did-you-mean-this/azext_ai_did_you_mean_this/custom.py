@@ -5,7 +5,6 @@
 
 import json
 from http import HTTPStatus
-from pkg_resources import parse_version
 
 import requests
 
@@ -16,12 +15,9 @@ from knack.util import CLIError  # pylint: disable=unused-import
 
 from azext_ai_did_you_mean_this.failure_recovery_recommendation import FailureRecoveryRecommendation
 from azext_ai_did_you_mean_this._style import style_message
-from azext_ai_did_you_mean_this._check_for_updates import CliStatus, is_cli_up_to_date
 from azext_ai_did_you_mean_this._const import (
     RECOMMENDATION_HEADER_FMT_STR,
-    UNABLE_TO_HELP_FMT_STR,
-    UPDATE_RECOMMENDATION_STR,
-    CLI_CHECK_IF_UP_TO_DATE
+    UNABLE_TO_HELP_FMT_STR
 )
 from azext_ai_did_you_mean_this._cmd_table import CommandTable
 
@@ -155,14 +151,6 @@ def recommend_recovery_options(version, command, parameters, extension):
         else:
             unable_to_help(command)
 
-    if CLI_CHECK_IF_UP_TO_DATE:
-        cli_status = is_cli_up_to_date()
-
-        if cli_status == CliStatus.OUTDATED:
-            append(style_message(UPDATE_RECOMMENDATION_STR))
-    else:
-        _log_debug('Skipping CLI version check.')
-
     elapsed_time = timer() - start_time
     _log_debug('The overall time it took to process failure recovery recommendations was %.2fms.', elapsed_time * 1000)
 
@@ -172,22 +160,21 @@ def recommend_recovery_options(version, command, parameters, extension):
 def get_recommendations_from_http_response(response):
     recommendations = []
 
-    for suggestion in json.loads(response.content):
+    for suggestion in response.json():
         recommendations.append(FailureRecoveryRecommendation(suggestion))
 
     return recommendations
 
 
-def call_aladdin_service(command, parameters, core_version):
+def call_aladdin_service(command, parameters, version):
     _log_debug('call_aladdin_service: version: "%s", command: "%s", parameters: "%s"',
-               core_version, command, parameters)
+               version, command, parameters)
 
-    session_id = telemetry_core._session._get_base_properties()['Reserved.SessionId']  # pylint: disable=protected-access
+    correlation_id = telemetry_core._session.correlation_id  # pylint: disable=protected-access
     subscription_id = telemetry_core._get_azure_subscription_id()  # pylint: disable=protected-access
-    version = str(parse_version(core_version))
 
     context = {
-        "sessionId": session_id,
+        "sessionId": correlation_id,
         "subscriptionId": subscription_id,
         "versionNumber": version
     }

@@ -12,5 +12,3 @@ UNABLE_TO_HELP_FMT_STR = (
 RECOMMENDATION_HEADER_FMT_STR = (
     '\nHere are the most common ways users succeeded after [{command}] failed:'
 )
-
-CLI_CHECK_IF_UP_TO_DATE = False
