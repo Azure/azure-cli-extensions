@@ -28,7 +28,7 @@ def setup(test, rg):
     test.cmd(
         'az feature register --namespace Microsoft.Network --name AllowBaremetalServers')
     test.cmd('az network vnet create --name vn -g {rg} --subnet-name default')
-    test.cmd('az vm create -g {rg} --name vm1 --image UbuntuLTS')
+    test.cmd('az vm create -g {rg} --name vm1 --image UbuntuLTS --generate-ssh-keys')
     test.cmd(
         'az network vnet subnet create --vnet-name vn -n GatewaySubnet -g {rg} --address-prefix 10.0.5.0/24')
     test.cmd(
