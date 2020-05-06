@@ -10,7 +10,6 @@
 
 import os
 import unittest
-import sys
 
 from azure_devtools.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import ScenarioTest
