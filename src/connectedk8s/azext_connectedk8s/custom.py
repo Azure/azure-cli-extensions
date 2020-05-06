@@ -17,6 +17,7 @@ from knack.log import get_logger
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core._profile import Profile
+from azure.cli.core import telemetry
 from azext_connectedk8s._client_factory import _graph_client_factory
 from azext_connectedk8s._client_factory import cf_resource_groups
 from azext_connectedk8s._client_factory import _resource_client_factory
@@ -42,8 +43,16 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
+    #telemetry.add_extension_event('connectedk8s', {'testk': 'testval'})
+    #print(telemetry._session.events['c4395b75-49cc-422c-bc95-c7d51aef5d46'])
+    #return
+
     # Setting subscription id
     subscription_id = get_subscription_id(cmd.cli_ctx)
+
+    # Setting resource Id
+    resource_id = "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Kubernetes/connectedClusters/{}".format(subscription_id, resource_group_name, cluster_name)
+    telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.ResourceId': resource_id})
 
     # Setting user profile
     profile = Profile(cli_ctx=cmd.cli_ctx)
@@ -62,6 +71,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
     try:
         config.load_kube_config(config_file=kube_config, context=kube_context)
     except Exception as e:
+        telemetry.set_user_fault()
+        telemetry.set_exception(exception=e, fault_type='kubeconfig-load-error',
+                                summary='Problem loading the kubeconfig file')
         raise CLIError("Problem loading the kubeconfig file." + str(e))
     configuration = kube_client.Configuration()
 
@@ -70,11 +82,21 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
     # if the user had not logged in.
     check_kube_connection(configuration)
 
+    # Get kubernetes cluster info for telemetry
+    kubernetes_version = get_server_version(configuration)
+    kubernetes_distro = 'default'
+    kubernetes_properties = {
+        'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
+        'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro
+    }
+    telemetry.add_extension_event('connectedk8s', kubernetes_properties)
+
     # Checking helm installation
     check_helm_install(kube_config, kube_context)
 
     # Check helm version
-    check_helm_version(kube_config, kube_context)
+    helm_version = check_helm_version(kube_config, kube_context)
+    telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.HelmVersion': helm_version})
 
     # Validate location
     rp_locations = []
@@ -84,6 +106,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
         if resourceTypes.resource_type == 'connectedClusters':
             rp_locations = [location.replace(" ", "").lower() for location in resourceTypes.locations]
             if location.lower() not in rp_locations:
+                telemetry.set_user_fault()
+                telemetry.set_exception(exception='Location not supported', fault_type='location-validation-error',
+                                        summary='Provided location is not supported for creating connected clusters')
                 raise CLIError("Connected cluster resource creation is supported only in the following locations: " +
                                ', '.join(map(str, rp_locations)) +
                                ". Use the --location flag to specify one of these locations.")
@@ -97,6 +122,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
         try:
             configmap = api_instance.read_namespaced_config_map('azure-clusterconfig', 'azure-arc')
         except Exception as e:  # pylint: disable=broad-except
+            telemetry.set_exception(exception=e, fault_type='configmap-read-error',
+                                    summary='Unable to read ConfigMap')
             raise CLIError("Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: %s\n" % e)
         configmap_rg_name = configmap.data["AZURE_RESOURCE_GROUP"]
         configmap_cluster_name = configmap.data["AZURE_RESOURCE_NAME"]
@@ -113,6 +140,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
                 except CloudError as ex:
                     raise CLIError(ex)
             else:
+                telemetry.set_user_fault()
+                telemetry.set_exception(exception='The kubernetes cluster is already onboarded', fault_type='cluster-already-onboarded-error',
+                                        summary='Kubernetes cluster already onboarded')
                 raise CLIError("The kubernetes cluster you are trying to onboard" +
                                "is already onboarded to the resource group" +
                                " '{}' with resource name '{}'.".format(configmap_rg_name, configmap_cluster_name))
@@ -121,6 +151,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
             delete_arc_agents(release_namespace, kube_config, kube_context, configuration)
     else:
         if connected_cluster_exists(client, resource_group_name, cluster_name):
+            telemetry.set_user_fault()
+            telemetry.set_exception(exception='The connected cluster resource already exists', fault_type='resource-already-exists-error',
+                                    summary='Connected cluster resource already exists')
             raise CLIError("The connected cluster resource {} already exists ".format(cluster_name) +
                            "in the resource group {} ".format(resource_group_name) +
                            "and corresponds to a different Kubernetes cluster. To onboard this Kubernetes cluster" +
@@ -132,6 +165,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
         try:
             resourceClient.resource_groups.create_or_update(resource_group_name, resource_group_params)
         except Exception as e:
+            telemetry.set_user_fault()
+            telemetry.set_exception(exception=e, fault_type='resource-group-creation-error',
+                                    summary='Failed to create the resource group')
             raise CLIError("Failed to create the resource group {} :".format(resource_group_name) + str(e))
 
     # Adding helm repo
@@ -144,6 +180,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
         response_helm_repo = Popen(cmd_helm_repo, stdout=PIPE, stderr=PIPE)
         _, error_helm_repo = response_helm_repo.communicate()
         if response_helm_repo.returncode != 0:
+            telemetry.set_exception(exception=error_helm_repo.decode("ascii"), fault_type='helm-repo-add-error',
+                                    summary='Failed to add helm repository')
             raise CLIError("Unable to add repository {} to helm: ".format(repo_url) + error_helm_repo.decode("ascii"))
 
     # Retrieving Helm chart OCI Artifact location
@@ -161,15 +199,21 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
     try:
         key_pair = RSA.generate(4096)
     except Exception as e:
+        telemetry.set_exception(exception=e, fault_type='keypair-generation-error',
+                                summary='Failed to generate public-private key pair')
         raise CLIError("Failed to generate public-private key pair. " + str(e))
     try:
         public_key = get_public_key(key_pair)
     except Exception as e:
-        raise CLIError("Failed to generate public key." + str(e))
+        telemetry.set_exception(exception=e, fault_type='publickey-export-error',
+                                summary='Failed to export public key')
+        raise CLIError("Failed to export public key." + str(e))
     try:
         private_key_pem = get_private_key(key_pair)
     except Exception as e:
-        raise CLIError("Failed to generate private key." + str(e))
+        telemetry.set_exception(exception=e, fault_type='privatekey-export-error',
+                                summary='Failed to export private key')
+        raise CLIError("Failed to export private key." + str(e))
 
     # Helm Install
     helm_chart_path = os.path.join(chart_export_path, 'azure-arc-k8sagents')
@@ -188,7 +232,13 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
     response_helm_install = Popen(cmd_helm_install, stdout=PIPE, stderr=PIPE)
     _, error_helm_install = response_helm_install.communicate()
     if response_helm_install.returncode != 0:
+        telemetry.set_exception(exception=error_helm_install.decode("ascii"), fault_type='helm-release-install-error',
+                                summary='Unable to install helm release')
         raise CLIError("Unable to install helm release: " + error_helm_install.decode("ascii"))
+
+    # Get azure-arc agent version for telemetry
+    azure_arc_agent_version = get_agent_version(configuration)
+    telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.AgentVersion': azure_arc_agent_version})
 
     # Create connected cluster resource
     cc = generate_request_payload(configuration, location, public_key, tags)
@@ -199,6 +249,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
         if no_wait:
             return put_cc_response
     except CloudError as ex:
+        telemetry.set_exception(exception=ex, fault_type='connected-cluster-create-error',
+                                summary='Unable to create connected cluster resource')
         raise CLIError(ex)
 
     # Getting total number of pods scheduled to run in azure-arc namespace
@@ -209,6 +261,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
     try:
         check_pod_status(pod_dict)
     except Exception as e:  # pylint: disable=broad-except
+        telemetry.set_exception(exception=e, fault_type='check-pod-status-error',
+                                summary='Failed to check arc agent pods statuses')
         logger.warning("Failed to check arc agent pods statuses: %s", e)
 
     return put_cc_response
@@ -234,6 +288,9 @@ def check_kube_connection(configuration):
     try:
         api_instance.get_api_resources()
     except Exception as e:
+        telemetry.set_user_fault()
+        telemetry.set_exception(exception=e, fault_type='kubernetes-cluster-connection-error',
+                                summary='Unable to verify connectivity to the Kubernetes cluster')
         logger.warning("Unable to verify connectivity to the Kubernetes cluster: %s\n", e)
         raise CLIError("If you are using AAD Enabled cluster, " +
                        "verify that you are able to access the cluster. Learn more at " +
@@ -249,8 +306,14 @@ def check_helm_install(kube_config, kube_context):
         _, error_helm_installed = response_helm_installed.communicate()
         if response_helm_installed.returncode != 0:
             if "unknown flag" in error_helm_installed.decode("ascii"):
+                telemetry.set_user_fault()
+                telemetry.set_exception(exception='Helm 3 not found', fault_type='helm-not-updated-error',
+                                        summary='Helm3 not found on the machine')
                 raise CLIError("Please install the latest version of Helm. " +
                                "Learn more at https://aka.ms/arc/k8s/onboarding-helm-install")
+            telemetry.set_user_fault()
+            telemetry.set_exception(exception=error_helm_installed.decode("ascii"), fault_type='helm-not-installed-error',
+                                    summary='Helm3 not installed on the machine')
             raise CLIError(error_helm_installed.decode("ascii"))
     except FileNotFoundError:
         raise CLIError("Helm is not installed or requires elevated permissions. " +
@@ -268,11 +331,17 @@ def check_helm_version(kube_config, kube_context):
     response_helm_version = Popen(cmd_helm_version, stdout=PIPE, stderr=PIPE)
     output_helm_version, error_helm_version = response_helm_version.communicate()
     if response_helm_version.returncode != 0:
+        telemetry.set_exception(exception=error_helm_version.decode('ascii'), fault_type='helm-version-check-error',
+                                summary='Unable to determine helm version')
         raise CLIError("Unable to determine helm version: " + error_helm_version.decode("ascii"))
     if "v2" in output_helm_version.decode("ascii"):
+        telemetry.set_user_fault()
+        telemetry.set_exception(exception='Helm 3 not found', fault_type='helm-not-updated-error',
+                                summary='Helm3 not found on the machine')
         raise CLIError("Helm version 3+ is required. " +
                        "Ensure that you have installed the latest version of Helm. " +
                        "Learn more at https://aka.ms/arc/k8s/onboarding-helm-install")
+    return output_helm_version.decode('ascii')
 
 
 def resource_group_exists(ctx, resource_group_name, subscription_id=None):
@@ -307,9 +376,13 @@ def get_helm_registery(profile, location):
     try:
         response = requests.post(get_chart_location_url, params=query_parameters, headers=header_parameters)
     except Exception as e:
+        telemetry.set_exception(exception=e, fault_type='helm-registery-path-fetch-error',
+                                summary='Error while fetching helm chart registery path')
         raise CLIError("Error while fetching helm chart registery path: " + str(e))
     if response.status_code == 200:
         return response.json().get('repositoryPath')
+    telemetry.set_exception(exception=str(response.json()), fault_type='helm-registery-path-fetch-error',
+                            summary='Error while fetching helm chart registery path')
     raise CLIError("Error while fetching helm chart registery path: {}".format(str(response.json())))
 
 
@@ -320,6 +393,8 @@ def pull_helm_chart(registery_path, kube_config, kube_context):
     response_helm_chart_pull = subprocess.Popen(cmd_helm_chart_pull, stdout=PIPE, stderr=PIPE)
     _, error_helm_chart_pull = response_helm_chart_pull.communicate()
     if response_helm_chart_pull.returncode != 0:
+        telemetry.set_exception(exception=error_helm_chart_pull.decode("ascii"), fault_type='helm-chart-pull-error',
+                                summary='Unable to pull helm chart from the registery')
         raise CLIError("Unable to pull helm chart from the registery '{}': ".format(registery_path) + error_helm_chart_pull.decode("ascii"))
 
 
@@ -331,6 +406,8 @@ def export_helm_chart(registery_path, chart_export_path, kube_config, kube_conte
     response_helm_chart_export = subprocess.Popen(cmd_helm_chart_export, stdout=PIPE, stderr=PIPE)
     _, error_helm_chart_export = response_helm_chart_export.communicate()
     if response_helm_chart_export.returncode != 0:
+        telemetry.set_exception(exception=error_helm_chart_export.decode("ascii"), fault_type='helm-chart-export-error',
+                                summary='Unable to export helm chart from the registery')
         raise CLIError("Unable to export helm chart from the registery '{}': ".format(registery_path) + error_helm_chart_export.decode("ascii"))
 
 
@@ -352,6 +429,8 @@ def get_node_count(configuration):
         api_response = api_instance.list_node()
         return len(api_response.items)
     except Exception as e:  # pylint: disable=broad-except
+        telemetry.set_exception(exception=e, fault_type='kubernetes-get-nodes-error',
+                                summary='Exception while fetching nodes')
         logger.warning("Exception while fetching nodes: %s\n", e)
 
 
@@ -361,6 +440,8 @@ def get_server_version(configuration):
         api_response = api_instance.get_code()
         return api_response.git_version
     except Exception as e:  # pylint: disable=broad-except
+        telemetry.set_exception(exception=e, fault_type='kubernetes-get-version-error',
+                                summary='Unable to fetch kubernetes version')
         logger.warning("Unable to fetch kubernetes version: %s\n", e)
 
 
@@ -370,15 +451,12 @@ def get_agent_version(configuration):
         api_response = api_instance.read_namespaced_config_map('azure-clusterconfig', 'azure-arc')
         return api_response.data["AZURE_ARC_AGENT_VERSION"]
     except Exception as e:  # pylint: disable=broad-except
+        telemetry.set_exception(exception=e, fault_type='get-agent-version-error',
+                                summary='Unable to fetch agent version')
         logger.warning("Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: %s\n", e)
 
 
 def generate_request_payload(configuration, location, public_key, tags):
-    # Fetch cluster info
-    total_node_count = get_node_count(configuration)
-    kubernetes_version = get_server_version(configuration)
-    azure_arc_agent_version = get_agent_version(configuration)
-
     # Create connected cluster resource object
     aad_profile = ConnectedClusterAADProfile(
         tenant_id="",
@@ -395,9 +473,6 @@ def generate_request_payload(configuration, location, public_key, tags):
         identity=identity,
         agent_public_key_certificate=public_key,
         aad_profile=aad_profile,
-        kubernetes_version=kubernetes_version,
-        total_node_count=total_node_count,
-        agent_version=azure_arc_agent_version,
         tags=tags
     )
     return cc
