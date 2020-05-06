@@ -16,16 +16,19 @@ class K8sconfigurationScenarioTest(ScenarioTest):
     @record_only()
     def test_k8sconfiguration(self):
         self.kwargs.update({
-            'name': 'cliTestConfig0422A',
+            'name': 'cliTestConfig0505A',
             'cluster_name': 'matrived-tpcomi',
             'rg': 'haikudevtesting',
             'repo_url': 'git://github.com/anubhav929/flux-get-started',
-            'operator_instance_name': 'cliTestconfig0422A-opin',
-            'operator_namespace': 'cliTestConfig0422A-opns'
+            'operator_instance_name': 'cliTestconfig0505A-opin',
+            'operator_namespace': 'cliTestConfig0505A-opns',
+            'cluster_type': 'connectedClusters',
+            'scope': 'namespace'
         })
 
         # List Configurations and get the count
-        config_count = len(self.cmd('k8sconfiguration list -g {rg} --cluster-name {cluster_name}').get_output_in_json())
+        config_count = len(self.cmd('k8sconfiguration list -g {rg} --cluster-name {cluster_name} '
+                                    '--cluster-type {cluster_type}').get_output_in_json())
         self.greater_than(config_count, 10)
 
         # Create a configuration
@@ -33,6 +36,8 @@ class K8sconfigurationScenarioTest(ScenarioTest):
                  -n {name}
                  -c {cluster_name}
                  -u {repo_url}
+                 --cluster-type {cluster_type}
+                 --scope {scope}
                  --operator-instance-name {operator_instance_name}
                  --operator-namespace {operator_namespace}
                  --operator-params \"--git-readonly \"
@@ -50,11 +55,12 @@ class K8sconfigurationScenarioTest(ScenarioTest):
                  ])
 
         # List the configurations again to see if we have one additional
-        new_count = len(self.cmd('k8sconfiguration list -g {rg} --cluster-name {cluster_name}').get_output_in_json())
+        new_count = len(self.cmd('k8sconfiguration list -g {rg} --cluster-name {cluster_name} '
+                                 '--cluster-type {cluster_type}').get_output_in_json())
         self.assertEqual(new_count, config_count + 1)
 
         # Get the configuration created
-        self.cmd('k8sconfiguration show -g {rg} -c {cluster_name} -n {name}',
+        self.cmd('k8sconfiguration show -g {rg} -c {cluster_name} -n {name} --cluster-type {cluster_type}',
                  checks=[
                      self.check('name', '{name}'),
                      self.check('resourceGroup', '{rg}'),
@@ -66,8 +72,9 @@ class K8sconfigurationScenarioTest(ScenarioTest):
                  ])
 
         # Delete the created configuration
-        self.cmd('k8sconfiguration delete -g {rg} -c {cluster_name} -n {name} -y')
+        self.cmd('k8sconfiguration delete -g {rg} -c {cluster_name} -n {name} --cluster-type {cluster_type} -y')
 
         # List Configurations and confirm the count is the same as we started
-        new_count = len(self.cmd('k8sconfiguration list -g {rg} --cluster-name {cluster_name}').get_output_in_json())
+        new_count = len(self.cmd('k8sconfiguration list -g {rg} --cluster-name {cluster_name} '
+                                 '--cluster-type {cluster_type}').get_output_in_json())
         self.assertEqual(new_count, config_count)

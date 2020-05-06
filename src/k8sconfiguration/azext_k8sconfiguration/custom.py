@@ -9,6 +9,7 @@ from azext_k8sconfiguration.vendored_sdks.models import SourceControlConfigurati
 from azext_k8sconfiguration.vendored_sdks.models import HelmOperatorProperties
 from azext_k8sconfiguration.vendored_sdks.models import ErrorResponse, ErrorResponseException
 
+
 def show_k8sconfiguration(client, resource_group_name, cluster_name, name, cluster_type):
     """Get an existing Kubernetes Source Control Configuration.
 
@@ -69,7 +70,7 @@ def create_k8sconfiguration(client, resource_group_name, cluster_name, name, rep
 
     # Try to create the resource
     config = client.create_or_update(resource_group_name, cluster_rp, cluster_type, cluster_name,
-                                   name, source_control_configuration)
+                                     name, source_control_configuration)
 
     return __fix_compliance_state(config)
 
@@ -114,8 +115,8 @@ def update_k8sconfiguration(client, resource_group_name, cluster_name, name, clu
     if update_yes is False:
         raise CLIError('Invalid update.  No values to update!')
 
-    config =  client.create_or_update(resource_group_name, cluster_rp, cluster_type, cluster_name,
-                                   source_control_configuration_name, config)
+    config = client.create_or_update(resource_group_name, cluster_rp, cluster_type, cluster_name,
+                                     source_control_configuration_name, config)
 
     return __fix_compliance_state(config)
 
@@ -142,6 +143,7 @@ def __get_cluster_type(cluster_type):
         return 'Microsoft.Kubernetes'
     # Since cluster_type is an enum of only two values, if not connectedClusters, it will be managedClusters.
     return 'Microsoft.ContainerService'
+
 
 def __fix_compliance_state(config):
     # If we get Compliant/NonCompliant as compliance_sate, change them before returning
