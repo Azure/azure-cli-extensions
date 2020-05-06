@@ -45,8 +45,6 @@ def load_arguments(self, _):
     with self.argument_context('spring-cloud app create') as c:
         c.argument(
             'is_public', arg_type=get_three_state_flag(), help='If true, assign public domain', default=False)
-        c.argument('assign_identity', arg_type=get_three_state_flag(),
-                   help='If true, assign managed service identity.')
 
     with self.argument_context('spring-cloud app update') as c:
         c.argument('is_public', arg_type=get_three_state_flag(),
@@ -56,10 +54,6 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument('deployment', options_list=[
                 '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=validate_deployment_name)
-
-    with self.argument_context('spring-cloud app identity assign') as c:
-        c.argument('scope', help="The scope the managed identity has access to")
-        c.argument('role', help="Role name or id the managed identity will be assigned")
 
     with self.argument_context('spring-cloud app logs') as c:
         c.argument('instance', options_list=['--instance', '-i'], help='Name of an existing instance of the deployment.')

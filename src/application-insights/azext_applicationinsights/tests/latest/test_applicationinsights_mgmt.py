@@ -54,6 +54,10 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         apps = self.cmd('az monitor app-insights component show -g {resource_group}').get_output_in_json()
         assert len(apps) == 2
 
+        self.cmd('az monitor app-insights component show -g {resource_group} --app {name_b}', checks=[
+            self.check('name', '{name_b}')
+        ])
+
         self.cmd('az monitor app-insights component delete --app {name_a} -g {resource_group}', checks=[self.is_empty()])
         return
 
@@ -202,11 +206,11 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
                 self.check('provisioningState', 'Succeeded'),
             ])
 
-        output_json = self.cmd('az monitor app-insights component update --app {name_a} --workspace {ws_1} --query-access Enabled --ingestion-access Enabled -g {resource_group}').get_output_in_json()
-        assert self.kwargs['ws_1'] in output_json['workspaceResourceId']
+        output_json = self.cmd('az monitor app-insights component update --app {name_a} --query-access Enabled --ingestion-access Enabled -g {resource_group}').get_output_in_json()
         assert output_json['publicNetworkAccessForIngestion'] == 'Enabled'
         assert output_json['publicNetworkAccessForQuery'] == 'Enabled'
-        output_json = self.cmd('az monitor app-insights component update --app {name_a} --query-access Disabled --ingestion-access Disabled -g {resource_group}').get_output_in_json()
+        output_json = self.cmd('az monitor app-insights component update --app {name_a} --workspace {ws_1} --query-access Disabled --ingestion-access Disabled -g {resource_group}').get_output_in_json()
+        assert self.kwargs['ws_1'] in output_json['workspaceResourceId']
         assert output_json['publicNetworkAccessForIngestion'] == 'Disabled'
         assert output_json['publicNetworkAccessForQuery'] == 'Disabled'
         output_json = self.cmd('az monitor app-insights component create --app {name_b} --workspace {ws_2} --location {loc} --query-access Enabled --ingestion-access Disabled -g {resource_group} --application-type {application_type}').get_output_in_json()
