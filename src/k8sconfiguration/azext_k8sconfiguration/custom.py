@@ -7,7 +7,7 @@ from knack.util import CLIError
 
 from azext_k8sconfiguration.vendored_sdks.models import SourceControlConfiguration
 from azext_k8sconfiguration.vendored_sdks.models import HelmOperatorProperties
-from azext_k8sconfiguration.vendored_sdks.models import ErrorResponse, ErrorResponseException
+from azext_k8sconfiguration.vendored_sdks.models import ErrorResponseException
 
 
 def show_k8sconfiguration(client, resource_group_name, cluster_name, name, cluster_type):
