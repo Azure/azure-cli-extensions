@@ -7,34 +7,43 @@ from knack.util import CLIError
 
 from azext_k8sconfiguration.vendored_sdks.models import SourceControlConfiguration
 from azext_k8sconfiguration.vendored_sdks.models import HelmOperatorProperties
+from azext_k8sconfiguration.vendored_sdks.models import ErrorResponse, ErrorResponseException
 
-
-def show_k8sconfiguration(client, resource_group_name, cluster_name, name, cluster_type='connectedClusters'):
+def show_k8sconfiguration(client, resource_group_name, cluster_name, name, cluster_type):
     """Get an existing Kubernetes Source Control Configuration.
 
     """
     # Determine ClusterRP
     cluster_rp = __get_cluster_type(cluster_type)
 
-    source_control_configuration_name = name
+    try:
+        config = client.get(resource_group_name, cluster_rp, cluster_type, cluster_name, name)
+        return __fix_compliance_state(config)
+    except ErrorResponseException as ex:
+        # Customize the error message for resources not found
+        if ex.response.status_code == 404:
+            # If Cluster not found
+            if ex.message.__contains__("(ResourceNotFound)"):
+                message = "{0} Verify that the --cluster-type is correct and the resource exists.".format(ex.message)
+            # If Configuration not found
+            elif ex.message.__contains__("Operation returned an invalid status code 'Not Found'"):
+                message = "(ConfigurationNotFound) The Resource {0}/{1}/{2}/Microsoft.KubernetesConfiguration/" \
+                          "sourcecontrolConfigurations/{3} could not be found!".format(cluster_rp, cluster_type,
+                                                                                       cluster_name, name)
+            else:
+                message = ex.message
+            raise CLIError(message)
 
-    return client.get(resource_group_name, cluster_rp, cluster_type, cluster_name, source_control_configuration_name)
 
-
-def create_k8sconfiguration(client, resource_group_name, cluster_name, name, repository_url,
-                            operator_instance_name=None, operator_namespace='default', cluster_type='connectedClusters',
-                            operator_params='', cluster_scoped=None, operator_type='flux', enable_helm_operator=None,
-                            helm_operator_version='0.2.0', helm_operator_params=''):
+def create_k8sconfiguration(client, resource_group_name, cluster_name, name, repository_url, scope, cluster_type,
+                            operator_instance_name=None, operator_namespace='default', helm_operator_version='0.3.0',
+                            operator_type='flux', operator_params='', enable_helm_operator=None,
+                            helm_operator_params=''):
     """Create a new Kubernetes Source Control Configuration.
 
     """
     # Determine ClusterRP
     cluster_rp = __get_cluster_type(cluster_type)
-
-    # Determine operatorScope
-    operator_scope = ''
-    if cluster_scoped is None:
-        operator_scope = 'namespace'
 
     # Determine operatorInstanceName
     if operator_instance_name is None:
@@ -54,16 +63,18 @@ def create_k8sconfiguration(client, resource_group_name, cluster_name, name, rep
                                                               operator_instance_name=operator_instance_name,
                                                               operator_type=operator_type,
                                                               operator_params=operator_params,
-                                                              operator_scope=operator_scope,
+                                                              operator_scope=scope,
                                                               enable_helm_operator=enable_helm_operator,
                                                               helm_operator_properties=helm_operator_properties)
 
     # Try to create the resource
-    return client.create_or_update(resource_group_name, cluster_rp, cluster_type, cluster_name,
+    config = client.create_or_update(resource_group_name, cluster_rp, cluster_type, cluster_name,
                                    name, source_control_configuration)
 
+    return __fix_compliance_state(config)
 
-def update_k8sconfiguration(client, resource_group_name, cluster_name, name, cluster_type='connectedClusters',
+
+def update_k8sconfiguration(client, resource_group_name, cluster_name, name, cluster_type,
                             repository_url=None, operator_params=None, enable_helm_operator=None,
                             helm_operator_version=None, helm_operator_params=None):
     """Create a new Kubernetes Source Control Configuration.
@@ -103,16 +114,18 @@ def update_k8sconfiguration(client, resource_group_name, cluster_name, name, clu
     if update_yes is False:
         raise CLIError('Invalid update.  No values to update!')
 
-    return client.create_or_update(resource_group_name, cluster_rp, cluster_type, cluster_name,
+    config =  client.create_or_update(resource_group_name, cluster_rp, cluster_type, cluster_name,
                                    source_control_configuration_name, config)
 
+    return __fix_compliance_state(config)
 
-def list_k8sconfiguration(client, resource_group_name, cluster_name, cluster_type='connectedClusters'):
+
+def list_k8sconfiguration(client, resource_group_name, cluster_name, cluster_type):
     cluster_rp = __get_cluster_type(cluster_type)
     return client.list(resource_group_name, cluster_rp, cluster_type, cluster_name)
 
 
-def delete_k8sconfiguration(client, resource_group_name, cluster_name, name, cluster_type='connectedClusters'):
+def delete_k8sconfiguration(client, resource_group_name, cluster_name, name, cluster_type):
     """Delete an existing Kubernetes Source Control Configuration.
 
     """
@@ -121,10 +134,7 @@ def delete_k8sconfiguration(client, resource_group_name, cluster_name, name, clu
 
     source_control_configuration_name = name
 
-    custom_headers = {"x-ms-force": "true"}
-
-    return client.delete(resource_group_name, cluster_rp, cluster_type, cluster_name, source_control_configuration_name,
-                         custom_headers)
+    return client.delete(resource_group_name, cluster_rp, cluster_type, cluster_name, source_control_configuration_name)
 
 
 def __get_cluster_type(cluster_type):
@@ -132,3 +142,12 @@ def __get_cluster_type(cluster_type):
         return 'Microsoft.Kubernetes'
     # Since cluster_type is an enum of only two values, if not connectedClusters, it will be managedClusters.
     return 'Microsoft.ContainerService'
+
+def __fix_compliance_state(config):
+    # If we get Compliant/NonCompliant as compliance_sate, change them before returning
+    if config.compliance_status.compliance_state.lower() == 'noncompliant':
+        config.compliance_status.compliance_state = 'Failed'
+    elif config.compliance_status.compliance_state.lower() == 'compliant':
+        config.compliance_status.compliance_state = 'Installed'
+
+    return config

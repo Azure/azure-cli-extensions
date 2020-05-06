@@ -17,7 +17,7 @@ from ._validators import validate_configuration_type
 
 
 def load_arguments(self, _):
-    sourcecontrolconfiguration_type = CLIArgumentType(help='Name of the K8sconfiguration.')
+    sourcecontrolconfiguration_type = CLIArgumentType(help='Name of the Kubernetes Configuration')
 
     with self.argument_context('k8sconfiguration') as c:
         c.argument('tags', tags_type)
@@ -25,28 +25,28 @@ def load_arguments(self, _):
         c.argument('name', sourcecontrolconfiguration_type, options_list=['--name', '-n'])
         c.argument('cluster_name', options_list=['--cluster-name', '-c'], help='Name of the Kubernetes cluster')
         c.argument('cluster_type', arg_type=get_enum_type(['connectedClusters', 'managedClusters']),
-                   help='Specify Arc clusters (default) or AKS clusters.')
+                   help='Specify Arc clusters or AKS managed clusters.')
         c.argument('repository_url', options_list=['--repository-url', '-u'],
-                   help='Url of the sourceControl repository')
+                   help='Url of the source control repository')
         c.argument('enable_helm_operator', arg_type=get_three_state_flag(),
                    help='Enable support for Helm chart deployments')
-        c.argument('cluster_scoped', action='store_true',
-                   help='''Switch to set scope of the operator to be cluster. Default scope is 'namespace'.''')
+        c.argument('scope', arg_type=get_enum_type(['namespace', 'cluster']),
+                   help='''Specify scope of the operator to be 'namespace' or 'cluster' ''')
         c.argument('configuration_type', validator=validate_configuration_type,
                    arg_type=get_enum_type(['sourceControlConfiguration']),
                    help='Type of the configuration')
         c.argument('helm_operator_params',
                    help='Chart values for the Helm Operator (if enabled)')
         c.argument('helm_operator_version',
-                   help='''Chart version of the Helm Operator, if enabled.  Default:'0.2.0'.''')
+                   help='Chart version of the Helm Operator (if enabled)')
         c.argument('operator_params',
-                   help='Parameters for the Operator.')
+                   help='Parameters for the Operator')
         c.argument('operator_instance_name',
-                   help='Instance name of the Operator.')
+                   help='Instance name of the Operator')
         c.argument('operator_namespace',
-                   help='Namespace in which to install the Operator.')
+                   help='Namespace in which to install the Operator')
         c.argument('operator_type',
-                   help='''Type of the operator. Valid value is 'flux'.''')
+                   help='''Type of the operator. Valid value is 'flux' ''')
 
     with self.argument_context('k8sconfiguration list') as c:
         c.argument('sourcecontrolconfiguration', sourcecontrolconfiguration_type, id_part=None)
