@@ -15,7 +15,6 @@ from azure_devtools.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import ScenarioTest
 from .. import try_manual
 from azure.cli.testsdk import ResourceGroupPreparer
-from .preparers import VirtualNetworkPreparer
 from azure.cli.testsdk import JMESPathCheck
 
 
