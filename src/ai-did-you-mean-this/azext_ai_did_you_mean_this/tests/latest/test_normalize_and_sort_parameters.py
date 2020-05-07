@@ -29,7 +29,7 @@ class TestNormalizeAndSortParameters(unittest.TestCase):
                                                     parser_cls=cli_ctx.parser_cls,
                                                     commands_loader_cls=cli_ctx.commands_loader_cls,
                                                     help_cls=cli_ctx.help_cls)
-        # load command table for the respective modules.
+        # load command table for every module
         cmd_loader = cls.cli.invocation.commands_loader
         cmd_loader.load_command_table(None)
 
@@ -77,4 +77,5 @@ class TestNormalizeAndSortParameters(unittest.TestCase):
         invalid_cmd = 'Lorem ipsum.'
         command, parameters = normalize_and_sort_parameters(self.cmd_tbl, invalid_cmd, ['--foo', '--baz'])
         self.assertEqual(parameters, '')
+        # verify that recursive parsing removes the last invalid whitespace delimited token.
         self.assertEqual(command, 'Lorem')
