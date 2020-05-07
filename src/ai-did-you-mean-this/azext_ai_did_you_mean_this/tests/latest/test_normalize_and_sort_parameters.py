@@ -58,19 +58,23 @@ class TestNormalizeAndSortParameters(unittest.TestCase):
         for cmd in AzCommandType:
             command, parameters = normalize_and_sort_parameters(self.cmd_tbl, cmd.command, cmd.parameters)
             self.assertEqual(parameters, cmd.expected_parameters)
+            self.assertEqual(command, cmd.command)
 
     def test_custom_normalize_and_sort_parameters_remove_invalid_command_token(self):
         for cmd in AzCommandType:
             cmd_with_invalid_token = f'{cmd.command} oops'
             command, parameters = normalize_and_sort_parameters(self.cmd_tbl, cmd_with_invalid_token, cmd.parameters)
             self.assertEqual(parameters, cmd.expected_parameters)
+            self.assertEqual(command, cmd.command)
 
     def test_custom_normalize_and_sort_parameters_empty_parameter_list(self):
         cmd = AzCommandType.ACCOUNT_SET
         command, parameters = normalize_and_sort_parameters(self.cmd_tbl, cmd.command, '')
         self.assertEqual(parameters, '')
+        self.assertEqual(command, cmd.command)
 
     def test_custom_normalize_and_sort_parameters_invalid_command(self):
         invalid_cmd = 'Lorem ipsum.'
         command, parameters = normalize_and_sort_parameters(self.cmd_tbl, invalid_cmd, ['--foo', '--baz'])
         self.assertEqual(parameters, '')
+        self.assertEqual(command, 'Lorem')
