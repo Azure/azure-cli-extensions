@@ -1,3 +1,9 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
+
 def assert_has_split_method(field, value):
     if not getattr(value, 'split') or not callable(value.split):
         raise TypeError(f'value assigned to `{field}` must contain split method')

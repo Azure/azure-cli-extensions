@@ -8,7 +8,7 @@ from http import HTTPStatus
 
 import requests
 
-import azure.cli.core.telemetry as telemetry_core
+import azure.cli.core.telemetry as telemetry
 
 from knack.log import get_logger
 from knack.util import CLIError  # pylint: disable=unused-import
@@ -17,7 +17,8 @@ from azext_ai_did_you_mean_this.failure_recovery_recommendation import FailureRe
 from azext_ai_did_you_mean_this._style import style_message
 from azext_ai_did_you_mean_this._const import (
     RECOMMENDATION_HEADER_FMT_STR,
-    UNABLE_TO_HELP_FMT_STR
+    UNABLE_TO_HELP_FMT_STR,
+    TELEMETRY_MUST_BE_ENABLED_STR
 )
 from azext_ai_did_you_mean_this._cmd_table import CommandTable
 
@@ -25,6 +26,7 @@ logger = get_logger(__name__)
 
 
 # Commands
+# note: at least one command is required in order for the CLI to load the extension.
 def show_extension_version():
     print(f'Current version: 0.1.0')
 
@@ -39,10 +41,13 @@ def get_parameter_table(cmd_table, command, recurse=True):
     az_cli_command = cmd_table.get(command, None)
     parameter_table = az_cli_command.arguments if az_cli_command else None
 
+    # if the specified command was not found and recursive search is enabled...
     if not az_cli_command and recurse:
+        # if there are at least two tokens separated by whitespace, remove the last token
         last_delim_idx = command.rfind(' ')
-        _log_debug('Removing unknown token "%s" from command.', command[last_delim_idx + 1:])
         if last_delim_idx != -1:
+            _log_debug('Removing unknown token "%s" from command.', command[last_delim_idx + 1:])
+            # try to find the truncated command.
             parameter_table, command = get_parameter_table(cmd_table, command[:last_delim_idx], recurse=False)
 
     return parameter_table, command
@@ -52,51 +57,60 @@ def normalize_and_sort_parameters(cmd_table, command, parameters):
     from knack.deprecation import Deprecated
     _log_debug('normalize_and_sort_parameters: command: "%s", parameters: "%s"', command, parameters)
 
-    if not parameters:
-        return ''
-
-    # TODO: Avoid setting rules for global parameters manually.
-    rules = {
-        '-h': '--help',
-        '--only-show-errors': None,
-        '-o': '--output',
-        '--query': None,
-        '--debug': None,
-        '--verbose': None
-    }
-
-    blacklisted = {'--debug', '--verbose'}
-
     parameter_set = set()
-    parameter_table, command = get_parameter_table(cmd_table, command)
 
-    if parameter_table:
-        for argument in parameter_table.values():
-            options = argument.type.settings['options_list']
-            # remove deprecated arguments.
-            options = (option for option in options if not isinstance(option, Deprecated))
+    if parameters:
+        # TODO: Avoid setting rules for global parameters manually.
+        rules = {
+            '-h': '--help',
+            '--only-show-errors': None,
+            '-o': '--output',
+            '--query': None,
+            '--debug': None,
+            '--verbose': None
+        }
 
-            try:
-                sorted_options = sorted(options, key=len, reverse=True)
-                standard_form = sorted_options[0]
+        blacklisted = {'--debug', '--verbose'}
 
-                for option in sorted_options[1:]:
-                    rules[option] = standard_form
+        parameter_table, command = get_parameter_table(cmd_table, command)
 
-                rules[standard_form] = None
-            except TypeError:
-                _log_debug('Unexpected argument options `%s` of type `%s`.', options, type(options).__name__)
+        if parameter_table:
+            for argument in parameter_table.values():
+                options = argument.type.settings['options_list']
+                # remove deprecated arguments.
+                options = (option for option in options if not isinstance(option, Deprecated))
 
-    for parameter in parameters:
-        if parameter in rules:
-            normalized_form = rules.get(parameter, None) or parameter
-            parameter_set.add(normalized_form)
-        else:
-            _log_debug('"%s" is an invalid parameter for command "%s".', parameter, command)
+                # attempt to create a rule for each potential parameter.
+                try:
+                    # sort parameters by decreasing length.
+                    sorted_options = sorted(options, key=len, reverse=True)
+                    # select the longest parameter as the standard form
+                    standard_form = sorted_options[0]
 
-    parameter_set.difference_update(blacklisted)
+                    for option in sorted_options[1:]:
+                        rules[option] = standard_form
 
-    return ','.join(sorted(parameter_set))
+                    # don't apply any rules for the parameter's standard form.
+                    rules[standard_form] = None
+                except TypeError:
+                    # ignore cases in which one of the option objects is of an unsupported type.
+                    _log_debug('Unexpected argument options `%s` of type `%s`.', options, type(options).__name__)
+
+        for parameter in parameters:
+            if parameter in rules:
+                # normalize the parameter or do nothing if already normalized
+                normalized_form = rules.get(parameter, None) or parameter
+                # add the parameter to our result set
+                parameter_set.add(normalized_form)
+            else:
+                # ignore any parameters that we were unable to validate.
+                _log_debug('"%s" is an invalid parameter for command "%s".', parameter, command)
+
+        # remove any special global parameters that would typically be removed by the CLI
+        parameter_set.difference_update(blacklisted)
+
+    # get the list of parameters as a comma-separated list
+    return command, ','.join(sorted(parameter_set))
 
 
 def recommend_recovery_options(version, command, parameters, extension):
@@ -105,13 +119,19 @@ def recommend_recovery_options(version, command, parameters, extension):
     elapsed_time = None
 
     result = []
+    cmd_tbl = CommandTable.CMD_TBL
     _log_debug('recommend_recovery_options: version: "%s", command: "%s", parameters: "%s", extension: "%s"',
                version, command, parameters, extension)
+
+    # if the user doesn't agree to telemetry...
+    if not telemetry.is_telemetry_enabled():
+        _log_debug(TELEMETRY_MUST_BE_ENABLED_STR)
+        return result
 
     # if the command is empty...
     if not command:
         # try to get the raw command field from telemetry.
-        session = telemetry_core._session  # pylint: disable=protected-access
+        session = telemetry._session  # pylint: disable=protected-access
         # get the raw command parsed by the CommandInvoker object.
         command = session.raw_command
         if command:
@@ -137,9 +157,11 @@ def recommend_recovery_options(version, command, parameters, extension):
     if extension or not command:
         return result
 
-    parameters = normalize_and_sort_parameters(CommandTable.CMD_TBL, command, parameters)
-    response = call_aladdin_service(command, parameters, '2.3.1')
+    # perform some rudimentary parsing to extract the parameters and command in a standard form
+    command, parameters = normalize_and_sort_parameters(cmd_tbl, command, parameters)
+    response = call_aladdin_service(command, parameters, version)
 
+    # only show recommendations when we can contact the service.
     if response.status_code == HTTPStatus.OK:
         recommendations = get_recommendations_from_http_response(response)
 
@@ -148,7 +170,10 @@ def recommend_recovery_options(version, command, parameters, extension):
 
             for recommendation in recommendations:
                 append(f"\t{recommendation}")
-        else:
+        # only prompt user to use "az find" for valid CLI commands
+        # note: pylint has trouble resolving statically initialized variables, which is why
+        # we need to disable the unsupported membership test rule
+        elif any(cmd.startswith(command) for cmd in cmd_tbl.keys()):  # pylint: disable=unsupported-membership-test
             unable_to_help(command)
 
     elapsed_time = timer() - start_time
@@ -170,8 +195,8 @@ def call_aladdin_service(command, parameters, version):
     _log_debug('call_aladdin_service: version: "%s", command: "%s", parameters: "%s"',
                version, command, parameters)
 
-    correlation_id = telemetry_core._session.correlation_id  # pylint: disable=protected-access
-    subscription_id = telemetry_core._get_azure_subscription_id()  # pylint: disable=protected-access
+    correlation_id = telemetry._session.correlation_id  # pylint: disable=protected-access
+    subscription_id = telemetry._get_azure_subscription_id()  # pylint: disable=protected-access
 
     context = {
         "sessionId": correlation_id,

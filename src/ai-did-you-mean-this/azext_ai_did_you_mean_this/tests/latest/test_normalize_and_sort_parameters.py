@@ -1,3 +1,8 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
 import unittest
 from enum import Enum, auto
 
@@ -51,21 +56,21 @@ class TestNormalizeAndSortParameters(unittest.TestCase):
 
     def test_custom_normalize_and_sort_parameters(self):
         for cmd in AzCommandType:
-            parameters = normalize_and_sort_parameters(self.cmd_tbl, cmd.command, cmd.parameters)
+            command, parameters = normalize_and_sort_parameters(self.cmd_tbl, cmd.command, cmd.parameters)
             self.assertEqual(parameters, cmd.expected_parameters)
 
     def test_custom_normalize_and_sort_parameters_remove_invalid_command_token(self):
         for cmd in AzCommandType:
             cmd_with_invalid_token = f'{cmd.command} oops'
-            parameters = normalize_and_sort_parameters(self.cmd_tbl, cmd_with_invalid_token, cmd.parameters)
+            command, parameters = normalize_and_sort_parameters(self.cmd_tbl, cmd_with_invalid_token, cmd.parameters)
             self.assertEqual(parameters, cmd.expected_parameters)
 
     def test_custom_normalize_and_sort_parameters_empty_parameter_list(self):
         cmd = AzCommandType.ACCOUNT_SET
-        parameters = normalize_and_sort_parameters(self.cmd_tbl, cmd.command, '')
+        command, parameters = normalize_and_sort_parameters(self.cmd_tbl, cmd.command, '')
         self.assertEqual(parameters, '')
 
     def test_custom_normalize_and_sort_parameters_invalid_command(self):
         invalid_cmd = 'Lorem ipsum.'
-        parameters = normalize_and_sort_parameters(self.cmd_tbl, invalid_cmd, ['--foo', '--baz'])
+        command, parameters = normalize_and_sort_parameters(self.cmd_tbl, invalid_cmd, ['--foo', '--baz'])
         self.assertEqual(parameters, '')

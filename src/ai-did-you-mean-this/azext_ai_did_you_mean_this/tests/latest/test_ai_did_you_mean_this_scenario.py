@@ -12,10 +12,12 @@ from http import HTTPStatus
 from collections import defaultdict
 
 from azext_ai_did_you_mean_this.custom import call_aladdin_service, get_recommendations_from_http_response
+from azext_ai_did_you_mean_this._cmd_table import CommandTable
 from azext_ai_did_you_mean_this.tests.latest._mock import (
     get_mock_recommendation_model_path,
     mock_aladdin_service_call,
-    MockRecommendationModel
+    MockRecommendationModel,
+    UserFaultType
 )
 from azext_ai_did_you_mean_this.tests.latest.aladdin_scenario_test_base import AladdinScenarioTest
 from azext_ai_did_you_mean_this.tests.latest._commands import AzCommandType
@@ -29,22 +31,44 @@ class AiDidYouMeanThisScenarioTest(AladdinScenarioTest):
         super().setUpClass()
 
         MockRecommendationModel.load(get_mock_recommendation_model_path(TEST_DIR))
+        cls.test_cases = MockRecommendationModel.get_test_cases()
 
     def setUp(self):
         super().setUp()
 
-        self.command, self.parameters = (AzCommandType.ACCOUNT.command, '')
-        self.invalid_cli_version = '0.0.0'
-
     def test_ai_did_you_mean_this_aladdin_service_call(self):
-        with mock_aladdin_service_call(self.command):
-            response = call_aladdin_service(self.command, self.parameters, self.cli_version)
+        for command, entity in self.test_cases:
+            tokens = entity.arguments.split()
+            parameters = [token for token in tokens if token.startswith('-')]
 
-        self.assertEqual(HTTPStatus.OK, response.status_code)
-        recommendations = get_recommendations_from_http_response(response)
-        expected_recommendations = MockRecommendationModel.get_recommendations(self.command)
-        self.assertEquals(recommendations, expected_recommendations)
+            with mock_aladdin_service_call(command):
+                response = call_aladdin_service(command, parameters, self.cli_version)
 
-    def test_ai_did_you_mean_this_arguments_required_user_fault(self):
-        with mock_aladdin_service_call(self.command):
-            self.cmd(self.command, expect_user_fault_failure=True)
+            self.assertEqual(HTTPStatus.OK, response.status_code)
+            recommendations = get_recommendations_from_http_response(response)
+            expected_recommendations = MockRecommendationModel.get_recommendations(command)
+            self.assertEquals(recommendations, expected_recommendations)
+
+    def test_ai_did_you_mean_this_recommendations_for_user_fault_commands(self):
+        for command, entity in self.test_cases:
+            args = entity.arguments
+            command_with_args = command if not args else f'{command} {args}'
+
+            with mock_aladdin_service_call(command):
+                self.cmd(command_with_args, expect_user_fault_failure=entity.user_fault_type)
+
+            self.assert_cmd_table_not_empty()
+            cmd_tbl = CommandTable.CMD_TBL
+
+            _version, _command, _parameters, _extension = self.recommender_postional_arguments
+            partial_command_match = command and any(cmd.startswith(command) for cmd in cmd_tbl.keys())
+            self.assertEqual(_version, self.cli_version)
+            self.assertEqual(_command, command if partial_command_match else '')
+            self.assertEqual(_extension, entity.extension)
+
+            if entity.recommendations:
+                self.assert_recommendations_were_shown()
+            elif partial_command_match and not entity.extension:
+                self.assert_az_find_was_suggested()
+            else:
+                self.assert_nothing_is_shown()
