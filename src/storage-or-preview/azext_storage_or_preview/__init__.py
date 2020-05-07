@@ -16,7 +16,7 @@ class StorageCommandsLoader(AzCommandsLoader):
         from azure.cli.core.commands import CliCommandType
 
         register_resource_type('latest', CUSTOM_MGMT_STORAGE_ORS, '2019-06-01')
-        storage_custom = CliCommandType(operations_tmpl='azext_storage_ors_preview.custom#{}')
+        storage_custom = CliCommandType(operations_tmpl='azext_storage_or_preview.custom#{}')
 
         super(StorageCommandsLoader, self).__init__(cli_ctx=cli_ctx,
                                                     resource_type=CUSTOM_MGMT_STORAGE_ORS,

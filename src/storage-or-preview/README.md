@@ -1,17 +1,11 @@
-# Azure CLI storage-ors-preview Extension #
-This is an extension for storage-ors-preview features.
+# Azure CLI storage-or-preview Extension #
+This is an extension for storage-or-preview features.
 
 ### How to use ###
 Install this extension using the below CLI command after release:
 ```
-az extension add -n storage-ors-preview
+az extension add -n storage-or-preview
 ```
-Currently you can install use source wheel:
-```
-az extension add -s https://storageextension.blob.core.windows.net/cliextension/storage_ors_preview-0.3.0-py2.py3-none-any.whl
-```
-
-For release history, please refer to https://github.com/Juliehzl/azure-cli-extensions/blob/ors/src/storage-ors-preview/HISTORY.rst.
 
 ### Prepare
 1. Prepare general purpose v2 storage account 
@@ -70,7 +64,7 @@ az storage account or-policy create \
     --prefix-match blobA blobB
 ```
 
-3. Create Object Replication Service Policy to source storage account through policy associated with destination storage account.
+3. Create Object Replication Policy to source storage account through policy associated with destination storage account.
 ```
 az storage account or-policy show -g groupName -n destAccountName --policy-id "3496e652-4cea-4581-b2f7-c86b3971ba92" | az storage account or-policy create -g ResourceGroupName -n srcAccountName -p "@-"
 ```
@@ -81,14 +75,14 @@ To save the policyId/ruleId in PowerShell Scripts, you can use:
 
 `$ruleId = (az storage account or-policy create --account-name accountName --resource-group groupName --properties @{path}) --query rules.ruleId)`
 
-##### List ORS Policies on storage account
+##### List OR Policies on storage account
 ```
 az storage account or-policy list \
     --account-name accountName \
     --resource-group groupName
 ```
 
-##### Show ORS Policy on storage account
+##### Show OR Policy on storage account
 ```
 az storage account or-policy show \
     --policy-id $policyId \
@@ -96,8 +90,8 @@ az storage account or-policy show \
     --resource-group groupName
 ```
 
-##### Update ORS Policy on storage account
-Change source storage account name of existing ORS policy.
+##### Update OR Policy on storage account
+Change source storage account name of existing OR policy.
 ```
 az storage account or-policy update \
     --policy-id $policyId \
@@ -106,14 +100,14 @@ az storage account or-policy update \
     -s newSourceAccount
 ```
 
-Update existing ORS policy through json file.
+Update existing OR policy through json file.
 ```
 az storage account or-policy update \
     --policy @policy.json \
     --account-name destAccountName \
     --resource-group groupName \
 ```
-##### Add rule to existing ORS Policy
+##### Add rule to existing OR Policy
 ```
 az storage account or-policy rule add \
     --policy-id $policyId \
@@ -125,7 +119,7 @@ az storage account or-policy rule add \
     --min-creation-time '2020-02-19T16:05:00Z' 
 ```
 
-##### List rules for ORS Policy
+##### List rules for OR Policy
 ```
 az storage account or-policy rule list \
     --policy-id $policyId \
@@ -133,7 +127,7 @@ az storage account or-policy rule list \
     --resource-group groupName
 ```
 
-##### Show properties of specific rule in ORS Policy
+##### Show properties of specific rule in OR Policy
 ```
 az storage account or-policy rule show \
     --rule-id $ruleId \
@@ -142,7 +136,7 @@ az storage account or-policy rule show \
     --resource-group groupName
 ```
 
-##### Update properties for specific ORS Policy Rule
+##### Update properties for specific OR Policy Rule
 Change prefix match filter properties.
 ```
 az storage account or-policy rule update \
@@ -162,7 +156,7 @@ az storage account or-policy rule update \
     --resource-group groupName \
     --min-creation-time '2020-02-19T16:05:00Z'
 ```
-##### Remove the specified rule in existing ORS Policy
+##### Remove the specified rule in existing OR Policy
 ```
 az storage account or-policy rule remove \
     --rule-id $ruleId \
@@ -171,7 +165,7 @@ az storage account or-policy rule remove \
     --resource-group groupName
 ```
 
-##### Delete the specified ORS Policy for storage account
+##### Delete the specified OR Policy for storage account
 ```
 az storage account or-policy delete \
     --policy-id $policyId \
