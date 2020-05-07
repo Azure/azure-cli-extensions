@@ -172,7 +172,7 @@ class SynapseScenarioTests(ScenarioTest):
                  expect_failure=True)
 
     @ResourceGroupPreparer(name_prefix='synapse-cli', random_name_length=16)
-    def test_spark_batch(self, resource_group):
+    def test_spark_job(self, resource_group):
         self.kwargs.update({
             'spark-pool': 'testsparkpool',
             'workspace': 'testsynapseworkspace',
@@ -187,7 +187,7 @@ class SynapseScenarioTests(ScenarioTest):
         })
 
         # create a spark batch job
-        batch_job = self.cmd('az synapse spark batch create --name {job} --workspace-name {workspace} '
+        batch_job = self.cmd('az synapse spark job submit --name {job} --workspace-name {workspace} '
                              '--spark-pool-name {spark-pool} --main-definition-file {main-definition-file} '
                              '--main-class-name {main-class-name} --command-line-arguments {command-line-arguments} '
                              '--executors {executors} --executor-size {executor-size}',
@@ -199,22 +199,22 @@ class SynapseScenarioTests(ScenarioTest):
         self.kwargs['batch-id'] = batch_job['id']
 
         # get a spark batch job with batch id
-        self.cmd('az synapse spark batch show --id {batch-id} --workspace-name {workspace} '
+        self.cmd('az synapse spark job show --livy-id {batch-id} --workspace-name {workspace} '
                  '--spark-pool-name {spark-pool}', checks=[self.check('id', self.kwargs['batch-id'])])
 
         # list all spark batch jobs under a specific spark pool
-        self.cmd('az synapse spark batch list --workspace-name {workspace} '
+        self.cmd('az synapse spark job list --workspace-name {workspace} '
                  '--spark-pool-name {spark-pool}',
                  checks=[
                      self.check('sessions[0].jobType', 'SparkBatch')
                  ])
 
         # cancel a spark batch job with batch id
-        self.cmd('az synapse spark batch cancel --id {batch-id} --workspace-name {workspace} '
+        self.cmd('az synapse spark job cancel --livy-id {batch-id} --workspace-name {workspace} '
                  '--spark-pool-name {spark-pool} --yes')
         import time
         time.sleep(60)
-        self.cmd('az synapse spark batch show --id {batch-id} --workspace-name {workspace} '
+        self.cmd('az synapse spark job show --livy-id {batch-id} --workspace-name {workspace} '
                  '--spark-pool-name {spark-pool}',
                  checks=[
                      self.check('result', 'Cancelled')
@@ -249,7 +249,7 @@ class SynapseScenarioTests(ScenarioTest):
         time.sleep(360)
 
         # get a spark session
-        self.cmd('az synapse spark session show --id {session-id} --workspace-name {workspace} '
+        self.cmd('az synapse spark session show --livy-id {session-id} --workspace-name {workspace} '
                  '--spark-pool-name {spark-pool}',
                  checks=[
                      self.check('id', self.kwargs['session-id']),
@@ -264,11 +264,11 @@ class SynapseScenarioTests(ScenarioTest):
                  ])
 
         # reset spark session's timeout time
-        self.cmd('az synapse spark session reset-timeout --id {session-id} --workspace-name {workspace} '
+        self.cmd('az synapse spark session reset-timeout --livy-id {session-id} --workspace-name {workspace} '
                  '--spark-pool-name {spark-pool}')
 
         # create a spark session statement job
-        statement = self.cmd('az synapse spark statement create --session-id {session-id} '
+        statement = self.cmd('az synapse spark statement invoke --session-id {session-id} '
                              '--workspace-name {workspace} --spark-pool-name {spark-pool} '
                              '--code {code} --language {language}',
                              checks=[
@@ -277,7 +277,7 @@ class SynapseScenarioTests(ScenarioTest):
         self.kwargs['statement-id'] = statement['id']
 
         # get a spark session statement
-        self.cmd('az synapse spark statement show --id {statement-id} --session-id {session-id} '
+        self.cmd('az synapse spark statement show --livy-id {statement-id} --session-id {session-id} '
                  '--workspace-name {workspace} --spark-pool-name {spark-pool}',
                  checks=[
                      self.check('state', 'running')
@@ -291,18 +291,18 @@ class SynapseScenarioTests(ScenarioTest):
                  ])
 
         # cancel a spark session statement
-        self.cmd('az synapse spark statement cancel --id {statement-id} --session-id {session-id} '
+        self.cmd('az synapse spark statement cancel --livy-id {statement-id} --session-id {session-id} '
                  '--workspace-name {workspace} --spark-pool-name {spark-pool}  --yes',
                  checks=[
                      self.check('msg', 'canceled')
                  ])
 
         # delete/cancel a spark session
-        self.cmd('az synapse spark session cancel --id {session-id} --workspace-name {workspace} '
+        self.cmd('az synapse spark session cancel --livy-id {session-id} --workspace-name {workspace} '
                  '--spark-pool-name {spark-pool} --yes')
         import time
         time.sleep(120)
-        self.cmd('az synapse spark session show --id {session-id} --workspace-name {workspace} '
+        self.cmd('az synapse spark session show --livy-id {session-id} --workspace-name {workspace} '
                  '--spark-pool-name {spark-pool}',
                  checks=[
                      self.check('state', 'killed')

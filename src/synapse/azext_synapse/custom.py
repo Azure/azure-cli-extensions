@@ -22,21 +22,21 @@ from ._client_factory import cf_synapse_client_workspace_factory
 
 
 # pylint: disable=too-many-locals, too-many-branches, too-many-statements, unused-argument, too-many-function-args
-def list_spark_batch_jobs(cmd, client, workspace_name, spark_pool_name, from_index=None, size=None, detailed=True):
-    return client.list(workspace_name, spark_pool_name, from_index, size, detailed)
+def list_spark_batch_jobs(cmd, client, workspace_name, spark_pool_name, from_index=None, size=None):
+    return client.list(workspace_name, spark_pool_name, from_index, size, detailed=True)
 
 
 def create_spark_batch_job(cmd, client, workspace_name, spark_pool_name, job_name, main_definition_file,
                            main_class_name, executor_size, executors, language=SparkBatchLanguage.Scala,
                            command_line_arguments=None,
                            reference_files=None, archives=None, configuration=None,
-                           tags=None, detailed=True):
+                           tags=None):
     file = main_definition_file
     class_name = main_class_name
     args = command_line_arguments
     conf = configuration
-    if language.upper() == SparkBatchLanguage.SparkDotNet.value.upper() or \
-            language.upper() == SparkBatchLanguage.CSharp.value.upper():
+    if language.upper() == SparkBatchLanguage.SparkDotNet.upper() or \
+            language.upper() == SparkBatchLanguage.CSharp.upper():
         file = DOTNET_FILE
         class_name = DOTNET_CLASS
 
@@ -65,11 +65,11 @@ def create_spark_batch_job(cmd, client, workspace_name, spark_pool_name, job_nam
         tags=tags, name=job_name, file=file, class_name=class_name, args=args, jars=jars,
         files=files, archives=archives, conf=conf, driver_memory=driver_memory, driver_cores=driver_cores,
         executor_memory=executor_memory, executor_cores=executor_cores, num_executors=executors)
-    return client.create(workspace_name, spark_pool_name, livy_batch_request, detailed)
+    return client.create(workspace_name, spark_pool_name, livy_batch_request, detailed=True)
 
 
-def get_spark_batch_job(cmd, client, workspace_name, spark_pool_name, batch_id, detailed=True):
-    return client.get(workspace_name, spark_pool_name, batch_id, detailed)
+def get_spark_batch_job(cmd, client, workspace_name, spark_pool_name, batch_id):
+    return client.get(workspace_name, spark_pool_name, batch_id, detailed=True)
 
 
 def cancel_spark_batch_job(cmd, client, workspace_name, spark_pool_name, batch_id):
@@ -77,12 +77,12 @@ def cancel_spark_batch_job(cmd, client, workspace_name, spark_pool_name, batch_i
 
 
 # Spark Session
-def list_spark_session_jobs(cmd, client, workspace_name, spark_pool_name, from_index=None, size=None, detailed=True):
-    return client.list(workspace_name, spark_pool_name, from_index, size, detailed)
+def list_spark_session_jobs(cmd, client, workspace_name, spark_pool_name, from_index=None, size=None):
+    return client.list(workspace_name, spark_pool_name, from_index, size, detailed=True)
 
 
 def create_spark_session_job(cmd, client, workspace_name, spark_pool_name, job_name, executor_size, executors,
-                             reference_files=None, configuration=None, tags=None, detailed=True):
+                             reference_files=None, configuration=None, tags=None):
     files = None
     jars = None
     if reference_files:
@@ -95,11 +95,11 @@ def create_spark_session_job(cmd, client, workspace_name, spark_pool_name, job_n
         tags=tags, name=job_name, jars=jars, files=files,
         conf=configuration, driver_memory=driver_memory, driver_cores=driver_cores,
         executor_memory=executor_memory, executor_cores=executor_cores, num_executors=executors)
-    return client.create(workspace_name, spark_pool_name, livy_session_request, detailed)
+    return client.create(workspace_name, spark_pool_name, livy_session_request, detailed=True)
 
 
-def get_spark_session_job(cmd, client, workspace_name, spark_pool_name, session_id, detailed=True):
-    return client.get(workspace_name, spark_pool_name, session_id, detailed)
+def get_spark_session_job(cmd, client, workspace_name, spark_pool_name, session_id):
+    return client.get(workspace_name, spark_pool_name, session_id, detailed=True)
 
 
 def cancel_spark_session_job(cmd, client, workspace_name, spark_pool_name, session_id):

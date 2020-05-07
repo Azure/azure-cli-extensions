@@ -89,8 +89,8 @@ def load_command_table(self, _):
 
     # Data Plane Commands
     # Spark batch opertions
-    with self.command_group('synapse spark batch', synapse_spark_batch_sdk, client_factory=cf_synapse_spark_batch) as g:
-        g.custom_command('create', 'create_spark_batch_job')
+    with self.command_group('synapse spark job', synapse_spark_batch_sdk, client_factory=cf_synapse_spark_batch) as g:
+        g.custom_command('submit', 'create_spark_batch_job')
         g.custom_command('list', 'list_spark_batch_jobs')
         g.custom_show_command('show', 'get_spark_batch_job')
         g.custom_command('cancel', 'cancel_spark_batch_job', confirmation=True)
@@ -107,7 +107,7 @@ def load_command_table(self, _):
     # Spark session statements operations
     with self.command_group('synapse spark statement', synapse_spark_session_sdk,
                             client_factory=cf_synapse_spark_session) as g:
-        g.custom_command('create', 'create_spark_session_statement')
+        g.custom_command('invoke', 'create_spark_session_statement')
         g.custom_command('list', 'list_spark_session_statements')
         g.custom_show_command('show', 'get_spark_session_statement')
         g.custom_command('cancel', 'cancel_spark_session_statement', confirmation=True)

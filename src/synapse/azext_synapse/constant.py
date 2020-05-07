@@ -29,7 +29,10 @@ class SparkBatchLanguage(str, Enum):
 
 
 class SparkStatementLanguage(str, Enum):
-    Spark = 'spark'
-    PySpark = 'pyspark'
-    SparkDotNet = 'sparkdotnet'
-    SQL = 'sql'
+    Spark = 'Spark'
+    Scala = 'Scala'
+    PySpark = 'PySpark'
+    Python = 'Python'
+    SparkDotNet = 'SparkDotNet'
+    CSharp = 'CSharp'
+    SQL = 'SQL'

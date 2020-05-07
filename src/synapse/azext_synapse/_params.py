@@ -8,78 +8,71 @@ from azext_synapse.constant import SparkBatchLanguage, SparkStatementLanguage
 from azure.cli.core.commands.parameters import name_type, tags_type, get_three_state_flag, get_enum_type, \
     resource_group_name_type
 from azure.cli.core.util import get_json_object
-from ._validators import validate_storage_account
+from ._validators import validate_storage_account, validate_statement_language
 
 
 # pylint: disable=too-many-statements
 def load_arguments(self, _):
     # synapse spark
-    for scope in ['batch', 'session', 'statement']:
+    for scope in ['job', 'session', 'statement']:
         with self.argument_context('synapse spark ' + scope) as c:
             c.argument('workspace_name', help='The name of the workspace.')
-            c.argument('spark_pool_name', help='The name of the spark pool.')
+            c.argument('spark_pool_name', help='The name of the Spark pool.')
 
-    for scope in ['synapse spark batch', 'synapse spark session']:
-        with self.argument_context(scope + ' create') as c:
-            c.argument('job_name', arg_type=name_type, help='The spark batch or session job name.')
-            c.argument('reference_files', nargs='+',
-                       help='Additional files used for reference in the main definition file.')
-            c.argument('configuration', type=get_json_object, help='The configuration of spark batch job.')
-            c.argument('executors', help='The number of executors.')
-            c.argument('executor_size', arg_type=get_enum_type(['Small', 'Medium']), help='The executor size')
-            c.argument('tags', arg_type=tags_type)
-            c.argument('detailed', action='store_true',
-                       help='Optional query parameter specifying whether detailed response is returned beyond plain livy.')
-
+    for scope in ['synapse spark job', 'synapse spark session']:
         with self.argument_context(scope + ' list') as c:
             c.argument('from_index', help='Optional parameter specifying which index the list should begin from.')
-            c.argument('detailed', action='store_true',
-                       help='Optional query parameter specifying whether detailed response is returned beyond plain livy.')
             c.argument('size',
                        help='The size of the returned list.By default it is 20 and that is the maximum.')
 
-    with self.argument_context('synapse spark batch create') as c:
+    with self.argument_context('synapse spark job submit') as c:
         c.argument('main_definition_file', help='The main file used for the job.')
         c.argument('main_class_name',
                    help='The fully-qualified identifier or the main class that is in the main definition file.')
         c.argument('command_line_arguments', nargs='+',
                    help='Optional arguments to the job (Note: please use storage URIs for file arguments).')
         c.argument('archives', nargs='+', help='The array of archives.')
-
-    with self.argument_context('synapse spark batch create') as c:
+        c.argument('job_name', arg_type=name_type, help='The Spark job name.')
+        c.argument('reference_files', nargs='+',
+                   help='Additional files used for reference in the main definition file.')
+        c.argument('configuration', type=get_json_object, help='The configuration of Spark job.')
+        c.argument('executors', help='The number of executors.')
+        c.argument('executor_size', arg_type=get_enum_type(['Small', 'Medium', 'Large']), help='The executor size')
+        c.argument('tags', arg_type=tags_type)
         c.argument('language', arg_type=get_enum_type(SparkBatchLanguage, default=SparkBatchLanguage.Scala),
-                   help='The spark batch job language.')
+                   help='The Spark job language.')
 
     for scope in ['show', 'cancel']:
-        with self.argument_context('synapse spark batch ' + scope) as c:
-            c.argument('batch_id', options_list=['--id', '--livy-id'], arg_group='Spark Batch',
-                       help='The id of the spark batch job.')
+        with self.argument_context('synapse spark job ' + scope) as c:
+            c.argument('batch_id', options_list=['--livy-id'], arg_group='Spark job',
+                       help='The id of the Spark job.')
 
-    with self.argument_context('synapse spark batch show') as c:
-        c.argument('detailed', action='store_true',
-                   help='Optional query parameter specifying whether detailed response is returned beyond plain livy.')
+    with self.argument_context('synapse spark session create') as c:
+        c.argument('job_name', arg_type=name_type, help='The Spark session name.')
+        c.argument('reference_files', nargs='+',
+                   help='Additional files used for reference in the main definition file.')
+        c.argument('configuration', type=get_json_object, help='The configuration of Spark session.')
+        c.argument('executors', help='The number of executors.')
+        c.argument('executor_size', arg_type=get_enum_type(['Small', 'Medium', 'Large']), help='The executor size')
+        c.argument('tags', arg_type=tags_type)
 
     for scope in ['show', 'cancel', 'reset-timeout']:
         with self.argument_context('synapse spark session ' + scope) as c:
-            c.argument('session_id', options_list=['--id', '--livy-id'], arg_group='Spark Session',
-                       help='The id of the spark session job.')
-
-    with self.argument_context('synapse spark session show') as c:
-        c.argument('detailed', action='store_true',
-                   help='Optional query parameter specifying whether detailed response is returned beyond plain livy.')
+            c.argument('session_id', options_list=['--livy-id'], arg_group='Spark Session',
+                       help='The id of the Spark session job.')
 
     with self.argument_context('synapse spark statement') as c:
-        c.argument('session_id', help='The id of spark session job.')
+        c.argument('session_id', help='The id of Spark session.')
 
     for scope in ['show', 'cancel']:
         with self.argument_context('synapse spark statement ' + scope) as c:
-            c.argument('statement_id', options_list=['--id', '--livy-id'], arg_group="Spark statement",
+            c.argument('statement_id', options_list=['--livy-id'], arg_group="Spark statement",
                        help='The id of the statement.')
 
-    with self.argument_context('synapse spark statement create') as c:
+    with self.argument_context('synapse spark statement invoke') as c:
         c.argument('code', completer=FilesCompleter(),
-                   help='The code of spark statement. This is either the code contents or use `@<file path>` to load the content from a file')
-        c.argument('language', arg_type=get_enum_type(SparkStatementLanguage), help='The language of spark statement.')
+                   help='The code of Spark statement. This is either the code contents or use `@<file path>` to load the content from a file')
+        c.argument('language', arg_type=get_enum_type(SparkStatementLanguage), validator=validate_statement_language, help='The language of Spark statement.')
 
     # synapse workspace
     for scope in ['synapse workspace', 'synapse spark pool', 'synapse sql pool', 'synapse workspace firewall-rule']:
@@ -116,7 +109,7 @@ def load_arguments(self, _):
     for scope in ['show', 'create', 'update', 'delete']:
         with self.argument_context('synapse spark pool ' + scope) as c:
             c.argument('spark_pool_name', arg_type=name_type, id_part='child_name_1',
-                       help='The name of the spark pool.')
+                       help='The name of the Spark pool.')
 
     with self.argument_context('synapse spark pool create') as c:
         # Node
@@ -141,11 +134,11 @@ def load_arguments(self, _):
                    help='The library requirements file.')
 
         # Default Folder
-        c.argument('spark_events_folder', arg_group='Default Folder', help='The spark events folder.')
-        c.argument('default_spark_log_folder', arg_group='Default Folder', help='The default spark log folder.')
+        c.argument('spark_events_folder', arg_group='Default Folder', help='The Spark events folder.')
+        c.argument('default_spark_log_folder', arg_group='Default Folder', help='The default Spark log folder.')
 
         # Component Version
-        c.argument('spark_version', arg_group='Component Version', help='The supported spark version is 2.4 now.')
+        c.argument('spark_version', arg_group='Component Version', help='The supported Spark version is 2.4 now.')
 
         c.argument('tags', arg_type=tags_type)
 

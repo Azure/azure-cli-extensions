@@ -14,3 +14,16 @@ def validate_storage_account(namespace):
         parsed_workspace = parse_resource_id(namespace.storage_account)
         storage_name = parsed_workspace['resource_name']
         namespace.storage_account = storage_name
+
+
+def validate_statement_language(namespace):
+    statement_language = {
+        'spark': 'spark',
+        'scala': 'spark',
+        'pypark': 'pyspark',
+        'python': 'pyspark',
+        'sparkdotnet': 'sparkdotnet',
+        'csharp': 'sparkdotnet',
+        'sql': 'sql'
+    }
+    namespace.language = statement_language.get(namespace.language.lower())
