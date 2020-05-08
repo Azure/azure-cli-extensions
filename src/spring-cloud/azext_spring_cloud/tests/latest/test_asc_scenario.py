@@ -26,7 +26,7 @@ class CustomDomainTests(ScenarioTest):
             'KeyVaultCertName': 'cli-ut',
             'domain': 'cli.asc-test.net',
             'app': 'test-app',
-            'serviceName': 'cli-ut',
+            'serviceName': 'cli-unittest',
             'rg': 'cli'
         })
 
