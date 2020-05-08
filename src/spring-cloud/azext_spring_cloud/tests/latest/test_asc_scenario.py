@@ -38,7 +38,7 @@ class CustomDomainTests(ScenarioTest):
             self.check('name', '{cert}')
         ])
 
-        result = self.cmd('spring-cloud certificate list').get_output_in_json()
+        result = self.cmd('spring-cloud certificate list -g {rg} -s {serviceName}').get_output_in_json()
         self.assertTrue(len(result) > 0)
 
         self.cmd('spring-cloud app custom-domain bind --domain-name {domain} --app {app} -g {rg} -s {serviceName}', checks=[
