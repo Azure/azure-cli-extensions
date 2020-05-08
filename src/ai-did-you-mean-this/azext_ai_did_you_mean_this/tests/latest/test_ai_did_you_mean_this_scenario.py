@@ -52,10 +52,6 @@ class AiDidYouMeanThisScenarioTest(AladdinScenarioTest):
 
     def test_ai_did_you_mean_this_recommendations_for_user_fault_commands(self):
         for command, entity in self.test_cases:
-            self.kwargs.update({
-                'ext': entity.extension
-            })
-
             args = entity.arguments
             command_with_args = command if not args else f'{command} {args}'
 
@@ -69,7 +65,7 @@ class AiDidYouMeanThisScenarioTest(AladdinScenarioTest):
             partial_command_match = command and any(cmd.startswith(command) for cmd in cmd_tbl.keys())
             self.assertEqual(_version, self.cli_version)
             self.assertEqual(_command, command if partial_command_match else '')
-            self.assertEqual(_extension, entity.extension)
+            self.assertEqual(bool(_extension), bool(entity.extension))
 
             if entity.recommendations:
                 self.assert_recommendations_were_shown()
