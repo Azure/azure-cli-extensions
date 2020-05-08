@@ -13,25 +13,25 @@ pr:
       - '*'
 
 jobs:
-- job: CredScan
-  displayName: "Credential Scan"
-  pool:
-    vmImage: "windows-2019"
-  steps:
-    - task: ms-codeanalysis.vss-microsoft-security-code-analysis.build-task-credscan.CredScan@2
-      displayName: 'CredScan'
-      inputs:
-        toolVersion: 'Latest'
-        suppressionsFile: './scripts/ci/credscan/CredScanSuppressions.json'
-    - task: ms-codeanalysis.vss-microsoft-security-code-analysis.build-task-postanalysis.PostAnalysis@1
-      displayName: 'Post Analysis'
-      inputs:
-        AllTools: false
-        BinSkim: false
-        CredScan: true
-        RoslynAnalyzers: false
-        TSLint: false
-        ToolLogsNotFoundAction: 'Standard'
+# - job: CredScan
+#   displayName: "Credential Scan"
+#   pool:
+#     vmImage: "windows-2019"
+#   steps:
+#     - task: ms-codeanalysis.vss-microsoft-security-code-analysis.build-task-credscan.CredScan@2
+#       displayName: 'CredScan'
+#       inputs:
+#         toolVersion: 'Latest'
+#         suppressionsFile: './scripts/ci/credscan/CredScanSuppressions.json'
+#     - task: ms-codeanalysis.vss-microsoft-security-code-analysis.build-task-postanalysis.PostAnalysis@1
+#       displayName: 'Post Analysis'
+#       inputs:
+#         AllTools: false
+#         BinSkim: false
+#         CredScan: true
+#         RoslynAnalyzers: false
+#         TSLint: false
+#         ToolLogsNotFoundAction: 'Standard'
 
 - job: CheckLicenseHeader
   displayName: "Check License"
