@@ -16,7 +16,7 @@ except ImportError:
 
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
-VERSION = '0.3.1'
+VERSION = '0.4.0'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -43,7 +43,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='storage-ors-preview',
+    name='storage-or-preview',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools Storage-ors-preview Extension',
     # TODO: Update author and email, if applicable
@@ -56,5 +56,5 @@ setup(
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_storage_ors_preview': ['azext_metadata.json']},
+    package_data={'azext_storage_or_preview': ['azext_metadata.json']},
 )
