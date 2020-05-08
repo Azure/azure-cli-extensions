@@ -64,7 +64,7 @@ def create_timeseriesinsights_environment_longterm(cmd, client,
         location=location,
         tags=tags,
         sku=Sku(name=sku_name, capacity=sku_capacity),
-        time_series_id_properties=[TimeSeriesIdProperty(name=time_series_id_properties, type="String")],
+        time_series_id_properties=[TimeSeriesIdProperty(name=id_property, type="String") for id_property in time_series_id_properties],
         storage_configuration=LongTermStorageConfigurationInput(account_name=storage_account_name, management_key=storage_management_key),
         data_retention=data_retention)
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name=resource_group_name, environment_name=environment_name, parameters=parameters)
