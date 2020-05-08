@@ -115,9 +115,9 @@ examples:
 
 helps['synapse spark pool show'] = """
 type: command
-short-summary: Get a specific Spark pool.
+short-summary: Get a Spark pool.
 examples:
-  - name: Get a specific Spark pools.
+  - name: Get a Spark pool.
     text: |-
         az synapse spark pool show --name testpool --workspace-name testsynapseworkspace --resource-group rg
 """
@@ -157,14 +157,14 @@ short-summary: Manage SQL pools.
 
 helps['synapse sql pool'] = """
 type: group
-short-summary: Manage SQL pool including Create, Get, List, Delete, Pause, Resume SQL pool.
+short-summary: Manage SQL pools.
 """
 
 helps['synapse sql pool create'] = """
 type: command
 short-summary: Create a SQL pool.
 examples:
-  - name: Create SQL pool.
+  - name: Create a SQL pool.
     text: |-
         az synapse sql pool create --name sqlpoolcli1 --performance-level "DW1000c" \\
         --workspace-name testsynapseworkspace --resource-group rg
@@ -174,7 +174,7 @@ helps['synapse sql pool show'] = """
 type: command
 short-summary: Get a SQL pool.
 examples:
-  - name: Get SQL pool.
+  - name: Get a SQL pool.
     text: |-
         az synapse sql pool show --name sqlpoolcli1 --workspace-name testsynapseworkspace --resource-group rg
 """
@@ -190,9 +190,9 @@ examples:
 
 helps['synapse sql pool update'] = """
 type: command
-short-summary: Update SQL pool.
+short-summary: Update a SQL pool.
 examples:
-  - name: Update SQL pool.
+  - name: Update a SQL pool.
     text: |-
         az synapse sql pool update --name sqlpoolcli1 --workspace-name testsynapseworkspace --resource-group rg \\
         --tags key1=value1
@@ -202,7 +202,7 @@ helps['synapse sql pool pause'] = """
 type: command
 short-summary: Pause a SQL pool.
 examples:
-  - name: Pause SQL pool.
+  - name: Pause a SQL pool.
     text: |-
         az synapse sql pool pause --name sqlpoolcli1 --workspace-name testsynapseworkspace --resource-group rg
 """
@@ -211,7 +211,7 @@ helps['synapse sql pool resume'] = """
 type: command
 short-summary: Resume a SQL pool.
 examples:
-  - name: Resume SQL pool.
+  - name: Resume a SQL pool.
     text: |-
         az synapse sql pool resume --name sqlpoolcli1 --workspace-name testsynapseworkspace --resource-group rg
 """
@@ -220,7 +220,7 @@ helps['synapse sql pool delete'] = """
 type: command
 short-summary: Delete a SQL pool.
 examples:
-  - name: Delete SQL pool.
+  - name: Delete a SQL pool.
     text: |-
         az synapse sql pool delete --name sqlpoolcli1 --workspace-name testsynapseworkspace --resource-group rg
 """
@@ -308,7 +308,7 @@ examples:
 
 helps['synapse spark job show'] = """
 type: command
-short-summary: Get a specific Spark job.
+short-summary: Get a Spark job.
 examples:
   - name: Get a Spark job.
     text: |-
