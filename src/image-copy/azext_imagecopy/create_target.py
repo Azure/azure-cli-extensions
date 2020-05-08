@@ -9,10 +9,7 @@ import time
 from knack.util import CLIError
 from knack.log import get_logger
 
-from msrestazure.tools import resource_id
-from azure.cli.core.commands.client_factory import get_subscription_id
-
-from azext_imagecopy.cli_utils import run_cli_command, prepare_cli_command
+from azext_imagecopy.cli_utils import run_cli_command, prepare_cli_command, get_storage_account_id_from_blob_path
 
 logger = get_logger(__name__)
 
@@ -116,14 +113,10 @@ def create_target_image(cmd, location, transient_resource_group_name, source_typ
     else:
         snapshot_resource_group_name = transient_resource_group_name
 
-    storage_account_name = target_blob_path.split('.')[0].split('/')[-1]
-    if target_subscription:
-        subscription_id = target_subscription
-    else:
-        subscription_id = get_subscription_id(cmd.cli_ctx)
-    source_storage_account_id = resource_id(
-        subscription=subscription_id, resource_group=transient_resource_group_name,
-        namespace='Microsoft.Storage', type='storageAccounts', name=storage_account_name)
+    source_storage_account_id = get_storage_account_id_from_blob_path(cmd,
+                                                                      target_blob_path,
+                                                                      transient_resource_group_name,
+                                                                      target_subscription)
 
     cli_cmd = prepare_cli_command(['snapshot', 'create',
                                    '--resource-group', snapshot_resource_group_name,
@@ -153,7 +146,6 @@ def create_target_image(cmd, location, transient_resource_group_name, source_typ
                                        '--resource-group', target_resource_group_name,
                                        '--name', target_image_name,
                                        '--location', location,
-                                       '--source', target_blob_path,
                                        '--os-type', source_os_type,
                                        '--source', target_snapshot_id],
                                       tags=tags,
