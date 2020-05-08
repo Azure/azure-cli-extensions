@@ -22,8 +22,8 @@ class CustomDomainTests(ScenarioTest):
     def test_bind_cert_to_domain(self):
         self.kwargs.update({
             'cert': 'test-cert',
-            'keyVaultUri': 'https://integration-test.vault-int.azure-int.net/',
-            'KeyVaultCertName': 'cli-ut',
+            'keyVaultUri': 'https://integration-test-prod.vault.azure.net/',
+            'KeyVaultCertName': 'cli-unittest',
             'domain': 'cli.asc-test.net',
             'app': 'test-app',
             'serviceName': 'cli-unittest',

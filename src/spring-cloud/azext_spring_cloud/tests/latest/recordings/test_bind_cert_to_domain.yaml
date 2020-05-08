@@ -1,66 +1,7 @@
 interactions:
 - request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Charset:
-      - utf-8
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-      return-client-request-id:
-      - 'true'
-      x-client-CPU:
-      - x86
-      x-client-OS:
-      - win32
-      x-client-SKU:
-      - Python
-      x-client-Ver:
-      - 1.2.2
-    method: GET
-    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
-  response:
-    body:
-      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
-    headers:
-      access-control-allow-methods:
-      - GET, OPTIONS
-      access-control-allow-origin:
-      - '*'
-      cache-control:
-      - private, max-age=86400
-      content-length:
-      - '131'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 08 May 2020 03:47:22 GMT
-      p3p:
-      - CP="DSP CUR OTPi IND OTRi ONL FIN"
-      set-cookie:
-      - fpc=AjdFn4mI_HFGojdUMgjSOCY; expires=Sun, 07-Jun-2020 03:47:23 GMT; path=/;
-        secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAAm-06blBE1TpVMil8KPQ41W862iobRpC_V1IYlrdMmxS7Fuv0v3m_dk6Ue97goN9FTrCcMbJfKql3021OorvzJ5_dplVkqGI6z_cdYaXhLJYoikm7yA5AGbc2EGSgyJi1AmTAW3mJkbIEvtt1uX0wyebPeYi7I_EAC9-DLEIn06qiylsYYlViICx2Hw8o8oqogAA;
-        domain=.login.windows.net; path=/; secure; HttpOnly; SameSite=None
-      - x-ms-gateway-slice=corp; path=/; SameSite=None; secure; HttpOnly
-      - stsservicecookie=estscorp; path=/; SameSite=None; secure; HttpOnly
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ests-server:
-      - 2.1.10519.11 - SIN1 ProdSlices
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"properties": {"vaultUri": "https://integration-test.vault-int.azure-int.net/",
-      "keyVaultCertName": "cli-ut"}}'
+    body: '{"properties": {"vaultUri": "https://integration-test-prod.vault.azure.net/",
+      "keyVaultCertName": "cli-unittest"}}'
     headers:
       Accept:
       - application/json
@@ -71,7 +12,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '111'
+      - '114'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
@@ -82,19 +23,19 @@ interactions:
       accept-language:
       - en-US
     method: PUT
-    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert?api-version=2019-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert?api-version=2019-05-01-preview
   response:
     body:
-      string: '{"properties":{"thumbprint":"18c6f4bde4077d63a4f0ec8b70c38024478a9305","vaultUri":"https://integration-test.vault-int.azure-int.net/","keyVaultCertName":"cli-ut","certVersion":"dd64505807cf4219831f3cf6d7743d3b","issuer":"*.asc-test.net","expirationDate":"2021-04-24T11:17:54.000+0000","activateDate":"2020-04-24T11:07:54.000+0000","subjectName":"CN=*.asc-test.net","dnsNames":["cli.asc-test.net"]},"type":"Microsoft.AppPlatform/Spring/certificates","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert","name":"test-cert"}'
+      string: '{"properties":{"thumbprint":"839dbe007ebc9aeb7150d58b1474dd955e684f18","vaultUri":"https://integration-test-prod.vault.azure.net/","keyVaultCertName":"cli-unittest","certVersion":"210525ac4b3d4a0d8431ab7e64cd11f8","issuer":"*.asc-test.net","expirationDate":"2021-05-08T04:54:02.000+0000","activateDate":"2020-05-08T04:44:02.000+0000","subjectName":"CN=*.asc-test.net","dnsNames":["cli.asc-test.net"]},"type":"Microsoft.AppPlatform/Spring/certificates","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert","name":"test-cert"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '621'
+      - '624'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 May 2020 03:47:27 GMT
+      - Fri, 08 May 2020 05:02:37 GMT
       expires:
       - '-1'
       pragma:
@@ -112,66 +53,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-writes:
       - '1198'
       x-rp-server-mvid:
-      - 372f05f4-e2d6-4e6c-ad1d-1453ec46bb1d
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Charset:
-      - utf-8
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-      return-client-request-id:
-      - 'true'
-      x-client-CPU:
-      - x86
-      x-client-OS:
-      - win32
-      x-client-SKU:
-      - Python
-      x-client-Ver:
-      - 1.2.2
-    method: GET
-    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
-  response:
-    body:
-      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
-    headers:
-      access-control-allow-methods:
-      - GET, OPTIONS
-      access-control-allow-origin:
-      - '*'
-      cache-control:
-      - private, max-age=86400
-      content-length:
-      - '131'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 08 May 2020 03:47:27 GMT
-      p3p:
-      - CP="DSP CUR OTPi IND OTRi ONL FIN"
-      set-cookie:
-      - fpc=Avqug7USKHxOh53sJUjqeJk; expires=Sun, 07-Jun-2020 03:47:28 GMT; path=/;
-        secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAAm-06blBE1TpVMil8KPQ41aZWFIHz6mM12J5R8bK0gbzkKd994GIklUI5VJYZqTgJe0VSPv1VjlQMngD2rkhm18botuShzN62HqvTvd-JQLHR1MoK96u4Un5eixSTasUzHuYzc2L0wL0xMiuFschz3DVA_DVBAoO_x1QrRoOKKyTehK7nkxkDO_fSnnoFBpXogAA;
-        domain=.login.windows.net; path=/; secure; HttpOnly; SameSite=None
-      - x-ms-gateway-slice=corp; path=/; SameSite=None; secure; HttpOnly
-      - stsservicecookie=estscorp; path=/; SameSite=None; secure; HttpOnly
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ests-server:
-      - 2.1.10519.11 - SIN1 ProdSlices
+      - afbe1e12-8584-4dc5-aa1e-547e4b04d8ae
     status:
       code: 200
       message: OK
@@ -194,19 +76,19 @@ interactions:
       accept-language:
       - en-US
     method: GET
-    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert?api-version=2019-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert?api-version=2019-05-01-preview
   response:
     body:
-      string: '{"properties":{"thumbprint":"18c6f4bde4077d63a4f0ec8b70c38024478a9305","vaultUri":"https://integration-test.vault-int.azure-int.net/","keyVaultCertName":"cli-ut","certVersion":"dd64505807cf4219831f3cf6d7743d3b","issuer":"*.asc-test.net","expirationDate":"2021-04-24T11:17:54.000+0000","activateDate":"2020-04-24T11:07:54.000+0000","subjectName":"CN=*.asc-test.net","dnsNames":["cli.asc-test.net"]},"type":"Microsoft.AppPlatform/Spring/certificates","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert","name":"test-cert"}'
+      string: '{"properties":{"thumbprint":"839dbe007ebc9aeb7150d58b1474dd955e684f18","vaultUri":"https://integration-test-prod.vault.azure.net/","keyVaultCertName":"cli-unittest","certVersion":"210525ac4b3d4a0d8431ab7e64cd11f8","issuer":"*.asc-test.net","expirationDate":"2021-05-08T04:54:02.000+0000","activateDate":"2020-05-08T04:44:02.000+0000","subjectName":"CN=*.asc-test.net","dnsNames":["cli.asc-test.net"]},"type":"Microsoft.AppPlatform/Spring/certificates","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert","name":"test-cert"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '621'
+      - '624'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 May 2020 03:47:29 GMT
+      - Fri, 08 May 2020 05:02:39 GMT
       expires:
       - '-1'
       pragma:
@@ -222,66 +104,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - 372f05f4-e2d6-4e6c-ad1d-1453ec46bb1d
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Charset:
-      - utf-8
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-      return-client-request-id:
-      - 'true'
-      x-client-CPU:
-      - x86
-      x-client-OS:
-      - win32
-      x-client-SKU:
-      - Python
-      x-client-Ver:
-      - 1.2.2
-    method: GET
-    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
-  response:
-    body:
-      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
-    headers:
-      access-control-allow-methods:
-      - GET, OPTIONS
-      access-control-allow-origin:
-      - '*'
-      cache-control:
-      - private, max-age=86400
-      content-length:
-      - '131'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 08 May 2020 03:47:30 GMT
-      p3p:
-      - CP="DSP CUR OTPi IND OTRi ONL FIN"
-      set-cookie:
-      - fpc=AsYixqB7QpZNoUzmcYtZZf0; expires=Sun, 07-Jun-2020 03:47:30 GMT; path=/;
-        secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAAm-06blBE1TpVMil8KPQ41XwXiT0smFPtWAfKvdh7busUTBTJ5RtYVvbWELFlLYFrL1sILCMdjq6BSK-BBbW1Zce_QGPEinvwT6vg91twV3p6RXqRZIKidY6_HITtm0Peiuxwq7IF-LNTbIfN-IKoUQQt9X7r5qFDss77Q0NauaK45RqoEbQOqvhqeYtZzmisgAA;
-        domain=.login.windows.net; path=/; secure; HttpOnly; SameSite=None
-      - x-ms-gateway-slice=corp; path=/; SameSite=None; secure; HttpOnly
-      - stsservicecookie=estscorp; path=/; SameSite=None; secure; HttpOnly
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ests-server:
-      - 2.1.10519.11 - SIN1 ProdSlices
+      - afbe1e12-8584-4dc5-aa1e-547e4b04d8ae
     status:
       code: 200
       message: OK
@@ -302,19 +125,19 @@ interactions:
       accept-language:
       - en-US
     method: GET
-    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates?api-version=2019-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates?api-version=2019-05-01-preview
   response:
     body:
-      string: '{"value":[{"properties":{"thumbprint":"18c6f4bde4077d63a4f0ec8b70c38024478a9305","vaultUri":"https://integration-test.vault-int.azure-int.net/","keyVaultCertName":"cli-ut","certVersion":"dd64505807cf4219831f3cf6d7743d3b","issuer":"*.asc-test.net","expirationDate":"2021-04-24T11:17:54.000+0000","activateDate":"2020-04-24T11:07:54.000+0000","subjectName":"CN=*.asc-test.net","dnsNames":["cli.asc-test.net"]},"type":"Microsoft.AppPlatform/Spring/certificates","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert","name":"test-cert"}]}'
+      string: '{"value":[{"properties":{"thumbprint":"839dbe007ebc9aeb7150d58b1474dd955e684f18","vaultUri":"https://integration-test-prod.vault.azure.net/","keyVaultCertName":"cli-unittest","certVersion":"210525ac4b3d4a0d8431ab7e64cd11f8","issuer":"*.asc-test.net","expirationDate":"2021-05-08T04:54:02.000+0000","activateDate":"2020-05-08T04:44:02.000+0000","subjectName":"CN=*.asc-test.net","dnsNames":["cli.asc-test.net"]},"type":"Microsoft.AppPlatform/Spring/certificates","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert","name":"test-cert"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '633'
+      - '636'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 May 2020 03:47:32 GMT
+      - Fri, 08 May 2020 05:02:41 GMT
       expires:
       - '-1'
       pragma:
@@ -330,66 +153,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - 372f05f4-e2d6-4e6c-ad1d-1453ec46bb1d
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Charset:
-      - utf-8
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-      return-client-request-id:
-      - 'true'
-      x-client-CPU:
-      - x86
-      x-client-OS:
-      - win32
-      x-client-SKU:
-      - Python
-      x-client-Ver:
-      - 1.2.2
-    method: GET
-    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
-  response:
-    body:
-      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
-    headers:
-      access-control-allow-methods:
-      - GET, OPTIONS
-      access-control-allow-origin:
-      - '*'
-      cache-control:
-      - private, max-age=86400
-      content-length:
-      - '131'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 08 May 2020 03:47:33 GMT
-      p3p:
-      - CP="DSP CUR OTPi IND OTRi ONL FIN"
-      set-cookie:
-      - fpc=Atbc0uOYQLBOsX9on1WD71g; expires=Sun, 07-Jun-2020 03:47:33 GMT; path=/;
-        secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAAm-06blBE1TpVMil8KPQ41ANRm-711tcQqMXQt3Wz4DF8kv1UZ7SaE26CKNWRrA45QFTmXoYeePsQ-laxZ7pBz8GcTPuDLXEYNLm-Ts1LYkoGffmkTo_9NYBfq0Rl_nAvQlV9dZIWkCOddGxsi-jWaYrhW8C548OmLrTR8BXddqfG2yNj3SIDN5dusTdagY7IgAA;
-        domain=.login.windows.net; path=/; secure; HttpOnly; SameSite=None
-      - x-ms-gateway-slice=corp; path=/; SameSite=None; secure; HttpOnly
-      - stsservicecookie=estscorp; path=/; SameSite=None; secure; HttpOnly
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ests-server:
-      - 2.1.10519.11 - SIN1 ProdSlices
+      - afbe1e12-8584-4dc5-aa1e-547e4b04d8ae
     status:
       code: 200
       message: OK
@@ -416,7 +180,7 @@ interactions:
       accept-language:
       - en-US
     method: PUT
-    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-app/domains/cli.asc-test.net?api-version=2019-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-app/domains/cli.asc-test.net?api-version=2019-05-01-preview
   response:
     body:
       string: '{"properties":{"appName":"test-app"},"type":"Microsoft.AppPlatform/Spring/apps/domains","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-app/domains/cli.asc-test.net","name":"cli.asc-test.net"}'
@@ -428,7 +192,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 May 2020 03:47:35 GMT
+      - Fri, 08 May 2020 05:02:43 GMT
       expires:
       - '-1'
       pragma:
@@ -444,68 +208,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
       x-rp-server-mvid:
-      - 372f05f4-e2d6-4e6c-ad1d-1453ec46bb1d
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Charset:
-      - utf-8
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-      return-client-request-id:
-      - 'true'
-      x-client-CPU:
-      - x86
-      x-client-OS:
-      - win32
-      x-client-SKU:
-      - Python
-      x-client-Ver:
-      - 1.2.2
-    method: GET
-    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
-  response:
-    body:
-      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
-    headers:
-      access-control-allow-methods:
-      - GET, OPTIONS
-      access-control-allow-origin:
-      - '*'
-      cache-control:
-      - private, max-age=86400
-      content-length:
-      - '131'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 08 May 2020 03:47:36 GMT
-      p3p:
-      - CP="DSP CUR OTPi IND OTRi ONL FIN"
-      set-cookie:
-      - fpc=AkVcsTeC36BEnN9f6OwrgCM; expires=Sun, 07-Jun-2020 03:47:36 GMT; path=/;
-        secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAAm-06blBE1TpVMil8KPQ41pirBB3OUV22AaJApBhqwVkGUjsH3M5VLEkol3wSAL68Xcmf9dMbNaE4VQAq13919dAidA8UiQtjjLN4ZxUil6KWDr4QYJbOPrGqp4jfGK3mAPDCv7ezAgic5M6KL6SPNeKfLbZV5lTAvWUDSVu0GNvzQbcYiIGLdTCIDFU-u4wIgAA;
-        domain=.login.windows.net; path=/; secure; HttpOnly; SameSite=None
-      - x-ms-gateway-slice=corp; path=/; SameSite=None; secure; HttpOnly
-      - stsservicecookie=estscorp; path=/; SameSite=None; secure; HttpOnly
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ests-server:
-      - 2.1.10519.11 - SIN1 ProdSlices
+      - afbe1e12-8584-4dc5-aa1e-547e4b04d8ae
     status:
       code: 200
       message: OK
@@ -528,7 +233,7 @@ interactions:
       accept-language:
       - en-US
     method: GET
-    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-app/domains/cli.asc-test.net?api-version=2019-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-app/domains/cli.asc-test.net?api-version=2019-05-01-preview
   response:
     body:
       string: '{"properties":{"appName":"test-app"},"type":"Microsoft.AppPlatform/Spring/apps/domains","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-app/domains/cli.asc-test.net","name":"cli.asc-test.net"}'
@@ -540,7 +245,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 May 2020 03:47:38 GMT
+      - Fri, 08 May 2020 05:02:44 GMT
       expires:
       - '-1'
       pragma:
@@ -556,66 +261,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - 372f05f4-e2d6-4e6c-ad1d-1453ec46bb1d
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Charset:
-      - utf-8
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-      return-client-request-id:
-      - 'true'
-      x-client-CPU:
-      - x86
-      x-client-OS:
-      - win32
-      x-client-SKU:
-      - Python
-      x-client-Ver:
-      - 1.2.2
-    method: GET
-    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
-  response:
-    body:
-      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
-    headers:
-      access-control-allow-methods:
-      - GET, OPTIONS
-      access-control-allow-origin:
-      - '*'
-      cache-control:
-      - private, max-age=86400
-      content-length:
-      - '131'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 08 May 2020 03:47:38 GMT
-      p3p:
-      - CP="DSP CUR OTPi IND OTRi ONL FIN"
-      set-cookie:
-      - fpc=AiTL_5bI1lBAkOeAkNjpd1s; expires=Sun, 07-Jun-2020 03:47:39 GMT; path=/;
-        secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAAm-06blBE1TpVMil8KPQ41XpY6_NoKe0i-L8hbU-jYyM_OfoM_IaY8D2fSonxKwk9dMjZ4EqhP2vtlzxrh0uh-3tpxCegp1OF954x6CztpHUWnz0SjrV7BCnf5pWqcex9E807l4zQdmI1aAkQe79eRtmzxBAUuejEMgDH4Q76eeWPXnrA_V9_6DefY5mSrBVEgAA;
-        domain=.login.windows.net; path=/; secure; HttpOnly; SameSite=None
-      - x-ms-gateway-slice=corp; path=/; SameSite=None; secure; HttpOnly
-      - stsservicecookie=estscorp; path=/; SameSite=None; secure; HttpOnly
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ests-server:
-      - 2.1.10519.11 - SIN1 ProdSlices
+      - afbe1e12-8584-4dc5-aa1e-547e4b04d8ae
     status:
       code: 200
       message: OK
@@ -638,7 +284,7 @@ interactions:
       accept-language:
       - en-US
     method: GET
-    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-app/domains?api-version=2019-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-app/domains?api-version=2019-05-01-preview
   response:
     body:
       string: '{"value":[{"properties":{"appName":"test-app"},"type":"Microsoft.AppPlatform/Spring/apps/domains","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-app/domains/cli.asc-test.net","name":"cli.asc-test.net"}]}'
@@ -650,7 +296,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 May 2020 03:47:40 GMT
+      - Fri, 08 May 2020 05:02:46 GMT
       expires:
       - '-1'
       pragma:
@@ -666,66 +312,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - 372f05f4-e2d6-4e6c-ad1d-1453ec46bb1d
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Charset:
-      - utf-8
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-      return-client-request-id:
-      - 'true'
-      x-client-CPU:
-      - x86
-      x-client-OS:
-      - win32
-      x-client-SKU:
-      - Python
-      x-client-Ver:
-      - 1.2.2
-    method: GET
-    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
-  response:
-    body:
-      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
-    headers:
-      access-control-allow-methods:
-      - GET, OPTIONS
-      access-control-allow-origin:
-      - '*'
-      cache-control:
-      - private, max-age=86400
-      content-length:
-      - '131'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 08 May 2020 03:47:40 GMT
-      p3p:
-      - CP="DSP CUR OTPi IND OTRi ONL FIN"
-      set-cookie:
-      - fpc=Appp21YJa5dAoXM6P2fVAkU; expires=Sun, 07-Jun-2020 03:47:41 GMT; path=/;
-        secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAAm-06blBE1TpVMil8KPQ41d8i4tmWidnHAIXQZw38q1LWlChB2C5gexV8W0RsZ_lPUSbXei5FZLbS9VaXaO6Io6QJcB1vrUtz-tKrF0U8sikLCc0uPR0bq2z7e3fJxLVrIOMPZzmulrVT8CHDTjxbcmFNxWqPFcOFKozAIt9Wl8nH0j1kL1GoL5YexV7r7lZ0gAA;
-        domain=.login.windows.net; path=/; secure; HttpOnly; SameSite=None
-      - x-ms-gateway-slice=corp; path=/; SameSite=None; secure; HttpOnly
-      - stsservicecookie=estscorp; path=/; SameSite=None; secure; HttpOnly
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ests-server:
-      - 2.1.10519.11 - SIN1 ProdSlices
+      - afbe1e12-8584-4dc5-aa1e-547e4b04d8ae
     status:
       code: 200
       message: OK
@@ -748,19 +335,19 @@ interactions:
       accept-language:
       - en-US
     method: GET
-    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert?api-version=2019-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert?api-version=2019-05-01-preview
   response:
     body:
-      string: '{"properties":{"thumbprint":"18c6f4bde4077d63a4f0ec8b70c38024478a9305","vaultUri":"https://integration-test.vault-int.azure-int.net/","keyVaultCertName":"cli-ut","certVersion":"dd64505807cf4219831f3cf6d7743d3b","issuer":"*.asc-test.net","expirationDate":"2021-04-24T11:17:54.000+0000","activateDate":"2020-04-24T11:07:54.000+0000","subjectName":"CN=*.asc-test.net","dnsNames":["cli.asc-test.net"]},"type":"Microsoft.AppPlatform/Spring/certificates","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert","name":"test-cert"}'
+      string: '{"properties":{"thumbprint":"839dbe007ebc9aeb7150d58b1474dd955e684f18","vaultUri":"https://integration-test-prod.vault.azure.net/","keyVaultCertName":"cli-unittest","certVersion":"210525ac4b3d4a0d8431ab7e64cd11f8","issuer":"*.asc-test.net","expirationDate":"2021-05-08T04:54:02.000+0000","activateDate":"2020-05-08T04:44:02.000+0000","subjectName":"CN=*.asc-test.net","dnsNames":["cli.asc-test.net"]},"type":"Microsoft.AppPlatform/Spring/certificates","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert","name":"test-cert"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '621'
+      - '624'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 May 2020 03:47:41 GMT
+      - Fri, 08 May 2020 05:02:48 GMT
       expires:
       - '-1'
       pragma:
@@ -776,71 +363,12 @@ interactions:
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - 372f05f4-e2d6-4e6c-ad1d-1453ec46bb1d
+      - afbe1e12-8584-4dc5-aa1e-547e4b04d8ae
     status:
       code: 200
       message: OK
 - request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Charset:
-      - utf-8
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-      return-client-request-id:
-      - 'true'
-      x-client-CPU:
-      - x86
-      x-client-OS:
-      - win32
-      x-client-SKU:
-      - Python
-      x-client-Ver:
-      - 1.2.2
-    method: GET
-    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
-  response:
-    body:
-      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
-    headers:
-      access-control-allow-methods:
-      - GET, OPTIONS
-      access-control-allow-origin:
-      - '*'
-      cache-control:
-      - private, max-age=86400
-      content-length:
-      - '131'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 08 May 2020 03:47:42 GMT
-      p3p:
-      - CP="DSP CUR OTPi IND OTRi ONL FIN"
-      set-cookie:
-      - fpc=AuFaB3UFGOJJmrqy8N9bZQY; expires=Sun, 07-Jun-2020 03:47:42 GMT; path=/;
-        secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAAm-06blBE1TpVMil8KPQ41Hab829GuviDDbAfts1s0xq5bJWWofKMkuIdQDhQwRHeWK7a9bepMBOn2n3aTIyJ-OzKgP-u1N073kru_nChFdfHNpKUArpip4YBl_F9zTV5p4qJMNgg42CxNdJu8cuHOr1ObcVXzcIpt_Wq1EFeejMAjGCGUCJr1g5C5enGEiQcgAA;
-        domain=.login.windows.net; path=/; secure; HttpOnly; SameSite=None
-      - x-ms-gateway-slice=corp; path=/; SameSite=None; secure; HttpOnly
-      - stsservicecookie=estscorp; path=/; SameSite=None; secure; HttpOnly
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ests-server:
-      - 2.1.10519.11 - SIN1 ProdSlices
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"properties": {"thumbprint": "18c6f4bde4077d63a4f0ec8b70c38024478a9305",
+    body: '{"properties": {"thumbprint": "839dbe007ebc9aeb7150d58b1474dd955e684f18",
       "certName": "test-cert"}}'
     headers:
       Accept:
@@ -863,10 +391,10 @@ interactions:
       accept-language:
       - en-US
     method: PUT
-    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-app/domains/cli.asc-test.net?api-version=2019-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-app/domains/cli.asc-test.net?api-version=2019-05-01-preview
   response:
     body:
-      string: '{"properties":{"thumbprint":"18c6f4bde4077d63a4f0ec8b70c38024478a9305","appName":"test-app","certName":"test-cert"},"type":"Microsoft.AppPlatform/Spring/apps/domains","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-app/domains/cli.asc-test.net","name":"cli.asc-test.net"}'
+      string: '{"properties":{"thumbprint":"839dbe007ebc9aeb7150d58b1474dd955e684f18","appName":"test-app","certName":"test-cert"},"type":"Microsoft.AppPlatform/Spring/apps/domains","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-app/domains/cli.asc-test.net","name":"cli.asc-test.net"}'
     headers:
       cache-control:
       - no-cache
@@ -875,7 +403,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 May 2020 03:47:42 GMT
+      - Fri, 08 May 2020 05:02:49 GMT
       expires:
       - '-1'
       pragma:
@@ -891,68 +419,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
       x-rp-server-mvid:
-      - 372f05f4-e2d6-4e6c-ad1d-1453ec46bb1d
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Charset:
-      - utf-8
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-      return-client-request-id:
-      - 'true'
-      x-client-CPU:
-      - x86
-      x-client-OS:
-      - win32
-      x-client-SKU:
-      - Python
-      x-client-Ver:
-      - 1.2.2
-    method: GET
-    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
-  response:
-    body:
-      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
-    headers:
-      access-control-allow-methods:
-      - GET, OPTIONS
-      access-control-allow-origin:
-      - '*'
-      cache-control:
-      - private, max-age=86400
-      content-length:
-      - '131'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 08 May 2020 03:47:44 GMT
-      p3p:
-      - CP="DSP CUR OTPi IND OTRi ONL FIN"
-      set-cookie:
-      - fpc=Ai4PnQXicbZBtSVtbJnlzv8; expires=Sun, 07-Jun-2020 03:47:44 GMT; path=/;
-        secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAAm-06blBE1TpVMil8KPQ415ABmc60Zh3dojn13M3aBM7Dd5_nwAgUi4FnTsdF44aiNzgimPlcMnAa_qOiK7cQkz8oLkvDCHEzAFvm4UhufJT_xkIbpdiN8TDgJ9aZZAl0cqH06QO9TWEQpEG38mh6opOXoywZpT5o0vWKZp2sxSc-EUodcE4DANxqwFvInImwgAA;
-        domain=.login.windows.net; path=/; secure; HttpOnly; SameSite=None
-      - x-ms-gateway-slice=corp; path=/; SameSite=None; secure; HttpOnly
-      - stsservicecookie=estscorp; path=/; SameSite=None; secure; HttpOnly
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ests-server:
-      - 2.1.10519.11 - SIN1 ProdSlices
+      - afbe1e12-8584-4dc5-aa1e-547e4b04d8ae
     status:
       code: 200
       message: OK
@@ -975,10 +444,10 @@ interactions:
       accept-language:
       - en-US
     method: GET
-    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-app/domains/cli.asc-test.net?api-version=2019-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-app/domains/cli.asc-test.net?api-version=2019-05-01-preview
   response:
     body:
-      string: '{"properties":{"thumbprint":"18c6f4bde4077d63a4f0ec8b70c38024478a9305","appName":"test-app","certName":"test-cert"},"type":"Microsoft.AppPlatform/Spring/apps/domains","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-app/domains/cli.asc-test.net","name":"cli.asc-test.net"}'
+      string: '{"properties":{"thumbprint":"839dbe007ebc9aeb7150d58b1474dd955e684f18","appName":"test-app","certName":"test-cert"},"type":"Microsoft.AppPlatform/Spring/apps/domains","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-app/domains/cli.asc-test.net","name":"cli.asc-test.net"}'
     headers:
       cache-control:
       - no-cache
@@ -987,7 +456,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 May 2020 03:47:45 GMT
+      - Fri, 08 May 2020 05:02:50 GMT
       expires:
       - '-1'
       pragma:
@@ -1003,66 +472,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - 372f05f4-e2d6-4e6c-ad1d-1453ec46bb1d
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Charset:
-      - utf-8
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-      return-client-request-id:
-      - 'true'
-      x-client-CPU:
-      - x86
-      x-client-OS:
-      - win32
-      x-client-SKU:
-      - Python
-      x-client-Ver:
-      - 1.2.2
-    method: GET
-    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
-  response:
-    body:
-      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
-    headers:
-      access-control-allow-methods:
-      - GET, OPTIONS
-      access-control-allow-origin:
-      - '*'
-      cache-control:
-      - private, max-age=86400
-      content-length:
-      - '131'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 08 May 2020 03:47:46 GMT
-      p3p:
-      - CP="DSP CUR OTPi IND OTRi ONL FIN"
-      set-cookie:
-      - fpc=AsXC_N54FtZHkFkd78cVM3I; expires=Sun, 07-Jun-2020 03:47:46 GMT; path=/;
-        secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAAm-06blBE1TpVMil8KPQ41Z25a8uUyw4eOod3K6zlJCrzxsmKl-lHEz6DhqhqF3h1WG3wr9xWlmFZ_--uIue30uCN8x3tOn-pro-EIW4_x56bIgBK6L6zF6Zc0P0Jd5uMlycxgkHUCRUtjO3gk8fw8ZLxookD9jiNe4n_Q8VtJ4IwLyydX_YwwQWrpy-FTt2UgAA;
-        domain=.login.windows.net; path=/; secure; HttpOnly; SameSite=None
-      - x-ms-gateway-slice=corp; path=/; SameSite=None; secure; HttpOnly
-      - stsservicecookie=estscorp; path=/; SameSite=None; secure; HttpOnly
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ests-server:
-      - 2.1.10519.11 - SIN1 ProdSlices
+      - afbe1e12-8584-4dc5-aa1e-547e4b04d8ae
     status:
       code: 200
       message: OK
@@ -1087,7 +497,7 @@ interactions:
       accept-language:
       - en-US
     method: DELETE
-    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-app/domains/cli.asc-test.net?api-version=2019-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-app/domains/cli.asc-test.net?api-version=2019-05-01-preview
   response:
     body:
       string: ''
@@ -1097,7 +507,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 08 May 2020 03:47:47 GMT
+      - Fri, 08 May 2020 05:02:50 GMT
       expires:
       - '-1'
       pragma:
@@ -1111,66 +521,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-deletes:
       - '14999'
       x-rp-server-mvid:
-      - 372f05f4-e2d6-4e6c-ad1d-1453ec46bb1d
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Charset:
-      - utf-8
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-      return-client-request-id:
-      - 'true'
-      x-client-CPU:
-      - x86
-      x-client-OS:
-      - win32
-      x-client-SKU:
-      - Python
-      x-client-Ver:
-      - 1.2.2
-    method: GET
-    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
-  response:
-    body:
-      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
-    headers:
-      access-control-allow-methods:
-      - GET, OPTIONS
-      access-control-allow-origin:
-      - '*'
-      cache-control:
-      - private, max-age=86400
-      content-length:
-      - '131'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 08 May 2020 03:47:48 GMT
-      p3p:
-      - CP="DSP CUR OTPi IND OTRi ONL FIN"
-      set-cookie:
-      - fpc=AjSmadGuQfhAiwxPPwi2E7c; expires=Sun, 07-Jun-2020 03:47:48 GMT; path=/;
-        secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAAm-06blBE1TpVMil8KPQ41kX57ofki3yVRx_AIL2aHOMKtW2TgURjtA6ub-NJW-aRehGwWxHwvS5tCnjp9rwyoSI9K052Qksp4OF_kXonRWlr8jiU_inafHWQKysUv_GM4EN7SAKyYOttTm_I6Qk6I0RqTHmclUwg6b_dy4JCnJJ5iV-TIT4muHDNmuzRMChEgAA;
-        domain=.login.windows.net; path=/; secure; HttpOnly; SameSite=None
-      - x-ms-gateway-slice=corp; path=/; SameSite=None; secure; HttpOnly
-      - stsservicecookie=estscorp; path=/; SameSite=None; secure; HttpOnly
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ests-server:
-      - 2.1.10519.11 - SIN1 ProdSlices
+      - afbe1e12-8584-4dc5-aa1e-547e4b04d8ae
     status:
       code: 200
       message: OK
@@ -1193,7 +544,7 @@ interactions:
       accept-language:
       - en-US
     method: GET
-    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-app/domains/cli.asc-test.net?api-version=2019-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-app/domains/cli.asc-test.net?api-version=2019-05-01-preview
   response:
     body:
       string: '{"error":{"code":"EntityNotFound","message":"CustomDomain with name
@@ -1206,7 +557,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 May 2020 03:47:49 GMT
+      - Fri, 08 May 2020 05:02:52 GMT
       expires:
       - '-1'
       pragma:
@@ -1220,69 +571,10 @@ interactions:
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - 372f05f4-e2d6-4e6c-ad1d-1453ec46bb1d
+      - afbe1e12-8584-4dc5-aa1e-547e4b04d8ae
     status:
       code: 404
       message: Not Found
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Charset:
-      - utf-8
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-      return-client-request-id:
-      - 'true'
-      x-client-CPU:
-      - x86
-      x-client-OS:
-      - win32
-      x-client-SKU:
-      - Python
-      x-client-Ver:
-      - 1.2.2
-    method: GET
-    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
-  response:
-    body:
-      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
-    headers:
-      access-control-allow-methods:
-      - GET, OPTIONS
-      access-control-allow-origin:
-      - '*'
-      cache-control:
-      - private, max-age=86400
-      content-length:
-      - '131'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 08 May 2020 03:47:50 GMT
-      p3p:
-      - CP="DSP CUR OTPi IND OTRi ONL FIN"
-      set-cookie:
-      - fpc=Au0XBTdXjNNLs5JH5iLfXd4; expires=Sun, 07-Jun-2020 03:47:50 GMT; path=/;
-        secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAAm-06blBE1TpVMil8KPQ417m6jnscfiP4RhSxQzQC168wshSRKuNkXfgg98nYzXPtC1w2Rnj7TV1RbIdVr5C1x8L_yOtPA1bWdMCj1SOrTXo3kTZOKK8p7ICuzZivVGQU70q94EsWR12rLYop_3uPcUgbH5dciQbdSL8Uo37amuA1qQ53fNNHK5N3mIfvYz5AgAA;
-        domain=.login.windows.net; path=/; secure; HttpOnly; SameSite=None
-      - x-ms-gateway-slice=corp; path=/; SameSite=None; secure; HttpOnly
-      - stsservicecookie=estscorp; path=/; SameSite=None; secure; HttpOnly
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ests-server:
-      - 2.1.10519.11 - SIN1 ProdSlices
-    status:
-      code: 200
-      message: OK
 - request:
     body: null
     headers:
@@ -1302,19 +594,19 @@ interactions:
       accept-language:
       - en-US
     method: GET
-    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert?api-version=2019-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert?api-version=2019-05-01-preview
   response:
     body:
-      string: '{"properties":{"thumbprint":"18c6f4bde4077d63a4f0ec8b70c38024478a9305","vaultUri":"https://integration-test.vault-int.azure-int.net/","keyVaultCertName":"cli-ut","certVersion":"dd64505807cf4219831f3cf6d7743d3b","issuer":"*.asc-test.net","expirationDate":"2021-04-24T11:17:54.000+0000","activateDate":"2020-04-24T11:07:54.000+0000","subjectName":"CN=*.asc-test.net","dnsNames":["cli.asc-test.net"]},"type":"Microsoft.AppPlatform/Spring/certificates","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert","name":"test-cert"}'
+      string: '{"properties":{"thumbprint":"839dbe007ebc9aeb7150d58b1474dd955e684f18","vaultUri":"https://integration-test-prod.vault.azure.net/","keyVaultCertName":"cli-unittest","certVersion":"210525ac4b3d4a0d8431ab7e64cd11f8","issuer":"*.asc-test.net","expirationDate":"2021-05-08T04:54:02.000+0000","activateDate":"2020-05-08T04:44:02.000+0000","subjectName":"CN=*.asc-test.net","dnsNames":["cli.asc-test.net"]},"type":"Microsoft.AppPlatform/Spring/certificates","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert","name":"test-cert"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '621'
+      - '624'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 May 2020 03:47:51 GMT
+      - Fri, 08 May 2020 05:02:53 GMT
       expires:
       - '-1'
       pragma:
@@ -1330,66 +622,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - 372f05f4-e2d6-4e6c-ad1d-1453ec46bb1d
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Charset:
-      - utf-8
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-      return-client-request-id:
-      - 'true'
-      x-client-CPU:
-      - x86
-      x-client-OS:
-      - win32
-      x-client-SKU:
-      - Python
-      x-client-Ver:
-      - 1.2.2
-    method: GET
-    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
-  response:
-    body:
-      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
-    headers:
-      access-control-allow-methods:
-      - GET, OPTIONS
-      access-control-allow-origin:
-      - '*'
-      cache-control:
-      - private, max-age=86400
-      content-length:
-      - '131'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 08 May 2020 03:47:52 GMT
-      p3p:
-      - CP="DSP CUR OTPi IND OTRi ONL FIN"
-      set-cookie:
-      - fpc=ArMN8Mu9pR5OsjDCFJXAYOQ; expires=Sun, 07-Jun-2020 03:47:52 GMT; path=/;
-        secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAAm-06blBE1TpVMil8KPQ411grT_BdSiuHTV2gRw05VgV-z4hxW_KPkFJ4m0FfTBL1QHVbjLsut_Bxk6VYh-NAQMIxM5pFClrCnuGsaFMgfPeuKsjwDK-ynUaN2qc3OIPl0JyPJbBrJyoHyaEihkyxi1ruf0HWwlN1NzTJde6y2qbVCeXSMBZUN7TvG878PE0YgAA;
-        domain=.login.windows.net; path=/; secure; HttpOnly; SameSite=None
-      - x-ms-gateway-slice=corp; path=/; SameSite=None; secure; HttpOnly
-      - stsservicecookie=estscorp; path=/; SameSite=None; secure; HttpOnly
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ests-server:
-      - 2.1.10519.11 - SIN1 ProdSlices
+      - afbe1e12-8584-4dc5-aa1e-547e4b04d8ae
     status:
       code: 200
       message: OK
@@ -1414,7 +647,7 @@ interactions:
       accept-language:
       - en-US
     method: DELETE
-    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert?api-version=2019-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert?api-version=2019-05-01-preview
   response:
     body:
       string: ''
@@ -1424,7 +657,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 08 May 2020 03:47:53 GMT
+      - Fri, 08 May 2020 05:02:53 GMT
       expires:
       - '-1'
       pragma:
@@ -1438,66 +671,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-deletes:
       - '14999'
       x-rp-server-mvid:
-      - 372f05f4-e2d6-4e6c-ad1d-1453ec46bb1d
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Charset:
-      - utf-8
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-      return-client-request-id:
-      - 'true'
-      x-client-CPU:
-      - x86
-      x-client-OS:
-      - win32
-      x-client-SKU:
-      - Python
-      x-client-Ver:
-      - 1.2.2
-    method: GET
-    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
-  response:
-    body:
-      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
-    headers:
-      access-control-allow-methods:
-      - GET, OPTIONS
-      access-control-allow-origin:
-      - '*'
-      cache-control:
-      - private, max-age=86400
-      content-length:
-      - '131'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 08 May 2020 03:47:53 GMT
-      p3p:
-      - CP="DSP CUR OTPi IND OTRi ONL FIN"
-      set-cookie:
-      - fpc=AgWWVYDaL9hAg7mztUtF2gs; expires=Sun, 07-Jun-2020 03:47:54 GMT; path=/;
-        secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAAm-06blBE1TpVMil8KPQ41httUYWYt1zvYOzR7sijp_rjVxuYfQCNocX_i5sdcnSdzUL7XuZFDDiSATcl4vdlb_DmC-MotjXKtN6Lx5wV2YbGClNgmUFQ3c-IVyxzuiZfVs8gnyUcW3RSgWu5038bPPJ5_U1aUjF555sR7aim8FdSX6vgM_3NILurWe7KTqy8gAA;
-        domain=.login.windows.net; path=/; secure; HttpOnly; SameSite=None
-      - x-ms-gateway-slice=corp; path=/; SameSite=None; secure; HttpOnly
-      - stsservicecookie=estscorp; path=/; SameSite=None; secure; HttpOnly
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ests-server:
-      - 2.1.10519.11 - SIN1 ProdSlices
+      - afbe1e12-8584-4dc5-aa1e-547e4b04d8ae
     status:
       code: 200
       message: OK
@@ -1520,7 +694,7 @@ interactions:
       accept-language:
       - en-US
     method: GET
-    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert?api-version=2019-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert?api-version=2019-05-01-preview
   response:
     body:
       string: '{"error":{"code":"EntityNotFound","message":"CertificateName ''test-cert''
@@ -1533,7 +707,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 May 2020 03:47:55 GMT
+      - Fri, 08 May 2020 05:02:54 GMT
       expires:
       - '-1'
       pragma:
@@ -1547,7 +721,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - 372f05f4-e2d6-4e6c-ad1d-1453ec46bb1d
+      - afbe1e12-8584-4dc5-aa1e-547e4b04d8ae
     status:
       code: 404
       message: Not Found
