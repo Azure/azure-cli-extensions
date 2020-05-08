@@ -76,3 +76,35 @@ def transform_spring_cloud_deployment_output(result):
         item['Registered Instance'] = "{}/{}".format(up_number, instance_count) if isStarted else "Stopped"
 
     return result if is_list else result[0]
+
+
+def transform_spring_cloud_certificate_output(result):
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    for item in result:
+        item['Certificate Name'] = item['properties']['keyVaultCertName']
+        item['Thumbprint'] = item['properties']['thumbprint']
+        item['Activate Date'] = item['properties']['activateDate'].split("T")[0]
+        item['Certificate Version'] = item['properties']['certVersion']
+        item['DNS Names'] = item['properties']['dnsNames']
+        item['Expiration Date'] = item['properties']['expirationDate'].split("T")[0]
+        item['Key Vault Uri'] = item['properties']['vaultUri']
+
+    return result if is_list else result[0]
+
+
+def transform_spring_cloud_custom_domain_output(result):
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    for item in result:
+        item['App Name'] = item['properties']["appName"]
+        item['Certificate Name'] = item['properties']['certName']
+        item['Thumbprint'] = item['properties']['thumbprint']
+
+    return result if is_list else result[0]

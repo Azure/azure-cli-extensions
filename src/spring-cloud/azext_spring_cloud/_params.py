@@ -47,8 +47,8 @@ def load_arguments(self, _):
             'is_public', arg_type=get_three_state_flag(), help='If true, assign public domain', default=False)
 
     with self.argument_context('spring-cloud app update') as c:
-        c.argument('is_public', arg_type=get_three_state_flag(),
-                   help='If true, assign public domain')
+        c.argument('is_public', arg_type=get_three_state_flag(), help='If true, assign endpoint')
+        c.argument('https_only', arg_type=get_three_state_flag(), help='If true, access app via https', default=False)
 
     for scope in ['spring-cloud app update', 'spring-cloud app start', 'spring-cloud app stop', 'spring-cloud app restart', 'spring-cloud app deploy', 'spring-cloud app scale', 'spring-cloud app set-deployment', 'spring-cloud app show-deploy-log']:
         with self.argument_context(scope) as c:
@@ -190,3 +190,22 @@ def load_arguments(self, _):
                    validator=validate_app_name)
         c.argument('deployment', options_list=[
             '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=validate_deployment_name)
+
+    with self.argument_context('spring-cloud certificate') as c:
+        c.argument('service', service_name_type)
+        c.argument('name', name_type, help='Name of certificate.')
+
+    with self.argument_context('spring-cloud certificate add') as c:
+        c.argument('vault_uri', help='The key vault uri where store the certificate')
+        c.argument('vault_certificate_name', help='The certificate name in key vault')
+
+    with self.argument_context('spring-cloud app custom-domain') as c:
+        c.argument('service', service_name_type)
+        c.argument('app', app_name_type, help='Name of app.', validator=validate_app_name)
+        c.argument('domain_name', help='Name of custom domain.')
+
+    with self.argument_context('spring-cloud app custom-domain bind') as c:
+        c.argument('certificate', type=str, help='Certificate name in Azure Spring Cloud.')
+
+    with self.argument_context('spring-cloud app custom-domain update') as c:
+        c.argument('certificate', help='Certificate name in Azure Spring Cloud.')
