@@ -317,12 +317,17 @@ helps['spring-cloud app binding redis update'] = """
     short-summary: Update an Azure Cache for Redis service binding of the app.
 """
 
+helps['spring-cloud certificate'] = """
+    type: group
+    short-summary: Commands to manage certificates.
+"""
+
 helps['spring-cloud certificate add'] = """
     type: command
     short-summary: Add a certificate in Azure Spring Cloud.
     examples:
     - name: Import certificate from key vault.
-      text: az spring-cloud certificate add --name MyCertName --vault-uri MyKeyVaultUri --vault-certificate-name MyKeyVaultCertName
+      text: az spring-cloud certificate add --name MyCertName --vault-uri MyKeyVaultUri --vault-certificate-name MyKeyVaultCertName --service MyCluster --resource-group MyResourceGroup
 """
 
 helps['spring-cloud certificate show'] = """
@@ -335,7 +340,7 @@ helps['spring-cloud certificate list'] = """
     short-summary: List all certificates in Azure Spring Cloud.
     examples:
     - name: List all certificates in spring cloud service.
-      text: az spring-cloud certificate list -o table
+      text: az spring-cloud certificate list --service MyCluster --resource-group MyResourceGroup -o table
 """
 
 helps['spring-cloud certificate remove'] = """
@@ -343,12 +348,17 @@ helps['spring-cloud certificate remove'] = """
     short-summary: Remove a certificate in Azure Spring Cloud.
 """
 
+helps['spring-cloud app custom-domain'] = """
+    type: group
+    short-summary: Commands to manage custom domains.
+"""
+
 helps['spring-cloud app custom-domain bind'] = """
     type: command
     short-summary: Bind a custom domain with the app.
     examples:
     - name: Bind a custom domain to app.
-      text: az spring-cloud app custom-domain bind --domain-name MyDomainName --certificate MyCertName> --app MyAppName
+      text: az spring-cloud app custom-domain bind --domain-name MyDomainName --certificate MyCertName --app MyAppName --service MyCluster --resource-group MyResourceGroup
 """
 
 helps['spring-cloud app custom-domain show'] = """
@@ -361,7 +371,7 @@ helps['spring-cloud app custom-domain list'] = """
     short-summary: List all custom domains of the app.
     examples:
     - name: List all custom domains of the app.
-      text: az spring-cloud app custom-domain list --app MyAppName -o table
+      text: az spring-cloud app custom-domain list --app MyAppName --service MyCluster --resource-group MyResourceGroup -o table
 """
 
 helps['spring-cloud app custom-domain update'] = """
@@ -369,7 +379,7 @@ helps['spring-cloud app custom-domain update'] = """
     short-summary: Update a custom domain of the app.
     examples:
     - name: Bind custom domain with a specified certificate.
-      text: az spring-cloud app custom-domain update --domain-name MyDomainName --certificate MCertName --app MyAppName
+      text: az spring-cloud app custom-domain update --domain-name MyDomainName --certificate MCertName --app MyAppName --service MyCluster --resource-group MyResourceGroup
 """
 
 helps['spring-cloud app custom-domain unbind'] = """
