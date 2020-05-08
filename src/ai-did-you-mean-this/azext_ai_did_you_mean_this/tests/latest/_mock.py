@@ -5,12 +5,12 @@
 
 import os
 import json
+import unittest.mock as mock
 from enum import Enum, auto
 from http import HTTPStatus
 from collections import namedtuple
 from contextlib import contextmanager
 
-import mock
 import requests
 
 from azext_ai_did_you_mean_this.failure_recovery_recommendation import FailureRecoveryRecommendation

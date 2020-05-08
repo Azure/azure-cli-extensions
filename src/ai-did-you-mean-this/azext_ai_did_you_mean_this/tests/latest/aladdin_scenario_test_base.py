@@ -5,7 +5,7 @@
 
 import re
 import logging
-import mock
+import unittest.mock as mock
 
 from azure_devtools.scenario_tests import mock_in_unit_test
 from azure.cli.testsdk import ScenarioTest

@@ -63,8 +63,10 @@ def normalize_and_sort_parameters(cmd_table, command, parameters):
         # TODO: Avoid setting rules for global parameters manually.
         rules = {
             '-h': '--help',
-            '--only-show-errors': None,
             '-o': '--output',
+            '--only-show-errors': None,
+            '--help': None,
+            '--output': None,
             '--query': None,
             '--debug': None,
             '--verbose': None

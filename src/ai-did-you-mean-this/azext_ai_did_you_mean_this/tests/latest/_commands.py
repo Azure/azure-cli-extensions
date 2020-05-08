@@ -56,8 +56,8 @@ AI_DID_YOU_MEAN_THIS_VERSION_ARGS = Arguments(
 )
 
 KUSTO_CLUSTER_CREATE_ARGS = Arguments(
-    actual=['-l', '-g', '-n', '--no-wait', '--capacity'],
-    expected=['--location', '--resource-group', '--name', '--no-wait', '--capacity']
+    actual=['-l', '-g', '--no-wait'],
+    expected=['--location', '--resource-group', '--no-wait']
 )
 
 

@@ -5,7 +5,7 @@
 
 import sys
 
-import colorama
+import colorama  # pylint: disable=import-error
 
 
 def style_message(msg):

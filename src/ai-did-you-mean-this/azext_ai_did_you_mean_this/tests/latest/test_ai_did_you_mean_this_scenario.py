@@ -5,11 +5,12 @@
 
 import os
 import unittest
-import mock
-import requests
+import unittest.mock as mock
 import json
 from http import HTTPStatus
 from collections import defaultdict
+
+import requests
 
 from azext_ai_did_you_mean_this.custom import call_aladdin_service, get_recommendations_from_http_response
 from azext_ai_did_you_mean_this._cmd_table import CommandTable
@@ -51,6 +52,10 @@ class AiDidYouMeanThisScenarioTest(AladdinScenarioTest):
 
     def test_ai_did_you_mean_this_recommendations_for_user_fault_commands(self):
         for command, entity in self.test_cases:
+            self.kwargs.update({
+                'ext': entity.extension
+            })
+
             args = entity.arguments
             command_with_args = command if not args else f'{command} {args}'
 
