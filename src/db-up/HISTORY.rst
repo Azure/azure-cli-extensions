@@ -3,6 +3,10 @@
  Release History
 ===============
 
+0.1.14 (2020-5-9)
+++++++++++++++++
+* Bump Cython, psycopg2-binary
+
 0.1.10 (2019-3-22)
 +++++++++++++++++
 * `az sql up/down/show-connection-string`.
