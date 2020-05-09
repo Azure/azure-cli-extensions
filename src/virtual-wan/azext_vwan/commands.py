@@ -17,21 +17,21 @@ from ._util import (
 def load_command_table(self, _):
 
     network_vhub_sdk = CliCommandType(
-        operations_tmpl='azext_vwan.vendored_sdks.v2019_09_01.operations#VirtualHubsOperations.{}',
+        operations_tmpl='azext_vwan.vendored_sdks.v2020_03_01.operations#VirtualHubsOperations.{}',
         client_factory=cf_virtual_hubs,
         resource_type=CUSTOM_VHUB_ROUTE_TABLE,
         min_api='2018-08-01'
     )
 
     network_vhub_route_table_sdk = CliCommandType(
-        operations_tmpl='azext_vwan.vendored_sdks.v2019_09_01.operations#VirtualHubRouteTableV2sOperations.{}',
+        operations_tmpl='azext_vwan.vendored_sdks.v2020_03_01.operations#VirtualHubRouteTableV2sOperations.{}',
         client_factory=cf_virtual_hub_route_table_v2s,
         resource_type=CUSTOM_VHUB_ROUTE_TABLE,
         min_api='2019-09-01'
     )
 
     network_vwan_sdk = CliCommandType(
-        operations_tmpl='azext_vwan.vendored_sdks.v2019_09_01.operations#VirtualWansOperations.{}',
+        operations_tmpl='azext_vwan.vendored_sdks.v2020_03_01.operations#VirtualWansOperations.{}',
         client_factory=cf_virtual_wans,
         resource_type=CUSTOM_VHUB_ROUTE_TABLE,
         min_api='2018-08-01'
