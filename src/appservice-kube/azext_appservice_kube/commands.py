@@ -73,6 +73,7 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_webapp', exception_handler=ex_handler_factory())
         g.custom_show_command('show', 'show_webapp', table_transformer=transform_web_output,
                               validator=validate_app_or_slot_exists_in_rg)
+        g.custom_command('up', 'webapp_up', exception_handler=ex_handler_factory())
 
     with self.command_group('functionapp') as g:
         g.custom_command('create', 'create_function', exception_handler=ex_handler_factory())

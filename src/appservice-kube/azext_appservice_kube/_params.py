@@ -65,6 +65,19 @@ def load_arguments(self, _):
         c.ignore('language')
         c.ignore('using_webapp_up')
 
+    with self.argument_context('webapp up') as c:
+        c.argument('name', arg_type=webapp_name_arg_type)
+        c.argument('plan', options_list=['--plan', '-p'], configured_default='appserviceplan',
+                   completer=get_resource_name_completion_list('Microsoft.Web/serverFarms'),
+                   help="name of the appserviceplan associated with the webapp")
+        c.argument('sku', arg_type=sku_arg_type)
+        c.argument('dryrun', help="show summary of the create and deploy operation instead of executing it", default=False, action='store_true')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx))
+        c.argument('launch_browser', help="Launch the created app using the default browser", default=False, action='store_true', options_list=['--launch-browser', '-b'])
+        c.argument('logs', help="Configure default logging required to enable viewing log stream immediately after launching the webapp", default=False, action='store_true')
+        c.argument('html', help="Ignore app detection and deploy as an html app", default=False, action='store_true')
+        c.argument('kube_environment', help="Name of the kube environment, if app is to be deployed to a k8 cluster", options_list=['--kube-environment', '-ke'])
+
     with self.argument_context('webapp show') as c:
         c.argument('name', arg_type=webapp_name_arg_type)
 
@@ -174,5 +187,5 @@ def load_arguments(self, _):
     with self.argument_context('appservice kube show') as c:
         c.argument('name', arg_type=name_arg_type, help='Name of the Kubernetes Environment.')
 
-    with self.argument_context('appservice kube wait') as c:
+    with self.argument_context('appservice kube waite') as c:
         c.argument('name', arg_type=name_arg_type, help='Name of the Kubernetes Environment.')

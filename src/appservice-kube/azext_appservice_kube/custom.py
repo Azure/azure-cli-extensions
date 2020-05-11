@@ -27,6 +27,8 @@ from azure.cli.core.commands import LongRunningOperation
 from azure.mgmt.storage import StorageManagementClient
 from azure.mgmt.applicationinsights import ApplicationInsightsManagementClient
 
+from azure.cli.core.util import get_az_user_agent
+
 from msrestazure.tools import is_valid_resource_id, parse_resource_id
 
 from six.moves.urllib.request import urlopen
@@ -39,7 +41,10 @@ from ._constants import (FUNCTIONS_VERSION_TO_DEFAULT_RUNTIME_VERSION, FUNCTIONS
 
 from ._utils import (_normalize_sku, get_sku_name, validate_subnet_id, _generic_site_operation,
                      _get_location_from_resource_group)
-
+from ._create_util import (zip_contents_from_dir, get_runtime_version_details, create_resource_group, get_app_details,
+                           should_create_new_rg, set_location, does_app_already_exist, get_profile_username,
+                           get_plan_to_use,get_kube_plan_to_use, get_lang_from_content, get_rg_to_use, get_sku_to_use,
+                           detect_os_form_src)
 from ._client_factory import web_client_factory, cf_kube_environments, ex_handler_factory
 from .vsts_cd_provider import VstsContinuousDeliveryProvider
 
@@ -342,6 +347,180 @@ def create_webapp(cmd, resource_group_name, name, plan, runtime=None, startup_fi
 
     return webapp
 
+def webapp_up(cmd, name, resource_group_name=None, plan=None, location=None, sku=None, dryrun=False, logs=False,  # pylint: disable=too-many-statements,
+        launch_browser=False, html=False, kube_environment=None, kube_environment_rg=None, kube_sku=KUBE_DEFAULT_SKU):
+    import os
+    is_kube = False
+    KubeEnvironmentProfile = cmd.get_models('KubeEnvironmentProfile')
+    if kube_environment is not None:
+        if resource_group_name is None:
+            raise CLIError("Must provide a resource group where Kube Environment '{}' exists".format(kube_id))
+        is_kube = True
+        kube_id = _resolve_kube_environment_id(cmd.cli_ctx, kube_environment, resource_group_name)
+        kube_def = KubeEnvironmentProfile(id=kube_id)
+        kind = KUBE_ASP_KIND
+        parsed_id = parse_resource_id(kube_id)
+        kube_name = parsed_id.get("name")
+        kube_rg = parsed_id.get("resource_group")
+        if kube_name is not None and kube_rg is not None:
+            kube_env = cf_kube_environments(cmd.cli_ctx).get(kube_rg, kube_name)
+            if kube_env is not None and  kube_env.location is not None:
+                location = kube_env.location.replace(" ", "")
+            else:
+                raise CLIError("Kube Environment '{}' not found in subscription.".format(kube_id))
+    #AppServicePlan = cmd.get_models('AppServicePlan')
+    src_dir = os.getcwd()
+    _src_path_escaped = "{}".format(src_dir.replace(os.sep, os.sep + os.sep))
+    client = web_client_factory(cmd.cli_ctx)
+    user = get_profile_username()
+    _create_new_rg = False
+    _create_new_app = does_app_already_exist(cmd, name)
+    os_name = detect_os_form_src(src_dir, html)
+    lang_details = get_lang_from_content(src_dir, html)
+    language = lang_details.get('language')
+    # detect the version
+    data = get_runtime_version_details(lang_details.get('file_loc'), language, is_kube)
+    version_used_create = data.get('to_create')
+    detected_version = data.get('detected')
+    runtime_version = "{}|{}".format(language, version_used_create) if \
+        version_used_create != "-" else version_used_create
+    site_config = None
+    if not _create_new_app:  # App exists
+        # Get the ASP & RG info, if the ASP & RG parameters are provided we use those else we need to find those
+        logger.warning("Webapp %s already exists. The command will deploy contents to the existing app.", name)
+        app_details = get_app_details(cmd, name)
+        if app_details is None:
+            raise CLIError("Unable to retrieve details of the existing app {}. Please check that the app is a part of "
+                           "the current subscription".format(name))
+        current_rg = app_details.resource_group
+        if resource_group_name is not None and (resource_group_name.lower() != current_rg.lower()):
+            raise CLIError("The webapp {} exists in ResourceGroup {} and does not match the value entered {}. Please "
+                           "re-run command with the correct parameters.". format(name, current_rg, resource_group_name))
+        rg_name = resource_group_name or current_rg
+        if location is None:
+            loc = app_details.location.replace(" ", "").lower()
+        else:
+            loc = location.replace(" ", "").lower()
+        plan_details = parse_resource_id(app_details.server_farm_id)
+        current_plan = plan_details['name']
+        if plan is not None and current_plan.lower() != plan.lower():
+            raise CLIError("The plan name entered {} does not match the plan name that the webapp is hosted in {}."
+                           "Please check if you have configured defaults for plan name and re-run command."
+                           .format(plan, current_plan))
+        plan = plan or plan_details['name']
+        plan_info = client.app_service_plans.get(rg_name, plan)
+        sku = plan_info.sku.name if isinstance(plan_info, AppServicePlan) else 'Free'
+        current_os = 'Linux' if plan_info.reserved else 'Windows'
+        # Raise error if current OS of the app is different from the current one
+        if current_os.lower() != os_name.lower():
+            raise CLIError("The webapp {} is a {} app. The code detected at '{}' will default to "
+                           "'{}'. "
+                           "Please create a new app to continue this operation.".format(name, current_os, src_dir, os))
+        _is_linux = plan_info.reserved
+        # for an existing app check if the runtime version needs to be updated
+        # Get site config to check the runtime version
+        site_config = client.web_apps.get_configuration(rg_name, name)
+    else:  # need to create new app, check if we need to use default RG or use user entered values
+        logger.warning("webapp %s doesn't exist", name)
+        sku = ""
+        if is_kube:
+            sku = kube_sku
+            loc = location
+            rg_name = kube_rg
+            _create_new_rg = False
+            _is_linux = False
+            plan = get_kube_plan_to_use(cmd, kube_environment, loc, sku, rg_name, _create_new_rg, plan)
+            sku_name = kube_sku
+        else:
+            sku = get_sku_to_use(src_dir, html, sku)
+            loc = set_location(cmd, sku, location)
+            rg_name = get_rg_to_use(cmd, user, loc, os_name, resource_group_name)
+            _is_linux = os_name.lower() == 'linux'
+            _create_new_rg = should_create_new_rg(cmd, rg_name, _is_linux)
+            sku_name = get_sku_name(sku)
+            plan = get_plan_to_use(cmd, user, os_name, loc, sku_name, rg_name, _create_new_rg, plan)
+    dry_run_str = r""" {
+                "name" : "%s",
+                "appserviceplan" : "%s",
+                "resourcegroup" : "%s",
+                "sku": "%s",
+                "os": "%s",
+                "location" : "%s",
+                "src_path" : "%s",
+                "runtime_version_detected": "%s",
+                "runtime_version": "%s"
+                }
+                """ % (name, plan, rg_name, sku_name, os_name, loc, _src_path_escaped, detected_version,
+                       runtime_version)
+    create_json = json.loads(dry_run_str)
+
+    if dryrun:
+        logger.warning("Web app will be created with the below configuration,re-run command "
+                       "without the --dryrun flag to create & deploy a new app")
+        return create_json
+    if _create_new_rg:
+        logger.warning("Creating Resource group '%s' ...", rg_name)
+        create_resource_group(cmd, rg_name, location)
+        logger.warning("Resource group creation complete")
+        # create ASP
+        logger.warning("Creating AppServicePlan '%s' ...", plan)
+    if is_kube:
+        logger.warning("Creating AppServicePlan '%s' with 1 instance count on kube cluster '%s' ...", plan, kube_environment)
+    else:
+        logger.warning("Creating AppServicePlan '%s' ...", plan)
+    # we will always call the ASP create or update API so that in case of re-deployment, if the SKU or plan setting are
+    # updated we update those
+    create_app_service_plan(cmd, rg_name, plan, _is_linux, hyper_v=False, per_site_scaling=False, sku=sku,
+                            number_of_workers=1 if _is_linux else None, location=location, kube_environment=kube_environment)
+    logger.warning("Successfully AppServicePlan '%s' ...", plan)
+    if _create_new_app:
+        logger.warning("Creating webapp '%s' ...", name)
+        create_webapp(cmd, rg_name, name, plan, runtime_version if _is_linux or is_kube else None,
+                      using_webapp_up=True, language=language)
+        if not is_kube:
+            _configure_default_logging(cmd, rg_name, name)
+        else:
+            logger.warning("Successfully App '%s' on Kube Cluster '%s'...", plan, kube_environment)
+    else:  # for existing app if we might need to update the stack runtime settings
+        if os_name.lower() == 'linux' and site_config.linux_fx_version != runtime_version:
+            logger.warning('Updating runtime version from %s to %s',
+                           site_config.linux_fx_version, runtime_version)
+            update_site_configs(cmd, rg_name, name, linux_fx_version=runtime_version)
+        elif os_name.lower() == 'windows' and site_config.windows_fx_version != runtime_version:
+            logger.warning('Updating runtime version from %s to %s',
+                           site_config.windows_fx_version, runtime_version)
+            update_site_configs(cmd, rg_name, name, windows_fx_version=runtime_version)
+        create_json['runtime_version'] = runtime_version
+    # Zip contents & Deploy
+    logger.warning("Creating zip with contents of dir %s ...", src_dir)
+    # zip contents & deploy
+    zip_file_path = zip_contents_from_dir(src_dir, language, is_kube)
+    enable_zip_deploy(cmd, rg_name, name, zip_file_path)
+    # Remove the file after deployment, handling exception if user removed the file manually
+    try:
+        os.remove(zip_file_path)
+    except OSError:
+        pass
+
+    if launch_browser:
+        logger.warning("Launching app using default browser")
+        view_in_browser(cmd, rg_name, name, None, logs)
+    else:
+        _url = _get_url(cmd, rg_name, name)
+        logger.warning("You can launch the app at %s", _url)
+        create_json.update({'URL': _url})
+    if logs:
+        if not is_kube:
+            _configure_default_logging(cmd, rg_name, name)
+        return get_streaming_log(cmd, rg_name, name)
+    if not is_kube:
+        with ConfiguredDefaultSetter(cmd.cli_ctx.config, True):
+            cmd.cli_ctx.config.set_value('defaults', 'group', rg_name)
+            cmd.cli_ctx.config.set_value('defaults', 'sku', sku)
+            cmd.cli_ctx.config.set_value('defaults', 'appserviceplan', plan)
+            cmd.cli_ctx.config.set_value('defaults', 'location', loc)
+            cmd.cli_ctx.config.set_value('defaults', 'web', name)
+    return create_json
 
 def show_webapp(cmd, resource_group_name, name, slot=None, app_instance=None):
     webapp = app_instance
@@ -407,12 +586,12 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None,
         is_linux = plan_info.reserved
         functionapp_def.server_farm_id = plan
         functionapp_def.location = location
-
     is_kube = False
     if plan_info.kind.upper() == KUBE_ASP_KIND:
         is_kube = True
 
     if is_kube:
+        functionapp_def.server_farm_id = plan_info.id
         if min_worker_count is not None:
             site_config.number_of_workers = min_worker_count
 
@@ -476,7 +655,7 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None,
             site_config.linux_fx_version = _get_linux_fx_functionapp(functions_version, runtime, runtime_version)
     elif is_kube:
         functionapp_def.kind = 'kubeapp,functionapp,linux'
-        functionapp_def.reserved = True
+        functionapp_def.reserved = False
         site_config.app_settings.append(NameValuePair(name='WEBSITES_PORT', value='80'))
         site_config.app_settings.append(NameValuePair(name='MACHINEKEY_DecryptionKey',
                                                       value=str(hexlify(urandom(32)).decode()).upper()))
@@ -1233,12 +1412,99 @@ def _build_app_settings_output(app_settings, slot_cfg_names):
              'value': app_settings[p],
              'slotSetting': p in slot_cfg_names} for p in _mask_creds_related_appsettings(app_settings)]
 
-
 def _rename_server_farm_props(webapp):
     # Should be renamed in SDK in a future release
     setattr(webapp, 'app_service_plan_id', webapp.server_farm_id)
     del webapp.server_farm_id
     return webapp
+
+
+def enable_zip_deploy(cmd, resource_group_name, name, src, timeout=None, slot=None):
+    logger.warning("Getting scm site credentials for zip deployment")
+    user_name, password = _get_site_credential(cmd.cli_ctx, resource_group_name, name, slot)
+
+    try:
+        scm_url = _get_scm_url(cmd, resource_group_name, name, slot)
+    except ValueError:
+        raise CLIError('Failed to fetch scm url for function app')
+
+    zip_url = scm_url + '/api/zipdeploy?isAsync=true'
+    deployment_status_url = scm_url + '/api/deployments/latest'
+
+    import urllib3
+    authorization = urllib3.util.make_headers(basic_auth='{0}:{1}'.format(user_name, password))
+    headers = authorization
+    headers['Content-Type'] = 'application/octet-stream'
+    headers['Cache-Control'] = 'no-cache'
+    headers['User-Agent'] = get_az_user_agent()
+    print(headers['User-Agent'])
+    import requests
+    import os
+    from azure.cli.core.util import should_disable_connection_verify
+    # Read file content
+    with open(os.path.realpath(os.path.expanduser(src)), 'rb') as fs:
+        zip_content = fs.read()
+        logger.warning("Starting zip deployment. This operation can take a while to complete ...")
+        res = requests.post(zip_url, data=zip_content, headers=headers, verify=not should_disable_connection_verify())
+        logger.warning("Deployment endpoint responded with status code %d", res.status_code)
+
+    # check if there's an ongoing process
+    if res.status_code == 409:
+        raise CLIError("There may be an ongoing deployment or your app setting has WEBSITE_RUN_FROM_PACKAGE. "
+                       "Please track your deployment in {} and ensure the WEBSITE_RUN_FROM_PACKAGE app setting "
+                       "is removed.".format(deployment_status_url))
+
+    # check the status of async deployment
+    response = _check_zip_deployment_status(cmd, resource_group_name, name, deployment_status_url,
+                                            authorization, timeout)
+    return response
+
+
+def _get_scm_url(cmd, resource_group_name, name, slot=None):
+    from azure.mgmt.web.models import HostType
+    webapp = show_webapp(cmd, resource_group_name, name, slot=slot)
+    for host in webapp.host_name_ssl_states or []:
+        if host.host_type == HostType.repository:
+            return "https://{}".format(host.name)
+
+
+def _get_site_credential(cli_ctx, resource_group_name, name, slot=None):
+    creds = _generic_site_operation(cli_ctx, resource_group_name, name, 'list_publishing_credentials', slot)
+    creds = creds.result()
+    return (creds.publishing_user_name, creds.publishing_password)
+
+
+def _check_zip_deployment_status(cmd, rg_name, name, deployment_status_url, authorization, timeout=None):
+    import requests
+    from azure.cli.core.util import should_disable_connection_verify
+    total_trials = (int(timeout) // 2) if timeout else 450
+    num_trials = 0
+    while num_trials < total_trials:
+        time.sleep(2)
+        response = requests.get(deployment_status_url, headers=authorization,
+                                verify=not should_disable_connection_verify())
+        try:
+            res_dict = response.json()
+        except json.decoder.JSONDecodeError:
+            logger.warning("Deployment status endpoint %s returns malformed data. Retrying...", deployment_status_url)
+            res_dict = {}
+        finally:
+            num_trials = num_trials + 1
+
+        if res_dict.get('status', 0) == 3:
+            _configure_default_logging(cmd, rg_name, name)
+            raise CLIError("""Zip deployment failed. {}. Please run the command az webapp log tail
+                           -n {} -g {}""".format(res_dict, name, rg_name))
+        if res_dict.get('status', 0) == 4:
+            break
+        if 'progress' in res_dict:
+            logger.info(res_dict['progress'])  # show only in debug mode, customers seem to find this confusing
+    # if the deployment is taking longer than expected
+    if res_dict.get('status', 0) != 4:
+        _configure_default_logging(cmd, rg_name, name)
+        raise CLIError("""Timeout reached by the command, however, the deployment operation
+                       is still on-going. Navigate to your scm site to check the deployment status""")
+    return res_dict
 
 
 def _fill_ftp_publishing_url(cmd, webapp, resource_group_name, name, slot=None):
@@ -1247,6 +1513,15 @@ def _fill_ftp_publishing_url(cmd, webapp, resource_group_name, name, slot=None):
     setattr(webapp, 'ftpPublishingUrl', url)
     return webapp
 
+def _get_url(cmd, resource_group_name, name, slot=None):
+    SslState = cmd.get_models('SslState')
+    site = _generic_site_operation(cmd.cli_ctx, resource_group_name, name, 'get', slot)
+    if not site:
+        raise CLIError("'{}' app doesn't exist".format(name))
+    url = site.enabled_host_names[0]  # picks the custom domain URL incase a domain is assigned
+    ssl_host = next((h for h in site.host_name_ssl_states
+                     if h.ssl_state != SslState.disabled), None)
+    return ('https' if ssl_host else 'http') + '://' + url
 
 # help class handles runtime stack in format like 'node|6.1', 'php|5.5'
 class _StackRuntimeHelper(object):
