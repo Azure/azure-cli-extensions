@@ -4,13 +4,20 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+import re
 import json
 import zipfile
-from wheel.install import WHEEL_INFO_RE
 
 # Dependencies that will not be checked.
 # This is for packages starting with 'azure-' but do not use the 'azure' namespace.
 SKIP_DEP_CHECK = ['azure-batch-extensions']
+
+# copy from wheel==0.30.0
+WHEEL_INFO_RE = re.compile(
+    r"""^(?P<namever>(?P<name>.+?)(-(?P<ver>\d.+?))?)
+    ((-(?P<build>\d.*?))?-(?P<pyver>.+?)-(?P<abi>.+?)-(?P<plat>.+?)
+    \.whl|\.dist-info)$""",
+    re.VERBOSE).match
 
 
 def get_repo_root():
