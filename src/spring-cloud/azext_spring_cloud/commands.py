@@ -6,7 +6,10 @@
 # pylint: disable=line-too-long
 from ._client_factory import (cf_app_services, cf_spring_cloud, cf_bindings)
 from ._transformers import (transform_spring_cloud_table_output,
-                            transform_app_table_output, transform_spring_cloud_deployment_output)
+                            transform_app_table_output,
+                            transform_spring_cloud_deployment_output,
+                            transform_spring_cloud_certificate_output,
+                            transform_spring_cloud_custom_domain_output)
 
 
 # pylint: disable=too-many-statements
@@ -80,6 +83,19 @@ def load_command_table(self, _):
         g.custom_command('redis add', 'binding_redis_add')
         g.custom_command('redis update', 'binding_redis_update')
         g.custom_show_command('remove', 'binding_remove')
+
+    with self.command_group('spring-cloud certificate', client_factory=cf_spring_cloud) as g:
+        g.custom_command('add', 'certificate_add')
+        g.custom_show_command('show', 'certificate_show', table_transformer=transform_spring_cloud_certificate_output)
+        g.custom_command('list', 'certificate_list', table_transformer=transform_spring_cloud_certificate_output)
+        g.custom_command('remove', 'certificate_remove')
+
+    with self.command_group('spring-cloud app custom-domain', client_factory=cf_spring_cloud) as g:
+        g.custom_command('bind', 'domain_bind')
+        g.custom_show_command('show', 'domain_show', table_transformer=transform_spring_cloud_custom_domain_output)
+        g.custom_command('list', 'domain_list', table_transformer=transform_spring_cloud_custom_domain_output)
+        g.custom_command('update', 'domain_update')
+        g.custom_command('unbind', 'domain_unbind')
 
     with self.command_group('spring-cloud', is_preview=True):
         pass

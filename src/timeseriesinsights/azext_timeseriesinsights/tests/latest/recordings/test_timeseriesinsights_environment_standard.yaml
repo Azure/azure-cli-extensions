@@ -1,0 +1,615 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - timeseriesinsights environment standard create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --sku-name --sku-capacity --data-retention-time --partition-key-properties
+        --storage-limit-exceeded-behavior
+      User-Agent:
+      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-resource/9.0.0 Azure-SDK-For-Python AZURECLI/2.4.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_timeseriesinsights000001?api-version=2019-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights000001","name":"cli_test_timeseriesinsights000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2020-04-23T08:52:27Z","StorageType":"Standard_LRS","type":"test"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '471'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 23 Apr 2020 08:52:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus", "sku": {"name": "S1", "capacity": 1}, "kind": "Standard",
+      "properties": {"dataRetentionTime": "P7D", "storageLimitExceededBehavior": "PauseIngress",
+      "partitionKeyProperties": [{"name": "DeviceId1", "type": "String"}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - timeseriesinsights environment standard create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '241'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --sku-name --sku-capacity --data-retention-time --partition-key-properties
+        --storage-limit-exceeded-behavior
+      User-Agent:
+      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-timeseriesinsights/0.2.0 Azure-SDK-For-Python AZURECLI/2.4.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002?api-version=2018-08-15-preview
+  response:
+    body:
+      string: '{"sku":{"name":"S1","capacity":1},"kind":"Standard","location":"westus","tags":null,"properties":{"dataRetentionTime":"P7D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2020-04-23T08:52:48+00:00","provisioningState":"Accepted","dataAccessId":"62ae24e5-6a5e-4752-945f-1dc74218f1fd","dataAccessFqdn":"62ae24e5-6a5e-4752-945f-1dc74218f1fd.env.timeseries.azure.com","requestApiVersion":"2018-08-15-preview"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002","name":"cli-test-tsi-env000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '797'
+      content-type:
+      - application/json
+      date:
+      - Thu, 23 Apr 2020 08:52:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - timeseriesinsights environment standard create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --sku-name --sku-capacity --data-retention-time --partition-key-properties
+        --storage-limit-exceeded-behavior
+      User-Agent:
+      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-timeseriesinsights/0.2.0 Azure-SDK-For-Python AZURECLI/2.4.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002?api-version=2018-08-15-preview
+  response:
+    body:
+      string: '{"sku":{"name":"S1","capacity":1},"kind":"Standard","location":"westus","tags":null,"properties":{"dataRetentionTime":"P7D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"Thu,
+        23 Apr 2020 08:52:48 GMT","provisioningState":"Creating","requestApiVersion":"2018-08-15-preview","dataAccessId":"62ae24e5-6a5e-4752-945f-1dc74218f1fd","dataAccessFqdn":"62ae24e5-6a5e-4752-945f-1dc74218f1fd.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002","name":"cli-test-tsi-env000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '801'
+      content-type:
+      - application/json
+      date:
+      - Thu, 23 Apr 2020 08:53:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - timeseriesinsights environment standard create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --sku-name --sku-capacity --data-retention-time --partition-key-properties
+        --storage-limit-exceeded-behavior
+      User-Agent:
+      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-timeseriesinsights/0.2.0 Azure-SDK-For-Python AZURECLI/2.4.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002?api-version=2018-08-15-preview
+  response:
+    body:
+      string: '{"sku":{"name":"S1","capacity":1},"kind":"Standard","location":"westus","tags":null,"properties":{"dataRetentionTime":"P7D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"Thu,
+        23 Apr 2020 08:52:48 GMT","provisioningState":"Succeeded","requestApiVersion":"2018-08-15-preview","dataAccessId":"62ae24e5-6a5e-4752-945f-1dc74218f1fd","dataAccessFqdn":"62ae24e5-6a5e-4752-945f-1dc74218f1fd.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002","name":"cli-test-tsi-env000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '802'
+      content-type:
+      - application/json
+      date:
+      - Thu, 23 Apr 2020 08:53:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"sku": {"name": "S1", "capacity": 2}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - timeseriesinsights environment standard update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '38'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --sku-name --sku-capacity
+      User-Agent:
+      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-timeseriesinsights/0.2.0 Azure-SDK-For-Python AZURECLI/2.4.0
+      accept-language:
+      - en-US
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002?api-version=2018-08-15-preview
+  response:
+    body:
+      string: '{"sku":{"name":"S1","capacity":2},"kind":"Standard","location":"westus","tags":{},"properties":{"dataRetentionTime":"P7D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"Thu,
+        23 Apr 2020 08:52:48 GMT","provisioningState":"Succeeded","requestApiVersion":"2018-08-15-preview","dataAccessId":"62ae24e5-6a5e-4752-945f-1dc74218f1fd","dataAccessFqdn":"62ae24e5-6a5e-4752-945f-1dc74218f1fd.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002","name":"cli-test-tsi-env000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '800'
+      content-type:
+      - application/json
+      date:
+      - Thu, 23 Apr 2020 08:54:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1193'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"dataRetentionTime": "P8D"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - timeseriesinsights environment standard update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '44'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --data-retention-time
+      User-Agent:
+      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-timeseriesinsights/0.2.0 Azure-SDK-For-Python AZURECLI/2.4.0
+      accept-language:
+      - en-US
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002?api-version=2018-08-15-preview
+  response:
+    body:
+      string: '{"sku":{"name":"S1","capacity":2},"kind":"Standard","location":"westus","tags":{},"properties":{"dataRetentionTime":"P8D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"Thu,
+        23 Apr 2020 08:52:48 GMT","provisioningState":"Succeeded","requestApiVersion":"2018-08-15-preview","dataAccessId":"62ae24e5-6a5e-4752-945f-1dc74218f1fd","dataAccessFqdn":"62ae24e5-6a5e-4752-945f-1dc74218f1fd.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002","name":"cli-test-tsi-env000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '800'
+      content-type:
+      - application/json
+      date:
+      - Thu, 23 Apr 2020 08:54:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1189'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"storageLimitExceededBehavior": "PurgeOldData"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - timeseriesinsights environment standard update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '64'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --storage-limit-exceeded-behavior
+      User-Agent:
+      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-timeseriesinsights/0.2.0 Azure-SDK-For-Python AZURECLI/2.4.0
+      accept-language:
+      - en-US
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002?api-version=2018-08-15-preview
+  response:
+    body:
+      string: '{"sku":{"name":"S1","capacity":2},"kind":"Standard","location":"westus","tags":{},"properties":{"dataRetentionTime":"P8D","storageLimitExceededBehavior":"PurgeOldData","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"Thu,
+        23 Apr 2020 08:52:48 GMT","provisioningState":"Succeeded","requestApiVersion":"2018-08-15-preview","dataAccessId":"62ae24e5-6a5e-4752-945f-1dc74218f1fd","dataAccessFqdn":"62ae24e5-6a5e-4752-945f-1dc74218f1fd.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002","name":"cli-test-tsi-env000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '800'
+      content-type:
+      - application/json
+      date:
+      - Thu, 23 Apr 2020 08:54:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1196'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - timeseriesinsights environment show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name
+      User-Agent:
+      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-timeseriesinsights/0.2.0 Azure-SDK-For-Python AZURECLI/2.4.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002?api-version=2018-08-15-preview
+  response:
+    body:
+      string: '{"sku":{"name":"S1","capacity":2},"kind":"Standard","location":"westus","tags":{},"properties":{"dataRetentionTime":"P8D","storageLimitExceededBehavior":"PurgeOldData","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"Thu,
+        23 Apr 2020 08:52:48 GMT","provisioningState":"Succeeded","requestApiVersion":"2018-08-15-preview","dataAccessId":"62ae24e5-6a5e-4752-945f-1dc74218f1fd","dataAccessFqdn":"62ae24e5-6a5e-4752-945f-1dc74218f1fd.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002","name":"cli-test-tsi-env000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '800'
+      content-type:
+      - application/json
+      date:
+      - Thu, 23 Apr 2020 08:54:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - timeseriesinsights environment list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-timeseriesinsights/0.2.0 Azure-SDK-For-Python AZURECLI/2.4.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights000001/providers/Microsoft.TimeSeriesInsights/environments?api-version=2018-08-15-preview
+  response:
+    body:
+      string: '{"value":[{"sku":{"name":"S1","capacity":2},"kind":"Standard","location":"westus","tags":{},"properties":{"dataRetentionTime":"P8D","storageLimitExceededBehavior":"PurgeOldData","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"Thu,
+        23 Apr 2020 08:52:48 GMT","provisioningState":"Succeeded","requestApiVersion":"2018-08-15-preview","dataAccessId":"62ae24e5-6a5e-4752-945f-1dc74218f1fd","dataAccessFqdn":"62ae24e5-6a5e-4752-945f-1dc74218f1fd.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002","name":"cli-test-tsi-env000002","type":"Microsoft.TimeSeriesInsights/Environments"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '812'
+      content-type:
+      - application/json
+      date:
+      - Thu, 23 Apr 2020 08:54:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - timeseriesinsights environment list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-timeseriesinsights/0.2.0 Azure-SDK-For-Python AZURECLI/2.4.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.TimeSeriesInsights/environments?api-version=2018-08-15-preview
+  response:
+    body:
+      string: '{"value":[{"sku":{"name":"S1","capacity":1},"kind":"Standard","location":"westus","tags":null,"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"Thu,
+        23 Apr 2020 08:52:42 GMT","provisioningState":"Succeeded","requestApiVersion":"2018-08-15-preview","dataAccessId":"c72de72b-1e7e-437a-b889-28db0873600b","dataAccessFqdn":"c72de72b-1e7e-437a-b889-28db0873600b.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights2oiftej3hx5342cijs7v7cjogck3zpitrefknndb425ds5ty/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-enve5dpsot4","name":"cli-test-tsi-enve5dpsot4","type":"Microsoft.TimeSeriesInsights/Environments"},{"sku":{"name":"L1","capacity":1},"kind":"LongTerm","location":"WestUs","tags":{},"properties":{"timeSeriesIdProperties":[{"name":"[''DeviceId1'']","type":"String"}],"storageConfiguration":{"accountName":"jlst0423"},"warmStoreConfiguration":{"dataRetention":"P12D"},"creationTime":"Thu,
+        23 Apr 2020 07:31:28 GMT","provisioningState":"Succeeded","requestApiVersion":"2018-08-15-preview","dataAccessId":"7edc94e2-0d50-45ec-87f0-8581f9fdb896","dataAccessFqdn":"7edc94e2-0d50-45ec-87f0-8581f9fdb896.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.TimeSeriesInsights/environments/env2","name":"env2","type":"Microsoft.TimeSeriesInsights/Environments"},{"sku":{"name":"S1","capacity":1},"kind":"Standard","location":"westus","tags":null,"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"Thu,
+        23 Apr 2020 08:52:40 GMT","provisioningState":"Deleting","requestApiVersion":"2018-08-15-preview","dataAccessId":"def09b9c-9580-41a8-b1e1-d74e50d8d85a","dataAccessFqdn":"def09b9c-9580-41a8-b1e1-d74e50d8d85a.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsightsq2yvggz3wbrhaaimlkvs4pxaodgoxddp7xdsnv4c2ku5sc6x/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-enviwayt2td","name":"cli-test-tsi-enviwayt2td","type":"Microsoft.TimeSeriesInsights/Environments"},{"sku":{"name":"L1","capacity":1},"kind":"LongTerm","location":"westus","tags":null,"properties":{"timeSeriesIdProperties":[{"name":"[''DeviceId1'']","type":"String"}],"storageConfiguration":{"accountName":"clitesti77jqi5ajd6qf26ih"},"warmStoreConfiguration":{"dataRetention":"P7D"},"creationTime":"Thu,
+        23 Apr 2020 08:15:51 GMT","provisioningState":"Succeeded","requestApiVersion":"2018-08-15-preview","dataAccessId":"b7940864-a0c6-49f3-97f0-2f97a92029f1","dataAccessFqdn":"b7940864-a0c6-49f3-97f0-2f97a92029f1.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsightslqf77dpmzjutptzaamy3njmq2em5vzikcppxdp4xv3yzg52h/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-envkatcjyef","name":"cli-test-tsi-envkatcjyef","type":"Microsoft.TimeSeriesInsights/Environments"},{"sku":{"name":"S1","capacity":1},"kind":"Standard","location":"westus","tags":null,"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"Thu,
+        23 Apr 2020 08:52:45 GMT","provisioningState":"Succeeded","requestApiVersion":"2018-08-15-preview","dataAccessId":"19d80b62-5ad8-413d-b006-9a81ba3dd670","dataAccessFqdn":"19d80b62-5ad8-413d-b006-9a81ba3dd670.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsightsykcxb7ztbepz3cbrz62whynq3mxbkltafzns3znlvb5q6v2e/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-envmy2ib4my","name":"cli-test-tsi-envmy2ib4my","type":"Microsoft.TimeSeriesInsights/Environments"},{"sku":{"name":"S1","capacity":2},"kind":"Standard","location":"westus","tags":{},"properties":{"dataRetentionTime":"P8D","storageLimitExceededBehavior":"PurgeOldData","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"Thu,
+        23 Apr 2020 08:52:48 GMT","provisioningState":"Succeeded","requestApiVersion":"2018-08-15-preview","dataAccessId":"62ae24e5-6a5e-4752-945f-1dc74218f1fd","dataAccessFqdn":"62ae24e5-6a5e-4752-945f-1dc74218f1fd.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002","name":"cli-test-tsi-env000002","type":"Microsoft.TimeSeriesInsights/Environments"},{"sku":{"name":"S1","capacity":1},"kind":"Standard","location":"westus","tags":null,"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"Thu,
+        23 Apr 2020 08:52:52 GMT","provisioningState":"Succeeded","requestApiVersion":"2018-08-15-preview","dataAccessId":"e366c607-9592-48f9-9f57-c274fd9787df","dataAccessFqdn":"e366c607-9592-48f9-9f57-c274fd9787df.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights6sqryqtjaivs76kpg4o4jrz7swfdygumzpyic7illekv6j5d/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-envkvpwo2pu","name":"cli-test-tsi-envkvpwo2pu","type":"Microsoft.TimeSeriesInsights/Environments"},{"sku":{"name":"L1","capacity":1},"kind":"LongTerm","location":"westus","tags":null,"properties":{"timeSeriesIdProperties":[{"name":"[''DeviceId1'']","type":"String"}],"storageConfiguration":{"accountName":"clitest7rfijel6fwut5i5pu"},"warmStoreConfiguration":{"dataRetention":"P7D"},"creationTime":"Thu,
+        23 Apr 2020 08:53:07 GMT","provisioningState":"Succeeded","requestApiVersion":"2018-08-15-preview","dataAccessId":"27230d72-77ee-4156-aa4a-43b545cc2504","dataAccessFqdn":"27230d72-77ee-4156-aa4a-43b545cc2504.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsightsq2vksngavqljrt5cw4eqq4kppsqha6q6co7anboikjdobqyl/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env6qb4o6ft","name":"cli-test-tsi-env6qb4o6ft","type":"Microsoft.TimeSeriesInsights/Environments"},{"sku":{"name":"S1","capacity":1},"kind":"Standard","location":"westus2","tags":null,"properties":{"dataRetentionTime":"P7D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"Thu,
+        23 Apr 2020 07:17:29 GMT","provisioningState":"Succeeded","requestApiVersion":"2018-08-15-preview","dataAccessId":"b5a60b17-e0a7-4e3a-87f7-cf48569e7eb9","dataAccessFqdn":"b5a60b17-e0a7-4e3a-87f7-cf48569e7eb9.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.TimeSeriesInsights/environments/env1","name":"env1","type":"Microsoft.TimeSeriesInsights/Environments"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '7140'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 23 Apr 2020 08:54:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 4e81e23e-97dd-4478-82fd-9d5391fd2120
+      - 185cfc4a-c8f8-478c-8489-4856a1b327e8
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - timeseriesinsights environment delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --name
+      User-Agent:
+      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-timeseriesinsights/0.2.0 Azure-SDK-For-Python AZURECLI/2.4.0
+      accept-language:
+      - en-US
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002?api-version=2018-08-15-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Thu, 23 Apr 2020 08:54:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - timeseriesinsights environment list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
+        azure-mgmt-timeseriesinsights/0.2.0 Azure-SDK-For-Python AZURECLI/2.4.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights000001/providers/Microsoft.TimeSeriesInsights/environments?api-version=2018-08-15-preview
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 23 Apr 2020 08:54:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

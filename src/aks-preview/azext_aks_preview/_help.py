@@ -181,10 +181,10 @@ helps['aks create'] = """
           long-summary: If specified, please make sure the kubernetes version is larger than 1.10.6.
         - name: --min-count
           type: int
-          short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100].
+          short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100].
         - name: --max-count
           type: int
-          short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100].
+          short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100].
         - name: --cluster-autoscaler-profile
           type: list
           short-summary: Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.
@@ -199,13 +199,16 @@ helps['aks create'] = """
           short-summary: The node resource group is the resource group where all customer's resources will be created in, such as virtual machines.
         - name: --uptime-sla
           type: bool
-          short-summary: Enable paid managed cluster service with high availability.
+          short-summary: Enable a paid managed cluster service with a financially backed SLA.
         - name: --attach-acr
           type: string
           short-summary: Grant the 'acrpull' role assignment to the ACR specified by name or resource ID.
         - name: --enable-private-cluster
           type: string
           short-summary: Enable private cluster.
+        - name: --enable-node-public-ip
+          type: bool
+          short-summary: Enable VMSS node public IP.
         - name: --enable-managed-identity
           type: bool
           short-summary: (PREVIEW) Using a system assigned managed identity to manage cluster resource group.
@@ -304,10 +307,10 @@ helps['aks update'] = """
           short-summary: Update min-count or max-count for cluster autoscaler.
         - name: --min-count
           type: int
-          short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100]
+          short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100]
         - name: --max-count
           type: int
-          short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100]
+          short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100]
         - name: --cluster-autoscaler-profile
           type: list
           short-summary: Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.
@@ -483,10 +486,10 @@ helps['aks nodepool add'] = """
           short-summary: Enable cluster autoscaler.
         - name: --min-count
           type: int
-          short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100]
+          short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100]
         - name: --max-count
           type: int
-          short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100]
+          short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100]
         - name: --node-taints
           type: string
           short-summary: The node taints for the node pool. You can't change the node taints through CLI after the node pool is created.
@@ -499,9 +502,9 @@ helps['aks nodepool add'] = """
         - name: --spot-max-price
           type: float
           short-summary: It can only be set when --priority is Spot. Specify the maximum price you are willing to pay in US Dollars. Possible values are any decimal value greater than zero or -1 which indicates default price to be up-to on-demand. It can only include up to 5 decimal places.
-        - name: --public-ip-per-vm
+        - name: --enable-node-public-ip
           type: bool
-          short-summary: Each node will have a public ip.
+          short-summary: Enable VMSS node public IP.
         - name: --labels
           type: string
           short-summary: The node labels for the node pool. You can't change the node labels through CLI after the node pool is created. See https://aka.ms/node-labels for syntax of labels.
@@ -543,10 +546,10 @@ helps['aks nodepool update'] = """
           short-summary: Update min-count or max-count for cluster autoscaler.
         - name: --min-count
           type: int
-          short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100]
+          short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100]
         - name: --max-count
           type: int
-          short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100]
+          short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100]
         - name: --mode
           type: string
           short-summary: The mode for a node pool which defines a node pool's primary function. If set as "System", AKS prefers system pods scheduling to node pools with mode `System`. Learn more at https://aka.ms/aks/nodepool/mode.
