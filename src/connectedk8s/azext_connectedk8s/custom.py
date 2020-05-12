@@ -106,7 +106,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
 
     # Get kubernetes cluster info for telemetry
     kubernetes_version = get_server_version(configuration)
-    kubernetes_distro = 'auto-detect'
+    kubernetes_distro = 'default'
     kubernetes_properties = {
         'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
         'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro
