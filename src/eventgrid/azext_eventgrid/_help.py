@@ -518,8 +518,8 @@ examples:
         az eventgrid system-topic event-subscription create --name es1 \\
             -g rg1 --system-topic-name systemtopic1 \\
             --endpoint https://contoso.azurewebsites.net/api/f1?code=code
-            --azure_active_directory_tenant_id azureactivedirectorytenantid
-            --azure_active_directory_application_id_or_uri azureactivedirectoryapplicationidoruri
+            --azure-active-directory-tenant-id azureactivedirectorytenantid
+            --azure-active-directory-application-id-or-uri azureactivedirectoryapplicationidoruri
   - name: Create a new event subscription for an Event Grid system topic, using Azure Function as destination.
     text: |
         az eventgrid system-topic event-subscription create -n es1 \\
@@ -674,8 +674,8 @@ examples:
         az eventgrid partner topic event-subscription create --name es1 \\
             -g rg1 --partner-topic-name partnertopic1 \\
             --endpoint https://contoso.azurewebsites.net/api/f1?code=code
-            --azure_active_directory_tenant_id azureactivedirectorytenantid
-            --azure_active_directory_application_id_or_uri azureactivedirectoryapplicationidoruri
+            --azure-active-directory-tenant-id azureactivedirectorytenantid
+            --azure-active-directory-application-id-or-uri azureactivedirectoryapplicationidoruri
   - name: Create a new event subscription for an Event Grid partner topic, using Azure Function as destination.
     text: |
         az eventgrid partner topic event-subscription create -n es1 \\
@@ -900,8 +900,8 @@ examples:
         az eventgrid event-subscription create --name es1 \\
             --source-resource-id /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.EventGrid/topics/topic1 \\
             --endpoint https://contoso.azurewebsites.net/api/f1?code=code
-            --azure_active_directory_tenant_id azureactivedirectorytenantid
-            --azure_active_directory_application_id_or_uri azureactivedirectoryapplicationidoruri
+            --azure-active-directory-tenant-id azureactivedirectorytenantid
+            --azure-active-directory-application-id-or-uri azureactivedirectoryapplicationidoruri
   - name: Create a new event subscription for an Event Grid topic, using Azure Function as destination.
     text: |
         az eventgrid event-subscription create --name es1 \\
