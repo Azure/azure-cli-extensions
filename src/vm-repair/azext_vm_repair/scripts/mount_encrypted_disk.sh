@@ -1,5 +1,12 @@
 #!/bin/bash
 
+#/boot/efi duplication validation
+efi_cnt=`lsblk | grep -i "/boot/efi" | wc -l`
+if [ "$efi_cnt" -eq 2 ]
+then
+        umount /boot/efi
+fi
+
 #creating mountpoint directories
 mkdir /{investigateboot,investigateroot}
 

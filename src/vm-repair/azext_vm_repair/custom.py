@@ -49,7 +49,6 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         source_vm = get_vm(cmd, resource_group_name, vm_name)
         is_linux = _is_linux_os(source_vm)
         target_disk_name = source_vm.storage_profile.os_disk.name
-        print(target_disk_name)
         is_managed = _uses_managed_disk(source_vm)
         copy_disk_id = None
         resource_tag = _get_repair_resource_tag(resource_group_name, vm_name)
