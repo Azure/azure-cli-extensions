@@ -13,7 +13,8 @@ from azext_applicationinsights._client_factory import (
     cf_query,
     cf_components,
     cf_api_key,
-    cf_component_billing
+    cf_component_billing,
+    cf_component_linked_storage_accounts
 )
 
 
@@ -63,6 +64,11 @@ def load_command_table(self, _):
         client_factory=cf_api_key
     )
 
+    component_linked_storage_accounts_custom_sdk = CliCommandType(
+        operations_tmpl='azext_applicationinsights.custom#{}',
+        client_factory=cf_component_linked_storage_accounts
+    )
+
     with self.command_group('monitor app-insights component', command_type=components_sdk, custom_command_type=components_custom_sdk) as g:
         g.custom_command('create', 'create_or_update_component')
         g.custom_command('update', 'update_component')
@@ -88,3 +94,9 @@ def load_command_table(self, _):
 
     with self.command_group('monitor app-insights', query_sdk) as g:
         g.custom_command('query', 'execute_query')
+
+    with self.command_group('monitor app-insights component linked-storage', custom_command_type=component_linked_storage_accounts_custom_sdk) as g:
+        g.custom_show_command('show', 'get_component_linked_storage_account')
+        g.custom_command('link', 'create_component_linked_storage_account')
+        g.custom_command('update', 'update_component_linked_storage_account')
+        g.custom_command('unlink', 'delete_component_linked_storage_account')

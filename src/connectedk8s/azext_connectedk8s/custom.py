@@ -517,7 +517,7 @@ def check_pod_status(pod_dict):
                                    "Run 'kubectl get pods -n azure-arc' to check the pod status.")
         if all(ele == 1 for ele in list(pod_dict.values())):
             return
-    telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.ExitStatus': 'Timeout'})
+    telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.ExitStatus': 'Timedout'})
     logger.warning("%s%s", 'The pods were unable to start before timeout. ',
                    'Please run "kubectl get pods -n azure-arc" to ensure if the pods are in running state.')
 
