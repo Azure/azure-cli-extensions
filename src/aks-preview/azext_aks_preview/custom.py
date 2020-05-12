@@ -262,11 +262,11 @@ def load_service_principals(config_path):
 
 def _invoke_deployment(cli_ctx, resource_group_name, deployment_name, template, parameters, validate, no_wait,
                        subscription_id=None):
-    from azure.mgmt.resource.resources import ResourceManagementClient
-    from azure.mgmt.resource.resources.models import DeploymentProperties
-
+    from azure.cli.core.profiles import ResourceType, get_sdk
+    DeploymentProperties = get_sdk(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES, 'DeploymentProperties', mod='models')
     properties = DeploymentProperties(template=template, parameters=parameters, mode='incremental')
-    smc = get_mgmt_service_client(cli_ctx, ResourceManagementClient, subscription_id=subscription_id).deployments
+    smc = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES,
+                                  subscription_id=subscription_id).deployments
     if validate:
         logger.info('==== BEGIN TEMPLATE ====')
         logger.info(json.dumps(template, indent=2))
@@ -1136,18 +1136,14 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
         raise CLIError('There is more than one node pool in the cluster. Please use "az aks nodepool" command '
                        'to update per node pool auto scaler settings')
 
-    node_count = instance.agent_pool_profiles[0].count
-
     if min_count is None or max_count is None:
         if enable_cluster_autoscaler or update_cluster_autoscaler:
-            raise CLIError('Please specifying both min-count and max-count when --enable-cluster-autoscaler or '
+            raise CLIError('Please specify both min-count and max-count when --enable-cluster-autoscaler or '
                            '--update-cluster-autoscaler set.')
 
     if min_count is not None and max_count is not None:
         if int(min_count) > int(max_count):
             raise CLIError('value of min-count should be less than or equal to value of max-count.')
-        if int(node_count) < int(min_count) or int(node_count) > int(max_count):
-            raise CLIError("current node count '{}' is not in the range of min-count and max-count.".format(node_count))
 
     if enable_cluster_autoscaler:
         if instance.agent_pool_profiles[0].enable_auto_scaling:
@@ -1416,7 +1412,7 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
 
     sas_token = sas_token.strip('?')
     deployment_yaml = urlopen(
-        "https://raw.githubusercontent.com/Azure/aks-periscope/v0.2/deployment/aks-periscope.yaml").read().decode()
+        "https://raw.githubusercontent.com/Azure/aks-periscope/latest/deployment/aks-periscope.yaml").read().decode()
     deployment_yaml = deployment_yaml.replace("# <accountName, base64 encoded>",
                                               (base64.b64encode(bytes(storage_account_name, 'ascii'))).decode('ascii'))
     deployment_yaml = deployment_yaml.replace("# <saskey, base64 encoded>",
@@ -1963,7 +1959,7 @@ def _check_cluster_autoscaler_flag(enable_cluster_autoscaler,
                                    agent_pool_profile):
     if enable_cluster_autoscaler:
         if min_count is None or max_count is None:
-            raise CLIError('Please specifying both min-count and max-count when --enable-cluster-autoscaler enabled')
+            raise CLIError('Please specify both min-count and max-count when --enable-cluster-autoscaler enabled')
         if int(min_count) > int(max_count):
             raise CLIError('value of min-count should be less than or equal to value of max-count')
         if int(node_count) < int(min_count) or int(node_count) > int(max_count):
@@ -2183,17 +2179,14 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
                        '"--tags" or "--mode"')
 
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
-    node_count = instance.count
 
     if min_count is None or max_count is None:
         if enable_cluster_autoscaler or update_cluster_autoscaler:
-            raise CLIError('Please specifying both min-count and max-count when --enable-cluster-autoscaler or '
+            raise CLIError('Please specify both min-count and max-count when --enable-cluster-autoscaler or '
                            '--update-cluster-autoscaler set.')
     if min_count is not None and max_count is not None:
         if int(min_count) > int(max_count):
             raise CLIError('value of min-count should be less than or equal to value of max-count.')
-        if int(node_count) < int(min_count) or int(node_count) > int(max_count):
-            raise CLIError("current node count '{}' is not in the range of min-count and max-count.".format(node_count))
 
     if enable_cluster_autoscaler:
         if instance.enable_auto_scaling:

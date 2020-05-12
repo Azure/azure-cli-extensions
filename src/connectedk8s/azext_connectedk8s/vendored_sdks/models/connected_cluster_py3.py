@@ -9,29 +9,30 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from msrest.serialization import Model
+from .tracked_resource_py3 import TrackedResource
 
 
-class ConnectedCluster(Model):
-    """ConnectedCluster.
+class ConnectedCluster(TrackedResource):
+    """Represents a connected cluster.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar id: Resource Id
+    :ivar id: Fully qualified resource Id for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}
     :vartype id: str
-    :ivar name: Resource name
+    :ivar name: The name of the resource
     :vartype name: str
-    :ivar type: Type of the resource requested. Possible values include:
-     'Microsoft.Kubernetes/connectedClusters'
-    :vartype type: str or ~azure.mgmt.hybridkubernetes.models.enum
-    :param location: Required. Location of the cluster
-    :type location: str
-    :param tags: Required. Connected Cluster Resource Tags.
+    :ivar type: The type of the resource. Ex-
+     Microsoft.Compute/virtualMachines or Microsoft.Storage/storageAccounts.
+    :vartype type: str
+    :param tags: Resource tags.
     :type tags: dict[str, str]
-    :param identity: The identity of the connected cluster, if configured.
+    :param location: Required. The geo-location where the resource lives
+    :type location: str
+    :param identity: Required. The identity of the connected cluster.
     :type identity:
      ~azure.mgmt.hybridkubernetes.models.ConnectedClusterIdentity
     :param agent_public_key_certificate: Required. Base64 encoded public
@@ -41,15 +42,19 @@ class ConnectedCluster(Model):
     :param aad_profile: Required.
     :type aad_profile:
      ~azure.mgmt.hybridkubernetes.models.ConnectedClusterAADProfile
-    :param kubernetes_version: The Kubernetes version of the connected cluster
+    :ivar kubernetes_version: The Kubernetes version of the connected cluster
      resource
-    :type kubernetes_version: str
-    :param total_node_count: Number of nodes present in the connected cluster
+    :vartype kubernetes_version: str
+    :ivar total_node_count: Number of nodes present in the connected cluster
      resource
-    :type total_node_count: int
-    :param agent_version: Version of the agent running on the connected
-     cluster resource
-    :type agent_version: str
+    :vartype total_node_count: int
+    :ivar agent_version: Version of the agent running on the connected cluster
+     resource
+    :vartype agent_version: str
+    :param provisioning_state: Possible values include: 'Succeeded', 'Failed',
+     'Canceled', 'Provisioning', 'Updating', 'Deleting', 'Accepted'
+    :type provisioning_state: str or
+     ~azure.mgmt.hybridkubernetes.models.ProvisioningState
     """
 
     _validation = {
@@ -57,35 +62,35 @@ class ConnectedCluster(Model):
         'name': {'readonly': True},
         'type': {'readonly': True},
         'location': {'required': True},
-        'tags': {'required': True},
+        'identity': {'required': True},
         'agent_public_key_certificate': {'required': True},
         'aad_profile': {'required': True},
+        'kubernetes_version': {'readonly': True},
+        'total_node_count': {'readonly': True},
+        'agent_version': {'readonly': True},
     }
 
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
-        'location': {'key': 'location', 'type': 'str'},
         'tags': {'key': 'tags', 'type': '{str}'},
+        'location': {'key': 'location', 'type': 'str'},
         'identity': {'key': 'identity', 'type': 'ConnectedClusterIdentity'},
         'agent_public_key_certificate': {'key': 'properties.agentPublicKeyCertificate', 'type': 'str'},
         'aad_profile': {'key': 'properties.aadProfile', 'type': 'ConnectedClusterAADProfile'},
         'kubernetes_version': {'key': 'properties.kubernetesVersion', 'type': 'str'},
         'total_node_count': {'key': 'properties.totalNodeCount', 'type': 'int'},
         'agent_version': {'key': 'properties.agentVersion', 'type': 'str'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
     }
 
-    def __init__(self, *, location: str, tags, agent_public_key_certificate: str, aad_profile, identity=None, kubernetes_version: str=None, total_node_count: int=None, agent_version: str=None, **kwargs) -> None:
-        super(ConnectedCluster, self).__init__(**kwargs)
-        self.id = None
-        self.name = None
-        self.type = None
-        self.location = location
-        self.tags = tags
+    def __init__(self, *, location: str, identity, agent_public_key_certificate: str, aad_profile, tags=None, provisioning_state=None, **kwargs) -> None:
+        super(ConnectedCluster, self).__init__(tags=tags, location=location, **kwargs)
         self.identity = identity
         self.agent_public_key_certificate = agent_public_key_certificate
         self.aad_profile = aad_profile
-        self.kubernetes_version = kubernetes_version
-        self.total_node_count = total_node_count
-        self.agent_version = agent_version
+        self.kubernetes_version = None
+        self.total_node_count = None
+        self.agent_version = None
+        self.provisioning_state = provisioning_state

@@ -3,407 +3,444 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import os
+import json
+import uuid
+import time
+import subprocess
+from subprocess import Popen, PIPE
+from base64 import b64encode
+import requests
+
 from knack.util import CLIError
+from knack.log import get_logger
 from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.cli.core.util import sdk_no_wait
+from azure.cli.core._profile import Profile
 from azext_connectedk8s._client_factory import _graph_client_factory
 from azext_connectedk8s._client_factory import cf_resource_groups
 from azext_connectedk8s._client_factory import _resource_client_factory
-from azext_connectedk8s._client_factory import _auth_client_factory
-from azext_connectedk8s._multi_api_adaptor import MultiAPIAdaptor
-from msrest.serialization import TZ_UTC
-from dateutil.relativedelta import relativedelta
-from azure.graphrbac.models import (PasswordCredential, ApplicationCreateParameters, ServicePrincipalCreateParameters)
-from azure.graphrbac.operations.service_principals_operations import ServicePrincipalsOperations
-from knack.log import get_logger
-from azure.graphrbac.models import GraphErrorException
-from azure.cli.core.api import get_config_dir
-from azure.cli.core.util import sdk_no_wait
 from msrestazure.azure_exceptions import CloudError
-from kubernetes import client, config
-import kubernetes.client
-from kubernetes.client.rest import ApiException
-import os
-import subprocess
-from subprocess import Popen, PIPE
-import json
-import uuid
-import datetime
-import time
+from kubernetes import client as kube_client, config, watch  # pylint: disable=import-error
+from Crypto.IO import PEM  # pylint: disable=import-error
+from Crypto.PublicKey import RSA  # pylint: disable=import-error
+from Crypto.Util import asn1  # pylint: disable=import-error
+
+from .vendored_sdks.models import ConnectedCluster, ConnectedClusterAADProfile, ConnectedClusterIdentity
 
 
 logger = get_logger(__name__)
 
 
-def create_connectedk8s(cmd, client, resource_group_name, cluster_name,
-                        onboarding_spn_id=None, onboarding_spn_secret=None,
-                        location=None, kube_config=None, kube_context=None, no_wait=False,):
-    print("Ensure that you have the latest helm version installed before proceeding to avoid unexpected errors.")
-    print("This operation might take a while...\n")
+# pylint:disable=unused-argument
+# pylint: disable=too-many-locals
+# pylint: disable=too-many-branches
+# pylint: disable=too-many-statements
+# pylint: disable=line-too-long
+def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location=None,
+                        kube_config=None, kube_context=None, no_wait=False, tags=None):
+    logger.warning("Ensure that you have the latest helm version installed before proceeding.")
+    logger.warning("This operation might take a while...\n")
 
     # Setting subscription id
     subscription_id = get_subscription_id(cmd.cli_ctx)
 
-    resourceClient = _resource_client_factory(cmd.cli_ctx, subscription_id=subscription_id)
+    # Setting user profile
+    profile = Profile(cli_ctx=cmd.cli_ctx)
 
-    # Resource group Creation
-    if location is None:
-        try:
-            location = resourceClient.resource_groups.get(resource_group_name).location
-        except:
-            raise CLIError("The provided resource group does not exist. Please provide location to create the Resource Group")
+    # Fetching Tenant Id
+    graph_client = _graph_client_factory(cmd.cli_ctx)
+    onboarding_tenant_id = graph_client.config.tenant_id
 
+    # Setting kubeconfig
+    kube_config = set_kube_config(kube_config)
+
+    # Removing quotes from kubeconfig path. This is necessary for windows OS.
+    trim_kube_config(kube_config)
+
+    # Loading the kubeconfig file in kubernetes client configuration
+    try:
+        config.load_kube_config(config_file=kube_config, context=kube_context)
+    except Exception as e:
+        raise CLIError("Problem loading the kubeconfig file." + str(e))
+    configuration = kube_client.Configuration()
+
+    # Checking the connection to kubernetes cluster.
+    # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
+    # if the user had not logged in.
+    check_kube_connection(configuration)
+
+    # Checking helm installation
+    check_helm_install(kube_config, kube_context)
+
+    # Check helm version
+    check_helm_version(kube_config, kube_context)
+
+    # Validate location
     rp_locations = []
+    resourceClient = _resource_client_factory(cmd.cli_ctx, subscription_id=subscription_id)
     providerDetails = resourceClient.providers.get('Microsoft.Kubernetes')
     for resourceTypes in providerDetails.resource_types:
         if resourceTypes.resource_type == 'connectedClusters':
             rp_locations = [location.replace(" ", "").lower() for location in resourceTypes.locations]
             if location.lower() not in rp_locations:
-                raise CLIError("The connected cluster resource creation is supported only in the following locations: " + ', '.join(map(str, rp_locations)) + ". Please use the --location flag to specify right location.")
+                raise CLIError("Connected cluster resource creation is supported only in the following locations: " +
+                               ', '.join(map(str, rp_locations)) +
+                               ". Use the --location flag to specify one of these locations.")
             break
-    
-    if (resource_group_exists(cmd.cli_ctx, resource_group_name, subscription_id) is False):
+
+    # Check Release Existance
+    release_namespace = get_release_namespace(kube_config, kube_context)
+    if release_namespace is not None:
+        # Loading config map
+        api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+        try:
+            configmap = api_instance.read_namespaced_config_map('azure-clusterconfig', 'azure-arc')
+        except Exception as e:  # pylint: disable=broad-except
+            raise CLIError("Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: %s\n" % e)
+        configmap_rg_name = configmap.data["AZURE_RESOURCE_GROUP"]
+        configmap_cluster_name = configmap.data["AZURE_RESOURCE_NAME"]
+        if connected_cluster_exists(client, configmap_rg_name, configmap_cluster_name):
+            if (configmap_rg_name.lower() == resource_group_name.lower() and
+                    configmap_cluster_name.lower() == cluster_name.lower()):
+                # Re-put connected cluster
+                public_key = client.get(configmap_rg_name,
+                                        configmap_cluster_name).agent_public_key_certificate
+                cc = generate_request_payload(configuration, location, public_key, tags)
+                try:
+                    return sdk_no_wait(no_wait, client.create, resource_group_name=resource_group_name,
+                                       cluster_name=cluster_name, connected_cluster=cc)
+                except CloudError as ex:
+                    raise CLIError(ex)
+            else:
+                raise CLIError("The kubernetes cluster you are trying to onboard" +
+                               "is already onboarded to the resource group" +
+                               " '{}' with resource name '{}'.".format(configmap_rg_name, configmap_cluster_name))
+        else:
+            # Cleanup agents and continue with put
+            delete_arc_agents(release_namespace, kube_config, kube_context, configuration)
+    else:
+        if connected_cluster_exists(client, resource_group_name, cluster_name):
+            raise CLIError("The connected cluster resource {} already exists ".format(cluster_name) +
+                           "in the resource group {} ".format(resource_group_name) +
+                           "and corresponds to a different Kubernetes cluster. To onboard this Kubernetes cluster" +
+                           "to Azure, specify different resource name or resource group name.")
+
+    # Resource group Creation
+    if resource_group_exists(cmd.cli_ctx, resource_group_name, subscription_id) is False:
         resource_group_params = {'location': location}
         try:
             resourceClient.resource_groups.create_or_update(resource_group_name, resource_group_params)
         except Exception as e:
-            raise CLIError("Resource Group Creation Failed." + str(e.message))   
+            raise CLIError("Failed to create the resource group {} :".format(resource_group_name) + str(e))
 
-    # SPN creation
-    graph_client = _graph_client_factory(cmd.cli_ctx)
-    onboarding_tenant_id = graph_client.config.tenant_id
+    # Adding helm repo
+    if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
+        repo_name = os.getenv('HELMREPONAME')
+        repo_url = os.getenv('HELMREPOURL')
+        cmd_helm_repo = ["helm", "repo", "add", repo_name, repo_url, "--kubeconfig", kube_config]
+        if kube_context:
+            cmd_helm_repo.extend(["--kube-context", kube_context])
+        response_helm_repo = Popen(cmd_helm_repo, stdout=PIPE, stderr=PIPE)
+        _, error_helm_repo = response_helm_repo.communicate()
+        if response_helm_repo.returncode != 0:
+            raise CLIError("Unable to add repository {} to helm: ".format(repo_url) + error_helm_repo.decode("ascii"))
 
-    if (onboarding_spn_id is not None and onboarding_spn_secret is None):
-        raise CLIError("Provide the onboarding spn secret.")
+    # Retrieving Helm chart OCI Artifact location
+    registery_path = get_helm_registery(profile, location)
 
-    if onboarding_spn_id is None:
-        try:
-            spn_list = list_owned_objects(graph_client.signed_in_user, 'servicePrincipal')
-        except Exception as ex:
-            raise CLIError("Problem loading the service principals. Check if you have sufficient access to list/create service principals. Error Message: " + str(ex))
-        spn_appid_list = []
-        for spn in spn_list:
-            spn_appid_list.append(spn.app_id)
-        file_name_connectedk8s = 'azureArcServicePrincipal.json'   # File containing SPN details
-        principal_obj = load_acs_service_principal(subscription_id,
-                                                   file_name=file_name_connectedk8s)  # Loading spn from file
-        spn_present = True
-        if principal_obj:
-            if principal_obj.get('service_principal') not in spn_appid_list:
-                erase_acs_service_principal(file_name=file_name_connectedk8s)
-                spn_present = False
-        if (principal_obj and spn_present is True):
-            onboarding_spn_id = principal_obj.get('service_principal')
-            onboarding_spn_secret = principal_obj.get('client_secret')
-        else:
-            # Creating New SPN
-            graph_client = _graph_client_factory(cmd.cli_ctx)
-            role_client = _auth_client_factory(cmd.cli_ctx).role_assignments
-            scopes = ['/subscriptions/' + role_client.config.subscription_id]
-            years = 1
-            app_start_date = datetime.datetime.now(TZ_UTC)
-            app_end_date = app_start_date + relativedelta(years=years)
-            app_display_name = ('cluster-onboarding-spn-' + app_start_date.strftime('%Y-%m-%d-%H-%M-%S'))
-            name = 'http://' + app_display_name
-            password = str(uuid.uuid4())
-            aad_application = create_aad_application(cmd,
-                                                 display_name=app_display_name,
-                                                 homepage='https://' + app_display_name,
-                                                 identifier_uris=[name],
-                                                 available_to_other_tenants=False,
-                                                 password=password, key_value=None,
-                                                 start_date=app_start_date,
-                                                 end_date=app_end_date,
-                                                 credential_description='rbac')
-            _RETRY_TIMES = 36
-            app_id = aad_application.app_id
-            aad_sp = None
-            for l in range(0, _RETRY_TIMES):
-                try:
-                    aad_sp = _create_service_principal(cmd.cli_ctx, app_id, resolve_app=False)
-                    break
-                except Exception as ex:  # pylint: disable=broad-except
-                    if l < _RETRY_TIMES and (
-                            ' does not reference ' in str(ex) or ' does not exist ' in str(ex)):
-                        time.sleep(5)
-                        logger.warning('Retrying service principal creation: %s/%s', l + 1, _RETRY_TIMES)
-                    else:
-                        logger.warning(
-                            "Creating service principal failed for appid '%s'. Trace followed:\n%s",
-                            name, ex.response.headers if hasattr(ex, 'response') else ex)   # pylint: disable=no-member
-                        raise
-            # correct
-            
+    # Pulling helm chart from registery
+    os.environ['HELM_EXPERIMENTAL_OCI'] = '1'
+    pull_helm_chart(registery_path, kube_config, kube_context)
 
-            # Creating Role Binding
-            role = 'Kubernetes Cluster - Azure Arc Onborading Role'
-            sp_oid = aad_sp.object_id
-            for scope in scopes:
-                for l in range(0, _RETRY_TIMES):
-                    try:
-                        _create_role_assignment(cmd.cli_ctx, role, sp_oid, None, scope, resolve_assignee=False)
-                        break
-                    except Exception as ex:
-                        if l < _RETRY_TIMES and ' does not exist in the directory ' in str(ex):
-                            time.sleep(5)
-                            #logger.warning('  Retrying role assignment creation: %s/%s', l + 1, _RETRY_TIMES)
-                            continue
-                        elif _error_caused_by_role_assignment_exists(ex):
-                            #logger.warning('  Role assignment already exits.\n')
-                            break
-                        else:
-                            if getattr(ex, 'response', None) is not None:
-                                logger.warning('  role assignment response headers: %s\n', ex.response.headers)  # pylint: disable=no-member
-                        raise
-            onboarding_spn_id = app_id
-            onboarding_spn_secret = password
-            store_acs_service_principal(subscription_id, onboarding_spn_secret, onboarding_spn_id, file_name=file_name_connectedk8s)
+    # Exporting helm chart
+    chart_export_path = os.path.join(os.path.expanduser('~'), '.azure', 'AzureArcCharts')
+    export_helm_chart(registery_path, chart_export_path, kube_config, kube_context)
 
-    # Setting kubeconfig
+    # Generate public-private key pair
+    try:
+        key_pair = RSA.generate(4096)
+    except Exception as e:
+        raise CLIError("Failed to generate public-private key pair. " + str(e))
+    try:
+        public_key = get_public_key(key_pair)
+    except Exception as e:
+        raise CLIError("Failed to generate public key." + str(e))
+    try:
+        private_key_pem = get_private_key(key_pair)
+    except Exception as e:
+        raise CLIError("Failed to generate private key." + str(e))
+
+    # Helm Install
+    helm_chart_path = os.path.join(chart_export_path, 'azure-arc-k8sagents')
+    chart_path = os.getenv('HELMCHART') if os.getenv('HELMCHART') else helm_chart_path
+    cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
+                        "--set", "global.subscriptionId={}".format(subscription_id),
+                        "--set", "global.resourceGroupName={}".format(resource_group_name),
+                        "--set", "global.resourceName={}".format(cluster_name),
+                        "--set", "global.location={}".format(location),
+                        "--set", "global.tenantId={}".format(onboarding_tenant_id),
+                        "--set", "global.onboardingPrivateKey={}".format(private_key_pem),
+                        "--set", "systemDefaultValues.spnOnboarding=false",
+                        "--kubeconfig", kube_config, "--output", "json"]
+    if kube_context:
+        cmd_helm_install.extend(["--kube-context", kube_context])
+    response_helm_install = Popen(cmd_helm_install, stdout=PIPE, stderr=PIPE)
+    _, error_helm_install = response_helm_install.communicate()
+    if response_helm_install.returncode != 0:
+        raise CLIError("Unable to install helm release: " + error_helm_install.decode("ascii"))
+
+    # Create connected cluster resource
+    cc = generate_request_payload(configuration, location, public_key, tags)
+    try:
+        put_cc_response = sdk_no_wait(no_wait, client.create,
+                                      resource_group_name=resource_group_name,
+                                      cluster_name=cluster_name, connected_cluster=cc)
+        if no_wait:
+            return put_cc_response
+    except CloudError as ex:
+        raise CLIError(ex)
+
+    # Getting total number of pods scheduled to run in azure-arc namespace
+    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+    pod_dict = get_pod_dict(api_instance)
+
+    # Checking azure-arc pod statuses
+    try:
+        check_pod_status(pod_dict)
+    except Exception as e:  # pylint: disable=broad-except
+        logger.warning("Failed to check arc agent pods statuses: %s", e)
+
+    return put_cc_response
+
+
+def set_kube_config(kube_config):
     if kube_config is None:
         kube_config = os.getenv('KUBECONFIG')
         if kube_config is None:
             kube_config = os.path.join(os.path.expanduser('~'), '.kube', 'config')
+    return kube_config
 
-    # Removing quotes from kubeconfig path
+
+def trim_kube_config(kube_config):
     if (kube_config.startswith("'") or kube_config.startswith('"')):
         kube_config = kube_config[1:]
     if (kube_config.endswith("'") or kube_config.endswith('"')):
         kube_config = kube_config[:-1]
 
-    # Loading the kubeconfig file in kubernetes client configuration
-    configuration = kubernetes.client.Configuration()
+
+def check_kube_connection(configuration):
+    api_instance = kube_client.NetworkingV1Api(kube_client.ApiClient(configuration))
     try:
-        config.load_kube_config(config_file=kube_config, context=kube_context, client_configuration=configuration)
+        api_instance.get_api_resources()
     except Exception as e:
-        raise CLIError("Problem loading the kubeconfig file." + str(e))
+        logger.warning("Unable to verify connectivity to the Kubernetes cluster: %s\n", e)
+        raise CLIError("If you are using AAD Enabled cluster, " +
+                       "verify that you are able to access the cluster. Learn more at " +
+                       "https://aka.ms/arc/k8s/onboarding-aad-enabled-clusters")
 
-    # Checking the connection to kubernetes cluster. This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters if the user had not logged in.
-    api_instance = kubernetes.client.NetworkingV1Api(kubernetes.client.ApiClient(configuration))
-    try:
-        api_response = api_instance.get_api_resources()
-    except ApiException as e:
-        print("Exception when calling NetworkingV1Api->get_api_resources: %s\n" % e)
-        raise CLIError("If you are using AAD Enabled cluster, check if you have logged in to the cluster properly and try again")
 
-    
-    # Checking helm installation
-    if kube_context is None:
-        cmd = ["helm", "--kubeconfig", kube_config, "--debug"]
-    else:
-        cmd = ["helm", "--kubeconfig", kube_config, "--kube-context", kube_context, "--debug"]
+def check_helm_install(kube_config, kube_context):
+    cmd_helm_installed = ["helm", "--kubeconfig", kube_config, "--debug"]
+    if kube_context:
+        cmd_helm_installed.extend(["--kube-context", kube_context])
     try:
-        response = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
-        output, error = response.communicate()
-        if response.returncode != 0:
-            if "unknown flag" in error.decode("ascii"):
-                raise CLIError("Please install the latest version of helm")
-            raise CLIError(error.decode("ascii"))
+        response_helm_installed = Popen(cmd_helm_installed, stdout=PIPE, stderr=PIPE)
+        _, error_helm_installed = response_helm_installed.communicate()
+        if response_helm_installed.returncode != 0:
+            if "unknown flag" in error_helm_installed.decode("ascii"):
+                raise CLIError("Please install the latest version of Helm. " +
+                               "Learn more at https://aka.ms/arc/k8s/onboarding-helm-install")
+            raise CLIError(error_helm_installed.decode("ascii"))
     except FileNotFoundError:
-        raise CLIError("Helm is not installed or requires elevated permissions. Please ensure that you have the latest version of helm installed on your machine.")
+        raise CLIError("Helm is not installed or requires elevated permissions. " +
+                       "Ensure that you have the latest version of Helm installed on your machine. " +
+                       "Learn more at https://aka.ms/arc/k8s/onboarding-helm-install")
     except subprocess.CalledProcessError as e2:
         e2.output = e2.output.decode("ascii")
         print(e2.output)
 
-    # Check helm version
-    if kube_context is None:
-        cmd = ["helm", "version", "--short", "--kubeconfig", kube_config]
-    else:
-        cmd = ["helm", "version", "--short", "--kubeconfig", kube_config, "--kube-context", kube_context]
-    response = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
-    output, error = response.communicate()
-    if response.returncode != 0:
-        raise CLIError("Unable to determine helm version: " + error.decode("ascii"))
-    else:
-        if "v2" in output.decode("ascii"):
-            raise CLIError("Please install the latest version of helm and then try again")
 
-    # Check Release Existance
-    if kube_context is None:    
-        cmd_list = ["helm", "list", "-a", "--all-namespaces", "--output", "json", "--kubeconfig", kube_config]
-    else:
-        cmd_list = ["helm", "list", "-a", "--all-namespaces", "--output", "json", "--kubeconfig", kube_config, "--kube-context", kube_context]
-    response_list = subprocess.Popen(cmd_list, stdout=PIPE, stderr=PIPE)
-    output_list, error_list = response_list.communicate()
-    if response_list.returncode != 0:
-        raise CLIError(error_list.decode("ascii"))
-    else:
-        output_list = output_list.decode("ascii")
-        output_list = json.loads(output_list)
-        release_name_list = []
-        for release in output_list:
-            release_name_list.append(release['name'])
-        if "azure-arc" in release_name_list:
-            # Loading config map
-            api_instance = kubernetes.client.CoreV1Api(kubernetes.client.ApiClient(configuration))
-            namespace = 'azure-arc'
-            try:
-                api_response = api_instance.list_namespaced_config_map(namespace)
-            except ApiException as e:
-                print("Exception when calling CoreV1Api->list_namespaced_config_map: %s\n" % e)
-            config_present = False
-            for configmap in api_response.items:
-                if configmap.metadata.name == 'azure-clusterconfig':
-                    config_present = True
-                    if (configmap.data["AZURE_RESOURCE_GROUP"].lower() == resource_group_name.lower() and configmap.data["AZURE_RESOURCE_NAME"].lower() == cluster_name.lower()):
-                        raise CLIError("Agents corresponding to the provided resource are already installed on this cluster. If the connected cluster resource does not exist, run 'az connectedk8s delete -g {} -n {}' to delete the agents and then try creating again.".format(resource_group_name, cluster_name))
-                    else:
-                        raise CLIError("Resource creation failed. Agents corresponding to some other resource are already installed on this cluster. Agents installed on this cluster correspond to the resource group name '{}' and resource name '{}'.".format(configmap.data["AZURE_RESOURCE_GROUP"], configmap.data["AZURE_RESOURCE_NAME"]))
-            if config_present is False:
-                raise CLIError("Helm release named 'azure-arc' is already present but the azure-arc agent pods are either missing or deployed unsuccessfully.")
-    
-    # Adding helm repo
-    if kube_context is None:
-        cmd1 = ["helm", "repo", "add", "azurearcfork8s", "https://azurearcfork8s.azurecr.io/helm/v1/repo", "--kubeconfig", kube_config]
-    else:
-        cmd1 = ["helm", "repo", "add", "azurearcfork8s", "https://azurearcfork8s.azurecr.io/helm/v1/repo", "--kubeconfig", kube_config, "--kube-context", kube_context]
-    response1 = subprocess.Popen(cmd1, stdout=PIPE, stderr=PIPE)
-    output1, error1 = response1.communicate()
-    if response1.returncode != 0:
-        raise CLIError("Helm unable to add repository: " + error1.decode("ascii"))
-
-    # Install agents
-    if kube_context is None:
-        cmd4 = ["helm", "install", "azure-arc", "azurearcfork8s/azure-arc-k8sagents", "--set", "global.subscriptionId={}".format(subscription_id), "--set", "global.resourceGroupName={}".format(resource_group_name), "--set", "global.resourceName={}".format(cluster_name), "--set", "global.location={}".format(location), "--set", "global.tenantId={}".format(onboarding_tenant_id), "--set", "global.clientId={}".format(onboarding_spn_id), "--set", "global.clientSecret={}".format(onboarding_spn_secret), "--kubeconfig", kube_config, "--output", "json"]
-    else:
-        cmd4 = ["helm", "install", "azure-arc", "azurearcfork8s/azure-arc-k8sagents", "--set", "global.subscriptionId={}".format(subscription_id), "--set", "global.resourceGroupName={}".format(resource_group_name), "--set", "global.resourceName={}".format(cluster_name), "--set", "global.location={}".format(location), "--set", "global.tenantId={}".format(onboarding_tenant_id), "--set", "global.clientId={}".format(onboarding_spn_id), "--set", "global.clientSecret={}".format(onboarding_spn_secret), "--kubeconfig", kube_config, "--kube-context", kube_context, "--output", "json"]
-    response4 = subprocess.Popen(cmd4, stdout=PIPE, stderr=PIPE)
-    output4, error4 = response4.communicate()
-    if response4.returncode != 0:
-        raise CLIError("Unable to install helm release: " + error4.decode("ascii")) 
-    
-    if no_wait is True:
-        print("Resource creation request accepted. Please run 'kubectl get pods -n azure-arc' to see whether the pods are in a running state and run 'az connectedk8s show -g {} -n {}' to check if the resource was created successfully".format(resource_group_name, cluster_name))
-        return
-
-    # Checking availability of connect agent containers
-    api_instance = kubernetes.client.CoreV1Api(kubernetes.client.ApiClient(configuration))
-    namespace = 'azure-arc'
-    timeout = time.time() + 180
-    container_available = False
-    while container_available is False:
-        if(time.time()>timeout):
-            break
-        try:
-            api_response = api_instance.list_namespaced_pod(namespace)
-        except ApiException as e:
-            print("Exception when calling CoreV1Api->list_namespaced_pod: %s\n" % e)
-        for pod in api_response.items:
-            if pod.metadata.name.startswith('connect-agent'):
-                if pod.status.container_statuses is not None:
-                    # Checking container status of connect agent pod 
-                    check_pod_status(api_instance=api_instance, namespace=namespace, configuration=configuration)
-                    container_available = True
-                    break
-                else:
-                    time.sleep(5)
-                break
-    if container_available is False:
-        raise CLIError("Unable to get container status of the connect agent pod. Please run 'kubectl get pods -n azure-arc' to check whether pods are in running state.")
-
-    # Checking the status of connected cluster resource
-    max_retry = 30
-    retry_exception = Exception(None)
-    for _ in range(0, max_retry):
-        try:
-            return sdk_no_wait(no_wait, client.create, resource_group_name=resource_group_name, cluster_name=cluster_name)
-        except CloudError as ex:
-            retry_exception = ex
-            if ('not found' in ex.message or 'Not Found' in ex.message):
-                time.sleep(3)
-            else:
-                raise ex
-    if ('not found' in retry_exception.message or 'Not Found' in retry_exception.message):
-        raise CLIError("Resource Creation Failed. Please run 'kubectl get pods -n azure-arc' to see whether the connect agent pod is in running state. If not, run 'kubectl -n azure-arc logs -l app.kubernetes.io/component=connect-agent -c connect-agent' to debug the error.")
-    else:
-        raise retry_exception
+def check_helm_version(kube_config, kube_context):
+    cmd_helm_version = ["helm", "version", "--short", "--kubeconfig", kube_config]
+    if kube_context:
+        cmd_helm_version.extend(["--kube-context", kube_context])
+    response_helm_version = Popen(cmd_helm_version, stdout=PIPE, stderr=PIPE)
+    output_helm_version, error_helm_version = response_helm_version.communicate()
+    if response_helm_version.returncode != 0:
+        raise CLIError("Unable to determine helm version: " + error_helm_version.decode("ascii"))
+    if "v2" in output_helm_version.decode("ascii"):
+        raise CLIError("Helm version 3+ is required. " +
+                       "Ensure that you have installed the latest version of Helm. " +
+                       "Learn more at https://aka.ms/arc/k8s/onboarding-helm-install")
 
 
 def resource_group_exists(ctx, resource_group_name, subscription_id=None):
     groups = cf_resource_groups(ctx, subscription_id=subscription_id)
     try:
-        rg = groups.get(resource_group_name)
+        groups.get(resource_group_name)
         return True
-    except:
+    except:  # pylint: disable=bare-except
         return False
 
 
-def erase_acs_service_principal(file_name='acsServicePrincipal.json'):
-    config_path = os.path.join(get_config_dir(), file_name)
-    open(config_path, 'w').close()
-
-
-def load_acs_service_principal(subscription_id, file_name='acsServicePrincipal.json'):
-    config_path = os.path.join(get_config_dir(), file_name)
-    config = load_service_principals(config_path)
-    if not config:
-        return None
-    return config.get(subscription_id)
-
-
-def load_service_principals(config_path):
-    if not os.path.exists(config_path):
-        return None
-    fd = os.open(config_path, os.O_RDONLY)
+def connected_cluster_exists(client, resource_group_name, cluster_name):
     try:
-        with os.fdopen(fd) as f:
-            return json.loads(f.read())
-    except:  # pylint: disable=bare-except
-        return None
+        client.get(resource_group_name, cluster_name)
+    except Exception as ex:
+        if (('was not found' in str(ex)) or ('could not be found' in str(ex))):
+            return False
+        raise CLIError("Unable to determine if the connected cluster resource exists. " + str(ex))
+    return True
 
 
-def store_acs_service_principal(subscription_id, client_secret, service_principal,
-                                file_name='acsServicePrincipal.json'):
-    obj = {}
-    if client_secret:
-        obj['client_secret'] = client_secret
-    if service_principal:
-        obj['service_principal'] = service_principal
+def get_helm_registery(profile, location):
+    cred, _, _ = profile.get_login_credentials(
+        resource='https://management.core.windows.net/')
+    token = cred._token_retriever()[2].get('accessToken')  # pylint: disable=protected-access
 
-    config_path = os.path.join(get_config_dir(), file_name)
-    full_config = load_service_principals(config_path=config_path)
-    if not full_config:
-        full_config = {}
-    full_config[subscription_id] = obj
+    get_chart_location_url = "https://{}.dp.kubernetesconfiguration.azure.com/{}/GetLatestHelmPackagePath?api-version=2019-11-01-preview".format(location, 'azure-arc-k8sagents')
+    query_parameters = {}
+    query_parameters['releaseTrain'] = 'stable'
+    header_parameters = {}
+    header_parameters['Authorization'] = "Bearer {}".format(str(token))
+    try:
+        response = requests.post(get_chart_location_url, params=query_parameters, headers=header_parameters)
+    except Exception as e:
+        raise CLIError("Error while fetching helm chart registery path: " + str(e))
+    if response.status_code == 200:
+        return response.json().get('repositoryPath')
+    raise CLIError("Error while fetching helm chart registery path: {}".format(str(response.json())))
 
-    with os.fdopen(os.open(config_path, os.O_RDWR | os.O_CREAT | os.O_TRUNC, 0o600),
-                   'w+') as spFile:
-        json.dump(full_config, spFile)
+
+def pull_helm_chart(registery_path, kube_config, kube_context):
+    cmd_helm_chart_pull = ["helm", "chart", "pull", registery_path, "--kubeconfig", kube_config]
+    if kube_context:
+        cmd_helm_chart_pull.extend(["--kube-context", kube_context])
+    response_helm_chart_pull = subprocess.Popen(cmd_helm_chart_pull, stdout=PIPE, stderr=PIPE)
+    _, error_helm_chart_pull = response_helm_chart_pull.communicate()
+    if response_helm_chart_pull.returncode != 0:
+        raise CLIError("Unable to pull helm chart from the registery '{}': ".format(registery_path) + error_helm_chart_pull.decode("ascii"))
 
 
-def list_owned_objects(client, object_type=None):
-    result = client.list_owned_objects()
-    if object_type:
-        result = [r for r in result if r.object_type and r.object_type.lower() == object_type.lower()]
-    return result
+def export_helm_chart(registery_path, chart_export_path, kube_config, kube_context):
+    chart_export_path = os.path.join(os.path.expanduser('~'), '.azure', 'AzureArcCharts')
+    cmd_helm_chart_export = ["helm", "chart", "export", registery_path, "--destination", chart_export_path, "--kubeconfig", kube_config]
+    if kube_context:
+        cmd_helm_chart_export.extend(["--kube-context", kube_context])
+    response_helm_chart_export = subprocess.Popen(cmd_helm_chart_export, stdout=PIPE, stderr=PIPE)
+    _, error_helm_chart_export = response_helm_chart_export.communicate()
+    if response_helm_chart_export.returncode != 0:
+        raise CLIError("Unable to export helm chart from the registery '{}': ".format(registery_path) + error_helm_chart_export.decode("ascii"))
 
-def check_pod_status(api_instance, namespace, configuration):
-    connect_agent_state = None
-    timeout = time.time() + 300
-    found_running = 0
-    while connect_agent_state is None:
-        if(time.time()>timeout):
-            break
+
+def get_public_key(key_pair):
+    pubKey = key_pair.publickey()
+    seq = asn1.DerSequence([pubKey.n, pubKey.e])
+    enc = seq.encode()
+    return b64encode(enc).decode('utf-8')
+
+
+def get_private_key(key_pair):
+    privKey_DER = key_pair.exportKey(format='DER')
+    return PEM.encode(privKey_DER, "RSA PRIVATE KEY")
+
+
+def get_node_count(configuration):
+    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+    try:
+        api_response = api_instance.list_node()
+        return len(api_response.items)
+    except Exception as e:  # pylint: disable=broad-except
+        logger.warning("Exception while fetching nodes: %s\n", e)
+
+
+def get_server_version(configuration):
+    api_instance = kube_client.VersionApi(kube_client.ApiClient(configuration))
+    try:
+        api_response = api_instance.get_code()
+        return api_response.git_version
+    except Exception as e:  # pylint: disable=broad-except
+        logger.warning("Unable to fetch kubernetes version: %s\n", e)
+
+
+def get_agent_version(configuration):
+    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+    try:
+        api_response = api_instance.read_namespaced_config_map('azure-clusterconfig', 'azure-arc')
+        return api_response.data["AZURE_ARC_AGENT_VERSION"]
+    except Exception as e:  # pylint: disable=broad-except
+        logger.warning("Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: %s\n", e)
+
+
+def generate_request_payload(configuration, location, public_key, tags):
+    # Fetch cluster info
+    total_node_count = get_node_count(configuration)
+    kubernetes_version = get_server_version(configuration)
+    azure_arc_agent_version = get_agent_version(configuration)
+
+    # Create connected cluster resource object
+    aad_profile = ConnectedClusterAADProfile(
+        tenant_id="",
+        client_app_id="",
+        server_app_id=""
+    )
+    identity = ConnectedClusterIdentity(
+        type="SystemAssigned"
+    )
+    if tags is None:
+        tags = {}
+    cc = ConnectedCluster(
+        location=location,
+        identity=identity,
+        agent_public_key_certificate=public_key,
+        aad_profile=aad_profile,
+        kubernetes_version=kubernetes_version,
+        total_node_count=total_node_count,
+        agent_version=azure_arc_agent_version,
+        tags=tags
+    )
+    return cc
+
+
+def get_pod_dict(api_instance):
+    pod_dict = {}
+    timeout = time.time() + 60
+    while not pod_dict:
         try:
-            api_response = api_instance.list_namespaced_pod(namespace)
-            #print(api_response.items)
-        except ApiException as e:
-            print("Exception when calling CoreV1Api->list_namespaced_pod: %s\n" % e)
-        for pod in api_response.items:
-            if pod.metadata.name.startswith('connect-agent'):
-                for container_status in pod.status.container_statuses:
-                    if container_status.name == 'connect-agent':
-                        connect_agent_state = container_status.state.running
-                        if connect_agent_state is not None:
-                            found_running = found_running + 1
-                            time.sleep(3)
-                        break
-                break
-        if found_running > 5:
-            break
-        else:
-            connect_agent_state = None
-    if connect_agent_state is None:
-        raise CLIError("There was a problem with connect-agent deployment. Please run 'kubectl -n azure-arc logs -l app.kubernetes.io/component=connect-agent -c connect-agent' to debug the error.")
+            api_response = api_instance.list_namespaced_pod('azure-arc')
+            for pod in api_response.items:
+                pod_dict[pod.metadata.name] = 0
+            return pod_dict
+        except Exception as e:  # pylint: disable=broad-except
+            logger.warning("Error occurred when retrieving pod information: %s", e)
+            time.sleep(5)
+        if time.time() > timeout:
+            logger.warning("Unable to fetch azure-arc agent pods.")
+            return pod_dict
+
+
+def check_pod_status(pod_dict):
+    v1 = kube_client.CoreV1Api()
+    w = watch.Watch()
+    for event in w.stream(v1.list_namespaced_pod, namespace='azure-arc', timeout_seconds=360):
+        pod_status = event['raw_object'].get('status')
+        pod_name = event['object'].metadata.name
+        if pod_status.get('containerStatuses'):
+            for container in pod_status.get('containerStatuses'):
+                if container.get('state').get('running') is None:
+                    pod_dict[pod_name] = 0
+                    break
+                else:
+                    pod_dict[pod_name] = 1
+                if container.get('state').get('terminated') is not None:
+                    logger.warning("%s%s%s", "The pod {} was terminated. ".format(container.get('name')),
+                                   "Please ensure it is in running state once the operation completes. ",
+                                   "Run 'kubectl get pods -n azure-arc' to check the pod status.")
+        if all(ele == 1 for ele in list(pod_dict.values())):
+            return
+    logger.warning("%s%s", 'The pods were unable to start before timeout. ',
+                   'Please run "kubectl get pods -n azure-arc" to ensure if the pods are in running state.')
 
 
 def get_connectedk8s(cmd, client, resource_group_name, cluster_name):
@@ -411,115 +448,117 @@ def get_connectedk8s(cmd, client, resource_group_name, cluster_name):
 
 
 def list_connectedk8s(cmd, client, resource_group_name=None):
-    if resource_group_name is None:
+    if not resource_group_name:
         return client.list_by_subscription()
     return client.list_by_resource_group(resource_group_name)
 
 
-def delete_connectedk8s(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None):
-    print("Ensure that you have the latest helm version installed before proceeding to avoid unexpected errors.")
-    print("This operation might take a while ...\n")
-    
-    # ARM delete Connected Cluster Resource
-    client.delete_cluster(resource_group_name, cluster_name)
+def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
+                        kube_config=None, kube_context=None, no_wait=False):
+    logger.warning("Ensure that you have the latest helm version installed before proceeding to avoid unexpected errors.")
+    logger.warning("This operation might take a while ...\n")
 
     # Setting kubeconfig
-    if kube_config is None:
-        kube_config = os.getenv('KUBECONFIG')
-        if kube_config is None:
-            kube_config = os.path.join(os.path.expanduser('~'), '.kube', 'config')
+    kube_config = set_kube_config(kube_config)
+
+    # Removing quotes from kubeconfig path. This is necessary for windows OS.
+    trim_kube_config(kube_config)
 
     # Loading the kubeconfig file in kubernetes client configuration
-    configuration = kubernetes.client.Configuration()
     try:
-        config.load_kube_config(config_file=kube_config, context=kube_context, client_configuration=configuration)
+        config.load_kube_config(config_file=kube_config, context=kube_context)
     except Exception as e:
-        print("Problem loading the kubeconfig file.")
-        raise CLIError(e)
+        raise CLIError("Problem loading the kubeconfig file." + str(e))
+    configuration = kube_client.Configuration()
 
-    # Checking the connection to kubernetes cluster. This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters if the user had not logged in.
-    api_instance = kubernetes.client.NetworkingV1Api(kubernetes.client.ApiClient(configuration))
-    try:
-        api_response = api_instance.get_api_resources()
-    except ApiException as e:
-        print("Exception when calling NetworkingV1Api->get_api_resources: %s\n" % e)
-        raise CLIError("If you are using AAD Enabled cluster, check if you have logged in to the cluster properly and try again")
+    # Checking the connection to kubernetes cluster.
+    # This check was added to avoid large timeouts when connecting to AAD Enabled
+    # AKS clusters if the user had not logged in.
+    check_kube_connection(configuration)
 
     # Checking helm installation
-    if kube_context is None:
-        cmd = ["helm", "--kubeconfig", kube_config, "--debug"]
-    else:
-        cmd = ["helm", "--kubeconfig", kube_config, "--kube-context", kube_context, "--debug"]
-    try:
-        response = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
-        output, error = response.communicate()
-        if response.returncode != 0:
-            if "unknown flag" in error.decode("ascii"):
-                raise CLIError("Please install the latest version of helm")
-            raise CLIError(error.decode("ascii"))
-    except FileNotFoundError:
-        raise CLIError("Helm is not installed or requires elevated permissions.")
-    except subprocess.CalledProcessError as e2:
-        e2.output = e2.output.decode("ascii")
-        print(e2.output)
+    check_helm_install(kube_config, kube_context)
 
     # Check helm version
-    if kube_context is None:
-        cmd = ["helm", "version", "--short", "--kubeconfig", kube_config]
-    else:
-        cmd = ["helm", "version", "--short", "--kubeconfig", kube_config, "--kube-context", kube_context]
-    response = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
-    output, error = response.communicate()
-    if response.returncode != 0:
-        raise CLIError("Unable to determine helm version: " + error.decode("ascii"))
-    else:
-        if "v2" in output.decode("ascii"):
-            raise CLIError("Please install the latest version of helm and then try again")
+    check_helm_version(kube_config, kube_context)
 
     # Check Release Existance
-    release_namespace = None
-    if kube_context is None:    
-        cmd_list = ["helm", "list", "-a", "--all-namespaces", "--output", "json", "--kubeconfig", kube_config]
-    else:
-        cmd_list = ["helm", "list", "-a", "--all-namespaces", "--output", "json", "--kubeconfig", kube_config, "--kube-context", kube_context]
-    response_list = subprocess.Popen(cmd_list, stdout=PIPE, stderr=PIPE)
-    output_list, error_list = response_list.communicate()
-    if response_list.returncode != 0:
-        raise CLIError(error_list.decode("ascii"))
-    else:
-        output_list = output_list.decode("ascii")
-        output_list = json.loads(output_list)
-        for release in output_list:
-            if release['name'] == 'azure-arc':
-                release_namespace = release['namespace']
-                break
-        if release_namespace is None:
-            return
+    release_namespace = get_release_namespace(kube_config, kube_context)
+    if release_namespace is None:
+        delete_cc_resource(client, resource_group_name, cluster_name, no_wait)
+        return
 
     # Loading config map
-    api_instance = kubernetes.client.CoreV1Api(kubernetes.client.ApiClient(configuration))
-    namespace = 'azure-arc'
+    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
     try:
-        api_response = api_instance.list_namespaced_config_map(namespace)
-    except ApiException as e:
-        print("Exception when calling CoreV1Api->list_namespaced_config_map: %s\n" % e)
-    for configmap in api_response.items:
-        if configmap.metadata.name == 'azure-clusterconfig':
-            if (configmap.data["AZURE_RESOURCE_GROUP"].lower() == resource_group_name.lower() and configmap.data["AZURE_RESOURCE_NAME"].lower() == cluster_name.lower()):
-                break
-            else:
-                raise CLIError("The kube config does not correspond to the connected cluster resource provided. Agents installed on this cluster correspond to the resource group name '{}' and resource name '{}'.".format(configmap.data["AZURE_RESOURCE_GROUP"], configmap.data["AZURE_RESOURCE_NAME"]))
+        configmap = api_instance.read_namespaced_config_map('azure-clusterconfig', 'azure-arc')
+    except Exception as e:  # pylint: disable=broad-except
+        logger.warning("Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: %s\n", e)
+
+    if (configmap.data["AZURE_RESOURCE_GROUP"].lower() == resource_group_name.lower() and
+            configmap.data["AZURE_RESOURCE_NAME"].lower() == cluster_name.lower()):
+        delete_cc_resource(client, resource_group_name, cluster_name, no_wait)
+    else:
+        raise CLIError("The current context in the kubeconfig file does not correspond " +
+                       "to the connected cluster resource specified. Agents installed on this cluster correspond " +
+                       "to the resource group name '{}' ".format(configmap.data["AZURE_RESOURCE_GROUP"]) +
+                       "and resource name '{}'.".format(configmap.data["AZURE_RESOURCE_NAME"]))
 
     # Deleting the azure-arc agents
-    if kube_context is None:
-        cmd1 = ["helm", "delete", "azure-arc", "--namespace", release_namespace, "--kubeconfig", kube_config]
-    else:
-        cmd1 = ["helm", "delete", "azure-arc", "--namespace", release_namespace, "--kubeconfig", kube_config, "--kube-context", kube_context]
-    response1 = subprocess.Popen(cmd1, stdout=PIPE, stderr=PIPE)
-    output1, error1 = response1.communicate()
-    if response1.returncode != 0:
-        raise CLIError("Helm release deletion failed: " + error1.decode("ascii"))
-    return
+    delete_arc_agents(release_namespace, kube_config, kube_context, configuration)
+
+
+def get_release_namespace(kube_config, kube_context):
+    cmd_helm_release = ["helm", "list", "-a", "--all-namespaces", "--output", "json", "--kubeconfig", kube_config]
+    if kube_context:
+        cmd_helm_release.extend(["--kube-context", kube_context])
+    response_helm_release = Popen(cmd_helm_release, stdout=PIPE, stderr=PIPE)
+    output_helm_release, error_helm_release = response_helm_release.communicate()
+    if response_helm_release.returncode != 0:
+        raise CLIError("Helm list release failed: " + error_helm_release.decode("ascii"))
+    output_helm_release = output_helm_release.decode("ascii")
+    output_helm_release = json.loads(output_helm_release)
+    for release in output_helm_release:
+        if release['name'] == 'azure-arc':
+            return release['namespace']
+    return None
+
+
+def delete_cc_resource(client, resource_group_name, cluster_name, no_wait):
+    try:
+        sdk_no_wait(no_wait, client.delete,
+                    resource_group_name=resource_group_name,
+                    cluster_name=cluster_name)
+    except CloudError as ex:
+        raise CLIError(ex)
+
+
+def delete_arc_agents(release_namespace, kube_config, kube_context, configuration):
+    cmd_helm_delete = ["helm", "delete", "azure-arc", "--namespace", release_namespace, "--kubeconfig", kube_config]
+    if kube_context:
+        cmd_helm_delete.extend(["--kube-context", kube_context])
+    response_helm_delete = Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
+    _, error_helm_delete = response_helm_delete.communicate()
+    if response_helm_delete.returncode != 0:
+        raise CLIError("Error occured while cleaning up arc agents. " +
+                       "Helm release deletion failed: " + error_helm_delete.decode("ascii"))
+    ensure_namespace_cleanup(configuration)
+
+
+def ensure_namespace_cleanup(configuration):
+    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+    timeout = time.time() + 120
+    while True:
+        if time.time() > timeout:
+            logger.warning("Namespace 'azure-arc' still in terminating state")
+            return
+        try:
+            api_response = api_instance.list_namespace(field_selector='metadata.name=azure-arc')
+            if api_response.items:
+                return
+            time.sleep(5)
+        except Exception as e:  # pylint: disable=broad-except
+            logger.warning("Exception while retrieving 'azure-arc' namespace: %s\n", e)
 
 
 def update_connectedk8s(cmd, instance, tags=None):
@@ -528,77 +567,9 @@ def update_connectedk8s(cmd, instance, tags=None):
     return instance
 
 
-def create_aad_application(cmd, display_name, homepage=None, identifier_uris=None,  # pylint: disable=too-many-locals
-                       available_to_other_tenants=False, password=None, reply_urls=None,
-                       key_value=None, key_type=None, key_usage=None, start_date=None, end_date=None,
-                       oauth2_allow_implicit_flow=None, required_resource_accesses=None, native_app=None,
-                       credential_description=None, app_roles=None):
-    graph_client = _graph_client_factory(cmd.cli_ctx)
-    password_creds = [PasswordCredential(start_date=start_date,
-                                         end_date=end_date, key_id=str(uuid.uuid4()),
-                                         value=password,
-                                         custom_key_identifier=None)]
-    app_create_param = ApplicationCreateParameters(available_to_other_tenants=False,
-                                                   display_name=display_name,
-                                                   identifier_uris=identifier_uris,
-                                                   homepage='https://' + display_name,
-                                                   reply_urls=None,
-                                                   key_credentials=None,
-                                                   password_credentials=password_creds,
-                                                   oauth2_allow_implicit_flow=None,
-                                                   required_resource_access=None,
-                                                   app_roles=None)
-    try:
-        result = graph_client.applications.create(app_create_param)
-    except GraphErrorException as ex:
-        if 'insufficient privileges' in str(ex).lower():
-            link = 'https://docs.microsoft.com/azure/azure-resource-manager/resource-group-create-service-principal-portal'  # pylint: disable=line-too-long
-            raise CLIError("Directory permission is needed for the current user to register the application. "
-                           "For how to configure, please refer '{}'. Original error: {}".format(link, ex))
-        raise
-    return result
-
-
-def _create_service_principal(cli_ctx, identifier, resolve_app=True):
-    client = _graph_client_factory(cli_ctx)
-    app_id = identifier
-    if resolve_app:
-        if _is_guid(identifier):
-            result = list(client.applications.list(filter="appId eq '{}'".format(identifier)))
-        else:
-            result = list(client.applications.list(
-                filter="identifierUris/any(s:s eq '{}')".format(identifier)))
-
-        try:
-            if not result:  # assume we get an object id
-                result = [client.applications.get(identifier)]
-            app_id = result[0].app_id
-        except GraphErrorException:
-            pass  # fallback to appid (maybe from an external tenant?)
-
-    return client.service_principals.create(ServicePrincipalCreateParameters(app_id=app_id, account_enabled=True))
-
-
 def _is_guid(guid):
     try:
         uuid.UUID(guid)
         return True
     except ValueError:
         return False
-
-
-def _error_caused_by_role_assignment_exists(ex):
-    return getattr(ex, 'status_code', None) == 409 and 'role assignment already exists' in ex.message
-
-
-def _create_role_assignment(cli_ctx, role, assignee, resource_group_name=None, scope=None,
-                            resolve_assignee=True, assignee_principal_type=None):
-    factory = _auth_client_factory(cli_ctx, scope)
-    assignments_client = factory.role_assignments
-    definitions_client = factory.role_definitions
-    role = '34e09817-6cbe-4d01-b1a2-e0eac5743d41'
-    role_id = '/subscriptions/{}/providers/Microsoft.Authorization/roleDefinitions/{}'.format(definitions_client.config.subscription_id, role)
-    object_id = assignee
-    worker = MultiAPIAdaptor(cli_ctx)
-    return worker.create_role_assignment(assignments_client, uuid.uuid4(), role_id,
-                                         object_id, scope, assignee_principal_type)

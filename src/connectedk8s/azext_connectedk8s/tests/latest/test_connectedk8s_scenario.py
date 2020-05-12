@@ -6,35 +6,39 @@
 import os
 import unittest
 
-from azure_devtools.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.testsdk import (LiveScenarioTest, ResourceGroupPreparer)  # pylint: disable=import-error
+from azure_devtools.scenario_tests import AllowLargeResponse  # pylint: disable=import-error
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
-class Connectedk8sScenarioTest(ScenarioTest):
+def _get_test_data_file(filename):
+    curr_dir = os.path.dirname(os.path.realpath(__file__))
+    return os.path.join(curr_dir, 'data', filename).replace('\\', '\\\\')
 
-    @ResourceGroupPreparer(name_prefix='cli_test_connectedk8s')
-    def test_connectedk8s(self, resource_group):
 
+class Connectedk8sScenarioTest(LiveScenarioTest):
+
+    def test_connectedk8s(self):
+
+        managed_cluster_name = self.create_random_name(prefix='cli-test-aks-', length=24)
         self.kwargs.update({
-            'name': 'test1'
+            'name': self.create_random_name(prefix='cc-', length=12),
+            'kubeconfig': "%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')),
+            'managed_cluster_name': managed_cluster_name
         })
-
-        self.cmd('connectedk8s create -g {rg} -n {name} --tags foo=doo', checks=[
+        self.cmd('aks create -g akkeshar-test2 -n {} -s Standard_B2s -l westeurope -c 1 --generate-ssh-keys'.format(managed_cluster_name))
+        self.cmd('aks get-credentials -g akkeshar-test2 -n {managed_cluster_name} -f {kubeconfig}')
+        os.environ['HELMCHART'] = _get_test_data_file('setupChart.tgz')
+        self.cmd('connectedk8s connect -g akkeshar-test2 -n {name} -l eastus2euap --tags foo=doo --kube-config {kubeconfig}', checks=[
             self.check('tags.foo', 'doo'),
             self.check('name', '{name}')
         ])
-        self.cmd('connectedk8s update -g {rg} -n {name} --tags foo=boo', checks=[
-            self.check('tags.foo', 'boo')
-        ])
-        count = len(self.cmd('connectedk8s list').get_output_in_json())
-        self.cmd('connectedk8s show - {rg} -n {name}', checks=[
+        self.cmd('connectedk8s show -g akkeshar-test2 -n {name}', checks=[
             self.check('name', '{name}'),
-            self.check('resourceGroup', '{rg}'),
-            self.check('tags.foo', 'boo')
+            self.check('resourceGroup', 'akkeshar-test2'),
+            self.check('tags.foo', 'doo')
         ])
-        self.cmd('connectedk8s delete -g {rg} -n {name}')
-        final_count = len(self.cmd('connectedk8s list').get_output_in_json())
-        self.assertTrue(final_count, count - 1)
+        self.cmd('connectedk8s delete -g akkeshar-test2 -n {name} --kube-config {kubeconfig} -y')
+        self.cmd('aks delete -g akkeshar-test2 -n {} -y'.format(managed_cluster_name))

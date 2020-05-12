@@ -1,0 +1,749 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-storage/9.0.0 Azure-SDK-For-Python AZURECLI/2.4.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_import_export_000001/providers/Microsoft.Storage/storageAccounts/clitest000002?api-version=2019-06-01
+  response:
+    body:
+      string: '{"sku":{"name":"Standard_LRS","tier":"Standard"},"kind":"Storage","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_import_export_000001/providers/Microsoft.Storage/storageAccounts/clitest000002","name":"clitest000002","type":"Microsoft.Storage/storageAccounts","location":"westus","tags":{},"properties":{"privateEndpointConnections":[],"isHnsEnabled":false,"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2020-04-21T09:42:32.0887711Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2020-04-21T09:42:32.0887711Z"}},"keySource":"Microsoft.Storage"},"provisioningState":"Succeeded","creationTime":"2020-04-21T09:42:31.9950564Z","primaryEndpoints":{"blob":"https://clitest000002.blob.core.windows.net/","queue":"https://clitest000002.queue.core.windows.net/","table":"https://clitest000002.table.core.windows.net/","file":"https://clitest000002.file.core.windows.net/"},"primaryLocation":"westus","statusOfPrimary":"available"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1261'
+      content-type:
+      - application/json
+      date:
+      - Tue, 21 Apr 2020 09:42:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - import-export location list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.4.0 azsdk-python-core/1.4.0 Python/3.8.2 (Windows-10-10.0.18362-SP0)
+        azsdk-python-storageimportexport/unknown
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ImportExport/locations?api-version=2016-11-01
+  response:
+    body:
+      string: "{\"value\":[{\"properties\":{\"recipientName\":\"This DC has security
+        requirements requiring advance notification for all inbound shipments. Contact
+        adbops@microsoft.com specifying your order name to receive the unique inbound
+        ID and shipping address\",\"streetAddress1\":\" \",\"streetAddress2\":\" \",\"city\":\"
+        \",\"stateOrProvince\":\" \",\"postalCode\":\" \",\"countryOrRegion\":\" \",\"phone\":\"
+        \",\"supportedCarriers\":[\"Blue Dart\",\"DHL\",\"FedEx\",\"TNT\",\"UPS\"],\"alternateLocations\":[\"/providers/Microsoft.ImportExport/locations/australiaeast\"]},\"id\":\"/providers/Microsoft.ImportExport/locations/australiaeast\",\"name\":\"Australia
+        East\",\"type\":\"Microsoft.ImportExport/locations\"},{\"properties\":{\"recipientName\":\"This
+        DC has security requirements requiring advance notification for all inbound
+        shipments. Contact adbops@microsoft.com specifying your order name to receive
+        the unique inbound ID and shipping address\",\"streetAddress1\":\" \",\"streetAddress2\":\"
+        \",\"city\":\" \",\"stateOrProvince\":\" \",\"postalCode\":\" \",\"countryOrRegion\":\"
+        \",\"phone\":\" \",\"supportedCarriers\":[\"Blue Dart\",\"DHL\",\"FedEx\",\"TNT\",\"UPS\"],\"alternateLocations\":[\"/providers/Microsoft.ImportExport/locations/australiasoutheast\"]},\"id\":\"/providers/Microsoft.ImportExport/locations/australiasoutheast\",\"name\":\"Australia
+        Southeast\",\"type\":\"Microsoft.ImportExport/locations\"},{\"properties\":{\"recipientName\":\"Microsoft
+        Azure Import/Export Service\",\"streetAddress1\":\"Microsoft c/o AscentyRua
+        Papa Joao Paulo II 4 - Jardim Santa Izabel\",\"streetAddress2\":\"Hortol\xE2ndia\",\"city\":\"S\xE3o
+        Paulo\",\"stateOrProvince\":\"\",\"postalCode\":\"CEP: 13.185-252\",\"countryOrRegion\":\"Brazil\",\"supportedCarriers\":[\"Blue
+        Dart\",\"DHL\",\"FedEx\",\"TNT\",\"UPS\"],\"alternateLocations\":[\"/providers/Microsoft.ImportExport/locations/brazilsouth\"]},\"id\":\"/providers/Microsoft.ImportExport/locations/brazilsouth\",\"name\":\"Brazil
+        South\",\"type\":\"Microsoft.ImportExport/locations\"},{\"properties\":{\"recipientName\":\"Microsoft
+        Azure Import/Export Service\",\"streetAddress1\":\"Microsoft c/o Allied Properties
+        REIT 35 John St\",\"streetAddress2\":\"\",\"city\":\"West Toronto\",\"stateOrProvince\":\"ON\",\"postalCode\":\"M5V
+        3G6\",\"countryOrRegion\":\"Canada\",\"supportedCarriers\":[\"Blue Dart\",\"DHL\",\"FedEx\",\"TNT\",\"UPS\"],\"alternateLocations\":[\"/providers/Microsoft.ImportExport/locations/canadacentral\"]},\"id\":\"/providers/Microsoft.ImportExport/locations/canadacentral\",\"name\":\"Canada
+        Central\",\"type\":\"Microsoft.ImportExport/locations\"},{\"properties\":{\"recipientName\":\"Microsoft
+        Azure Import/Export Service\",\"streetAddress1\":\"Microsoft c/o 4 Degrees
+        2675 Boulevard du Parc-Technologique\",\"streetAddress2\":\"\",\"city\":\"Quebec
+        City\",\"stateOrProvince\":\"QC\",\"postalCode\":\"G1P 4S5\",\"countryOrRegion\":\"Canada\",\"supportedCarriers\":[\"Blue
+        Dart\",\"DHL\",\"FedEx\",\"TNT\",\"UPS\"],\"alternateLocations\":[\"/providers/Microsoft.ImportExport/locations/canadacentral\"]},\"id\":\"/providers/Microsoft.ImportExport/locations/canadaeast\",\"name\":\"Canada
+        East\",\"type\":\"Microsoft.ImportExport/locations\"},{\"properties\":{\"recipientName\":\"Microsoft
+        Azure Import/Export Service\",\"streetAddress1\":\"Microsoft Corp. (India)
+        Pvt. Ltd. c/o Tata Communications Ltd., IDC Building, 2nd floor, Alandi Road\",\"streetAddress2\":\"\",\"city\":\"Dighi,
+        Pune\",\"stateOrProvince\":\"Mahar\",\"postalCode\":\"411015\",\"countryOrRegion\":\"India\",\"phone\":\"+91-8956884068\",\"supportedCarriers\":[\"Blue
+        Dart\",\"DHL\",\"FedEx\",\"TNT\",\"UPS\"],\"alternateLocations\":[\"/providers/Microsoft.ImportExport/locations/centralindia\"]},\"id\":\"/providers/Microsoft.ImportExport/locations/centralindia\",\"name\":\"Central
+        India\",\"type\":\"Microsoft.ImportExport/locations\"},{\"properties\":{\"recipientName\":\"Microsoft
+        Azure Import/Export Service\",\"streetAddress1\":\"550 SE White Crane Rd\",\"streetAddress2\":\"\",\"city\":\"West
+        Des Moines\",\"stateOrProvince\":\"IA\",\"postalCode\":\"50265\",\"countryOrRegion\":\"USA\",\"phone\":\"5156975500\",\"supportedCarriers\":[\"Blue
+        Dart\",\"DHL\",\"FedEx\",\"TNT\",\"UPS\"],\"alternateLocations\":[\"/providers/Microsoft.ImportExport/locations/centralus\"]},\"id\":\"/providers/Microsoft.ImportExport/locations/centralus\",\"name\":\"Central
+        US\",\"type\":\"Microsoft.ImportExport/locations\"},{\"properties\":{\"recipientName\":\"Microsoft
+        Azure Import/Export Service\",\"streetAddress1\":\"\\n      Microsoft c/o
+        NTT Comm 6 Chun Kwong Street, Tseung Kwan O Industrial Estate \",\"streetAddress2\":\"\",\"city\":\"Tseung
+        Kwan O\",\"stateOrProvince\":\"\",\"postalCode\":\"\",\"countryOrRegion\":\"\",\"phone\":\"+852
+        3793 0508\\n    \",\"supportedCarriers\":[\"Blue Dart\",\"DHL\",\"FedEx\",\"TNT\",\"UPS\"],\"alternateLocations\":[\"/providers/Microsoft.ImportExport/locations/eastasia\"]},\"id\":\"/providers/Microsoft.ImportExport/locations/eastasia\",\"name\":\"East
+        Asia\",\"type\":\"Microsoft.ImportExport/locations\"},{\"properties\":{\"recipientName\":\"Microsoft
+        Azure Import/Export Service\",\"streetAddress1\":\"21625 Gresham Drive\",\"streetAddress2\":\"\",\"city\":\"Ashburn\",\"stateOrProvince\":\"VA\",\"postalCode\":\"20147\",\"countryOrRegion\":\"USA\",\"phone\":\"\",\"supportedCarriers\":[\"Blue
+        Dart\",\"DHL\",\"FedEx\",\"TNT\",\"UPS\"],\"alternateLocations\":[\"/providers/Microsoft.ImportExport/locations/eastus\"]},\"id\":\"/providers/Microsoft.ImportExport/locations/eastus\",\"name\":\"East
+        US\",\"type\":\"Microsoft.ImportExport/locations\"},{\"properties\":{\"recipientName\":\"Microsoft
+        Azure Import/Export Service\",\"streetAddress1\":\"101 Herbert Drive, BLDG
+        7\",\"streetAddress2\":\"\",\"city\":\"Boydton\",\"stateOrProvince\":\"VA\",\"postalCode\":\"23917\",\"countryOrRegion\":\"USA\",\"phone\":\"\",\"supportedCarriers\":[\"Blue
+        Dart\",\"DHL\",\"FedEx\",\"TNT\",\"UPS\"],\"alternateLocations\":[\"/providers/Microsoft.ImportExport/locations/eastus\"]},\"id\":\"/providers/Microsoft.ImportExport/locations/eastus2\",\"name\":\"East
+        US 2\",\"type\":\"Microsoft.ImportExport/locations\"},{\"properties\":{\"recipientName\":\"Microsoft
+        Azure Import/Export Service\",\"streetAddress1\":\"Microsoft Agriport 570\",\"streetAddress2\":\"\",\"city\":\"Middenmeer\",\"stateOrProvince\":\"NL-NH\",\"postalCode\":\"1775TB\",\"countryOrRegion\":\"Netherlands
+        (NL)\",\"supportedCarriers\":[\"FedEx\"],\"alternateLocations\":[\"/providers/Microsoft.ImportExport/locations/westeurope\"]},\"id\":\"/providers/Microsoft.ImportExport/locations/germanynorth\",\"name\":\"Germany
+        North\",\"type\":\"Microsoft.ImportExport/locations\"},{\"properties\":{\"recipientName\":\"Microsoft
+        Azure Import/Export Service\",\"streetAddress1\":\"Microsoft Agriport 570\",\"streetAddress2\":\"\",\"city\":\"Middenmeer\",\"stateOrProvince\":\"NL-NH\",\"postalCode\":\"1775TB\",\"countryOrRegion\":\"Netherlands
+        (NL)\",\"supportedCarriers\":[\"FedEx\"],\"alternateLocations\":[\"/providers/Microsoft.ImportExport/locations/westeurope\"]},\"id\":\"/providers/Microsoft.ImportExport/locations/germanywestcentral\",\"name\":\"Germany
+        West Central\",\"type\":\"Microsoft.ImportExport/locations\"},{\"properties\":{\"recipientName\":\"Microsoft
+        Azure Import/Export Service\",\"streetAddress1\":\"Microsoft C/O NTT Communications
+        2-7-5, Tabatashinmachi, Kita-ku\",\"streetAddress2\":\"\",\"city\":\"Tokyo\",\"stateOrProvince\":\"\",\"postalCode\":\"114-0012\",\"countryOrRegion\":\"Japan\",\"supportedCarriers\":[\"Blue
+        Dart\",\"DHL\",\"FedEx\",\"TNT\",\"UPS\"],\"alternateLocations\":[\"/providers/Microsoft.ImportExport/locations/japaneast\"]},\"id\":\"/providers/Microsoft.ImportExport/locations/japaneast\",\"name\":\"Japan
+        East\",\"type\":\"Microsoft.ImportExport/locations\"},{\"properties\":{\"recipientName\":\"Microsoft
+        Azure Import/Export Service\",\"streetAddress1\":\"Microsoft C/O NTT Communications3-1-21,
+        Dojima Kita-ku\",\"streetAddress2\":\"\",\"city\":\"Osaka City\",\"stateOrProvince\":\"Osaka\",\"postalCode\":\"553-0003\",\"countryOrRegion\":\"Japan\",\"phone\":\"+81
+        (6) 7670-6655\",\"supportedCarriers\":[\"Blue Dart\",\"DHL\",\"FedEx\",\"TNT\",\"UPS\"],\"alternateLocations\":[\"/providers/Microsoft.ImportExport/locations/japanwest\"]},\"id\":\"/providers/Microsoft.ImportExport/locations/japanwest\",\"name\":\"Japan
+        West\",\"type\":\"Microsoft.ImportExport/locations\"},{\"properties\":{\"recipientName\":\"Microsoft
+        Azure Import/Export Service\",\"streetAddress1\":\"Microsoft c/o 29, Simindaero-327gil,
+        Dong An-gu\",\"streetAddress2\":\"Anyang-si\",\"city\":\"Kyeonggido\",\"stateOrProvince\":\"\",\"postalCode\":\"14055\",\"countryOrRegion\":\"Republic
+        of Korea\",\"supportedCarriers\":[\"Blue Dart\",\"DHL\",\"FedEx\",\"TNT\",\"UPS\"],\"alternateLocations\":[\"/providers/Microsoft.ImportExport/locations/koreacentral\"]},\"id\":\"/providers/Microsoft.ImportExport/locations/koreacentral\",\"name\":\"Korea
+        Central\",\"type\":\"Microsoft.ImportExport/locations\"},{\"properties\":{\"recipientName\":\"Microsoft
+        Azure Import/Export Service\",\"streetAddress1\":\"Microsoft c/o 29, Simindaero-327gil,
+        Dong An-gu\",\"streetAddress2\":\"Anyang-si\",\"city\":\"Kyeonggido\",\"stateOrProvince\":\"\",\"postalCode\":\"14055\",\"countryOrRegion\":\"Republic
+        of Korea\",\"supportedCarriers\":[\"FedEx\",\"DHL\"],\"alternateLocations\":[\"/providers/Microsoft.ImportExport/locations/australiasoutheast\"]},\"id\":\"/providers/Microsoft.ImportExport/locations/koreasouth\",\"name\":\"Korea
+        South\",\"type\":\"Microsoft.ImportExport/locations\"},{\"properties\":{\"recipientName\":\"Microsoft
+        Azure Import/Export Service\",\"streetAddress1\":\"601 Northwest Ave.\",\"streetAddress2\":\"\",\"city\":\"Northlake\",\"stateOrProvince\":\"IL\",\"postalCode\":\"60164\",\"countryOrRegion\":\"USA\",\"phone\":\"(708)
+        836-5143\",\"supportedCarriers\":[\"Blue Dart\",\"DHL\",\"FedEx\",\"TNT\",\"UPS\"],\"alternateLocations\":[\"/providers/Microsoft.ImportExport/locations/northcentralus\"]},\"id\":\"/providers/Microsoft.ImportExport/locations/northcentralus\",\"name\":\"North
+        Central US\",\"type\":\"Microsoft.ImportExport/locations\"},{\"properties\":{\"recipientName\":\"Microsoft
+        Azure Import/Export Service\",\"streetAddress1\":\"Unit 74 Grange Castle Business
+        Park, Clondalkin\",\"streetAddress2\":\"\",\"city\":\"Dublin\",\"stateOrProvince\":\"\",\"postalCode\":\"22\",\"countryOrRegion\":\"Ireland
+        (IE)\",\"phone\":\"8886052200\",\"supportedCarriers\":[\"Blue Dart\",\"DHL\",\"FedEx\",\"TNT\",\"UPS\"],\"alternateLocations\":[\"/providers/Microsoft.ImportExport/locations/westeurope\"]},\"id\":\"/providers/Microsoft.ImportExport/locations/northeurope\",\"name\":\"North
+        Europe\",\"type\":\"Microsoft.ImportExport/locations\"},{\"properties\":{\"recipientName\":\"Microsoft
+        Azure Import/Export Service\",\"streetAddress1\":\"5150 Rogers Road\",\"streetAddress2\":\"\",\"city\":\"San
+        Antonio\",\"stateOrProvince\":\"TX\",\"postalCode\":\"78251\",\"countryOrRegion\":\"USA\",\"phone\":\"+1
+        210 3462528\",\"supportedCarriers\":[\"Blue Dart\",\"DHL\",\"FedEx\",\"TNT\",\"UPS\"],\"alternateLocations\":[\"/providers/Microsoft.ImportExport/locations/westus\"]},\"id\":\"/providers/Microsoft.ImportExport/locations/southcentralus\",\"name\":\"South
+        Central US\",\"type\":\"Microsoft.ImportExport/locations\"},{\"properties\":{\"recipientName\":\"Microsoft
+        Azure Import/Export Service\",\"streetAddress1\":\"Microsoft Corp. (India)
+        Pvt. Ltd. C/o Tata Communications Ltd, 226 Red Hills Road, Kallikuppam\",\"streetAddress2\":\"\",\"city\":\"Ambattur\",\"stateOrProvince\":\"Tamil
+        Nadu\",\"postalCode\":\"600053\",\"countryOrRegion\":\"India\",\"phone\":\"+91
+        7200090173\",\"supportedCarriers\":[\"Blue Dart\",\"DHL\",\"FedEx\",\"TNT\",\"UPS\"],\"alternateLocations\":[\"/providers/Microsoft.ImportExport/locations/southindia\"]},\"id\":\"/providers/Microsoft.ImportExport/locations/southindia\",\"name\":\"South
+        India\",\"type\":\"Microsoft.ImportExport/locations\"},{\"properties\":{\"recipientName\":\"Microsoft
+        Azure Import/Export Service\",\"streetAddress1\":\"21 Defu Ave 1\",\"streetAddress2\":\"\",\"city\":\"Singapore\",\"stateOrProvince\":\"539539\",\"postalCode\":\"Singapore
+        (SG)\",\"countryOrRegion\":\"+659017 9066\",\"supportedCarriers\":[\"Blue
+        Dart\",\"DHL\",\"FedEx\",\"TNT\",\"UPS\"],\"alternateLocations\":[\"/providers/Microsoft.ImportExport/locations/southeastasia\"]},\"id\":\"/providers/Microsoft.ImportExport/locations/southeastasia\",\"name\":\"Southeast
+        Asia\",\"type\":\"Microsoft.ImportExport/locations\"},{\"properties\":{\"recipientName\":\"This
+        DC has security requirements requiring advance notification for all inbound
+        shipments. Contact adbops@microsoft.com specifying your order name to receive
+        the unique inbound ID and shipping address\",\"streetAddress1\":\" \",\"streetAddress2\":\"
+        \",\"city\":\" \",\"stateOrProvince\":\" \",\"postalCode\":\" \",\"countryOrRegion\":\"
+        \",\"phone\":\" \",\"supportedCarriers\":[\"Blue Dart\",\"DHL\",\"FedEx\",\"TNT\",\"UPS\"],\"alternateLocations\":[\"/providers/Microsoft.ImportExport/locations/uksouth\"]},\"id\":\"/providers/Microsoft.ImportExport/locations/uksouth\",\"name\":\"UK
+        South\",\"type\":\"Microsoft.ImportExport/locations\"},{\"properties\":{\"recipientName\":\"This
+        DC has security requirements requiring advance notification for all inbound
+        shipments. Contact adbops@microsoft.com specifying your order name to receive
+        the unique inbound ID and shipping address\",\"streetAddress1\":\" \",\"streetAddress2\":\"
+        \",\"city\":\" \",\"stateOrProvince\":\" \",\"postalCode\":\" \",\"countryOrRegion\":\"
+        \",\"phone\":\" \",\"supportedCarriers\":[\"FedEx\",\"DHL\"],\"alternateLocations\":[\"/providers/Microsoft.ImportExport/locations/uksouth\"]},\"id\":\"/providers/Microsoft.ImportExport/locations/ukwest\",\"name\":\"UK
+        West\",\"type\":\"Microsoft.ImportExport/locations\"},{\"properties\":{\"recipientName\":\"Microsoft
+        Azure Import/Export Service\",\"streetAddress1\":\"Microsoft 638 Logistics
+        Drive\",\"streetAddress2\":\"\",\"city\":\"Cheyenne\",\"stateOrProvince\":\"WY\",\"postalCode\":\"82007\",\"countryOrRegion\":\"USA\",\"supportedCarriers\":[\"Blue
+        Dart\",\"DHL\",\"FedEx\",\"TNT\",\"UPS\"],\"alternateLocations\":[\"/providers/Microsoft.ImportExport/locations/centralus\"]},\"id\":\"/providers/Microsoft.ImportExport/locations/westcentralus\",\"name\":\"West
+        Central US\",\"type\":\"Microsoft.ImportExport/locations\"},{\"properties\":{\"recipientName\":\"Microsoft
+        Azure Import/Export Service\",\"streetAddress1\":\"Microsoft Agriport 570\",\"streetAddress2\":\"\",\"city\":\"Middenmeer\",\"stateOrProvince\":\"NL-NH\",\"postalCode\":\"1775TB\",\"countryOrRegion\":\"Netherlands
+        (NL)\",\"supportedCarriers\":[\"Blue Dart\",\"DHL\",\"FedEx\",\"TNT\",\"UPS\"],\"alternateLocations\":[\"/providers/Microsoft.ImportExport/locations/westeurope\"]},\"id\":\"/providers/Microsoft.ImportExport/locations/westeurope\",\"name\":\"West
+        Europe\",\"type\":\"Microsoft.ImportExport/locations\"},{\"properties\":{\"recipientName\":\"Microsoft
+        Azure Import/Export Service\",\"streetAddress1\":\"Microsoft c/o Tata Communications,Tower
+        A , 6th Floor,Plot # C21 C36, Bandra Kurla Complex, Near MTNL\",\"streetAddress2\":\"\",\"city\":\"Mumbai\",\"stateOrProvince\":\"Maharashtra\",\"postalCode\":\"400098\",\"countryOrRegion\":\"India\",\"supportedCarriers\":[\"Blue
+        Dart\",\"DHL\",\"FedEx\",\"TNT\",\"UPS\"],\"alternateLocations\":[\"/providers/Microsoft.ImportExport/locations/centralindia\"]},\"id\":\"/providers/Microsoft.ImportExport/locations/westindia\",\"name\":\"West
+        India\",\"type\":\"Microsoft.ImportExport/locations\"},{\"properties\":{\"recipientName\":\"Microsoft
+        Azure Import/Export Service\",\"streetAddress1\":\"3020 Coronado\",\"streetAddress2\":\"\",\"city\":\"Santa
+        Clara\",\"stateOrProvince\":\"CA\",\"postalCode\":\"95054\",\"countryOrRegion\":\"USA\",\"phone\":\"408
+        352 7600\",\"supportedCarriers\":[\"Blue Dart\",\"DHL\",\"FedEx\",\"TNT\",\"UPS\"],\"alternateLocations\":[\"/providers/Microsoft.ImportExport/locations/westus\"]},\"id\":\"/providers/Microsoft.ImportExport/locations/westus\",\"name\":\"West
+        US\",\"type\":\"Microsoft.ImportExport/locations\"},{\"properties\":{\"recipientName\":\"Microsoft
+        Azure Import/Export Service\",\"streetAddress1\":\"1515 Port Industrial Parkway\",\"streetAddress2\":\"\",\"city\":\"Quincy\",\"stateOrProvince\":\"WA\",\"postalCode\":\"98848\",\"countryOrRegion\":\"USA\",\"supportedCarriers\":[\"Blue
+        Dart\",\"DHL\",\"FedEx\",\"TNT\",\"UPS\"],\"alternateLocations\":[\"/providers/Microsoft.ImportExport/locations/westus2\"]},\"id\":\"/providers/Microsoft.ImportExport/locations/westus2\",\"name\":\"West
+        US 2\",\"type\":\"Microsoft.ImportExport/locations\"}]}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '15120'
+      content-type:
+      - application/json
+      date:
+      - Tue, 21 Apr 2020 09:42:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - import-export location list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-resource/9.0.0 Azure-SDK-For-Python AZURECLI/2.4.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/locations?api-version=2019-06-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/eastasia","name":"eastasia","displayName":"East
+        Asia","longitude":"114.188","latitude":"22.267"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/southeastasia","name":"southeastasia","displayName":"Southeast
+        Asia","longitude":"103.833","latitude":"1.283"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/centralus","name":"centralus","displayName":"Central
+        US","longitude":"-93.6208","latitude":"41.5908"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/eastus","name":"eastus","displayName":"East
+        US","longitude":"-79.8164","latitude":"37.3719"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/eastus2","name":"eastus2","displayName":"East
+        US 2","longitude":"-78.3889","latitude":"36.6681"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/westus","name":"westus","displayName":"West
+        US","longitude":"-122.417","latitude":"37.783"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/northcentralus","name":"northcentralus","displayName":"North
+        Central US","longitude":"-87.6278","latitude":"41.8819"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/southcentralus","name":"southcentralus","displayName":"South
+        Central US","longitude":"-98.5","latitude":"29.4167"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/northeurope","name":"northeurope","displayName":"North
+        Europe","longitude":"-6.2597","latitude":"53.3478"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/westeurope","name":"westeurope","displayName":"West
+        Europe","longitude":"4.9","latitude":"52.3667"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/japanwest","name":"japanwest","displayName":"Japan
+        West","longitude":"135.5022","latitude":"34.6939"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/japaneast","name":"japaneast","displayName":"Japan
+        East","longitude":"139.77","latitude":"35.68"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/brazilsouth","name":"brazilsouth","displayName":"Brazil
+        South","longitude":"-46.633","latitude":"-23.55"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/australiaeast","name":"australiaeast","displayName":"Australia
+        East","longitude":"151.2094","latitude":"-33.86"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/australiasoutheast","name":"australiasoutheast","displayName":"Australia
+        Southeast","longitude":"144.9631","latitude":"-37.8136"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/southindia","name":"southindia","displayName":"South
+        India","longitude":"80.1636","latitude":"12.9822"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/centralindia","name":"centralindia","displayName":"Central
+        India","longitude":"73.9197","latitude":"18.5822"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/westindia","name":"westindia","displayName":"West
+        India","longitude":"72.868","latitude":"19.088"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/canadacentral","name":"canadacentral","displayName":"Canada
+        Central","longitude":"-79.383","latitude":"43.653"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/canadaeast","name":"canadaeast","displayName":"Canada
+        East","longitude":"-71.217","latitude":"46.817"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/uksouth","name":"uksouth","displayName":"UK
+        South","longitude":"-0.799","latitude":"50.941"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/ukwest","name":"ukwest","displayName":"UK
+        West","longitude":"-3.084","latitude":"53.427"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/westcentralus","name":"westcentralus","displayName":"West
+        Central US","longitude":"-110.234","latitude":"40.890"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/westus2","name":"westus2","displayName":"West
+        US 2","longitude":"-119.852","latitude":"47.233"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/koreacentral","name":"koreacentral","displayName":"Korea
+        Central","longitude":"126.9780","latitude":"37.5665"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/koreasouth","name":"koreasouth","displayName":"Korea
+        South","longitude":"129.0756","latitude":"35.1796"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/francecentral","name":"francecentral","displayName":"France
+        Central","longitude":"2.3730","latitude":"46.3772"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/francesouth","name":"francesouth","displayName":"France
+        South","longitude":"2.1972","latitude":"43.8345"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/australiacentral","name":"australiacentral","displayName":"Australia
+        Central","longitude":"149.1244","latitude":"-35.3075"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/australiacentral2","name":"australiacentral2","displayName":"Australia
+        Central 2","longitude":"149.1244","latitude":"-35.3075"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/uaecentral","name":"uaecentral","displayName":"UAE
+        Central","longitude":"54.366669","latitude":"24.466667"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/uaenorth","name":"uaenorth","displayName":"UAE
+        North","longitude":"55.316666","latitude":"25.266666"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/southafricanorth","name":"southafricanorth","displayName":"South
+        Africa North","longitude":"28.218370","latitude":"-25.731340"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/southafricawest","name":"southafricawest","displayName":"South
+        Africa West","longitude":"18.843266","latitude":"-34.075691"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/switzerlandnorth","name":"switzerlandnorth","displayName":"Switzerland
+        North","longitude":"8.564572","latitude":"47.451542"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/switzerlandwest","name":"switzerlandwest","displayName":"Switzerland
+        West","longitude":"6.143158","latitude":"46.204391"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/germanynorth","name":"germanynorth","displayName":"Germany
+        North","longitude":"8.806422","latitude":"53.073635"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/germanywestcentral","name":"germanywestcentral","displayName":"Germany
+        West Central","longitude":"8.682127","latitude":"50.110924"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/norwaywest","name":"norwaywest","displayName":"Norway
+        West","longitude":"5.733107","latitude":"58.969975"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/norwayeast","name":"norwayeast","displayName":"Norway
+        East","longitude":"10.752245","latitude":"59.913868"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '7129'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 21 Apr 2020 09:42:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - import-export location show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location
+      User-Agent:
+      - AZURECLI/2.4.0 azsdk-python-core/1.4.0 Python/3.8.2 (Windows-10-10.0.18362-SP0)
+        azsdk-python-storageimportexport/unknown
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ImportExport/locations/westus2?api-version=2016-11-01
+  response:
+    body:
+      string: '{"properties":{"recipientName":"Microsoft Azure Import/Export Service","streetAddress1":"1515
+        Port Industrial Parkway","streetAddress2":"","city":"Quincy","stateOrProvince":"WA","postalCode":"98848","countryOrRegion":"USA","supportedCarriers":["Blue
+        Dart","DHL","FedEx","TNT","UPS"],"alternateLocations":["/providers/Microsoft.ImportExport/locations/westus2"]},"id":"/providers/Microsoft.ImportExport/locations/westus2","name":"West
+        US 2","type":"Microsoft.ImportExport/locations"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '481'
+      content-type:
+      - application/json
+      date:
+      - Tue, 21 Apr 2020 09:42:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - import-export location show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location
+      User-Agent:
+      - python/3.8.2 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.3
+        azure-mgmt-resource/9.0.0 Azure-SDK-For-Python AZURECLI/2.4.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/locations?api-version=2019-06-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/eastasia","name":"eastasia","displayName":"East
+        Asia","longitude":"114.188","latitude":"22.267"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/southeastasia","name":"southeastasia","displayName":"Southeast
+        Asia","longitude":"103.833","latitude":"1.283"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/centralus","name":"centralus","displayName":"Central
+        US","longitude":"-93.6208","latitude":"41.5908"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/eastus","name":"eastus","displayName":"East
+        US","longitude":"-79.8164","latitude":"37.3719"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/eastus2","name":"eastus2","displayName":"East
+        US 2","longitude":"-78.3889","latitude":"36.6681"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/westus","name":"westus","displayName":"West
+        US","longitude":"-122.417","latitude":"37.783"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/northcentralus","name":"northcentralus","displayName":"North
+        Central US","longitude":"-87.6278","latitude":"41.8819"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/southcentralus","name":"southcentralus","displayName":"South
+        Central US","longitude":"-98.5","latitude":"29.4167"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/northeurope","name":"northeurope","displayName":"North
+        Europe","longitude":"-6.2597","latitude":"53.3478"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/westeurope","name":"westeurope","displayName":"West
+        Europe","longitude":"4.9","latitude":"52.3667"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/japanwest","name":"japanwest","displayName":"Japan
+        West","longitude":"135.5022","latitude":"34.6939"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/japaneast","name":"japaneast","displayName":"Japan
+        East","longitude":"139.77","latitude":"35.68"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/brazilsouth","name":"brazilsouth","displayName":"Brazil
+        South","longitude":"-46.633","latitude":"-23.55"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/australiaeast","name":"australiaeast","displayName":"Australia
+        East","longitude":"151.2094","latitude":"-33.86"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/australiasoutheast","name":"australiasoutheast","displayName":"Australia
+        Southeast","longitude":"144.9631","latitude":"-37.8136"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/southindia","name":"southindia","displayName":"South
+        India","longitude":"80.1636","latitude":"12.9822"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/centralindia","name":"centralindia","displayName":"Central
+        India","longitude":"73.9197","latitude":"18.5822"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/westindia","name":"westindia","displayName":"West
+        India","longitude":"72.868","latitude":"19.088"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/canadacentral","name":"canadacentral","displayName":"Canada
+        Central","longitude":"-79.383","latitude":"43.653"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/canadaeast","name":"canadaeast","displayName":"Canada
+        East","longitude":"-71.217","latitude":"46.817"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/uksouth","name":"uksouth","displayName":"UK
+        South","longitude":"-0.799","latitude":"50.941"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/ukwest","name":"ukwest","displayName":"UK
+        West","longitude":"-3.084","latitude":"53.427"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/westcentralus","name":"westcentralus","displayName":"West
+        Central US","longitude":"-110.234","latitude":"40.890"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/westus2","name":"westus2","displayName":"West
+        US 2","longitude":"-119.852","latitude":"47.233"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/koreacentral","name":"koreacentral","displayName":"Korea
+        Central","longitude":"126.9780","latitude":"37.5665"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/koreasouth","name":"koreasouth","displayName":"Korea
+        South","longitude":"129.0756","latitude":"35.1796"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/francecentral","name":"francecentral","displayName":"France
+        Central","longitude":"2.3730","latitude":"46.3772"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/francesouth","name":"francesouth","displayName":"France
+        South","longitude":"2.1972","latitude":"43.8345"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/australiacentral","name":"australiacentral","displayName":"Australia
+        Central","longitude":"149.1244","latitude":"-35.3075"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/australiacentral2","name":"australiacentral2","displayName":"Australia
+        Central 2","longitude":"149.1244","latitude":"-35.3075"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/uaecentral","name":"uaecentral","displayName":"UAE
+        Central","longitude":"54.366669","latitude":"24.466667"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/uaenorth","name":"uaenorth","displayName":"UAE
+        North","longitude":"55.316666","latitude":"25.266666"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/southafricanorth","name":"southafricanorth","displayName":"South
+        Africa North","longitude":"28.218370","latitude":"-25.731340"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/southafricawest","name":"southafricawest","displayName":"South
+        Africa West","longitude":"18.843266","latitude":"-34.075691"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/switzerlandnorth","name":"switzerlandnorth","displayName":"Switzerland
+        North","longitude":"8.564572","latitude":"47.451542"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/switzerlandwest","name":"switzerlandwest","displayName":"Switzerland
+        West","longitude":"6.143158","latitude":"46.204391"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/germanynorth","name":"germanynorth","displayName":"Germany
+        North","longitude":"8.806422","latitude":"53.073635"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/germanywestcentral","name":"germanywestcentral","displayName":"Germany
+        West Central","longitude":"8.682127","latitude":"50.110924"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/norwaywest","name":"norwaywest","displayName":"Norway
+        West","longitude":"5.733107","latitude":"58.969975"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/norwayeast","name":"norwayeast","displayName":"Norway
+        East","longitude":"10.752245","latitude":"59.913868"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '7129'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 21 Apr 2020 09:42:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: 'b''b\''{"location": "westus", "properties": {"storageAccountId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_import_export_000001/providers/Microsoft.Storage/storageAccounts/clitest000002",
+      "jobType": "Import", "returnAddress": {"recipientName": "Tests", "streetAddress1":
+      "Street1", "streetAddress2": "street2", "city": "Redmond", "stateOrProvince":
+      "wa", "postalCode": "98007", "countryOrRegion": "USA", "phone": "4250000000",
+      "email": "Test@contoso.com"}, "diagnosticsPath": "waimportexport", "logLevel":
+      "Verbose", "backupDriveManifest": true, "driveList": [{"driveId": "9CA995BF",
+      "bitLockerKey": "238810-662376-448998-450120-652806-203390-606320-483076", "manifestFile":
+      "\\\\\\\\DriveManifest.xml", "manifestHash": "109B21108597EF36D5785F08303F3638",
+      "driveHeaderHash": ""}]}}\'''''
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - import-export create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '860'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --location --type --log-level --storage-account --backup-drive-manifest
+        --diagnostics-path --drive-list --return-address
+      User-Agent:
+      - AZURECLI/2.4.0 azsdk-python-core/1.4.0 Python/3.8.2 (Windows-10-10.0.18362-SP0)
+        azsdk-python-storageimportexport/unknown
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_import_export_000001/providers/Microsoft.ImportExport/jobs/test-import-export-000003?api-version=2016-11-01
+  response:
+    body:
+      string: '{"properties":{"storageAccountId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_import_export_000001/providers/Microsoft.Storage/storageAccounts/clitest000002","jobType":"Import","returnAddress":{"recipientName":"Tests","streetAddress1":"Street1","streetAddress2":"street2","city":"Redmond","stateOrProvince":"wa","postalCode":"98007","countryOrRegion":"USA","phone":"4250000000","email":"Test@contoso.com"},"shippingInformation":{"recipientName":"Microsoft
+        Azure Import/Export Service","streetAddress1":"3020 Coronado","streetAddress2":"","city":"Santa
+        Clara","stateOrProvince":"CA","postalCode":"95054","countryOrRegion":"USA","phone":"408
+        352 7600"},"diagnosticsPath":"waimportexport","logLevel":"Verbose","backupDriveManifest":true,"cancelRequested":false,"state":"Creating","driveList":[{"driveId":"9CA995BF","manifestFile":"\\DriveManifest.xml","manifestHash":"109B21108597EF36D5785F08303F3638","driveHeaderHash":"","state":"Specified"}],"provisioningState":"Succeeded","encryptionKey":{"kekType":"MicrosoftManaged"}},"identity":{"type":"None"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_import_export_000001/providers/Microsoft.ImportExport/jobs/test-import-export-000003","name":"test-import-export-000003","type":"Microsoft.ImportExport/jobs","location":"westus"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1443'
+      content-type:
+      - application/json
+      date:
+      - Tue, 21 Apr 2020 09:43:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - import-export list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.4.0 azsdk-python-core/1.4.0 Python/3.8.2 (Windows-10-10.0.18362-SP0)
+        azsdk-python-storageimportexport/unknown
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_import_export_000001/providers/Microsoft.ImportExport/jobs?api-version=2016-11-01
+  response:
+    body:
+      string: '{"value":[{"properties":{"storageAccountId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_import_export_000001/providers/Microsoft.Storage/storageAccounts/clitest000002","jobType":"Import","returnAddress":{"recipientName":"Tests","streetAddress1":"Street1","streetAddress2":"street2","city":"Redmond","stateOrProvince":"wa","postalCode":"98007","countryOrRegion":"USA","phone":"4250000000","email":"Test@contoso.com"},"shippingInformation":{"recipientName":"Microsoft
+        Azure Import/Export Service","streetAddress1":"3020 Coronado","streetAddress2":"","city":"Santa
+        Clara","stateOrProvince":"CA","postalCode":"95054","countryOrRegion":"USA","phone":"408
+        352 7600"},"diagnosticsPath":"waimportexport","logLevel":"Verbose","backupDriveManifest":true,"cancelRequested":false,"state":"Creating","provisioningState":"Succeeded","encryptionKey":{"kekType":"MicrosoftManaged"}},"identity":{"type":"None"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_import_export_000001/providers/Microsoft.ImportExport/jobs/test-import-export-000003","name":"test-import-export-000003","type":"Microsoft.ImportExport/jobs","location":"West
+        US"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1291'
+      content-type:
+      - application/json
+      date:
+      - Tue, 21 Apr 2020 09:43:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - import-export show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.4.0 azsdk-python-core/1.4.0 Python/3.8.2 (Windows-10-10.0.18362-SP0)
+        azsdk-python-storageimportexport/unknown
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_import_export_000001/providers/Microsoft.ImportExport/jobs/test-import-export-000003?api-version=2016-11-01
+  response:
+    body:
+      string: '{"properties":{"storageAccountId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_import_export_000001/providers/Microsoft.Storage/storageAccounts/clitest000002","jobType":"Import","returnAddress":{"recipientName":"Tests","streetAddress1":"Street1","streetAddress2":"street2","city":"Redmond","stateOrProvince":"wa","postalCode":"98007","countryOrRegion":"USA","phone":"4250000000","email":"Test@contoso.com"},"shippingInformation":{"recipientName":"Microsoft
+        Azure Import/Export Service","streetAddress1":"3020 Coronado","streetAddress2":"","city":"Santa
+        Clara","stateOrProvince":"CA","postalCode":"95054","countryOrRegion":"USA","phone":"408
+        352 7600"},"diagnosticsPath":"waimportexport","logLevel":"Verbose","backupDriveManifest":true,"cancelRequested":false,"state":"Creating","driveList":[{"driveId":"9CA995BF","manifestFile":"\\DriveManifest.xml","manifestHash":"109B21108597EF36D5785F08303F3638","driveHeaderHash":"","state":"Specified"}],"provisioningState":"Succeeded","encryptionKey":{"kekType":"MicrosoftManaged"}},"identity":{"type":"None"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_import_export_000001/providers/Microsoft.ImportExport/jobs/test-import-export-000003","name":"test-import-export-000003","type":"Microsoft.ImportExport/jobs","location":"West
+        US"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1444'
+      content-type:
+      - application/json
+      date:
+      - Tue, 21 Apr 2020 09:43:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"cancelRequested": true}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - import-export update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '41'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --cancel-requested
+      User-Agent:
+      - AZURECLI/2.4.0 azsdk-python-core/1.4.0 Python/3.8.2 (Windows-10-10.0.18362-SP0)
+        azsdk-python-storageimportexport/unknown
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_import_export_000001/providers/Microsoft.ImportExport/jobs/test-import-export-000003?api-version=2016-11-01
+  response:
+    body:
+      string: '{"properties":{"storageAccountId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_import_export_000001/providers/Microsoft.Storage/storageAccounts/clitest000002","jobType":"Import","returnAddress":{"recipientName":"Tests","streetAddress1":"Street1","streetAddress2":"street2","city":"Redmond","stateOrProvince":"wa","postalCode":"98007","countryOrRegion":"USA","phone":"4250000000","email":"Test@contoso.com"},"shippingInformation":{"recipientName":"Microsoft
+        Azure Import/Export Service","streetAddress1":"3020 Coronado","streetAddress2":"","city":"Santa
+        Clara","stateOrProvince":"CA","postalCode":"95054","countryOrRegion":"USA","phone":"408
+        352 7600"},"diagnosticsPath":"waimportexport","logLevel":"Verbose","backupDriveManifest":true,"cancelRequested":true,"state":"Creating","driveList":[{"driveId":"9CA995BF","manifestFile":"\\DriveManifest.xml","manifestHash":"109B21108597EF36D5785F08303F3638","driveHeaderHash":"","state":"Specified"}],"provisioningState":"Succeeded","encryptionKey":{"kekType":"MicrosoftManaged"}},"identity":{"type":"None"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_import_export_000001/providers/Microsoft.ImportExport/jobs/test-import-export-000003","name":"test-import-export-000003","type":"Microsoft.ImportExport/jobs","location":"West
+        US"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1443'
+      content-type:
+      - application/json
+      date:
+      - Tue, 21 Apr 2020 09:43:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - import-export bit-locker-key list
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --job-name
+      User-Agent:
+      - AZURECLI/2.4.0 azsdk-python-core/1.4.0 Python/3.8.2 (Windows-10-10.0.18362-SP0)
+        azsdk-python-storageimportexport/unknown
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_import_export_000001/providers/Microsoft.ImportExport/jobs/test-import-export-000003/listBitLockerKeys?api-version=2016-11-01
+  response:
+    body:
+      string: '{"value":[{"driveId":"9CA995BF","bitLockerKey":"238810-662376-448998-450120-652806-203390-606320-483076"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '107'
+      content-type:
+      - application/json
+      date:
+      - Tue, 21 Apr 2020 09:43:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - import-export delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.4.0 azsdk-python-core/1.4.0 Python/3.8.2 (Windows-10-10.0.18362-SP0)
+        azsdk-python-storageimportexport/unknown
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_import_export_000001/providers/Microsoft.ImportExport/jobs/test-import-export-000003?api-version=2016-11-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 21 Apr 2020 09:43:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+version: 1

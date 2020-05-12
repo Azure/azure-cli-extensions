@@ -9,10 +9,10 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .k8_connect_rp import K8ConnectRP
+from .kubernetes_connect_rp_client import KubernetesConnectRPClient
 from .version import VERSION
 
-__all__ = ['K8ConnectRP']
+__all__ = ['KubernetesConnectRPClient']
 
 __version__ = VERSION
 
