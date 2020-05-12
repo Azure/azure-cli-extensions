@@ -84,7 +84,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
 
     # Get kubernetes cluster info for telemetry
     kubernetes_version = get_server_version(configuration)
-    kubernetes_distro = 'default'
+    kubernetes_distro = get_kubernetes_distro(configuration)
     kubernetes_properties = {
         'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
         'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro
@@ -220,6 +220,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
     chart_path = os.getenv('HELMCHART') if os.getenv('HELMCHART') else helm_chart_path
     cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
                         "--set", "global.subscriptionId={}".format(subscription_id),
+                        "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
                         "--set", "global.resourceGroupName={}".format(resource_group_name),
                         "--set", "global.resourceName={}".format(cluster_name),
                         "--set", "global.location={}".format(location),
@@ -443,6 +444,19 @@ def get_server_version(configuration):
         telemetry.set_exception(exception=e, fault_type='kubernetes-get-version-error',
                                 summary='Unable to fetch kubernetes version')
         logger.warning("Unable to fetch kubernetes version: %s\n", e)
+
+def get_kubernetes_distro(configuration):
+    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+    try:
+        api_response = api_instance.list_node()
+        for item in api_response.items: 
+            if len(item.metadata.labels) != 0 :
+                return "openshift"    
+        return "default"
+    except Exception as e:  # pylint: disable=broad-except
+        telemetry.set_exception(exception=e, fault_type='kubernetes-get-distribution-error',
+                                summary='Exception while fetching kubernetes distribution')
+        logger.warning("Exception while trying to figure out kubernetes distribution: %s\n", e)
 
 
 def get_agent_version(configuration):
