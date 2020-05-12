@@ -71,6 +71,7 @@ class WindowsUnmanagedDiskCreateRestoreTest(LiveScenarioTest):
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['vhd']['uri'] == result['copied_disk_uri']
 
+
 class WindowsEncryptedManagedDiskCreateRestoreTest(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
@@ -102,7 +103,6 @@ class WindowsEncryptedManagedDiskCreateRestoreTest(LiveScenarioTest):
         # Enable encryption
         self.cmd('vm encryption enable -g {rg} -n {vm} --disk-encryption-keyvault onevlt14 --key-encryption-key winkey')
 
-
         # Test create
         result = self.cmd('vm repair create -g {rg} -n {vm} --repair-username azureadmin --repair-password !Passw0rd2018 --unlock-encrypted-vm -o json').get_output_in_json()
 
@@ -120,7 +120,6 @@ class WindowsEncryptedManagedDiskCreateRestoreTest(LiveScenarioTest):
 #        vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
 #        source_vm = vms[0]
 #        assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
-
 
 
 class LinuxManagedDiskCreateRestoreTest(LiveScenarioTest):
@@ -188,6 +187,7 @@ class LinuxUnmanagedDiskCreateRestoreTest(LiveScenarioTest):
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['vhd']['uri'] == result['copied_disk_uri']
 
+
 class LinuxEncryptedManagedDiskCreateRestoreTest(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
@@ -236,6 +236,7 @@ class LinuxEncryptedManagedDiskCreateRestoreTest(LiveScenarioTest):
 #        vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
 #        source_vm = vms[0]
 #        assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
+
 
 class WindowsRunHelloWorldTest(LiveScenarioTest):
 
