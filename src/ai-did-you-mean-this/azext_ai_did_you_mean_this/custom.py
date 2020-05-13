@@ -7,6 +7,7 @@ import json
 from http import HTTPStatus
 
 import requests
+from requests import RequestException
 
 import azure.cli.core.telemetry as telemetry
 
@@ -164,7 +165,7 @@ def recommend_recovery_options(version, command, parameters, extension):
     response = call_aladdin_service(command, parameters, version)
 
     # only show recommendations when we can contact the service.
-    if response.status_code == HTTPStatus.OK:
+    if response and response.status_code == HTTPStatus.OK:
         recommendations = get_recommendations_from_http_response(response)
 
         if recommendations:
@@ -197,6 +198,8 @@ def call_aladdin_service(command, parameters, version):
     _log_debug('call_aladdin_service: version: "%s", command: "%s", parameters: "%s"',
                version, command, parameters)
 
+    response = None
+
     correlation_id = telemetry._session.correlation_id  # pylint: disable=protected-access
     subscription_id = telemetry._get_azure_subscription_id()  # pylint: disable=protected-access
 
@@ -214,13 +217,16 @@ def call_aladdin_service(command, parameters, version):
     api_url = 'https://app.aladdindev.microsoft.com/api/v1.0/suggestions'
     headers = {'Content-Type': 'application/json'}
 
-    response = requests.get(
-        api_url,
-        params={
-            'query': json.dumps(query),
-            'clientType': 'AzureCli',
-            'context': json.dumps(context)
-        },
-        headers=headers)
+    try:
+        response = requests.get(
+            api_url,
+            params={
+                'query': json.dumps(query),
+                'clientType': 'AzureCli',
+                'context': json.dumps(context)
+            },
+            headers=headers)
+    except RequestException as ex:
+        _log_debug('requests.get() exception: %s', ex)
 
     return response

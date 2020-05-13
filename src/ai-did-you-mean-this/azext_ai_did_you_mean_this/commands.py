@@ -8,8 +8,5 @@
 
 def load_command_table(self, _):
 
-    with self.command_group('ai-did-you-mean-this') as g:
+    with self.command_group('ai-did-you-mean-this', is_preview=True) as g:
         g.custom_command('version', 'show_extension_version')
-
-    with self.command_group('ai-did-you-mean-this', is_preview=True):
-        pass
