@@ -20,3 +20,23 @@ RECOMMENDATION_HEADER_FMT_STR = (
 TELEMETRY_MUST_BE_ENABLED_STR = (
     'User must agree to telemetry before failure recovery recommendations can be presented.'
 )
+
+TELEMETRY_MISSING_SUBSCRIPTION_ID_STR = (
+    "Subscription ID was not set in telemetry. Trying another way..."
+)
+
+TELEMETRY_MISSING_CORRELATION_ID_STR = (
+    "Correlation ID was not set in telemetry."
+)
+
+UNABLE_TO_RETRIEVE_SUBSCRIPTION_ID_STR = (
+    "Unable to retrieve subscription ID."
+)
+
+RETRIEVED_SUBSCRIPTION_ID_STR = (
+    'Retrieved subcription ID successfully.'
+)
+
+UNABLE_TO_CALL_SERVICE_STR = (
+    'Either the subscription ID or correlation ID was not set. Aborting operation.'
+)

@@ -10,6 +10,7 @@ import requests
 from requests import RequestException
 
 import azure.cli.core.telemetry as telemetry
+from azure.cli.core.commands.client_factory import get_subscription_id
 
 from knack.log import get_logger
 from knack.util import CLIError  # pylint: disable=unused-import
@@ -19,9 +20,15 @@ from azext_ai_did_you_mean_this._style import style_message
 from azext_ai_did_you_mean_this._const import (
     RECOMMENDATION_HEADER_FMT_STR,
     UNABLE_TO_HELP_FMT_STR,
-    TELEMETRY_MUST_BE_ENABLED_STR
+    TELEMETRY_MUST_BE_ENABLED_STR,
+    TELEMETRY_MISSING_SUBSCRIPTION_ID_STR,
+    TELEMETRY_MISSING_CORRELATION_ID_STR,
+    UNABLE_TO_RETRIEVE_SUBSCRIPTION_ID_STR,
+    UNABLE_TO_CALL_SERVICE_STR,
+    RETRIEVED_SUBSCRIPTION_ID_STR
 )
 from azext_ai_did_you_mean_this._cmd_table import CommandTable
+from azext_ai_did_you_mean_this._cli_ctx import CliContext
 
 logger = get_logger(__name__)
 
@@ -203,30 +210,45 @@ def call_aladdin_service(command, parameters, version):
     correlation_id = telemetry._session.correlation_id  # pylint: disable=protected-access
     subscription_id = telemetry._get_azure_subscription_id()  # pylint: disable=protected-access
 
-    context = {
-        "sessionId": correlation_id,
-        "subscriptionId": subscription_id,
-        "versionNumber": version
-    }
+    if subscription_id is None:
+        _log_debug(TELEMETRY_MISSING_SUBSCRIPTION_ID_STR)
+        subscription_id = get_subscription_id(CliContext.CLI_CTX)
 
-    query = {
-        "command": command,
-        "parameters": parameters
-    }
+        if subscription_id is None:
+            _log_debug(UNABLE_TO_RETRIEVE_SUBSCRIPTION_ID_STR)
+        else:
+            _log_debug(RETRIEVED_SUBSCRIPTION_ID_STR)
 
-    api_url = 'https://app.aladdindev.microsoft.com/api/v1.0/suggestions'
-    headers = {'Content-Type': 'application/json'}
+    if subscription_id and correlation_id:
+        context = {
+            "sessionId": correlation_id,
+            "subscriptionId": subscription_id,
+            "versionNumber": version
+        }
 
-    try:
-        response = requests.get(
-            api_url,
-            params={
-                'query': json.dumps(query),
-                'clientType': 'AzureCli',
-                'context': json.dumps(context)
-            },
-            headers=headers)
-    except RequestException as ex:
-        _log_debug('requests.get() exception: %s', ex)
+        query = {
+            "command": command,
+            "parameters": parameters
+        }
+
+        api_url = 'https://app.aladdindev.microsoft.com/api/v1.0/suggestions'
+        headers = {'Content-Type': 'application/json'}
+
+        try:
+            response = requests.get(
+                api_url,
+                params={
+                    'query': json.dumps(query),
+                    'clientType': 'AzureCli',
+                    'context': json.dumps(context)
+                },
+                headers=headers)
+        except RequestException as ex:
+            _log_debug('requests.get() exception: %s', ex)
+    else:
+        if correlation_id is None:
+            _log_debug(TELEMETRY_MISSING_CORRELATION_ID_STR)
+
+        _log_debug(UNABLE_TO_CALL_SERVICE_STR)
 
     return response
