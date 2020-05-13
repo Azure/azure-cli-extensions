@@ -2674,6 +2674,7 @@ def format_bright(msg):
 def format_hyperlink(the_link):
     return f'\033[1m{colorama.Style.BRIGHT}{colorama.Fore.BLUE}{the_link}{colorama.Style.RESET_ALL}'
 
+
 def get_aks_custom_headers(aks_custom_headers=None):
     headers = {}
     if aks_custom_headers is not None:
