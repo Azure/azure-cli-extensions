@@ -25,7 +25,6 @@ from azext_ai_did_you_mean_this._const import (
     UNABLE_TO_CALL_SERVICE_STR
 )
 from azext_ai_did_you_mean_this._cmd_table import CommandTable
-from azext_ai_did_you_mean_this._cli_ctx import CliContext
 
 logger = get_logger(__name__)
 
