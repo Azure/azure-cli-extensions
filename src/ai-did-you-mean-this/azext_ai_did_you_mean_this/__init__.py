@@ -11,7 +11,6 @@ from knack.events import (
 
 from azext_ai_did_you_mean_this._help import helps  # pylint: disable=unused-import
 from azext_ai_did_you_mean_this._cmd_table import on_command_table_loaded
-from azext_ai_did_you_mean_this._cli_ctx import on_extension_loaded
 
 
 def inject_functions_into_core():
