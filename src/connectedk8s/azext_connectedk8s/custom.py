@@ -72,10 +72,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
     # Setting subscription id
     subscription_id = get_subscription_id(cmd.cli_ctx)
 
-    # Setting resource Id
-    resource_id = "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Kubernetes/connectedClusters/{}".format(subscription_id, resource_group_name, cluster_name)
-    telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.ResourceId': resource_id})
-
     # Setting user profile
     profile = Profile(cli_ctx=cmd.cli_ctx)
 
