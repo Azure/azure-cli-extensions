@@ -29,7 +29,6 @@ class AiDidYouMeanThisCommandsLoader(AzCommandsLoader):
         super().__init__(cli_ctx=cli_ctx,
                          custom_command_type=ai_did_you_mean_this_custom)
         self.cli_ctx.register_event(EVENT_INVOKER_CMD_TBL_LOADED, on_command_table_loaded)
-        on_extension_loaded(cli_ctx)
         inject_functions_into_core()
 
     def load_command_table(self, args):

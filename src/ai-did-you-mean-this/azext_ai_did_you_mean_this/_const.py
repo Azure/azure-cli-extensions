@@ -22,19 +22,11 @@ TELEMETRY_MUST_BE_ENABLED_STR = (
 )
 
 TELEMETRY_MISSING_SUBSCRIPTION_ID_STR = (
-    "Subscription ID was not set in telemetry. Trying another way..."
+    "Subscription ID was not set in telemetry."
 )
 
 TELEMETRY_MISSING_CORRELATION_ID_STR = (
     "Correlation ID was not set in telemetry."
-)
-
-UNABLE_TO_RETRIEVE_SUBSCRIPTION_ID_STR = (
-    "Unable to retrieve subscription ID."
-)
-
-RETRIEVED_SUBSCRIPTION_ID_STR = (
-    'Retrieved subcription ID successfully.'
 )
 
 UNABLE_TO_CALL_SERVICE_STR = (

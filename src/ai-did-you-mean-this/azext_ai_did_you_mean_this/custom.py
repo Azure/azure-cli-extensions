@@ -10,7 +10,6 @@ import requests
 from requests import RequestException
 
 import azure.cli.core.telemetry as telemetry
-from azure.cli.core.commands.client_factory import get_subscription_id
 
 from knack.log import get_logger
 from knack.util import CLIError  # pylint: disable=unused-import
@@ -23,9 +22,7 @@ from azext_ai_did_you_mean_this._const import (
     TELEMETRY_MUST_BE_ENABLED_STR,
     TELEMETRY_MISSING_SUBSCRIPTION_ID_STR,
     TELEMETRY_MISSING_CORRELATION_ID_STR,
-    UNABLE_TO_RETRIEVE_SUBSCRIPTION_ID_STR,
-    UNABLE_TO_CALL_SERVICE_STR,
-    RETRIEVED_SUBSCRIPTION_ID_STR
+    UNABLE_TO_CALL_SERVICE_STR
 )
 from azext_ai_did_you_mean_this._cmd_table import CommandTable
 from azext_ai_did_you_mean_this._cli_ctx import CliContext
@@ -210,15 +207,6 @@ def call_aladdin_service(command, parameters, version):
     correlation_id = telemetry._session.correlation_id  # pylint: disable=protected-access
     subscription_id = telemetry._get_azure_subscription_id()  # pylint: disable=protected-access
 
-    if subscription_id is None:
-        _log_debug(TELEMETRY_MISSING_SUBSCRIPTION_ID_STR)
-        subscription_id = get_subscription_id(CliContext.CLI_CTX)
-
-        if subscription_id is None:
-            _log_debug(UNABLE_TO_RETRIEVE_SUBSCRIPTION_ID_STR)
-        else:
-            _log_debug(RETRIEVED_SUBSCRIPTION_ID_STR)
-
     if subscription_id and correlation_id:
         context = {
             "sessionId": correlation_id,
@@ -246,6 +234,8 @@ def call_aladdin_service(command, parameters, version):
         except RequestException as ex:
             _log_debug('requests.get() exception: %s', ex)
     else:
+        if subscription_id is None:
+            _log_debug(TELEMETRY_MISSING_SUBSCRIPTION_ID_STR)
         if correlation_id is None:
             _log_debug(TELEMETRY_MISSING_CORRELATION_ID_STR)
 
