@@ -9,36 +9,36 @@
 # --------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-from azext_hardwaresecuritymodules.generated._help import helps  # pylint: disable=unused-import
+from azext_hardware_security_modules.generated._help import helps  # pylint: disable=unused-import
 
 
 class AzureDedicatedHSMResourceProviderCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_hardwaresecuritymodules.generated._client_factory import cf_hardwaresecuritymodules
+        from azext_hardware_security_modules.generated._client_factory import cf_hardwaresecuritymodules
         hardwaresecuritymodules_custom = CliCommandType(
-            operations_tmpl='azext_hardwaresecuritymodules.custom#{}',
+            operations_tmpl='azext_hardware_security_modules.custom#{}',
             client_factory=cf_hardwaresecuritymodules)
         super(AzureDedicatedHSMResourceProviderCommandsLoader,
               self).__init__(
                   cli_ctx=cli_ctx, custom_command_type=hardwaresecuritymodules_custom)
 
     def load_command_table(self, args):
-        from azext_hardwaresecuritymodules.generated.commands import load_command_table
+        from azext_hardware_security_modules.generated.commands import load_command_table
         load_command_table(self, args)
         try:
-            from azext_hardwaresecuritymodules.manual.commands import load_command_table as load_command_table_manual
+            from azext_hardware_security_modules.manual.commands import load_command_table as load_command_table_manual
             load_command_table_manual(self, args)
         except ImportError:
             pass
         return self.command_table
 
     def load_arguments(self, command):
-        from azext_hardwaresecuritymodules.generated._params import load_arguments
+        from azext_hardware_security_modules.generated._params import load_arguments
         load_arguments(self, command)
         try:
-            from azext_hardwaresecuritymodules.manual._params import load_arguments as load_arguments_manual
+            from azext_hardware_security_modules.manual._params import load_arguments as load_arguments_manual
             load_arguments_manual(self, command)
         except ImportError:
             pass

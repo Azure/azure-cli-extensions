@@ -36,7 +36,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='hardwaresecuritymodules',
+    name='hardware-security-modules',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools AzureDedicatedHSMResourceProvider Extension',
     # TODO: Update author and email, if applicable
@@ -49,5 +49,5 @@ setup(
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_hardwaresecuritymodules': ['azext_metadata.json']},
+    package_data={'azext_hardware_security_modules': ['azext_metadata.json']},
 )

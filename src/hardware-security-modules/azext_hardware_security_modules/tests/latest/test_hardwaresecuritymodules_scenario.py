@@ -41,11 +41,11 @@ def setup(test, rg):
 # EXAMPLE: /DedicatedHsm/put/Create a new or update an existing dedicated HSM
 @try_manual
 def step__dedicatedhsm_put_create_a_new_or_update_an_existing_dedicated_hsm(test, rg):
-    test.cmd('az hardwaresecuritymodules dedicated-hsm create '
+    test.cmd('az dedicated-hsm create '
              '--name "hsm1" '
              '--location "japaneast" '
              '--network-profile-network-interfaces private-ip-address="10.0.2.21" '
-             '--network-profile-subnet id="/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetworks/vn/subnets/hsm" '
+             '--subnet id="/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetworks/vn/subnets/hsm" '
              '--stamp-id "stamp1" '
              '--sku name="SafeNet Luna Network HSM A790" '
              '--tags Dept="hsm" Environment="dogfood" '
@@ -56,7 +56,7 @@ def step__dedicatedhsm_put_create_a_new_or_update_an_existing_dedicated_hsm(test
 # EXAMPLE: /DedicatedHsm/get/Get a dedicated HSM
 @try_manual
 def step__dedicatedhsm_get_get_a_dedicated_hsm(test, rg):
-    test.cmd('az hardwaresecuritymodules dedicated-hsm show '
+    test.cmd('az dedicated-hsm show '
              '--name "hsm1" '
              '--resource-group "{rg}"',
              checks=[JMESPathCheck('name', 'hsm1')])
@@ -65,7 +65,7 @@ def step__dedicatedhsm_get_get_a_dedicated_hsm(test, rg):
 # EXAMPLE: /DedicatedHsm/get/List dedicated HSM devices in a resource group
 @try_manual
 def step__dedicatedhsm_get_list_dedicated_hsm_devices_in_a_resource_group(test, rg):
-    test.cmd('az hardwaresecuritymodules dedicated-hsm list '
+    test.cmd('az dedicated-hsm list '
              '--resource-group "{rg}"',
              checks=[JMESPathCheck('[0].name', 'hsm1')])
 
@@ -73,7 +73,7 @@ def step__dedicatedhsm_get_list_dedicated_hsm_devices_in_a_resource_group(test, 
 # EXAMPLE: /DedicatedHsm/get/List dedicated HSM devices in a subscription
 @try_manual
 def step__dedicatedhsm_get_list_dedicated_hsm_devices_in_a_subscription(test, rg):
-    test.cmd('az hardwaresecuritymodules dedicated-hsm list '
+    test.cmd('az dedicated-hsm list '
              '-g=',
              checks=[JMESPathCheck('[0].name', 'hsm1')])
 
@@ -81,7 +81,7 @@ def step__dedicatedhsm_get_list_dedicated_hsm_devices_in_a_subscription(test, rg
 # EXAMPLE: /DedicatedHsm/patch/Update an existing dedicated HSM
 @try_manual
 def step__dedicatedhsm_patch_update_an_existing_dedicated_hsm(test, rg):
-    test.cmd('az hardwaresecuritymodules dedicated-hsm update '
+    test.cmd('az dedicated-hsm update '
              '--name "hsm1" '
              '--tags Dept="hsm" Environment="dogfood" Slice="A" '
              '--resource-group "{rg}"',
@@ -91,7 +91,7 @@ def step__dedicatedhsm_patch_update_an_existing_dedicated_hsm(test, rg):
 # EXAMPLE: /DedicatedHsm/delete/Delete a dedicated HSM
 @try_manual
 def step__dedicatedhsm_delete_delete_a_dedicated_hsm(test, rg):
-    test.cmd('az hardwaresecuritymodules dedicated-hsm delete '
+    test.cmd('az dedicated-hsm delete '
              '--name "hsm1" '
              '--resource-group "{rg}" '
              '-y',
@@ -104,15 +104,22 @@ def call_scenario(test, rg):
         setup(test, rg)
         step__dedicatedhsm_put_create_a_new_or_update_an_existing_dedicated_hsm(
             test, rg)
+        print("\nmake")
         step__dedicatedhsm_get_get_a_dedicated_hsm(test, rg)
+        print("\nget ")
         step__dedicatedhsm_get_list_dedicated_hsm_devices_in_a_resource_group(
             test, rg)
+        print("\nlist ")
         step__dedicatedhsm_get_list_dedicated_hsm_devices_in_a_subscription(
             test, rg)
+        print("\nlist 2")
         step__dedicatedhsm_patch_update_an_existing_dedicated_hsm(test, rg)
+        print("\nupdate")
         step__dedicatedhsm_delete_delete_a_dedicated_hsm(test, rg)
+        print("\ndone")
     except:
-        test.cmd('az group delete -n {rg} --yes ')
+        pass
+        #test.cmd('az group delete -n {rg} --yes ')
 
 
 @try_manual

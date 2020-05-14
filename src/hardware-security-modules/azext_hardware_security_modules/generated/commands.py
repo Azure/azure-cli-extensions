@@ -13,12 +13,12 @@ from azure.cli.core.commands import CliCommandType
 
 def load_command_table(self, _):
 
-    from azext_hardwaresecuritymodules.generated._client_factory import cf_dedicated_hsm
+    from azext_hardware_security_modules.generated._client_factory import cf_dedicated_hsm
     hardwaresecuritymodules_dedicated_hsm = CliCommandType(
-        operations_tmpl='azext_hardwaresecuritymodules.vendored_sdks.hardwaresecuritymodules.operations._dedicated_hsm_'
+        operations_tmpl='azext_hardware_security_modules.vendored_sdks.hardwaresecuritymodules.operations._dedicated_hsm_'
         'operations#DedicatedHsmOperations.{}',
         client_factory=cf_dedicated_hsm)
-    with self.command_group('hardwaresecuritymodules dedicated-hsm', hardwaresecuritymodules_dedicated_hsm,
+    with self.command_group('dedicated-hsm', hardwaresecuritymodules_dedicated_hsm,
                             client_factory=cf_dedicated_hsm, is_experimental=True) as g:
         g.custom_command('list', 'hardwaresecuritymodules_dedicated_hsm_list')
         g.custom_show_command(

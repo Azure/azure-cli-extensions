@@ -17,7 +17,7 @@ from azure.cli.core.commands.parameters import (
     get_location_type
 )
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
-from azext_hardwaresecuritymodules.action import (
+from azext_hardware_security_modules.action import (
     AddNetworkProfileSubnet,
     AddNetworkProfileNetworkInterfaces
 )
@@ -25,16 +25,16 @@ from azext_hardwaresecuritymodules.action import (
 
 def load_arguments(self, _):
 
-    with self.argument_context('hardwaresecuritymodules dedicated-hsm list') as c:
+    with self.argument_context('dedicated-hsm list') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('top', help='Maximum number of results to return.')
 
-    with self.argument_context('hardwaresecuritymodules dedicated-hsm show') as c:
+    with self.argument_context('dedicated-hsm show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('name', options_list=[
                    '--name', '-n'], help='The name of the dedicated HSM.')
 
-    with self.argument_context('hardwaresecuritymodules dedicated-hsm create') as c:
+    with self.argument_context('dedicated-hsm create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('name', options_list=[
                    '--name', '-n'], help='Name of the dedicated Hsm')
@@ -47,19 +47,19 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument(
             'stamp_id', help='This field will be used when RP does not support Availability zones.')
-        c.argument('network_profile_subnet', options_list=['--network-profile-subnet', '-s'], action=AddNetworkProfileSubnet, nargs='+', help='Specifies the identifier '
+        c.argument('network_profile_subnet', arg_group='network profile', options_list=['--subnet', '-s'], action=AddNetworkProfileSubnet, nargs='+', help='Specifies the identifier '
                    'of the subnet. Expected value: id=xx.')
         c.argument('network_profile_network_interfaces', options_list=['--network-profile-network-interfaces', '-i'], action=AddNetworkProfileNetworkInterfaces, nargs='+', help='Sp'
                    'ecifies the list of resource Ids for the network interfaces associated with the dedicated HSM. Expe'
                    'cted value: -interfaces private-ip-address=xx.')
 
-    with self.argument_context('hardwaresecuritymodules dedicated-hsm update') as c:
+    with self.argument_context('dedicated-hsm update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('name', options_list=[
                    '--name', '-n'], help='Name of the dedicated HSM')
         c.argument('tags', tags_type)
 
-    with self.argument_context('hardwaresecuritymodules dedicated-hsm delete') as c:
+    with self.argument_context('dedicated-hsm delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('name', options_list=[
                    '--name', '-n'], help='The name of the dedicated HSM to delete')

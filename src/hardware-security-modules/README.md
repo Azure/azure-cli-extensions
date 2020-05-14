@@ -1,10 +1,10 @@
-Microsoft Azure CLI 'hardwaresecuritymodules' Extension
+Microsoft Azure CLI 'hardware-security-modules' Extension
 ==========================================
 
 ### How to use ###
 Install this extension using the below CLI command
 ```
-az extension add --name hardwaresecuritymodules
+az extension add --name hardwareesecurityemodules
 ```
 
 ### Getting Help
@@ -13,11 +13,11 @@ To see examples of commands and parameters details of commands or command groups
 
 Examples:
 ```
-az hardwaresecuritymodules dedicated-hsm create -h
+az dedicated-hsm create -h
 
-az az hardwaresecuritymodules dedicated-hsm list -h
+az dedicated-hsm list -h
 
-az az hardwaresecuritymodules dedicated-hsm update -h
+az dedicated-hsm update -h
 ```
 
 
