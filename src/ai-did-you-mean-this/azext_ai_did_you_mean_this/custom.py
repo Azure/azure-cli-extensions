@@ -77,7 +77,7 @@ def normalize_and_sort_parameters(cmd_table, command, parameters):
             '--verbose': None
         }
 
-        blacklisted = {'--debug', '--verbose'}
+        blocklisted = {'--debug', '--verbose'}
 
         if parameter_table:
             for argument in parameter_table.values():
@@ -112,7 +112,7 @@ def normalize_and_sort_parameters(cmd_table, command, parameters):
                 _log_debug('"%s" is an invalid parameter for command "%s".', parameter, command)
 
         # remove any special global parameters that would typically be removed by the CLI
-        parameter_set.difference_update(blacklisted)
+        parameter_set.difference_update(blocklisted)
 
     # get the list of parameters as a comma-separated list
     return command, ','.join(sorted(parameter_set))
