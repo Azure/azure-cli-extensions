@@ -167,8 +167,9 @@ def app_update(cmd, client, resource_group, service, name,
                runtime_version=None,
                jvm_options=None,
                env=None,
-               enable_persistent_storage=None):
-    properties = models.AppResourceProperties(public=is_public)
+               enable_persistent_storage=None,
+               https_only=None):
+    properties = models.AppResourceProperties(public=is_public, https_only=https_only)
     if enable_persistent_storage is True:
         properties.persistent_disk = models.PersistentDisk(
             size_in_gb=50, mount_path="/persistent")
@@ -1087,3 +1088,63 @@ def _get_app_log(url, user_name, password, exceptions):
         response.release_conn()
     except CLIError as e:
         exceptions.append(e)
+
+
+def certificate_add(cmd, client, resource_group, service, name, vault_uri, vault_certificate_name):
+    properties = models.CertificateProperties(
+        vault_uri=vault_uri,
+        key_vault_cert_name=vault_certificate_name
+    )
+    return client.certificates.create_or_update(resource_group, service, name, properties)
+
+
+def certificate_show(cmd, client, resource_group, service, name):
+    return client.certificates.get(resource_group, service, name)
+
+
+def certificate_list(cmd, client, resource_group, service):
+    return client.certificates.list(resource_group, service)
+
+
+def certificate_remove(cmd, client, resource_group, service, name):
+    client.certificates.get(resource_group, service, name)
+    return client.certificates.delete(resource_group, service, name)
+
+
+def domain_bind(cmd, client, resource_group, service, app,
+                domain_name,
+                certificate=None):
+    properties = models.CustomDomainProperties()
+    if certificate is not None:
+        certificate_response = client.certificates.get(resource_group, service, certificate)
+        properties = models.CustomDomainProperties(
+            thumbprint=certificate_response.properties.thumbprint,
+            cert_name=certificate
+        )
+    return client.custom_domains.create_or_update(resource_group, service, app, domain_name, properties)
+
+
+def domain_show(cmd, client, resource_group, service, app, domain_name):
+    return client.custom_domains.get(resource_group, service, app, domain_name)
+
+
+def domain_list(cmd, client, resource_group, service, app):
+    return client.custom_domains.list(resource_group, service, app)
+
+
+def domain_update(cmd, client, resource_group, service, app,
+                  domain_name,
+                  certificate=None):
+    properties = models.CustomDomainProperties()
+    if certificate is not None:
+        certificate_response = client.certificates.get(resource_group, service, certificate)
+        properties = models.CustomDomainProperties(
+            thumbprint=certificate_response.properties.thumbprint,
+            cert_name=certificate
+        )
+    return client.custom_domains.create_or_update(resource_group, service, app, domain_name, properties)
+
+
+def domain_unbind(cmd, client, resource_group, service, app, domain_name):
+    client.custom_domains.get(resource_group, service, app, domain_name)
+    return client.custom_domains.delete(resource_group, service, app, domain_name)

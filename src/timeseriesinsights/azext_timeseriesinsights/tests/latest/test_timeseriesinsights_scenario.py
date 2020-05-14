@@ -95,7 +95,8 @@ class TimeSeriesInsightsClientScenarioTest(ScenarioTest):
                  '--time-series-id-properties DeviceId1 '
                  '--storage-account-name {sa} '
                  '--storage-management-key ' + key,
-                 checks=[self.check('name', '{env}')])
+                 checks=[self.check('name', '{env}'),
+                         self.check('timeSeriesIdProperties[0].name', 'DeviceId1')])
 
         self.cmd('az timeseriesinsights environment longterm update --resource-group {rg} --name {env} --data-retention 8',
                  checks=[self.check('dataRetention', '8 days, 0:00:00')])

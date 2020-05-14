@@ -5,5 +5,5 @@
 
 from azure.cli.core.profiles import CustomResourceType
 
-CUSTOM_MGMT_STORAGE_ORS = CustomResourceType('azext_storage_ors_preview.vendored_sdks.azure_mgmt_storage',
+CUSTOM_MGMT_STORAGE_ORS = CustomResourceType('azext_storage_or_preview.vendored_sdks.azure_mgmt_storage',
                                              'StorageManagementClient')

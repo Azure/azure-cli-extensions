@@ -15,3 +15,7 @@ Release History
 ++++++
 * Rename `az storage account ors-policy` to `az storage account or-policy`.
 * Default to `--account-name` for `--destination-account` when creating policy in destination account.
+
+0.4.0
+++++++
+* Rename the extension to `storage-or-policy`.

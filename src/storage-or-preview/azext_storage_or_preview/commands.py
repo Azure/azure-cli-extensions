@@ -13,14 +13,14 @@ from ._validators import validate_or_policy
 def load_command_table(self, _):
 
     or_policy_sdk = CliCommandType(
-        operations_tmpl='azext_storage_ors_preview.vendored_sdks.azure_mgmt_storage.operations'
+        operations_tmpl='azext_storage_or_preview.vendored_sdks.azure_mgmt_storage.operations'
                         '#ObjectReplicationPoliciesOperations.{}',
         client_factory=cf_or_policy,
         resource_type=CUSTOM_MGMT_STORAGE_ORS
     )
 
     or_policy_custom_type = CliCommandType(
-        operations_tmpl='azext_storage_ors_preview.operations.account#{}',
+        operations_tmpl='azext_storage_or_preview.operations.account#{}',
         client_factory=cf_or_policy)
 
     with self.command_group('storage account or-policy', or_policy_sdk, is_preview=True,

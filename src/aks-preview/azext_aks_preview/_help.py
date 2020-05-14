@@ -199,7 +199,7 @@ helps['aks create'] = """
           short-summary: The node resource group is the resource group where all customer's resources will be created in, such as virtual machines.
         - name: --uptime-sla
           type: bool
-          short-summary: Enable paid managed cluster service with high availability.
+          short-summary: Enable a paid managed cluster service with a financially backed SLA.
         - name: --attach-acr
           type: string
           short-summary: Grant the 'acrpull' role assignment to the ACR specified by name or resource ID.
