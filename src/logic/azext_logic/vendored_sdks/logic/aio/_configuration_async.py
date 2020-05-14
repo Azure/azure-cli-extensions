@@ -6,12 +6,17 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from typing import Any
+from typing import Any, TYPE_CHECKING
 
 from azure.core.configuration import Configuration
 from azure.core.pipeline import policies
 
-VERSION = "unknown"
+from .._version import VERSION
+
+if TYPE_CHECKING:
+    # pylint: disable=unused-import,ungrouped-imports
+    from azure.core.credentials import TokenCredential
+
 
 class LogicManagementClientConfiguration(Configuration):
     """Configuration for LogicManagementClient.
@@ -20,14 +25,14 @@ class LogicManagementClientConfiguration(Configuration):
     attributes.
 
     :param credential: Credential needed for the client to connect to Azure.
-    :type credential: azure.core.credentials.TokenCredential
+    :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     :param subscription_id: The subscription id.
     :type subscription_id: str
     """
 
     def __init__(
         self,
-        credential: "TokenCredential",
+        credential: "AsyncTokenCredential",
         subscription_id: str,
         **kwargs: Any
     ) -> None:
@@ -40,7 +45,8 @@ class LogicManagementClientConfiguration(Configuration):
         self.credential = credential
         self.subscription_id = subscription_id
         self.api_version = "2019-05-01"
-        kwargs.setdefault('sdk_moniker', 'logicmanagementclient/{}'.format(VERSION))
+        self.credential_scopes = ['https://management.azure.com/.default']
+        kwargs.setdefault('sdk_moniker', 'mgmt-logic/{}'.format(VERSION))
         self._configure(**kwargs)
 
     def _configure(
@@ -56,4 +62,4 @@ class LogicManagementClientConfiguration(Configuration):
         self.redirect_policy = kwargs.get('redirect_policy') or policies.AsyncRedirectPolicy(**kwargs)
         self.authentication_policy = kwargs.get('authentication_policy')
         if self.credential and not self.authentication_policy:
-            self.authentication_policy = policies.AsyncBearerTokenCredentialPolicy(self.credential, **kwargs)
+            self.authentication_policy = policies.AsyncBearerTokenCredentialPolicy(self.credential, *self.credential_scopes, **kwargs)

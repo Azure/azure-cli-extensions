@@ -6,14 +6,4 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._logic_management_client import LogicManagementClient
-from ._version import VERSION
-
-__version__ = VERSION
-__all__ = ['LogicManagementClient']
-
-try:
-    from .patch import patch_sdk
-    patch_sdk()
-except ImportError:
-    pass
+VERSION = "2019-05-01T00:00:00.000Z"

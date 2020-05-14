@@ -1368,25 +1368,6 @@ class AzureResourceErrorInfo(ErrorInfo):
         self.details = kwargs.get('details', None)
 
 
-class B2BPartnerContent(msrest.serialization.Model):
-    """The B2B partner content.
-
-    :param business_identities: The list of partner business identities.
-    :type business_identities: list[~azure.mgmt.logic.models.BusinessIdentity]
-    """
-
-    _attribute_map = {
-        'business_identities': {'key': 'businessIdentities', 'type': '[BusinessIdentity]'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(B2BPartnerContent, self).__init__(**kwargs)
-        self.business_identities = kwargs.get('business_identities', None)
-
-
 class BatchConfiguration(Resource):
     """The batch configuration resource definition.
 
@@ -1404,15 +1385,28 @@ class BatchConfiguration(Resource):
     :type location: str
     :param tags: A set of tags. The resource tags.
     :type tags: dict[str, str]
-    :param properties: Required. The batch configuration properties.
-    :type properties: ~azure.mgmt.logic.models.BatchConfigurationProperties
+    :param created_time_properties_created_time: The artifact creation time.
+    :type created_time_properties_created_time: ~datetime.datetime
+    :param changed_time_properties_changed_time: The artifact changed time.
+    :type changed_time_properties_changed_time: ~datetime.datetime
+    :param metadata: Any object.
+    :type metadata: object
+    :param batch_group_name: Required. The name of the batch group.
+    :type batch_group_name: str
+    :param release_criteria: Required. The batch release criteria.
+    :type release_criteria: ~azure.mgmt.logic.models.BatchReleaseCriteria
+    :param created_time: The created time.
+    :type created_time: ~datetime.datetime
+    :param changed_time: The changed time.
+    :type changed_time: ~datetime.datetime
     """
 
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
         'type': {'readonly': True},
-        'properties': {'required': True},
+        'batch_group_name': {'required': True},
+        'release_criteria': {'required': True},
     }
 
     _attribute_map = {
@@ -1421,7 +1415,13 @@ class BatchConfiguration(Resource):
         'type': {'key': 'type', 'type': 'str'},
         'location': {'key': 'location', 'type': 'str'},
         'tags': {'key': 'tags', 'type': '{str}'},
-        'properties': {'key': 'properties', 'type': 'BatchConfigurationProperties'},
+        'created_time_properties_created_time': {'key': 'properties.createdTime', 'type': 'iso-8601'},
+        'changed_time_properties_changed_time': {'key': 'properties.changedTime', 'type': 'iso-8601'},
+        'metadata': {'key': 'properties.metadata', 'type': 'object'},
+        'batch_group_name': {'key': 'properties.batchGroupName', 'type': 'str'},
+        'release_criteria': {'key': 'properties.releaseCriteria', 'type': 'BatchReleaseCriteria'},
+        'created_time': {'key': 'properties.createdTime', 'type': 'iso-8601'},
+        'changed_time': {'key': 'properties.changedTime', 'type': 'iso-8601'},
     }
 
     def __init__(
@@ -1429,7 +1429,13 @@ class BatchConfiguration(Resource):
         **kwargs
     ):
         super(BatchConfiguration, self).__init__(**kwargs)
-        self.properties = kwargs['properties']
+        self.created_time_properties_created_time = kwargs.get('created_time_properties_created_time', None)
+        self.changed_time_properties_changed_time = kwargs.get('changed_time_properties_changed_time', None)
+        self.metadata = kwargs.get('metadata', None)
+        self.batch_group_name = kwargs['batch_group_name']
+        self.release_criteria = kwargs['release_criteria']
+        self.created_time = kwargs.get('created_time', None)
+        self.changed_time = kwargs.get('changed_time', None)
 
 
 class BatchConfigurationCollection(msrest.serialization.Model):
@@ -3106,10 +3112,14 @@ class IntegrationAccountCertificate(Resource):
     :vartype changed_time: ~datetime.datetime
     :param metadata: The metadata.
     :type metadata: object
-    :param key: The key details in the key vault.
-    :type key: ~azure.mgmt.logic.models.KeyVaultKeyReference
     :param public_certificate: The public certificate.
     :type public_certificate: str
+    :param key_vault: The key vault reference.
+    :type key_vault: ~azure.mgmt.logic.models.KeyVaultKeyReferenceKeyVault
+    :param key_name: The private key name in key vault.
+    :type key_name: str
+    :param key_version: The private key version in key vault.
+    :type key_version: str
     """
 
     _validation = {
@@ -3129,8 +3139,10 @@ class IntegrationAccountCertificate(Resource):
         'created_time': {'key': 'properties.createdTime', 'type': 'iso-8601'},
         'changed_time': {'key': 'properties.changedTime', 'type': 'iso-8601'},
         'metadata': {'key': 'properties.metadata', 'type': 'object'},
-        'key': {'key': 'properties.key', 'type': 'KeyVaultKeyReference'},
         'public_certificate': {'key': 'properties.publicCertificate', 'type': 'str'},
+        'key_vault': {'key': 'properties.key.keyVault', 'type': 'KeyVaultKeyReferenceKeyVault'},
+        'key_name': {'key': 'properties.key.keyName', 'type': 'str'},
+        'key_version': {'key': 'properties.key.keyVersion', 'type': 'str'},
     }
 
     def __init__(
@@ -3141,8 +3153,10 @@ class IntegrationAccountCertificate(Resource):
         self.created_time = None
         self.changed_time = None
         self.metadata = kwargs.get('metadata', None)
-        self.key = kwargs.get('key', None)
         self.public_certificate = kwargs.get('public_certificate', None)
+        self.key_vault = kwargs.get('key_vault', None)
+        self.key_name = kwargs.get('key_name', None)
+        self.key_version = kwargs.get('key_version', None)
 
 
 class IntegrationAccountCertificateListResult(msrest.serialization.Model):
@@ -3363,8 +3377,8 @@ class IntegrationAccountPartner(Resource):
     :vartype changed_time: ~datetime.datetime
     :param metadata: The metadata.
     :type metadata: object
-    :param content: Required. The partner content.
-    :type content: ~azure.mgmt.logic.models.PartnerContent
+    :param business_identities: The list of partner business identities.
+    :type business_identities: list[~azure.mgmt.logic.models.BusinessIdentity]
     """
 
     _validation = {
@@ -3374,7 +3388,6 @@ class IntegrationAccountPartner(Resource):
         'partner_type': {'required': True},
         'created_time': {'readonly': True},
         'changed_time': {'readonly': True},
-        'content': {'required': True},
     }
 
     _attribute_map = {
@@ -3387,7 +3400,7 @@ class IntegrationAccountPartner(Resource):
         'created_time': {'key': 'properties.createdTime', 'type': 'iso-8601'},
         'changed_time': {'key': 'properties.changedTime', 'type': 'iso-8601'},
         'metadata': {'key': 'properties.metadata', 'type': 'object'},
-        'content': {'key': 'properties.content', 'type': 'PartnerContent'},
+        'business_identities': {'key': 'properties.content.b2b.businessIdentities', 'type': '[BusinessIdentity]'},
     }
 
     def __init__(
@@ -3399,7 +3412,7 @@ class IntegrationAccountPartner(Resource):
         self.created_time = None
         self.changed_time = None
         self.metadata = kwargs.get('metadata', None)
-        self.content = kwargs['content']
+        self.business_identities = kwargs.get('business_identities', None)
 
 
 class IntegrationAccountPartnerFilter(msrest.serialization.Model):
@@ -3725,10 +3738,22 @@ class IntegrationServiceEnvironment(Resource):
     :type location: str
     :param tags: A set of tags. The resource tags.
     :type tags: dict[str, str]
-    :param properties: The integration service environment properties.
-    :type properties: ~azure.mgmt.logic.models.IntegrationServiceEnvironmentProperties
     :param sku: The sku.
     :type sku: ~azure.mgmt.logic.models.IntegrationServiceEnvironmentSku
+    :param provisioning_state: The provisioning state. Possible values include: "NotSpecified",
+     "Accepted", "Running", "Ready", "Creating", "Created", "Deleting", "Deleted", "Canceled",
+     "Failed", "Succeeded", "Moving", "Updating", "Registering", "Registered", "Unregistering",
+     "Unregistered", "Completed", "Renewing", "Pending", "Waiting", "InProgress".
+    :type provisioning_state: str or ~azure.mgmt.logic.models.WorkflowProvisioningState
+    :param state: The integration service environment state. Possible values include:
+     "NotSpecified", "Completed", "Enabled", "Disabled", "Deleted", "Suspended".
+    :type state: str or ~azure.mgmt.logic.models.WorkflowState
+    :param integration_service_environment_id: Gets the tracking id.
+    :type integration_service_environment_id: str
+    :param endpoints_configuration: The endpoints configuration.
+    :type endpoints_configuration: ~azure.mgmt.logic.models.FlowEndpointsConfiguration
+    :param network_configuration: The network configuration.
+    :type network_configuration: ~azure.mgmt.logic.models.NetworkConfiguration
     """
 
     _validation = {
@@ -3743,8 +3768,12 @@ class IntegrationServiceEnvironment(Resource):
         'type': {'key': 'type', 'type': 'str'},
         'location': {'key': 'location', 'type': 'str'},
         'tags': {'key': 'tags', 'type': '{str}'},
-        'properties': {'key': 'properties', 'type': 'IntegrationServiceEnvironmentProperties'},
         'sku': {'key': 'sku', 'type': 'IntegrationServiceEnvironmentSku'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+        'state': {'key': 'properties.state', 'type': 'str'},
+        'integration_service_environment_id': {'key': 'properties.integrationServiceEnvironmentId', 'type': 'str'},
+        'endpoints_configuration': {'key': 'properties.endpointsConfiguration', 'type': 'FlowEndpointsConfiguration'},
+        'network_configuration': {'key': 'properties.networkConfiguration', 'type': 'NetworkConfiguration'},
     }
 
     def __init__(
@@ -3752,8 +3781,12 @@ class IntegrationServiceEnvironment(Resource):
         **kwargs
     ):
         super(IntegrationServiceEnvironment, self).__init__(**kwargs)
-        self.properties = kwargs.get('properties', None)
         self.sku = kwargs.get('sku', None)
+        self.provisioning_state = kwargs.get('provisioning_state', None)
+        self.state = kwargs.get('state', None)
+        self.integration_service_environment_id = kwargs.get('integration_service_environment_id', None)
+        self.endpoints_configuration = kwargs.get('endpoints_configuration', None)
+        self.network_configuration = kwargs.get('network_configuration', None)
 
 
 class IntegrationServiceEnvironmentAccessEndpoint(msrest.serialization.Model):
@@ -3882,45 +3915,6 @@ class IntegrationServiceEnvironmentNetworkEndpoint(msrest.serialization.Model):
         self.accessibility = kwargs.get('accessibility', None)
         self.domain_name = kwargs.get('domain_name', None)
         self.ports = kwargs.get('ports', None)
-
-
-class IntegrationServiceEnvironmentProperties(msrest.serialization.Model):
-    """The integration service environment properties.
-
-    :param provisioning_state: The provisioning state. Possible values include: "NotSpecified",
-     "Accepted", "Running", "Ready", "Creating", "Created", "Deleting", "Deleted", "Canceled",
-     "Failed", "Succeeded", "Moving", "Updating", "Registering", "Registered", "Unregistering",
-     "Unregistered", "Completed", "Renewing", "Pending", "Waiting", "InProgress".
-    :type provisioning_state: str or ~azure.mgmt.logic.models.WorkflowProvisioningState
-    :param state: The integration service environment state. Possible values include:
-     "NotSpecified", "Completed", "Enabled", "Disabled", "Deleted", "Suspended".
-    :type state: str or ~azure.mgmt.logic.models.WorkflowState
-    :param integration_service_environment_id: Gets the tracking id.
-    :type integration_service_environment_id: str
-    :param endpoints_configuration: The endpoints configuration.
-    :type endpoints_configuration: ~azure.mgmt.logic.models.FlowEndpointsConfiguration
-    :param network_configuration: The network configuration.
-    :type network_configuration: ~azure.mgmt.logic.models.NetworkConfiguration
-    """
-
-    _attribute_map = {
-        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-        'state': {'key': 'state', 'type': 'str'},
-        'integration_service_environment_id': {'key': 'integrationServiceEnvironmentId', 'type': 'str'},
-        'endpoints_configuration': {'key': 'endpointsConfiguration', 'type': 'FlowEndpointsConfiguration'},
-        'network_configuration': {'key': 'networkConfiguration', 'type': 'NetworkConfiguration'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(IntegrationServiceEnvironmentProperties, self).__init__(**kwargs)
-        self.provisioning_state = kwargs.get('provisioning_state', None)
-        self.state = kwargs.get('state', None)
-        self.integration_service_environment_id = kwargs.get('integration_service_environment_id', None)
-        self.endpoints_configuration = kwargs.get('endpoints_configuration', None)
-        self.network_configuration = kwargs.get('network_configuration', None)
 
 
 class IntegrationServiceEnvironmentSku(msrest.serialization.Model):
@@ -4219,40 +4213,6 @@ class KeyVaultKeyCollection(msrest.serialization.Model):
         super(KeyVaultKeyCollection, self).__init__(**kwargs)
         self.value = kwargs.get('value', None)
         self.skip_token = kwargs.get('skip_token', None)
-
-
-class KeyVaultKeyReference(msrest.serialization.Model):
-    """The reference to the key vault key.
-
-    All required parameters must be populated in order to send to Azure.
-
-    :param key_vault: Required. The key vault reference.
-    :type key_vault: ~azure.mgmt.logic.models.KeyVaultKeyReferenceKeyVault
-    :param key_name: Required. The private key name in key vault.
-    :type key_name: str
-    :param key_version: The private key version in key vault.
-    :type key_version: str
-    """
-
-    _validation = {
-        'key_vault': {'required': True},
-        'key_name': {'required': True},
-    }
-
-    _attribute_map = {
-        'key_vault': {'key': 'keyVault', 'type': 'KeyVaultKeyReferenceKeyVault'},
-        'key_name': {'key': 'keyName', 'type': 'str'},
-        'key_version': {'key': 'keyVersion', 'type': 'str'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(KeyVaultKeyReference, self).__init__(**kwargs)
-        self.key_vault = kwargs['key_vault']
-        self.key_name = kwargs['key_name']
-        self.key_version = kwargs.get('key_version', None)
 
 
 class KeyVaultKeyReferenceKeyVault(msrest.serialization.Model):
@@ -4716,25 +4676,6 @@ class OperationResult(OperationResultProperties):
         self.tracked_properties = None
         self.retry_history = kwargs.get('retry_history', None)
         self.iteration_count = kwargs.get('iteration_count', None)
-
-
-class PartnerContent(msrest.serialization.Model):
-    """The integration account partner content.
-
-    :param b2_b: The B2B partner content.
-    :type b2_b: ~azure.mgmt.logic.models.B2BPartnerContent
-    """
-
-    _attribute_map = {
-        'b2_b': {'key': 'b2b', 'type': 'B2BPartnerContent'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(PartnerContent, self).__init__(**kwargs)
-        self.b2_b = kwargs.get('b2_b', None)
 
 
 class RecurrenceSchedule(msrest.serialization.Model):
@@ -5690,10 +5631,6 @@ class Workflow(Resource):
     :vartype version: str
     :ivar access_endpoint: Gets the access endpoint.
     :vartype access_endpoint: str
-    :param endpoints_configuration: The endpoints configuration.
-    :type endpoints_configuration: ~azure.mgmt.logic.models.FlowEndpointsConfiguration
-    :param access_control: The access control configuration.
-    :type access_control: ~azure.mgmt.logic.models.FlowAccessControlConfiguration
     :ivar sku: The sku.
     :vartype sku: ~azure.mgmt.logic.models.Sku
     :param integration_account: The integration account.
@@ -5704,6 +5641,18 @@ class Workflow(Resource):
     :type definition: object
     :param parameters: The parameters.
     :type parameters: dict[str, ~azure.mgmt.logic.models.WorkflowParameter]
+    :param triggers: The access control configuration for invoking workflow triggers.
+    :type triggers: ~azure.mgmt.logic.models.FlowAccessControlConfigurationPolicy
+    :param contents: The access control configuration for accessing workflow run contents.
+    :type contents: ~azure.mgmt.logic.models.FlowAccessControlConfigurationPolicy
+    :param actions: The access control configuration for workflow actions.
+    :type actions: ~azure.mgmt.logic.models.FlowAccessControlConfigurationPolicy
+    :param workflow_management: The access control configuration for workflow management.
+    :type workflow_management: ~azure.mgmt.logic.models.FlowAccessControlConfigurationPolicy
+    :param workflow: The workflow endpoints.
+    :type workflow: ~azure.mgmt.logic.models.FlowEndpoints
+    :param connector: The connector endpoints.
+    :type connector: ~azure.mgmt.logic.models.FlowEndpoints
     """
 
     _validation = {
@@ -5730,13 +5679,17 @@ class Workflow(Resource):
         'state': {'key': 'properties.state', 'type': 'str'},
         'version': {'key': 'properties.version', 'type': 'str'},
         'access_endpoint': {'key': 'properties.accessEndpoint', 'type': 'str'},
-        'endpoints_configuration': {'key': 'properties.endpointsConfiguration', 'type': 'FlowEndpointsConfiguration'},
-        'access_control': {'key': 'properties.accessControl', 'type': 'FlowAccessControlConfiguration'},
         'sku': {'key': 'properties.sku', 'type': 'Sku'},
         'integration_account': {'key': 'properties.integrationAccount', 'type': 'ResourceReference'},
         'integration_service_environment': {'key': 'properties.integrationServiceEnvironment', 'type': 'ResourceReference'},
         'definition': {'key': 'properties.definition', 'type': 'object'},
         'parameters': {'key': 'properties.parameters', 'type': '{WorkflowParameter}'},
+        'triggers': {'key': 'properties.accessControl.triggers', 'type': 'FlowAccessControlConfigurationPolicy'},
+        'contents': {'key': 'properties.accessControl.contents', 'type': 'FlowAccessControlConfigurationPolicy'},
+        'actions': {'key': 'properties.accessControl.actions', 'type': 'FlowAccessControlConfigurationPolicy'},
+        'workflow_management': {'key': 'properties.accessControl.workflowManagement', 'type': 'FlowAccessControlConfigurationPolicy'},
+        'workflow': {'key': 'properties.endpointsConfiguration.workflow', 'type': 'FlowEndpoints'},
+        'connector': {'key': 'properties.endpointsConfiguration.connector', 'type': 'FlowEndpoints'},
     }
 
     def __init__(
@@ -5750,13 +5703,17 @@ class Workflow(Resource):
         self.state = kwargs.get('state', None)
         self.version = None
         self.access_endpoint = None
-        self.endpoints_configuration = kwargs.get('endpoints_configuration', None)
-        self.access_control = kwargs.get('access_control', None)
         self.sku = None
         self.integration_account = kwargs.get('integration_account', None)
         self.integration_service_environment = kwargs.get('integration_service_environment', None)
         self.definition = kwargs.get('definition', None)
         self.parameters = kwargs.get('parameters', None)
+        self.triggers = kwargs.get('triggers', None)
+        self.contents = kwargs.get('contents', None)
+        self.actions = kwargs.get('actions', None)
+        self.workflow_management = kwargs.get('workflow_management', None)
+        self.workflow = kwargs.get('workflow', None)
+        self.connector = kwargs.get('connector', None)
 
 
 class WorkflowFilter(msrest.serialization.Model):

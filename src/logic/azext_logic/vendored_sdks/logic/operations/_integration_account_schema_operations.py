@@ -6,18 +6,23 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 import datetime
-from typing import Any, Callable, Dict, Generic, Optional, TypeVar, Union
+from typing import TYPE_CHECKING
 import warnings
 
 from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.paging import ItemPaged
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpRequest, HttpResponse
+from azure.mgmt.core.exceptions import ARMErrorFormat
 
 from .. import models
 
-T = TypeVar('T')
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
+if TYPE_CHECKING:
+    # pylint: disable=unused-import,ungrouped-imports
+    from typing import Any, Callable, Dict, Generic, Optional, TypeVar, Union
+
+    T = TypeVar('T')
+    ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
 class IntegrationAccountSchemaOperations(object):
     """IntegrationAccountSchemaOperations operations.
@@ -26,7 +31,7 @@ class IntegrationAccountSchemaOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~logic_management_client.models
+    :type models: ~azure.mgmt.logic.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -62,7 +67,7 @@ class IntegrationAccountSchemaOperations(object):
         :type filter: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationAccountSchemaListResult or the result of cls(response)
-        :rtype: ~logic_management_client.models.IntegrationAccountSchemaListResult
+        :rtype: ~azure.mgmt.logic.models.IntegrationAccountSchemaListResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationAccountSchemaListResult"]
@@ -114,7 +119,7 @@ class IntegrationAccountSchemaOperations(object):
             if response.status_code not in [200]:
                 error = self._deserialize(models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, model=error)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -141,7 +146,7 @@ class IntegrationAccountSchemaOperations(object):
         :type schema_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationAccountSchema or the result of cls(response)
-        :rtype: ~logic_management_client.models.IntegrationAccountSchema
+        :rtype: ~azure.mgmt.logic.models.IntegrationAccountSchema
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationAccountSchema"]
@@ -174,7 +179,7 @@ class IntegrationAccountSchemaOperations(object):
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('IntegrationAccountSchema', pipeline_response)
 
@@ -210,7 +215,7 @@ class IntegrationAccountSchemaOperations(object):
         :param schema_name: The integration account schema name.
         :type schema_name: str
         :param schema_type: The schema type.
-        :type schema_type: str or ~logic_management_client.models.SchemaType
+        :type schema_type: str or ~azure.mgmt.logic.models.SchemaType
         :param location: The resource location.
         :type location: str
         :param tags: The resource tags.
@@ -229,7 +234,7 @@ class IntegrationAccountSchemaOperations(object):
         :type content_type_parameter: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationAccountSchema or the result of cls(response)
-        :rtype: ~logic_management_client.models.IntegrationAccountSchema or ~logic_management_client.models.IntegrationAccountSchema
+        :rtype: ~azure.mgmt.logic.models.IntegrationAccountSchema or ~azure.mgmt.logic.models.IntegrationAccountSchema
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationAccountSchema"]
@@ -270,7 +275,7 @@ class IntegrationAccountSchemaOperations(object):
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = None
         if response.status_code == 200:
@@ -335,7 +340,7 @@ class IntegrationAccountSchemaOperations(object):
         if response.status_code not in [200, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
           return cls(pipeline_response, None, {})
@@ -363,10 +368,10 @@ class IntegrationAccountSchemaOperations(object):
         :param not_after: The expiry time.
         :type not_after: ~datetime.datetime
         :param key_type: The key type.
-        :type key_type: str or ~logic_management_client.models.KeyType
+        :type key_type: str or ~azure.mgmt.logic.models.KeyType
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: WorkflowTriggerCallbackUrl or the result of cls(response)
-        :rtype: ~logic_management_client.models.WorkflowTriggerCallbackUrl
+        :rtype: ~azure.mgmt.logic.models.WorkflowTriggerCallbackUrl
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.WorkflowTriggerCallbackUrl"]
@@ -407,7 +412,7 @@ class IntegrationAccountSchemaOperations(object):
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('WorkflowTriggerCallbackUrl', pipeline_response)
 

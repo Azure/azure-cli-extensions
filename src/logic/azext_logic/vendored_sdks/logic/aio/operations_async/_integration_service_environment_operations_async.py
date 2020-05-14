@@ -13,6 +13,8 @@ from azure.core.exceptions import HttpResponseError, ResourceExistsError, Resour
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
 from azure.core.polling import AsyncNoPolling, AsyncPollingMethod, async_poller
+from azure.mgmt.core.exceptions import ARMErrorFormat
+from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
 
 from ... import models
 
@@ -26,7 +28,7 @@ class IntegrationServiceEnvironmentOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~logic_management_client.models
+    :type models: ~azure.mgmt.logic.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -52,7 +54,7 @@ class IntegrationServiceEnvironmentOperations:
         :type top: int
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationServiceEnvironmentListResult or the result of cls(response)
-        :rtype: ~logic_management_client.models.IntegrationServiceEnvironmentListResult
+        :rtype: ~azure.mgmt.logic.models.IntegrationServiceEnvironmentListResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationServiceEnvironmentListResult"]
@@ -100,7 +102,7 @@ class IntegrationServiceEnvironmentOperations:
             if response.status_code not in [200]:
                 error = self._deserialize(models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, model=error)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -123,7 +125,7 @@ class IntegrationServiceEnvironmentOperations:
         :type top: int
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationServiceEnvironmentListResult or the result of cls(response)
-        :rtype: ~logic_management_client.models.IntegrationServiceEnvironmentListResult
+        :rtype: ~azure.mgmt.logic.models.IntegrationServiceEnvironmentListResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationServiceEnvironmentListResult"]
@@ -172,7 +174,7 @@ class IntegrationServiceEnvironmentOperations:
             if response.status_code not in [200]:
                 error = self._deserialize(models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, model=error)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -195,7 +197,7 @@ class IntegrationServiceEnvironmentOperations:
         :type integration_service_environment_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationServiceEnvironment or the result of cls(response)
-        :rtype: ~logic_management_client.models.IntegrationServiceEnvironment
+        :rtype: ~azure.mgmt.logic.models.IntegrationServiceEnvironment
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationServiceEnvironment"]
@@ -227,7 +229,7 @@ class IntegrationServiceEnvironmentOperations:
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('IntegrationServiceEnvironment', pipeline_response)
 
@@ -243,14 +245,18 @@ class IntegrationServiceEnvironmentOperations:
         integration_service_environment_name: str,
         location: Optional[str] = None,
         tags: Optional[Dict[str, str]] = None,
-        properties: Optional["models.IntegrationServiceEnvironmentProperties"] = None,
         sku: Optional["models.IntegrationServiceEnvironmentSku"] = None,
+        provisioning_state: Optional[Union[str, "models.WorkflowProvisioningState"]] = None,
+        state: Optional[Union[str, "models.WorkflowState"]] = None,
+        integration_service_environment_id: Optional[str] = None,
+        endpoints_configuration: Optional["models.FlowEndpointsConfiguration"] = None,
+        network_configuration: Optional["models.NetworkConfiguration"] = None,
         **kwargs
     ) -> "models.IntegrationServiceEnvironment":
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationServiceEnvironment"]
         error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        _integration_service_environment = models.IntegrationServiceEnvironment(location=location, tags=tags, properties=properties, sku=sku)
+        _integration_service_environment = models.IntegrationServiceEnvironment(location=location, tags=tags, sku=sku, provisioning_state=provisioning_state, state=state, integration_service_environment_id=integration_service_environment_id, endpoints_configuration=endpoints_configuration, network_configuration=network_configuration)
         api_version = "2019-05-01"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -284,7 +290,7 @@ class IntegrationServiceEnvironmentOperations:
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = None
         if response.status_code == 200:
@@ -305,8 +311,12 @@ class IntegrationServiceEnvironmentOperations:
         integration_service_environment_name: str,
         location: Optional[str] = None,
         tags: Optional[Dict[str, str]] = None,
-        properties: Optional["models.IntegrationServiceEnvironmentProperties"] = None,
         sku: Optional["models.IntegrationServiceEnvironmentSku"] = None,
+        provisioning_state: Optional[Union[str, "models.WorkflowProvisioningState"]] = None,
+        state: Optional[Union[str, "models.WorkflowState"]] = None,
+        integration_service_environment_id: Optional[str] = None,
+        endpoints_configuration: Optional["models.FlowEndpointsConfiguration"] = None,
+        network_configuration: Optional["models.NetworkConfiguration"] = None,
         **kwargs
     ) -> "models.IntegrationServiceEnvironment":
         """Creates or updates an integration service environment.
@@ -319,28 +329,40 @@ class IntegrationServiceEnvironmentOperations:
         :type location: str
         :param tags: The resource tags.
         :type tags: dict[str, str]
-        :param properties: The integration service environment properties.
-        :type properties: ~logic_management_client.models.IntegrationServiceEnvironmentProperties
         :param sku: The sku.
-        :type sku: ~logic_management_client.models.IntegrationServiceEnvironmentSku
+        :type sku: ~azure.mgmt.logic.models.IntegrationServiceEnvironmentSku
+        :param provisioning_state: The provisioning state.
+        :type provisioning_state: str or ~azure.mgmt.logic.models.WorkflowProvisioningState
+        :param state: The integration service environment state.
+        :type state: str or ~azure.mgmt.logic.models.WorkflowState
+        :param integration_service_environment_id: Gets the tracking id.
+        :type integration_service_environment_id: str
+        :param endpoints_configuration: The endpoints configuration.
+        :type endpoints_configuration: ~azure.mgmt.logic.models.FlowEndpointsConfiguration
+        :param network_configuration: The network configuration.
+        :type network_configuration: ~azure.mgmt.logic.models.NetworkConfiguration
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :return: An instance of LROPoller that returns IntegrationServiceEnvironment
-        :rtype: ~azure.core.polling.LROPoller[~logic_management_client.models.IntegrationServiceEnvironment]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.logic.models.IntegrationServiceEnvironment]
 
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        polling = kwargs.pop('polling', False)  # type: Union[bool, AsyncPollingMethod]
+        polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationServiceEnvironment"]
         raw_result = await self._create_or_update_initial(
             resource_group=resource_group,
             integration_service_environment_name=integration_service_environment_name,
             location=location,
             tags=tags,
-            properties=properties,
             sku=sku,
+            provisioning_state=provisioning_state,
+            state=state,
+            integration_service_environment_id=integration_service_environment_id,
+            endpoints_configuration=endpoints_configuration,
+            network_configuration=network_configuration,
             cls=lambda x,y,z: x,
             **kwargs
         )
@@ -356,7 +378,7 @@ class IntegrationServiceEnvironmentOperations:
             'polling_interval',
             self._config.polling_interval
         )
-        if polling is True: raise ValueError("polling being True is not valid because no default polling implemetation has been defined.")
+        if polling is True: polling_method = AsyncARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         return await async_poller(self._client, raw_result, get_long_running_output, polling_method)
@@ -368,14 +390,18 @@ class IntegrationServiceEnvironmentOperations:
         integration_service_environment_name: str,
         location: Optional[str] = None,
         tags: Optional[Dict[str, str]] = None,
-        properties: Optional["models.IntegrationServiceEnvironmentProperties"] = None,
         sku: Optional["models.IntegrationServiceEnvironmentSku"] = None,
+        provisioning_state: Optional[Union[str, "models.WorkflowProvisioningState"]] = None,
+        state: Optional[Union[str, "models.WorkflowState"]] = None,
+        integration_service_environment_id: Optional[str] = None,
+        endpoints_configuration: Optional["models.FlowEndpointsConfiguration"] = None,
+        network_configuration: Optional["models.NetworkConfiguration"] = None,
         **kwargs
     ) -> "models.IntegrationServiceEnvironment":
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationServiceEnvironment"]
         error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        _integration_service_environment = models.IntegrationServiceEnvironment(location=location, tags=tags, properties=properties, sku=sku)
+        _integration_service_environment = models.IntegrationServiceEnvironment(location=location, tags=tags, sku=sku, provisioning_state=provisioning_state, state=state, integration_service_environment_id=integration_service_environment_id, endpoints_configuration=endpoints_configuration, network_configuration=network_configuration)
         api_version = "2019-05-01"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -409,7 +435,7 @@ class IntegrationServiceEnvironmentOperations:
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('IntegrationServiceEnvironment', pipeline_response)
 
@@ -425,8 +451,12 @@ class IntegrationServiceEnvironmentOperations:
         integration_service_environment_name: str,
         location: Optional[str] = None,
         tags: Optional[Dict[str, str]] = None,
-        properties: Optional["models.IntegrationServiceEnvironmentProperties"] = None,
         sku: Optional["models.IntegrationServiceEnvironmentSku"] = None,
+        provisioning_state: Optional[Union[str, "models.WorkflowProvisioningState"]] = None,
+        state: Optional[Union[str, "models.WorkflowState"]] = None,
+        integration_service_environment_id: Optional[str] = None,
+        endpoints_configuration: Optional["models.FlowEndpointsConfiguration"] = None,
+        network_configuration: Optional["models.NetworkConfiguration"] = None,
         **kwargs
     ) -> "models.IntegrationServiceEnvironment":
         """Updates an integration service environment.
@@ -439,28 +469,40 @@ class IntegrationServiceEnvironmentOperations:
         :type location: str
         :param tags: The resource tags.
         :type tags: dict[str, str]
-        :param properties: The integration service environment properties.
-        :type properties: ~logic_management_client.models.IntegrationServiceEnvironmentProperties
         :param sku: The sku.
-        :type sku: ~logic_management_client.models.IntegrationServiceEnvironmentSku
+        :type sku: ~azure.mgmt.logic.models.IntegrationServiceEnvironmentSku
+        :param provisioning_state: The provisioning state.
+        :type provisioning_state: str or ~azure.mgmt.logic.models.WorkflowProvisioningState
+        :param state: The integration service environment state.
+        :type state: str or ~azure.mgmt.logic.models.WorkflowState
+        :param integration_service_environment_id: Gets the tracking id.
+        :type integration_service_environment_id: str
+        :param endpoints_configuration: The endpoints configuration.
+        :type endpoints_configuration: ~azure.mgmt.logic.models.FlowEndpointsConfiguration
+        :param network_configuration: The network configuration.
+        :type network_configuration: ~azure.mgmt.logic.models.NetworkConfiguration
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :return: An instance of LROPoller that returns IntegrationServiceEnvironment
-        :rtype: ~azure.core.polling.LROPoller[~logic_management_client.models.IntegrationServiceEnvironment]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.logic.models.IntegrationServiceEnvironment]
 
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        polling = kwargs.pop('polling', False)  # type: Union[bool, AsyncPollingMethod]
+        polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationServiceEnvironment"]
         raw_result = await self._update_initial(
             resource_group=resource_group,
             integration_service_environment_name=integration_service_environment_name,
             location=location,
             tags=tags,
-            properties=properties,
             sku=sku,
+            provisioning_state=provisioning_state,
+            state=state,
+            integration_service_environment_id=integration_service_environment_id,
+            endpoints_configuration=endpoints_configuration,
+            network_configuration=network_configuration,
             cls=lambda x,y,z: x,
             **kwargs
         )
@@ -476,7 +518,7 @@ class IntegrationServiceEnvironmentOperations:
             'polling_interval',
             self._config.polling_interval
         )
-        if polling is True: raise ValueError("polling being True is not valid because no default polling implemetation has been defined.")
+        if polling is True: polling_method = AsyncARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         return await async_poller(self._client, raw_result, get_long_running_output, polling_method)
@@ -527,7 +569,7 @@ class IntegrationServiceEnvironmentOperations:
         if response.status_code not in [200, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
           return cls(pipeline_response, None, {})
@@ -579,7 +621,7 @@ class IntegrationServiceEnvironmentOperations:
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
           return cls(pipeline_response, None, {})

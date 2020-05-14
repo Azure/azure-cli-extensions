@@ -13,6 +13,7 @@ from azure.core.async_paging import AsyncItemPaged, AsyncList
 from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
+from azure.mgmt.core.exceptions import ARMErrorFormat
 
 from ... import models
 
@@ -26,7 +27,7 @@ class IntegrationAccountMapOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~logic_management_client.models
+    :type models: ~azure.mgmt.logic.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -61,7 +62,7 @@ class IntegrationAccountMapOperations:
         :type filter: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationAccountMapListResult or the result of cls(response)
-        :rtype: ~logic_management_client.models.IntegrationAccountMapListResult
+        :rtype: ~azure.mgmt.logic.models.IntegrationAccountMapListResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationAccountMapListResult"]
@@ -113,7 +114,7 @@ class IntegrationAccountMapOperations:
             if response.status_code not in [200]:
                 error = self._deserialize(models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, model=error)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -139,7 +140,7 @@ class IntegrationAccountMapOperations:
         :type map_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationAccountMap or the result of cls(response)
-        :rtype: ~logic_management_client.models.IntegrationAccountMap
+        :rtype: ~azure.mgmt.logic.models.IntegrationAccountMap
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationAccountMap"]
@@ -172,7 +173,7 @@ class IntegrationAccountMapOperations:
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('IntegrationAccountMap', pipeline_response)
 
@@ -205,13 +206,13 @@ class IntegrationAccountMapOperations:
         :param map_name: The integration account map name.
         :type map_name: str
         :param map_type: The map type.
-        :type map_type: str or ~logic_management_client.models.MapType
+        :type map_type: str or ~azure.mgmt.logic.models.MapType
         :param location: The resource location.
         :type location: str
         :param tags: The resource tags.
         :type tags: dict[str, str]
         :param parameters_schema: The parameters schema of integration account map.
-        :type parameters_schema: ~logic_management_client.models.IntegrationAccountMapPropertiesParametersSchema
+        :type parameters_schema: ~azure.mgmt.logic.models.IntegrationAccountMapPropertiesParametersSchema
         :param content: The content.
         :type content: str
         :param content_type_parameter: The content type.
@@ -220,7 +221,7 @@ class IntegrationAccountMapOperations:
         :type metadata: object
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationAccountMap or the result of cls(response)
-        :rtype: ~logic_management_client.models.IntegrationAccountMap or ~logic_management_client.models.IntegrationAccountMap
+        :rtype: ~azure.mgmt.logic.models.IntegrationAccountMap or ~azure.mgmt.logic.models.IntegrationAccountMap
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationAccountMap"]
@@ -261,7 +262,7 @@ class IntegrationAccountMapOperations:
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = None
         if response.status_code == 200:
@@ -325,7 +326,7 @@ class IntegrationAccountMapOperations:
         if response.status_code not in [200, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
           return cls(pipeline_response, None, {})
@@ -352,10 +353,10 @@ class IntegrationAccountMapOperations:
         :param not_after: The expiry time.
         :type not_after: ~datetime.datetime
         :param key_type: The key type.
-        :type key_type: str or ~logic_management_client.models.KeyType
+        :type key_type: str or ~azure.mgmt.logic.models.KeyType
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: WorkflowTriggerCallbackUrl or the result of cls(response)
-        :rtype: ~logic_management_client.models.WorkflowTriggerCallbackUrl
+        :rtype: ~azure.mgmt.logic.models.WorkflowTriggerCallbackUrl
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.WorkflowTriggerCallbackUrl"]
@@ -396,7 +397,7 @@ class IntegrationAccountMapOperations:
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('WorkflowTriggerCallbackUrl', pipeline_response)
 
