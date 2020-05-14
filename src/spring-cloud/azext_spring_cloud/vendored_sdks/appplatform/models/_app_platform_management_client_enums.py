@@ -42,14 +42,6 @@ class TraceProxyState(str, Enum):
     updating = "Updating"
 
 
-class ManagedIdentityType(str, Enum):
-
-    none = "None"
-    system_assigned = "SystemAssigned"
-    user_assigned = "UserAssigned"
-    system_assigned_user_assigned = "SystemAssigned,UserAssigned"
-
-
 class TestKeyType(str, Enum):
 
     primary = "Primary"
