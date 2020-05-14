@@ -5,11 +5,13 @@
 
 import sys
 
-import colorama  # pylint: disable=import-error
+from azext_ai_did_you_mean_this import GlobalConfig
 
 
 def style_message(msg):
     if should_enable_styling():
+        import colorama  # pylint: disable=import-error
+
         try:
             msg = colorama.Style.BRIGHT + msg + colorama.Style.RESET_ALL
         except KeyError:
@@ -19,7 +21,7 @@ def style_message(msg):
 
 def should_enable_styling():
     try:
-        if sys.stdout.isatty():
+        if GlobalConfig.ENABLE_STYLING and sys.stdout.isatty():
             return True
     except AttributeError:
         pass
