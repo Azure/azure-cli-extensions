@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.3.0
+++++++
+* `az connectedk8s connect`: Added kubernetes distribution.
+
 0.2.0
 ++++++
 * `az connectedk8s connect`: Added telemetry.

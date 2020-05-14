@@ -57,6 +57,7 @@ Get_HelmRegistery_Path_Fault_Type = 'helm-registry-path-fetch-error'
 Pull_HelmChart_Fault_Type = 'helm-chart-pull-error'
 Export_HelmChart_Fault_Type = 'helm-chart-export-error'
 Get_Kubernetes_Version_Fault_Type = 'kubernetes-get-version-error'
+Get_Kubernetes_Distro_Fault_Type = 'kubernetes-get-distribution-error'
 
 
 # pylint:disable=unused-argument
@@ -459,14 +460,15 @@ def get_kubernetes_distro(configuration):
     api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
     try:
         api_response = api_instance.list_node()
-        for item in api_response.items: 
-            if len(item.metadata.labels) != 0 :
-                return "openshift"    
+        if api_response.items:
+            labels = api_response.items[0].metadata.labels
+            if labels.get("node.openshift.io/os_id") == "rhcos" or labels.get("node.openshift.io/os_id") == "rhel":
+                return "openshift"
         return "default"
     except Exception as e:  # pylint: disable=broad-except
-        telemetry.set_exception(exception=e, fault_type='kubernetes-get-distribution-error',
-                                summary='Exception while fetching kubernetes distribution')
-        logger.warning("Exception while trying to figure out kubernetes distribution: %s\n", e)
+        telemetry.set_exception(exception=e, fault_type=Get_Kubernetes_Distro_Fault_Type,
+                                summary='Unable to fetch kubernetes distribution')
+        logger.warning("Exception while trying to fetch kubernetes distribution: %s\n", e)
 
 
 def generate_request_payload(configuration, location, public_key, tags):
