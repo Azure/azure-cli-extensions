@@ -29,7 +29,7 @@ type: command
 short-summary: Create or update a standard environment in the specified subscription and resource group.
 examples:
   - name: Create a standard environment
-    text: az timeseriesinsights environment standard create -g {rg} -n {env} --location westus --sku-name S1 --sku-capacity 1 --data-retention-time P31D --partition-key DeviceId1 --storage-limit-exceeded-behavior PauseIngress
+    text: az timeseriesinsights environment standard create -g {rg} -n {env} --location westus --sku-name S1 --sku-capacity 1 --data-retention-time 31 --partition-key DeviceId1 --storage-limit-exceeded-behavior PauseIngress
 """
 
 helps['timeseriesinsights environment standard update'] = """
