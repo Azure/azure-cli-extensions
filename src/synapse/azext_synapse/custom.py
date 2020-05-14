@@ -68,12 +68,12 @@ def create_spark_batch_job(cmd, client, workspace_name, spark_pool_name, job_nam
     return client.create(workspace_name, spark_pool_name, livy_batch_request, detailed=True)
 
 
-def get_spark_batch_job(cmd, client, workspace_name, spark_pool_name, batch_id):
-    return client.get(workspace_name, spark_pool_name, batch_id, detailed=True)
+def get_spark_batch_job(cmd, client, workspace_name, spark_pool_name, job_id):
+    return client.get(workspace_name, spark_pool_name, job_id, detailed=True)
 
 
-def cancel_spark_batch_job(cmd, client, workspace_name, spark_pool_name, batch_id):
-    return client.delete(workspace_name, spark_pool_name, batch_id)
+def cancel_spark_batch_job(cmd, client, workspace_name, spark_pool_name, job_id):
+    return client.delete(workspace_name, spark_pool_name, job_id)
 
 
 # Spark Session
@@ -169,7 +169,7 @@ def create_spark_pool(cmd, client, resource_group_name, workspace_name, spark_po
                       spark_version, node_size, node_count,
                       node_size_family=NodeSizeFamily.memory_optimized.value, enable_auto_scale=None,
                       min_node_count=None, max_node_count=None,
-                      enable_auto_pause=None, delay_in_minutes=None, spark_events_folder="/events",
+                      enable_auto_pause=None, delay=None, spark_events_folder="/events",
                       library_requirements_file=None,
                       default_spark_log_folder="/logs", tags=None, no_wait=False):
     # get the location of the workspace
@@ -187,7 +187,7 @@ def create_spark_pool(cmd, client, resource_group_name, workspace_name, spark_po
                                                         max_node_count=max_node_count)
 
     big_data_pool_info.auto_pause = AutoPauseProperties(enabled=enable_auto_pause,
-                                                        delay_in_minutes=delay_in_minutes)
+                                                        delay_in_minutes=delay)
 
     if library_requirements_file:
         library_requirements_content = read_file_content(library_requirements_file)
@@ -200,7 +200,7 @@ def create_spark_pool(cmd, client, resource_group_name, workspace_name, spark_po
 def update_spark_pool(cmd, client, resource_group_name, workspace_name, spark_pool_name,
                       node_size=None, node_count=None, enable_auto_scale=None,
                       min_node_count=None, max_node_count=None,
-                      enable_auto_pause=None, delay_in_minutes=None,
+                      enable_auto_pause=None, delay=None,
                       library_requirements_file=None, tags=None, force=False, no_wait=False):
     existing_spark_pool = client.get(resource_group_name, workspace_name, spark_pool_name)
 
@@ -230,11 +230,11 @@ def update_spark_pool(cmd, client, resource_group_name, workspace_name, spark_po
     if existing_spark_pool.auto_pause is not None:
         if enable_auto_pause is not None:
             existing_spark_pool.auto_pause.enabled = enable_auto_pause
-        if delay_in_minutes:
-            existing_spark_pool.auto_pause.delay_in_minutes = delay_in_minutes
+        if delay:
+            existing_spark_pool.auto_pause.delay_in_minutes = delay
     else:
         existing_spark_pool.auto_pause = AutoPauseProperties(enabled=enable_auto_pause,
-                                                             delay_in_minutes=delay_in_minutes)
+                                                             delay_in_minutes=delay)
 
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, workspace_name, spark_pool_name,
                        existing_spark_pool, force=force)
@@ -244,20 +244,16 @@ def delete_spark_pool(cmd, client, resource_group_name, workspace_name, spark_po
     return sdk_no_wait(no_wait, client.delete, resource_group_name, workspace_name, spark_pool_name)
 
 
-def create_sql_pool(cmd, client, resource_group_name, workspace_name, sql_pool_name, sku_name, tags=None,
+def create_sql_pool(cmd, client, resource_group_name, workspace_name, sql_pool_name, performance_level, tags=None,
                     no_wait=False):
     # get the location of the workspace
     workspace_client = cf_synapse_client_workspace_factory(cmd.cli_ctx)
     workspace_object = workspace_client.get(resource_group_name, workspace_name)
     location = workspace_object.location
 
-    max_size_bytes = None
-    sku_tier = None
-    sku = Sku(tier=sku_tier, name=sku_name)
+    sku = Sku(name=performance_level)
 
-    sql_pool_info = SqlPool(sku=sku, location=location, max_size_bytes=max_size_bytes,
-                            create_mode=SynapseSqlCreateMode.Default,
-                            tags=tags)
+    sql_pool_info = SqlPool(sku=sku, location=location, create_mode=SynapseSqlCreateMode.Default, tags=tags)
 
     return sdk_no_wait(no_wait, client.create, resource_group_name, workspace_name, sql_pool_name, sql_pool_info)
 

@@ -28,6 +28,11 @@ examples:
         az synapse workspace create --name fromcli4 --resource-group rg \\
           --storage-account testadlsgen2 --file-system testfilesystem \\
           --sql-admin-login-user cliuser1 --sql-admin-login-password Password123! --location "East US"
+  - name: Create a Synapse workspace with storage resource id
+    text: |-
+        az synapse workspace create --name fromcli4 --resource-group rg \\
+          --storage-account /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.Storage/storageAccounts/testadlsgen2 --file-system testfilesystem \\
+          --sql-admin-login-user cliuser1 --sql-admin-login-password Password123! --location "East US"
 """
 
 helps['synapse workspace list'] = """

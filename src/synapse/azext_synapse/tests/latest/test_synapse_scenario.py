@@ -358,7 +358,7 @@ class SynapseScenarioTests(ScenarioTest):
             'location': self.location,
             'workspace': self.create_random_name(prefix='clitest', length=16),
             'file-system': 'testfilesystem',
-            'account-url': 'https://adlsgen2account.dfs.core.windows.net',
+            'storage-account': 'adlsgen2account',
             'login-user': 'cliuser1',
             'login-password': 'Password123!'
         })
@@ -370,7 +370,7 @@ class SynapseScenarioTests(ScenarioTest):
 
         # create synapse workspace
         self.cmd(
-            'az synapse workspace create --name {workspace} --resource-group {rg} --storage-account {account-url} '
+            'az synapse workspace create --name {workspace} --resource-group {rg} --storage-account {storage-account} '
             '--file-system {file-system} --sql-admin-login-user {login-user} '
             '--sql-admin-login-password {login-password}'
             ' --location {location}', checks=[

@@ -5,8 +5,7 @@
 # pylint: disable=line-too-long
 from argcomplete import FilesCompleter
 from azext_synapse.constant import SparkBatchLanguage, SparkStatementLanguage
-from azure.cli.core.commands.parameters import name_type, tags_type, get_three_state_flag, get_enum_type, \
-    resource_group_name_type
+from azure.cli.core.commands.parameters import name_type, tags_type, get_three_state_flag, get_enum_type
 from azure.cli.core.util import get_json_object
 from ._validators import validate_storage_account, validate_statement_language
 
@@ -44,7 +43,7 @@ def load_arguments(self, _):
 
     for scope in ['show', 'cancel']:
         with self.argument_context('synapse spark job ' + scope) as c:
-            c.argument('batch_id', options_list=['--livy-id'], arg_group='Spark job',
+            c.argument('job_id', options_list=['--livy-id'], arg_group='Spark job',
                        help='The id of the Spark job.')
 
     with self.argument_context('synapse spark session create') as c:
@@ -75,10 +74,6 @@ def load_arguments(self, _):
         c.argument('language', arg_type=get_enum_type(SparkStatementLanguage), validator=validate_statement_language, help='The language of Spark statement.')
 
     # synapse workspace
-    for scope in ['synapse workspace', 'synapse spark pool', 'synapse sql pool', 'synapse workspace firewall-rule']:
-        with self.argument_context(scope) as c:
-            c.argument('resource_group_name', arg_type=resource_group_name_type, id_part='resource_group')
-
     for scope in ['show', 'create', 'update', 'delete']:
         with self.argument_context('synapse workspace ' + scope) as c:
             c.argument('workspace_name', arg_type=name_type, id_part='name', help='The workspace name.')
@@ -127,7 +122,7 @@ def load_arguments(self, _):
         # AutoPause
         c.argument('enable_auto_pause', arg_type=get_three_state_flag(), arg_group='AutoPause',
                    help='The flag of enabling auto pause.')
-        c.argument('delay_in_minutes', arg_group='AutoPause', help='The delay time.')
+        c.argument('delay', arg_group='AutoPause', help='The delay time whose unit is minute.')
 
         # Environment Configuration
         c.argument('library_requirements_file', arg_group='Environment Configuration',
@@ -159,7 +154,7 @@ def load_arguments(self, _):
         # AutoPause
         c.argument('enable_auto_pause', arg_type=get_three_state_flag(), arg_group='AutoPause',
                    help='The flag of enabling auto pause.')
-        c.argument('delay_in_minutes', arg_group='AutoPause', help='The delay time.')
+        c.argument('delay', arg_group='AutoPause', help='The delay time whose unit is minute.')
 
         # Environment Configuration
         c.argument('library_requirements_file', arg_group='Environment Configuration',
@@ -178,9 +173,7 @@ def load_arguments(self, _):
             c.argument('sql_pool_name', arg_type=name_type, id_part='child_name_1', help='The SQL pool name.')
 
     with self.argument_context('synapse sql pool create') as c:
-        c.argument('max_size_bytes', help='The max size bytes.')
-        c.argument('sku_name', options_list=['--performance-level'], help='The performance level.')
-        c.argument('sku_tier', help='The sku tier.')
+        c.argument('performance_level', help='The performance level.')
         c.argument('source_database_id', help='The source database id.')
         c.argument('recoverable_database_id', help='The recoverable database id.')
         c.argument('tags', arg_type=tags_type)
