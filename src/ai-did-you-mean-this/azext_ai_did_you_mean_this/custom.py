@@ -62,6 +62,7 @@ def normalize_and_sort_parameters(cmd_table, command, parameters):
     _log_debug('normalize_and_sort_parameters: command: "%s", parameters: "%s"', command, parameters)
 
     parameter_set = set()
+    parameter_table, command = get_parameter_table(cmd_table, command)
 
     if parameters:
         # TODO: Avoid setting rules for global parameters manually.
@@ -77,8 +78,6 @@ def normalize_and_sort_parameters(cmd_table, command, parameters):
         }
 
         blacklisted = {'--debug', '--verbose'}
-
-        parameter_table, command = get_parameter_table(cmd_table, command)
 
         if parameter_table:
             for argument in parameter_table.values():
