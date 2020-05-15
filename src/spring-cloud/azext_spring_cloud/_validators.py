@@ -146,7 +146,7 @@ def validate_jvm_options(namespace):
 
 def validate_vnet(cmd, namespace):
     if not namespace.vnet and not namespace.app_subnet and \
-        not namespace.service_runtime_subnet and not namespace.reserved_cidr_range:
+       not namespace.service_runtime_subnet and not namespace.reserved_cidr_range:
         return
     validate_vnet_required_parameters(namespace)
     _validate_cidr_range(namespace.reserved_cidr_range)
@@ -174,6 +174,7 @@ def validate_vnet(cmd, namespace):
     if namespace.app_subnet.lower() == namespace.service_runtime_subnet.lower():
         raise CLIError('--app-subnet and --service-runtime-subnet should not be the same.')
 
+
 def _validate_subnet_id(subnet_id):
     if not is_valid_resource_id(subnet_id):
         raise CLIError('subnet {0} is not a valid resource ID'.format(subnet_id))
@@ -186,6 +187,7 @@ def _validate_subnet_id(subnet_id):
         name=subnet['name']
     )
 
+
 def _parse_subnet(vnet_id, subnet):
     if not is_valid_resource_id(subnet):
         if subnet.count('/'):
@@ -196,6 +198,7 @@ def _parse_subnet(vnet_id, subnet):
         raise CLIError('subnet {0} is not under virtual network {1}'.format(subnet, vnet_id))
     return subnet
 
+
 def _validate_cidr_range(ranges):
     if isinstance(ranges, list):
         if len(ranges) != 3:
@@ -204,6 +207,7 @@ def _validate_cidr_range(ranges):
             _validate_ip(ip, 16)
     else:
         _validate_ip(ranges, 14)
+
 
 def _validate_ip(ip, prefix):
     try:
@@ -217,6 +221,7 @@ def _validate_ip(ip, prefix):
                 ' --reserved-cidr-range should be 1 unused /14 IP range, or 3 unused /16 IP rangeds.'.format(ip))
     except ValueError:
         raise CLIError('{0} is not a valid CIDR'.format(ip))
+
 
 def validate_vnet_required_parameters(namespace):
     if not namespace.reserved_cidr_range or not namespace.app_subnet or not namespace.service_runtime_subnet:
