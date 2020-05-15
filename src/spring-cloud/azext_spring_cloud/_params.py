@@ -9,7 +9,8 @@ from azure.cli.core.commands.parameters import get_enum_type, get_three_state_fl
 from azure.cli.core.commands.parameters import (name_type, get_location_type, resource_group_name_type)
 from ._validators import (validate_env, validate_cosmos_type, validate_resource_id, validate_location,
                           validate_name, validate_app_name, validate_deployment_name, validate_log_lines,
-                          validate_log_limit, validate_log_since, validate_sku, validate_jvm_options)
+                          validate_log_limit, validate_log_since, validate_sku, validate_jvm_options
+                          validate_vnet, validate_vnet_required_parameters)
 from ._utils import ApiType
 
 from .vendored_sdks.appplatform.models import RuntimeVersion, TestKeyType
@@ -33,6 +34,10 @@ def load_arguments(self, _):
     with self.argument_context('spring-cloud create') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=validate_location)
         c.argument('sku', type=str, validator=validate_sku, help='Name of SKU, the value is "Basic" or "Standard"')
+        c.argument('reserved_cidr_range', help='A CIDR notation IP range from which to host underlying infrastructure. Can be 1 unused /14 IP range(or as large as available), or 3 unused /16 IP ranges. Required when deploying into a Virtual Network.', validator=validate_vnet)
+        c.argument('vnet', help='The name or ID of an existing Virtual Network into which to deploy the Spring Cloud instance.', validator=validate_vnet_required_parameters)
+        c.argument('app_subnet', help='The name or ID of an existing subnet in "vnet" into which to deploy the Spring Cloud app. Required when deploying into a Virtual Network.', validator=validate_vnet_required_parameters)
+        c.argument('service_runtime_subnet', help='The name or ID of an existing subnet in "vnet" into which to deploy the Spring Cloud service runtime. Required when deploying into a Virtual Network.', validator=validate_vnet_required_parameters)
 
     with self.argument_context('spring-cloud update') as c:
         c.argument('sku', type=str, validator=validate_sku, help='Name of SKU, the value is "Basic" or "Standard"')

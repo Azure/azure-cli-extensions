@@ -44,12 +44,19 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None, app_in
     rg_location = _get_rg_location(cmd.cli_ctx, resource_group)
     if location is None:
         location = rg_location
+    properties = models.ClusterResourceProperties()
+    resource = models.ServiceResource(location=location, properties=properties)
+
+    if service_runtime_subnet or app_subnet or reserved_cidr_range:
+        properties.network_profile = models.NetworkProfile(
+            service_runtime_subnet_id=service_runtime_subnet,
+            app_subnet_id=app_subnet,
+            service_cidr=reserved_cidr_range
+        )
 
     if sku is None:
         sku = "Standard"
     full_sku = models.Sku(name=_get_sku_name(sku), tier=sku)
-
-    properties = models.ClusterResourceProperties()
 
     check_tracing_parameters(app_insights_key, app_insights, disable_distributed_tracing)
     update_tracing_config(cmd, resource_group, name, location, properties,
