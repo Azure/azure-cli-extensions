@@ -16,6 +16,7 @@ except ImportError:
 
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
+
 VERSION = '0.3.0'
 
 # The full list of classifiers is available at

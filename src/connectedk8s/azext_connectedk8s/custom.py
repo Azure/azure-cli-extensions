@@ -104,6 +104,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
     # Get kubernetes cluster info for telemetry
     kubernetes_version = get_server_version(configuration)
     kubernetes_distro = get_kubernetes_distro(configuration)
+
     kubernetes_properties = {
         'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
         'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro
@@ -455,8 +456,8 @@ def get_server_version(configuration):
         telemetry.set_exception(exception=e, fault_type=Get_Kubernetes_Version_Fault_Type,
                                 summary='Unable to fetch kubernetes version')
         logger.warning("Unable to fetch kubernetes version: %s\n", e)
-
-
+        
+        
 def get_kubernetes_distro(configuration):
     api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
     try:
@@ -470,8 +471,8 @@ def get_kubernetes_distro(configuration):
         telemetry.set_exception(exception=e, fault_type=Get_Kubernetes_Distro_Fault_Type,
                                 summary='Unable to fetch kubernetes distribution')
         logger.warning("Exception while trying to fetch kubernetes distribution: %s\n", e)
-
-
+        
+        
 def generate_request_payload(configuration, location, public_key, tags):
     # Create connected cluster resource object
     aad_profile = ConnectedClusterAADProfile(
