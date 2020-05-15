@@ -425,8 +425,9 @@ def cli_event_channel_create_or_update(
         partner_topic_source,
         destination_subscription_id,
         destination_resource_group,
-        desination_topic_name):
-
+        desination_topic_name,
+        activation_expiration_date=None,
+        partner_topic_description=None):
     source_info = EventChannelSource(source=partner_topic_source)
 
     destination_info = EventChannelDestination(
@@ -434,7 +435,11 @@ def cli_event_channel_create_or_update(
         resource_group=destination_resource_group,
         partner_topic_name=desination_topic_name)
 
-    event_channel_info = EventChannel(source=source_info, destination=destination_info)
+    event_channel_info = EventChannel(
+        source=source_info,
+        destination=destination_info,
+        expiration_time_if_not_activated_utc=activation_expiration_date,
+        partner_topic_friendly_description=partner_topic_description)
 
     return client.create_or_update(
         resource_group_name,

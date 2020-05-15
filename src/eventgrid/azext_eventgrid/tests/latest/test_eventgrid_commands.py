@@ -9,6 +9,7 @@ import uuid
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer, StorageAccountPreparer
 from knack.util import CLIError
+from datetime import datetime, timedelta
 
 
 class EventGridTests(ScenarioTest):
@@ -111,7 +112,7 @@ class EventGridTests(ScenarioTest):
         #    self.check('identity.tenantId', None),
         # ])
 
-        outputdomain = self.cmd('az eventgrid domain create --name {domain_name4} --resource-group {rg} --location {location} --inbound-ip-rules 19.12.43.90/102 allow --inbound-ip-rules 19.12.43.70/81 allow --public-network-access disabled --identity systemassigned').get_output_in_json()
+        outputdomain = self.cmd('az eventgrid domain create --name {domain_name4} --resource-group {rg} --location {location} --inbound-ip-rules 19.12.43.90/15 allow --inbound-ip-rules 19.12.43.70/11 allow --public-network-access disabled --identity systemassigned').get_output_in_json()
         self.check(outputdomain['type'], 'Microsoft.EventGrid/domains')
         self.check(outputdomain['name'], self.kwargs['domain_name4'])
         self.check(outputdomain['publicNetworkAccess'], 'Disabled')
@@ -355,7 +356,7 @@ class EventGridTests(ScenarioTest):
         #     self.check('identity', None)
         # ])
 
-        outputtopic = self.cmd('az eventgrid topic create --name {topic_name4} --resource-group {rg} --location {location} --public-network-access disabled --inbound-ip-rules 19.12.43.90/102 allow --inbound-ip-rules 19.12.43.70/81 allow --sku BASic --identity systemassigned').get_output_in_json()
+        outputtopic = self.cmd('az eventgrid topic create --name {topic_name4} --resource-group {rg} --location {location} --public-network-access disabled --inbound-ip-rules 19.12.43.90/12 allow --inbound-ip-rules 19.12.43.70/20 allow --sku BASic --identity systemassigned').get_output_in_json()
         self.check(outputtopic['type'], 'Microsoft.EventGrid/topics')
         self.check(outputtopic['name'], self.kwargs['topic_name4'])
         self.check(outputtopic['publicNetworkAccess'], 'Disabled')
@@ -1158,6 +1159,9 @@ class EventGridTests(ScenarioTest):
         guid3 = uuid.uuid1()
         destination_subscription_id = '5b4b650e-28b9-4790-b3ab-ddbd88d727c4'
         source = self.create_random_name(prefix='cli', length=40)
+        exp_time = datetime.utcnow() + timedelta(hours=24)
+        exp_time = exp_time.isoformat()
+        creation_time = datetime.utcnow().isoformat()
 
         self.kwargs.update({
             'partner_registration_name': partner_registration_name,
@@ -1175,7 +1179,15 @@ class EventGridTests(ScenarioTest):
             'description': description,
             'display_name': display_name,
             'destination_subscription_id': destination_subscription_id,
-            'source': source
+            'source': source,
+            'exp_time': exp_time,
+            'creation_time': creation_time,
+        })
+
+        partner_topic_friendly_description = 'This partner topic was created by Partner {part_name} at {create_time}.'.format(part_name = partner_name, create_time = creation_time)
+
+        self.kwargs.update({
+            'partner_topic_friendly_description': partner_topic_friendly_description
         })
 
         scope = self.cmd('az eventgrid partner registration create --name {partner_registration_name} --resource-group {rg} --partner-name {partner_name} --resource-type-name {resource_type_name} --authorized-subscription-ids {guid1}', checks=[
@@ -1212,7 +1224,7 @@ class EventGridTests(ScenarioTest):
         ])
 
         self.kwargs.update({
-            'scope': scope,
+            'scope': scope
         })
 
         # self.cmd('az eventgrid partner registration update --name {partner_registration_name} --resource-group {rg} --tags Dept=IT', checks=[
@@ -1287,18 +1299,26 @@ class EventGridTests(ScenarioTest):
             self.check('type', 'Microsoft.EventGrid/partnerNamespaces/eventChannels'),
             self.check('name', self.kwargs['event_channel_name']),
             self.check('provisioningState', 'Succeeded'),
+            # self.check('partnerTopicReadinessState', 'NotActivatedByUserYet')
         ])
 
-        self.cmd('az eventgrid partner namespace event-channel show --resource-group {rg} --partner-namespace-name {partner_namespace_name} --name {event_channel_name} ', checks=[
+        self.cmd('az eventgrid partner namespace event-channel show --resource-group {rg} --partner-namespace-name {partner_namespace_name} --name {event_channel_name}', checks=[
             self.check('type', 'Microsoft.EventGrid/partnerNamespaces/eventChannels'),
             self.check('name', self.kwargs['event_channel_name']),
-            self.check('provisioningState', 'Succeeded')
+            self.check('provisioningState', 'Succeeded'),
+            # self.check('partnerTopicReadinessState', 'NotActivatedByUserYet')
         ])
 
-        outputnamespace = self.cmd('az eventgrid partner namespace event-channel create --resource-group {rg} --partner-namespace-name {partner_namespace_name} --name {event_channel_name} --destination-subscription-id {destination_subscription_id} --destination-resource-group {rg} --desination-topic-name {partner_topic_name} --source {source}').get_output_in_json()
-        self.check(outputnamespace['type'], 'Microsoft.EventGrid/partnerNamespaces/eventChannels'),
-        self.check(outputnamespace['name'], self.kwargs['event_channel_name']),
-        self.check(outputnamespace['provisioningState'], 'Succeeded')
+        outputeventchannel = self.cmd('az eventgrid partner namespace event-channel create --resource-group {rg} --partner-namespace-name {partner_namespace_name} --name {event_channel_name} --destination-subscription-id {destination_subscription_id} --destination-resource-group {rg} --desination-topic-name {partner_topic_name} --source {source} --activation-expiration-date \'{exp_time}\' --partner-topic-description \'{partner_topic_friendly_description}\'').get_output_in_json()
+
+        self.check(outputeventchannel['type'], 'Microsoft.EventGrid/partnerNamespaces/eventChannels'),
+        self.check(outputeventchannel['name'], self.kwargs['event_channel_name']),
+        self.check(outputeventchannel['provisioningState'], 'Succeeded'),
+        self.check(outputeventchannel['expirationTimeIfNotActivatedUtc'], exp_time),
+        self.check(outputeventchannel['partnerTopicFriendlyDescription'], partner_topic_friendly_description),
+        self.check(outputeventchannel['partnerTopicReadinessState'], 'NotActivatedByUserYet')
+
+        self.check(inChannel['partnerTopicReadinessState'], 'NotActivatedByUserYet')
 
         # self.cmd('az eventgrid partner namespace update --resource-group {rg} --partner-namespace-name {partner_namespace_name} --name {event_channel_name} --tags Dept=Finance', checks=[
         #    self.check('name', self.kwargs['event_channel_name']),
