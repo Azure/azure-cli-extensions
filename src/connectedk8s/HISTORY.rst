@@ -3,7 +3,7 @@
 Release History
 ===============
 
-0.3.0
+0.2.1
 ++++++
 * `az connectedk8s connect`: Added kubernetes distribution.
 
