@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.4.45
++++++
+* Add "--aks-custom-headers" for "az aks nodepool add" and "az aks update"
+
 0.4.43
 +++++
 * Fix issues with monitoring addon enabling with CLI versions 2.4.0+
