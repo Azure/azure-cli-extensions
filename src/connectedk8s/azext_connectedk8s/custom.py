@@ -470,7 +470,6 @@ def get_kubernetes_distro(configuration):
                                 summary='Unable to fetch kubernetes distribution')
         logger.warning("Exception while trying to fetch kubernetes distribution: %s\n", e)
 
-
 def generate_request_payload(configuration, location, public_key, tags):
     # Create connected cluster resource object
     aad_profile = ConnectedClusterAADProfile(
