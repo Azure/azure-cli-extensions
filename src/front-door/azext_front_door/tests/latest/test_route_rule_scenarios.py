@@ -19,16 +19,18 @@ class RouteRuleScenarioTests(ScenarioTest):
                  '--frontend-endpoints DefaultFrontendEndpoint --route-type Forward '
                  '--backend-pool DefaultBackendPool --patterns /forward1')
         self.cmd('network front-door routing-rule update -f {front_door} -g {rg} -n {rule1} '
-                 '--patterns /forward2 --caching Disabled',
+                 '--patterns /forward2 --caching Enabled',
                  checks=[
                      self.check('patternsToMatch[0]', '/forward2'),
-                     self.check('routeConfiguration.cacheConfiguration', None)
+                     self.check('length(routeConfiguration.cacheConfiguration)', 4),
+                     self.check('routeConfiguration.cacheConfiguration.queryParameterStripDirective', 'StripNone'),
+                     self.check('routeConfiguration.cacheConfiguration.dynamicCompression', 'Enabled')
                  ])
         self.cmd('network front-door routing-rule create -f {front_door} -g {rg} -n {rule2} '
                  '--frontend-endpoints DefaultFrontendEndpoint --route-type Redirect '
                  '--custom-host redirecthost.com --patterns /redirect1 --custom-query-string querystring')
         self.cmd('network front-door routing-rule update -f {front_door} -g {rg} -n {rule2} '
-                 '--patterns /forward3 --custom-query-string querystring2',
+                 '--patterns /forward3 --custom-query-string querystring2 ',
                  checks=[
                      self.check('patternsToMatch[0]', '/forward3'),
                      self.check('routeConfiguration.customQueryString', 'querystring2')
