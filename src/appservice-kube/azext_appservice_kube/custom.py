@@ -43,6 +43,12 @@ from ._utils import (_normalize_sku, get_sku_name, validate_subnet_id, _generic_
 from ._client_factory import web_client_factory, cf_kube_environments, ex_handler_factory
 from .vsts_cd_provider import VstsContinuousDeliveryProvider
 
+import subprocess
+from subprocess import PIPE
+import tempfile
+import shutil
+import os
+
 logger = get_logger(__name__)
 
 
@@ -472,7 +478,6 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None,
         functionapp_def.kind = 'kubeapp,functionapp,linux'
         functionapp_def.reserved = True
         site_config.app_settings.append(NameValuePair(name='WEBSITES_PORT', value='80'))
-        site_config.app_settings.append(NameValuePair(name='FUNCTIONS_EXTENSION_VERSION', value='~2'))
         site_config.app_settings.append(NameValuePair(name='MACHINEKEY_DecryptionKey',
                                                       value=str(hexlify(urandom(32)).decode()).upper()))
         if deployment_container_image_name:
@@ -481,6 +486,8 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None,
                                                           value=deployment_container_image_name))
             site_config.app_settings.append(NameValuePair(name='FUNCTION_APP_EDIT_MODE', value='readOnly'))
             site_config.linux_fx_version = _format_fx_version(deployment_container_image_name)
+            function_triggers_json = retrieve_update_function_triggers(deployment_container_image_name, site_config, docker_registry_server_user, docker_registry_server_password)
+            site_config.app_settings.append(NameValuePair(name='K8SE_FUNCTIONS_TRIGGERS', value=function_triggers_json))
         else:
             site_config.app_settings.append(NameValuePair(name='WEBSITES_ENABLE_APP_SERVICE_STORAGE', value='true'))
             site_config.linux_fx_version = _get_linux_fx_kube_functionapp(runtime, runtime_version)
@@ -1338,3 +1345,116 @@ class _StackRuntimeHelper(object):
                 r['setter'] = (_StackRuntimeHelper.update_site_appsettings if 'node' in
                                r['displayName'] else _StackRuntimeHelper.update_site_config)
         self._stacks = result
+
+
+class DockerHelper:
+    def docker_login(self, registryName, userName, password):
+        command = ["docker", "login", registryName, "-u", userName, "-p", password]
+        popen = self.run_command(command)
+        error = popen.stderr.read().decode("utf-8")
+        if error != "" and not error.startswith("WARNING!"):
+            error = error.replace("\n", "")
+            raise CLIError("An error occurred logging to image registry :" + registryName +", error:\n" + error)
+
+    def pull_container_image(self, containerImage):
+        command = ["docker", "pull", containerImage]
+        popen = self.run_command(command)
+        error = popen.stderr.read().decode("utf-8")
+        if error != "":
+            error = error.replace("\n", "")
+            raise CLIError("An error occurred pulling image :" + containerImage +", error:\n" + error)
+        else:
+            logger.info("Pulled image " + containerImage)
+  
+    def run_container(self, containerImage, entryPoint=None):
+        command = ["docker", "run", "-d"]
+        if entryPoint is not None:
+            command = ["docker", "run", "--rm", "-d", "-it", "--entrypoint", entryPoint]   
+        command.append(containerImage)
+        popen = self.run_command(command)
+        error = popen.stderr.read().decode("utf-8")
+        if error != "":
+            error = error.replace("\n", "")
+            raise CLIError("An error occurred trying to run container image:" + containerImage +", error:\n" + error)
+        else:
+            cont_id = popen.stdout.readline().decode("utf-8")
+            cont_id = cont_id.replace("\n", "")
+            logger.info(('The new container id: %s' % (cont_id)))
+            return cont_id
+
+    def exec_container(self, containerId, args):
+        command = ["docker", "exec", "-t", containerId]
+        if not args:
+            command = ["docker", "exec", "-t", containerId, "/bin/sh"]
+        else:
+            command.extend(args)
+        popen = self.run_command(command)
+        error = popen.stderr.read().decode("utf-8")
+        if error != "":
+            error = error.replace("\n", "")
+            raise CLIError("An error occurred executing container :" + containerId +", error:\n" + error)
+        else:
+            result = popen.stdout.read().decode("utf-8")
+            return result
+
+    def copy_file_folder_to_container(self, containerid, source, destination):
+        command = ["docker", "cp", source, containerid + ":" + destination]
+        popen = self.run_command(command)
+        error = popen.stderr.read().decode("utf-8")
+        if error != "":
+            error = error.replace("\n", "")
+            raise CLIError("An error occurred copying get function json shell script file %s to container :" + containerid +", error:\n" + error % (source))
+
+    def remove_container(self, containerName):
+        command = ["docker", "rm", "-f", containerName]
+        popen = self.run_command(command)
+        error = popen.stderr.read().decode("utf-8")
+        if error != "":
+            error = error.replace("\n", "")
+            raise CLIError("An error occurred removing image :" + containerName +", error:\n" + error)      
+        logger.info(('The container %s has been removed' % (containerName)))
+
+    def remove_image(self, imageName):
+        command = ["docker", "image", "rm", "-f", imageName]
+        popen = self.run_command(command)
+        error = popen.stderr.read().decode("utf-8")
+        if error != "":
+            error = error.replace("\n", "")
+            raise CLIError("An error occurred removing image :" + imageName +", error:\n" + error)
+        logger.info("The image %s has been successfully removed" % (imageName))
+
+    def run_command(self, command):
+        debugcommand = " - {0}".format(" ".join(command))
+        logger.info("Executing docker command => " + debugcommand)
+        openedProcess = subprocess.Popen(command, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        openedProcess.wait(500)
+        return openedProcess
+
+
+def retrieve_update_function_triggers(container_image_name,
+                                      site_config,
+                                      docker_registry_user_name=None,
+                                      docker_registry_password=None):
+    image_registry_url = parse_docker_image_name(container_image_name)
+    dockerHelper = DockerHelper()
+    if docker_registry_user_name is not None and docker_registry_password is not None:
+        dockerHelper.docker_login(image_registry_url, docker_registry_user_name, docker_registry_password)
+
+    dockerHelper.pull_container_image(container_image_name)
+    container_id = dockerHelper.run_container(container_image_name, "/bin/sh") 
+
+    #copy the getfunctionsjson.sh in the function image container
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    get_function_sh_script_file_path = os.path.join(dir_path, "getfunctionsjson.sh")
+    dockerHelper.copy_file_folder_to_container(container_id, get_function_sh_script_file_path, '/getfunctionsjson.sh')
+
+    dockerHelper.exec_container(container_id, ["chmod", "+x", "/getfunctionsjson.sh"])
+    functionJson = dockerHelper.exec_container(container_id, ["/getfunctionsjson.sh"])
+    functionJson = functionJson.replace("\r", "").replace("\n", "").replace(" ", "").replace(",}}", "}}")
+    dockerHelper.remove_container(container_id)
+    dockerHelper.remove_image(container_image_name)
+    try:
+        json.loads(functionJson)
+    except ValueError as e: 
+        raise CLIError("No function in the image: " + container_image_name + ",error: " + e)
+    return functionJson
