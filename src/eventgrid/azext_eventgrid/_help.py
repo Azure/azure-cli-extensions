@@ -226,7 +226,7 @@ examples:
   - name: Create a new partner registration with basic information.
     text: az eventgrid partner registration create -g rg1 --name partnerRegistrationName1 --partner-name Contoso --resource-type-name Accounts --authorized-subscription-ids 533ad9de-25db-46e2-b94a-d00c37cf022b 05aa2228-7d34-4635-922d-2b582c422445
   - name: Create a new partner registration with partner information.
-    text: az eventgrid partner registration create -g rg1 --name partnerRegistrationName1 --partner-name Contoso --resource-type-name Accounts --authorized-subscription-ids 533ad9de-25db-46e2-b94a-d00c37cf022b 05aa2228-7d34-4635-922d-2b582c422445 --description ExampleDescription --display-name ExampleDisplayName1 --logo-uri https://www.example.com/logo.png --setup-uri https://www.example.com
+    text: az eventgrid partner registration create -g rg1 --name partnerRegistrationName1 --partner-name Contoso --resource-type-name Accounts --authorized-subscription-ids 533ad9de-25db-46e2-b94a-d00c37cf022b 05aa2228-7d34-4635-922d-2b582c422445 --description ExampleDescription --display-name ExampleDisplayName1 --logo-uri \'https://www.example.com/logo.png\' --setup-uri \'https://www.example.com\' --long-description \'This is sample description}\' --customer-service-number \'+1 800 123 4567' --customer-service-extension \'125\' --customer-service-uri \'https://www.example.com/customerservice\'
 """
 
 helps['eventgrid partner registration list'] = """
@@ -318,7 +318,9 @@ short-summary: Create an event channel under a partner namespace.
 examples:
   - name: Create a specific event-channel.
     text: az eventgrid partner namespace event-channel create -g rg1 --partner-namespace-name partnernamespace1 -n eventChannelName1 --source SourceExample1 --destination-subscription-id 61f7c265-374d-499e-866d-5f4cc302b888 --destination-resource-group rg2 --desination-topic-name topicName1
-"""
+
+  - name: Create a specific event-channel with an activation expiration time and partner topic friendly description.
+    text: az eventgrid partner namespace event-channel create -g rg1 --partner-namespace-name partnernamespace1 -n eventChannelName1 --source SourceExample1 --destination-subscription-id 61f7c265-374d-499e-866d-5f4cc302b888 --destination-resource-group rg2 --desination-topic-name topicName1 --activation-expiration-date \'2020-05-20T10:00\' --partner-topic-description \'This topic is created by Costoco corp on user behavior.\' """
 
 helps['eventgrid partner namespace event-channel list'] = """
 type: command

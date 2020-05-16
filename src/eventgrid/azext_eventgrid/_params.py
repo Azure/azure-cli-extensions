@@ -150,6 +150,15 @@ partner_topic_source_type = CLIArgumentType(
     arg_type=name_type,
     options_list=['--partner-topic-source'])
 
+phone_number_type = CLIArgumentType(
+    help='The customer service number of the publisher. The expected phone format should start with a \'+\' sign'
+         ' followed by the country code. The remaining digits are then followed. Only digits and spaces are allowed and its'
+         ' length cannot exceed 16 digits including country code. Examples of valid phone numbers are: +1 515 123 4567 and'
+         ' +966 7 5115 2471. Examples of invalid phone numbers are: +1 (515) 123-4567, 1 515 123 4567 and +966 121 5115 24 7 551 1234 43.')
+
+phone_extension_type = CLIArgumentType(
+    help='The extension of the customer service number of the publisher. Only digits are allowed and number of digits should not exceed 10.')
+
 
 def load_arguments(self, _):    # pylint: disable=too-many-statements
     with self.argument_context('eventgrid') as c:
@@ -283,6 +292,10 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
 
     with self.argument_context('eventgrid partner registration') as c:
         c.argument('partner_registration_name', arg_type=partner_registration_name_type, options_list=['--name', '-n'], id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/partnerregistrations'))
+        c.argument('long_description', help='Description of the custom scenarios and integration. Length of this description should not exceed 2048 characters', id_part=None)
+        c.argument('customer_service_number', arg_type=phone_number_type, id_part=None)
+        c.argument('customer_service_extension', arg_type=phone_extension_type, id_part=None)
+        c.argument('customer_service_uri', help='The customer service URI of the publisher.', id_part=None)
 
     with self.argument_context('eventgrid partner registration list') as c:
         c.argument('odata_query', arg_type=odata_query_type, id_part=None)
