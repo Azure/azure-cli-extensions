@@ -44,7 +44,8 @@ from azext_eventgrid.vendored_sdks.eventgrid.models import (
     ConnectionState,
     EventSubscriptionIdentity,
     DeliveryWithResourceIdentity,
-    DeadLetterWithResourceIdentity)
+    DeadLetterWithResourceIdentity,
+    EventChannelFilter)
 
 logger = get_logger(__name__)
 
@@ -459,7 +460,8 @@ def cli_event_channel_create_or_update(
         destination_resource_group,
         desination_topic_name,
         activation_expiration_date=None,
-        partner_topic_description=None):
+        partner_topic_description=None,
+        publisher_filter=None):
 
     source_info = EventChannelSource(source=partner_topic_source)
 
@@ -468,11 +470,16 @@ def cli_event_channel_create_or_update(
         resource_group=destination_resource_group,
         partner_topic_name=desination_topic_name)
 
+    event_channel_filter = None
+    if publisher_filter is not None:
+        event_channel_filter = EventChannelFilter(advanced_filters=publisher_filter)
+
     event_channel_info = EventChannel(
         source=source_info,
         destination=destination_info,
         expiration_time_if_not_activated_utc=activation_expiration_date,
-        partner_topic_friendly_description=partner_topic_description)
+        partner_topic_friendly_description=partner_topic_description,
+        filter=event_channel_filter)
 
     return client.create_or_update(
         resource_group_name,

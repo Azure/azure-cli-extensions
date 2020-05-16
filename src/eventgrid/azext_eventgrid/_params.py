@@ -18,6 +18,7 @@ from azure.cli.core.commands.parameters import (
 )
 
 from .advanced_filter import EventSubscriptionAddFilter
+from .event_channel_filter import EventChannelAddFilter
 from .inbound_ip_rules import AddInboundIpRule
 
 included_event_types_type = CLIArgumentType(
@@ -318,6 +319,7 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
         c.argument('partner_topic_source', arg_type=partner_topic_source_type, options_list=['--source'])
         c.argument('activation_expiration_date', help="Date or datetime in UTC ISO 8601 format (e.g., '2022-02-17T01:59:59+00:00' or '2022-02-17') after which the event channel and corresponding partner topic would expire and get auto deleted. If this time is not specified, the expiration date is set to seven days by default.")
         c.argument('partner_topic_description', help="Friendly description of the corresponding partner topic. This will be helpful to remove any ambiguity of the origin of creation of the partner topic for the customer.")
+        c.argument('publisher_filter', help="The set of filters that are specified by the publisher in order to determine which events to be received by the subscriber.", action=EventChannelAddFilter, nargs='+')
 
     with self.argument_context('eventgrid partner namespace event-channel show') as c:
         c.argument('partner_namespace_name', arg_type=partner_namespace_name_type, id_part='name')
