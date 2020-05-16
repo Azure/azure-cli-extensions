@@ -315,12 +315,32 @@ short-summary: Manage partner event channels.
 helps['eventgrid partner namespace event-channel create'] = """
 type: command
 short-summary: Create an event channel under a partner namespace.
+parameters:
+  - name: --publisher-filter
+    short-summary: A publisher filter that is used to enable filtering of events based on a specific event property. This set of filters that are specified by the publisher in order to determine which events to be received by the subscriber.
+    long-summary: |
+        Usage:                     --publisher-filter KEY[.INNERKEY] FILTEROPERATOR VALUE [VALUE ...]
+        StringIn:                  --publisher-filter data.Color StringIn Blue Red Orange Yellow
+        StringNotIn:               --publisher-filter data.Color StringNotIn Blue Red Orange Yellow
+        StringContains:            --publisher-filter subject StringContains Blue Red
+        StringBeginsWith:          --publisher-filter subject StringBeginsWith Blue Red
+        StringEndsWith:            --publisher-filter subject StringEndsWith img png jpg
+        NumberIn:                  --publisher-filter data.property1 NumberIn 5 10 20
+        NumberNotIn:               --publisher-filter data.property2 NumberNotIn 100 200 300
+        NumberLessThan:            --publisher-filter data.property3 NumberLessThan 100
+        NumberLessThanOrEquals:    --publisher-filter data.property2 NumberLessThanOrEquals 100
+        NumberGreaterThan:         --publisher-filter data.property3 NumberGreaterThan 100
+        NumberGreaterThanOrEquals: --publisher-filter data.property2 NumberGreaterThanOrEquals 100
+        BoolEquals:                --publisher-filter data.property3 BoolEquals true
+        Multiple publisher filters can be specified by using more than one `--publisher-filter` argument.
 examples:
-  - name: Create a specific event-channel.
+  - name: Create a specific event channel.
     text: az eventgrid partner namespace event-channel create -g rg1 --partner-namespace-name partnernamespace1 -n eventChannelName1 --source SourceExample1 --destination-subscription-id 61f7c265-374d-499e-866d-5f4cc302b888 --destination-resource-group rg2 --desination-topic-name topicName1
-
-  - name: Create a specific event-channel with an activation expiration time and partner topic friendly description.
-    text: az eventgrid partner namespace event-channel create -g rg1 --partner-namespace-name partnernamespace1 -n eventChannelName1 --source SourceExample1 --destination-subscription-id 61f7c265-374d-499e-866d-5f4cc302b888 --destination-resource-group rg2 --desination-topic-name topicName1 --activation-expiration-date \'2020-05-20T10:00\' --partner-topic-description \'This topic is created by Costoco corp on user behavior.\' """
+  - name: Create a specific event channel with an activation expiration time and partner topic friendly description.
+    text: az eventgrid partner namespace event-channel create -g rg1 --partner-namespace-name partnernamespace1 -n eventChannelName1 --source SourceExample1 --destination-subscription-id 61f7c265-374d-499e-866d-5f4cc302b888 --destination-resource-group rg2 --desination-topic-name topicName1 --activation-expiration-date \'2020-05-20T10:00\' --partner-topic-description \'This topic is created by Costoco corp on user behavior.\'
+  - name: Create a specific event channel with publisher filters.
+    text: az eventgrid partner namespace event-channel create -g rg1 --partner-namespace-name partnernamespace1 -n eventChannelName1 --source SourceExample1 --destination-subscription-id 61f7c265-374d-499e-866d-5f4cc302b888 --destination-resource-group rg2 --desination-topic-name topicName1 --publisher-filter data.key1 NumberIn 2 3 4 100 200 --publisher-filter data.key2 StringIn 2 3 4 100 200
+"""
 
 helps['eventgrid partner namespace event-channel list'] = """
 type: command
