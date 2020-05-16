@@ -57,6 +57,7 @@ Get_HelmRegistery_Path_Fault_Type = 'helm-registry-path-fetch-error'
 Pull_HelmChart_Fault_Type = 'helm-chart-pull-error'
 Export_HelmChart_Fault_Type = 'helm-chart-export-error'
 Get_Kubernetes_Version_Fault_Type = 'kubernetes-get-version-error'
+Get_Kubernetes_Distro_Fault_Type = 'kubernetes-get-distribution-error'
 
 
 # pylint:disable=unused-argument
@@ -102,7 +103,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
 
     # Get kubernetes cluster info for telemetry
     kubernetes_version = get_server_version(configuration)
-    kubernetes_distro = 'default'
+    kubernetes_distro = get_kubernetes_distro(configuration)
+
     kubernetes_properties = {
         'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
         'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro
@@ -243,6 +245,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
     chart_path = os.getenv('HELMCHART') if os.getenv('HELMCHART') else helm_chart_path
     cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
                         "--set", "global.subscriptionId={}".format(subscription_id),
+                        "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
                         "--set", "global.resourceGroupName={}".format(resource_group_name),
                         "--set", "global.resourceName={}".format(cluster_name),
                         "--set", "global.location={}".format(location),
@@ -453,6 +456,21 @@ def get_server_version(configuration):
         telemetry.set_exception(exception=e, fault_type=Get_Kubernetes_Version_Fault_Type,
                                 summary='Unable to fetch kubernetes version')
         logger.warning("Unable to fetch kubernetes version: %s\n", e)
+
+
+def get_kubernetes_distro(configuration):
+    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+    try:
+        api_response = api_instance.list_node()
+        if api_response.items:
+            labels = api_response.items[0].metadata.labels
+            if labels.get("node.openshift.io/os_id") == "rhcos" or labels.get("node.openshift.io/os_id") == "rhel":
+                return "openshift"
+        return "default"
+    except Exception as e:  # pylint: disable=broad-except
+        telemetry.set_exception(exception=e, fault_type=Get_Kubernetes_Distro_Fault_Type,
+                                summary='Unable to fetch kubernetes distribution')
+        logger.warning("Exception while trying to fetch kubernetes distribution: %s\n", e)
 
 
 def generate_request_payload(configuration, location, public_key, tags):
