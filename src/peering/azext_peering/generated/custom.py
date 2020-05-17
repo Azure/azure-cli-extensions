@@ -19,10 +19,10 @@ def peering__check_service_provider_availability(cmd, client,
                                                       peering_service_provider=peering_service_provider)
 
 
-def peering_legacy_peering_list(cmd, client,
-                                peering_location,
-                                kind,
-                                asn=None):
+def peering_legacy_list(cmd, client,
+                        peering_location,
+                        kind,
+                        asn=None):
     return client.list(peering_location=peering_location,
                        kind=kind,
                        asn=asn)
@@ -64,9 +64,9 @@ def peering_asn_delete(cmd, client,
     return client.delete(peer_asn_name=peer_asn_name)
 
 
-def peering_peering_location_list(cmd, client,
-                                  kind,
-                                  direct_peering_type=None):
+def peering_location_list(cmd, client,
+                          kind,
+                          direct_peering_type=None):
     return client.list(kind=kind,
                        direct_peering_type=direct_peering_type)
 
@@ -246,32 +246,32 @@ def peering_service_location_list(cmd, client,
     return client.list(country=country)
 
 
-def peering_prefix_list(cmd, client,
-                        resource_group_name,
-                        peering_service_name,
-                        expand=None):
+def peering_service_prefix_list(cmd, client,
+                                resource_group_name,
+                                peering_service_name,
+                                expand=None):
     return client.list_by_peering_service(resource_group_name=resource_group_name,
                                           peering_service_name=peering_service_name,
                                           expand=expand)
 
 
-def peering_prefix_show(cmd, client,
-                        resource_group_name,
-                        peering_service_name,
-                        prefix_name,
-                        expand=None):
+def peering_service_prefix_show(cmd, client,
+                                resource_group_name,
+                                peering_service_name,
+                                prefix_name,
+                                expand=None):
     return client.get(resource_group_name=resource_group_name,
                       peering_service_name=peering_service_name,
                       prefix_name=prefix_name,
                       expand=expand)
 
 
-def peering_prefix_create(cmd, client,
-                          resource_group_name,
-                          peering_service_name,
-                          prefix_name,
-                          prefix=None,
-                          peering_service_prefix_key=None):
+def peering_service_prefix_create(cmd, client,
+                                  resource_group_name,
+                                  peering_service_name,
+                                  prefix_name,
+                                  prefix=None,
+                                  peering_service_prefix_key=None):
     return client.create_or_update(resource_group_name=resource_group_name,
                                    peering_service_name=peering_service_name,
                                    prefix_name=prefix_name,
@@ -279,12 +279,12 @@ def peering_prefix_create(cmd, client,
                                    peering_service_prefix_key=peering_service_prefix_key)
 
 
-def peering_prefix_update(cmd, client,
-                          resource_group_name,
-                          peering_service_name,
-                          prefix_name,
-                          prefix=None,
-                          peering_service_prefix_key=None):
+def peering_service_prefix_update(cmd, client,
+                                  resource_group_name,
+                                  peering_service_name,
+                                  prefix_name,
+                                  prefix=None,
+                                  peering_service_prefix_key=None):
     return client.create_or_update(resource_group_name=resource_group_name,
                                    peering_service_name=peering_service_name,
                                    prefix_name=prefix_name,
@@ -292,10 +292,10 @@ def peering_prefix_update(cmd, client,
                                    peering_service_prefix_key=peering_service_prefix_key)
 
 
-def peering_prefix_delete(cmd, client,
-                          resource_group_name,
-                          peering_service_name,
-                          prefix_name):
+def peering_service_prefix_delete(cmd, client,
+                                  resource_group_name,
+                                  peering_service_name,
+                                  prefix_name):
     return client.delete(resource_group_name=resource_group_name,
                          peering_service_name=peering_service_name,
                          prefix_name=prefix_name)

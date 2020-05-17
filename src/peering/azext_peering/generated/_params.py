@@ -31,7 +31,7 @@ def load_arguments(self, _):
         c.argument('peering_service_location', help='Gets or sets the peering service location.')
         c.argument('peering_service_provider', help='Gets or sets the peering service provider.')
 
-    with self.argument_context('peering legacy-peering list') as c:
+    with self.argument_context('peering legacy list') as c:
         c.argument('peering_location', help='The location of the peering.')
         c.argument('kind', arg_type=get_enum_type(['Direct', 'Exchange']), help='The kind of the peering.')
         c.argument('asn', help='The ASN number associated with a legacy peering.')
@@ -63,7 +63,7 @@ def load_arguments(self, _):
     with self.argument_context('peering asn delete') as c:
         c.argument('peer_asn_name', options_list=['--name', '-n'], help='The peer ASN name.', id_part='name')
 
-    with self.argument_context('peering peering-location list') as c:
+    with self.argument_context('peering location list') as c:
         c.argument('kind', arg_type=get_enum_type(['Direct', 'Exchange']), help='The kind of the peering.')
         c.argument('direct_peering_type', arg_type=get_enum_type(['Edge', 'Transit', 'Cdn', 'Internal', 'Ix', 'IxRs']),
                     help='The type of direct peering.')
@@ -175,26 +175,26 @@ def load_arguments(self, _):
     with self.argument_context('peering service location list') as c:
         c.argument('country', help='The country of interest, in which the locations are to be present.')
 
-    with self.argument_context('peering prefix list') as c:
+    with self.argument_context('peering service-prefix list') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('peering_service_name', help='The name of the peering service.')
         c.argument('expand', help='The properties to be expanded.')
 
-    with self.argument_context('peering prefix show') as c:
+    with self.argument_context('peering service-prefix show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('peering_service_name', help='The name of the peering service.', id_part='name')
         c.argument('prefix_name', options_list=['--name', '-n'], help='The name of the prefix.',
                    id_part='child_name_1')
         c.argument('expand', help='The properties to be expanded.')
 
-    with self.argument_context('peering prefix create') as c:
+    with self.argument_context('peering service-prefix create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('peering_service_name', help='The name of the peering service.')
         c.argument('prefix_name', options_list=['--name', '-n'], help='The name of the prefix.')
         c.argument('prefix', help='The prefix from which your traffic originates.')
         c.argument('peering_service_prefix_key', help='The peering service prefix key')
 
-    with self.argument_context('peering prefix update') as c:
+    with self.argument_context('peering service-prefix update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('peering_service_name', help='The name of the peering service.', id_part='name')
         c.argument('prefix_name', options_list=['--name', '-n'], help='The name of the prefix.',
@@ -202,7 +202,7 @@ def load_arguments(self, _):
         c.argument('prefix', help='The prefix from which your traffic originates.')
         c.argument('peering_service_prefix_key', help='The peering service prefix key')
 
-    with self.argument_context('peering prefix delete') as c:
+    with self.argument_context('peering service-prefix delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('peering_service_name', help='The name of the peering service.', id_part='name')
         c.argument('prefix_name', options_list=['--name', '-n'], help='The name of the prefix.',

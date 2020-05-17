@@ -25,9 +25,9 @@ def load_command_table(self, _):
         operations_tmpl='azext_peering.vendored_sdks.peering.operations._legacy_peering_operations#LegacyPeeringOperati'
         'ons.{}',
         client_factory=cf_legacy_peering)
-    with self.command_group('peering legacy-peering', peering_legacy_peering, client_factory=cf_legacy_peering,
+    with self.command_group('peering legacy', peering_legacy_peering, client_factory=cf_legacy_peering,
                             is_experimental=True) as g:
-        g.custom_command('list', 'peering_legacy_peering_list')
+        g.custom_command('list', 'peering_legacy_list')
 
     from azext_peering.generated._client_factory import cf_peer_asn
     peering_peer_asn = CliCommandType(
@@ -46,9 +46,9 @@ def load_command_table(self, _):
         operations_tmpl='azext_peering.vendored_sdks.peering.operations._peering_location_operations#PeeringLocationOpe'
         'rations.{}',
         client_factory=cf_peering_location)
-    with self.command_group('peering peering-location', peering_peering_location, client_factory=cf_peering_location,
+    with self.command_group('peering location', peering_peering_location, client_factory=cf_peering_location,
                             is_experimental=True) as g:
-        g.custom_command('list', 'peering_peering_location_list')
+        g.custom_command('list', 'peering_location_list')
 
     from azext_peering.generated._client_factory import cf_registered_asn
     peering_registered_asn = CliCommandType(
@@ -118,12 +118,13 @@ def load_command_table(self, _):
     peering_prefix = CliCommandType(
         operations_tmpl='azext_peering.vendored_sdks.peering.operations._prefix_operations#PrefixOperations.{}',
         client_factory=cf_prefix)
-    with self.command_group('peering prefix', peering_prefix, client_factory=cf_prefix, is_experimental=True) as g:
-        g.custom_command('list', 'peering_prefix_list')
-        g.custom_show_command('show', 'peering_prefix_show')
-        g.custom_command('create', 'peering_prefix_create')
-        g.custom_command('update', 'peering_prefix_update')
-        g.custom_command('delete', 'peering_prefix_delete')
+    with self.command_group('peering service-prefix', peering_prefix, client_factory=cf_prefix,
+                            is_experimental=True) as g:
+        g.custom_command('list', 'peering_service_prefix_list')
+        g.custom_show_command('show', 'peering_service_prefix_show')
+        g.custom_command('create', 'peering_service_prefix_create')
+        g.custom_command('update', 'peering_service_prefix_update')
+        g.custom_command('delete', 'peering_service_prefix_delete')
 
     from azext_peering.generated._client_factory import cf_peering_service_provider
     peering_peering_service_provider = CliCommandType(
