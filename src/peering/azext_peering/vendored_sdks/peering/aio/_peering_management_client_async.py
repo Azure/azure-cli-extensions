@@ -6,64 +6,60 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from typing import TYPE_CHECKING
+from typing import Any, Optional
 
-from azure.mgmt.core import ARMPipelineClient
+from azure.mgmt.core import AsyncARMPipelineClient
 from msrest import Deserializer, Serializer
 
-if TYPE_CHECKING:
-    # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Optional
-
-from ._configuration import PeeringManagementClientConfiguration
-from .operations import PeeringManagementClientOperationsMixin
-from .operations import LegacyPeeringOperations
-from .operations import OperationOperations
-from .operations import PeerAsnOperations
-from .operations import PeeringLocationOperations
-from .operations import RegisteredAsnOperations
-from .operations import RegisteredPrefixOperations
-from .operations import PeeringOperations
-from .operations import ReceivedRouteOperations
-from .operations import PeeringServiceCountryOperations
-from .operations import PeeringServiceLocationOperations
-from .operations import PrefixOperations
-from .operations import PeeringServiceProviderOperations
-from .operations import PeeringServiceOperations
-from . import models
+from ._configuration_async import PeeringManagementClientConfiguration
+from .operations_async import PeeringManagementClientOperationsMixin
+from .operations_async import LegacyPeeringOperations
+from .operations_async import OperationOperations
+from .operations_async import PeerAsnOperations
+from .operations_async import PeeringLocationOperations
+from .operations_async import RegisteredAsnOperations
+from .operations_async import RegisteredPrefixOperations
+from .operations_async import PeeringOperations
+from .operations_async import ReceivedRouteOperations
+from .operations_async import PeeringServiceCountryOperations
+from .operations_async import PeeringServiceLocationOperations
+from .operations_async import PrefixOperations
+from .operations_async import PeeringServiceProviderOperations
+from .operations_async import PeeringServiceOperations
+from .. import models
 
 
 class PeeringManagementClient(PeeringManagementClientOperationsMixin):
     """Peering Client.
 
     :ivar legacy_peering: LegacyPeeringOperations operations
-    :vartype legacy_peering: azure.mgmt.peering.operations.LegacyPeeringOperations
+    :vartype legacy_peering: azure.mgmt.peering.aio.operations_async.LegacyPeeringOperations
     :ivar operation: OperationOperations operations
-    :vartype operation: azure.mgmt.peering.operations.OperationOperations
+    :vartype operation: azure.mgmt.peering.aio.operations_async.OperationOperations
     :ivar peer_asn: PeerAsnOperations operations
-    :vartype peer_asn: azure.mgmt.peering.operations.PeerAsnOperations
+    :vartype peer_asn: azure.mgmt.peering.aio.operations_async.PeerAsnOperations
     :ivar peering_location: PeeringLocationOperations operations
-    :vartype peering_location: azure.mgmt.peering.operations.PeeringLocationOperations
+    :vartype peering_location: azure.mgmt.peering.aio.operations_async.PeeringLocationOperations
     :ivar registered_asn: RegisteredAsnOperations operations
-    :vartype registered_asn: azure.mgmt.peering.operations.RegisteredAsnOperations
+    :vartype registered_asn: azure.mgmt.peering.aio.operations_async.RegisteredAsnOperations
     :ivar registered_prefix: RegisteredPrefixOperations operations
-    :vartype registered_prefix: azure.mgmt.peering.operations.RegisteredPrefixOperations
+    :vartype registered_prefix: azure.mgmt.peering.aio.operations_async.RegisteredPrefixOperations
     :ivar peering: PeeringOperations operations
-    :vartype peering: azure.mgmt.peering.operations.PeeringOperations
+    :vartype peering: azure.mgmt.peering.aio.operations_async.PeeringOperations
     :ivar received_route: ReceivedRouteOperations operations
-    :vartype received_route: azure.mgmt.peering.operations.ReceivedRouteOperations
+    :vartype received_route: azure.mgmt.peering.aio.operations_async.ReceivedRouteOperations
     :ivar peering_service_country: PeeringServiceCountryOperations operations
-    :vartype peering_service_country: azure.mgmt.peering.operations.PeeringServiceCountryOperations
+    :vartype peering_service_country: azure.mgmt.peering.aio.operations_async.PeeringServiceCountryOperations
     :ivar peering_service_location: PeeringServiceLocationOperations operations
-    :vartype peering_service_location: azure.mgmt.peering.operations.PeeringServiceLocationOperations
+    :vartype peering_service_location: azure.mgmt.peering.aio.operations_async.PeeringServiceLocationOperations
     :ivar prefix: PrefixOperations operations
-    :vartype prefix: azure.mgmt.peering.operations.PrefixOperations
+    :vartype prefix: azure.mgmt.peering.aio.operations_async.PrefixOperations
     :ivar peering_service_provider: PeeringServiceProviderOperations operations
-    :vartype peering_service_provider: azure.mgmt.peering.operations.PeeringServiceProviderOperations
+    :vartype peering_service_provider: azure.mgmt.peering.aio.operations_async.PeeringServiceProviderOperations
     :ivar peering_service: PeeringServiceOperations operations
-    :vartype peering_service: azure.mgmt.peering.operations.PeeringServiceOperations
+    :vartype peering_service: azure.mgmt.peering.aio.operations_async.PeeringServiceOperations
     :param credential: Credential needed for the client to connect to Azure.
-    :type credential: ~azure.core.credentials.TokenCredential
+    :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     :param subscription_id: The Azure subscription ID.
     :type subscription_id: str
     :param str base_url: Service URL
@@ -71,16 +67,15 @@ class PeeringManagementClient(PeeringManagementClientOperationsMixin):
 
     def __init__(
         self,
-        credential,  # type: "TokenCredential"
-        subscription_id,  # type: str
-        base_url=None,  # type: Optional[str]
-        **kwargs  # type: Any
-    ):
-        # type: (...) -> None
+        credential: "AsyncTokenCredential",
+        subscription_id: str,
+        base_url: Optional[str] = None,
+        **kwargs: Any
+    ) -> None:
         if not base_url:
             base_url = 'https://management.azure.com'
         self._config = PeeringManagementClientConfiguration(credential, subscription_id, **kwargs)
-        self._client = ARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
+        self._client = AsyncARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)
@@ -113,15 +108,12 @@ class PeeringManagementClient(PeeringManagementClientOperationsMixin):
         self.peering_service = PeeringServiceOperations(
             self._client, self._config, self._serialize, self._deserialize)
 
-    def close(self):
-        # type: () -> None
-        self._client.close()
+    async def close(self) -> None:
+        await self._client.close()
 
-    def __enter__(self):
-        # type: () -> PeeringManagementClient
-        self._client.__enter__()
+    async def __aenter__(self) -> "PeeringManagementClient":
+        await self._client.__aenter__()
         return self
 
-    def __exit__(self, *exc_details):
-        # type: (Any) -> None
-        self._client.__exit__(*exc_details)
+    async def __aexit__(self, *exc_details) -> None:
+        await self._client.__aexit__(*exc_details)
