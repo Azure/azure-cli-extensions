@@ -8,6 +8,48 @@ check-service-provider-availability a peering .
 |------|----|-----------|----------|--------------|
 |**--peering-service-location**|string|Gets or sets the peering service location.|peering_service_location|
 |**--peering-service-provider**|string|Gets or sets the peering service provider.|peering_service_provider|
+### peering asn create
+
+create a peering asn.
+
+|Option|Type|Description|Path (SDK)|Path (swagger)|
+|------|----|-----------|----------|--------------|
+|**--peer-asn-name**|string|The peer ASN name.|peer_asn_name|
+|**--peer-asn**|integer|The Autonomous System Number (ASN) of the peer.|peer_asn|
+|**--peer-contact-detail**|array|The contact details of the peer.|peer_contact_detail|
+|**--peer-name**|string|The name of the peer.|peer_name|
+|**--validation-state**|choice|The validation state of the ASN associated with the peer.|validation_state|
+### peering asn delete
+
+delete a peering asn.
+
+|Option|Type|Description|Path (SDK)|Path (swagger)|
+|------|----|-----------|----------|--------------|
+|**--peer-asn-name**|string|The peer ASN name.|peer_asn_name|
+### peering asn list
+
+list a peering asn.
+
+|Option|Type|Description|Path (SDK)|Path (swagger)|
+|------|----|-----------|----------|--------------|
+### peering asn show
+
+show a peering asn.
+
+|Option|Type|Description|Path (SDK)|Path (swagger)|
+|------|----|-----------|----------|--------------|
+|**--peer-asn-name**|string|The peer ASN name.|peer_asn_name|
+### peering asn update
+
+create a peering asn.
+
+|Option|Type|Description|Path (SDK)|Path (swagger)|
+|------|----|-----------|----------|--------------|
+|**--peer-asn-name**|string|The peer ASN name.|peer_asn_name|
+|**--peer-asn**|integer|The Autonomous System Number (ASN) of the peer.|peer_asn|
+|**--peer-contact-detail**|array|The contact details of the peer.|peer_contact_detail|
+|**--peer-name**|string|The name of the peer.|peer_name|
+|**--validation-state**|choice|The validation state of the ASN associated with the peer.|validation_state|
 ### peering legacy-peering list
 
 list a peering legacy-peering.
@@ -17,48 +59,6 @@ list a peering legacy-peering.
 |**--peering-location**|string|The location of the peering.|peering_location|
 |**--kind**|choice|The kind of the peering.|kind|
 |**--asn**|integer|The ASN number associated with a legacy peering.|asn|
-### peering peering asn create
-
-create a peering peering asn.
-
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--peer-asn-name**|string|The peer ASN name.|peer_asn_name|
-|**--peer-asn**|integer|The Autonomous System Number (ASN) of the peer.|peer_asn|
-|**--peer-contact-detail**|array|The contact details of the peer.|peer_contact_detail|
-|**--peer-name**|string|The name of the peer.|peer_name|
-|**--validation-state**|choice|The validation state of the ASN associated with the peer.|validation_state|
-### peering peering asn delete
-
-delete a peering peering asn.
-
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--peer-asn-name**|string|The peer ASN name.|peer_asn_name|
-### peering peering asn list
-
-list a peering peering asn.
-
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-### peering peering asn show
-
-show a peering peering asn.
-
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--peer-asn-name**|string|The peer ASN name.|peer_asn_name|
-### peering peering asn update
-
-create a peering peering asn.
-
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--peer-asn-name**|string|The peer ASN name.|peer_asn_name|
-|**--peer-asn**|integer|The Autonomous System Number (ASN) of the peer.|peer_asn|
-|**--peer-contact-detail**|array|The contact details of the peer.|peer_contact_detail|
-|**--peer-name**|string|The name of the peer.|peer_name|
-|**--validation-state**|choice|The validation state of the ASN associated with the peer.|validation_state|
 ### peering peering create
 
 create a peering peering.
@@ -89,70 +89,6 @@ list a peering peering.
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
 |**--resource-group-name**|string|The name of the resource group.|resource_group_name|
-### peering peering service create
-
-create a peering peering service.
-
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--resource-group-name**|string|The name of the resource group.|resource_group_name|
-|**--peering-service-name**|string|The name of the peering service.|peering_service_name|
-|**--location**|string|The location of the resource.|location|
-|**--sku**|object|The SKU that defines the type of the peering service.|sku|
-|**--tags**|dictionary|The resource tags.|tags|
-|**--peering-service-location**|string|The PeeringServiceLocation of the Customer.|peering_service_location|
-|**--peering-service-provider**|string|The MAPS Provider Name.|peering_service_provider|
-### peering peering service delete
-
-delete a peering peering service.
-
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--resource-group-name**|string|The name of the resource group.|resource_group_name|
-|**--peering-service-name**|string|The name of the peering service.|peering_service_name|
-### peering peering service list
-
-list a peering peering service.
-
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--resource-group-name**|string|The name of the resource group.|resource_group_name|
-### peering peering service show
-
-show a peering peering service.
-
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--resource-group-name**|string|The name of the resource group.|resource_group_name|
-|**--peering-service-name**|string|The name of the peering.|peering_service_name|
-### peering peering service update
-
-update a peering peering service.
-
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--resource-group-name**|string|The name of the resource group.|resource_group_name|
-|**--peering-service-name**|string|The name of the peering service.|peering_service_name|
-|**--tags**|dictionary|Gets or sets the tags, a dictionary of descriptors arm object|tags|
-### peering peering service-country list
-
-list a peering peering service-country.
-
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-### peering peering service-location list
-
-list a peering peering service-location.
-
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--country**|string|The country of interest, in which the locations are to be present.|country|
-### peering peering service-provider list
-
-list a peering peering service-provider.
-
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
 ### peering peering show
 
 show a peering peering.
@@ -333,3 +269,67 @@ create a peering registered-prefix.
 |**--peering-name**|string|The name of the peering.|peering_name|
 |**--registered-prefix-name**|string|The name of the registered prefix.|registered_prefix_name|
 |**--prefix**|string|The customer's prefix from which traffic originates.|prefix|
+### peering service country list
+
+list a peering service country.
+
+|Option|Type|Description|Path (SDK)|Path (swagger)|
+|------|----|-----------|----------|--------------|
+### peering service create
+
+create a peering service.
+
+|Option|Type|Description|Path (SDK)|Path (swagger)|
+|------|----|-----------|----------|--------------|
+|**--resource-group-name**|string|The name of the resource group.|resource_group_name|
+|**--peering-service-name**|string|The name of the peering service.|peering_service_name|
+|**--location**|string|The location of the resource.|location|
+|**--sku**|object|The SKU that defines the type of the peering service.|sku|
+|**--tags**|dictionary|The resource tags.|tags|
+|**--peering-service-location**|string|The PeeringServiceLocation of the Customer.|peering_service_location|
+|**--peering-service-provider**|string|The MAPS Provider Name.|peering_service_provider|
+### peering service delete
+
+delete a peering service.
+
+|Option|Type|Description|Path (SDK)|Path (swagger)|
+|------|----|-----------|----------|--------------|
+|**--resource-group-name**|string|The name of the resource group.|resource_group_name|
+|**--peering-service-name**|string|The name of the peering service.|peering_service_name|
+### peering service list
+
+list a peering service.
+
+|Option|Type|Description|Path (SDK)|Path (swagger)|
+|------|----|-----------|----------|--------------|
+|**--resource-group-name**|string|The name of the resource group.|resource_group_name|
+### peering service location list
+
+list a peering service location.
+
+|Option|Type|Description|Path (SDK)|Path (swagger)|
+|------|----|-----------|----------|--------------|
+|**--country**|string|The country of interest, in which the locations are to be present.|country|
+### peering service provider list
+
+list a peering service provider.
+
+|Option|Type|Description|Path (SDK)|Path (swagger)|
+|------|----|-----------|----------|--------------|
+### peering service show
+
+show a peering service.
+
+|Option|Type|Description|Path (SDK)|Path (swagger)|
+|------|----|-----------|----------|--------------|
+|**--resource-group-name**|string|The name of the resource group.|resource_group_name|
+|**--peering-service-name**|string|The name of the peering.|peering_service_name|
+### peering service update
+
+update a peering service.
+
+|Option|Type|Description|Path (SDK)|Path (swagger)|
+|------|----|-----------|----------|--------------|
+|**--resource-group-name**|string|The name of the resource group.|resource_group_name|
+|**--peering-service-name**|string|The name of the peering service.|peering_service_name|
+|**--tags**|dictionary|Gets or sets the tags, a dictionary of descriptors arm object|tags|

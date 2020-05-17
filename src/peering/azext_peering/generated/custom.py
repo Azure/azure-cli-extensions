@@ -28,21 +28,21 @@ def peering_legacy_peering_list(cmd, client,
                        asn=asn)
 
 
-def peering_peering_asn_list(cmd, client):
+def peering_asn_list(cmd, client):
     return client.list_by_subscription()
 
 
-def peering_peering_asn_show(cmd, client,
-                             peer_asn_name):
+def peering_asn_show(cmd, client,
+                     peer_asn_name):
     return client.get(peer_asn_name=peer_asn_name)
 
 
-def peering_peering_asn_create(cmd, client,
-                               peer_asn_name,
-                               peer_asn=None,
-                               peer_contact_detail=None,
-                               peer_name=None,
-                               validation_state=None):
+def peering_asn_create(cmd, client,
+                       peer_asn_name,
+                       peer_asn=None,
+                       peer_contact_detail=None,
+                       peer_name=None,
+                       validation_state=None):
     return client.create_or_update(peer_asn_name=peer_asn_name,
                                    peer_asn=peer_asn,
                                    peer_contact_detail=peer_contact_detail,
@@ -50,17 +50,17 @@ def peering_peering_asn_create(cmd, client,
                                    validation_state=validation_state)
 
 
-def peering_peering_asn_update(instance, cmd,
-                               peer_asn_name,
-                               peer_asn=None,
-                               peer_contact_detail=None,
-                               peer_name=None,
-                               validation_state=None):
+def peering_asn_update(instance, cmd,
+                       peer_asn_name,
+                       peer_asn=None,
+                       peer_contact_detail=None,
+                       peer_name=None,
+                       validation_state=None):
     return instance
 
 
-def peering_peering_asn_delete(cmd, client,
-                               peer_asn_name):
+def peering_asn_delete(cmd, client,
+                       peer_asn_name):
     return client.delete(peer_asn_name=peer_asn_name)
 
 
@@ -237,12 +237,12 @@ def peering_received_route_list(cmd, client,
                                   skip_token=skip_token)
 
 
-def peering_peering_service_country_list(cmd, client):
+def peering_service_country_list(cmd, client):
     return client.list()
 
 
-def peering_peering_service_location_list(cmd, client,
-                                          country=None):
+def peering_service_location_list(cmd, client,
+                                  country=None):
     return client.list(country=country)
 
 
@@ -301,32 +301,32 @@ def peering_prefix_delete(cmd, client,
                          prefix_name=prefix_name)
 
 
-def peering_peering_service_provider_list(cmd, client):
+def peering_service_provider_list(cmd, client):
     return client.list()
 
 
-def peering_peering_service_list(cmd, client,
-                                 resource_group_name=None):
+def peering_service_list(cmd, client,
+                         resource_group_name=None):
     if resource_group_name:
         return client.list_by_resource_group(resource_group_name=resource_group_name)
     return client.list_by_subscription()
 
 
-def peering_peering_service_show(cmd, client,
-                                 resource_group_name,
-                                 peering_service_name):
+def peering_service_show(cmd, client,
+                         resource_group_name,
+                         peering_service_name):
     return client.get(resource_group_name=resource_group_name,
                       peering_service_name=peering_service_name)
 
 
-def peering_peering_service_create(cmd, client,
-                                   resource_group_name,
-                                   peering_service_name,
-                                   location,
-                                   sku=None,
-                                   tags=None,
-                                   peering_service_location=None,
-                                   peering_service_provider=None):
+def peering_service_create(cmd, client,
+                           resource_group_name,
+                           peering_service_name,
+                           location,
+                           sku=None,
+                           tags=None,
+                           peering_service_location=None,
+                           peering_service_provider=None):
     return client.create_or_update(resource_group_name=resource_group_name,
                                    peering_service_name=peering_service_name,
                                    sku=sku,
@@ -336,17 +336,17 @@ def peering_peering_service_create(cmd, client,
                                    peering_service_provider=peering_service_provider)
 
 
-def peering_peering_service_update(cmd, client,
-                                   resource_group_name,
-                                   peering_service_name,
-                                   tags=None):
+def peering_service_update(cmd, client,
+                           resource_group_name,
+                           peering_service_name,
+                           tags=None):
     return client.update(resource_group_name=resource_group_name,
                          peering_service_name=peering_service_name,
                          tags=tags)
 
 
-def peering_peering_service_delete(cmd, client,
-                                   resource_group_name,
-                                   peering_service_name):
+def peering_service_delete(cmd, client,
+                           resource_group_name,
+                           peering_service_name):
     return client.delete(resource_group_name=resource_group_name,
                          peering_service_name=peering_service_name)

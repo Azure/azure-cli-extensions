@@ -26,7 +26,7 @@ def setup(test, rg):
 # EXAMPLE: /PeerAsns/put/Create a peer ASN
 @try_manual
 def step__peerasns_put_create_a_peer_asn(test, rg):
-    test.cmd('az peering peering asn create '
+    test.cmd('az peering asn create '
              '--peer-asn 65000 '
              '--peer-contact-detail email="noc@contoso.com" phone="+1 (234) 567-8999" role="Noc" '
              '--peer-contact-detail email="abc@contoso.com" phone="+1 (234) 567-8900" role="Policy" '
@@ -48,7 +48,7 @@ def step__legacypeerings_get_list_legacy_peerings(test, rg):
 # EXAMPLE: /PeerAsns/get/Get a peer ASN
 @try_manual
 def step__peerasns_get_get_a_peer_asn(test, rg):
-    test.cmd('az peering peering asn show '
+    test.cmd('az peering asn show '
              '--name "{PeerAsns_2}"',
              checks=[])
 
@@ -56,7 +56,7 @@ def step__peerasns_get_get_a_peer_asn(test, rg):
 # EXAMPLE: /PeerAsns/get/List peer ASNs in a subscription
 @try_manual
 def step__peerasns_get_list_peer_asns_in_a_subscription(test, rg):
-    test.cmd('az peering peering asn list',
+    test.cmd('az peering asn list',
              checks=[])
 
 
@@ -79,28 +79,28 @@ def step__peeringlocations_get_list_exchange_peering_locations(test, rg):
 # EXAMPLE: /PeeringServiceCountries/get/List peering service countries
 @try_manual
 def step__peeringservicecountries_get_list_peering_service_countries(test, rg):
-    test.cmd('az peering peering service-country list',
+    test.cmd('az peering service country list',
              checks=[])
 
 
 # EXAMPLE: /PeeringServiceLocations/get/List peering service locations
 @try_manual
 def step__peeringservicelocations_get_list_peering_service_locations(test, rg):
-    test.cmd('az peering peering service-location list',
+    test.cmd('az peering service location list',
              checks=[])
 
 
 # EXAMPLE: /PeeringServiceProviders/get/List peering service providers
 @try_manual
 def step__peeringserviceproviders_get_list_peering_service_providers(test, rg):
-    test.cmd('az peering peering service-provider list',
+    test.cmd('az peering service provider list',
              checks=[])
 
 
 # EXAMPLE: /PeeringServices/put/Create a  peering service
 @try_manual
 def step__peeringservices_put_create_a__peering_service(test, rg):
-    test.cmd('az peering peering service create '
+    test.cmd('az peering service create '
              '--location "eastus" '
              '--peering-service-location "state1" '
              '--peering-service-provider "serviceProvider1" '
@@ -112,7 +112,7 @@ def step__peeringservices_put_create_a__peering_service(test, rg):
 # EXAMPLE: /PeeringServices/get/Get a peering service
 @try_manual
 def step__peeringservices_get_get_a_peering_service(test, rg):
-    test.cmd('az peering peering service show '
+    test.cmd('az peering service show '
              '--name "{peeringServiceName}" '
              '--resource-group "{rg}"',
              checks=[])
@@ -121,7 +121,7 @@ def step__peeringservices_get_get_a_peering_service(test, rg):
 # EXAMPLE: /PeeringServices/get/List peering services in a resource group
 @try_manual
 def step__peeringservices_get_list_peering_services_in_a_resource_group(test, rg):
-    test.cmd('az peering peering service list '
+    test.cmd('az peering service list '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -129,7 +129,7 @@ def step__peeringservices_get_list_peering_services_in_a_resource_group(test, rg
 # EXAMPLE: /PeeringServices/get/List peering services in a subscription
 @try_manual
 def step__peeringservices_get_list_peering_services_in_a_subscription(test, rg):
-    test.cmd('az peering peering service list '
+    test.cmd('az peering service list '
              '-g ""',
              checks=[])
 
@@ -137,7 +137,7 @@ def step__peeringservices_get_list_peering_services_in_a_subscription(test, rg):
 # EXAMPLE: /PeeringServices/patch/Update peering service tags
 @try_manual
 def step__peeringservices_patch_update_peering_service_tags(test, rg):
-    test.cmd('az peering peering service update '
+    test.cmd('az peering service update '
              '--name "{peeringServiceName}" '
              '--resource-group "{rg}" '
              '--tags tags={{"tag0":"value0","tag1":"value1"}}',
@@ -387,7 +387,7 @@ def step__registeredprefixes_delete_deletes_a_registered_prefix_associated_with_
 # EXAMPLE: /PeeringServices/delete/Delete a peering service
 @try_manual
 def step__peeringservices_delete_delete_a_peering_service(test, rg):
-    test.cmd('az peering peering service delete '
+    test.cmd('az peering service delete '
              '--name "{peeringServiceName}" '
              '--resource-group "{rg}"',
              checks=[])
@@ -405,7 +405,7 @@ def step__peerings_delete_delete_a_peering(test, rg):
 # EXAMPLE: /PeerAsns/delete/Delete a peer ASN
 @try_manual
 def step__peerasns_delete_delete_a_peer_asn(test, rg):
-    test.cmd('az peering peering asn delete '
+    test.cmd('az peering asn delete '
              '--name "{PeerAsns_2}"',
              checks=[])
 
