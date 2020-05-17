@@ -1,16 +1,16 @@
 # Azure CLI Module Creation Report
 
-### asn check-service-provider-availability
+### peering asn check-service-provider-availability
 
-check-service-provider-availability a asn.
+check-service-provider-availability a peering asn.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
 |**--peering-service-location**|string|Gets or sets the peering service location.|peering_service_location|
 |**--peering-service-provider**|string|Gets or sets the peering service provider.|peering_service_provider|
-### asn create
+### peering asn create
 
-create a asn.
+create a peering asn.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
@@ -21,32 +21,32 @@ create a asn.
 |**--tags**|dictionary|The resource tags.|tags|
 |**--peering-service-location**|string|The PeeringServiceLocation of the Customer.|peering_service_location|
 |**--peering-service-provider**|string|The MAPS Provider Name.|peering_service_provider|
-### asn delete
+### peering asn delete
 
-delete a asn.
+delete a peering asn.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
 |**--resource-group-name**|string|The name of the resource group.|resource_group_name|
 |**--peering-service-name**|string|The name of the peering service.|peering_service_name|
-### asn list
+### peering asn list
 
-list a asn.
+list a peering asn.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
 |**--resource-group-name**|string|The name of the resource group.|resource_group_name|
-### asn show
+### peering asn show
 
-show a asn.
+show a peering asn.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
 |**--resource-group-name**|string|The name of the resource group.|resource_group_name|
 |**--peering-service-name**|string|The name of the peering.|peering_service_name|
-### asn update
+### peering asn update
 
-update a asn.
+update a peering asn.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|

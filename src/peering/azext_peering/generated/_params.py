@@ -27,31 +27,22 @@ from azext_peering.action import (
 
 def load_arguments(self, _):
 
-    with self.argument_context('asn check-service-provider-availability') as c:
+    with self.argument_context('peering asn check-service-provider-availability') as c:
         c.argument('peering_service_location', help='Gets or sets the peering service location.')
         c.argument('peering_service_provider', help='Gets or sets the peering service provider.')
 
-    with self.argument_context('asn list') as c:
+    with self.argument_context('peering asn list') as c:
         c.argument('peering_location', help='The location of the peering.')
         c.argument('kind', arg_type=get_enum_type(['Direct', 'Exchange']), help='The kind of the peering.')
         c.argument('asn', help='The ASN number associated with a legacy peering.')
 
-    with self.argument_context('asn list') as c:
+    with self.argument_context('peering asn list') as c:
         pass
 
-    with self.argument_context('asn show') as c:
+    with self.argument_context('peering asn show') as c:
         c.argument('peer_asn_name', help='The peer ASN name.')
 
-    with self.argument_context('asn create') as c:
-        c.argument('peer_asn_name', help='The peer ASN name.')
-        c.argument('peer_asn', help='The Autonomous System Number (ASN) of the peer.')
-        c.argument('peer_contact_detail', action=AddPeerContactDetail, nargs='+', help='The contact details of the peer'
-                   '. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: role, email, phone.')
-        c.argument('peer_name', help='The name of the peer.')
-        c.argument('validation_state', arg_type=get_enum_type(['None', 'Pending', 'Approved', 'Failed']), help='The val'
-                   'idation state of the ASN associated with the peer.')
-
-    with self.argument_context('asn update') as c:
+    with self.argument_context('peering asn create') as c:
         c.argument('peer_asn_name', help='The peer ASN name.')
         c.argument('peer_asn', help='The Autonomous System Number (ASN) of the peer.')
         c.argument('peer_contact_detail', action=AddPeerContactDetail, nargs='+', help='The contact details of the peer'
@@ -60,74 +51,83 @@ def load_arguments(self, _):
         c.argument('validation_state', arg_type=get_enum_type(['None', 'Pending', 'Approved', 'Failed']), help='The val'
                    'idation state of the ASN associated with the peer.')
 
-    with self.argument_context('asn delete') as c:
+    with self.argument_context('peering asn update') as c:
+        c.argument('peer_asn_name', help='The peer ASN name.')
+        c.argument('peer_asn', help='The Autonomous System Number (ASN) of the peer.')
+        c.argument('peer_contact_detail', action=AddPeerContactDetail, nargs='+', help='The contact details of the peer'
+                   '. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: role, email, phone.')
+        c.argument('peer_name', help='The name of the peer.')
+        c.argument('validation_state', arg_type=get_enum_type(['None', 'Pending', 'Approved', 'Failed']), help='The val'
+                   'idation state of the ASN associated with the peer.')
+
+    with self.argument_context('peering asn delete') as c:
         c.argument('peer_asn_name', help='The peer ASN name.')
 
-    with self.argument_context('asn list') as c:
+    with self.argument_context('peering asn list') as c:
         c.argument('kind', arg_type=get_enum_type(['Direct', 'Exchange']), help='The kind of the peering.')
         c.argument('direct_peering_type', arg_type=get_enum_type(['Edge', 'Transit', 'Cdn', 'Internal', 'Ix', 'IxRs']),
                     help='The type of direct peering.')
 
-    with self.argument_context('asn list') as c:
+    with self.argument_context('peering asn list') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('peering_name', help='The name of the peering.')
 
-    with self.argument_context('asn show') as c:
+    with self.argument_context('peering asn show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('peering_name', help='The name of the peering.')
         c.argument('registered_asn_name', help='The name of the registered ASN.')
 
-    with self.argument_context('asn create') as c:
+    with self.argument_context('peering asn create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('peering_name', help='The name of the peering.')
         c.argument('registered_asn_name', help='The name of the ASN.')
         c.argument('asn', help='The customer\'s ASN from which traffic originates.')
 
-    with self.argument_context('asn update') as c:
+    with self.argument_context('peering asn update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('peering_name', help='The name of the peering.')
         c.argument('registered_asn_name', help='The name of the ASN.')
         c.argument('asn', help='The customer\'s ASN from which traffic originates.')
 
-    with self.argument_context('asn delete') as c:
+    with self.argument_context('peering asn delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('peering_name', help='The name of the peering.')
         c.argument('registered_asn_name', help='The name of the registered ASN.')
 
-    with self.argument_context('asn list') as c:
+    with self.argument_context('peering asn list') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('peering_name', help='The name of the peering.')
 
-    with self.argument_context('asn show') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('peering_name', help='The name of the peering.')
-        c.argument('registered_prefix_name', help='The name of the registered prefix.')
-
-    with self.argument_context('asn create') as c:
+    with self.argument_context('peering asn show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('peering_name', help='The name of the peering.')
         c.argument('registered_prefix_name', help='The name of the registered prefix.')
-        c.argument('prefix', help='The customer\'s prefix from which traffic originates.')
 
-    with self.argument_context('asn update') as c:
+    with self.argument_context('peering asn create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('peering_name', help='The name of the peering.')
         c.argument('registered_prefix_name', help='The name of the registered prefix.')
         c.argument('prefix', help='The customer\'s prefix from which traffic originates.')
 
-    with self.argument_context('asn delete') as c:
+    with self.argument_context('peering asn update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('peering_name', help='The name of the peering.')
+        c.argument('registered_prefix_name', help='The name of the registered prefix.')
+        c.argument('prefix', help='The customer\'s prefix from which traffic originates.')
+
+    with self.argument_context('peering asn delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('peering_name', help='The name of the peering.')
         c.argument('registered_prefix_name', help='The name of the registered prefix.')
 
-    with self.argument_context('asn list') as c:
+    with self.argument_context('peering asn list') as c:
         c.argument('resource_group_name', resource_group_name_type)
 
-    with self.argument_context('asn show') as c:
+    with self.argument_context('peering asn show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('peering_name', help='The name of the peering.')
 
-    with self.argument_context('asn create') as c:
+    with self.argument_context('peering asn create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('peering_name', help='The name of the peering.')
         c.argument('sku', action=AddPeeringsSku, nargs='+', help='The SKU that defines the tier and kind of the peering'
@@ -142,16 +142,16 @@ def load_arguments(self, _):
                    'n exchange peering. Expected value: json-string/@json-file.'))
         c.argument('peering_location', help='The location of the peering.')
 
-    with self.argument_context('asn update') as c:
+    with self.argument_context('peering asn update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('peering_name', help='The name of the peering.')
         c.argument('tags', tags_type)
 
-    with self.argument_context('asn delete') as c:
+    with self.argument_context('peering asn delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('peering_name', help='The name of the peering.')
 
-    with self.argument_context('asn list') as c:
+    with self.argument_context('peering asn list') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('peering_name', help='The name of the peering.')
         c.argument('prefix', help='The optional prefix that can be used to filter the routes.')
@@ -163,53 +163,53 @@ def load_arguments(self, _):
         c.argument('skip_token', help='The optional page continuation token that is used in the event of paginated resu'
                    'lt.')
 
-    with self.argument_context('asn list') as c:
+    with self.argument_context('peering asn list') as c:
         pass
 
-    with self.argument_context('asn list') as c:
+    with self.argument_context('peering asn list') as c:
         c.argument('country', help='The country of interest, in which the locations are to be present.')
 
-    with self.argument_context('asn list') as c:
+    with self.argument_context('peering asn list') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('peering_service_name', help='The name of the peering service.')
         c.argument('expand', help='The properties to be expanded.')
 
-    with self.argument_context('asn show') as c:
+    with self.argument_context('peering asn show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('peering_service_name', help='The name of the peering service.')
         c.argument('prefix_name', help='The name of the prefix.')
         c.argument('expand', help='The properties to be expanded.')
 
-    with self.argument_context('asn create') as c:
+    with self.argument_context('peering asn create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('peering_service_name', help='The name of the peering service.')
         c.argument('prefix_name', help='The name of the prefix.')
         c.argument('prefix', help='The prefix from which your traffic originates.')
         c.argument('peering_service_prefix_key', help='The peering service prefix key')
 
-    with self.argument_context('asn update') as c:
+    with self.argument_context('peering asn update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('peering_service_name', help='The name of the peering service.')
         c.argument('prefix_name', help='The name of the prefix.')
         c.argument('prefix', help='The prefix from which your traffic originates.')
         c.argument('peering_service_prefix_key', help='The peering service prefix key')
 
-    with self.argument_context('asn delete') as c:
+    with self.argument_context('peering asn delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('peering_service_name', help='The name of the peering service.')
         c.argument('prefix_name', help='The name of the prefix.')
 
-    with self.argument_context('asn list') as c:
+    with self.argument_context('peering asn list') as c:
         pass
 
-    with self.argument_context('asn list') as c:
+    with self.argument_context('peering asn list') as c:
         c.argument('resource_group_name', resource_group_name_type)
 
-    with self.argument_context('asn show') as c:
+    with self.argument_context('peering asn show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('peering_service_name', help='The name of the peering.')
 
-    with self.argument_context('asn create') as c:
+    with self.argument_context('peering asn create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('peering_service_name', help='The name of the peering service.')
         c.argument('sku', action=AddPeeringservicesSku, nargs='+', help='The SKU that defines the type of the peering s'
@@ -220,11 +220,11 @@ def load_arguments(self, _):
         c.argument('peering_service_location', help='The PeeringServiceLocation of the Customer.')
         c.argument('peering_service_provider', help='The MAPS Provider Name.')
 
-    with self.argument_context('asn update') as c:
+    with self.argument_context('peering asn update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('peering_service_name', help='The name of the peering service.')
         c.argument('tags', tags_type)
 
-    with self.argument_context('asn delete') as c:
+    with self.argument_context('peering asn delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('peering_service_name', help='The name of the peering service.')
