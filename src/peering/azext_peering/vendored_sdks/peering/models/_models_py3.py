@@ -11,6 +11,8 @@ from typing import Dict, List, Optional, Union
 from azure.core.exceptions import HttpResponseError
 import msrest.serialization
 
+from ._peering_management_client_enums import *
+
 
 class BgpSession(msrest.serialization.Model):
     """The properties that define a BGP session.

@@ -18,7 +18,7 @@ from .. import models
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Callable, Dict, Generic, Optional, TypeVar
+    from typing import Any, Callable, Dict, Generic, Iterable, Optional, TypeVar
 
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
@@ -50,37 +50,38 @@ class PeeringServiceLocationOperations(object):
         country=None,  # type: Optional[str]
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.PeeringServiceLocationListResult"
+        # type: (...) -> Iterable["models.PeeringServiceLocationListResult"]
         """Lists all of the available locations for peering service.
 
         :param country: The country of interest, in which the locations are to be present.
         :type country: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: PeeringServiceLocationListResult or the result of cls(response)
-        :rtype: ~azure.mgmt.peering.models.PeeringServiceLocationListResult
+        :return: An iterator like instance of PeeringServiceLocationListResult or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.peering.models.PeeringServiceLocationListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.PeeringServiceLocationListResult"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-04-01"
 
         def prepare_request(next_link=None):
             if not next_link:
                 # Construct URL
-                url = self.list.metadata['url']
+                url = self.list.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
+                # Construct parameters
+                query_parameters = {}  # type: Dict[str, Any]
+                if country is not None:
+                    query_parameters['country'] = self._serialize.query("country", country, 'str')
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
             else:
                 url = next_link
-
-            # Construct parameters
-            query_parameters = {}  # type: Dict[str, Any]
-            if country is not None:
-                query_parameters['country'] = self._serialize.query("country", country, 'str')
-            query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-
+                query_parameters = {}  # type: Dict[str, Any]
             # Construct headers
             header_parameters = {}  # type: Dict[str, Any]
             header_parameters['Accept'] = 'application/json'
@@ -112,4 +113,4 @@ class PeeringServiceLocationOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Peering/peeringServiceLocations'}
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Peering/peeringServiceLocations'}  # type: ignore

@@ -18,7 +18,7 @@ from .. import models
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Callable, Dict, Generic, List, Optional, TypeVar, Union
+    from typing import Any, Callable, Dict, Generic, Iterable, List, Optional, TypeVar, Union
 
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
@@ -61,11 +61,12 @@ class PeerAsnOperations(object):
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.PeerAsn"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-04-01"
 
         # Construct URL
-        url = self.get.metadata['url']
+        url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
             'peerAsnName': self._serialize.url("peer_asn_name", peer_asn_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
@@ -96,13 +97,13 @@ class PeerAsnOperations(object):
           return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Peering/peerAsns/{peerAsnName}'}
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Peering/peerAsns/{peerAsnName}'}  # type: ignore
 
     def create_or_update(
         self,
         peer_asn_name,  # type: str
         peer_asn=None,  # type: Optional[int]
-        peer_contact_detail=None,  # type: Optional[List["ContactDetail"]]
+        peer_contact_detail=None,  # type: Optional[List["models.ContactDetail"]]
         peer_name=None,  # type: Optional[str]
         validation_state=None,  # type: Optional[Union[str, "models.ValidationState"]]
         **kwargs  # type: Any
@@ -122,18 +123,19 @@ class PeerAsnOperations(object):
         :type validation_state: str or ~azure.mgmt.peering.models.ValidationState
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: PeerAsn or the result of cls(response)
-        :rtype: ~azure.mgmt.peering.models.PeerAsn or ~azure.mgmt.peering.models.PeerAsn
+        :rtype: ~azure.mgmt.peering.models.PeerAsn
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.PeerAsn"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
 
         _peer_asn = models.PeerAsn(peer_asn=peer_asn, peer_contact_detail=peer_contact_detail, peer_name=peer_name, validation_state=validation_state)
         api_version = "2020-04-01"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
-        url = self.create_or_update.metadata['url']
+        url = self.create_or_update.metadata['url']  # type: ignore
         path_format_arguments = {
             'peerAsnName': self._serialize.url("peer_asn_name", peer_asn_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
@@ -174,7 +176,7 @@ class PeerAsnOperations(object):
           return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Peering/peerAsns/{peerAsnName}'}
+    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Peering/peerAsns/{peerAsnName}'}  # type: ignore
 
     def delete(
         self,
@@ -192,11 +194,12 @@ class PeerAsnOperations(object):
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-04-01"
 
         # Construct URL
-        url = self.delete.metadata['url']
+        url = self.delete.metadata['url']  # type: ignore
         path_format_arguments = {
             'peerAsnName': self._serialize.url("peer_asn_name", peer_asn_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
@@ -223,39 +226,40 @@ class PeerAsnOperations(object):
         if cls:
           return cls(pipeline_response, None, {})
 
-    delete.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Peering/peerAsns/{peerAsnName}'}
+    delete.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Peering/peerAsns/{peerAsnName}'}  # type: ignore
 
     def list_by_subscription(
         self,
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.PeerAsnListResult"
+        # type: (...) -> Iterable["models.PeerAsnListResult"]
         """Lists all of the peer ASNs under the given subscription.
 
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: PeerAsnListResult or the result of cls(response)
-        :rtype: ~azure.mgmt.peering.models.PeerAsnListResult
+        :return: An iterator like instance of PeerAsnListResult or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.peering.models.PeerAsnListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.PeerAsnListResult"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-04-01"
 
         def prepare_request(next_link=None):
             if not next_link:
                 # Construct URL
-                url = self.list_by_subscription.metadata['url']
+                url = self.list_by_subscription.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
+                # Construct parameters
+                query_parameters = {}  # type: Dict[str, Any]
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
             else:
                 url = next_link
-
-            # Construct parameters
-            query_parameters = {}  # type: Dict[str, Any]
-            query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-
+                query_parameters = {}  # type: Dict[str, Any]
             # Construct headers
             header_parameters = {}  # type: Dict[str, Any]
             header_parameters['Accept'] = 'application/json'
@@ -287,4 +291,4 @@ class PeerAsnOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list_by_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Peering/peerAsns'}
+    list_by_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Peering/peerAsns'}  # type: ignore
