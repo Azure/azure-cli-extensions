@@ -12,477 +12,473 @@
 from knack.help_files import helps
 
 
-helps['peering '] = """
+helps['asn'] = """
     type: group
-    short-summary: peering 
+    short-summary: asn
 """
 
-helps['peering  check-service-provider-availability'] = """
+helps['asn check-service-provider-availability'] = """
     type: command
     short-summary: Checks if the peering service provider is present within 1000 miles of customer's location
     examples:
       - name: Check if peering service provider is available in customer location
         text: |-
-               az peering  check-service-provider-availability --peering-service-location "peeringServiceLocation1" --p\
-eering-service-provider "peeringServiceProvider1"
+               az asn check-service-provider-availability --peering-service-location "peeringServiceLocation1" --peerin\
+g-service-provider "peeringServiceProvider1"
 """
 
-helps['peering legacy-peering'] = """
+helps['asn'] = """
     type: group
-    short-summary: peering legacy-peering
+    short-summary: asn
 """
 
-helps['peering legacy-peering list'] = """
+helps['asn list'] = """
     type: command
     short-summary: Lists all of the legacy peerings under the given subscription matching the specified kind and locati\
 on.
     examples:
       - name: List legacy peerings
         text: |-
-               az peering legacy-peering list --kind "Exchange" --peering-location "peeringLocation0"
+               az asn list --kind "Exchange" --peering-location "peeringLocation0"
 """
 
-helps['peering peer-asn'] = """
+helps['asn'] = """
     type: group
-    short-summary: peering peer-asn
+    short-summary: asn
 """
 
-helps['peering peer-asn list'] = """
+helps['asn list'] = """
     type: command
     short-summary: Lists all of the peer ASNs under the given subscription.
     examples:
       - name: List peer ASNs in a subscription
         text: |-
-               az peering peer-asn list
+               az asn list
 """
 
-helps['peering peer-asn show'] = """
+helps['asn show'] = """
     type: command
     short-summary: Gets the peer ASN with the specified name under the given subscription.
     examples:
       - name: Get a peer ASN
         text: |-
-               az peering peer-asn show --peer-asn-name "peerAsnName"
+               az asn show --peer-asn-name "peerAsnName"
 """
 
-helps['peering peer-asn create'] = """
+helps['asn create'] = """
     type: command
     short-summary: Creates a new peer ASN or updates an existing peer ASN with the specified name under the given subsc\
 ription.
     examples:
       - name: Create a peer ASN
         text: |-
-               az peering peer-asn create --peer-asn 65000 --peer-contact-detail email="noc@contoso.com" phone="+1 (234\
-) 567-8999" role="Noc" --peer-contact-detail email="abc@contoso.com" phone="+1 (234) 567-8900" role="Policy" --peer-con\
-tact-detail email="xyz@contoso.com" phone="+1 (234) 567-8900" role="Technical" --peer-name "Contoso" --peer-asn-name "p\
-eerAsnName"
+               az asn create --peer-asn 65000 --peer-contact-detail email="noc@contoso.com" phone="+1 (234) 567-8999" r\
+ole="Noc" --peer-contact-detail email="abc@contoso.com" phone="+1 (234) 567-8900" role="Policy" --peer-contact-detail e\
+mail="xyz@contoso.com" phone="+1 (234) 567-8900" role="Technical" --peer-name "Contoso" --peer-asn-name "peerAsnName"
 """
 
-helps['peering peer-asn update'] = """
+helps['asn update'] = """
     type: command
     short-summary: Creates a new peer ASN or updates an existing peer ASN with the specified name under the given subsc\
 ription.
     examples:
       - name: Create a peer ASN
         text: |-
-               az peering peer-asn update --peer-asn 65000 --peer-contact-detail email="noc@contoso.com" phone="+1 (234\
-) 567-8999" role="Noc" --peer-contact-detail email="abc@contoso.com" phone="+1 (234) 567-8900" role="Policy" --peer-con\
-tact-detail email="xyz@contoso.com" phone="+1 (234) 567-8900" role="Technical" --peer-name "Contoso" --peer-asn-name "p\
-eerAsnName"
+               az asn update --peer-asn 65000 --peer-contact-detail email="noc@contoso.com" phone="+1 (234) 567-8999" r\
+ole="Noc" --peer-contact-detail email="abc@contoso.com" phone="+1 (234) 567-8900" role="Policy" --peer-contact-detail e\
+mail="xyz@contoso.com" phone="+1 (234) 567-8900" role="Technical" --peer-name "Contoso" --peer-asn-name "peerAsnName"
 """
 
-helps['peering peer-asn delete'] = """
+helps['asn delete'] = """
     type: command
     short-summary: Deletes an existing peer ASN with the specified name under the given subscription.
     examples:
       - name: Delete a peer ASN
         text: |-
-               az peering peer-asn delete --peer-asn-name "peerAsnName"
+               az asn delete --peer-asn-name "peerAsnName"
 """
 
-helps['peering peering-location'] = """
+helps['asn'] = """
     type: group
-    short-summary: peering peering-location
+    short-summary: asn
 """
 
-helps['peering peering-location list'] = """
+helps['asn list'] = """
     type: command
     short-summary: Lists all of the available peering locations for the specified kind of peering.
     examples:
       - name: List direct peering locations
         text: |-
-               az peering peering-location list --kind "Direct"
+               az asn list --kind "Direct"
       - name: List exchange peering locations
         text: |-
-               az peering peering-location list --kind "Exchange"
+               az asn list --kind "Exchange"
 """
 
-helps['peering registered-asn'] = """
+helps['asn'] = """
     type: group
-    short-summary: peering registered-asn
+    short-summary: asn
 """
 
-helps['peering registered-asn list'] = """
+helps['asn list'] = """
     type: command
     short-summary: Lists all registered ASNs under the given subscription, resource group and peering.
     examples:
       - name: List all the registered ASNs associated with the peering
         text: |-
-               az peering registered-asn list --peering-name "peeringName" --resource-group "rgName"
+               az asn list --peering-name "peeringName" --resource-group "rgName"
 """
 
-helps['peering registered-asn show'] = """
+helps['asn show'] = """
     type: command
     short-summary: Gets an existing registered ASN with the specified name under the given subscription, resource group\
  and peering.
     examples:
       - name: Get a registered ASN associated with the peering
         text: |-
-               az peering registered-asn show --peering-name "peeringName" --registered-asn-name "registeredAsnName0" -\
--resource-group "rgName"
+               az asn show --peering-name "peeringName" --registered-asn-name "registeredAsnName0" --resource-group "rg\
+Name"
 """
 
-helps['peering registered-asn create'] = """
+helps['asn create'] = """
     type: command
     short-summary: Creates a new registered ASN with the specified name under the given subscription, resource group an\
 d peering.
     examples:
       - name: Create or update a registered ASN for the peering
         text: |-
-               az peering registered-asn create --peering-name "peeringName" --asn 65000 --registered-asn-name "registe\
-redAsnName" --resource-group "rgName"
+               az asn create --peering-name "peeringName" --asn 65000 --registered-asn-name "registeredAsnName" --resou\
+rce-group "rgName"
 """
 
-helps['peering registered-asn update'] = """
+helps['asn update'] = """
     type: command
     short-summary: Creates a new registered ASN with the specified name under the given subscription, resource group an\
 d peering.
     examples:
       - name: Create or update a registered ASN for the peering
         text: |-
-               az peering registered-asn update --peering-name "peeringName" --asn 65000 --registered-asn-name "registe\
-redAsnName" --resource-group "rgName"
+               az asn update --peering-name "peeringName" --asn 65000 --registered-asn-name "registeredAsnName" --resou\
+rce-group "rgName"
 """
 
-helps['peering registered-asn delete'] = """
+helps['asn delete'] = """
     type: command
     short-summary: Deletes an existing registered ASN with the specified name under the given subscription, resource gr\
 oup and peering.
     examples:
       - name: Deletes a registered ASN associated with the peering
         text: |-
-               az peering registered-asn delete --peering-name "peeringName" --registered-asn-name "registeredAsnName" \
---resource-group "rgName"
+               az asn delete --peering-name "peeringName" --registered-asn-name "registeredAsnName" --resource-group "r\
+gName"
 """
 
-helps['peering registered-prefix'] = """
+helps['asn'] = """
     type: group
-    short-summary: peering registered-prefix
+    short-summary: asn
 """
 
-helps['peering registered-prefix list'] = """
+helps['asn list'] = """
     type: command
     short-summary: Lists all registered prefixes under the given subscription, resource group and peering.
     examples:
       - name: List all the registered prefixes associated with the peering
         text: |-
-               az peering registered-prefix list --peering-name "peeringName" --resource-group "rgName"
+               az asn list --peering-name "peeringName" --resource-group "rgName"
 """
 
-helps['peering registered-prefix show'] = """
+helps['asn show'] = """
     type: command
     short-summary: Gets an existing registered prefix with the specified name under the given subscription, resource gr\
 oup and peering.
     examples:
       - name: Get a registered prefix associated with the peering
         text: |-
-               az peering registered-prefix show --peering-name "peeringName" --registered-prefix-name "registeredPrefi\
-xName" --resource-group "rgName"
+               az asn show --peering-name "peeringName" --registered-prefix-name "registeredPrefixName" --resource-grou\
+p "rgName"
 """
 
-helps['peering registered-prefix create'] = """
+helps['asn create'] = """
     type: command
     short-summary: Creates a new registered prefix with the specified name under the given subscription, resource group\
  and peering.
     examples:
       - name: Create or update a registered prefix for the peering
         text: |-
-               az peering registered-prefix create --peering-name "peeringName" --prefix "10.22.20.0/24" --registered-p\
-refix-name "registeredPrefixName" --resource-group "rgName"
+               az asn create --peering-name "peeringName" --prefix "10.22.20.0/24" --registered-prefix-name "registered\
+PrefixName" --resource-group "rgName"
 """
 
-helps['peering registered-prefix update'] = """
+helps['asn update'] = """
     type: command
     short-summary: Creates a new registered prefix with the specified name under the given subscription, resource group\
  and peering.
     examples:
       - name: Create or update a registered prefix for the peering
         text: |-
-               az peering registered-prefix update --peering-name "peeringName" --prefix "10.22.20.0/24" --registered-p\
-refix-name "registeredPrefixName" --resource-group "rgName"
+               az asn update --peering-name "peeringName" --prefix "10.22.20.0/24" --registered-prefix-name "registered\
+PrefixName" --resource-group "rgName"
 """
 
-helps['peering registered-prefix delete'] = """
+helps['asn delete'] = """
     type: command
     short-summary: Deletes an existing registered prefix with the specified name under the given subscription, resource\
  group and peering.
     examples:
       - name: Deletes a registered prefix associated with the peering
         text: |-
-               az peering registered-prefix delete --peering-name "peeringName" --registered-prefix-name "registeredPre\
-fixName" --resource-group "rgName"
+               az asn delete --peering-name "peeringName" --registered-prefix-name "registeredPrefixName" --resource-gr\
+oup "rgName"
 """
 
-helps['peering peering'] = """
+helps['asn'] = """
     type: group
-    short-summary: peering peering
+    short-summary: asn
 """
 
-helps['peering peering list'] = """
+helps['asn list'] = """
     type: command
     short-summary: Lists all of the peerings under the given subscription.
     examples:
       - name: List peerings in a resource group
         text: |-
-               az peering peering list --resource-group "rgName"
+               az asn list --resource-group "rgName"
 """
 
-helps['peering peering show'] = """
+helps['asn show'] = """
     type: command
     short-summary: Gets an existing peering with the specified name under the given subscription and resource group.
     examples:
       - name: Get a peering
         text: |-
-               az peering peering show --peering-name "peeringName" --resource-group "rgName"
+               az asn show --peering-name "peeringName" --resource-group "rgName"
 """
 
-helps['peering peering create'] = """
+helps['asn create'] = """
     type: command
     short-summary: Creates a new peering or updates an existing peering with the specified name under the given subscri\
 ption and resource group.
     examples:
       - name: Create a direct peering
         text: |-
-               az peering peering create --kind "Direct" --location "eastus" --direct "{\\"connections\\":[{\\"bandwidt\
-hInMbps\\":10000,\\"bgpSession\\":{\\"maxPrefixesAdvertisedV4\\":1000,\\"maxPrefixesAdvertisedV6\\":100,\\"md5Authentic\
-ationKey\\":\\"test-md5-auth-key\\",\\"sessionPrefixV4\\":\\"192.168.0.0/31\\",\\"sessionPrefixV6\\":\\"fd00::0/127\\"}\
-,\\"connectionIdentifier\\":\\"5F4CB5C7-6B43-4444-9338-9ABC72606C16\\",\\"peeringDBFacilityId\\":99999,\\"sessionAddres\
-sProvider\\":\\"Peer\\",\\"useForPeeringService\\":false},{\\"bandwidthInMbps\\":10000,\\"connectionIdentifier\\":\\"8A\
-B00818-D533-4504-A25A-03A17F61201C\\",\\"peeringDBFacilityId\\":99999,\\"sessionAddressProvider\\":\\"Microsoft\\",\\"u\
-seForPeeringService\\":true}],\\"directPeeringType\\":\\"Edge\\",\\"peerAsn\\":{\\"id\\":\\"/subscriptions/subId/provid\
-ers/Microsoft.Peering/peerAsns/myAsn1\\"}}" --peering-location "peeringLocation0" --sku name="Basic_Direct_Free" --peer\
-ing-name "peeringName" --resource-group "rgName"
+               az asn create --kind "Direct" --location "eastus" --direct "{\\"connections\\":[{\\"bandwidthInMbps\\":1\
+0000,\\"bgpSession\\":{\\"maxPrefixesAdvertisedV4\\":1000,\\"maxPrefixesAdvertisedV6\\":100,\\"md5AuthenticationKey\\":\
+\\"test-md5-auth-key\\",\\"sessionPrefixV4\\":\\"192.168.0.0/31\\",\\"sessionPrefixV6\\":\\"fd00::0/127\\"},\\"connecti\
+onIdentifier\\":\\"5F4CB5C7-6B43-4444-9338-9ABC72606C16\\",\\"peeringDBFacilityId\\":99999,\\"sessionAddressProvider\\"\
+:\\"Peer\\",\\"useForPeeringService\\":false},{\\"bandwidthInMbps\\":10000,\\"connectionIdentifier\\":\\"8AB00818-D533-\
+4504-A25A-03A17F61201C\\",\\"peeringDBFacilityId\\":99999,\\"sessionAddressProvider\\":\\"Microsoft\\",\\"useForPeering\
+Service\\":true}],\\"directPeeringType\\":\\"Edge\\",\\"peerAsn\\":{\\"id\\":\\"/subscriptions/subId/providers/Microsof\
+t.Peering/peerAsns/myAsn1\\"}}" --peering-location "peeringLocation0" --sku name="Basic_Direct_Free" --peering-name "pe\
+eringName" --resource-group "rgName"
       - name: Create a peering with exchange route server
         text: |-
-               az peering peering create --kind "Direct" --location "eastus" --direct "{\\"connections\\":[{\\"bandwidt\
-hInMbps\\":10000,\\"bgpSession\\":{\\"maxPrefixesAdvertisedV4\\":1000,\\"maxPrefixesAdvertisedV6\\":100,\\"microsoftSes\
-sionIPv4Address\\":\\"192.168.0.123\\",\\"peerSessionIPv4Address\\":\\"192.168.0.234\\",\\"sessionPrefixV4\\":\\"192.16\
-8.0.0/24\\"},\\"connectionIdentifier\\":\\"5F4CB5C7-6B43-4444-9338-9ABC72606C16\\",\\"peeringDBFacilityId\\":99999,\\"s\
-essionAddressProvider\\":\\"Peer\\",\\"useForPeeringService\\":true}],\\"directPeeringType\\":\\"IxRs\\",\\"peerAsn\\":\
-{\\"id\\":\\"/subscriptions/subId/providers/Microsoft.Peering/peerAsns/myAsn1\\"}}" --peering-location "peeringLocation\
-0" --sku name="Premium_Direct_Free" --peering-name "peeringName" --resource-group "rgName"
+               az asn create --kind "Direct" --location "eastus" --direct "{\\"connections\\":[{\\"bandwidthInMbps\\":1\
+0000,\\"bgpSession\\":{\\"maxPrefixesAdvertisedV4\\":1000,\\"maxPrefixesAdvertisedV6\\":100,\\"microsoftSessionIPv4Addr\
+ess\\":\\"192.168.0.123\\",\\"peerSessionIPv4Address\\":\\"192.168.0.234\\",\\"sessionPrefixV4\\":\\"192.168.0.0/24\\"}\
+,\\"connectionIdentifier\\":\\"5F4CB5C7-6B43-4444-9338-9ABC72606C16\\",\\"peeringDBFacilityId\\":99999,\\"sessionAddres\
+sProvider\\":\\"Peer\\",\\"useForPeeringService\\":true}],\\"directPeeringType\\":\\"IxRs\\",\\"peerAsn\\":{\\"id\\":\\\
+"/subscriptions/subId/providers/Microsoft.Peering/peerAsns/myAsn1\\"}}" --peering-location "peeringLocation0" --sku nam\
+e="Premium_Direct_Free" --peering-name "peeringName" --resource-group "rgName"
       - name: Create an exchange peering
         text: |-
-               az peering peering create --kind "Exchange" --location "eastus" --exchange "{\\"connections\\":[{\\"bgpS\
-ession\\":{\\"maxPrefixesAdvertisedV4\\":1000,\\"maxPrefixesAdvertisedV6\\":100,\\"md5AuthenticationKey\\":\\"test-md5-\
-auth-key\\",\\"peerSessionIPv4Address\\":\\"192.168.2.1\\",\\"peerSessionIPv6Address\\":\\"fd00::1\\"},\\"connectionIde\
-ntifier\\":\\"CE495334-0E94-4E51-8164-8116D6CD284D\\",\\"peeringDBFacilityId\\":99999},{\\"bgpSession\\":{\\"maxPrefixe\
-sAdvertisedV4\\":1000,\\"maxPrefixesAdvertisedV6\\":100,\\"md5AuthenticationKey\\":\\"test-md5-auth-key\\",\\"peerSessi\
-onIPv4Address\\":\\"192.168.2.2\\",\\"peerSessionIPv6Address\\":\\"fd00::2\\"},\\"connectionIdentifier\\":\\"CDD8E673-C\
-B07-47E6-84DE-3739F778762B\\",\\"peeringDBFacilityId\\":99999}],\\"peerAsn\\":{\\"id\\":\\"/subscriptions/subId/provide\
-rs/Microsoft.Peering/peerAsns/myAsn1\\"}}" --peering-location "peeringLocation0" --sku name="Basic_Exchange_Free" --pee\
-ring-name "peeringName" --resource-group "rgName"
+               az asn create --kind "Exchange" --location "eastus" --exchange "{\\"connections\\":[{\\"bgpSession\\":{\
+\\"maxPrefixesAdvertisedV4\\":1000,\\"maxPrefixesAdvertisedV6\\":100,\\"md5AuthenticationKey\\":\\"test-md5-auth-key\\"\
+,\\"peerSessionIPv4Address\\":\\"192.168.2.1\\",\\"peerSessionIPv6Address\\":\\"fd00::1\\"},\\"connectionIdentifier\\":\
+\\"CE495334-0E94-4E51-8164-8116D6CD284D\\",\\"peeringDBFacilityId\\":99999},{\\"bgpSession\\":{\\"maxPrefixesAdvertised\
+V4\\":1000,\\"maxPrefixesAdvertisedV6\\":100,\\"md5AuthenticationKey\\":\\"test-md5-auth-key\\",\\"peerSessionIPv4Addre\
+ss\\":\\"192.168.2.2\\",\\"peerSessionIPv6Address\\":\\"fd00::2\\"},\\"connectionIdentifier\\":\\"CDD8E673-CB07-47E6-84\
+DE-3739F778762B\\",\\"peeringDBFacilityId\\":99999}],\\"peerAsn\\":{\\"id\\":\\"/subscriptions/subId/providers/Microsof\
+t.Peering/peerAsns/myAsn1\\"}}" --peering-location "peeringLocation0" --sku name="Basic_Exchange_Free" --peering-name "\
+peeringName" --resource-group "rgName"
 """
 
-helps['peering peering update'] = """
+helps['asn update'] = """
     type: command
     short-summary: Updates tags for a peering with the specified name under the given subscription and resource group.
     examples:
       - name: Update peering tags
         text: |-
-               az peering peering update --peering-name "peeringName" --resource-group "rgName" --tags tags={"tag0":"va\
-lue0","tag1":"value1"}
+               az asn update --peering-name "peeringName" --resource-group "rgName" --tags tags={"tag0":"value0","tag1"\
+:"value1"}
 """
 
-helps['peering peering delete'] = """
+helps['asn delete'] = """
     type: command
     short-summary: Deletes an existing peering with the specified name under the given subscription and resource group.
     examples:
       - name: Delete a peering
         text: |-
-               az peering peering delete --peering-name "peeringName" --resource-group "rgName"
+               az asn delete --peering-name "peeringName" --resource-group "rgName"
 """
 
-helps['peering received-route'] = """
+helps['asn'] = """
     type: group
-    short-summary: peering received-route
+    short-summary: asn
 """
 
-helps['peering received-route list'] = """
+helps['asn list'] = """
     type: command
     short-summary: Lists the prefixes received over the specified peering under the given subscription and resource gro\
 up.
     examples:
       - name: Lists the prefixes received over the specified peering under the given subscription and resource group.
         text: |-
-               az peering received-route list --as-path "123 456" --origin-as-validation-state "Valid" --peering-name "\
-peeringName" --prefix "1.1.1.0/24" --resource-group "rgName" --rpki-validation-state "Valid"
+               az asn list --as-path "123 456" --origin-as-validation-state "Valid" --peering-name "peeringName" --pref\
+ix "1.1.1.0/24" --resource-group "rgName" --rpki-validation-state "Valid"
 """
 
-helps['peering peering-service-country'] = """
+helps['asn'] = """
     type: group
-    short-summary: peering peering-service-country
+    short-summary: asn
 """
 
-helps['peering peering-service-country list'] = """
+helps['asn list'] = """
     type: command
     short-summary: Lists all of the available countries for peering service.
     examples:
       - name: List peering service countries
         text: |-
-               az peering peering-service-country list
+               az asn list
 """
 
-helps['peering peering-service-location'] = """
+helps['asn'] = """
     type: group
-    short-summary: peering peering-service-location
+    short-summary: asn
 """
 
-helps['peering peering-service-location list'] = """
+helps['asn list'] = """
     type: command
     short-summary: Lists all of the available locations for peering service.
     examples:
       - name: List peering service locations
         text: |-
-               az peering peering-service-location list
+               az asn list
 """
 
-helps['peering prefix'] = """
+helps['asn'] = """
     type: group
-    short-summary: peering prefix
+    short-summary: asn
 """
 
-helps['peering prefix list'] = """
+helps['asn list'] = """
     type: command
     short-summary: Lists all prefixes under the given subscription, resource group and peering service.
     examples:
       - name: List all the prefixes associated with the peering service
         text: |-
-               az peering prefix list --peering-service-name "peeringServiceName" --resource-group "rgName"
+               az asn list --peering-service-name "peeringServiceName" --resource-group "rgName"
 """
 
-helps['peering prefix show'] = """
+helps['asn show'] = """
     type: command
     short-summary: Gets an existing prefix with the specified name under the given subscription, resource group and pee\
 ring service.
     examples:
       - name: Get a prefix associated with the peering service
         text: |-
-               az peering prefix show --peering-service-name "peeringServiceName" --prefix-name "peeringServicePrefixNa\
-me" --resource-group "rgName"
+               az asn show --peering-service-name "peeringServiceName" --prefix-name "peeringServicePrefixName" --resou\
+rce-group "rgName"
 """
 
-helps['peering prefix create'] = """
+helps['asn create'] = """
     type: command
     short-summary: Creates a new prefix with the specified name under the given subscription, resource group and peerin\
 g service.
     examples:
       - name: Create or update a prefix for the peering service
         text: |-
-               az peering prefix create --peering-service-name "peeringServiceName" --peering-service-prefix-key "00000\
-000-0000-0000-0000-000000000000" --prefix "192.168.1.0/24" --prefix-name "peeringServicePrefixName" --resource-group "r\
-gName"
+               az asn create --peering-service-name "peeringServiceName" --peering-service-prefix-key "00000000-0000-00\
+00-0000-000000000000" --prefix "192.168.1.0/24" --prefix-name "peeringServicePrefixName" --resource-group "rgName"
 """
 
-helps['peering prefix update'] = """
+helps['asn update'] = """
     type: command
     short-summary: Creates a new prefix with the specified name under the given subscription, resource group and peerin\
 g service.
     examples:
       - name: Create or update a prefix for the peering service
         text: |-
-               az peering prefix update --peering-service-name "peeringServiceName" --peering-service-prefix-key "00000\
-000-0000-0000-0000-000000000000" --prefix "192.168.1.0/24" --prefix-name "peeringServicePrefixName" --resource-group "r\
-gName"
+               az asn update --peering-service-name "peeringServiceName" --peering-service-prefix-key "00000000-0000-00\
+00-0000-000000000000" --prefix "192.168.1.0/24" --prefix-name "peeringServicePrefixName" --resource-group "rgName"
 """
 
-helps['peering prefix delete'] = """
+helps['asn delete'] = """
     type: command
     short-summary: Deletes an existing prefix with the specified name under the given subscription, resource group and \
 peering service.
     examples:
       - name: Delete a prefix associated with the peering service
         text: |-
-               az peering prefix delete --peering-service-name "peeringServiceName" --prefix-name "peeringServicePrefix\
-Name" --resource-group "rgName"
+               az asn delete --peering-service-name "peeringServiceName" --prefix-name "peeringServicePrefixName" --res\
+ource-group "rgName"
 """
 
-helps['peering peering-service-provider'] = """
+helps['asn'] = """
     type: group
-    short-summary: peering peering-service-provider
+    short-summary: asn
 """
 
-helps['peering peering-service-provider list'] = """
+helps['asn list'] = """
     type: command
     short-summary: Lists all of the available peering service locations for the specified kind of peering.
     examples:
       - name: List peering service providers
         text: |-
-               az peering peering-service-provider list
+               az asn list
 """
 
-helps['peering peering-service'] = """
+helps['asn'] = """
     type: group
-    short-summary: peering peering-service
+    short-summary: asn
 """
 
-helps['peering peering-service list'] = """
+helps['asn list'] = """
     type: command
     short-summary: Lists all of the peerings under the given subscription.
     examples:
       - name: List peering services in a resource group
         text: |-
-               az peering peering-service list --resource-group "rgName"
+               az asn list --resource-group "rgName"
 """
 
-helps['peering peering-service show'] = """
+helps['asn show'] = """
     type: command
     short-summary: Gets an existing peering service with the specified name under the given subscription and resource g\
 roup.
     examples:
       - name: Get a peering service
         text: |-
-               az peering peering-service show --peering-service-name "peeringServiceName" --resource-group "rgName"
+               az asn show --peering-service-name "peeringServiceName" --resource-group "rgName"
 """
 
-helps['peering peering-service create'] = """
+helps['asn create'] = """
     type: command
     short-summary: Creates a new peering service or updates an existing peering with the specified name under the given\
  subscription and resource group.
     examples:
       - name: Create a  peering service
         text: |-
-               az peering peering-service create --location "eastus" --peering-service-location "state1" --peering-serv\
-ice-provider "serviceProvider1" --peering-service-name "peeringServiceName" --resource-group "rgName"
+               az asn create --location "eastus" --peering-service-location "state1" --peering-service-provider "servic\
+eProvider1" --peering-service-name "peeringServiceName" --resource-group "rgName"
 """
 
-helps['peering peering-service update'] = """
+helps['asn update'] = """
     type: command
     short-summary: Updates tags for a peering service with the specified name under the given subscription and resource\
  group.
     examples:
       - name: Update peering service tags
         text: |-
-               az peering peering-service update --peering-service-name "peeringServiceName" --resource-group "rgName" \
---tags tags={"tag0":"value0","tag1":"value1"}
+               az asn update --peering-service-name "peeringServiceName" --resource-group "rgName" --tags tags={"tag0":\
+"value0","tag1":"value1"}
 """
 
-helps['peering peering-service delete'] = """
+helps['asn delete'] = """
     type: command
     short-summary: Deletes an existing peering service with the specified name under the given subscription and resourc\
 e group.
     examples:
       - name: Delete a peering service
         text: |-
-               az peering peering-service delete --peering-service-name "peeringServiceName" --resource-group "rgName"
+               az asn delete --peering-service-name "peeringServiceName" --resource-group "rgName"
 """
