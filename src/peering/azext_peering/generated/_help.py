@@ -355,63 +355,63 @@ helps['peering service location list'] = """
                az peering service location list
 """
 
-helps['peering service-prefix'] = """
+helps['peering service prefix'] = """
     type: group
-    short-summary: peering service-prefix
+    short-summary: peering service prefix
 """
 
-helps['peering service-prefix list'] = """
+helps['peering service prefix list'] = """
     type: command
     short-summary: Lists all prefixes under the given subscription, resource group and peering service.
     examples:
       - name: List all the prefixes associated with the peering service
         text: |-
-               az peering service-prefix list --peering-service-name "peeringServiceName" --resource-group "rgName"
+               az peering service prefix list --peering-service-name "peeringServiceName" --resource-group "rgName"
 """
 
-helps['peering service-prefix show'] = """
+helps['peering service prefix show'] = """
     type: command
     short-summary: Gets an existing prefix with the specified name under the given subscription, resource group and pee\
 ring service.
     examples:
       - name: Get a prefix associated with the peering service
         text: |-
-               az peering service-prefix show --peering-service-name "peeringServiceName" --name "peeringServicePrefixN\
+               az peering service prefix show --peering-service-name "peeringServiceName" --name "peeringServicePrefixN\
 ame" --resource-group "rgName"
 """
 
-helps['peering service-prefix create'] = """
+helps['peering service prefix create'] = """
     type: command
     short-summary: Creates a new prefix with the specified name under the given subscription, resource group and peerin\
 g service.
     examples:
       - name: Create or update a prefix for the peering service
         text: |-
-               az peering service-prefix create --peering-service-name "peeringServiceName" --peering-service-prefix-ke\
+               az peering service prefix create --peering-service-name "peeringServiceName" --peering-service-prefix-ke\
 y "00000000-0000-0000-0000-000000000000" --prefix "192.168.1.0/24" --name "peeringServicePrefixName" --resource-group "\
 rgName"
 """
 
-helps['peering service-prefix update'] = """
+helps['peering service prefix update'] = """
     type: command
     short-summary: Creates a new prefix with the specified name under the given subscription, resource group and peerin\
 g service.
     examples:
       - name: Create or update a prefix for the peering service
         text: |-
-               az peering service-prefix update --peering-service-name "peeringServiceName" --peering-service-prefix-ke\
+               az peering service prefix update --peering-service-name "peeringServiceName" --peering-service-prefix-ke\
 y "00000000-0000-0000-0000-000000000000" --prefix "192.168.1.0/24" --name "peeringServicePrefixName" --resource-group "\
 rgName"
 """
 
-helps['peering service-prefix delete'] = """
+helps['peering service prefix delete'] = """
     type: command
     short-summary: Deletes an existing prefix with the specified name under the given subscription, resource group and \
 peering service.
     examples:
       - name: Delete a prefix associated with the peering service
         text: |-
-               az peering service-prefix delete --peering-service-name "peeringServiceName" --name "peeringServicePrefi\
+               az peering service prefix delete --peering-service-name "peeringServiceName" --name "peeringServicePrefi\
 xName" --resource-group "rgName"
 """
 

@@ -118,8 +118,7 @@ def load_command_table(self, _):
     peering_prefix = CliCommandType(
         operations_tmpl='azext_peering.vendored_sdks.peering.operations._prefix_operations#PrefixOperations.{}',
         client_factory=cf_prefix)
-    with self.command_group('peering service-prefix', peering_prefix, client_factory=cf_prefix,
-                            is_experimental=True) as g:
+    with self.command_group('peering service prefix', peering_prefix, client_factory=cf_prefix) as g:
         g.custom_command('list', 'peering_service_prefix_list')
         g.custom_show_command('show', 'peering_service_prefix_show')
         g.custom_command('create', 'peering_service_prefix_create')

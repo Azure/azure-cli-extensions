@@ -122,7 +122,7 @@ def step__registeredasns_put_create_or_update_a_registered_asn_for_the_peering(t
 # EXAMPLE: /Prefixes/put/Create or update a prefix for the peering service
 @try_manual
 def step__prefixes_put_create_or_update_a_prefix_for_the_peering_service(test, rg):
-    # test.cmd('az peering service-prefix create '
+    # test.cmd('az peering service prefix create '
     #          '--peering-service-name "{peeringServiceName}" '
     #          '--peering-service-prefix-key "00000000-0000-0000-0000-000000000000" '
     #          '--prefix "192.168.1.0/24" '
@@ -155,7 +155,7 @@ def step__registeredprefixes_get_get_a_registered_prefix_associated_with_the_pee
 # EXAMPLE: /Prefixes/get/Get a prefix associated with the peering service
 @try_manual
 def step__prefixes_get_get_a_prefix_associated_with_the_peering_service(test, rg):
-    # test.cmd('az peering service-prefix show '
+    # test.cmd('az peering service prefix show '
     #          '--peering-service-name "{peeringServiceName}" '
     #          '--name "{peeringServicePrefixName}" '
     #          '--resource-group "{rg}"',
@@ -175,7 +175,7 @@ def step__registeredasns_get_get_a_registered_asn_associated_with_the_peering(te
 # EXAMPLE: /Prefixes/get/List all the prefixes associated with the peering service
 @try_manual
 def step__prefixes_get_list_all_the_prefixes_associated_with_the_peering_service(test, rg):
-    test.cmd('az peering service-prefix list '
+    test.cmd('az peering service prefix list '
              '--peering-service-name "{peeringServiceName}" '
              '--resource-group "{rg}"',
              checks=[])
@@ -357,7 +357,7 @@ def step__registeredprefixes_delete_deletes_a_registered_prefix_associated_with_
 # EXAMPLE: /Prefixes/delete/Delete a prefix associated with the peering service
 @try_manual
 def step__prefixes_delete_delete_a_prefix_associated_with_the_peering_service(test, rg):
-    # test.cmd('az peering service-prefix delete '
+    # test.cmd('az peering service prefix delete '
     #          '--peering-service-name "{peeringServiceName}" '
     #          '--name "{peeringServicePrefixName}" '
     #          '--resource-group "{rg}"',

@@ -175,26 +175,26 @@ def load_arguments(self, _):
     with self.argument_context('peering service location list') as c:
         c.argument('country', help='The country of interest, in which the locations are to be present.')
 
-    with self.argument_context('peering service-prefix list') as c:
+    with self.argument_context('peering service prefix list') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('peering_service_name', help='The name of the peering service.')
         c.argument('expand', help='The properties to be expanded.')
 
-    with self.argument_context('peering service-prefix show') as c:
+    with self.argument_context('peering service prefix show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('peering_service_name', help='The name of the peering service.', id_part='name')
         c.argument('prefix_name', options_list=['--name', '-n'], help='The name of the prefix.',
                    id_part='child_name_1')
         c.argument('expand', help='The properties to be expanded.')
 
-    with self.argument_context('peering service-prefix create') as c:
+    with self.argument_context('peering service prefix create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('peering_service_name', help='The name of the peering service.')
         c.argument('prefix_name', options_list=['--name', '-n'], help='The name of the prefix.')
         c.argument('prefix', help='The prefix from which your traffic originates.')
         c.argument('peering_service_prefix_key', help='The peering service prefix key')
 
-    with self.argument_context('peering service-prefix update') as c:
+    with self.argument_context('peering service prefix update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('peering_service_name', help='The name of the peering service.', id_part='name')
         c.argument('prefix_name', options_list=['--name', '-n'], help='The name of the prefix.',
@@ -202,7 +202,7 @@ def load_arguments(self, _):
         c.argument('prefix', help='The prefix from which your traffic originates.')
         c.argument('peering_service_prefix_key', help='The peering service prefix key')
 
-    with self.argument_context('peering service-prefix delete') as c:
+    with self.argument_context('peering service prefix delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('peering_service_name', help='The name of the peering service.', id_part='name')
         c.argument('prefix_name', options_list=['--name', '-n'], help='The name of the prefix.',

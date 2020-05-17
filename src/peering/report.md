@@ -260,6 +260,56 @@ list a peering service location.
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
 |**--country**|string|The country of interest, in which the locations are to be present.|country|
+### peering service prefix create
+
+create a peering service prefix.
+
+|Option|Type|Description|Path (SDK)|Path (swagger)|
+|------|----|-----------|----------|--------------|
+|**--resource-group-name**|string|The name of the resource group.|resource_group_name|
+|**--peering-service-name**|string|The name of the peering service.|peering_service_name|
+|**--prefix-name**|string|The name of the prefix.|prefix_name|
+|**--prefix**|string|The prefix from which your traffic originates.|prefix|
+|**--peering-service-prefix-key**|string|The peering service prefix key|peering_service_prefix_key|
+### peering service prefix delete
+
+delete a peering service prefix.
+
+|Option|Type|Description|Path (SDK)|Path (swagger)|
+|------|----|-----------|----------|--------------|
+|**--resource-group-name**|string|The name of the resource group.|resource_group_name|
+|**--peering-service-name**|string|The name of the peering service.|peering_service_name|
+|**--prefix-name**|string|The name of the prefix.|prefix_name|
+### peering service prefix list
+
+list a peering service prefix.
+
+|Option|Type|Description|Path (SDK)|Path (swagger)|
+|------|----|-----------|----------|--------------|
+|**--resource-group-name**|string|The name of the resource group.|resource_group_name|
+|**--peering-service-name**|string|The name of the peering service.|peering_service_name|
+|**--expand**|string|The properties to be expanded.|expand|
+### peering service prefix show
+
+show a peering service prefix.
+
+|Option|Type|Description|Path (SDK)|Path (swagger)|
+|------|----|-----------|----------|--------------|
+|**--resource-group-name**|string|The name of the resource group.|resource_group_name|
+|**--peering-service-name**|string|The name of the peering service.|peering_service_name|
+|**--prefix-name**|string|The name of the prefix.|prefix_name|
+|**--expand**|string|The properties to be expanded.|expand|
+### peering service prefix update
+
+create a peering service prefix.
+
+|Option|Type|Description|Path (SDK)|Path (swagger)|
+|------|----|-----------|----------|--------------|
+|**--resource-group-name**|string|The name of the resource group.|resource_group_name|
+|**--peering-service-name**|string|The name of the peering service.|peering_service_name|
+|**--prefix-name**|string|The name of the prefix.|prefix_name|
+|**--prefix**|string|The prefix from which your traffic originates.|prefix|
+|**--peering-service-prefix-key**|string|The peering service prefix key|peering_service_prefix_key|
 ### peering service provider list
 
 list a peering service provider.
@@ -283,53 +333,3 @@ update a peering service.
 |**--resource-group-name**|string|The name of the resource group.|resource_group_name|
 |**--peering-service-name**|string|The name of the peering service.|peering_service_name|
 |**--tags**|dictionary|Gets or sets the tags, a dictionary of descriptors arm object|tags|
-### peering service-prefix create
-
-create a peering service-prefix.
-
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--resource-group-name**|string|The name of the resource group.|resource_group_name|
-|**--peering-service-name**|string|The name of the peering service.|peering_service_name|
-|**--prefix-name**|string|The name of the prefix.|prefix_name|
-|**--prefix**|string|The prefix from which your traffic originates.|prefix|
-|**--peering-service-prefix-key**|string|The peering service prefix key|peering_service_prefix_key|
-### peering service-prefix delete
-
-delete a peering service-prefix.
-
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--resource-group-name**|string|The name of the resource group.|resource_group_name|
-|**--peering-service-name**|string|The name of the peering service.|peering_service_name|
-|**--prefix-name**|string|The name of the prefix.|prefix_name|
-### peering service-prefix list
-
-list a peering service-prefix.
-
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--resource-group-name**|string|The name of the resource group.|resource_group_name|
-|**--peering-service-name**|string|The name of the peering service.|peering_service_name|
-|**--expand**|string|The properties to be expanded.|expand|
-### peering service-prefix show
-
-show a peering service-prefix.
-
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--resource-group-name**|string|The name of the resource group.|resource_group_name|
-|**--peering-service-name**|string|The name of the peering service.|peering_service_name|
-|**--prefix-name**|string|The name of the prefix.|prefix_name|
-|**--expand**|string|The properties to be expanded.|expand|
-### peering service-prefix update
-
-create a peering service-prefix.
-
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--resource-group-name**|string|The name of the resource group.|resource_group_name|
-|**--peering-service-name**|string|The name of the peering service.|peering_service_name|
-|**--prefix-name**|string|The name of the prefix.|prefix_name|
-|**--prefix**|string|The prefix from which your traffic originates.|prefix|
-|**--peering-service-prefix-key**|string|The peering service prefix key|peering_service_prefix_key|
