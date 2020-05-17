@@ -47,7 +47,7 @@ class PeeringManagementClientOperationsMixin(object):
         error_map.update(kwargs.pop('error_map', {}))
 
         _check_service_provider_availability_input = models.CheckServiceProviderAvailabilityInput(peering_service_location=peering_service_location, peering_service_provider=peering_service_provider)
-        api_version = "2020-04-01"
+        api_version = "2020-01-01-preview"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL

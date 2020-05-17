@@ -72,7 +72,7 @@ class PrefixOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType["models.PeeringServicePrefix"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-04-01"
+        api_version = "2020-01-01-preview"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
@@ -144,7 +144,7 @@ class PrefixOperations(object):
         error_map.update(kwargs.pop('error_map', {}))
 
         _peering_service_prefix = models.PeeringServicePrefix(prefix=prefix, peering_service_prefix_key=peering_service_prefix_key)
-        api_version = "2020-04-01"
+        api_version = "2020-01-01-preview"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
@@ -217,7 +217,7 @@ class PrefixOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-04-01"
+        api_version = "2020-01-01-preview"
 
         # Construct URL
         url = self.delete.metadata['url']  # type: ignore
@@ -275,7 +275,7 @@ class PrefixOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType["models.PeeringServicePrefixListResult"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-04-01"
+        api_version = "2020-01-01-preview"
 
         def prepare_request(next_link=None):
             if not next_link:

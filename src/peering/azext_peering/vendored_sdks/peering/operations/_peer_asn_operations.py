@@ -63,7 +63,7 @@ class PeerAsnOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType["models.PeerAsn"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-04-01"
+        api_version = "2020-01-01-preview"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
@@ -131,7 +131,7 @@ class PeerAsnOperations(object):
         error_map.update(kwargs.pop('error_map', {}))
 
         _peer_asn = models.PeerAsn(peer_asn=peer_asn, peer_contact_detail=peer_contact_detail, peer_name=peer_name, validation_state=validation_state)
-        api_version = "2020-04-01"
+        api_version = "2020-01-01-preview"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
@@ -196,7 +196,7 @@ class PeerAsnOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-04-01"
+        api_version = "2020-01-01-preview"
 
         # Construct URL
         url = self.delete.metadata['url']  # type: ignore
@@ -243,7 +243,7 @@ class PeerAsnOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType["models.PeerAsnListResult"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-04-01"
+        api_version = "2020-01-01-preview"
 
         def prepare_request(next_link=None):
             if not next_link:

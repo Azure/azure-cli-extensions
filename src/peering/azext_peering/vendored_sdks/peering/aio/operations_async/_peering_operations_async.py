@@ -61,7 +61,7 @@ class PeeringOperations:
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Peering"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-04-01"
+        api_version = "2020-01-01-preview"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
@@ -141,7 +141,7 @@ class PeeringOperations:
         error_map.update(kwargs.pop('error_map', {}))
 
         _peering = models.Peering(sku=sku, kind=kind, location=location, tags=tags, direct=direct, exchange=exchange, peering_location=peering_location)
-        api_version = "2020-04-01"
+        api_version = "2020-01-01-preview"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
@@ -209,7 +209,7 @@ class PeeringOperations:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-04-01"
+        api_version = "2020-01-01-preview"
 
         # Construct URL
         url = self.delete.metadata['url']  # type: ignore
@@ -267,7 +267,7 @@ class PeeringOperations:
         error_map.update(kwargs.pop('error_map', {}))
 
         _tags = models.ResourceTags(tags=tags)
-        api_version = "2020-04-01"
+        api_version = "2020-01-01-preview"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
@@ -327,7 +327,7 @@ class PeeringOperations:
         cls = kwargs.pop('cls', None)  # type: ClsType["models.PeeringListResult"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-04-01"
+        api_version = "2020-01-01-preview"
 
         def prepare_request(next_link=None):
             if not next_link:
@@ -392,7 +392,7 @@ class PeeringOperations:
         cls = kwargs.pop('cls', None)  # type: ClsType["models.PeeringListResult"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-04-01"
+        api_version = "2020-01-01-preview"
 
         def prepare_request(next_link=None):
             if not next_link:
