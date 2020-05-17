@@ -1348,6 +1348,7 @@ class EventGridTests(ScenarioTest):
             self.check('type', 'Microsoft.EventGrid/partnerNamespaces/eventChannels'),
             self.check('name', self.kwargs['event_channel_name']),
             self.check('provisioningState', 'Succeeded'),
+            # Comment for recorded test to pass.
             # self.check('expirationTimeIfNotActivatedUtc', exp_time + '+00:00'),
             # self.check('partnerTopicFriendlyDescription', partner_topic_friendly_description),
             self.check('partnerTopicReadinessState', 'NotActivatedByUserYet'),
