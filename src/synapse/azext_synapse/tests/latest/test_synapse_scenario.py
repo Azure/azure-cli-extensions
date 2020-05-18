@@ -57,7 +57,7 @@ class SynapseScenarioTests(ScenarioTest):
         self.kwargs.update({
             'location': 'eastus',
             'workspace': 'testsynapseworkspace',
-            'rg': 'zzy-test-rg',
+            'rg': 'rg',
             'spark-pool': self.create_random_name(prefix='testpool', length=15),
             'spark-version': '2.4'
         })
@@ -103,7 +103,7 @@ class SynapseScenarioTests(ScenarioTest):
         self.kwargs.update({
             'location': 'eastus',
             'workspace': 'testsynapseworkspace',
-            'rg': 'zzy-test-rg',
+            'rg': 'rg',
             'sql-pool': self.create_random_name(prefix='testsqlpool', length=15),
             'performance-level': 'DW1000c'
         })
@@ -180,8 +180,8 @@ class SynapseScenarioTests(ScenarioTest):
             'main-definition-file': 'abfss://testfilesystem@adlsgen2account.dfs.core.windows.net/samples/java/wordcount/wordcount.jar',
             'main-class-name': 'WordCount',
             'command-line-arguments': [
-                'abfss://testfilesystem@newzzyadlsgen2.dfs.core.windows.net/samples/java/wordcount/shakespeare.txt',
-                'abfss://testfilesystem@newzzyadlsgen2.dfs.core.windows.net/samples/java/wordcount/result/'],
+                'abfss://testfilesystem@adlsgen2account.dfs.core.windows.net/samples/java/wordcount/shakespeare.txt',
+                'abfss://testfilesystem@adlsgen2account.dfs.core.windows.net/samples/java/wordcount/result/'],
             'executors': 2,
             'executor-size': 'Medium'
         })
@@ -312,7 +312,7 @@ class SynapseScenarioTests(ScenarioTest):
     def test_ip_firewall_rules(self, resource_group):
         self.kwargs.update({
             'workspace': 'testsynapseworkspace',
-            'rg': 'zzy-test-rg',
+            'rg': 'rg',
             'ruleName': self.create_random_name(prefix='rule', length=8),
             'startIpAddress': "0.0.0.0",
             'endIpAddress': "255.255.255.255"
