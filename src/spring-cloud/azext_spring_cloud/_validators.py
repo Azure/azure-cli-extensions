@@ -152,33 +152,41 @@ def validate_vnet(cmd, namespace):
     _validate_cidr_range(namespace)
 
     if namespace.vnet:
-        vnet = namespace.vnet
+        vnet_id = namespace.vnet
         # format the app_subnet and service_runtime_subnet
-        if not is_valid_resource_id(vnet):
-            if vnet.count('/') > 0:
-                raise CLIError('vnet {0} is not a valid name or resource ID'.format(vnet))
-            vnet = resource_id(
+        if not is_valid_resource_id(vnet_id):
+            if vnet_id.count('/') > 0:
+                raise CLIError('--vnet {0} is not a valid name or resource ID'.format(vnet_id))
+            vnet_id = resource_id(
                 subscription=get_subscription_id(cmd.cli_ctx),
                 resource_group=namespace.resource_group,
                 namespace='Microsoft.Network',
                 type='virtualNetworks',
-                name=vnet
+                name=vnet_id
             )
-        namespace.app_subnet = _parse_subnet(vnet, namespace.app_subnet)
-        namespace.service_runtime_subnet = _parse_subnet(vnet, namespace.service_runtime_subnet)
+        else:
+            vnet = parse_resource_id(vnet_id)
+            if vnet['namespace'].lower() != 'microsoft.network' or vnet['virtualnetworks'].lower() != 'virtualnetworks':
+                raise CLIError('--vnet {0} is not a valid VirtualNetwork resource ID'.format(vnet_id))
+        namespace.app_subnet = _construct_subnet_id(vnet_id, namespace.app_subnet)
+        namespace.service_runtime_subnet = _construct_subnet_id(vnet_id, namespace.service_runtime_subnet)
     else:
-        app_vnet_id = _validate_subnet_id(namespace.app_subnet)
-        service_runtime_vnet_id = _validate_subnet_id(namespace.service_runtime_subnet)
+        app_vnet_id = _parse_vnet_id_from_subnet(namespace.app_subnet)
+        service_runtime_vnet_id = _parse_vnet_id_from_subnet(namespace.service_runtime_subnet)
         if app_vnet_id.lower() != service_runtime_vnet_id.lower():
             raise CLIError('--app-subnet and --service-runtime-subnet should be in the same Virtual Networks.')
     if namespace.app_subnet.lower() == namespace.service_runtime_subnet.lower():
         raise CLIError('--app-subnet and --service-runtime-subnet should not be the same.')
 
 
-def _validate_subnet_id(subnet_id):
+def _parse_vnet_id_from_subnet(subnet_id):
     if not is_valid_resource_id(subnet_id):
-        raise CLIError('subnet {0} is not a valid resource ID'.format(subnet_id))
+        raise CLIError('{0} is not a valid subnet resource ID'.format(subnet_id))
     subnet = parse_resource_id(subnet_id)
+    if subnet['namespace'].lower() != 'microsoft.network' or \
+        subnet['type'].lower() != 'virtualnetworks' or \
+        'resource_type' not in subnet or subnet['resource_type'].lower() != 'subnets':
+        raise CLIError('{0} is not a valid subnet resource ID'.format(subnet_id))
     return resource_id(
         subscription=subnet['subscription'],
         resource_group=subnet['resource_group'],
@@ -188,7 +196,7 @@ def _validate_subnet_id(subnet_id):
     )
 
 
-def _parse_subnet(vnet_id, subnet):
+def _construct_subnet_id(vnet_id, subnet):
     if not is_valid_resource_id(subnet):
         if subnet.count('/'):
             raise CLIError('subnet {0} is not a valid name or resource ID'.format(subnet))
@@ -208,7 +216,7 @@ def _validate_cidr_range(namespace):
         namespace.reserved_cidr_range = ranges[0]
         return
     if len(ranges) != 3:
-        raise CLIError('--reserved-cidr-range should be 1 unused /14 IP range, or 3 unused /16 IP rangeds')
+        raise CLIError('--reserved-cidr-range should be 1 unused /14 IP range, or 3 unused /16 IP ranges')
     ipv4 = [_validate_ip(ip, 16) for ip in ranges]
     # check no overlap with each other
     for i, item in enumerate(ipv4):
@@ -224,11 +232,11 @@ def _validate_ip(ip, prefix):
         # Host bits set can be non-zero? Here treat it as valid.
         ip_address = ip_network(ip, strict=False)
         if ip_address.version != 4:
-            raise CLIError('{0} is not a valid CIDR.'.format(ip))
+            raise CLIError('{0} is not a valid IPv4 CIDR.'.format(ip))
         if ip_address.prefixlen > prefix:
             raise CLIError(
-                '{0} is not valid.'
-                ' --reserved-cidr-range should be 1 unused /14 IP range, or 3 unused /16 IP rangeds.'.format(ip))
+                '{0} doesn\'t has valid CIDR prefix.'
+                ' --reserved-cidr-range should be 1 unused /14 IP range, or 3 unused /16 IP ranges.'.format(ip))
         return ip_address
     except ValueError:
         raise CLIError('{0} is not a valid CIDR'.format(ip))
