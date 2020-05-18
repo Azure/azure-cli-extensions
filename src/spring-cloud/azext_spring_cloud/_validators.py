@@ -149,7 +149,7 @@ def validate_vnet(cmd, namespace):
        not namespace.service_runtime_subnet and not namespace.reserved_cidr_range:
         return
     validate_vnet_required_parameters(namespace)
-    _validate_cidr_range(namespace.reserved_cidr_range)
+    _validate_cidr_range(namespace)
 
     if namespace.vnet:
         vnet = namespace.vnet
@@ -199,14 +199,24 @@ def _parse_subnet(vnet_id, subnet):
     return subnet
 
 
-def _validate_cidr_range(ranges):
-    if isinstance(ranges, list):
-        if len(ranges) != 3:
-            raise CLIError('--reserved-cidr-range should be 1 unused /14 IP range, or 3 unused /16 IP rangeds')
-        for ip in ranges:
-            _validate_ip(ip, 16)
-    else:
-        _validate_ip(ranges, 14)
+def _validate_cidr_range(namespace):
+    ranges = namespace.reserved_cidr_range.split(',')
+    ranges = [x for x in ranges if x != '']  # filter out empty ones
+
+    if len(ranges) == 1:
+        _validate_ip(ranges[0], 14)
+        namespace.reserved_cidr_range = ranges[0]
+        return
+    if len(ranges) != 3:
+        raise CLIError('--reserved-cidr-range should be 1 unused /14 IP range, or 3 unused /16 IP rangeds')
+    ipv4 = [_validate_ip(ip, 16) for ip in ranges]
+    # check no overlap with each other
+    for i, item in enumerate(ipv4):
+        for j in range(i + 1, len(ipv4)):
+            if item.overlaps(ipv4[j]):
+                raise CLIError('--reserved-cidr-range should not be overlapped with each other. But got {0} and {1}'
+                               .format(ranges[i], ranges[j]))
+    namespace.reserved_cidr_range = ','.join(ranges)
 
 
 def _validate_ip(ip, prefix):
@@ -219,6 +229,7 @@ def _validate_ip(ip, prefix):
             raise CLIError(
                 '{0} is not valid.'
                 ' --reserved-cidr-range should be 1 unused /14 IP range, or 3 unused /16 IP rangeds.'.format(ip))
+        return ip_address
     except ValueError:
         raise CLIError('{0} is not a valid CIDR'.format(ip))
 
