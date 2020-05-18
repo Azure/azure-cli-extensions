@@ -1472,7 +1472,8 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
         os.remove(temp_yaml_path)
 
     print()
-    normalized_fqdn = mc.fqdn.replace('.', '-')
+    fqdn = mc.fqdn if mc.fqdn is not None else mc.private_fqdn
+    normalized_fqdn = fqdn.replace('.', '-')
     token_in_storage_account_url = readonly_sas_token if readonly_sas_token is not None else sas_token
     log_storage_account_url = f"https://{storage_account_name}.blob.core.windows.net/" \
                               f"{_trim_fqdn_name_containing_hcp(normalized_fqdn)}?{token_in_storage_account_url}"

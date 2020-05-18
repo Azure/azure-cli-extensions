@@ -9,6 +9,7 @@ from knack.util import CLIError
 
 # pylint: disable=no-name-in-module,import-error
 from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterAPIServerAccessProfile
+from ._consts import CONST_CONTAINER_NAME_MAX_LENGTH
 from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING
 
 
@@ -88,4 +89,6 @@ def _trim_fqdn_name_containing_hcp(normalized_fqdn: str) -> str:
     attached
     """
     storage_name_without_hcp, _, _ = normalized_fqdn.partition('-hcp-')
+    if len(storage_name_without_hcp) > CONST_CONTAINER_NAME_MAX_LENGTH:
+        return storage_name_without_hcp[:CONST_CONTAINER_NAME_MAX_LENGTH]
     return storage_name_without_hcp
