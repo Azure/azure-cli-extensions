@@ -119,6 +119,7 @@ def load_arguments(self, _):
         c.argument('disable_pod_security_policy', action='store_true')
         c.argument('attach_acr', acr_arg_type, validator=validate_acr)
         c.argument('detach_acr', acr_arg_type, validator=validate_acr)
+        c.argument('aks_custom_headers')
 
     with self.argument_context('aks scale') as c:
         c.argument('nodepool_name', type=str,
@@ -146,6 +147,7 @@ def load_arguments(self, _):
             c.argument('spot_max_price', type=float, validator=validate_spot_max_price)
             c.argument('labels', nargs='*', validator=validate_nodepool_labels)
             c.argument('mode', arg_type=get_enum_type([CONST_NODEPOOL_MODE_SYSTEM, CONST_NODEPOOL_MODE_USER]))
+            c.argument('aks_custom_headers')
 
     for scope in ['aks nodepool show', 'aks nodepool delete', 'aks nodepool scale', 'aks nodepool upgrade', 'aks nodepool update']:
         with self.argument_context(scope) as c:
