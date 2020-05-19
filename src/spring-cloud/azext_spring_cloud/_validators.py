@@ -145,13 +145,13 @@ def validate_jvm_options(namespace):
 
 
 def validate_vnet(cmd, namespace):
-    if not namespace.vnet and not namespace.app_subnet and \
-       not namespace.service_runtime_subnet and not namespace.reserved_cidr_range:
+    if 'vnet' not in namespace and 'app_subnet' not in namespace and \
+       'service_runtime_subnet' not in namespace and 'reserved_cidr_range' not in namespace:
         return
     validate_vnet_required_parameters(namespace)
     _validate_cidr_range(namespace)
 
-    if namespace.vnet:
+    if 'vnet' in namespace:
         vnet_id = namespace.vnet
         # format the app_subnet and service_runtime_subnet
         if not is_valid_resource_id(vnet_id):
@@ -166,7 +166,7 @@ def validate_vnet(cmd, namespace):
             )
         else:
             vnet = parse_resource_id(vnet_id)
-            if vnet['namespace'].lower() != 'microsoft.network' or vnet['virtualnetworks'].lower() != 'virtualnetworks':
+            if vnet['namespace'].lower() != 'microsoft.network' or vnet['type'].lower() != 'virtualnetworks':
                 raise CLIError('--vnet {0} is not a valid VirtualNetwork resource ID'.format(vnet_id))
         namespace.app_subnet = _construct_subnet_id(vnet_id, namespace.app_subnet)
         namespace.service_runtime_subnet = _construct_subnet_id(vnet_id, namespace.service_runtime_subnet)
@@ -176,7 +176,7 @@ def validate_vnet(cmd, namespace):
         if app_vnet_id.lower() != service_runtime_vnet_id.lower():
             raise CLIError('--app-subnet and --service-runtime-subnet should be in the same Virtual Networks.')
     if namespace.app_subnet.lower() == namespace.service_runtime_subnet.lower():
-        raise CLIError('--app-subnet and --service-runtime-subnet should not be the same.')
+        raise CLIError('--app-subnet and --service-runtime-subnet should not be same.')
 
 
 def _parse_vnet_id_from_subnet(subnet_id):
@@ -184,8 +184,8 @@ def _parse_vnet_id_from_subnet(subnet_id):
         raise CLIError('{0} is not a valid subnet resource ID'.format(subnet_id))
     subnet = parse_resource_id(subnet_id)
     if subnet['namespace'].lower() != 'microsoft.network' or \
-        subnet['type'].lower() != 'virtualnetworks' or \
-        'resource_type' not in subnet or subnet['resource_type'].lower() != 'subnets':
+       subnet['type'].lower() != 'virtualnetworks' or \
+       'resource_type' not in subnet or subnet['resource_type'].lower() != 'subnets':
         raise CLIError('{0} is not a valid subnet resource ID'.format(subnet_id))
     return resource_id(
         subscription=subnet['subscription'],
@@ -243,6 +243,7 @@ def _validate_ip(ip, prefix):
 
 
 def validate_vnet_required_parameters(namespace):
-    if not namespace.reserved_cidr_range or not namespace.app_subnet or not namespace.service_runtime_subnet:
+    if 'reserved_cidr_range' not in namespace or \
+       'app_subnet' not in namespace or 'service_runtime_subnet' not in namespace:
         raise CLIError(
             '--reserved-cidr-range, --app-subnet, --service-runtime-subnet must be set when deploying to VNet')
