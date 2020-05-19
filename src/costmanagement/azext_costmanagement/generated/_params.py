@@ -26,199 +26,206 @@ from azext_costmanagement.action import (
 
 def load_arguments(self, _):
 
-    with self.argument_context('costmanagement dimension list') as c:
-        c.argument('scope', help='The scope associated with dimension operations. This includes \'/subscriptions/{subsc'
-                   'riptionId}/\' for subscription scope, \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGro'
-                   'upName}\' for resourceGroup scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccountId'
-                   '}\' for Billing Account scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/de'
-                   'partments/{departmentId}\' for Department scope, \'/providers/Microsoft.Billing/billingAccounts/{bi'
-                   'llingAccountId}/enrollmentAccounts/{enrollmentAccountId}\' for EnrollmentAccount scope, \'/provider'
-                   's/Microsoft.Management/managementGroups/{managementGroupId}\' for Management Group scope, \'/provid'
-                   'ers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId}\' for b'
-                   'illingProfile scope, \'providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfil'
-                   'es/{billingProfileId}/invoiceSections/{invoiceSectionId}\' for invoiceSection scope, and \'provider'
-                   's/Microsoft.Billing/billingAccounts/{billingAccountId}/customers/{customerId}\' specific for partne'
-                   'rs.')
-        c.argument('filter', help='May be used to filter dimensions by properties/category, properties/usageStart, prop'
-                   'erties/usageEnd. Supported operators are \'eq\',\'lt\', \'gt\', \'le\', \'ge\'.')
-        c.argument('expand', help='May be used to expand the properties/data within a dimension category. By default, d'
-                   'ata is not included when listing dimensions.')
-        c.argument('skiptoken', help='Skiptoken is only used if a previous operation returned a partial result. If a pr'
-                   'evious response contains a nextLink element, the value of the nextLink element will include a skipt'
-                   'oken parameter that specifies a starting point to use for subsequent calls.')
-        c.argument('top', help='May be used to limit the number of results to the most recent N dimension data.')
+    # with self.argument_context('costmanagement dimension list') as c:
+    #     c.argument('scope', help='The scope associated with dimension operations. This includes \'/subscriptions/{subsc'
+    #                'riptionId}/\' for subscription scope, \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGro'
+    #                'upName}\' for resourceGroup scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccountId'
+    #                '}\' for Billing Account scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/de'
+    #                'partments/{departmentId}\' for Department scope, \'/providers/Microsoft.Billing/billingAccounts/{bi'
+    #                'llingAccountId}/enrollmentAccounts/{enrollmentAccountId}\' for EnrollmentAccount scope, \'/provider'
+    #                's/Microsoft.Management/managementGroups/{managementGroupId}\' for Management Group scope, \'/provid'
+    #                'ers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId}\' for b'
+    #                'illingProfile scope, \'providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfil'
+    #                'es/{billingProfileId}/invoiceSections/{invoiceSectionId}\' for invoiceSection scope, and \'provider'
+    #                's/Microsoft.Billing/billingAccounts/{billingAccountId}/customers/{customerId}\' specific for partne'
+    #                'rs.')
+    #     c.argument('filter', help='May be used to filter dimensions by properties/category, properties/usageStart, prop'
+    #                'erties/usageEnd. Supported operators are \'eq\',\'lt\', \'gt\', \'le\', \'ge\'.')
+    #     c.argument('expand', help='May be used to expand the properties/data within a dimension category. By default, d'
+    #                'ata is not included when listing dimensions.')
+    #     c.argument('skiptoken', help='Skiptoken is only used if a previous operation returned a partial result. If a pr'
+    #                'evious response contains a nextLink element, the value of the nextLink element will include a skipt'
+    #                'oken parameter that specifies a starting point to use for subsequent calls.')
+    #     c.argument('top', help='May be used to limit the number of results to the most recent N dimension data.')
 
-    with self.argument_context('costmanagement dimension by-external-cloud-provider-type') as c:
-        c.argument('external_cloud_provider_type', arg_type=get_enum_type(['externalSubscriptions', 'externalBillingAcc'
-                   'ounts']), help='The external cloud provider type associated with dimension/query operations. This i'
-                   'ncludes \'externalSubscriptions\' for linked account and \'externalBillingAccounts\' for consolidat'
-                   'ed account.')
-        c.argument('external_cloud_provider_id', help='This can be \'{externalSubscriptionId}\' for linked account or '
-                   '\'{externalBillingAccountId}\' for consolidated account used with dimension/query operations.')
-        c.argument('filter', help='May be used to filter dimensions by properties/category, properties/usageStart, prop'
-                   'erties/usageEnd. Supported operators are \'eq\',\'lt\', \'gt\', \'le\', \'ge\'.')
-        c.argument('expand', help='May be used to expand the properties/data within a dimension category. By default, d'
-                   'ata is not included when listing dimensions.')
-        c.argument('skiptoken', help='Skiptoken is only used if a previous operation returned a partial result. If a pr'
-                   'evious response contains a nextLink element, the value of the nextLink element will include a skipt'
-                   'oken parameter that specifies a starting point to use for subsequent calls.')
-        c.argument('top', help='May be used to limit the number of results to the most recent N dimension data.')
+    # with self.argument_context('costmanagement dimension by-external-cloud-provider-type') as c:
+    #     c.argument('external_cloud_provider_type', arg_type=get_enum_type(['externalSubscriptions', 'externalBillingAcc'
+    #                'ounts']), help='The external cloud provider type associated with dimension/query operations. This i'
+    #                'ncludes \'externalSubscriptions\' for linked account and \'externalBillingAccounts\' for consolidat'
+    #                'ed account.')
+    #     c.argument('external_cloud_provider_id', help='This can be \'{externalSubscriptionId}\' for linked account or '
+    #                '\'{externalBillingAccountId}\' for consolidated account used with dimension/query operations.')
+    #     c.argument('filter', help='May be used to filter dimensions by properties/category, properties/usageStart, prop'
+    #                'erties/usageEnd. Supported operators are \'eq\',\'lt\', \'gt\', \'le\', \'ge\'.')
+    #     c.argument('expand', help='May be used to expand the properties/data within a dimension category. By default, d'
+    #                'ata is not included when listing dimensions.')
+    #     c.argument('skiptoken', help='Skiptoken is only used if a previous operation returned a partial result. If a pr'
+    #                'evious response contains a nextLink element, the value of the nextLink element will include a skipt'
+    #                'oken parameter that specifies a starting point to use for subsequent calls.')
+    #     c.argument('top', help='May be used to limit the number of results to the most recent N dimension data.')
 
-    with self.argument_context('costmanagement alert list') as c:
-        c.argument('scope', help='The scope associated with alerts operations. This includes \'/subscriptions/{subscrip'
-                   'tionId}/\' for subscription scope, \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupN'
-                   'ame}\' for resourceGroup scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}\''
-                   ' for Billing Account scope and \'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/de'
-                   'partments/{departmentId}\' for Department scope, \'/providers/Microsoft.Billing/billingAccounts/{bi'
-                   'llingAccountId}/enrollmentAccounts/{enrollmentAccountId}\' for EnrollmentAccount scope, \'/provider'
-                   's/Microsoft.Management/managementGroups/{managementGroupId} for Management Group scope, \'/provider'
-                   's/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId}\' for bil'
-                   'lingProfile scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfile'
-                   's/{billingProfileId}/invoiceSections/{invoiceSectionId}\' for invoiceSection scope, and \'/provider'
-                   's/Microsoft.Billing/billingAccounts/{billingAccountId}/customers/{customerId}\' specific for partne'
-                   'rs.')
+    # with self.argument_context('costmanagement alert list') as c:
+    #     c.argument('scope', help='The scope associated with alerts operations. This includes \'/subscriptions/{subscrip'
+    #                'tionId}/\' for subscription scope, \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupN'
+    #                'ame}\' for resourceGroup scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}\''
+    #                ' for Billing Account scope and \'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/de'
+    #                'partments/{departmentId}\' for Department scope, \'/providers/Microsoft.Billing/billingAccounts/{bi'
+    #                'llingAccountId}/enrollmentAccounts/{enrollmentAccountId}\' for EnrollmentAccount scope, \'/provider'
+    #                's/Microsoft.Management/managementGroups/{managementGroupId} for Management Group scope, \'/provider'
+    #                's/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId}\' for bil'
+    #                'lingProfile scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfile'
+    #                's/{billingProfileId}/invoiceSections/{invoiceSectionId}\' for invoiceSection scope, and \'/provider'
+    #                's/Microsoft.Billing/billingAccounts/{billingAccountId}/customers/{customerId}\' specific for partne'
+    #                'rs.')
 
-    with self.argument_context('costmanagement alert list-external') as c:
-        c.argument('external_cloud_provider_type', arg_type=get_enum_type(['externalSubscriptions', 'externalBillingAcc'
-                   'ounts']), help='The external cloud provider type associated with dimension/query operations. This i'
-                   'ncludes \'externalSubscriptions\' for linked account and \'externalBillingAccounts\' for consolidat'
-                   'ed account.')
-        c.argument('external_cloud_provider_id', help='This can be \'{externalSubscriptionId}\' for linked account or '
-                   '\'{externalBillingAccountId}\' for consolidated account used with dimension/query operations.')
+    # with self.argument_context('costmanagement alert list-external') as c:
+    #     c.argument('external_cloud_provider_type', arg_type=get_enum_type(['externalSubscriptions', 'externalBillingAcc'
+    #                'ounts']), help='The external cloud provider type associated with dimension/query operations. This i'
+    #                'ncludes \'externalSubscriptions\' for linked account and \'externalBillingAccounts\' for consolidat'
+    #                'ed account.')
+    #     c.argument('external_cloud_provider_id', help='This can be \'{externalSubscriptionId}\' for linked account or '
+    #                '\'{externalBillingAccountId}\' for consolidated account used with dimension/query operations.')
 
-    with self.argument_context('costmanagement forecast external-cloud-provider-usage') as c:
-        c.argument('filter', help='May be used to filter forecasts by properties/usageDate (Utc time), properties/charg'
-                   'eType or properties/grain. The filter supports \'eq\', \'lt\', \'gt\', \'le\', \'ge\', and \'and\'.'
-                   ' It does not currently support \'ne\', \'or\', or \'not\'.')
-        c.argument('external_cloud_provider_type', arg_type=get_enum_type(['externalSubscriptions', 'externalBillingAcc'
-                   'ounts']), help='The external cloud provider type associated with dimension/query operations. This i'
-                   'ncludes \'externalSubscriptions\' for linked account and \'externalBillingAccounts\' for consolidat'
-                   'ed account.')
-        c.argument('external_cloud_provider_id', help='This can be \'{externalSubscriptionId}\' for linked account or '
-                   '\'{externalBillingAccountId}\' for consolidated account used with dimension/query operations.')
-        c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['Usage', 'ActualCost', 'AmortizedCost']),
-                   help='The type of the forecast.')
-        c.argument('timeframe', arg_type=get_enum_type(['MonthToDate', 'BillingMonthToDate', 'TheLastMonth', 'TheLastBi'
-                   'llingMonth', 'WeekToDate', 'Custom']), help='The time frame for pulling data for the forecast. If c'
-                   'ustom, then a specific time period must be provided.')
-        c.argument('time_period', action=AddTimePeriod, nargs='+', help='Has time period for pulling data for the forec'
-                   'ast. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: from, to.')
-        c.argument('include_actual_cost', arg_type=get_three_state_flag(), help='a boolean determining if actualCost wi'
-                   'll be included')
-        c.argument('include_fresh_partial_cost', arg_type=get_three_state_flag(), help='a boolean determining if FreshP'
-                   'artialCost will be included')
-        c.argument('dataset_configuration', action=AddDatasetConfiguration, nargs='+', help='Has configuration informat'
-                   'ion for the data in the export. The configuration will be ignored if aggregation and grouping are p'
-                   'rovided. Expect value: columns=xx.')
-        c.argument('dataset_aggregation', arg_type=CLIArgumentType(options_list=['--dataset-aggregation'], help='Dictio'
-                   'nary of aggregation expression to use in the query. The key of each item in the dictionary is the a'
-                   'lias for the aggregated column. Query can have up to 2 aggregation clauses. Expected value: json-st'
-                   'ring/@json-file.'))
-        c.argument('dataset_grouping', action=AddDatasetGrouping, nargs='+', help='Array of group by expression to use '
-                   'in the query. Query can have up to 2 group by clauses. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , '
-                   'available KEYs are: type, name.')
-        c.argument('dataset_filter', arg_type=CLIArgumentType(options_list=['--dataset-filter'], help='Has filter expre'
-                   'ssion to use in the query. Expected value: json-string/@json-file.'))
+    # with self.argument_context('costmanagement forecast external-cloud-provider-usage') as c:
+    #     c.argument('filter', help='May be used to filter forecasts by properties/usageDate (Utc time), properties/charg'
+    #                'eType or properties/grain. The filter supports \'eq\', \'lt\', \'gt\', \'le\', \'ge\', and \'and\'.'
+    #                ' It does not currently support \'ne\', \'or\', or \'not\'.')
+    #     c.argument('external_cloud_provider_type', arg_type=get_enum_type(['externalSubscriptions', 'externalBillingAcc'
+    #                'ounts']), help='The external cloud provider type associated with dimension/query operations. This i'
+    #                'ncludes \'externalSubscriptions\' for linked account and \'externalBillingAccounts\' for consolidat'
+    #                'ed account.')
+    #     c.argument('external_cloud_provider_id', help='This can be \'{externalSubscriptionId}\' for linked account or '
+    #                '\'{externalBillingAccountId}\' for consolidated account used with dimension/query operations.')
+    #     c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['Usage', 'ActualCost', 'AmortizedCost']),
+    #                help='The type of the forecast.')
+    #     c.argument('timeframe', arg_type=get_enum_type(['MonthToDate', 'BillingMonthToDate', 'TheLastMonth', 'TheLastBi'
+    #                'llingMonth', 'WeekToDate', 'Custom']), help='The time frame for pulling data for the forecast. If c'
+    #                'ustom, then a specific time period must be provided.')
+    #     c.argument('time_period', action=AddTimePeriod, nargs='+', help='Has time period for pulling data for the forec'
+    #                'ast. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: from, to.')
+    #     c.argument('include_actual_cost', arg_type=get_three_state_flag(), help='a boolean determining if actualCost wi'
+    #                'll be included')
+    #     c.argument('include_fresh_partial_cost', arg_type=get_three_state_flag(), help='a boolean determining if FreshP'
+    #                'artialCost will be included')
+    #     c.argument('dataset_configuration', action=AddDatasetConfiguration, nargs='+', help='Has configuration informat'
+    #                'ion for the data in the export. The configuration will be ignored if aggregation and grouping are p'
+    #                'rovided. Expect value: columns=xx.')
+    #     c.argument('dataset_aggregation', arg_type=CLIArgumentType(options_list=['--dataset-aggregation'], help='Dictio'
+    #                'nary of aggregation expression to use in the query. The key of each item in the dictionary is the a'
+    #                'lias for the aggregated column. Query can have up to 2 aggregation clauses. Expected value: json-st'
+    #                'ring/@json-file.'))
+    #     c.argument('dataset_grouping', action=AddDatasetGrouping, nargs='+', help='Array of group by expression to use '
+    #                'in the query. Query can have up to 2 group by clauses. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , '
+    #                'available KEYs are: type, name.')
+    #     c.argument('dataset_filter', arg_type=CLIArgumentType(options_list=['--dataset-filter'], help='Has filter expre'
+    #                'ssion to use in the query. Expected value: json-string/@json-file.'))
 
-    with self.argument_context('costmanagement forecast usage') as c:
-        c.argument('filter', help='May be used to filter forecasts by properties/usageDate (Utc time), properties/charg'
-                   'eType or properties/grain. The filter supports \'eq\', \'lt\', \'gt\', \'le\', \'ge\', and \'and\'.'
-                   ' It does not currently support \'ne\', \'or\', or \'not\'.')
-        c.argument('scope', help='The scope associated with forecast operations. This includes \'/subscriptions/{subscr'
-                   'iptionId}/\' for subscription scope, \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGrou'
-                   'pName}\' for resourceGroup scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}'
-                   '\' for Billing Account scope and \'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/'
-                   'departments/{departmentId}\' for Department scope, \'/providers/Microsoft.Billing/billingAccounts/{'
-                   'billingAccountId}/enrollmentAccounts/{enrollmentAccountId}\' for EnrollmentAccount scope, \'/provid'
-                   'ers/Microsoft.Management/managementGroups/{managementGroupId} for Management Group scope, \'/provid'
-                   'ers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId}\' for b'
-                   'illingProfile scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfi'
-                   'les/{billingProfileId}/invoiceSections/{invoiceSectionId}\' for invoiceSection scope, and \'/provid'
-                   'ers/Microsoft.Billing/billingAccounts/{billingAccountId}/customers/{customerId}\' specific for part'
-                   'ners.')
-        c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['Usage', 'ActualCost', 'AmortizedCost']),
-                   help='The type of the forecast.')
-        c.argument('timeframe', arg_type=get_enum_type(['MonthToDate', 'BillingMonthToDate', 'TheLastMonth', 'TheLastBi'
-                   'llingMonth', 'WeekToDate', 'Custom']), help='The time frame for pulling data for the forecast. If c'
-                   'ustom, then a specific time period must be provided.')
-        c.argument('time_period', action=AddTimePeriod, nargs='+', help='Has time period for pulling data for the forec'
-                   'ast. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: from, to.')
-        c.argument('include_actual_cost', arg_type=get_three_state_flag(), help='a boolean determining if actualCost wi'
-                   'll be included')
-        c.argument('include_fresh_partial_cost', arg_type=get_three_state_flag(), help='a boolean determining if FreshP'
-                   'artialCost will be included')
-        c.argument('dataset_configuration', action=AddDatasetConfiguration, nargs='+', help='Has configuration informat'
-                   'ion for the data in the export. The configuration will be ignored if aggregation and grouping are p'
-                   'rovided. Expect value: columns=xx.')
-        c.argument('dataset_aggregation', arg_type=CLIArgumentType(options_list=['--dataset-aggregation'], help='Dictio'
-                   'nary of aggregation expression to use in the query. The key of each item in the dictionary is the a'
-                   'lias for the aggregated column. Query can have up to 2 aggregation clauses. Expected value: json-st'
-                   'ring/@json-file.'))
-        c.argument('dataset_grouping', action=AddDatasetGrouping, nargs='+', help='Array of group by expression to use '
-                   'in the query. Query can have up to 2 group by clauses. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , '
-                   'available KEYs are: type, name.')
-        c.argument('dataset_filter', arg_type=CLIArgumentType(options_list=['--dataset-filter'], help='Has filter expre'
-                   'ssion to use in the query. Expected value: json-string/@json-file.'))
+    # with self.argument_context('costmanagement forecast usage') as c:
+    #     c.argument('filter', help='May be used to filter forecasts by properties/usageDate (Utc time), properties/charg'
+    #                'eType or properties/grain. The filter supports \'eq\', \'lt\', \'gt\', \'le\', \'ge\', and \'and\'.'
+    #                ' It does not currently support \'ne\', \'or\', or \'not\'.')
+    #     c.argument('scope', help='The scope associated with forecast operations. This includes \'/subscriptions/{subscr'
+    #                'iptionId}/\' for subscription scope, \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGrou'
+    #                'pName}\' for resourceGroup scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}'
+    #                '\' for Billing Account scope and \'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/'
+    #                'departments/{departmentId}\' for Department scope, \'/providers/Microsoft.Billing/billingAccounts/{'
+    #                'billingAccountId}/enrollmentAccounts/{enrollmentAccountId}\' for EnrollmentAccount scope, \'/provid'
+    #                'ers/Microsoft.Management/managementGroups/{managementGroupId} for Management Group scope, \'/provid'
+    #                'ers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId}\' for b'
+    #                'illingProfile scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfi'
+    #                'les/{billingProfileId}/invoiceSections/{invoiceSectionId}\' for invoiceSection scope, and \'/provid'
+    #                'ers/Microsoft.Billing/billingAccounts/{billingAccountId}/customers/{customerId}\' specific for part'
+    #                'ners.')
+    #     c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['Usage', 'ActualCost', 'AmortizedCost']),
+    #                help='The type of the forecast.')
+    #     c.argument('timeframe', arg_type=get_enum_type(['MonthToDate', 'BillingMonthToDate', 'TheLastMonth', 'TheLastBi'
+    #                'llingMonth', 'WeekToDate', 'Custom']), help='The time frame for pulling data for the forecast. If c'
+    #                'ustom, then a specific time period must be provided.')
+    #     c.argument('time_period', action=AddTimePeriod, nargs='+', help='Has time period for pulling data for the forec'
+    #                'ast. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: from, to.')
+    #     c.argument('include_actual_cost', arg_type=get_three_state_flag(), help='a boolean determining if actualCost wi'
+    #                'll be included')
+    #     c.argument('include_fresh_partial_cost', arg_type=get_three_state_flag(), help='a boolean determining if FreshP'
+    #                'artialCost will be included')
+    #     c.argument('dataset_configuration', action=AddDatasetConfiguration, nargs='+', help='Has configuration informat'
+    #                'ion for the data in the export. The configuration will be ignored if aggregation and grouping are p'
+    #                'rovided. Expect value: columns=xx.')
+    #     c.argument('dataset_aggregation', arg_type=CLIArgumentType(options_list=['--dataset-aggregation'], help='Dictio'
+    #                'nary of aggregation expression to use in the query. The key of each item in the dictionary is the a'
+    #                'lias for the aggregated column. Query can have up to 2 aggregation clauses. Expected value: json-st'
+    #                'ring/@json-file.'))
+    #     c.argument('dataset_grouping', action=AddDatasetGrouping, nargs='+', help='Array of group by expression to use '
+    #                'in the query. Query can have up to 2 group by clauses. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , '
+    #                'available KEYs are: type, name.')
+    #     c.argument('dataset_filter', arg_type=CLIArgumentType(options_list=['--dataset-filter'], help='Has filter expre'
+    #                'ssion to use in the query. Expected value: json-string/@json-file.'))
 
-    with self.argument_context('costmanagement query usage') as c:
-        c.argument('scope', help='The scope associated with query and export operations. This includes \'/subscriptions'
-                   '/{subscriptionId}/\' for subscription scope, \'/subscriptions/{subscriptionId}/resourceGroups/{reso'
-                   'urceGroupName}\' for resourceGroup scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAc'
-                   'countId}\' for Billing Account scope and \'/providers/Microsoft.Billing/billingAccounts/{billingAcc'
-                   'ountId}/departments/{departmentId}\' for Department scope, \'/providers/Microsoft.Billing/billingAc'
-                   'counts/{billingAccountId}/enrollmentAccounts/{enrollmentAccountId}\' for EnrollmentAccount scope, '
-                   '\'/providers/Microsoft.Management/managementGroups/{managementGroupId} for Management Group scope, '
-                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId'
-                   '}\' for billingProfile scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/bil'
-                   'lingProfiles/{billingProfileId}/invoiceSections/{invoiceSectionId}\' for invoiceSection scope, and '
-                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/customers/{customerId}\' specific'
-                   ' for partners.')
-        c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['Usage', 'ActualCost', 'AmortizedCost']),
-                   help='The type of the query.')
-        c.argument('timeframe', arg_type=get_enum_type(['MonthToDate', 'BillingMonthToDate', 'TheLastMonth', 'TheLastBi'
-                   'llingMonth', 'WeekToDate', 'Custom']), help='The time frame for pulling data for the query. If cust'
-                   'om, then a specific time period must be provided.')
-        c.argument('time_period', action=AddTimePeriod, nargs='+', help='Has time period for pulling data for the query'
-                   '. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: from, to.')
-        c.argument('dataset_configuration', action=AddDatasetConfiguration, nargs='+', help='Has configuration informat'
-                   'ion for the data in the export. The configuration will be ignored if aggregation and grouping are p'
-                   'rovided. Expect value: columns=xx.')
-        c.argument('dataset_aggregation', arg_type=CLIArgumentType(options_list=['--dataset-aggregation'], help='Dictio'
-                   'nary of aggregation expression to use in the query. The key of each item in the dictionary is the a'
-                   'lias for the aggregated column. Query can have up to 2 aggregation clauses. Expected value: json-st'
-                   'ring/@json-file.'))
-        c.argument('dataset_grouping', action=AddDatasetGrouping, nargs='+', help='Array of group by expression to use '
-                   'in the query. Query can have up to 2 group by clauses. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , '
-                   'available KEYs are: type, name.')
-        c.argument('dataset_filter', arg_type=CLIArgumentType(options_list=['--dataset-filter'], help='Has filter expre'
-                   'ssion to use in the query. Expected value: json-string/@json-file.'))
+    # with self.argument_context('costmanagement query usage') as c:
+    #     c.argument('scope',
+    #                help='The scope associated with query and export operations. '
+    #                     'This includes \'/subscriptions/{subscriptionId}/\' for subscription scope, '
+    #                     '\'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}\' for resourceGroup scope, '
+    #                     '\'/providers/Microsoft.Management/managementGroups/{managementGroupId} for Management Group scope, '
+    #                     # '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}\' for Billing Account scope and '
+    #                     # '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/departments/{departmentId}\' for Department scope, '
+    #                     # '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/enrollmentAccounts/{enrollmentAccountId}\' for EnrollmentAccount scope, '
+    #                     # '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId}\' for billingProfile scope, '
+    #                     # '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId}/invoiceSections/{invoiceSectionId}\' for invoiceSection scope, and '
+    #                     # '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/customers/{customerId}\' specific for partners.'
+    #                 )
+    #     c.argument('type_',
+    #                options_list=['--type'],
+    #                arg_type=get_enum_type(['Usage', 'ActualCost', 'AmortizedCost']),
+    #                help='The type of the query.')
+    #     c.argument('timeframe',
+    #                arg_type=get_enum_type(['MonthToDate', 'BillingMonthToDate', 'TheLastMonth', 'TheLastBi'
+    #                                        'llingMonth', 'WeekToDate', 'Custom']),
+    #                help='The time frame for pulling data for the query.'
+    #                     'If custom, then a specific time period must be provided.')
+    #     c.argument('time_period',
+    #                action=AddTimePeriod,
+    #                nargs='+',
+    #                help='Has time period for pulling data for the query. '
+    #                     'Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: from, to.')
+    #     c.argument('dataset_configuration', action=AddDatasetConfiguration, nargs='+', help='Has configuration informat'
+    #                'ion for the data in the export. The configuration will be ignored if aggregation and grouping are p'
+    #                'rovided. Expect value: columns=xx.')
+    #     c.argument('dataset_aggregation', arg_type=CLIArgumentType(options_list=['--dataset-aggregation'], help='Dictio'
+    #                'nary of aggregation expression to use in the query. The key of each item in the dictionary is the a'
+    #                'lias for the aggregated column. Query can have up to 2 aggregation clauses. Expected value: json-st'
+    #                'ring/@json-file.'))
+    #     c.argument('dataset_grouping', action=AddDatasetGrouping, nargs='+', help='Array of group by expression to use '
+    #                'in the query. Query can have up to 2 group by clauses. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , '
+    #                'available KEYs are: type, name.')
+    #     c.argument('dataset_filter', arg_type=CLIArgumentType(options_list=['--dataset-filter'], help='Has filter expre'
+    #                'ssion to use in the query. Expected value: json-string/@json-file.'))
 
-    with self.argument_context('costmanagement query usage-by-external-cloud-provider-type') as c:
-        c.argument('external_cloud_provider_type', arg_type=get_enum_type(['externalSubscriptions', 'externalBillingAcc'
-                   'ounts']), help='The external cloud provider type associated with dimension/query operations. This i'
-                   'ncludes \'externalSubscriptions\' for linked account and \'externalBillingAccounts\' for consolidat'
-                   'ed account.')
-        c.argument('external_cloud_provider_id', help='This can be \'{externalSubscriptionId}\' for linked account or '
-                   '\'{externalBillingAccountId}\' for consolidated account used with dimension/query operations.')
-        c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['Usage', 'ActualCost', 'AmortizedCost']),
-                   help='The type of the query.')
-        c.argument('timeframe', arg_type=get_enum_type(['MonthToDate', 'BillingMonthToDate', 'TheLastMonth', 'TheLastBi'
-                   'llingMonth', 'WeekToDate', 'Custom']), help='The time frame for pulling data for the query. If cust'
-                   'om, then a specific time period must be provided.')
-        c.argument('time_period', action=AddTimePeriod, nargs='+', help='Has time period for pulling data for the query'
-                   '. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: from, to.')
-        c.argument('dataset_configuration', action=AddDatasetConfiguration, nargs='+', help='Has configuration informat'
-                   'ion for the data in the export. The configuration will be ignored if aggregation and grouping are p'
-                   'rovided. Expect value: columns=xx.')
-        c.argument('dataset_aggregation', arg_type=CLIArgumentType(options_list=['--dataset-aggregation'], help='Dictio'
-                   'nary of aggregation expression to use in the query. The key of each item in the dictionary is the a'
-                   'lias for the aggregated column. Query can have up to 2 aggregation clauses. Expected value: json-st'
-                   'ring/@json-file.'))
-        c.argument('dataset_grouping', action=AddDatasetGrouping, nargs='+', help='Array of group by expression to use '
-                   'in the query. Query can have up to 2 group by clauses. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , '
-                   'available KEYs are: type, name.')
-        c.argument('dataset_filter', arg_type=CLIArgumentType(options_list=['--dataset-filter'], help='Has filter expre'
-                   'ssion to use in the query. Expected value: json-string/@json-file.'))
+    # with self.argument_context('costmanagement query usage-by-external-cloud-provider-type') as c:
+    #     c.argument('external_cloud_provider_type', arg_type=get_enum_type(['externalSubscriptions', 'externalBillingAcc'
+    #                'ounts']), help='The external cloud provider type associated with dimension/query operations. This i'
+    #                'ncludes \'externalSubscriptions\' for linked account and \'externalBillingAccounts\' for consolidat'
+    #                'ed account.')
+    #     c.argument('external_cloud_provider_id', help='This can be \'{externalSubscriptionId}\' for linked account or '
+    #                '\'{externalBillingAccountId}\' for consolidated account used with dimension/query operations.')
+    #     c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['Usage', 'ActualCost', 'AmortizedCost']),
+    #                help='The type of the query.')
+    #     c.argument('timeframe', arg_type=get_enum_type(['MonthToDate', 'BillingMonthToDate', 'TheLastMonth', 'TheLastBi'
+    #                'llingMonth', 'WeekToDate', 'Custom']), help='The time frame for pulling data for the query. If cust'
+    #                'om, then a specific time period must be provided.')
+    #     c.argument('time_period', action=AddTimePeriod, nargs='+', help='Has time period for pulling data for the query'
+    #                '. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: from, to.')
+    #     c.argument('dataset_configuration', action=AddDatasetConfiguration, nargs='+', help='Has configuration informat'
+    #                'ion for the data in the export. The configuration will be ignored if aggregation and grouping are p'
+    #                'rovided. Expect value: columns=xx.')
+    #     c.argument('dataset_aggregation', arg_type=CLIArgumentType(options_list=['--dataset-aggregation'], help='Dictio'
+    #                'nary of aggregation expression to use in the query. The key of each item in the dictionary is the a'
+    #                'lias for the aggregated column. Query can have up to 2 aggregation clauses. Expected value: json-st'
+    #                'ring/@json-file.'))
+    #     c.argument('dataset_grouping', action=AddDatasetGrouping, nargs='+', help='Array of group by expression to use '
+    #                'in the query. Query can have up to 2 group by clauses. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , '
+    #                'available KEYs are: type, name.')
+    #     c.argument('dataset_filter', arg_type=CLIArgumentType(options_list=['--dataset-filter'], help='Has filter expre'
+    #                'ssion to use in the query. Expected value: json-string/@json-file.'))
 
     with self.argument_context('costmanagement export list') as c:
         c.argument('scope', help='The scope associated with query and export operations. This includes \'/subscriptions'
@@ -366,3 +373,5 @@ def load_arguments(self, _):
                    '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/customers/{customerId}\' specific'
                    ' for partners.')
         c.argument('export_name', help='Export Name.')
+
+    pass

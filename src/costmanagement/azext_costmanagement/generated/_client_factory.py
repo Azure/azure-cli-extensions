@@ -12,7 +12,7 @@
 def cf_costmanagement(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from ..vendored_sdks.costmanagement import CostManagementClient
-    return get_mgmt_service_client(cli_ctx, CostManagementClient)
+    return get_mgmt_service_client(cli_ctx, CostManagementClient, subscription_bound=False)
 
 
 def cf_dimension(cli_ctx, *_):
