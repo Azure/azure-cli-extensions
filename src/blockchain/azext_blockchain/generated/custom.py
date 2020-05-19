@@ -33,8 +33,6 @@ def blockchain_member_create(cmd, client,
                              password=None,
                              consortium=None,
                              consortium_management_account_password=None,
-                             consortium_role=None,
-                             consortium_member_display_name=None,
                              firewall_rules=None):
     return client.begin_create(blockchain_member_name=blockchain_member_name,
                                resource_group_name=resource_group_name,
@@ -46,8 +44,6 @@ def blockchain_member_create(cmd, client,
                                password=password,
                                consortium=consortium,
                                consortium_management_account_password=consortium_management_account_password,
-                               consortium_role=consortium_role,
-                               consortium_member_display_name=consortium_member_display_name,
                                firewall_rules=firewall_rules)
 
 
@@ -103,8 +99,8 @@ def blockchain_member_regenerate_api_key(cmd, client,
 
 
 def blockchain_consortium_list(cmd, client,
-                               location_name):
-    return client.list_consortium(location_name=location_name)
+                               location):
+    return client.list_consortium(location_name=location)
 
 
 def blockchain_transaction_node_list(cmd, client,

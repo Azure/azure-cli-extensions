@@ -33,11 +33,11 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
 
     with self.argument_context('blockchain member show') as c:
-        c.argument('blockchain_member_name', help='Blockchain member name.')
+        c.argument('blockchain_member_name', options_list=['--name', '-n'], help='Blockchain member name.')
         c.argument('resource_group_name', resource_group_name_type)
 
     with self.argument_context('blockchain member create') as c:
-        c.argument('blockchain_member_name', help='Blockchain member name.')
+        c.argument('blockchain_member_name', options_list=['--name', '-n'], help='Blockchain member name.')
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
@@ -59,7 +59,7 @@ def load_arguments(self, _):
                    'ss, end-ip-address.')
 
     with self.argument_context('blockchain member update') as c:
-        c.argument('blockchain_member_name', help='Blockchain member name.')
+        c.argument('blockchain_member_name', options_list=['--name', '-n'], help='Blockchain member name.')
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('tags', tags_type)
         c.argument('password', help='Sets the transaction node dns endpoint basic auth password.')
@@ -70,41 +70,41 @@ def load_arguments(self, _):
                    'ord.')
 
     with self.argument_context('blockchain member delete') as c:
-        c.argument('blockchain_member_name', help='Blockchain member name')
+        c.argument('blockchain_member_name', options_list=['--name', '-n'], help='Blockchain member name')
         c.argument('resource_group_name', resource_group_name_type)
 
     with self.argument_context('blockchain member list-all') as c:
         pass
 
     with self.argument_context('blockchain member list-api-key') as c:
-        c.argument('blockchain_member_name', help='Blockchain member name.')
+        c.argument('blockchain_member_name', options_list=['--name', '-n'], help='Blockchain member name.')
         c.argument('resource_group_name', resource_group_name_type)
 
     with self.argument_context('blockchain member list-consortium-member') as c:
-        c.argument('blockchain_member_name', help='Blockchain member name.')
+        c.argument('blockchain_member_name', options_list=['--name', '-n'], help='Blockchain member name.')
         c.argument('resource_group_name', resource_group_name_type)
 
     with self.argument_context('blockchain member regenerate-api-key') as c:
-        c.argument('blockchain_member_name', help='Blockchain member name.')
+        c.argument('blockchain_member_name', options_list=['--name', '-n'], help='Blockchain member name.')
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('key_name', help='Gets or sets the API key name.')
         c.argument('value', help='Gets or sets the API key value.')
 
     with self.argument_context('blockchain consortium list') as c:
-        c.argument('location_name', help='Location Name.')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx))
 
     with self.argument_context('blockchain transaction-node list') as c:
-        c.argument('blockchain_member_name', help='Blockchain member name.')
+        c.argument('blockchain_member_name', options_list=['--member-name'], help='Blockchain member name.')
         c.argument('resource_group_name', resource_group_name_type)
 
     with self.argument_context('blockchain transaction-node show') as c:
-        c.argument('blockchain_member_name', help='Blockchain member name.')
-        c.argument('transaction_node_name', help='Transaction node name.')
+        c.argument('blockchain_member_name', options_list=['--member-name'], help='Blockchain member name.')
+        c.argument('transaction_node_name', options_list=['--name', '-n'], help='Transaction node name.')
         c.argument('resource_group_name', resource_group_name_type)
 
     with self.argument_context('blockchain transaction-node create') as c:
-        c.argument('blockchain_member_name', help='Blockchain member name.')
-        c.argument('transaction_node_name', help='Transaction node name.')
+        c.argument('blockchain_member_name', options_list=['--member-name'], help='Blockchain member name.')
+        c.argument('transaction_node_name', options_list=['--name', '-n'], help='Transaction node name.')
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
@@ -114,8 +114,8 @@ def load_arguments(self, _):
                    'start-ip-address, end-ip-address.')
 
     with self.argument_context('blockchain transaction-node update') as c:
-        c.argument('blockchain_member_name', help='Blockchain member name.')
-        c.argument('transaction_node_name', help='Transaction node name.')
+        c.argument('blockchain_member_name', options_list=['--member-name'], help='Blockchain member name.')
+        c.argument('transaction_node_name', options_list=['--name', '-n'], help='Transaction node name.')
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('password', help='Sets the transaction node dns endpoint basic auth password.')
         c.argument('firewall_rules', action=AddBlockchainTransactionNodeUpdateFirewallRules, nargs='+', help='Gets or s'
@@ -123,18 +123,18 @@ def load_arguments(self, _):
                    'start-ip-address, end-ip-address.')
 
     with self.argument_context('blockchain transaction-node delete') as c:
-        c.argument('blockchain_member_name', help='Blockchain member name.')
-        c.argument('transaction_node_name', help='Transaction node name.')
+        c.argument('blockchain_member_name', options_list=['--member-name'], help='Blockchain member name.')
+        c.argument('transaction_node_name', options_list=['--name', '-n'], help='Transaction node name.')
         c.argument('resource_group_name', resource_group_name_type)
 
     with self.argument_context('blockchain transaction-node list-api-key') as c:
-        c.argument('blockchain_member_name', help='Blockchain member name.')
-        c.argument('transaction_node_name', help='Transaction node name.')
+        c.argument('blockchain_member_name', options_list=['--member-name'], help='Blockchain member name.')
+        c.argument('transaction_node_name', options_list=['--name', '-n'], help='Transaction node name.')
         c.argument('resource_group_name', resource_group_name_type)
 
     with self.argument_context('blockchain transaction-node regenerate-api-key') as c:
-        c.argument('blockchain_member_name', help='Blockchain member name.')
-        c.argument('transaction_node_name', help='Transaction node name.')
+        c.argument('blockchain_member_name', options_list=['--member-name'], help='Blockchain member name.')
+        c.argument('transaction_node_name', options_list=['--name', '-n'], help='Transaction node name.')
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('key_name', help='Gets or sets the API key name.')
         c.argument('value', help='Gets or sets the API key value.')
