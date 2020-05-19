@@ -275,10 +275,10 @@ me\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" 
 resh-partial-cost false --timeframe "MonthToDate" --scope "subscriptions/00000000-0000-0000-0000-000000000000"
 """
 
-helps['costmanagement query'] = """
-    type: group
-    short-summary: costmanagement query
-"""
+# helps['costmanagement query'] = """
+#     type: group
+#     short-summary: costmanagement query
+# """
 
 helps['costmanagement query usage'] = """
     type: command
