@@ -694,7 +694,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                windows_admin_username=None,
                windows_admin_password=None,
                kubernetes_version='',
-               node_vm_size="Standard_DS2_v2",
+               node_vm_size="Standard_D2s_v3",
                node_osdisk_size=0,
                node_osdisk_diskencryptionset_id=None,
                node_count=3,
@@ -2085,10 +2085,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                 raise CLIError('Taint does not match allowed values. Expect value such as "special=true:NoSchedule".')
 
     if node_vm_size is None:
-        if os_type == "Windows":
-            node_vm_size = "Standard_D2s_v3"
-        else:
-            node_vm_size = "Standard_DS2_v2"
+        node_vm_size = "Standard_D2s_v3"
 
     agent_pool = AgentPool(
         name=nodepool_name,
