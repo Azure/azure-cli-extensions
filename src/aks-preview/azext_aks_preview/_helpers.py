@@ -90,5 +90,5 @@ def _trim_fqdn_name_containing_hcp(normalized_fqdn: str) -> str:
     """
     storage_name_without_hcp, _, _ = normalized_fqdn.partition('-hcp-')
     if len(storage_name_without_hcp) > CONST_CONTAINER_NAME_MAX_LENGTH:
-        return storage_name_without_hcp[:CONST_CONTAINER_NAME_MAX_LENGTH]
-    return storage_name_without_hcp
+        storage_name_without_hcp = storage_name_without_hcp[:CONST_CONTAINER_NAME_MAX_LENGTH]
+    return storage_name_without_hcp.rstrip('-')

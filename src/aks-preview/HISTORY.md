@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.4.48
++++++
+* Fix issues of storage account name for az aks kollect
+
 0.4.47
 +++++
 * Add "--node-image-only" for "az aks nodepool upgrade" and "az aks upgrade"".
