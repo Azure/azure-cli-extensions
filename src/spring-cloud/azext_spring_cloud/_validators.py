@@ -222,7 +222,7 @@ def _validate_cidr_range(namespace):
     for i, item in enumerate(ipv4):
         for j in range(i + 1, len(ipv4)):
             if item.overlaps(ipv4[j]):
-                raise CLIError('--reserved-cidr-range should not be overlapped with each other. But got {0} and {1}'
+                raise CLIError('--reserved-cidr-range should not overlap each other, but {0} and {1} overlapping.'
                                .format(ranges[i], ranges[j]))
     namespace.reserved_cidr_range = ','.join(ranges)
 

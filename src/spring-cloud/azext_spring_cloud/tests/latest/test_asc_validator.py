@@ -49,7 +49,7 @@ class TestValidateIPRanges(unittest.TestCase):
         ns = Namespace(reserved_cidr_range='10.0.0.0/8,10.0.0.0/16,30.0.0.0/16')
         with self.assertRaises(CLIError) as context:
             _validate_cidr_range(ns)
-            self.assertEqual('--reserved-cidr-range should not be overlapped with each other. But got 10.0.0.0/8 and 10.0.0.0/16',
+            self.assertEqual('--reserved-cidr-range should not overlap each other, but 10.0.0.0/8 and 10.0.0.0/16 overlapping.',
                              str(context.exception))
 
     def test_valid_vnet(self):
