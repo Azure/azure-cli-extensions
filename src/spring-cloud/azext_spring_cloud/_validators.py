@@ -145,13 +145,13 @@ def validate_jvm_options(namespace):
 
 
 def validate_vnet(cmd, namespace):
-    if 'vnet' not in namespace and 'app_subnet' not in namespace and \
-       'service_runtime_subnet' not in namespace and 'reserved_cidr_range' not in namespace:
+    if not namespace.vnet and not namespace.app_subnet and \
+       not namespace.service_runtime_subnet and not namespace.reserved_cidr_range:
         return
     validate_vnet_required_parameters(namespace)
     _validate_cidr_range(namespace)
 
-    if 'vnet' in namespace:
+    if namespace.vnet:
         vnet_id = namespace.vnet
         # format the app_subnet and service_runtime_subnet
         if not is_valid_resource_id(vnet_id):
@@ -243,7 +243,8 @@ def _validate_ip(ip, prefix):
 
 
 def validate_vnet_required_parameters(namespace):
-    if 'reserved_cidr_range' not in namespace or \
-       'app_subnet' not in namespace or 'service_runtime_subnet' not in namespace:
+    if not namespace.reserved_cidr_range \
+       or not namespace.app_subnet \
+       or not namespace.service_runtime_subnet:
         raise CLIError(
             '--reserved-cidr-range, --app-subnet, --service-runtime-subnet must be set when deploying to VNet')
