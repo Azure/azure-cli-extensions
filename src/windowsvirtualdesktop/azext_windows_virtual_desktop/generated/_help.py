@@ -161,7 +161,7 @@ helps['windows-virtual-desktop hostpool create'] = """
         text: |-
                az windows-virtual-desktop hostpool create --location "centralus" --description "des1" --friendly-name "\
 friendly" --host-pool-type "Pooled" --load-balancer-type "BreadthFirst" --max-session-limit 999999 --personal-desktop-a\
-ssignment-type "Automatic" --registration-info expiration-time="2008-09-22T14:01:54.9571247Z" registration-token-operat\
+ssignment-type "Automatic" --registration-info expiration-time="2020-10-01T14:01:54.9571247Z" registration-token-operat\
 ion="Update" --sso-context "KeyVaultPath" --tags tag1="value1" tag2="value2" --name "hostPool1" --resource-group "resou\
 rceGroup1"
 """
@@ -180,9 +180,9 @@ helps['windows-virtual-desktop hostpool update'] = """
       - name: HostPool_Update
         text: |-
                az windows-virtual-desktop hostpool update --description "des1" --friendly-name "friendly" --load-balanc\
-er-type "BreadthFirst" --max-session-limit 999999 --personal-desktop-assignment-type "Automatic" --registration-info re\
-gistration-token-operation="Update" --sso-context "KeyVaultPath" --tags "{\\"tag1\\":\\"value1\\",\\"tag2\\":\\"value2\
-\\"}" --name "hostPool1" --resource-group "resourceGroup1"
+er-type "BreadthFirst" --max-session-limit 999999 --personal-desktop-assignment-type "Automatic" --registration-info ex\
+pirationTime="2020-10-02T14:01:54.9571247Z" --sso-context "KeyVaultPath" --tags "{\\"tag1\\":\\"value1\\",\\"tag2\\":\\\
+"value2\\"}" --name "hostPool1" --resource-group "resourceGroup1"
 """
 
 helps['windows-virtual-desktop hostpool delete'] = """
