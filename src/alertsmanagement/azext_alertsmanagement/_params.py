@@ -5,7 +5,7 @@
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
-from azext_alertsmanagement.vendored_sdks.alertsmanagement.models import ActionRuleStatus, SuppressionType
+
 from azure.cli.core.commands.parameters import (
     tags_type,
     get_enum_type,
@@ -13,6 +13,7 @@ from azure.cli.core.commands.parameters import (
 )
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from knack.arguments import CLIArgumentType
+from .vendored_sdks.alertsmanagement.models import ActionRuleStatus, SuppressionType
 
 
 def load_arguments(self, _):

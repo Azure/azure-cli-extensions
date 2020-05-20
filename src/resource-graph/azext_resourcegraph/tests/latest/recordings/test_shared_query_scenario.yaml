@@ -1,0 +1,276 @@
+interactions:
+- request:
+    body: '{"tags": {"a": "b"}, "properties": {"description": "AzureCliTest", "query":
+      "project id, name, type, location, tags"}, "location": "global"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - graph shared-query create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '140'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -g -n -q -d --tags
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.2 azure-mgmt-resourcegraph/2.1.0
+        Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ResourceGraph/queries/clitest000002?api-version=2018-09-01-preview
+  response:
+    body:
+      string: '{"properties":{"resultKind":"UnKnown","timeModified":"2020-03-23T07:07:46.8114309Z","query":"project
+        id, name, type, location, tags","description":"AzureCliTest"},"type":"microsoft.resourcegraph/queries","location":"global","subscriptionId":"0b1f6471-1bf0-4dda-aec3-cb9272f09590","resourceGroup":"clitest.rg000001","name":"clitest000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.resourcegraph/queries/clitest000002","tags":{"a":"b"},"etag":"\"23006685-0000-1800-0000-5e7860420000\""}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '684'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Mar 2020 07:07:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '1'
+      x-ms-user-quota-remaining:
+      - '1'
+      x-ms-user-quota-resets-after:
+      - 00:00:00
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - graph shared-query show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.2 azure-mgmt-resourcegraph/2.1.0
+        Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ResourceGraph/queries/clitest000002?api-version=2018-09-01-preview
+  response:
+    body:
+      string: '{"properties":{"resultKind":"UnKnown","timeModified":"2020-03-23T07:07:46.8114309Z","query":"project
+        id, name, type, location, tags","description":"AzureCliTest"},"type":"microsoft.resourcegraph/queries","location":"global","subscriptionId":"0b1f6471-1bf0-4dda-aec3-cb9272f09590","resourceGroup":"clitest.rg000001","name":"clitest000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.resourcegraph/queries/clitest000002","tags":{"a":"b"},"etag":"\"23006685-0000-1800-0000-5e7860420000\""}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '684'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Mar 2020 07:07:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '1'
+      x-ms-user-quota-remaining:
+      - '1'
+      x-ms-user-quota-resets-after:
+      - 00:00:00
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - graph shared-query list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.2 azure-mgmt-resourcegraph/2.1.0
+        Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ResourceGraph/queries?api-version=2018-09-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"resultKind":"UnKnown","timeModified":"2020-03-23T07:07:46.8114309Z","query":"project
+        id, name, type, location, tags","description":"AzureCliTest"},"type":"microsoft.resourcegraph/queries","location":"global","subscriptionId":"0b1f6471-1bf0-4dda-aec3-cb9272f09590","resourceGroup":"clitest.rg000001","name":"clitest000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.resourcegraph/queries/clitest000002","tags":{"a":"b"},"etag":"\"23006685-0000-1800-0000-5e7860420000\""}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '696'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Mar 2020 07:07:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '1'
+      x-ms-user-quota-remaining:
+      - '1'
+      x-ms-user-quota-resets-after:
+      - 00:00:00
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - graph shared-query delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.2 azure-mgmt-resourcegraph/2.1.0
+        Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ResourceGraph/queries/clitest000002?api-version=2018-09-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 23 Mar 2020 07:07:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '1'
+      x-ms-user-quota-remaining:
+      - '1'
+      x-ms-user-quota-resets-after:
+      - 00:00:00
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - graph shared-query show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.2 azure-mgmt-resourcegraph/2.1.0
+        Azure-SDK-For-Python AZURECLI/2.2.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ResourceGraph/queries/clitest000002?api-version=2018-09-01-preview
+  response:
+    body:
+      string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.ResourceGraph/queries/clitest000002''
+        under resource group ''clitest.rg000001'' was not found."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '231'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Mar 2020 07:07:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+    status:
+      code: 404
+      message: Not Found
+version: 1
