@@ -27,7 +27,8 @@ def setup(test, rg):
     test.cmd(
         'az feature register --namespace Microsoft.Network --name AllowBaremetalServers')
     test.cmd('az network vnet create --name vn -g {rg} --subnet-name default')
-    test.cmd('az vm create -g {rg} --name vm1 --image UbuntuLTS --generate-ssh-keys')
+    test.cmd(
+        'az vm create -g {rg} --name vm1 --image UbuntuLTS --generate-ssh-keys')
     test.cmd(
         'az network vnet subnet create --vnet-name vn -n GatewaySubnet -g {rg} --address-prefix 10.0.5.0/24')
     test.cmd(
@@ -104,22 +105,15 @@ def call_scenario(test, rg):
         setup(test, rg)
         step__dedicatedhsm_put_create_a_new_or_update_an_existing_dedicated_hsm(
             test, rg)
-        print("\nmake")
         step__dedicatedhsm_get_get_a_dedicated_hsm(test, rg)
-        print("\nget ")
         step__dedicatedhsm_get_list_dedicated_hsm_devices_in_a_resource_group(
             test, rg)
-        print("\nlist ")
         step__dedicatedhsm_get_list_dedicated_hsm_devices_in_a_subscription(
             test, rg)
-        print("\nlist 2")
         step__dedicatedhsm_patch_update_an_existing_dedicated_hsm(test, rg)
-        print("\nupdate")
         step__dedicatedhsm_delete_delete_a_dedicated_hsm(test, rg)
-        print("\ndone")
     except:
-        pass
-        #test.cmd('az group delete -n {rg} --yes ')
+        test.cmd('az group delete -n {rg} --yes ')
 
 
 @try_manual

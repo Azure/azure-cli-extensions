@@ -50,8 +50,8 @@ def load_arguments(self, _):
         c.argument('network_profile_subnet', arg_group='network profile', options_list=['--subnet', '-s'], action=AddNetworkProfileSubnet, nargs='+', help='Specifies the identifier '
                    'of the subnet. Expected value: id=xx.')
         c.argument('network_profile_network_interfaces', options_list=['--network-profile-network-interfaces', '-i'], action=AddNetworkProfileNetworkInterfaces, nargs='+', help='Sp'
-                   'ecifies the list of resource Ids for the network interfaces associated with the dedicated HSM. Expe'
-                   'cted value: -interfaces private-ip-address=xx.')
+                   'ecifies a list of ip address from the specfied subnet for the network interfaces associated with the dedicated HSM. Expe'
+                   'cted value: -i private-ip-address=xx.')
 
     with self.argument_context('dedicated-hsm update') as c:
         c.argument('resource_group_name', resource_group_name_type)
