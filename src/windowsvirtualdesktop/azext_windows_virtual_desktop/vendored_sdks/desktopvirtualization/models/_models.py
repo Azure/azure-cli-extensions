@@ -6,6 +6,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
+from azure.core.exceptions import HttpResponseError
 import msrest.serialization
 
 
@@ -71,7 +72,7 @@ class Application(Resource):
      launched with command line arguments provided by the client, command line arguments specified
      at publish time, or no command line arguments at all. Possible values include: "DoNotAllow",
      "Allow", "Require".
-    :type command_line_setting: str or ~azure.mgmt.DesktopVirtualization.models.CommandLineSetting
+    :type command_line_setting: str or ~desktop_virtualization_api_client.models.CommandLineSetting
     :param command_line_arguments: Command Line Arguments for Application.
     :type command_line_arguments: str
     :param show_in_portal: Specifies whether to show the RemoteApp program in the RD Web Access
@@ -204,7 +205,7 @@ class ApplicationGroup(TrackedResource):
     :param application_group_type: Required. Resource Type of ApplicationGroup. Possible values
      include: "RemoteApp", "Desktop".
     :type application_group_type: str or
-     ~azure.mgmt.DesktopVirtualization.models.ApplicationGroupType
+     ~desktop_virtualization_api_client.models.ApplicationGroupType
     """
 
     _validation = {
@@ -248,7 +249,7 @@ class ApplicationGroupList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :param value: List of ApplicationGroup definitions.
-    :type value: list[~azure.mgmt.DesktopVirtualization.models.ApplicationGroup]
+    :type value: list[~desktop_virtualization_api_client.models.ApplicationGroup]
     :ivar next_link: Link to the next page of results.
     :vartype next_link: str
     """
@@ -323,7 +324,7 @@ class ApplicationList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :param value: List of Application definitions.
-    :type value: list[~azure.mgmt.DesktopVirtualization.models.Application]
+    :type value: list[~desktop_virtualization_api_client.models.Application]
     :ivar next_link: Link to the next page of results.
     :vartype next_link: str
     """
@@ -361,7 +362,7 @@ class ApplicationPatch(msrest.serialization.Model):
      command line arguments provided by the client, command line arguments specified at publish
      time, or no command line arguments at all. Possible values include: "DoNotAllow", "Allow",
      "Require".
-    :type command_line_setting: str or ~azure.mgmt.DesktopVirtualization.models.CommandLineSetting
+    :type command_line_setting: str or ~desktop_virtualization_api_client.models.CommandLineSetting
     :param command_line_arguments: Command Line Arguments for Application.
     :type command_line_arguments: str
     :param show_in_portal: Specifies whether to show the RemoteApp program in the RD Web Access
@@ -399,6 +400,29 @@ class ApplicationPatch(msrest.serialization.Model):
         self.show_in_portal = kwargs.get('show_in_portal', None)
         self.icon_path = kwargs.get('icon_path', None)
         self.icon_index = kwargs.get('icon_index', None)
+
+
+class CloudError(msrest.serialization.Model):
+    """Error response of an operation failure.
+
+    :param code: Error code.
+    :type code: str
+    :param message: Error message indicating why the operation failed.
+    :type message: str
+    """
+
+    _attribute_map = {
+        'code': {'key': 'code', 'type': 'str'},
+        'message': {'key': 'message', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(CloudError, self).__init__(**kwargs)
+        self.code = kwargs.get('code', None)
+        self.message = kwargs.get('message', None)
 
 
 class Desktop(Resource):
@@ -459,7 +483,7 @@ class DesktopList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :param value: List of Desktop definitions.
-    :type value: list[~azure.mgmt.DesktopVirtualization.models.Desktop]
+    :type value: list[~desktop_virtualization_api_client.models.Desktop]
     :ivar next_link: Link to the next page of results.
     :vartype next_link: str
     """
@@ -534,24 +558,24 @@ class HostPool(TrackedResource):
     :type description: str
     :param host_pool_type: Required. HostPool type for desktop. Possible values include:
      "Personal", "Pooled".
-    :type host_pool_type: str or ~azure.mgmt.DesktopVirtualization.models.HostPoolType
+    :type host_pool_type: str or ~desktop_virtualization_api_client.models.HostPoolType
     :param personal_desktop_assignment_type: Required. PersonalDesktopAssignment type for HostPool.
      Possible values include: "Automatic", "Direct".
     :type personal_desktop_assignment_type: str or
-     ~azure.mgmt.DesktopVirtualization.models.PersonalDesktopAssignmentType
+     ~desktop_virtualization_api_client.models.PersonalDesktopAssignmentType
     :param custom_rdp_property: Custom rdp property of HostPool.
     :type custom_rdp_property: str
     :param max_session_limit: The max session limit of HostPool.
     :type max_session_limit: int
     :param load_balancer_type: Required. The type of the load balancer. Possible values include:
      "BreadthFirst", "DepthFirst", "Persistent".
-    :type load_balancer_type: str or ~azure.mgmt.DesktopVirtualization.models.LoadBalancerType
+    :type load_balancer_type: str or ~desktop_virtualization_api_client.models.LoadBalancerType
     :param ring: The ring number of HostPool.
     :type ring: int
     :param validation_environment: Is validation environment.
     :type validation_environment: bool
     :param registration_info: The registration info of HostPool.
-    :type registration_info: ~azure.mgmt.DesktopVirtualization.models.RegistrationInfo
+    :type registration_info: ~desktop_virtualization_api_client.models.RegistrationInfo
     :param vm_template: VM template for sessionhosts configuration within hostpool.
     :type vm_template: str
     :ivar application_group_references: List of applicationGroup links.
@@ -618,7 +642,7 @@ class HostPoolList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :param value: List of HostPool definitions.
-    :type value: list[~azure.mgmt.DesktopVirtualization.models.HostPool]
+    :type value: list[~desktop_virtualization_api_client.models.HostPool]
     :ivar next_link: Link to the next page of results.
     :vartype next_link: str
     """
@@ -667,16 +691,16 @@ class HostPoolPatch(Resource):
     :param personal_desktop_assignment_type: PersonalDesktopAssignment type for HostPool. Possible
      values include: "Automatic", "Direct".
     :type personal_desktop_assignment_type: str or
-     ~azure.mgmt.DesktopVirtualization.models.PersonalDesktopAssignmentType
+     ~desktop_virtualization_api_client.models.PersonalDesktopAssignmentType
     :param load_balancer_type: The type of the load balancer. Possible values include:
      "BreadthFirst", "DepthFirst", "Persistent".
-    :type load_balancer_type: str or ~azure.mgmt.DesktopVirtualization.models.LoadBalancerType
+    :type load_balancer_type: str or ~desktop_virtualization_api_client.models.LoadBalancerType
     :param ring: The ring number of HostPool.
     :type ring: int
     :param validation_environment: Is validation environment.
     :type validation_environment: bool
     :param registration_info: The registration info of HostPool.
-    :type registration_info: ~azure.mgmt.DesktopVirtualization.models.RegistrationInfoPatch
+    :type registration_info: ~desktop_virtualization_api_client.models.RegistrationInfoPatch
     :param sso_context: Path to keyvault containing ssoContext secret.
     :type sso_context: str
     """
@@ -732,7 +756,7 @@ class RegistrationInfo(msrest.serialization.Model):
     :param registration_token_operation: The type of resetting the token. Possible values include:
      "Delete", "None", "Update".
     :type registration_token_operation: str or
-     ~azure.mgmt.DesktopVirtualization.models.RegistrationTokenOperation
+     ~desktop_virtualization_api_client.models.RegistrationTokenOperation
     """
 
     _attribute_map = {
@@ -757,7 +781,7 @@ class RegistrationInfoPatch(msrest.serialization.Model):
     :param registration_token_operation: The type of resetting the token. Possible values include:
      "Delete", "None", "Update".
     :type registration_token_operation: str or
-     ~azure.mgmt.DesktopVirtualization.models.RegistrationTokenOperation
+     ~desktop_virtualization_api_client.models.RegistrationTokenOperation
     """
 
     _attribute_map = {
@@ -778,7 +802,7 @@ class ResourceProviderOperation(msrest.serialization.Model):
     :param name: Operation name, in format of {provider}/{resource}/{operation}.
     :type name: str
     :param display: Display metadata associated with the operation.
-    :type display: ~azure.mgmt.DesktopVirtualization.models.ResourceProviderOperationDisplay
+    :type display: ~desktop_virtualization_api_client.models.ResourceProviderOperationDisplay
     """
 
     _attribute_map = {
@@ -830,7 +854,7 @@ class ResourceProviderOperationList(msrest.serialization.Model):
     """Result of the request to list operations.
 
     :param value: List of operations supported by this resource provider.
-    :type value: list[~azure.mgmt.DesktopVirtualization.models.ResourceProviderOperation]
+    :type value: list[~desktop_virtualization_api_client.models.ResourceProviderOperation]
     """
 
     _attribute_map = {
@@ -893,7 +917,7 @@ class SessionHost(Resource):
     :type assigned_user: str
     :param status: Status for a SessionHost. Possible values include: "Available", "Unavailable",
      "Shutdown", "Disconnected", "Upgrading", "UpgradeFailed".
-    :type status: str or ~azure.mgmt.DesktopVirtualization.models.Status
+    :type status: str or ~desktop_virtualization_api_client.models.Status
     :ivar status_timestamp: The timestamp of the status.
     :vartype status_timestamp: ~datetime.datetime
     :param os_version: The version of the OS on the session host.
@@ -902,7 +926,7 @@ class SessionHost(Resource):
     :type sx_s_stack_version: str
     :param update_state: Update state of a SessionHost. Possible values include: "Initial",
      "Pending", "Started", "Succeeded", "Failed".
-    :type update_state: str or ~azure.mgmt.DesktopVirtualization.models.UpdateState
+    :type update_state: str or ~desktop_virtualization_api_client.models.UpdateState
     :ivar last_update_time: The timestamp of the last update.
     :vartype last_update_time: ~datetime.datetime
     :param update_error_message: The error message.
@@ -960,7 +984,7 @@ class SessionHostList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :param value: List of SessionHost definitions.
-    :type value: list[~azure.mgmt.DesktopVirtualization.models.SessionHost]
+    :type value: list[~desktop_virtualization_api_client.models.SessionHost]
     :ivar next_link: Link to the next page of results.
     :vartype next_link: str
     """
@@ -1089,7 +1113,7 @@ class StartMenuItemList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :param value: List of StartMenuItem definitions.
-    :type value: list[~azure.mgmt.DesktopVirtualization.models.StartMenuItem]
+    :type value: list[~desktop_virtualization_api_client.models.StartMenuItem]
     :ivar next_link: Link to the next page of results.
     :vartype next_link: str
     """
@@ -1129,10 +1153,10 @@ class UserSession(Resource):
     :type user_principal_name: str
     :param application_type: Application type of application. Possible values include: "RemoteApp",
      "Desktop".
-    :type application_type: str or ~azure.mgmt.DesktopVirtualization.models.ApplicationType
+    :type application_type: str or ~desktop_virtualization_api_client.models.ApplicationType
     :param session_state: State of user session. Possible values include: "Unknown", "Active",
      "Disconnected", "Pending", "LogOff", "UserProfileDiskMounted".
-    :type session_state: str or ~azure.mgmt.DesktopVirtualization.models.SessionState
+    :type session_state: str or ~desktop_virtualization_api_client.models.SessionState
     :param active_directory_user_name: The active directory user name.
     :type active_directory_user_name: str
     :param create_time: The timestamp of the user session create.
@@ -1174,7 +1198,7 @@ class UserSessionList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :param value: List of UserSession definitions.
-    :type value: list[~azure.mgmt.DesktopVirtualization.models.UserSession]
+    :type value: list[~desktop_virtualization_api_client.models.UserSession]
     :ivar next_link: Link to the next page of results.
     :vartype next_link: str
     """
@@ -1258,7 +1282,7 @@ class WorkspaceList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :param value: List of Workspace definitions.
-    :type value: list[~azure.mgmt.DesktopVirtualization.models.Workspace]
+    :type value: list[~desktop_virtualization_api_client.models.Workspace]
     :ivar next_link: Link to the next page of results.
     :vartype next_link: str
     """

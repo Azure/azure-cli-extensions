@@ -6,10 +6,14 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from typing import Any, Optional
+from typing import Any, Optional, TYPE_CHECKING
 
-from azure.mgmt.core import AsyncARMPipelineClient
+from azure.core import AsyncPipelineClient
 from msrest import Deserializer, Serializer
+
+if TYPE_CHECKING:
+    # pylint: disable=unused-import,ungrouped-imports
+    from azure.core.credentials_async import AsyncTokenCredential
 
 from ._configuration_async import DesktopVirtualizationAPIClientConfiguration
 from .operations_async import OperationOperations
@@ -30,27 +34,27 @@ class DesktopVirtualizationAPIClient(object):
     """DesktopVirtualizationAPIClient.
 
     :ivar operation: OperationOperations operations
-    :vartype operation: azure.mgmt.DesktopVirtualization.aio.operations_async.OperationOperations
+    :vartype operation: desktop_virtualization_api_client.aio.operations_async.OperationOperations
     :ivar workspace: WorkspaceOperations operations
-    :vartype workspace: azure.mgmt.DesktopVirtualization.aio.operations_async.WorkspaceOperations
+    :vartype workspace: desktop_virtualization_api_client.aio.operations_async.WorkspaceOperations
     :ivar application_group_assignment: ApplicationGroupAssignmentOperations operations
-    :vartype application_group_assignment: azure.mgmt.DesktopVirtualization.aio.operations_async.ApplicationGroupAssignmentOperations
+    :vartype application_group_assignment: desktop_virtualization_api_client.aio.operations_async.ApplicationGroupAssignmentOperations
     :ivar application_group: ApplicationGroupOperations operations
-    :vartype application_group: azure.mgmt.DesktopVirtualization.aio.operations_async.ApplicationGroupOperations
+    :vartype application_group: desktop_virtualization_api_client.aio.operations_async.ApplicationGroupOperations
     :ivar start_menu_item: StartMenuItemOperations operations
-    :vartype start_menu_item: azure.mgmt.DesktopVirtualization.aio.operations_async.StartMenuItemOperations
+    :vartype start_menu_item: desktop_virtualization_api_client.aio.operations_async.StartMenuItemOperations
     :ivar application: ApplicationOperations operations
-    :vartype application: azure.mgmt.DesktopVirtualization.aio.operations_async.ApplicationOperations
+    :vartype application: desktop_virtualization_api_client.aio.operations_async.ApplicationOperations
     :ivar desktop: DesktopOperations operations
-    :vartype desktop: azure.mgmt.DesktopVirtualization.aio.operations_async.DesktopOperations
+    :vartype desktop: desktop_virtualization_api_client.aio.operations_async.DesktopOperations
     :ivar host_pool: HostPoolOperations operations
-    :vartype host_pool: azure.mgmt.DesktopVirtualization.aio.operations_async.HostPoolOperations
+    :vartype host_pool: desktop_virtualization_api_client.aio.operations_async.HostPoolOperations
     :ivar user_session: UserSessionOperations operations
-    :vartype user_session: azure.mgmt.DesktopVirtualization.aio.operations_async.UserSessionOperations
+    :vartype user_session: desktop_virtualization_api_client.aio.operations_async.UserSessionOperations
     :ivar session_host: SessionHostOperations operations
-    :vartype session_host: azure.mgmt.DesktopVirtualization.aio.operations_async.SessionHostOperations
+    :vartype session_host: desktop_virtualization_api_client.aio.operations_async.SessionHostOperations
     :ivar active_application: ActiveApplicationOperations operations
-    :vartype active_application: azure.mgmt.DesktopVirtualization.aio.operations_async.ActiveApplicationOperations
+    :vartype active_application: desktop_virtualization_api_client.aio.operations_async.ActiveApplicationOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     :param subscription_id: The ID of the target subscription.
@@ -69,7 +73,7 @@ class DesktopVirtualizationAPIClient(object):
         if not base_url:
             base_url = 'https://management.azure.com'
         self._config = DesktopVirtualizationAPIClientConfiguration(credential, subscription_id, **kwargs)
-        self._client = AsyncARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
+        self._client = AsyncPipelineClient(base_url=base_url, config=self._config, **kwargs)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)

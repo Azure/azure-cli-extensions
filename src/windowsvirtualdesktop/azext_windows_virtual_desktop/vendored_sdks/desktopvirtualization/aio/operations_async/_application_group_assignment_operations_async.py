@@ -12,7 +12,6 @@ from azure.core.async_paging import AsyncItemPaged, AsyncList
 from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
-from azure.mgmt.core.exceptions import ARMErrorFormat
 
 from ... import models
 
@@ -26,7 +25,7 @@ class ApplicationGroupAssignmentOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.DesktopVirtualization.models
+    :type models: ~desktop_virtualization_api_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -58,8 +57,8 @@ class ApplicationGroupAssignmentOperations:
      applicationGroupType.
         :type filter: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of ApplicationGroupList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.DesktopVirtualization.models.ApplicationGroupList]
+        :return: An iterator like instance of either ApplicationGroupList or the result of cls(response)
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~desktop_virtualization_api_client.models.ApplicationGroupList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ApplicationGroupList"]
@@ -108,8 +107,9 @@ class ApplicationGroupAssignmentOperations:
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
+                error = self._deserialize(models.CloudError, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                raise HttpResponseError(response=response, model=error)
 
             return pipeline_response
 

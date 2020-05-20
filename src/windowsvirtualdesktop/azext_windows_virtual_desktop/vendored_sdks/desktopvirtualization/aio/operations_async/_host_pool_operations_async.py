@@ -12,7 +12,6 @@ from azure.core.async_paging import AsyncItemPaged, AsyncList
 from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
-from azure.mgmt.core.exceptions import ARMErrorFormat
 
 from ... import models
 
@@ -26,7 +25,7 @@ class HostPoolOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.DesktopVirtualization.models
+    :type models: ~desktop_virtualization_api_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -54,8 +53,8 @@ class HostPoolOperations:
         :param host_pool_name: The name of the host pool within the specified resource group.
         :type host_pool_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: HostPool or the result of cls(response)
-        :rtype: ~azure.mgmt.DesktopVirtualization.models.HostPool
+        :return: HostPool, or the result of cls(response)
+        :rtype: ~desktop_virtualization_api_client.models.HostPool
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.HostPool"]
@@ -87,12 +86,13 @@ class HostPoolOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize(models.CloudError, response)
+            raise HttpResponseError(response=response, model=error)
 
         deserialized = self._deserialize('HostPool', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
     get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/hostPools/{hostPoolName}'}  # type: ignore
@@ -126,11 +126,11 @@ class HostPoolOperations:
         :param location: The geo-location where the resource lives.
         :type location: str
         :param host_pool_type: HostPool type for desktop.
-        :type host_pool_type: str or ~azure.mgmt.DesktopVirtualization.models.HostPoolType
+        :type host_pool_type: str or ~desktop_virtualization_api_client.models.HostPoolType
         :param personal_desktop_assignment_type: PersonalDesktopAssignment type for HostPool.
-        :type personal_desktop_assignment_type: str or ~azure.mgmt.DesktopVirtualization.models.PersonalDesktopAssignmentType
+        :type personal_desktop_assignment_type: str or ~desktop_virtualization_api_client.models.PersonalDesktopAssignmentType
         :param load_balancer_type: The type of the load balancer.
-        :type load_balancer_type: str or ~azure.mgmt.DesktopVirtualization.models.LoadBalancerType
+        :type load_balancer_type: str or ~desktop_virtualization_api_client.models.LoadBalancerType
         :param tags: Resource tags.
         :type tags: dict[str, str]
         :param friendly_name: Friendly name of HostPool.
@@ -146,14 +146,14 @@ class HostPoolOperations:
         :param validation_environment: Is validation environment.
         :type validation_environment: bool
         :param registration_info: The registration info of HostPool.
-        :type registration_info: ~azure.mgmt.DesktopVirtualization.models.RegistrationInfo
+        :type registration_info: ~desktop_virtualization_api_client.models.RegistrationInfo
         :param vm_template: VM template for sessionhosts configuration within hostpool.
         :type vm_template: str
         :param sso_context: Path to keyvault containing ssoContext secret.
         :type sso_context: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: HostPool or the result of cls(response)
-        :rtype: ~azure.mgmt.DesktopVirtualization.models.HostPool
+        :return: HostPool, or the result of cls(response)
+        :rtype: ~desktop_virtualization_api_client.models.HostPool
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.HostPool"]
@@ -193,7 +193,8 @@ class HostPoolOperations:
 
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize(models.CloudError, response)
+            raise HttpResponseError(response=response, model=error)
 
         deserialized = None
         if response.status_code == 200:
@@ -203,7 +204,7 @@ class HostPoolOperations:
             deserialized = self._deserialize('HostPool', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
     create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/hostPools/{hostPoolName}'}  # type: ignore
@@ -224,7 +225,7 @@ class HostPoolOperations:
         :param force: Force flag to delete sessionHost.
         :type force: bool
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: None or the result of cls(response)
+        :return: None, or the result of cls(response)
         :rtype: None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
@@ -258,10 +259,11 @@ class HostPoolOperations:
 
         if response.status_code not in [200, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize(models.CloudError, response)
+            raise HttpResponseError(response=response, model=error)
 
         if cls:
-          return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, {})
 
     delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/hostPools/{hostPoolName}'}  # type: ignore
 
@@ -299,20 +301,20 @@ class HostPoolOperations:
         :param max_session_limit: The max session limit of HostPool.
         :type max_session_limit: int
         :param personal_desktop_assignment_type: PersonalDesktopAssignment type for HostPool.
-        :type personal_desktop_assignment_type: str or ~azure.mgmt.DesktopVirtualization.models.PersonalDesktopAssignmentType
+        :type personal_desktop_assignment_type: str or ~desktop_virtualization_api_client.models.PersonalDesktopAssignmentType
         :param load_balancer_type: The type of the load balancer.
-        :type load_balancer_type: str or ~azure.mgmt.DesktopVirtualization.models.LoadBalancerType
+        :type load_balancer_type: str or ~desktop_virtualization_api_client.models.LoadBalancerType
         :param ring: The ring number of HostPool.
         :type ring: int
         :param validation_environment: Is validation environment.
         :type validation_environment: bool
         :param registration_info: The registration info of HostPool.
-        :type registration_info: ~azure.mgmt.DesktopVirtualization.models.RegistrationInfoPatch
+        :type registration_info: ~desktop_virtualization_api_client.models.RegistrationInfoPatch
         :param sso_context: Path to keyvault containing ssoContext secret.
         :type sso_context: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: HostPool or the result of cls(response)
-        :rtype: ~azure.mgmt.DesktopVirtualization.models.HostPool
+        :return: HostPool, or the result of cls(response)
+        :rtype: ~desktop_virtualization_api_client.models.HostPool
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.HostPool"]
@@ -355,12 +357,13 @@ class HostPoolOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize(models.CloudError, response)
+            raise HttpResponseError(response=response, model=error)
 
         deserialized = self._deserialize('HostPool', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
     update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/hostPools/{hostPoolName}'}  # type: ignore
@@ -375,8 +378,8 @@ class HostPoolOperations:
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of HostPoolList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.DesktopVirtualization.models.HostPoolList]
+        :return: An iterator like instance of either HostPoolList or the result of cls(response)
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~desktop_virtualization_api_client.models.HostPoolList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.HostPoolList"]
@@ -422,8 +425,9 @@ class HostPoolOperations:
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
+                error = self._deserialize(models.CloudError, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                raise HttpResponseError(response=response, model=error)
 
             return pipeline_response
 
@@ -439,8 +443,8 @@ class HostPoolOperations:
         """List hostPools in subscription.
 
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of HostPoolList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.DesktopVirtualization.models.HostPoolList]
+        :return: An iterator like instance of either HostPoolList or the result of cls(response)
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~desktop_virtualization_api_client.models.HostPoolList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.HostPoolList"]
@@ -485,8 +489,9 @@ class HostPoolOperations:
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
+                error = self._deserialize(models.CloudError, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                raise HttpResponseError(response=response, model=error)
 
             return pipeline_response
 

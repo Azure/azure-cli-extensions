@@ -11,12 +11,11 @@ from typing import Any, TYPE_CHECKING
 from azure.core.configuration import Configuration
 from azure.core.pipeline import policies
 
-from .._version import VERSION
-
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from azure.core.credentials import TokenCredential
+    from azure.core.credentials_async import AsyncTokenCredential
 
+VERSION = "unknown"
 
 class DesktopVirtualizationAPIClientConfiguration(Configuration):
     """Configuration for DesktopVirtualizationAPIClient.
@@ -45,9 +44,9 @@ class DesktopVirtualizationAPIClientConfiguration(Configuration):
         self.credential = credential
         self.subscription_id = subscription_id
         self.api_version = "2019-12-10-preview"
-        self.credential_scopes = ['https://management.azure.com/.default']
+        self.credential_scopes = []
         self.credential_scopes.extend(kwargs.pop('credential_scopes', []))
-        kwargs.setdefault('sdk_moniker', 'mgmt-DesktopVirtualization/{}'.format(VERSION))
+        kwargs.setdefault('sdk_moniker', 'desktopvirtualizationapiclient/{}'.format(VERSION))
         self._configure(**kwargs)
 
     def _configure(
@@ -62,5 +61,7 @@ class DesktopVirtualizationAPIClientConfiguration(Configuration):
         self.custom_hook_policy = kwargs.get('custom_hook_policy') or policies.CustomHookPolicy(**kwargs)
         self.redirect_policy = kwargs.get('redirect_policy') or policies.AsyncRedirectPolicy(**kwargs)
         self.authentication_policy = kwargs.get('authentication_policy')
+        if not self.credential_scopes and not self.authentication_policy:
+            raise ValueError("You must provide either credential_scopes or authentication_policy as kwargs")
         if self.credential and not self.authentication_policy:
             self.authentication_policy = policies.AsyncBearerTokenCredentialPolicy(self.credential, *self.credential_scopes, **kwargs)

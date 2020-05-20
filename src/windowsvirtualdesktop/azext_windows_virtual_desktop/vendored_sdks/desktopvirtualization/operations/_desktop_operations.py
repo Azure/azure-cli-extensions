@@ -11,7 +11,6 @@ import warnings
 from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpRequest, HttpResponse
-from azure.mgmt.core.exceptions import ARMErrorFormat
 
 from .. import models
 
@@ -29,7 +28,7 @@ class DesktopOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.DesktopVirtualization.models
+    :type models: ~desktop_virtualization_api_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -61,8 +60,8 @@ class DesktopOperations(object):
         :param desktop_name: The name of the desktop within the specified desktop group.
         :type desktop_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: Desktop or the result of cls(response)
-        :rtype: ~azure.mgmt.DesktopVirtualization.models.Desktop
+        :return: Desktop, or the result of cls(response)
+        :rtype: ~desktop_virtualization_api_client.models.Desktop
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Desktop"]
@@ -95,12 +94,13 @@ class DesktopOperations(object):
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize(models.CloudError, response)
+            raise HttpResponseError(response=response, model=error)
 
         deserialized = self._deserialize('Desktop', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
     get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/applicationGroups/{applicationGroupName}/desktops/{desktopName}'}  # type: ignore
@@ -131,8 +131,8 @@ class DesktopOperations(object):
         :param friendly_name: Friendly name of Desktop.
         :type friendly_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: Desktop or the result of cls(response)
-        :rtype: ~azure.mgmt.DesktopVirtualization.models.Desktop
+        :return: Desktop, or the result of cls(response)
+        :rtype: ~desktop_virtualization_api_client.models.Desktop
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Desktop"]
@@ -176,12 +176,13 @@ class DesktopOperations(object):
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize(models.CloudError, response)
+            raise HttpResponseError(response=response, model=error)
 
         deserialized = self._deserialize('Desktop', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
     update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/applicationGroups/{applicationGroupName}/desktops/{desktopName}'}  # type: ignore
@@ -200,8 +201,8 @@ class DesktopOperations(object):
         :param application_group_name: The name of the application group.
         :type application_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: DesktopList or the result of cls(response)
-        :rtype: ~azure.mgmt.DesktopVirtualization.models.DesktopList
+        :return: DesktopList, or the result of cls(response)
+        :rtype: ~desktop_virtualization_api_client.models.DesktopList
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DesktopList"]
@@ -233,12 +234,13 @@ class DesktopOperations(object):
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize(models.CloudError, response)
+            raise HttpResponseError(response=response, model=error)
 
         deserialized = self._deserialize('DesktopList', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
     list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/applicationGroups/{applicationGroupName}/desktops'}  # type: ignore

@@ -8,12 +8,14 @@
 
 from typing import TYPE_CHECKING
 
-from azure.mgmt.core import ARMPipelineClient
+from azure.core import PipelineClient
 from msrest import Deserializer, Serializer
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
     from typing import Any, Optional
+
+    from azure.core.credentials import TokenCredential
 
 from ._configuration import DesktopVirtualizationAPIClientConfiguration
 from .operations import OperationOperations
@@ -34,27 +36,27 @@ class DesktopVirtualizationAPIClient(object):
     """DesktopVirtualizationAPIClient.
 
     :ivar operation: OperationOperations operations
-    :vartype operation: azure.mgmt.DesktopVirtualization.operations.OperationOperations
+    :vartype operation: desktop_virtualization_api_client.operations.OperationOperations
     :ivar workspace: WorkspaceOperations operations
-    :vartype workspace: azure.mgmt.DesktopVirtualization.operations.WorkspaceOperations
+    :vartype workspace: desktop_virtualization_api_client.operations.WorkspaceOperations
     :ivar application_group_assignment: ApplicationGroupAssignmentOperations operations
-    :vartype application_group_assignment: azure.mgmt.DesktopVirtualization.operations.ApplicationGroupAssignmentOperations
+    :vartype application_group_assignment: desktop_virtualization_api_client.operations.ApplicationGroupAssignmentOperations
     :ivar application_group: ApplicationGroupOperations operations
-    :vartype application_group: azure.mgmt.DesktopVirtualization.operations.ApplicationGroupOperations
+    :vartype application_group: desktop_virtualization_api_client.operations.ApplicationGroupOperations
     :ivar start_menu_item: StartMenuItemOperations operations
-    :vartype start_menu_item: azure.mgmt.DesktopVirtualization.operations.StartMenuItemOperations
+    :vartype start_menu_item: desktop_virtualization_api_client.operations.StartMenuItemOperations
     :ivar application: ApplicationOperations operations
-    :vartype application: azure.mgmt.DesktopVirtualization.operations.ApplicationOperations
+    :vartype application: desktop_virtualization_api_client.operations.ApplicationOperations
     :ivar desktop: DesktopOperations operations
-    :vartype desktop: azure.mgmt.DesktopVirtualization.operations.DesktopOperations
+    :vartype desktop: desktop_virtualization_api_client.operations.DesktopOperations
     :ivar host_pool: HostPoolOperations operations
-    :vartype host_pool: azure.mgmt.DesktopVirtualization.operations.HostPoolOperations
+    :vartype host_pool: desktop_virtualization_api_client.operations.HostPoolOperations
     :ivar user_session: UserSessionOperations operations
-    :vartype user_session: azure.mgmt.DesktopVirtualization.operations.UserSessionOperations
+    :vartype user_session: desktop_virtualization_api_client.operations.UserSessionOperations
     :ivar session_host: SessionHostOperations operations
-    :vartype session_host: azure.mgmt.DesktopVirtualization.operations.SessionHostOperations
+    :vartype session_host: desktop_virtualization_api_client.operations.SessionHostOperations
     :ivar active_application: ActiveApplicationOperations operations
-    :vartype active_application: azure.mgmt.DesktopVirtualization.operations.ActiveApplicationOperations
+    :vartype active_application: desktop_virtualization_api_client.operations.ActiveApplicationOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: The ID of the target subscription.
@@ -74,7 +76,7 @@ class DesktopVirtualizationAPIClient(object):
         if not base_url:
             base_url = 'https://management.azure.com'
         self._config = DesktopVirtualizationAPIClientConfiguration(credential, subscription_id, **kwargs)
-        self._client = ARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
+        self._client = PipelineClient(base_url=base_url, config=self._config, **kwargs)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)

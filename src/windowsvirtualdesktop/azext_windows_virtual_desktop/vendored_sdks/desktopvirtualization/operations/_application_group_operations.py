@@ -12,7 +12,6 @@ from azure.core.exceptions import HttpResponseError, ResourceExistsError, Resour
 from azure.core.paging import ItemPaged
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpRequest, HttpResponse
-from azure.mgmt.core.exceptions import ARMErrorFormat
 
 from .. import models
 
@@ -30,7 +29,7 @@ class ApplicationGroupOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.DesktopVirtualization.models
+    :type models: ~desktop_virtualization_api_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -59,8 +58,8 @@ class ApplicationGroupOperations(object):
         :param application_group_name: The name of the application group.
         :type application_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: ApplicationGroup or the result of cls(response)
-        :rtype: ~azure.mgmt.DesktopVirtualization.models.ApplicationGroup
+        :return: ApplicationGroup, or the result of cls(response)
+        :rtype: ~desktop_virtualization_api_client.models.ApplicationGroup
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ApplicationGroup"]
@@ -92,12 +91,13 @@ class ApplicationGroupOperations(object):
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize(models.CloudError, response)
+            raise HttpResponseError(response=response, model=error)
 
         deserialized = self._deserialize('ApplicationGroup', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
     get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/applicationGroups/{applicationGroupName}'}  # type: ignore
@@ -126,7 +126,7 @@ class ApplicationGroupOperations(object):
         :param host_pool_arm_path: HostPool arm path of ApplicationGroup.
         :type host_pool_arm_path: str
         :param application_group_type: Resource Type of ApplicationGroup.
-        :type application_group_type: str or ~azure.mgmt.DesktopVirtualization.models.ApplicationGroupType
+        :type application_group_type: str or ~desktop_virtualization_api_client.models.ApplicationGroupType
         :param tags: Resource tags.
         :type tags: dict[str, str]
         :param description: Description of ApplicationGroup.
@@ -134,8 +134,8 @@ class ApplicationGroupOperations(object):
         :param friendly_name: Friendly name of ApplicationGroup.
         :type friendly_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: ApplicationGroup or the result of cls(response)
-        :rtype: ~azure.mgmt.DesktopVirtualization.models.ApplicationGroup
+        :return: ApplicationGroup, or the result of cls(response)
+        :rtype: ~desktop_virtualization_api_client.models.ApplicationGroup
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ApplicationGroup"]
@@ -175,7 +175,8 @@ class ApplicationGroupOperations(object):
 
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize(models.CloudError, response)
+            raise HttpResponseError(response=response, model=error)
 
         deserialized = None
         if response.status_code == 200:
@@ -185,7 +186,7 @@ class ApplicationGroupOperations(object):
             deserialized = self._deserialize('ApplicationGroup', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
     create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/applicationGroups/{applicationGroupName}'}  # type: ignore
@@ -204,7 +205,7 @@ class ApplicationGroupOperations(object):
         :param application_group_name: The name of the application group.
         :type application_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: None or the result of cls(response)
+        :return: None, or the result of cls(response)
         :rtype: None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
@@ -236,10 +237,11 @@ class ApplicationGroupOperations(object):
 
         if response.status_code not in [200, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize(models.CloudError, response)
+            raise HttpResponseError(response=response, model=error)
 
         if cls:
-          return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, {})
 
     delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/applicationGroups/{applicationGroupName}'}  # type: ignore
 
@@ -266,8 +268,8 @@ class ApplicationGroupOperations(object):
         :param friendly_name: Friendly name of ApplicationGroup.
         :type friendly_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: ApplicationGroup or the result of cls(response)
-        :rtype: ~azure.mgmt.DesktopVirtualization.models.ApplicationGroup
+        :return: ApplicationGroup, or the result of cls(response)
+        :rtype: ~desktop_virtualization_api_client.models.ApplicationGroup
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ApplicationGroup"]
@@ -310,12 +312,13 @@ class ApplicationGroupOperations(object):
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize(models.CloudError, response)
+            raise HttpResponseError(response=response, model=error)
 
         deserialized = self._deserialize('ApplicationGroup', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
     update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/applicationGroups/{applicationGroupName}'}  # type: ignore
@@ -335,8 +338,8 @@ class ApplicationGroupOperations(object):
      applicationGroupType.
         :type filter: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of ApplicationGroupList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.DesktopVirtualization.models.ApplicationGroupList]
+        :return: An iterator like instance of either ApplicationGroupList or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~desktop_virtualization_api_client.models.ApplicationGroupList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ApplicationGroupList"]
@@ -384,8 +387,9 @@ class ApplicationGroupOperations(object):
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
+                error = self._deserialize(models.CloudError, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                raise HttpResponseError(response=response, model=error)
 
             return pipeline_response
 
@@ -406,8 +410,8 @@ class ApplicationGroupOperations(object):
      applicationGroupType.
         :type filter: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of ApplicationGroupList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.DesktopVirtualization.models.ApplicationGroupList]
+        :return: An iterator like instance of either ApplicationGroupList or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~desktop_virtualization_api_client.models.ApplicationGroupList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ApplicationGroupList"]
@@ -454,8 +458,9 @@ class ApplicationGroupOperations(object):
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
+                error = self._deserialize(models.CloudError, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                raise HttpResponseError(response=response, model=error)
 
             return pipeline_response
 

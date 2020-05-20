@@ -12,7 +12,6 @@ from azure.core.async_paging import AsyncItemPaged, AsyncList
 from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
-from azure.mgmt.core.exceptions import ARMErrorFormat
 
 from ... import models
 
@@ -26,7 +25,7 @@ class SessionHostOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.DesktopVirtualization.models
+    :type models: ~desktop_virtualization_api_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -57,8 +56,8 @@ class SessionHostOperations:
         :param session_host_name: The name of the session host within the specified host pool.
         :type session_host_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: SessionHost or the result of cls(response)
-        :rtype: ~azure.mgmt.DesktopVirtualization.models.SessionHost
+        :return: SessionHost, or the result of cls(response)
+        :rtype: ~desktop_virtualization_api_client.models.SessionHost
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.SessionHost"]
@@ -91,12 +90,13 @@ class SessionHostOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize(models.CloudError, response)
+            raise HttpResponseError(response=response, model=error)
 
         deserialized = self._deserialize('SessionHost', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
     get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/hostPools/{hostPoolName}/sessionHosts/{sessionHostName}'}  # type: ignore
@@ -120,7 +120,7 @@ class SessionHostOperations:
         :param force: Force flag to force sessionHost deletion even when userSession exists.
         :type force: bool
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: None or the result of cls(response)
+        :return: None, or the result of cls(response)
         :rtype: None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
@@ -155,10 +155,11 @@ class SessionHostOperations:
 
         if response.status_code not in [200, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize(models.CloudError, response)
+            raise HttpResponseError(response=response, model=error)
 
         if cls:
-          return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, {})
 
     delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/hostPools/{hostPoolName}/sessionHosts/{sessionHostName}'}  # type: ignore
 
@@ -184,8 +185,8 @@ class SessionHostOperations:
         :param assigned_user: User assigned to SessionHost.
         :type assigned_user: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: SessionHost or the result of cls(response)
-        :rtype: ~azure.mgmt.DesktopVirtualization.models.SessionHost
+        :return: SessionHost, or the result of cls(response)
+        :rtype: ~desktop_virtualization_api_client.models.SessionHost
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.SessionHost"]
@@ -229,12 +230,13 @@ class SessionHostOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize(models.CloudError, response)
+            raise HttpResponseError(response=response, model=error)
 
         deserialized = self._deserialize('SessionHost', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
     update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/hostPools/{hostPoolName}/sessionHosts/{sessionHostName}'}  # type: ignore
@@ -252,8 +254,8 @@ class SessionHostOperations:
         :param host_pool_name: The name of the host pool within the specified resource group.
         :type host_pool_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of SessionHostList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.DesktopVirtualization.models.SessionHostList]
+        :return: An iterator like instance of either SessionHostList or the result of cls(response)
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~desktop_virtualization_api_client.models.SessionHostList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.SessionHostList"]
@@ -300,8 +302,9 @@ class SessionHostOperations:
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
+                error = self._deserialize(models.CloudError, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                raise HttpResponseError(response=response, model=error)
 
             return pipeline_response
 

@@ -13,6 +13,7 @@ try:
     from ._models_py3 import ApplicationGroupPatch
     from ._models_py3 import ApplicationList
     from ._models_py3 import ApplicationPatch
+    from ._models_py3 import CloudError
     from ._models_py3 import Desktop
     from ._models_py3 import DesktopList
     from ._models_py3 import DesktopPatch
@@ -44,6 +45,7 @@ except (SyntaxError, ImportError):
     from ._models import ApplicationGroupPatch  # type: ignore
     from ._models import ApplicationList  # type: ignore
     from ._models import ApplicationPatch  # type: ignore
+    from ._models import CloudError  # type: ignore
     from ._models import Desktop  # type: ignore
     from ._models import DesktopList  # type: ignore
     from ._models import DesktopPatch  # type: ignore
@@ -89,6 +91,7 @@ __all__ = [
     'ApplicationGroupPatch',
     'ApplicationList',
     'ApplicationPatch',
+    'CloudError',
     'Desktop',
     'DesktopList',
     'DesktopPatch',
