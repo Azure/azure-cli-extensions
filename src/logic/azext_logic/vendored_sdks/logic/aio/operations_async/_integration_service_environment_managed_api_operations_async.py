@@ -13,6 +13,8 @@ from azure.core.exceptions import HttpResponseError, ResourceExistsError, Resour
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
 from azure.core.polling import AsyncNoPolling, AsyncPollingMethod, async_poller
+from azure.mgmt.core.exceptions import ARMErrorFormat
+from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
 
 from ... import models
 
@@ -26,7 +28,7 @@ class IntegrationServiceEnvironmentManagedApiOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~logic_management_client.models
+    :type models: ~azure.mgmt.logic.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -55,7 +57,7 @@ class IntegrationServiceEnvironmentManagedApiOperations:
         :type integration_service_environment_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ManagedApiListResult or the result of cls(response)
-        :rtype: ~logic_management_client.models.ManagedApiListResult
+        :rtype: ~azure.mgmt.logic.models.ManagedApiListResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ManagedApiListResult"]
@@ -103,7 +105,7 @@ class IntegrationServiceEnvironmentManagedApiOperations:
             if response.status_code not in [200]:
                 error = self._deserialize(models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, model=error)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -129,7 +131,7 @@ class IntegrationServiceEnvironmentManagedApiOperations:
         :type api_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ManagedApi or the result of cls(response)
-        :rtype: ~logic_management_client.models.ManagedApi
+        :rtype: ~azure.mgmt.logic.models.ManagedApi
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ManagedApi"]
@@ -162,7 +164,7 @@ class IntegrationServiceEnvironmentManagedApiOperations:
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('ManagedApi', pipeline_response)
 
@@ -209,7 +211,7 @@ class IntegrationServiceEnvironmentManagedApiOperations:
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = None
         if response.status_code == 200:
@@ -244,11 +246,11 @@ class IntegrationServiceEnvironmentManagedApiOperations:
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :return: An instance of LROPoller that returns ManagedApi
-        :rtype: ~azure.core.polling.LROPoller[~logic_management_client.models.ManagedApi]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.logic.models.ManagedApi]
 
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        polling = kwargs.pop('polling', False)  # type: Union[bool, AsyncPollingMethod]
+        polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ManagedApi"]
         raw_result = await self._put_initial(
             resource_group=resource_group,
@@ -269,7 +271,7 @@ class IntegrationServiceEnvironmentManagedApiOperations:
             'polling_interval',
             self._config.polling_interval
         )
-        if polling is True: raise ValueError("polling being True is not valid because no default polling implemetation has been defined.")
+        if polling is True: polling_method = AsyncARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         return await async_poller(self._client, raw_result, get_long_running_output, polling_method)
@@ -311,7 +313,7 @@ class IntegrationServiceEnvironmentManagedApiOperations:
         if response.status_code not in [202, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
           return cls(pipeline_response, None, {})
@@ -342,7 +344,7 @@ class IntegrationServiceEnvironmentManagedApiOperations:
 
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        polling = kwargs.pop('polling', False)  # type: Union[bool, AsyncPollingMethod]
+        polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         raw_result = await self._delete_initial(
             resource_group=resource_group,
@@ -360,7 +362,7 @@ class IntegrationServiceEnvironmentManagedApiOperations:
             'polling_interval',
             self._config.polling_interval
         )
-        if polling is True: raise ValueError("polling being True is not valid because no default polling implemetation has been defined.")
+        if polling is True: polling_method = AsyncARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         return await async_poller(self._client, raw_result, get_long_running_output, polling_method)

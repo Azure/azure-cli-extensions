@@ -12,6 +12,7 @@ from azure.core.async_paging import AsyncItemPaged, AsyncList
 from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
+from azure.mgmt.core.exceptions import ARMErrorFormat
 
 from ... import models
 
@@ -25,7 +26,7 @@ class WorkflowRunActionOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~logic_management_client.models
+    :type models: ~azure.mgmt.logic.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -63,7 +64,7 @@ class WorkflowRunActionOperations:
         :type filter: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: WorkflowRunActionListResult or the result of cls(response)
-        :rtype: ~logic_management_client.models.WorkflowRunActionListResult
+        :rtype: ~azure.mgmt.logic.models.WorkflowRunActionListResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.WorkflowRunActionListResult"]
@@ -116,7 +117,7 @@ class WorkflowRunActionOperations:
             if response.status_code not in [200]:
                 error = self._deserialize(models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, model=error)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -145,7 +146,7 @@ class WorkflowRunActionOperations:
         :type action_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: WorkflowRunAction or the result of cls(response)
-        :rtype: ~logic_management_client.models.WorkflowRunAction
+        :rtype: ~azure.mgmt.logic.models.WorkflowRunAction
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.WorkflowRunAction"]
@@ -179,7 +180,7 @@ class WorkflowRunActionOperations:
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('WorkflowRunAction', pipeline_response)
 
@@ -209,7 +210,7 @@ class WorkflowRunActionOperations:
         :type action_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ExpressionTraces or the result of cls(response)
-        :rtype: ~logic_management_client.models.ExpressionTraces
+        :rtype: ~azure.mgmt.logic.models.ExpressionTraces
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ExpressionTraces"]
@@ -259,7 +260,7 @@ class WorkflowRunActionOperations:
             if response.status_code not in [200]:
                 error = self._deserialize(models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, model=error)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 

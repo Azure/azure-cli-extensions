@@ -6,13 +6,14 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 import datetime
-from typing import Any, Callable, Dict, Generic, Optional, TypeVar, Union
+from typing import Any, Callable, Dict, Generic, List, Optional, TypeVar, Union
 import warnings
 
 from azure.core.async_paging import AsyncItemPaged, AsyncList
 from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
+from azure.mgmt.core.exceptions import ARMErrorFormat
 
 from ... import models
 
@@ -26,7 +27,7 @@ class IntegrationAccountPartnerOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~logic_management_client.models
+    :type models: ~azure.mgmt.logic.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -61,7 +62,7 @@ class IntegrationAccountPartnerOperations:
         :type filter: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationAccountPartnerListResult or the result of cls(response)
-        :rtype: ~logic_management_client.models.IntegrationAccountPartnerListResult
+        :rtype: ~azure.mgmt.logic.models.IntegrationAccountPartnerListResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationAccountPartnerListResult"]
@@ -113,7 +114,7 @@ class IntegrationAccountPartnerOperations:
             if response.status_code not in [200]:
                 error = self._deserialize(models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, model=error)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -139,7 +140,7 @@ class IntegrationAccountPartnerOperations:
         :type partner_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationAccountPartner or the result of cls(response)
-        :rtype: ~logic_management_client.models.IntegrationAccountPartner
+        :rtype: ~azure.mgmt.logic.models.IntegrationAccountPartner
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationAccountPartner"]
@@ -172,7 +173,7 @@ class IntegrationAccountPartnerOperations:
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('IntegrationAccountPartner', pipeline_response)
 
@@ -188,10 +189,10 @@ class IntegrationAccountPartnerOperations:
         integration_account_name: str,
         partner_name: str,
         partner_type: Union[str, "models.PartnerType"],
-        content: "models.PartnerContent",
         location: Optional[str] = None,
         tags: Optional[Dict[str, str]] = None,
         metadata: Optional[object] = None,
+        business_identities: Optional[List["BusinessIdentity"]] = None,
         **kwargs
     ) -> "models.IntegrationAccountPartner":
         """Creates or updates an integration account partner.
@@ -203,24 +204,24 @@ class IntegrationAccountPartnerOperations:
         :param partner_name: The integration account partner name.
         :type partner_name: str
         :param partner_type: The partner type.
-        :type partner_type: str or ~logic_management_client.models.PartnerType
-        :param content: The partner content.
-        :type content: ~logic_management_client.models.PartnerContent
+        :type partner_type: str or ~azure.mgmt.logic.models.PartnerType
         :param location: The resource location.
         :type location: str
         :param tags: The resource tags.
         :type tags: dict[str, str]
         :param metadata: The metadata.
         :type metadata: object
+        :param business_identities: The list of partner business identities.
+        :type business_identities: list[~azure.mgmt.logic.models.BusinessIdentity]
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationAccountPartner or the result of cls(response)
-        :rtype: ~logic_management_client.models.IntegrationAccountPartner or ~logic_management_client.models.IntegrationAccountPartner
+        :rtype: ~azure.mgmt.logic.models.IntegrationAccountPartner or ~azure.mgmt.logic.models.IntegrationAccountPartner
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationAccountPartner"]
         error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        _partner = models.IntegrationAccountPartner(location=location, tags=tags, partner_type=partner_type, metadata=metadata, content=content)
+        _partner = models.IntegrationAccountPartner(location=location, tags=tags, partner_type=partner_type, metadata=metadata, business_identities=business_identities)
         api_version = "2019-05-01"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -255,7 +256,7 @@ class IntegrationAccountPartnerOperations:
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = None
         if response.status_code == 200:
@@ -319,7 +320,7 @@ class IntegrationAccountPartnerOperations:
         if response.status_code not in [200, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
           return cls(pipeline_response, None, {})
@@ -346,10 +347,10 @@ class IntegrationAccountPartnerOperations:
         :param not_after: The expiry time.
         :type not_after: ~datetime.datetime
         :param key_type: The key type.
-        :type key_type: str or ~logic_management_client.models.KeyType
+        :type key_type: str or ~azure.mgmt.logic.models.KeyType
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: WorkflowTriggerCallbackUrl or the result of cls(response)
-        :rtype: ~logic_management_client.models.WorkflowTriggerCallbackUrl
+        :rtype: ~azure.mgmt.logic.models.WorkflowTriggerCallbackUrl
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.WorkflowTriggerCallbackUrl"]
@@ -390,7 +391,7 @@ class IntegrationAccountPartnerOperations:
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('WorkflowTriggerCallbackUrl', pipeline_response)
 

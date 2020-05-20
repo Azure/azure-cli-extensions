@@ -6,18 +6,23 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 import datetime
-from typing import Any, Callable, Dict, Generic, Optional, TypeVar, Union
+from typing import TYPE_CHECKING
 import warnings
 
 from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.paging import ItemPaged
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpRequest, HttpResponse
+from azure.mgmt.core.exceptions import ARMErrorFormat
 
 from .. import models
 
-T = TypeVar('T')
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
+if TYPE_CHECKING:
+    # pylint: disable=unused-import,ungrouped-imports
+    from typing import Any, Callable, Dict, Generic, Optional, TypeVar, Union
+
+    T = TypeVar('T')
+    ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
 class IntegrationAccountAgreementOperations(object):
     """IntegrationAccountAgreementOperations operations.
@@ -26,7 +31,7 @@ class IntegrationAccountAgreementOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~logic_management_client.models
+    :type models: ~azure.mgmt.logic.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -63,7 +68,7 @@ class IntegrationAccountAgreementOperations(object):
         :type filter: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationAccountAgreementListResult or the result of cls(response)
-        :rtype: ~logic_management_client.models.IntegrationAccountAgreementListResult
+        :rtype: ~azure.mgmt.logic.models.IntegrationAccountAgreementListResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationAccountAgreementListResult"]
@@ -115,7 +120,7 @@ class IntegrationAccountAgreementOperations(object):
             if response.status_code not in [200]:
                 error = self._deserialize(models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, model=error)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -142,7 +147,7 @@ class IntegrationAccountAgreementOperations(object):
         :type agreement_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationAccountAgreement or the result of cls(response)
-        :rtype: ~logic_management_client.models.IntegrationAccountAgreement
+        :rtype: ~azure.mgmt.logic.models.IntegrationAccountAgreement
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationAccountAgreement"]
@@ -175,7 +180,7 @@ class IntegrationAccountAgreementOperations(object):
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('IntegrationAccountAgreement', pipeline_response)
 
@@ -211,7 +216,7 @@ class IntegrationAccountAgreementOperations(object):
         :param agreement_name: The integration account agreement name.
         :type agreement_name: str
         :param agreement_type: The agreement type.
-        :type agreement_type: str or ~logic_management_client.models.AgreementType
+        :type agreement_type: str or ~azure.mgmt.logic.models.AgreementType
         :param host_partner: The integration account partner that is set as host partner for this
          agreement.
         :type host_partner: str
@@ -219,11 +224,11 @@ class IntegrationAccountAgreementOperations(object):
          agreement.
         :type guest_partner: str
         :param host_identity: The business identity of the host partner.
-        :type host_identity: ~logic_management_client.models.BusinessIdentity
+        :type host_identity: ~azure.mgmt.logic.models.BusinessIdentity
         :param guest_identity: The business identity of the guest partner.
-        :type guest_identity: ~logic_management_client.models.BusinessIdentity
+        :type guest_identity: ~azure.mgmt.logic.models.BusinessIdentity
         :param content: The agreement content.
-        :type content: ~logic_management_client.models.AgreementContent
+        :type content: ~azure.mgmt.logic.models.AgreementContent
         :param location: The resource location.
         :type location: str
         :param tags: The resource tags.
@@ -232,7 +237,7 @@ class IntegrationAccountAgreementOperations(object):
         :type metadata: object
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationAccountAgreement or the result of cls(response)
-        :rtype: ~logic_management_client.models.IntegrationAccountAgreement or ~logic_management_client.models.IntegrationAccountAgreement
+        :rtype: ~azure.mgmt.logic.models.IntegrationAccountAgreement or ~azure.mgmt.logic.models.IntegrationAccountAgreement
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationAccountAgreement"]
@@ -273,7 +278,7 @@ class IntegrationAccountAgreementOperations(object):
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = None
         if response.status_code == 200:
@@ -338,7 +343,7 @@ class IntegrationAccountAgreementOperations(object):
         if response.status_code not in [200, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
           return cls(pipeline_response, None, {})
@@ -366,10 +371,10 @@ class IntegrationAccountAgreementOperations(object):
         :param not_after: The expiry time.
         :type not_after: ~datetime.datetime
         :param key_type: The key type.
-        :type key_type: str or ~logic_management_client.models.KeyType
+        :type key_type: str or ~azure.mgmt.logic.models.KeyType
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: WorkflowTriggerCallbackUrl or the result of cls(response)
-        :rtype: ~logic_management_client.models.WorkflowTriggerCallbackUrl
+        :rtype: ~azure.mgmt.logic.models.WorkflowTriggerCallbackUrl
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.WorkflowTriggerCallbackUrl"]
@@ -410,7 +415,7 @@ class IntegrationAccountAgreementOperations(object):
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('WorkflowTriggerCallbackUrl', pipeline_response)
 

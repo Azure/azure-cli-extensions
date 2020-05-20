@@ -12,6 +12,7 @@ from azure.core.async_paging import AsyncItemPaged, AsyncList
 from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
+from azure.mgmt.core.exceptions import ARMErrorFormat
 
 from ... import models
 
@@ -25,7 +26,7 @@ class WorkflowTriggerOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~logic_management_client.models
+    :type models: ~azure.mgmt.logic.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -60,7 +61,7 @@ class WorkflowTriggerOperations:
         :type filter: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: WorkflowTriggerListResult or the result of cls(response)
-        :rtype: ~logic_management_client.models.WorkflowTriggerListResult
+        :rtype: ~azure.mgmt.logic.models.WorkflowTriggerListResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.WorkflowTriggerListResult"]
@@ -112,7 +113,7 @@ class WorkflowTriggerOperations:
             if response.status_code not in [200]:
                 error = self._deserialize(models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, model=error)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -138,7 +139,7 @@ class WorkflowTriggerOperations:
         :type trigger_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: WorkflowTrigger or the result of cls(response)
-        :rtype: ~logic_management_client.models.WorkflowTrigger
+        :rtype: ~azure.mgmt.logic.models.WorkflowTrigger
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.WorkflowTrigger"]
@@ -171,7 +172,7 @@ class WorkflowTriggerOperations:
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('WorkflowTrigger', pipeline_response)
 
@@ -230,7 +231,7 @@ class WorkflowTriggerOperations:
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
           return cls(pipeline_response, None, {})
@@ -283,10 +284,10 @@ class WorkflowTriggerOperations:
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in []:
+        if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize('object', response)
-            raise HttpResponseError(response=response, model=error)
+            error = self._deserialize(models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
           return cls(pipeline_response, None, {})
@@ -310,7 +311,7 @@ class WorkflowTriggerOperations:
         :type trigger_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: JsonSchema or the result of cls(response)
-        :rtype: ~logic_management_client.models.JsonSchema
+        :rtype: ~azure.mgmt.logic.models.JsonSchema
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.JsonSchema"]
@@ -343,7 +344,7 @@ class WorkflowTriggerOperations:
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('JsonSchema', pipeline_response)
 
@@ -358,7 +359,7 @@ class WorkflowTriggerOperations:
         resource_group_name: str,
         workflow_name: str,
         trigger_name: str,
-        source: "models.WorkflowTrigger",
+        source: "models.WorkflowTriggerReference",
         **kwargs
     ) -> None:
         """Sets the state of a workflow trigger.
@@ -370,7 +371,7 @@ class WorkflowTriggerOperations:
         :param trigger_name: The workflow trigger name.
         :type trigger_name: str
         :param source: The source.
-        :type source: ~logic_management_client.models.WorkflowTrigger
+        :type source: ~azure.mgmt.logic.models.WorkflowTriggerReference
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None or the result of cls(response)
         :rtype: None
@@ -413,7 +414,7 @@ class WorkflowTriggerOperations:
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
           return cls(pipeline_response, None, {})
@@ -437,7 +438,7 @@ class WorkflowTriggerOperations:
         :type trigger_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: WorkflowTriggerCallbackUrl or the result of cls(response)
-        :rtype: ~logic_management_client.models.WorkflowTriggerCallbackUrl
+        :rtype: ~azure.mgmt.logic.models.WorkflowTriggerCallbackUrl
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.WorkflowTriggerCallbackUrl"]
@@ -470,7 +471,7 @@ class WorkflowTriggerOperations:
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('WorkflowTriggerCallbackUrl', pipeline_response)
 

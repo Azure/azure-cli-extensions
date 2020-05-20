@@ -12,6 +12,7 @@ from azure.core.async_paging import AsyncItemPaged, AsyncList
 from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
+from azure.mgmt.core.exceptions import ARMErrorFormat
 
 from ... import models
 
@@ -25,7 +26,7 @@ class WorkflowRunActionScopeRepetitionOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~logic_management_client.models
+    :type models: ~azure.mgmt.logic.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -60,7 +61,7 @@ class WorkflowRunActionScopeRepetitionOperations:
         :type action_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: WorkflowRunActionRepetitionDefinitionCollection or the result of cls(response)
-        :rtype: ~logic_management_client.models.WorkflowRunActionRepetitionDefinitionCollection
+        :rtype: ~azure.mgmt.logic.models.WorkflowRunActionRepetitionDefinitionCollection
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.WorkflowRunActionRepetitionDefinitionCollection"]
@@ -110,7 +111,7 @@ class WorkflowRunActionScopeRepetitionOperations:
             if response.status_code not in [200]:
                 error = self._deserialize(models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, model=error)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -142,7 +143,7 @@ class WorkflowRunActionScopeRepetitionOperations:
         :type repetition_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: WorkflowRunActionRepetitionDefinition or the result of cls(response)
-        :rtype: ~logic_management_client.models.WorkflowRunActionRepetitionDefinition
+        :rtype: ~azure.mgmt.logic.models.WorkflowRunActionRepetitionDefinition
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.WorkflowRunActionRepetitionDefinition"]
@@ -177,7 +178,7 @@ class WorkflowRunActionScopeRepetitionOperations:
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('WorkflowRunActionRepetitionDefinition', pipeline_response)
 

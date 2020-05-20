@@ -12,6 +12,7 @@ from azure.core.async_paging import AsyncItemPaged, AsyncList
 from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
+from azure.mgmt.core.exceptions import ARMErrorFormat
 
 from ... import models
 
@@ -25,7 +26,7 @@ class IntegrationAccountCertificateOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~logic_management_client.models
+    :type models: ~azure.mgmt.logic.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -57,7 +58,7 @@ class IntegrationAccountCertificateOperations:
         :type top: int
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationAccountCertificateListResult or the result of cls(response)
-        :rtype: ~logic_management_client.models.IntegrationAccountCertificateListResult
+        :rtype: ~azure.mgmt.logic.models.IntegrationAccountCertificateListResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationAccountCertificateListResult"]
@@ -107,7 +108,7 @@ class IntegrationAccountCertificateOperations:
             if response.status_code not in [200]:
                 error = self._deserialize(models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, model=error)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -133,7 +134,7 @@ class IntegrationAccountCertificateOperations:
         :type certificate_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationAccountCertificate or the result of cls(response)
-        :rtype: ~logic_management_client.models.IntegrationAccountCertificate
+        :rtype: ~azure.mgmt.logic.models.IntegrationAccountCertificate
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationAccountCertificate"]
@@ -166,7 +167,7 @@ class IntegrationAccountCertificateOperations:
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('IntegrationAccountCertificate', pipeline_response)
 
@@ -184,8 +185,10 @@ class IntegrationAccountCertificateOperations:
         location: Optional[str] = None,
         tags: Optional[Dict[str, str]] = None,
         metadata: Optional[object] = None,
-        key: Optional["models.KeyVaultKeyReference"] = None,
         public_certificate: Optional[str] = None,
+        key_vault: Optional["models.KeyVaultKeyReferenceKeyVault"] = None,
+        key_name: Optional[str] = None,
+        key_version: Optional[str] = None,
         **kwargs
     ) -> "models.IntegrationAccountCertificate":
         """Creates or updates an integration account certificate.
@@ -202,19 +205,23 @@ class IntegrationAccountCertificateOperations:
         :type tags: dict[str, str]
         :param metadata: The metadata.
         :type metadata: object
-        :param key: The key details in the key vault.
-        :type key: ~logic_management_client.models.KeyVaultKeyReference
         :param public_certificate: The public certificate.
         :type public_certificate: str
+        :param key_vault: The key vault reference.
+        :type key_vault: ~azure.mgmt.logic.models.KeyVaultKeyReferenceKeyVault
+        :param key_name: The private key name in key vault.
+        :type key_name: str
+        :param key_version: The private key version in key vault.
+        :type key_version: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationAccountCertificate or the result of cls(response)
-        :rtype: ~logic_management_client.models.IntegrationAccountCertificate or ~logic_management_client.models.IntegrationAccountCertificate
+        :rtype: ~azure.mgmt.logic.models.IntegrationAccountCertificate or ~azure.mgmt.logic.models.IntegrationAccountCertificate
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationAccountCertificate"]
         error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        _certificate = models.IntegrationAccountCertificate(location=location, tags=tags, metadata=metadata, key=key, public_certificate=public_certificate)
+        _certificate = models.IntegrationAccountCertificate(location=location, tags=tags, metadata=metadata, public_certificate=public_certificate, key_vault=key_vault, key_name=key_name, key_version=key_version)
         api_version = "2019-05-01"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -249,7 +256,7 @@ class IntegrationAccountCertificateOperations:
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = None
         if response.status_code == 200:
@@ -313,7 +320,7 @@ class IntegrationAccountCertificateOperations:
         if response.status_code not in [200, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
           return cls(pipeline_response, None, {})
