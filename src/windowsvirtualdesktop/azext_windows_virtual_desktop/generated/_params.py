@@ -10,7 +10,6 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
-from knack.arguments import CLIArgumentType
 from azure.cli.core.commands.parameters import (
     tags_type,
     get_three_state_flag,

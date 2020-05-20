@@ -19,7 +19,6 @@ class AddWindowsVirtualDesktopHostpoolCreateRegistrationInfo(argparse.Action):
         action = self.get_action(values, option_string)
         namespace.registration_info = action
 
-
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
             properties = defaultdict(list)
@@ -45,7 +44,6 @@ class AddWindowsVirtualDesktopHostpoolUpdateRegistrationInfo(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
         namespace.registration_info = action
-
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:

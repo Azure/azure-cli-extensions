@@ -12,21 +12,21 @@
 import json
 
 
-def windows_virtual_desktop_workspace_list(cmd, client,
+def windows_virtual_desktop_workspace_list(client,
                                            resource_group_name=None):
     if resource_group_name:
         return client.list_by_resource_group(resource_group_name=resource_group_name)
     return client.list_by_subscription()
 
 
-def windows_virtual_desktop_workspace_show(cmd, client,
+def windows_virtual_desktop_workspace_show(client,
                                            resource_group_name,
                                            workspace_name):
     return client.get(resource_group_name=resource_group_name,
                       workspace_name=workspace_name)
 
 
-def windows_virtual_desktop_workspace_create(cmd, client,
+def windows_virtual_desktop_workspace_create(client,
                                              resource_group_name,
                                              workspace_name,
                                              location,
@@ -43,7 +43,7 @@ def windows_virtual_desktop_workspace_create(cmd, client,
                                    application_group_references=application_group_references)
 
 
-def windows_virtual_desktop_workspace_update(cmd, client,
+def windows_virtual_desktop_workspace_update(client,
                                              resource_group_name,
                                              workspace_name,
                                              tags=None,
@@ -60,14 +60,14 @@ def windows_virtual_desktop_workspace_update(cmd, client,
                          application_group_references=application_group_references)
 
 
-def windows_virtual_desktop_workspace_delete(cmd, client,
+def windows_virtual_desktop_workspace_delete(client,
                                              resource_group_name,
                                              workspace_name):
     return client.delete(resource_group_name=resource_group_name,
                          workspace_name=workspace_name)
 
 
-def windows_virtual_desktop_applicationgroup_list(cmd, client,
+def windows_virtual_desktop_applicationgroup_list(client,
                                                   resource_group_name=None,
                                                   filter=None):
     if resource_group_name:
@@ -76,14 +76,14 @@ def windows_virtual_desktop_applicationgroup_list(cmd, client,
     return client.list_by_subscription(filter=filter)
 
 
-def windows_virtual_desktop_applicationgroup_show(cmd, client,
+def windows_virtual_desktop_applicationgroup_show(client,
                                                   resource_group_name,
                                                   application_group_name):
     return client.get(resource_group_name=resource_group_name,
                       application_group_name=application_group_name)
 
 
-def windows_virtual_desktop_applicationgroup_create(cmd, client,
+def windows_virtual_desktop_applicationgroup_create(client,
                                                     resource_group_name,
                                                     application_group_name,
                                                     location,
@@ -102,7 +102,7 @@ def windows_virtual_desktop_applicationgroup_create(cmd, client,
                                    application_group_type=application_group_type)
 
 
-def windows_virtual_desktop_applicationgroup_update(cmd, client,
+def windows_virtual_desktop_applicationgroup_update(client,
                                                     resource_group_name,
                                                     application_group_name,
                                                     tags=None,
@@ -117,28 +117,28 @@ def windows_virtual_desktop_applicationgroup_update(cmd, client,
                          friendly_name=friendly_name)
 
 
-def windows_virtual_desktop_applicationgroup_delete(cmd, client,
+def windows_virtual_desktop_applicationgroup_delete(client,
                                                     resource_group_name,
                                                     application_group_name):
     return client.delete(resource_group_name=resource_group_name,
                          application_group_name=application_group_name)
 
 
-def windows_virtual_desktop_hostpool_list(cmd, client,
+def windows_virtual_desktop_hostpool_list(client,
                                           resource_group_name=None):
     if resource_group_name:
         return client.list_by_resource_group(resource_group_name=resource_group_name)
     return client.list()
 
 
-def windows_virtual_desktop_hostpool_show(cmd, client,
+def windows_virtual_desktop_hostpool_show(client,
                                           resource_group_name,
                                           host_pool_name):
     return client.get(resource_group_name=resource_group_name,
                       host_pool_name=host_pool_name)
 
 
-def windows_virtual_desktop_hostpool_create(cmd, client,
+def windows_virtual_desktop_hostpool_create(client,
                                             resource_group_name,
                                             host_pool_name,
                                             location,
@@ -173,7 +173,7 @@ def windows_virtual_desktop_hostpool_create(cmd, client,
                                    sso_context=sso_context)
 
 
-def windows_virtual_desktop_hostpool_update(cmd, client,
+def windows_virtual_desktop_hostpool_update(client,
                                             resource_group_name,
                                             host_pool_name,
                                             tags=None,
@@ -204,7 +204,7 @@ def windows_virtual_desktop_hostpool_update(cmd, client,
                          sso_context=sso_context)
 
 
-def windows_virtual_desktop_hostpool_delete(cmd, client,
+def windows_virtual_desktop_hostpool_delete(client,
                                             resource_group_name,
                                             host_pool_name,
                                             force=None):

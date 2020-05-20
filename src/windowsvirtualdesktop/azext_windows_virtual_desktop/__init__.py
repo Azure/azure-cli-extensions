@@ -20,8 +20,8 @@ class DesktopVirtualizationAPIClientCommandsLoader(AzCommandsLoader):
         windows_virtual_desktop_custom = CliCommandType(
             operations_tmpl='azext_windows_virtual_desktop.custom#{}',
             client_factory=cf_windows_virtual_desktop)
-        super(DesktopVirtualizationAPIClientCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                                           custom_command_type=windows_virtual_desktop_custom)
+        parent = super(DesktopVirtualizationAPIClientCommandsLoader, self)
+        parent.__init__(cli_ctx=cli_ctx, custom_command_type=windows_virtual_desktop_custom)
 
     def load_command_table(self, args):
         from azext_windows_virtual_desktop.generated.commands import load_command_table
