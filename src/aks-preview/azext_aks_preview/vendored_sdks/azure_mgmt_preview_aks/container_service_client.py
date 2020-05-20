@@ -115,6 +115,7 @@ class ContainerServiceClient(MultiApiClientMixin, SDKClient):
            * 2020-01-01: :mod:`v2020_01_01_.models<azure.mgmt.containerservice.v2020_01_01.models>`
            * 2020-02-01: :mod:`v2020_02_01_.models<azure.mgmt.containerservice.v2020_02_01.models>`
            * 2020-03-01: :mod:`v2020_03_01_.models<azure.mgmt.containerservice.v2020_03_01.models>`
+           * 2020-04-01: :mod:`v2020_04_01_.models<azure.mgmt.containerservice.v2020_04_01.models>`
         """
         if api_version == '2017-07-01':
             from .v2017_07_01 import models
@@ -149,6 +150,9 @@ class ContainerServiceClient(MultiApiClientMixin, SDKClient):
         elif api_version == '2020-03-01':
             from .v2020_03_01 import models
             return models
+        elif api_version == '2020-04-01':
+            from .v2020_04_01 import models
+            return models
         raise NotImplementedError("APIVersion {} is not available".format(api_version))
 
     @property
@@ -161,7 +165,8 @@ class ContainerServiceClient(MultiApiClientMixin, SDKClient):
            * 2019-10-01: :class:`AgentPoolsOperations<azure.mgmt.containerservice.v2019_10_01.operations.AgentPoolsOperations>`
            * 2020-01-01: :class:`AgentPoolsOperations<azure.mgmt.containerservice.v2020_01_01.operations.AgentPoolsOperations>`
            * 2020-02-01: :class:`AgentPoolsOperations<azure.mgmt.containerservice.v2020_02_01.operations.AgentPoolsOperations>`
-           * 2020-03-01: :class:`AgentPoolsOperations<azure.mgmt.containerservice.v2020_03_01.operations.AgentPoolsOperations>` 
+           * 2020-03-01: :class:`AgentPoolsOperations<azure.mgmt.containerservice.v2020_03_01.operations.AgentPoolsOperations>`
+           * 2020-04-01: :class:`AgentPoolsOperations<azure.mgmt.containerservice.v2020_04_01.operations.AgentPoolsOperations>`
         """
         api_version = self._get_api_version('agent_pools')
         if api_version == '2019-02-01':
@@ -178,6 +183,8 @@ class ContainerServiceClient(MultiApiClientMixin, SDKClient):
             from .v2020_02_01.operations import AgentPoolsOperations as OperationClass
         elif api_version == '2020-03-01':
             from .v2020_03_01.operations import AgentPoolsOperations as OperationClass
+        elif api_version == '2020-04-01':
+            from .v2020_04_01.operations import AgentPoolsOperations as OperationClass
         else:
             raise NotImplementedError("APIVersion {} is not available".format(api_version))
         return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
@@ -224,7 +231,8 @@ class ContainerServiceClient(MultiApiClientMixin, SDKClient):
            * 2019-10-01: :class:`ManagedClustersOperations<azure.mgmt.containerservice.v2019_10_01.operations.ManagedClustersOperations>`
            * 2020-01-01: :class:`ManagedClustersOperations<azure.mgmt.containerservice.v2020_01_01.operations.ManagedClustersOperations>`
            * 2020-02-01: :class:`ManagedClustersOperations<azure.mgmt.containerservice.v2020_02_01.operations.ManagedClustersOperations>`
-           * 2020-03-01: :class:`ManagedClustersOperations<azure.mgmt.containerservice.v2020_03_01.operations.ManagedClustersOperations>` 
+           * 2020-03-01: :class:`ManagedClustersOperations<azure.mgmt.containerservice.v2020_03_01.operations.ManagedClustersOperations>`
+           * 2020-04-01: :class:`ManagedClustersOperations<azure.mgmt.containerservice.v2020_04_01.operations.ManagedClustersOperations>`
         """
         api_version = self._get_api_version('managed_clusters')
         if api_version == '2018-03-31':
@@ -245,6 +253,8 @@ class ContainerServiceClient(MultiApiClientMixin, SDKClient):
             from .v2020_02_01.operations import ManagedClustersOperations as OperationClass
         elif api_version == '2020-03-01':
             from .v2020_03_01.operations import ManagedClustersOperations as OperationClass
+        elif api_version == '2020-04-01':
+            from .v2020_04_01.operations import ManagedClustersOperations as OperationClass
         else:
             raise NotImplementedError("APIVersion {} is not available".format(api_version))
         return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
@@ -275,6 +285,7 @@ class ContainerServiceClient(MultiApiClientMixin, SDKClient):
            * 2020-01-01: :class:`Operations<azure.mgmt.containerservice.v2020_01_01.operations.Operations>`
            * 2020-02-01: :class:`Operations<azure.mgmt.containerservice.v2020_02_01.operations.Operations>`
            * 2020-03-01: :class:`Operations<azure.mgmt.containerservice.v2020_03_01.operations.Operations>`
+           * 2020-04-01: :class:`Operations<azure.mgmt.containerservice.v2020_04_01.operations.Operations>`
         """
         api_version = self._get_api_version('operations')
         if api_version == '2018-03-31':
@@ -295,6 +306,8 @@ class ContainerServiceClient(MultiApiClientMixin, SDKClient):
             from .v2020_02_01.operations import Operations as OperationClass
         elif api_version == '2020-03-01':
             from .v2020_03_01.operations import Operations as OperationClass
+        elif api_version == '2020-04-01':
+            from .v2020_04_01.operations import Operations as OperationClass
         else:
             raise NotImplementedError("APIVersion {} is not available".format(api_version))
         return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
