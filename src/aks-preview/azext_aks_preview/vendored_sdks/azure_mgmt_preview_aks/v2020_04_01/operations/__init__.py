@@ -9,15 +9,12 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .v2017_07_01.models import *
-from .v2018_03_31.models import *
-from .v2018_08_01_preview.models import *
-from .v2018_09_30_preview.models import *
-from .v2019_02_01.models import *
-from .v2019_04_01.models import *
-from .v2019_08_01.models import *
-from .v2019_10_01.models import *
-from .v2020_01_01.models import *
-from .v2020_02_01.models import *
-from .v2020_03_01.models import *
-from .v2020_04_01.models import *
+from ._operations import Operations
+from ._managed_clusters_operations import ManagedClustersOperations
+from ._agent_pools_operations import AgentPoolsOperations
+
+__all__ = [
+    'Operations',
+    'ManagedClustersOperations',
+    'AgentPoolsOperations',
+]
