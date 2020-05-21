@@ -92,7 +92,6 @@ def validate_cosmos_type(namespace):
                 "Cosmosdb with type {} should specify collection name".format(type))
 
 
-
 def validate_log_limit(namespace):
     temp_limit = None
     try:
