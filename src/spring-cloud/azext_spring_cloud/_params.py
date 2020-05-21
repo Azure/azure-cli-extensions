@@ -8,8 +8,8 @@ from knack.arguments import CLIArgumentType
 from azure.cli.core.commands.parameters import get_enum_type, get_three_state_flag
 from azure.cli.core.commands.parameters import (name_type, get_location_type, resource_group_name_type)
 from ._validators import (validate_env, validate_cosmos_type, validate_resource_id, validate_location,
-                          validate_name, validate_app_name, validate_deployment_name, validate_nodes_count,
-                          validate_log_lines, validate_log_limit, validate_log_since, validate_sku)
+                          validate_name, validate_app_name, validate_deployment_name, validate_log_lines, 
+                          validate_log_limit, validate_log_since, validate_sku)
 from ._utils import ApiType
 
 from .vendored_sdks.appplatform.models import RuntimeVersion, TestKeyType
@@ -100,12 +100,9 @@ def load_arguments(self, _):
 
     for scope in ['spring-cloud app deploy', 'spring-cloud app scale']:
         with self.argument_context(scope) as c:
-            c.argument('cpu', type=int,
-                       help='Number of virtual cpu cores per instance.', validator=validate_nodes_count)
-            c.argument('memory', type=int,
-                       help='Number of GB of memory per instance.', validator=validate_nodes_count)
-            c.argument('instance_count', type=int,
-                       help='Number of instance.', validator=validate_nodes_count)
+            c.argument('cpu', type=int, help='Number of virtual cpu cores per instance.')
+            c.argument('memory', type=int, help='Number of GB of memory per instance.')
+            c.argument('instance_count', type=int, help='Number of instance.')
 
     for scope in ['spring-cloud app deploy', 'spring-cloud app deployment create']:
         with self.argument_context(scope) as c:
