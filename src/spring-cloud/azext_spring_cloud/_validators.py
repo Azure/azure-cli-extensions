@@ -31,6 +31,12 @@ def validate_location(namespace):
                                       for piece in location_slice])
 
 
+def validate_sku(namespace):
+    namespace.sku = namespace.sku.upper()
+    if namespace.sku not in ['BASIC', 'STANDARD']:
+        raise CLIError("The pricing tier only accept value [Basic, Standard]")
+
+
 def validate_name(namespace):
     namespace.name = namespace.name.lower()
     matchObj = match(r'^[a-z][a-z0-9-]{2,30}[a-z0-9]$', namespace.name)

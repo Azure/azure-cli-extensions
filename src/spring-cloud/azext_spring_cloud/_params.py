@@ -9,7 +9,7 @@ from azure.cli.core.commands.parameters import get_enum_type, get_three_state_fl
 from azure.cli.core.commands.parameters import (name_type, get_location_type, resource_group_name_type)
 from ._validators import (validate_env, validate_cosmos_type, validate_resource_id, validate_location,
                           validate_name, validate_app_name, validate_deployment_name, validate_nodes_count,
-                          validate_log_lines, validate_log_limit, validate_log_since)
+                          validate_log_lines, validate_log_limit, validate_log_since, validate_sku)
 from ._utils import ApiType
 
 from .vendored_sdks.appplatform.models import RuntimeVersion, TestKeyType
@@ -31,8 +31,11 @@ def load_arguments(self, _):
             '--name', '-n'], help='Name of Azure Spring Cloud.')
 
     with self.argument_context('spring-cloud create') as c:
-        c.argument('location', arg_type=get_location_type(
-            self.cli_ctx), validator=validate_location)
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=validate_location)
+        c.argument('sku', type=str, validator=validate_sku, help='Name of SKU, the value is "Basic" or "Standard"')
+
+    with self.argument_context('spring-cloud update') as c:
+        c.argument('sku', type=str, validator=validate_sku, help='Name of SKU, the value is "Basic" or "Standard"')
 
     with self.argument_context('spring-cloud test-endpoint renew-key') as c:
         c.argument('type', type=str, arg_type=get_enum_type(
