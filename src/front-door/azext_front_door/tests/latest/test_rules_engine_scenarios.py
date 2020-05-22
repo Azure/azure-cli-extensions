@@ -98,12 +98,17 @@ class RulesEngineScenarioTests(ScenarioTest):
         """Step 9: Add a Forward Route Override action to the rule"""
         self.cmd('network front-door rules-engine rule action add -f {front_door} -g {rg} '
                  '--rules-engine-name {rules_engine} --name {rule1} --action-type '
-                 'ForwardRouteOverride --backend-pool DefaultBackendPool --caching Enabled',
+                 'ForwardRouteOverride --backend-pool DefaultBackendPool --caching Enabled '
+                 '--query-parameter-strip-directive StripOnly --query-parameters "a=b,x=y&p=q" '
+                 '--cache-duration P5DT1H30M30S',
                  checks=[
                      self.check('length(rules[0].action.routeConfigurationOverride)', 5),
                      self.check('contains(rules[0].action.routeConfigurationOverride.odatatype, `FrontdoorForwardingConfiguration`)', True),
                      self.check('contains(rules[0].action.routeConfigurationOverride.backendPool.id, `DefaultBackendPool`)', True),
-                     self.check('length(rules[0].action.routeConfigurationOverride.cacheConfiguration)', 4)
+                     self.check('length(rules[0].action.routeConfigurationOverride.cacheConfiguration)', 4),
+                     self.check('rules[0].action.routeConfigurationOverride.cacheConfiguration.queryParameterStripDirective', 'StripOnly'),
+                     self.check('rules[0].action.routeConfigurationOverride.cacheConfiguration.queryParameters', 'a=b,x=y&p=q'),
+                     self.check('rules[0].action.routeConfigurationOverride.cacheConfiguration.cacheDuration', '5 days, 1:30:30')
                  ])
 
         """Step 10: Add a Redirect Route Override action to the rule"""
@@ -146,21 +151,30 @@ class RulesEngineScenarioTests(ScenarioTest):
                      self.check('rules[0].matchConditions[1].transforms', ['Lowercase'])
                  ])
 
-        """Step 14: List all the match conditions in a rule"""
+        """Step 14: Add a match condition with no match values to the rule"""
+        self.cmd('network front-door rules-engine rule condition add -f {front_door} -g {rg} '
+                 '-r {rules_engine} --name {rule1} --match-variable RequestPath --operator Any',
+                 checks=[
+                     self.check('length(rules[0].matchConditions)', 3),
+                     self.check('rules[0].matchConditions[2].rulesEngineMatchVariable', 'RequestPath'),
+                     self.check('rules[0].matchConditions[2].rulesEngineOperator', 'Any')
+                 ])
+
+        """Step 15: List all the match conditions in a rule"""
         self.cmd('network front-door rules-engine rule condition list -f {front_door} -g {rg} '
                  '--rules-engine-name {rules_engine} --name {rule1}',
                  checks=[
-                     self.check('length(@)', 2)
+                     self.check('length(@)', 3)
                  ])
 
-        """Step 15: Remove a match condition from a rule"""
+        """Step 16: Remove a match condition from a rule"""
         self.cmd('network front-door rules-engine rule condition remove -f {front_door} -g {rg} '
                  '--rules-engine-name {rules_engine} --name {rule1} --index 0',
                  checks=[
-                     self.check('length(rules[0].matchConditions)', 1)
+                     self.check('length(rules[0].matchConditions)', 2)
                  ])
 
-        """Step 16: Remove a Route Override action from a rule"""
+        """Step 17: Remove a Route Override action from a rule"""
         self.cmd('network front-door rules-engine rule action remove -f {front_door} -g {rg} '
                  '--rules-engine-name {rules_engine} --name {rule1} --action-type '
                  'ForwardRouteOverride',
@@ -168,7 +182,7 @@ class RulesEngineScenarioTests(ScenarioTest):
                      self.check('rules[0].routeConfigurationOverride', None)
                  ])
 
-        """Step 17: Remove a Header action from a rule"""
+        """Step 18: Remove a Header action from a rule"""
         self.cmd('network front-door rules-engine rule action remove -f {front_door} -g {rg} '
                  '--rules-engine-name {rules_engine} --name {rule2} --action-type '
                  'ResponseHeader --index 1',
@@ -176,14 +190,14 @@ class RulesEngineScenarioTests(ScenarioTest):
                      self.check('length(rules[1].action.responseHeaderActions)', 1)
                  ])
 
-        """Step 18: Delete a rule from a Rules Engine configuration"""
+        """Step 19: Delete a rule from a Rules Engine configuration"""
         self.cmd('network front-door rules-engine rule delete -f {front_door} -g {rg} '
                  '--rules-engine-name {rules_engine} --name {rule2}',
                  checks=[
                      self.check('length(rules)', 1)
                  ])
 
-        """Step 19: List all the Rules Engine configurations in a Front Door"""
+        """Step 20: List all the Rules Engine configurations in a Front Door"""
         self.cmd('network front-door rules-engine list -f {front_door} -g {rg}',
                  checks=[
                      self.check('length(@)', 1)
