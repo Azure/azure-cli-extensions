@@ -541,7 +541,6 @@ helps['aks nodepool upgrade'] = """
         - name: --max-surge
           type: string
           short-summary: int (5) or percent (33%)  indidcating the extra nodes to use to speed upgrade
-        
 """
 
 helps['aks nodepool update'] = """
