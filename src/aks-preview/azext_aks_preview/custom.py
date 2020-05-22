@@ -1546,14 +1546,20 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument
     if kubernetes_version != '' and node_image_only:
         raise CLIError('Conflicting flags. Upgrading the Kubernetes version will also upgrade node image version. If you only want to upgrade the node version please use the "--node-image-only" option only.')
 
+    vmas_cluster = False
+    for agent_profile in instance.agent_pool_profiles:
+        if agent_profile.type.lower() == "availabilityset":
+            vmas_cluster = True
+            break
+
     if node_image_only:
         msg = "This node image upgrade operation will run across every node pool in the cluster and might take a while, do you wish to continue?"
         if not prompt_y_n(msg, default="n"):
             return None
         agent_pool_client = cf_agent_pools(cmd.cli_ctx)
         for agent_pool_profile in instance.agent_pool_profiles:
-            if agent_pool_profile.type.lower() == "availabilityset":
-                raise CLIError('This cluster is not using VirtualMachineScaleSets. Node image upgrde only operation can only be applied on VirtualMachineScaleSets cluster.')
+            if vmas_cluster:
+                raise CLIError('This cluster is not using VirtualMachineScaleSets. Node image upgrade only operation can only be applied on VirtualMachineScaleSets cluster.')
             _upgrade_single_agent_pool_node_image(agent_pool_client, resource_group_name, name, agent_pool_profile, no_wait)
         return None
 
@@ -1568,12 +1574,6 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument
 
     upgrade_all = False
     instance.kubernetes_version = kubernetes_version
-
-    vmas_cluster = False
-    for agent_profile in instance.agent_pool_profiles:
-        if agent_profile.type.lower() == "availabilityset":
-            vmas_cluster = True
-            break
 
     # for legacy clusters, we always upgrade node pools with CCP.
     if instance.max_agent_pools < 8 or vmas_cluster:
