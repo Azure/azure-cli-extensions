@@ -1,4 +1,4 @@
-# pylint: disable=too-many-lines,import-outside-toplevel
+# pylint: disable=too-many-lines
 # --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
@@ -24,21 +24,20 @@ import time
 import uuid
 import base64
 import webbrowser
-from math import isnan
-import yaml  # pylint: disable=import-error
-import colorama  # pylint: disable=import-error
-
 from six.moves.urllib.request import urlopen  # pylint: disable=import-error
 from six.moves.urllib.error import URLError  # pylint: disable=import-error
+from math import isnan
 import requests
 from knack.log import get_logger
 from knack.util import CLIError
 from knack.prompting import prompt_pass, NoTTYException
 
+import yaml  # pylint: disable=import-error
 from dateutil.relativedelta import relativedelta  # pylint: disable=import-error
 from dateutil.parser import parse  # pylint: disable=import-error
 from msrestazure.azure_exceptions import CloudError
 
+import colorama  # pylint: disable=import-error
 from tabulate import tabulate  # pylint: disable=import-error
 from azure.cli.core.api import get_config_dir
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
