@@ -517,6 +517,9 @@ helps['aks nodepool add'] = """
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+        - name: --max-surge
+          type: string
+          short-summary: int (5) or percent (33%)  indidcating the extra nodes to use to speed upgrade
 """
 
 helps['aks nodepool scale'] = """
@@ -535,6 +538,10 @@ helps['aks nodepool upgrade'] = """
         - name: --kubernetes-version -k
           type: string
           short-summary: Version of Kubernetes to upgrade the node pool to, such as "1.11.12".
+        - name: --max-surge
+          type: string
+          short-summary: int (5) or percent (33%)  indidcating the extra nodes to use to speed upgrade
+        
 """
 
 helps['aks nodepool update'] = """
@@ -556,6 +563,9 @@ helps['aks nodepool update'] = """
         - name: --max-count
           type: int
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100]
+        - name: --max-surge
+          type: string
+          short-summary: int (5) or percent (33%)  indidcating the extra nodes to use to speed upgrade
         - name: --mode
           type: string
           short-summary: The mode for a node pool which defines a node pool's primary function. If set as "System", AKS prefers system pods scheduling to node pools with mode `System`. Learn more at https://aka.ms/aks/nodepool/mode.
