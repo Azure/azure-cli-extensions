@@ -23,7 +23,7 @@ helps['costmanagement query'] = """
 \\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\
 \\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" --timeframe "MonthToDate" --scope "provid\
 ers/Microsoft.Management/managementGroups/MyMgId"
-      - name: Query in ManagementGroupQuery scope in grouping
+      - name: Query in ManagementGroupQuery scope via grouping
         text: |-
                az costmanagement query --type "Usage" --dataset-aggregation "{\\"totalCost\\":{\\"name\\":\\"PreT\
 axCost\\",\\"function\\":\\"Sum\\"}}" --dataset-grouping name="ResourceGroup" type="Dimension" --timeframe "TheLastMont\
