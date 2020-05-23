@@ -39,3 +39,52 @@ class CostManagementQueryTest(ScenarioTest):
                 self.assertEqual(cost_data['columns'][0]['type'], 'Number')
                 self.assertEqual(cost_data['columns'][1]['name'], "Currency")
                 self.assertEqual(cost_data['columns'][1]['type'], 'String')
+
+    @ResourceGroupPreparer(name_prefix='test_data_aggregation_in_subscription_scope')
+    def test_data_aggregation_in_subscription_scope(self, resource_group):
+        self.kwargs.update({
+            'scope': '/subscriptions/{}'.format(self.get_subscription_id()),
+        })
+
+        usage_type = 'ActualCost'
+        timeframe = 'TheLastMonth'
+        aggregation_expression = '\'{"totalCost": {"name": "PreTaxCost", "function": "Sum"}}\''
+
+        self.kwargs.update({
+            'usage_type': usage_type,
+            'timeframe': timeframe,
+            'aggregation_expression': aggregation_expression
+        })
+
+        cost_data = self.cmd('costmanagement query '
+                             '--type {usage_type} '
+                             '--timeframe {timeframe} '
+                             '--scope {scope} '
+                             '--dataset-aggregation {aggregation_expression}').get_output_in_json()
+
+        self.assertEqual(cost_data['type'], 'Microsoft.CostManagement/query')
+
+        self.assertEqual(len(cost_data['columns']), 3)
+        self.assertEqual(cost_data['columns'][0]['name'], 'PreTaxCost')
+        self.assertEqual(cost_data['columns'][0]['type'], 'Number')
+
+        self.assertEqual(len(cost_data['rows']), 30)
+
+    # @ResourceGroupPreparer(name_prefix='test_cm_query_in_subscription_scope_custome_timeframe')
+    # def test_cm_query_in_subscription_scope_custome_timeframe(self, resource_group):
+    #     usage_types = ['ActualCost', 'AmortizedCost', 'Usage']
+    #     timeframe = 'Custom'
+
+    #     # for usage_type in usage_types:
+
+    #     self.kwargs.update({
+    #         'usgae_type': usage_types[0],
+    #         'timeframe': timeframe,
+    #         'scope': '/subscriptions/{}'.format(self.get_subscription_id())
+    #     })
+
+    #     cost_data = self.cmd('costmanagement query '
+    #                          '--type {usgae_type} '
+    #                          '--timeframe {timeframe} '
+    #                          '--time-period from=2020-03-01T00:00:00 to=2020-05-09T00:00:00 '
+    #                          '--scope {scope} ').get_output_in_json()
