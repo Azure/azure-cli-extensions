@@ -71,6 +71,7 @@ from ._client_factory import cf_resources
 from ._client_factory import get_resource_by_name
 from ._client_factory import cf_container_registry_service
 from ._client_factory import cf_storage
+from ._client_factory import cf_agent_pools
 
 
 from ._helpers import (_populate_api_server_access_profile, _set_vm_set_type,
@@ -1534,11 +1535,33 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument
                 client,
                 resource_group_name,
                 name,
-                kubernetes_version,
+                kubernetes_version='',
                 control_plane_only=False,
                 no_wait=False,
+                node_image_only=False,
                 **kwargs):  # pylint: disable=unused-argument
+    from knack.prompting import prompt_y_n
     instance = client.get(resource_group_name, name)
+
+    if kubernetes_version != '' and node_image_only:
+        raise CLIError('Conflicting flags. Upgrading the Kubernetes version will also upgrade node image version. If you only want to upgrade the node version please use the "--node-image-only" option only.')
+
+    vmas_cluster = False
+    for agent_profile in instance.agent_pool_profiles:
+        if agent_profile.type.lower() == "availabilityset":
+            vmas_cluster = True
+            break
+
+    if node_image_only:
+        msg = "This node image upgrade operation will run across every node pool in the cluster and might take a while, do you wish to continue?"
+        if not prompt_y_n(msg, default="n"):
+            return None
+        agent_pool_client = cf_agent_pools(cmd.cli_ctx)
+        for agent_pool_profile in instance.agent_pool_profiles:
+            if vmas_cluster:
+                raise CLIError('This cluster is not using VirtualMachineScaleSets. Node image upgrade only operation can only be applied on VirtualMachineScaleSets cluster.')
+            _upgrade_single_agent_pool_node_image(agent_pool_client, resource_group_name, name, agent_pool_profile, no_wait)
+        return None
 
     if instance.kubernetes_version == kubernetes_version:
         if instance.provisioning_state == "Succeeded":
@@ -1549,16 +1572,8 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument
             logger.warning("Cluster currently in failed state. Proceeding with upgrade to existing version %s to "
                            "attempt resolution of failed cluster state.", instance.kubernetes_version)
 
-    from knack.prompting import prompt_y_n
-
     upgrade_all = False
     instance.kubernetes_version = kubernetes_version
-
-    vmas_cluster = False
-    for agent_profile in instance.agent_pool_profiles:
-        if agent_profile.type.lower() == "availabilityset":
-            vmas_cluster = True
-            break
 
     # for legacy clusters, we always upgrade node pools with CCP.
     if instance.max_agent_pools < 8 or vmas_cluster:
@@ -1590,6 +1605,12 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument
     instance.aad_profile = None
 
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
+
+
+def _upgrade_single_agent_pool_node_image(client, resource_group_name, cluster_name, agent_pool_profile, no_wait):
+    instance = client.get(resource_group_name, cluster_name, agent_pool_profile.name)
+    instance.node_image_version = 'latest'
+    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, agent_pool_profile.name, instance)
 
 
 def _handle_addons_args(cmd, addons_str, subscription_id, resource_group_name, addon_profiles=None,
@@ -2142,11 +2163,23 @@ def aks_agentpool_upgrade(cmd,  # pylint: disable=unused-argument
                           client,
                           resource_group_name,
                           cluster_name,
-                          kubernetes_version,
                           nodepool_name,
-                          no_wait=False):
+                          kubernetes_version='',
+                          no_wait=False,
+                          node_image_only=False):
+
+    from knack.prompting import prompt_y_n
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
+    if kubernetes_version != '' and node_image_only:
+        raise CLIError('Conflicting flags. Upgrading the Kubernetes version will also upgrade node image version. If you only want to upgrade the node version please use the "--node-image-only" option only.')
+
     instance.orchestrator_version = kubernetes_version
+    if node_image_only:
+        msg = "This node image upgrade operation will run across every node in this node pool and might take a while, " \
+              "do you wish to continue? "
+        if not prompt_y_n(msg, default="n"):
+            return None
+        instance.node_image_version = 'latest'
 
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
 

@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.4.47
++++++
+* Add "--node-image-only" for "az aks nodepool upgrade" and "az aks upgrade"".
+
 0.4.46
 +++++
 * Fix issues for az aks kollect on private clusters
