@@ -70,21 +70,38 @@ class CostManagementQueryTest(ScenarioTest):
 
         self.assertEqual(len(cost_data['rows']), 30)
 
-    # @ResourceGroupPreparer(name_prefix='test_cm_query_in_subscription_scope_custome_timeframe')
-    # def test_cm_query_in_subscription_scope_custome_timeframe(self, resource_group):
-    #     usage_types = ['ActualCost', 'AmortizedCost', 'Usage']
-    #     timeframe = 'Custom'
+    @ResourceGroupPreparer(name_prefix='test_cm_query_in_subscription_scope_custome_timeframe')
+    def test_data_aggregation_in_subscription_scope_custome_timeframe(self, resource_group):
+        self.kwargs.update({
+            'scope': '/subscriptions/{}'.format(self.get_subscription_id()),
+        })
 
-    #     # for usage_type in usage_types:
+        usage_types = ['ActualCost', 'AmortizedCost', 'Usage']
+        timeframe = 'Custom'
+        aggregation_expression = '\'{"totalCost": {"name": "PreTaxCost", "function": "Sum"}}\''
+        time_period = 'from=2020-03-01T00:00:00 to=2020-05-09T00:00:00 '
 
-    #     self.kwargs.update({
-    #         'usgae_type': usage_types[0],
-    #         'timeframe': timeframe,
-    #         'scope': '/subscriptions/{}'.format(self.get_subscription_id())
-    #     })
+        # for usage_type in usage_types:
 
-    #     cost_data = self.cmd('costmanagement query '
-    #                          '--type {usgae_type} '
-    #                          '--timeframe {timeframe} '
-    #                          '--time-period from=2020-03-01T00:00:00 to=2020-05-09T00:00:00 '
-    #                          '--scope {scope} ').get_output_in_json()
+        self.kwargs.update({
+            'usgae_type': usage_types[0],
+            'timeframe': timeframe,
+            'time_period': time_period,
+            'aggregation_expression': aggregation_expression
+        })
+
+        cost_data = self.cmd('costmanagement query '
+                             '--type {usgae_type} '
+                             '--timeframe {timeframe} '
+                             '--time-period {time_period} '
+                             '--scope {scope} '
+                             '--dataset-aggregation {aggregation_expression}').get_output_in_json()
+
+        self.assertEqual(cost_data['type'], 'Microsoft.CostManagement/query')
+
+        self.assertEqual(len(cost_data['columns']), 3)
+        self.assertEqual(cost_data['columns'][0]['name'], 'PreTaxCost')
+        self.assertEqual(cost_data['columns'][0]['type'], 'Number')
+
+        self.assertEqual(len(cost_data['rows']), 70)
+        self.assertEqual(cost_data['rows'][0], [186.758302, 20200301, 'USD'])
