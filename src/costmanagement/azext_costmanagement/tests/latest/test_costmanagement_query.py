@@ -17,19 +17,25 @@ class CostManagementQueryTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='test_query_without_dataset_')
     def test_cm_query_in_subscription_scope(self, resource_group):
 
-        self.kwargs.update({
-            'usgae_type': 'Usage',
-            'timeframe': 'MonthToDate',
-            'scope': '/subscriptions/{}'.format(self.get_subscription_id())
-        })
+        usage_types = ['ActualCost', 'AmortizedCost', 'Usage']
+        timeframes = ['BillingMonthToDate', 'MonthToDate', 'TheLastBillingMonth',
+                      'TheLastMonth', 'WeekToDate']
 
-        cost_data = self.cmd('costmanagement query --type {usgae_type} --timeframe {timeframe} --scope {scope}').get_output_in_json()
+        for usage_type in usage_types:
+            for timeframe in timeframes:
+                self.kwargs.update({
+                    'usgae_type': usage_type,
+                    'timeframe': timeframe,
+                    'scope': '/subscriptions/{}'.format(self.get_subscription_id())
+                })
 
-        self.assertEqual(cost_data['type'], 'Microsoft.CostManagement/query')
+                cost_data = self.cmd('costmanagement query --type {usgae_type} --timeframe {timeframe} --scope {scope}').get_output_in_json()
 
-        # assert data columns, by default, there is no actual cost data but 2 columns "UsageDate" and "Currency"
-        self.assertEqual(len(cost_data['columns']), 2)
-        self.assertEqual(cost_data['columns'][0]['name'], 'UsageDate')
-        self.assertEqual(cost_data['columns'][0]['type'], 'Number')
-        self.assertEqual(cost_data['columns'][1]['name'], "Currency")
-        self.assertEqual(cost_data['columns'][1]['type'], 'String')
+                self.assertEqual(cost_data['type'], 'Microsoft.CostManagement/query')
+
+                # assert data columns, by default, there is no actual cost data but 2 columns "UsageDate" and "Currency"
+                self.assertEqual(len(cost_data['columns']), 2)
+                self.assertEqual(cost_data['columns'][0]['name'], 'UsageDate')
+                self.assertEqual(cost_data['columns'][0]['type'], 'Number')
+                self.assertEqual(cost_data['columns'][1]['name'], "Currency")
+                self.assertEqual(cost_data['columns'][1]['type'], 'String')
