@@ -68,7 +68,7 @@ def load_arguments(self, _):
                    '\'/subscriptions/{subscriptionId}/\' for subscription scope, '
                    '\'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}\' for resourceGroup scope, '
                    '\'/providers/Microsoft.Management/managementGroups/{managementGroupId} for Management Group scope.')
-        c.argument('export_name', help='Export Name.')
+        c.argument('export_name', help='Export Name.', options_list='--name')
         c.argument('definition_type',
                    arg_type=get_enum_type(['Usage', 'ActualCost', 'AmortizedCost']),
                    help='The type of the query.')
