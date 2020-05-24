@@ -2082,7 +2082,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       min_count=None,
                       max_count=None,
                       enable_cluster_autoscaler=False,
-                      node_taints=None,
+                      node_taints=[],
                       priority=CONST_SCALE_SET_PRIORITY_REGULAR,
                       eviction_policy=CONST_SPOT_EVICTION_POLICY_DELETE,
                       spot_max_price=float('nan'),
@@ -2098,18 +2098,9 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                            "use 'aks nodepool list' to get current list of node pool".format(nodepool_name))
 
     upgradeSettings = AgentPoolUpgradeSettings()
-    taints_array = []
+    taints_array = [taint.strip() for taint in node_taints.split(',')]
 
-    if node_taints is not None:
-        for taint in node_taints.split(','):
-            try:
-                taint = taint.strip()
-                taints_array.append(taint)
-            except ValueError:
-                raise CLIError('Taint does not match allowed values. Expect value such as "special=true:NoSchedule".')
-
-    if node_vm_size is None:
-        node_vm_size = "Standard_D2s_v3"
+    node_vm_size = node_vm_size or "Standard_D2s_v3"
 
     if max_surge:
         upgradeSettings.max_surge = max_surge
