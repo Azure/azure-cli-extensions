@@ -60,6 +60,7 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClus
 from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClusterAddonProfile
 from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClusterAgentPoolProfile
 from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import AgentPool
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import AgentPoolUpgradeSettings
 from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ContainerServiceStorageProfileTypes
 from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClusterIdentity
 from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClusterAPIServerAccessProfile
@@ -2086,6 +2087,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       eviction_policy=CONST_SPOT_EVICTION_POLICY_DELETE,
                       spot_max_price=float('nan'),
                       labels=None,
+                      max_surge=None,
                       mode="User",
                       aks_custom_headers=None,
                       no_wait=False):
@@ -2095,6 +2097,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
             raise CLIError("Node pool {} already exists, please try a different name, "
                            "use 'aks nodepool list' to get current list of node pool".format(nodepool_name))
 
+    upgradeSettings = AgentPoolUpgradeSettings()
     taints_array = []
 
     if node_taints is not None:
@@ -2107,6 +2110,9 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
 
     if node_vm_size is None:
         node_vm_size = "Standard_D2s_v3"
+
+    if max_surge:
+        upgradeSettings.max_surge = max_surge
 
     agent_pool = AgentPool(
         name=nodepool_name,
@@ -2124,6 +2130,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         enable_node_public_ip=enable_node_public_ip,
         node_taints=taints_array,
         scale_set_priority=priority,
+        upgrade_settings=upgradeSettings,
         mode=mode
     )
 
@@ -2166,7 +2173,8 @@ def aks_agentpool_upgrade(cmd,  # pylint: disable=unused-argument
                           nodepool_name,
                           kubernetes_version='',
                           no_wait=False,
-                          node_image_only=False):
+                          node_image_only=False,
+                          max_surge=None,):
 
     from knack.prompting import prompt_y_n
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
@@ -2181,6 +2189,12 @@ def aks_agentpool_upgrade(cmd,  # pylint: disable=unused-argument
             return None
         instance.node_image_version = 'latest'
 
+    if not instance.upgrade_settings:
+        instance.upgrade_settings = AgentPoolUpgradeSettings()
+
+    if max_surge:
+        instance.upgrade_settings.max_surge = max_surge
+
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
 
 
@@ -2194,16 +2208,17 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
                          disable_cluster_autoscaler=False,
                          update_cluster_autoscaler=False,
                          min_count=None, max_count=None,
+                         max_surge=None,
                          mode=None,
                          no_wait=False):
 
     update_autoscaler = enable_cluster_autoscaler + disable_cluster_autoscaler + update_cluster_autoscaler
 
-    if (update_autoscaler != 1 and not tags and not mode):
+    if (update_autoscaler != 1 and not tags and not mode and not max_surge):
         raise CLIError('Please specify one or more of "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
-                       '"--tags" or "--mode"')
+                       '"--tags" or "--mode" or "--max-surge"')
 
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
 
@@ -2232,6 +2247,12 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
                            'to enable cluster with min-count and max-count.')
         instance.min_count = int(min_count)
         instance.max_count = int(max_count)
+
+    if not instance.upgrade_settings:
+        instance.upgrade_settings = AgentPoolUpgradeSettings()
+
+    if max_surge:
+        instance.upgrade_settings.max_surge = max_surge
 
     if disable_cluster_autoscaler:
         if not instance.enable_auto_scaling:
