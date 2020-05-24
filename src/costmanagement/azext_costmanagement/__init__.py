@@ -9,7 +9,7 @@
 # --------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-from azext_costmanagement.generated._help import helps  # pylint: disable=unused-import
+# from azext_costmanagement.generated._help import helps  # pylint: disable=unused-import
 from azext_costmanagement.manual._help import helps  # pylint: disable=unused-import
 
 
