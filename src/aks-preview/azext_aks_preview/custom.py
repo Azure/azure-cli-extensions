@@ -2110,6 +2110,10 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
     if node_vm_size is None:
         node_vm_size = "Standard_D2s_v3"
 
+    upgradeSettings = AgentPoolUpgradeSettings()
+    if max_surge:
+        upgradeSettings.max_surge = max_surge
+
     agent_pool = AgentPool(
         name=nodepool_name,
         tags=tags,
@@ -2126,7 +2130,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         enable_node_public_ip=enable_node_public_ip,
         node_taints=taints_array,
         scale_set_priority=priority,
-        upgrade_settings=AgentPoolUpgradeSettings(max_surge=max_surge),
+        upgrade_settings=upgradeSettings,
         mode=mode
     )
 
@@ -2185,8 +2189,11 @@ def aks_agentpool_upgrade(cmd,  # pylint: disable=unused-argument
             return None
         instance.node_image_version = 'latest'
 
+    if not instance.upgrade_settings:
+        instance.upgrade_settings = AgentPoolUpgradeSettings()
+
     if max_surge:
-        instance.upgrade_settings = AgentPoolUpgradeSettings(max_surge=max_surge)
+        instance.upgrade_settings.max_surge = max_surge
 
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
 
@@ -2241,8 +2248,11 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
         instance.min_count = int(min_count)
         instance.max_count = int(max_count)
 
+    if not instance.upgrade_settings:
+        instance.upgrade_settings = AgentPoolUpgradeSettings()
+
     if max_surge:
-        instance.upgrade_settings = AgentPoolUpgradeSettings(max_surge=max_surge)
+        instance.upgrade_settings.max_surge = max_surge
 
     if disable_cluster_autoscaler:
         if not instance.enable_auto_scaling:
