@@ -30,7 +30,9 @@ def setup(test, rg):
 def step__locations_post_locations_listconsortiums(test, rg):
     test.cmd('az blockchain consortium list '
              '--location "{southeastasia}"',
-             checks=[])
+             checks=[
+                 test.check('length(value)', 0)
+             ])
 
 
 # EXAMPLE: /BlockchainMembers/put/BlockchainMembers_Create
@@ -59,14 +61,18 @@ def step__blockchainmembers_put_blockchainmembers_create(test, rg):
 def step__blockchainmembers_get_blockchainmembers_list(test, rg):
     test.cmd('az blockchain member list '
              '--resource-group "{rg}"',
-             checks=[])
+             checks=[
+                 test.check('length(@)', 1)
+             ])
 
 
 # EXAMPLE: /BlockchainMembers/get/BlockchainMembers_ListAll
 @try_manual
 def step__blockchainmembers_get_blockchainmembers_listall(test, rg):
     test.cmd('az blockchain member list',
-             checks=[])
+             checks=[
+                 test.check('length(@)', 1)
+             ])
 
 
 # EXAMPLE: /BlockchainMembers/get/BlockchainMembers_ListConsortiumMembers
@@ -75,7 +81,9 @@ def step__blockchainmembers_get_blockchainmembers_listconsortiummembers(test, rg
     test.cmd('az blockchain member list-consortium-member '
              '--name "{contosemember1}" '
              '--resource-group "{rg}"',
-             checks=[])
+             checks=[
+                 test.check('length(@)', 1)
+             ])
 
 
 # EXAMPLE: /BlockchainMembers/post/BlockchainMembers_ListApiKeys
@@ -84,7 +92,9 @@ def step__blockchainmembers_post_blockchainmembers_listapikeys(test, rg):
     test.cmd('az blockchain member list-api-key '
              '--name "{contosemember1}" '
              '--resource-group "{rg}"',
-             checks=[])
+             checks=[
+                 test.check('length(keys)', 2)
+             ])
 
 
 # EXAMPLE: /BlockchainMembers/post/BlockchainMembers_ListRegenerateApiKeys
@@ -94,7 +104,9 @@ def step__blockchainmembers_post_blockchainmembers_listregenerateapikeys(test, r
              '--key-name "key1" '
              '--name "{contosemember1}" '
              '--resource-group "{rg}"',
-             checks=[])
+             checks=[
+                 test.check('length(keys)', 2)
+             ])
 
 
 # EXAMPLE: /BlockchainMembers/patch/BlockchainMembers_Update
