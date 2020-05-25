@@ -65,7 +65,6 @@ class CostManagementExportTest(ScenarioTest):
         with self.assertRaisesRegex(SystemExit, '3'):
             self.cmd('costmanagement export show --scope {scope} --name {export_name}')
 
-
     def _test_export_create_in_subscription_scope_assertions(self, data, export_name, storage_container, storage_account_id, timeframe):
         self.assertEqual(data['name'], export_name)
         self.assertIsNone(data['aggregation'], None)
