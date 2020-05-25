@@ -82,15 +82,15 @@ helps['costmanagement export show'] = """
     examples:
       - name: Show an export in a ManagementGroup scope
         text: |-
-               az costmanagement export show --export-name "TestExport" --scope "providers/Microsoft.Management/managem\
+               az costmanagement export show --name "TestExport" --scope "providers/Microsoft.Management/managem\
 entGroups/TestMG"
       - name: Show an export in a ResourceGroup scope
         text: |-
-               az costmanagement export show --export-name "TestExport" --scope "subscriptions/00000000-0000-0000-0000-\
+               az costmanagement export show --name "TestExport" --scope "subscriptions/00000000-0000-0000-0000-\
 000000000000/resourceGroups/MYDEVTESTRG"
       - name: Show an export in a Subscription scope
         text: |-
-               az costmanagement export show --export-name "TestExport" --scope "subscriptions/00000000-0000-0000-0000-\
+               az costmanagement export show --name "TestExport" --scope "subscriptions/00000000-0000-0000-0000-\
 000000000000"
 """
 
@@ -101,7 +101,7 @@ equest. You may obtain the latest eTag by performing a get operation. Create ope
     examples:
       - name: Create an export for ManagementGroup scope
         text: |-
-               az costmanagement export create --export-name "TestExport" --definition-type "Usage" --definition-datase\
+               az costmanagement export create --name "TestExport" --definition-type "Usage" --definition-datase\
 t-aggregation "{\\"costSum\\":{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}" --definition-dataset-configurati\
 on columns="Date" columns="MeterId" columns="InstanceId" columns="ResourceLocation" columns="PreTaxCost" --definition-d\
 ataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"va\
@@ -115,7 +115,7 @@ geAccounts/ccmeastusdiag182" root-folder-path="ad-hoc" --schedule-recurrence "We
 nagementGroups/TestMG"
       - name: Create an export for ResourceGroup scope
         text: |-
-               az costmanagement export create --export-name "TestExport" --definition-type "Usage" --definition-datase\
+               az costmanagement export create --name "TestExport" --definition-type "Usage" --definition-datase\
 t-aggregation "{\\"costSum\\":{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}" --definition-dataset-configurati\
 on columns="Date" columns="MeterId" columns="InstanceId" columns="ResourceLocation" columns="PreTaxCost" --definition-d\
 ataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"va\
@@ -129,7 +129,7 @@ geAccounts/ccmeastusdiag182" root-folder-path="ad-hoc" --schedule-recurrence "We
 0000-000000000000/resourceGroups/MYDEVTESTRG"
       - name: Create an export for Subscription scope
         text: |-
-               az costmanagement export create --export-name "TestExport" --definition-type "Usage" --definition-datase\
+               az costmanagement export create --name "TestExport" --definition-type "Usage" --definition-datase\
 t-aggregation "{\\"costSum\\":{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}" --definition-dataset-configurati\
 on columns="Date" columns="MeterId" columns="InstanceId" columns="ResourceLocation" columns="PreTaxCost" --definition-d\
 ataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"va\
@@ -150,7 +150,7 @@ equest. You may obtain the latest eTag by performing a get operation. Create ope
     examples:
       - name: Update an export for ManagementGroup scope
         text: |-
-               az costmanagement export update --export-name "TestExport" --definition-type "Usage" --definition-datase\
+               az costmanagement export update --name "TestExport" --definition-type "Usage" --definition-datase\
 t-aggregation "{\\"costSum\\":{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}" --definition-dataset-configurati\
 on columns="Date" columns="MeterId" columns="InstanceId" columns="ResourceLocation" columns="PreTaxCost" --definition-d\
 ataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"va\
@@ -164,7 +164,7 @@ geAccounts/ccmeastusdiag182" root-folder-path="ad-hoc" --schedule-recurrence "We
 nagementGroups/TestMG"
       - name: Update an export for ResourceGroup scope
         text: |-
-               az costmanagement export update --export-name "TestExport" --definition-type "Usage" --definition-datase\
+               az costmanagement export update --name "TestExport" --definition-type "Usage" --definition-datase\
 t-aggregation "{\\"costSum\\":{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}" --definition-dataset-configurati\
 on columns="Date" columns="MeterId" columns="InstanceId" columns="ResourceLocation" columns="PreTaxCost" --definition-d\
 ataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"va\
@@ -178,7 +178,7 @@ geAccounts/ccmeastusdiag182" root-folder-path="ad-hoc" --schedule-recurrence "We
 0000-000000000000/resourceGroups/MYDEVTESTRG"
       - name: Update an export for Subscription scope
         text: |-
-               az costmanagement export update --export-name "TestExport" --definition-type "Usage" --definition-datase\
+               az costmanagement export update --name "TestExport" --definition-type "Usage" --definition-datase\
 t-aggregation "{\\"costSum\\":{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}" --definition-dataset-configurati\
 on columns="Date" columns="MeterId" columns="InstanceId" columns="ResourceLocation" columns="PreTaxCost" --definition-d\
 ataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"va\
@@ -198,14 +198,14 @@ helps['costmanagement export delete'] = """
     examples:
       - name: delete an export for a ManagementGroup scope
         text: |-
-               az costmanagement export delete --export-name "TestExport" --scope "providers/Microsoft.Management/manag\
+               az costmanagement export delete --name "TestExport" --scope "providers/Microsoft.Management/manag\
 ementGroups/TestMG"
       - name: delete an export for ResourceGroup scope
         text: |-
-               az costmanagement export delete --export-name "TestExport" --scope "subscriptions/00000000-0000-0000-000\
+               az costmanagement export delete --name "TestExport" --scope "subscriptions/00000000-0000-0000-000\
 0-000000000000/resourceGroups/MYDEVTESTRG"
       - name: delete an export for Subscription scope
         text: |-
-               az costmanagement export delete --export-name "TestExport" --scope "subscriptions/00000000-0000-0000-000\
+               az costmanagement export delete --name "TestExport" --scope "subscriptions/00000000-0000-0000-000\
 0-000000000000"
 """
