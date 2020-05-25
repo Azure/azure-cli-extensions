@@ -45,7 +45,7 @@ def step__blockchainmembers_put_blockchainmembers_create(test, rg):
              '--protocol "Quorum" '
              '--name "{contosemember1}" '
              '--resource-group "{rg}" '
-             '--firewall-rules rule-name=mytest start-ip-address=10.0.0.0 end-in-address=10.0.1.0 '
+             '--firewall-rules rule-name=mytest start-ip-address=10.0.0.0 end-ip-address=10.0.1.0 '
              '--no-wait',
              checks=[])
     test.cmd('az blockchain member wait --created '
