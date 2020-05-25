@@ -126,6 +126,7 @@ def step__transactionnodes_put_transactionnodes_create(test, rg):
              '--name "{txnode2}"',
              checks=[])
     test.cmd('az blockchain transaction-node wait --created '
+             '--member-name "{contosemember1}" '
              '--resource-group "{rg}" '
              '--name "{txnode2}"',
              checks=[])
