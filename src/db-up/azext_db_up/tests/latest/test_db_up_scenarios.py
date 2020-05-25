@@ -11,6 +11,7 @@ from azure.cli.testsdk import (ScenarioTest, JMESPathCheck, ResourceGroupPrepare
 
 
 class DbUpTests(ScenarioTest):
+    @live_only()
     def test_mysql_flow(self):
         group = self.create_random_name(prefix='group', length=24)
         server = self.create_random_name(prefix='server', length=24)
@@ -42,6 +43,7 @@ class DbUpTests(ScenarioTest):
             password, user, database, server)).get_output_in_json()
         self.assertEqual(output, output_mirror)
 
+    @live_only()
     def test_postgres_flow(self):
         group = self.create_random_name(prefix='group', length=24)
         server = self.create_random_name(prefix='server', length=24)
