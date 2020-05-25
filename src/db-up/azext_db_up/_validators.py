@@ -67,8 +67,8 @@ def _process_db_up_namespace(cmd, namespace, db_type=None):
         try:
             resource_client.resource_groups.get(namespace.resource_group_name)
             create_resource_group = False
-        except CloudError as ex:  # throw exception when resource group name is invalid
-            raise ex
+        except CloudError:  # throw exception when resource group name is invalid
+            pass
 
     if create_resource_group:
         # create new resource group

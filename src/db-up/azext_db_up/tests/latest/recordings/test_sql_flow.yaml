@@ -31,7 +31,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 25 May 2020 06:06:10 GMT
+      - Mon, 25 May 2020 08:24:06 GMT
       expires:
       - '-1'
       pragma:
@@ -46,53 +46,7 @@ interactions:
       code: 404
       message: Not Found
 - request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - sql up
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -s
-      User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-resource/9.0.0 Azure-SDK-For-Python AZURECLI/2.6.0
-      accept-language:
-      - en-US
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/group000001?api-version=2019-07-01
-  response:
-    body:
-      string: '{"error":{"code":"ResourceGroupNotFound","message":"Resource group
-        ''group000001'' could not be found."}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '116'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 25 May 2020 06:06:10 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-failure-cause:
-      - gateway
-    status:
-      code: 404
-      message: Not Found
-- request:
-    body: '{"location": "westus2"}'
+    body: '{"location": "eastus"}'
     headers:
       Accept:
       - application/json
@@ -103,7 +57,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '23'
+      - '22'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
@@ -117,16 +71,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/group000001?api-version=2019-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001","name":"group000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"StorageType":"Standard_LRS","type":"test"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001","name":"group000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"StorageType":"Standard_LRS","type":"test"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '298'
+      - '297'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 25 May 2020 06:06:12 GMT
+      - Mon, 25 May 2020 08:24:08 GMT
       expires:
       - '-1'
       pragma:
@@ -136,7 +90,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1198'
     status:
       code: 201
       message: Created
@@ -172,7 +126,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 25 May 2020 06:06:13 GMT
+      - Mon, 25 May 2020 08:24:08 GMT
       expires:
       - '-1'
       pragma:
@@ -187,8 +141,8 @@ interactions:
       code: 404
       message: Not Found
 - request:
-    body: '{"location": "westus2", "properties": {"administratorLogin": "cockyHornet9",
-      "administratorLoginPassword": "b7ccda42-aa02-4435-ad0a-5dc00e779f0d", "version":
+    body: '{"location": "eastus", "properties": {"administratorLogin": "thirdChile0",
+      "administratorLoginPassword": "8d28cece-4fcd-4da3-adc9-d2fdb2701983", "version":
       "12.0"}}'
     headers:
       Accept:
@@ -200,7 +154,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '166'
+      - '164'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
@@ -214,10 +168,10 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/servers/server000002?api-version=2015-05-01-preview
   response:
     body:
-      string: '{"operation":"UpsertLogicalServer","startTime":"2020-05-25T06:06:17.753Z"}'
+      string: '{"operation":"UpsertLogicalServer","startTime":"2020-05-25T08:24:14.363Z"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/locations/westus2/serverAzureAsyncOperation/27a9443f-3ba7-4657-a7f1-f89687a517e8?api-version=2015-05-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/locations/eastus/serverAzureAsyncOperation/cd5077d0-5534-44eb-a7e4-90030fa926a3?api-version=2015-05-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -225,11 +179,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 25 May 2020 06:06:17 GMT
+      - Mon, 25 May 2020 08:24:14 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/locations/westus2/serverOperationResults/27a9443f-3ba7-4657-a7f1-f89687a517e8?api-version=2015-05-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/locations/eastus/serverOperationResults/cd5077d0-5534-44eb-a7e4-90030fa926a3?api-version=2015-05-01-preview
       pragma:
       - no-cache
       server:
@@ -260,10 +214,10 @@ interactions:
       - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
         azure-mgmt-sql/0.11.0 Azure-SDK-For-Python AZURECLI/2.6.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/locations/westus2/serverAzureAsyncOperation/27a9443f-3ba7-4657-a7f1-f89687a517e8?api-version=2015-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/locations/eastus/serverAzureAsyncOperation/cd5077d0-5534-44eb-a7e4-90030fa926a3?api-version=2015-05-01-preview
   response:
     body:
-      string: '{"name":"27a9443f-3ba7-4657-a7f1-f89687a517e8","status":"InProgress","startTime":"2020-05-25T06:06:17.753Z"}'
+      string: '{"name":"cd5077d0-5534-44eb-a7e4-90030fa926a3","status":"InProgress","startTime":"2020-05-25T08:24:14.363Z"}'
     headers:
       cache-control:
       - no-cache
@@ -272,7 +226,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 25 May 2020 06:06:19 GMT
+      - Mon, 25 May 2020 08:24:15 GMT
       expires:
       - '-1'
       pragma:
@@ -307,10 +261,10 @@ interactions:
       - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
         azure-mgmt-sql/0.11.0 Azure-SDK-For-Python AZURECLI/2.6.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/locations/westus2/serverAzureAsyncOperation/27a9443f-3ba7-4657-a7f1-f89687a517e8?api-version=2015-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/locations/eastus/serverAzureAsyncOperation/cd5077d0-5534-44eb-a7e4-90030fa926a3?api-version=2015-05-01-preview
   response:
     body:
-      string: '{"name":"27a9443f-3ba7-4657-a7f1-f89687a517e8","status":"InProgress","startTime":"2020-05-25T06:06:17.753Z"}'
+      string: '{"name":"cd5077d0-5534-44eb-a7e4-90030fa926a3","status":"InProgress","startTime":"2020-05-25T08:24:14.363Z"}'
     headers:
       cache-control:
       - no-cache
@@ -319,7 +273,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 25 May 2020 06:06:20 GMT
+      - Mon, 25 May 2020 08:24:17 GMT
       expires:
       - '-1'
       pragma:
@@ -354,10 +308,10 @@ interactions:
       - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
         azure-mgmt-sql/0.11.0 Azure-SDK-For-Python AZURECLI/2.6.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/locations/westus2/serverAzureAsyncOperation/27a9443f-3ba7-4657-a7f1-f89687a517e8?api-version=2015-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/locations/eastus/serverAzureAsyncOperation/cd5077d0-5534-44eb-a7e4-90030fa926a3?api-version=2015-05-01-preview
   response:
     body:
-      string: '{"name":"27a9443f-3ba7-4657-a7f1-f89687a517e8","status":"InProgress","startTime":"2020-05-25T06:06:17.753Z"}'
+      string: '{"name":"cd5077d0-5534-44eb-a7e4-90030fa926a3","status":"InProgress","startTime":"2020-05-25T08:24:14.363Z"}'
     headers:
       cache-control:
       - no-cache
@@ -366,7 +320,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 25 May 2020 06:06:21 GMT
+      - Mon, 25 May 2020 08:24:18 GMT
       expires:
       - '-1'
       pragma:
@@ -401,10 +355,10 @@ interactions:
       - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
         azure-mgmt-sql/0.11.0 Azure-SDK-For-Python AZURECLI/2.6.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/locations/westus2/serverAzureAsyncOperation/27a9443f-3ba7-4657-a7f1-f89687a517e8?api-version=2015-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/locations/eastus/serverAzureAsyncOperation/cd5077d0-5534-44eb-a7e4-90030fa926a3?api-version=2015-05-01-preview
   response:
     body:
-      string: '{"name":"27a9443f-3ba7-4657-a7f1-f89687a517e8","status":"InProgress","startTime":"2020-05-25T06:06:17.753Z"}'
+      string: '{"name":"cd5077d0-5534-44eb-a7e4-90030fa926a3","status":"InProgress","startTime":"2020-05-25T08:24:14.363Z"}'
     headers:
       cache-control:
       - no-cache
@@ -413,7 +367,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 25 May 2020 06:06:24 GMT
+      - Mon, 25 May 2020 08:24:39 GMT
       expires:
       - '-1'
       pragma:
@@ -448,57 +402,10 @@ interactions:
       - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
         azure-mgmt-sql/0.11.0 Azure-SDK-For-Python AZURECLI/2.6.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/locations/westus2/serverAzureAsyncOperation/27a9443f-3ba7-4657-a7f1-f89687a517e8?api-version=2015-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/locations/eastus/serverAzureAsyncOperation/cd5077d0-5534-44eb-a7e4-90030fa926a3?api-version=2015-05-01-preview
   response:
     body:
-      string: '{"name":"27a9443f-3ba7-4657-a7f1-f89687a517e8","status":"InProgress","startTime":"2020-05-25T06:06:17.753Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '108'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 25 May 2020 06:06:45 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - sql up
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -s
-      User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-sql/0.11.0 Azure-SDK-For-Python AZURECLI/2.6.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/locations/westus2/serverAzureAsyncOperation/27a9443f-3ba7-4657-a7f1-f89687a517e8?api-version=2015-05-01-preview
-  response:
-    body:
-      string: '{"name":"27a9443f-3ba7-4657-a7f1-f89687a517e8","status":"Succeeded","startTime":"2020-05-25T06:06:17.753Z"}'
+      string: '{"name":"cd5077d0-5534-44eb-a7e4-90030fa926a3","status":"Succeeded","startTime":"2020-05-25T08:24:14.363Z"}'
     headers:
       cache-control:
       - no-cache
@@ -507,7 +414,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 25 May 2020 06:07:05 GMT
+      - Mon, 25 May 2020 08:25:00 GMT
       expires:
       - '-1'
       pragma:
@@ -545,16 +452,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/servers/server000002?api-version=2015-05-01-preview
   response:
     body:
-      string: '{"kind":"v12.0","properties":{"administratorLogin":"cockyHornet9","version":"12.0","state":"Ready","fullyQualifiedDomainName":"server000002.database.windows.net"},"location":"westus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/servers/server000002","name":"server000002","type":"Microsoft.Sql/servers"}'
+      string: '{"kind":"v12.0","properties":{"administratorLogin":"thirdChile0","version":"12.0","state":"Ready","fullyQualifiedDomainName":"server000002.database.windows.net"},"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/servers/server000002","name":"server000002","type":"Microsoft.Sql/servers"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '417'
+      - '415'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 25 May 2020 06:07:05 GMT
+      - Mon, 25 May 2020 08:25:01 GMT
       expires:
       - '-1'
       pragma:
@@ -598,19 +505,19 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/servers/server000002/firewallRules/azure-access?api-version=2014-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/servers/server000002/firewallRules/azure-access","name":"azure-access","type":"Microsoft.Sql/servers/firewallRules","location":"West
-        US 2","kind":"v12.0","properties":{"startIpAddress":"0.0.0.0","endIpAddress":"0.0.0.0"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/servers/server000002/firewallRules/azure-access","name":"azure-access","type":"Microsoft.Sql/servers/firewallRules","location":"East
+        US","kind":"v12.0","properties":{"startIpAddress":"0.0.0.0","endIpAddress":"0.0.0.0"}}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '356'
+      - '354'
       content-type:
       - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
       dataserviceversion:
       - 3.0;
       date:
-      - Mon, 25 May 2020 06:07:07 GMT
+      - Mon, 25 May 2020 08:25:02 GMT
       preference-applied:
       - return-content
       server:
@@ -620,7 +527,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1195'
+      - '1198'
     status:
       code: 201
       message: Created
@@ -656,7 +563,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 25 May 2020 06:07:08 GMT
+      - Mon, 25 May 2020 08:25:03 GMT
       expires:
       - '-1'
       pragma:
@@ -671,7 +578,7 @@ interactions:
       code: 404
       message: Not Found
 - request:
-    body: '{"location": "westus2"}'
+    body: '{"location": "eastus"}'
     headers:
       Accept:
       - application/json
@@ -682,7 +589,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '23'
+      - '22'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
@@ -696,22 +603,22 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/servers/server000002/databases/sampledb?api-version=2017-10-01-preview
   response:
     body:
-      string: '{"operation":"CreateLogicalDatabase","startTime":"2020-05-25T06:07:12.43Z"}'
+      string: '{"operation":"CreateLogicalDatabase","startTime":"2020-05-25T08:25:07.617Z"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/locations/westus2/databaseAzureAsyncOperation/4d032462-31b6-4ad0-8571-d0b7ffa45f14?api-version=2017-10-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/locations/eastus/databaseAzureAsyncOperation/50603bdc-4828-4559-8d94-ff64cdda4ba5?api-version=2017-10-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '75'
+      - '76'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 25 May 2020 06:07:12 GMT
+      - Mon, 25 May 2020 08:25:07 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/locations/westus2/databaseOperationResults/4d032462-31b6-4ad0-8571-d0b7ffa45f14?api-version=2017-10-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/locations/eastus/databaseOperationResults/50603bdc-4828-4559-8d94-ff64cdda4ba5?api-version=2017-10-01-preview
       pragma:
       - no-cache
       server:
@@ -721,7 +628,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1197'
     status:
       code: 202
       message: Accepted
@@ -742,19 +649,19 @@ interactions:
       - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
         azure-mgmt-sql/0.11.0 Azure-SDK-For-Python AZURECLI/2.6.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/locations/westus2/databaseAzureAsyncOperation/4d032462-31b6-4ad0-8571-d0b7ffa45f14?api-version=2017-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/locations/eastus/databaseAzureAsyncOperation/50603bdc-4828-4559-8d94-ff64cdda4ba5?api-version=2017-10-01-preview
   response:
     body:
-      string: '{"name":"4d032462-31b6-4ad0-8571-d0b7ffa45f14","status":"InProgress","startTime":"2020-05-25T06:07:12.43Z"}'
+      string: '{"name":"50603bdc-4828-4559-8d94-ff64cdda4ba5","status":"InProgress","startTime":"2020-05-25T08:25:07.617Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '107'
+      - '108'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 25 May 2020 06:07:27 GMT
+      - Mon, 25 May 2020 08:25:23 GMT
       expires:
       - '-1'
       pragma:
@@ -789,19 +696,19 @@ interactions:
       - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
         azure-mgmt-sql/0.11.0 Azure-SDK-For-Python AZURECLI/2.6.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/locations/westus2/databaseAzureAsyncOperation/4d032462-31b6-4ad0-8571-d0b7ffa45f14?api-version=2017-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/locations/eastus/databaseAzureAsyncOperation/50603bdc-4828-4559-8d94-ff64cdda4ba5?api-version=2017-10-01-preview
   response:
     body:
-      string: '{"name":"4d032462-31b6-4ad0-8571-d0b7ffa45f14","status":"InProgress","startTime":"2020-05-25T06:07:12.43Z"}'
+      string: '{"name":"50603bdc-4828-4559-8d94-ff64cdda4ba5","status":"InProgress","startTime":"2020-05-25T08:25:07.617Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '107'
+      - '108'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 25 May 2020 06:07:43 GMT
+      - Mon, 25 May 2020 08:25:38 GMT
       expires:
       - '-1'
       pragma:
@@ -836,19 +743,19 @@ interactions:
       - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
         azure-mgmt-sql/0.11.0 Azure-SDK-For-Python AZURECLI/2.6.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/locations/westus2/databaseAzureAsyncOperation/4d032462-31b6-4ad0-8571-d0b7ffa45f14?api-version=2017-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/locations/eastus/databaseAzureAsyncOperation/50603bdc-4828-4559-8d94-ff64cdda4ba5?api-version=2017-10-01-preview
   response:
     body:
-      string: '{"name":"4d032462-31b6-4ad0-8571-d0b7ffa45f14","status":"Succeeded","startTime":"2020-05-25T06:07:12.43Z"}'
+      string: '{"name":"50603bdc-4828-4559-8d94-ff64cdda4ba5","status":"Succeeded","startTime":"2020-05-25T08:25:07.617Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '106'
+      - '107'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 25 May 2020 06:07:58 GMT
+      - Mon, 25 May 2020 08:25:54 GMT
       expires:
       - '-1'
       pragma:
@@ -886,16 +793,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/servers/server000002/databases/sampledb?api-version=2017-10-01-preview
   response:
     body:
-      string: '{"sku":{"name":"GP_Gen5","tier":"GeneralPurpose","family":"Gen5","capacity":2},"kind":"v12.0,user,vcore","properties":{"collation":"SQL_Latin1_General_CP1_CI_AS","maxSizeBytes":34359738368,"status":"Online","databaseId":"348989bb-f439-45ba-a218-5b1d3a01cc54","creationDate":"2020-05-25T06:07:46.277Z","currentServiceObjectiveName":"GP_Gen5_2","requestedServiceObjectiveName":"GP_Gen5_2","defaultSecondaryLocation":"westcentralus","catalogCollation":"SQL_Latin1_General_CP1_CI_AS","zoneRedundant":false,"licenseType":"LicenseIncluded","maxLogSizeBytes":10307502080,"earliestRestoreDate":"2020-05-25T06:37:46.277Z","readScale":"Disabled","readReplicaCount":0,"currentSku":{"name":"GP_Gen5","tier":"GeneralPurpose","family":"Gen5","capacity":2}},"location":"westus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/servers/server000002/databases/sampledb","name":"sampledb","type":"Microsoft.Sql/servers/databases"}'
+      string: '{"sku":{"name":"GP_Gen5","tier":"GeneralPurpose","family":"Gen5","capacity":2},"kind":"v12.0,user,vcore","properties":{"collation":"SQL_Latin1_General_CP1_CI_AS","maxSizeBytes":34359738368,"status":"Online","databaseId":"24f226cf-53a9-436c-b40a-7ec3ea616146","creationDate":"2020-05-25T08:25:44.287Z","currentServiceObjectiveName":"GP_Gen5_2","requestedServiceObjectiveName":"GP_Gen5_2","defaultSecondaryLocation":"westus","catalogCollation":"SQL_Latin1_General_CP1_CI_AS","zoneRedundant":false,"licenseType":"LicenseIncluded","maxLogSizeBytes":10307502080,"earliestRestoreDate":"2020-05-25T08:55:44.287Z","readScale":"Disabled","readReplicaCount":0,"currentSku":{"name":"GP_Gen5","tier":"GeneralPurpose","family":"Gen5","capacity":2}},"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/servers/server000002/databases/sampledb","name":"sampledb","type":"Microsoft.Sql/servers/databases"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '998'
+      - '990'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 25 May 2020 06:07:59 GMT
+      - Mon, 25 May 2020 08:25:55 GMT
       expires:
       - '-1'
       pragma:
@@ -914,7 +821,7 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"properties": {"startIpAddress": "167.220.255.115", "endIpAddress": "167.220.255.115"}}'
+    body: '{"properties": {"startIpAddress": "167.220.255.51", "endIpAddress": "167.220.255.51"}}'
     headers:
       Accept:
       - application/json
@@ -925,7 +832,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '88'
+      - '86'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
@@ -939,19 +846,19 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/servers/server000002/firewallRules/devbox?api-version=2014-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/servers/server000002/firewallRules/devbox","name":"devbox","type":"Microsoft.Sql/servers/firewallRules","location":"West
-        US 2","kind":"v12.0","properties":{"startIpAddress":"167.220.255.115","endIpAddress":"167.220.255.115"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/servers/server000002/firewallRules/devbox","name":"devbox","type":"Microsoft.Sql/servers/firewallRules","location":"East
+        US","kind":"v12.0","properties":{"startIpAddress":"167.220.255.51","endIpAddress":"167.220.255.51"}}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '360'
+      - '356'
       content-type:
       - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
       dataserviceversion:
       - 3.0;
       date:
-      - Mon, 25 May 2020 06:08:12 GMT
+      - Mon, 25 May 2020 08:26:10 GMT
       preference-applied:
       - return-content
       server:
@@ -961,7 +868,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1194'
+      - '1198'
     status:
       code: 201
       message: Created
@@ -985,16 +892,59 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/group000001?api-version=2019-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001","name":"group000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"StorageType":"Standard_LRS","type":"test"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001","name":"group000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"StorageType":"Standard_LRS","type":"test"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '298'
+      - '297'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 25 May 2020 06:08:14 GMT
+      - Mon, 25 May 2020 08:26:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - sql up
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-resource/9.0.0 Azure-SDK-For-Python AZURECLI/2.6.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/group000001?api-version=2019-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001","name":"group000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"StorageType":"Standard_LRS","type":"test"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '297'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 25 May 2020 08:26:13 GMT
       expires:
       - '-1'
       pragma:
@@ -1028,16 +978,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/servers/server000002?api-version=2015-05-01-preview
   response:
     body:
-      string: '{"kind":"v12.0","properties":{"administratorLogin":"cockyHornet9","version":"12.0","state":"Ready","fullyQualifiedDomainName":"server000002.database.windows.net"},"location":"westus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/servers/server000002","name":"server000002","type":"Microsoft.Sql/servers"}'
+      string: '{"kind":"v12.0","properties":{"administratorLogin":"thirdChile0","version":"12.0","state":"Ready","fullyQualifiedDomainName":"server000002.database.windows.net"},"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/servers/server000002","name":"server000002","type":"Microsoft.Sql/servers"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '417'
+      - '415'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 25 May 2020 06:08:15 GMT
+      - Mon, 25 May 2020 08:26:14 GMT
       expires:
       - '-1'
       pragma:
@@ -1075,16 +1025,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/servers/server000002/databases/sampledb?api-version=2017-10-01-preview
   response:
     body:
-      string: '{"sku":{"name":"GP_Gen5","tier":"GeneralPurpose","family":"Gen5","capacity":2},"kind":"v12.0,user,vcore","properties":{"collation":"SQL_Latin1_General_CP1_CI_AS","maxSizeBytes":34359738368,"status":"Online","databaseId":"348989bb-f439-45ba-a218-5b1d3a01cc54","creationDate":"2020-05-25T06:07:46.277Z","currentServiceObjectiveName":"GP_Gen5_2","requestedServiceObjectiveName":"GP_Gen5_2","defaultSecondaryLocation":"westcentralus","catalogCollation":"SQL_Latin1_General_CP1_CI_AS","zoneRedundant":false,"licenseType":"LicenseIncluded","maxLogSizeBytes":10307502080,"earliestRestoreDate":"2020-05-25T06:37:46.277Z","readScale":"Disabled","readReplicaCount":0,"currentSku":{"name":"GP_Gen5","tier":"GeneralPurpose","family":"Gen5","capacity":2}},"location":"westus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/servers/server000002/databases/sampledb","name":"sampledb","type":"Microsoft.Sql/servers/databases"}'
+      string: '{"sku":{"name":"GP_Gen5","tier":"GeneralPurpose","family":"Gen5","capacity":2},"kind":"v12.0,user,vcore","properties":{"collation":"SQL_Latin1_General_CP1_CI_AS","maxSizeBytes":34359738368,"status":"Online","databaseId":"24f226cf-53a9-436c-b40a-7ec3ea616146","creationDate":"2020-05-25T08:25:44.287Z","currentServiceObjectiveName":"GP_Gen5_2","requestedServiceObjectiveName":"GP_Gen5_2","defaultSecondaryLocation":"westus","catalogCollation":"SQL_Latin1_General_CP1_CI_AS","zoneRedundant":false,"licenseType":"LicenseIncluded","maxLogSizeBytes":10307502080,"earliestRestoreDate":"2020-05-25T08:55:44.287Z","readScale":"Disabled","readReplicaCount":0,"currentSku":{"name":"GP_Gen5","tier":"GeneralPurpose","family":"Gen5","capacity":2}},"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/servers/server000002/databases/sampledb","name":"sampledb","type":"Microsoft.Sql/servers/databases"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '998'
+      - '990'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 25 May 2020 06:08:16 GMT
+      - Mon, 25 May 2020 08:26:14 GMT
       expires:
       - '-1'
       pragma:
@@ -1124,16 +1074,61 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/group000001?api-version=2019-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001","name":"group000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"StorageType":"Standard_LRS","type":"test"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001","name":"group000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"StorageType":"Standard_LRS","type":"test"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '298'
+      - '297'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 25 May 2020 06:08:27 GMT
+      - Mon, 25 May 2020 08:26:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - sql up
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -p
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-resource/9.0.0 Azure-SDK-For-Python AZURECLI/2.6.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/group000001?api-version=2019-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001","name":"group000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"StorageType":"Standard_LRS","type":"test"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '297'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 25 May 2020 08:26:28 GMT
       expires:
       - '-1'
       pragma:
@@ -1169,16 +1164,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/servers/server000002?api-version=2015-05-01-preview
   response:
     body:
-      string: '{"kind":"v12.0","properties":{"administratorLogin":"cockyHornet9","version":"12.0","state":"Ready","fullyQualifiedDomainName":"server000002.database.windows.net"},"location":"westus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/servers/server000002","name":"server000002","type":"Microsoft.Sql/servers"}'
+      string: '{"kind":"v12.0","properties":{"administratorLogin":"thirdChile0","version":"12.0","state":"Ready","fullyQualifiedDomainName":"server000002.database.windows.net"},"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/servers/server000002","name":"server000002","type":"Microsoft.Sql/servers"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '417'
+      - '415'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 25 May 2020 06:08:27 GMT
+      - Mon, 25 May 2020 08:26:29 GMT
       expires:
       - '-1'
       pragma:
@@ -1197,7 +1192,7 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"properties": {"administratorLoginPassword": "b7ccda42-aa02-4435-ad0a-5dc00e779f0d"}}'
+    body: '{"properties": {"administratorLoginPassword": "8d28cece-4fcd-4da3-adc9-d2fdb2701983"}}'
     headers:
       Accept:
       - application/json
@@ -1222,10 +1217,10 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/servers/server000002?api-version=2015-05-01-preview
   response:
     body:
-      string: '{"operation":"UpsertLogicalServer","startTime":"2020-05-25T06:08:28.68Z"}'
+      string: '{"operation":"UpsertLogicalServer","startTime":"2020-05-25T08:26:30.41Z"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/locations/westus2/serverAzureAsyncOperation/e43e593a-0a77-41ab-82e2-432793da1f22?api-version=2015-05-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/locations/eastus/serverAzureAsyncOperation/9957b119-ae9b-4108-92f6-da0eb077763c?api-version=2015-05-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -1233,11 +1228,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 25 May 2020 06:08:28 GMT
+      - Mon, 25 May 2020 08:26:30 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/locations/westus2/serverOperationResults/e43e593a-0a77-41ab-82e2-432793da1f22?api-version=2015-05-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/locations/eastus/serverOperationResults/9957b119-ae9b-4108-92f6-da0eb077763c?api-version=2015-05-01-preview
       pragma:
       - no-cache
       server:
@@ -1247,7 +1242,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '1197'
     status:
       code: 202
       message: Accepted
@@ -1268,10 +1263,10 @@ interactions:
       - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
         azure-mgmt-sql/0.11.0 Azure-SDK-For-Python AZURECLI/2.6.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/locations/westus2/serverAzureAsyncOperation/e43e593a-0a77-41ab-82e2-432793da1f22?api-version=2015-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/locations/eastus/serverAzureAsyncOperation/9957b119-ae9b-4108-92f6-da0eb077763c?api-version=2015-05-01-preview
   response:
     body:
-      string: '{"name":"e43e593a-0a77-41ab-82e2-432793da1f22","status":"Succeeded","startTime":"2020-05-25T06:08:28.68Z"}'
+      string: '{"name":"9957b119-ae9b-4108-92f6-da0eb077763c","status":"Succeeded","startTime":"2020-05-25T08:26:30.41Z"}'
     headers:
       cache-control:
       - no-cache
@@ -1280,7 +1275,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 25 May 2020 06:08:29 GMT
+      - Mon, 25 May 2020 08:26:31 GMT
       expires:
       - '-1'
       pragma:
@@ -1318,16 +1313,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/servers/server000002?api-version=2015-05-01-preview
   response:
     body:
-      string: '{"kind":"v12.0","properties":{"administratorLogin":"cockyHornet9","version":"12.0","state":"Ready","fullyQualifiedDomainName":"server000002.database.windows.net"},"location":"westus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/servers/server000002","name":"server000002","type":"Microsoft.Sql/servers"}'
+      string: '{"kind":"v12.0","properties":{"administratorLogin":"thirdChile0","version":"12.0","state":"Ready","fullyQualifiedDomainName":"server000002.database.windows.net"},"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/servers/server000002","name":"server000002","type":"Microsoft.Sql/servers"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '417'
+      - '415'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 25 May 2020 06:08:30 GMT
+      - Mon, 25 May 2020 08:26:32 GMT
       expires:
       - '-1'
       pragma:
@@ -1367,16 +1362,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/servers/server000002/databases/sampledb?api-version=2017-10-01-preview
   response:
     body:
-      string: '{"sku":{"name":"GP_Gen5","tier":"GeneralPurpose","family":"Gen5","capacity":2},"kind":"v12.0,user,vcore","properties":{"collation":"SQL_Latin1_General_CP1_CI_AS","maxSizeBytes":34359738368,"status":"Online","databaseId":"348989bb-f439-45ba-a218-5b1d3a01cc54","creationDate":"2020-05-25T06:07:46.277Z","currentServiceObjectiveName":"GP_Gen5_2","requestedServiceObjectiveName":"GP_Gen5_2","defaultSecondaryLocation":"westcentralus","catalogCollation":"SQL_Latin1_General_CP1_CI_AS","zoneRedundant":false,"licenseType":"LicenseIncluded","maxLogSizeBytes":10307502080,"earliestRestoreDate":"2020-05-25T06:37:46.277Z","readScale":"Disabled","readReplicaCount":0,"currentSku":{"name":"GP_Gen5","tier":"GeneralPurpose","family":"Gen5","capacity":2}},"location":"westus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/servers/server000002/databases/sampledb","name":"sampledb","type":"Microsoft.Sql/servers/databases"}'
+      string: '{"sku":{"name":"GP_Gen5","tier":"GeneralPurpose","family":"Gen5","capacity":2},"kind":"v12.0,user,vcore","properties":{"collation":"SQL_Latin1_General_CP1_CI_AS","maxSizeBytes":34359738368,"status":"Online","databaseId":"24f226cf-53a9-436c-b40a-7ec3ea616146","creationDate":"2020-05-25T08:25:44.287Z","currentServiceObjectiveName":"GP_Gen5_2","requestedServiceObjectiveName":"GP_Gen5_2","defaultSecondaryLocation":"westus","catalogCollation":"SQL_Latin1_General_CP1_CI_AS","zoneRedundant":false,"licenseType":"LicenseIncluded","maxLogSizeBytes":10307502080,"earliestRestoreDate":"2020-05-25T08:55:44.287Z","readScale":"Disabled","readReplicaCount":0,"currentSku":{"name":"GP_Gen5","tier":"GeneralPurpose","family":"Gen5","capacity":2}},"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/servers/server000002/databases/sampledb","name":"sampledb","type":"Microsoft.Sql/servers/databases"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '998'
+      - '990'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 25 May 2020 06:08:32 GMT
+      - Mon, 25 May 2020 08:26:33 GMT
       expires:
       - '-1'
       pragma:
@@ -1416,16 +1411,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/servers/server000002/databases/sampledb?api-version=2017-10-01-preview
   response:
     body:
-      string: '{"sku":{"name":"GP_Gen5","tier":"GeneralPurpose","family":"Gen5","capacity":2},"kind":"v12.0,user,vcore","properties":{"collation":"SQL_Latin1_General_CP1_CI_AS","maxSizeBytes":34359738368,"status":"Online","databaseId":"348989bb-f439-45ba-a218-5b1d3a01cc54","creationDate":"2020-05-25T06:07:46.277Z","currentServiceObjectiveName":"GP_Gen5_2","requestedServiceObjectiveName":"GP_Gen5_2","defaultSecondaryLocation":"westcentralus","catalogCollation":"SQL_Latin1_General_CP1_CI_AS","zoneRedundant":false,"licenseType":"LicenseIncluded","maxLogSizeBytes":10307502080,"earliestRestoreDate":"2020-05-25T06:37:46.277Z","readScale":"Disabled","readReplicaCount":0,"currentSku":{"name":"GP_Gen5","tier":"GeneralPurpose","family":"Gen5","capacity":2}},"location":"westus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/servers/server000002/databases/sampledb","name":"sampledb","type":"Microsoft.Sql/servers/databases"}'
+      string: '{"sku":{"name":"GP_Gen5","tier":"GeneralPurpose","family":"Gen5","capacity":2},"kind":"v12.0,user,vcore","properties":{"collation":"SQL_Latin1_General_CP1_CI_AS","maxSizeBytes":34359738368,"status":"Online","databaseId":"24f226cf-53a9-436c-b40a-7ec3ea616146","creationDate":"2020-05-25T08:25:44.287Z","currentServiceObjectiveName":"GP_Gen5_2","requestedServiceObjectiveName":"GP_Gen5_2","defaultSecondaryLocation":"westus","catalogCollation":"SQL_Latin1_General_CP1_CI_AS","zoneRedundant":false,"licenseType":"LicenseIncluded","maxLogSizeBytes":10307502080,"earliestRestoreDate":"2020-05-25T08:55:44.287Z","readScale":"Disabled","readReplicaCount":0,"currentSku":{"name":"GP_Gen5","tier":"GeneralPurpose","family":"Gen5","capacity":2}},"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group000001/providers/Microsoft.Sql/servers/server000002/databases/sampledb","name":"sampledb","type":"Microsoft.Sql/servers/databases"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '998'
+      - '990'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 25 May 2020 06:09:03 GMT
+      - Mon, 25 May 2020 08:27:12 GMT
       expires:
       - '-1'
       pragma:
@@ -1474,11 +1469,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 25 May 2020 06:09:08 GMT
+      - Mon, 25 May 2020 08:27:18 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUDVWMlJFUzJYVFBET1JKRVdMTVctV0VTVFVTMiIsImpvYkxvY2F0aW9uIjoid2VzdHVzMiJ9?api-version=2019-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUElaQ0pLVkJXRExNWTdYSDRHQlotRUFTVFVTIiwiam9iTG9jYXRpb24iOiJlYXN0dXMifQ?api-version=2019-07-01
       pragma:
       - no-cache
       strict-transport-security:
@@ -1507,7 +1502,7 @@ interactions:
       - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
         azure-mgmt-resource/9.0.0 Azure-SDK-For-Python AZURECLI/2.6.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUDVWMlJFUzJYVFBET1JKRVdMTVctV0VTVFVTMiIsImpvYkxvY2F0aW9uIjoid2VzdHVzMiJ9?api-version=2019-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUElaQ0pLVkJXRExNWTdYSDRHQlotRUFTVFVTIiwiam9iTG9jYXRpb24iOiJlYXN0dXMifQ?api-version=2019-07-01
   response:
     body:
       string: ''
@@ -1517,11 +1512,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 25 May 2020 06:09:24 GMT
+      - Mon, 25 May 2020 08:27:34 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUDVWMlJFUzJYVFBET1JKRVdMTVctV0VTVFVTMiIsImpvYkxvY2F0aW9uIjoid2VzdHVzMiJ9?api-version=2019-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUElaQ0pLVkJXRExNWTdYSDRHQlotRUFTVFVTIiwiam9iTG9jYXRpb24iOiJlYXN0dXMifQ?api-version=2019-07-01
       pragma:
       - no-cache
       strict-transport-security:
@@ -1548,7 +1543,7 @@ interactions:
       - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
         azure-mgmt-resource/9.0.0 Azure-SDK-For-Python AZURECLI/2.6.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUDVWMlJFUzJYVFBET1JKRVdMTVctV0VTVFVTMiIsImpvYkxvY2F0aW9uIjoid2VzdHVzMiJ9?api-version=2019-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUElaQ0pLVkJXRExNWTdYSDRHQlotRUFTVFVTIiwiam9iTG9jYXRpb24iOiJlYXN0dXMifQ?api-version=2019-07-01
   response:
     body:
       string: ''
@@ -1558,11 +1553,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 25 May 2020 06:09:39 GMT
+      - Mon, 25 May 2020 08:27:51 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUDVWMlJFUzJYVFBET1JKRVdMTVctV0VTVFVTMiIsImpvYkxvY2F0aW9uIjoid2VzdHVzMiJ9?api-version=2019-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUElaQ0pLVkJXRExNWTdYSDRHQlotRUFTVFVTIiwiam9iTG9jYXRpb24iOiJlYXN0dXMifQ?api-version=2019-07-01
       pragma:
       - no-cache
       strict-transport-security:
@@ -1589,7 +1584,7 @@ interactions:
       - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
         azure-mgmt-resource/9.0.0 Azure-SDK-For-Python AZURECLI/2.6.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUDVWMlJFUzJYVFBET1JKRVdMTVctV0VTVFVTMiIsImpvYkxvY2F0aW9uIjoid2VzdHVzMiJ9?api-version=2019-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUElaQ0pLVkJXRExNWTdYSDRHQlotRUFTVFVTIiwiam9iTG9jYXRpb24iOiJlYXN0dXMifQ?api-version=2019-07-01
   response:
     body:
       string: ''
@@ -1599,11 +1594,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 25 May 2020 06:09:54 GMT
+      - Mon, 25 May 2020 08:28:06 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUDVWMlJFUzJYVFBET1JKRVdMTVctV0VTVFVTMiIsImpvYkxvY2F0aW9uIjoid2VzdHVzMiJ9?api-version=2019-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUElaQ0pLVkJXRExNWTdYSDRHQlotRUFTVFVTIiwiam9iTG9jYXRpb24iOiJlYXN0dXMifQ?api-version=2019-07-01
       pragma:
       - no-cache
       strict-transport-security:
@@ -1630,7 +1625,7 @@ interactions:
       - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
         azure-mgmt-resource/9.0.0 Azure-SDK-For-Python AZURECLI/2.6.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUDVWMlJFUzJYVFBET1JKRVdMTVctV0VTVFVTMiIsImpvYkxvY2F0aW9uIjoid2VzdHVzMiJ9?api-version=2019-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUElaQ0pLVkJXRExNWTdYSDRHQlotRUFTVFVTIiwiam9iTG9jYXRpb24iOiJlYXN0dXMifQ?api-version=2019-07-01
   response:
     body:
       string: ''
@@ -1640,11 +1635,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 25 May 2020 06:10:10 GMT
+      - Mon, 25 May 2020 08:28:21 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUDVWMlJFUzJYVFBET1JKRVdMTVctV0VTVFVTMiIsImpvYkxvY2F0aW9uIjoid2VzdHVzMiJ9?api-version=2019-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUElaQ0pLVkJXRExNWTdYSDRHQlotRUFTVFVTIiwiam9iTG9jYXRpb24iOiJlYXN0dXMifQ?api-version=2019-07-01
       pragma:
       - no-cache
       strict-transport-security:
@@ -1671,7 +1666,7 @@ interactions:
       - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
         azure-mgmt-resource/9.0.0 Azure-SDK-For-Python AZURECLI/2.6.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUDVWMlJFUzJYVFBET1JKRVdMTVctV0VTVFVTMiIsImpvYkxvY2F0aW9uIjoid2VzdHVzMiJ9?api-version=2019-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUElaQ0pLVkJXRExNWTdYSDRHQlotRUFTVFVTIiwiam9iTG9jYXRpb24iOiJlYXN0dXMifQ?api-version=2019-07-01
   response:
     body:
       string: ''
@@ -1681,11 +1676,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 25 May 2020 06:10:25 GMT
+      - Mon, 25 May 2020 08:28:37 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUDVWMlJFUzJYVFBET1JKRVdMTVctV0VTVFVTMiIsImpvYkxvY2F0aW9uIjoid2VzdHVzMiJ9?api-version=2019-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUElaQ0pLVkJXRExNWTdYSDRHQlotRUFTVFVTIiwiam9iTG9jYXRpb24iOiJlYXN0dXMifQ?api-version=2019-07-01
       pragma:
       - no-cache
       strict-transport-security:
@@ -1712,7 +1707,7 @@ interactions:
       - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
         azure-mgmt-resource/9.0.0 Azure-SDK-For-Python AZURECLI/2.6.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUDVWMlJFUzJYVFBET1JKRVdMTVctV0VTVFVTMiIsImpvYkxvY2F0aW9uIjoid2VzdHVzMiJ9?api-version=2019-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUElaQ0pLVkJXRExNWTdYSDRHQlotRUFTVFVTIiwiam9iTG9jYXRpb24iOiJlYXN0dXMifQ?api-version=2019-07-01
   response:
     body:
       string: ''
@@ -1722,11 +1717,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 25 May 2020 06:10:41 GMT
+      - Mon, 25 May 2020 08:28:52 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUDVWMlJFUzJYVFBET1JKRVdMTVctV0VTVFVTMiIsImpvYkxvY2F0aW9uIjoid2VzdHVzMiJ9?api-version=2019-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUElaQ0pLVkJXRExNWTdYSDRHQlotRUFTVFVTIiwiam9iTG9jYXRpb24iOiJlYXN0dXMifQ?api-version=2019-07-01
       pragma:
       - no-cache
       strict-transport-security:
@@ -1753,7 +1748,7 @@ interactions:
       - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
         azure-mgmt-resource/9.0.0 Azure-SDK-For-Python AZURECLI/2.6.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUDVWMlJFUzJYVFBET1JKRVdMTVctV0VTVFVTMiIsImpvYkxvY2F0aW9uIjoid2VzdHVzMiJ9?api-version=2019-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUElaQ0pLVkJXRExNWTdYSDRHQlotRUFTVFVTIiwiam9iTG9jYXRpb24iOiJlYXN0dXMifQ?api-version=2019-07-01
   response:
     body:
       string: ''
@@ -1763,11 +1758,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 25 May 2020 06:10:57 GMT
+      - Mon, 25 May 2020 08:29:08 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUDVWMlJFUzJYVFBET1JKRVdMTVctV0VTVFVTMiIsImpvYkxvY2F0aW9uIjoid2VzdHVzMiJ9?api-version=2019-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUElaQ0pLVkJXRExNWTdYSDRHQlotRUFTVFVTIiwiam9iTG9jYXRpb24iOiJlYXN0dXMifQ?api-version=2019-07-01
       pragma:
       - no-cache
       strict-transport-security:
@@ -1794,7 +1789,7 @@ interactions:
       - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
         azure-mgmt-resource/9.0.0 Azure-SDK-For-Python AZURECLI/2.6.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUDVWMlJFUzJYVFBET1JKRVdMTVctV0VTVFVTMiIsImpvYkxvY2F0aW9uIjoid2VzdHVzMiJ9?api-version=2019-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUElaQ0pLVkJXRExNWTdYSDRHQlotRUFTVFVTIiwiam9iTG9jYXRpb24iOiJlYXN0dXMifQ?api-version=2019-07-01
   response:
     body:
       string: ''
@@ -1804,11 +1799,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 25 May 2020 06:11:12 GMT
+      - Mon, 25 May 2020 08:29:23 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUDVWMlJFUzJYVFBET1JKRVdMTVctV0VTVFVTMiIsImpvYkxvY2F0aW9uIjoid2VzdHVzMiJ9?api-version=2019-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUElaQ0pLVkJXRExNWTdYSDRHQlotRUFTVFVTIiwiam9iTG9jYXRpb24iOiJlYXN0dXMifQ?api-version=2019-07-01
       pragma:
       - no-cache
       strict-transport-security:
@@ -1835,7 +1830,7 @@ interactions:
       - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
         azure-mgmt-resource/9.0.0 Azure-SDK-For-Python AZURECLI/2.6.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUDVWMlJFUzJYVFBET1JKRVdMTVctV0VTVFVTMiIsImpvYkxvY2F0aW9uIjoid2VzdHVzMiJ9?api-version=2019-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUElaQ0pLVkJXRExNWTdYSDRHQlotRUFTVFVTIiwiam9iTG9jYXRpb24iOiJlYXN0dXMifQ?api-version=2019-07-01
   response:
     body:
       string: ''
@@ -1845,11 +1840,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 25 May 2020 06:11:28 GMT
+      - Mon, 25 May 2020 08:29:40 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUDVWMlJFUzJYVFBET1JKRVdMTVctV0VTVFVTMiIsImpvYkxvY2F0aW9uIjoid2VzdHVzMiJ9?api-version=2019-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUElaQ0pLVkJXRExNWTdYSDRHQlotRUFTVFVTIiwiam9iTG9jYXRpb24iOiJlYXN0dXMifQ?api-version=2019-07-01
       pragma:
       - no-cache
       strict-transport-security:
@@ -1876,7 +1871,7 @@ interactions:
       - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
         azure-mgmt-resource/9.0.0 Azure-SDK-For-Python AZURECLI/2.6.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUDVWMlJFUzJYVFBET1JKRVdMTVctV0VTVFVTMiIsImpvYkxvY2F0aW9uIjoid2VzdHVzMiJ9?api-version=2019-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1HUk9VUElaQ0pLVkJXRExNWTdYSDRHQlotRUFTVFVTIiwiam9iTG9jYXRpb24iOiJlYXN0dXMifQ?api-version=2019-07-01
   response:
     body:
       string: ''
@@ -1886,7 +1881,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 25 May 2020 06:11:43 GMT
+      - Mon, 25 May 2020 08:29:55 GMT
       expires:
       - '-1'
       pragma:
@@ -1930,7 +1925,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 25 May 2020 06:11:44 GMT
+      - Mon, 25 May 2020 08:29:56 GMT
       expires:
       - '-1'
       pragma:
