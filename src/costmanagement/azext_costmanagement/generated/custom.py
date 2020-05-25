@@ -12,152 +12,152 @@
 import json
 
 
-def costmanagement_dimension_list(cmd, client,
-                                  scope,
-                                  filter=None,
-                                  expand=None,
-                                  skiptoken=None,
-                                  top=None):
-    return client.list(scope=scope,
-                       filter=filter,
-                       expand=expand,
-                       skiptoken=skiptoken,
-                       top=top)
+# def costmanagement_dimension_list(cmd, client,
+#                                   scope,
+#                                   filter=None,
+#                                   expand=None,
+#                                   skiptoken=None,
+#                                   top=None):
+#     return client.list(scope=scope,
+#                        filter=filter,
+#                        expand=expand,
+#                        skiptoken=skiptoken,
+#                        top=top)
 
 
-def costmanagement_dimension_by_external_cloud_provider_type(cmd, client,
-                                                             external_cloud_provider_type,
-                                                             external_cloud_provider_id,
-                                                             filter=None,
-                                                             expand=None,
-                                                             skiptoken=None,
-                                                             top=None):
-    return client.by_external_cloud_provider_type(external_cloud_provider_type=external_cloud_provider_type,
-                                                  external_cloud_provider_id=external_cloud_provider_id,
-                                                  filter=filter,
-                                                  expand=expand,
-                                                  skiptoken=skiptoken,
-                                                  top=top)
+# def costmanagement_dimension_by_external_cloud_provider_type(cmd, client,
+#                                                              external_cloud_provider_type,
+#                                                              external_cloud_provider_id,
+#                                                              filter=None,
+#                                                              expand=None,
+#                                                              skiptoken=None,
+#                                                              top=None):
+#     return client.by_external_cloud_provider_type(external_cloud_provider_type=external_cloud_provider_type,
+#                                                   external_cloud_provider_id=external_cloud_provider_id,
+#                                                   filter=filter,
+#                                                   expand=expand,
+#                                                   skiptoken=skiptoken,
+#                                                   top=top)
 
 
-def costmanagement_alert_list(cmd, client,
-                              scope):
-    return client.list(scope=scope)
+# def costmanagement_alert_list(cmd, client,
+#                               scope):
+#     return client.list(scope=scope)
 
 
-def costmanagement_alert_list_external(cmd, client,
-                                       external_cloud_provider_type,
-                                       external_cloud_provider_id):
-    return client.list_external(external_cloud_provider_type=external_cloud_provider_type,
-                                external_cloud_provider_id=external_cloud_provider_id)
+# def costmanagement_alert_list_external(cmd, client,
+#                                        external_cloud_provider_type,
+#                                        external_cloud_provider_id):
+#     return client.list_external(external_cloud_provider_type=external_cloud_provider_type,
+#                                 external_cloud_provider_id=external_cloud_provider_id)
 
 
-def costmanagement_forecast_external_cloud_provider_usage(cmd, client,
-                                                          external_cloud_provider_type,
-                                                          external_cloud_provider_id,
-                                                          type_,
-                                                          timeframe,
-                                                          filter=None,
-                                                          time_period=None,
-                                                          include_actual_cost=None,
-                                                          include_fresh_partial_cost=None,
-                                                          dataset_configuration=None,
-                                                          dataset_aggregation=None,
-                                                          dataset_grouping=None,
-                                                          dataset_filter=None):
-    if isinstance(dataset_aggregation, str):
-        dataset_aggregation = json.loads(dataset_aggregation)
-    if isinstance(dataset_filter, str):
-        dataset_filter = json.loads(dataset_filter)
-    return client.external_cloud_provider_usage(filter=filter,
-                                                external_cloud_provider_type=external_cloud_provider_type,
-                                                external_cloud_provider_id=external_cloud_provider_id,
-                                                type=type_,
-                                                timeframe=timeframe,
-                                                time_period=time_period,
-                                                include_actual_cost=include_actual_cost,
-                                                include_fresh_partial_cost=include_fresh_partial_cost,
-                                                configuration=dataset_configuration,
-                                                aggregation=dataset_aggregation,
-                                                grouping=dataset_grouping,
-                                                query_filter=dataset_filter)
+# def costmanagement_forecast_external_cloud_provider_usage(cmd, client,
+#                                                           external_cloud_provider_type,
+#                                                           external_cloud_provider_id,
+#                                                           type_,
+#                                                           timeframe,
+#                                                           filter=None,
+#                                                           time_period=None,
+#                                                           include_actual_cost=None,
+#                                                           include_fresh_partial_cost=None,
+#                                                           dataset_configuration=None,
+#                                                           dataset_aggregation=None,
+#                                                           dataset_grouping=None,
+#                                                           dataset_filter=None):
+#     if isinstance(dataset_aggregation, str):
+#         dataset_aggregation = json.loads(dataset_aggregation)
+#     if isinstance(dataset_filter, str):
+#         dataset_filter = json.loads(dataset_filter)
+#     return client.external_cloud_provider_usage(filter=filter,
+#                                                 external_cloud_provider_type=external_cloud_provider_type,
+#                                                 external_cloud_provider_id=external_cloud_provider_id,
+#                                                 type=type_,
+#                                                 timeframe=timeframe,
+#                                                 time_period=time_period,
+#                                                 include_actual_cost=include_actual_cost,
+#                                                 include_fresh_partial_cost=include_fresh_partial_cost,
+#                                                 configuration=dataset_configuration,
+#                                                 aggregation=dataset_aggregation,
+#                                                 grouping=dataset_grouping,
+#                                                 query_filter=dataset_filter)
 
 
-def costmanagement_forecast_usage(cmd, client,
-                                  scope,
-                                  type_,
-                                  timeframe,
-                                  filter=None,
-                                  time_period=None,
-                                  include_actual_cost=None,
-                                  include_fresh_partial_cost=None,
-                                  dataset_configuration=None,
-                                  dataset_aggregation=None,
-                                  dataset_grouping=None,
-                                  dataset_filter=None):
-    if isinstance(dataset_aggregation, str):
-        dataset_aggregation = json.loads(dataset_aggregation)
-    if isinstance(dataset_filter, str):
-        dataset_filter = json.loads(dataset_filter)
-    return client.usage(filter=filter,
-                        scope=scope,
-                        type=type_,
-                        timeframe=timeframe,
-                        time_period=time_period,
-                        include_actual_cost=include_actual_cost,
-                        include_fresh_partial_cost=include_fresh_partial_cost,
-                        configuration=dataset_configuration,
-                        aggregation=dataset_aggregation,
-                        grouping=dataset_grouping,
-                        query_filter=dataset_filter)
+# def costmanagement_forecast_usage(cmd, client,
+#                                   scope,
+#                                   type_,
+#                                   timeframe,
+#                                   filter=None,
+#                                   time_period=None,
+#                                   include_actual_cost=None,
+#                                   include_fresh_partial_cost=None,
+#                                   dataset_configuration=None,
+#                                   dataset_aggregation=None,
+#                                   dataset_grouping=None,
+#                                   dataset_filter=None):
+#     if isinstance(dataset_aggregation, str):
+#         dataset_aggregation = json.loads(dataset_aggregation)
+#     if isinstance(dataset_filter, str):
+#         dataset_filter = json.loads(dataset_filter)
+#     return client.usage(filter=filter,
+#                         scope=scope,
+#                         type=type_,
+#                         timeframe=timeframe,
+#                         time_period=time_period,
+#                         include_actual_cost=include_actual_cost,
+#                         include_fresh_partial_cost=include_fresh_partial_cost,
+#                         configuration=dataset_configuration,
+#                         aggregation=dataset_aggregation,
+#                         grouping=dataset_grouping,
+#                         query_filter=dataset_filter)
 
 
-def costmanagement_query_usage(cmd, client,
-                               scope,
-                               type_,
-                               timeframe,
-                               time_period=None,
-                               dataset_configuration=None,
-                               dataset_aggregation=None,
-                               dataset_grouping=None,
-                               dataset_filter=None):
-    if isinstance(dataset_aggregation, str):
-        dataset_aggregation = json.loads(dataset_aggregation)
-    if isinstance(dataset_filter, str):
-        dataset_filter = json.loads(dataset_filter)
-    return client.usage(scope=scope,
-                        type=type_,
-                        timeframe=timeframe,
-                        time_period=time_period,
-                        configuration=dataset_configuration,
-                        aggregation=dataset_aggregation,
-                        grouping=dataset_grouping,
-                        filter=dataset_filter)
+# def costmanagement_query_usage(cmd, client,
+#                                scope,
+#                                type_,
+#                                timeframe,
+#                                time_period=None,
+#                                dataset_configuration=None,
+#                                dataset_aggregation=None,
+#                                dataset_grouping=None,
+#                                dataset_filter=None):
+#     if isinstance(dataset_aggregation, str):
+#         dataset_aggregation = json.loads(dataset_aggregation)
+#     if isinstance(dataset_filter, str):
+#         dataset_filter = json.loads(dataset_filter)
+#     return client.usage(scope=scope,
+#                         type=type_,
+#                         timeframe=timeframe,
+#                         time_period=time_period,
+#                         configuration=dataset_configuration,
+#                         aggregation=dataset_aggregation,
+#                         grouping=dataset_grouping,
+#                         filter=dataset_filter)
 
 
-def costmanagement_query_usage_by_external_cloud_provider_type(cmd, client,
-                                                               external_cloud_provider_type,
-                                                               external_cloud_provider_id,
-                                                               type_,
-                                                               timeframe,
-                                                               time_period=None,
-                                                               dataset_configuration=None,
-                                                               dataset_aggregation=None,
-                                                               dataset_grouping=None,
-                                                               dataset_filter=None):
-    if isinstance(dataset_aggregation, str):
-        dataset_aggregation = json.loads(dataset_aggregation)
-    if isinstance(dataset_filter, str):
-        dataset_filter = json.loads(dataset_filter)
-    return client.usage_by_external_cloud_provider_type(external_cloud_provider_type=external_cloud_provider_type,
-                                                        external_cloud_provider_id=external_cloud_provider_id,
-                                                        type=type_,
-                                                        timeframe=timeframe,
-                                                        time_period=time_period,
-                                                        configuration=dataset_configuration,
-                                                        aggregation=dataset_aggregation,
-                                                        grouping=dataset_grouping,
-                                                        filter=dataset_filter)
+# def costmanagement_query_usage_by_external_cloud_provider_type(cmd, client,
+#                                                                external_cloud_provider_type,
+#                                                                external_cloud_provider_id,
+#                                                                type_,
+#                                                                timeframe,
+#                                                                time_period=None,
+#                                                                dataset_configuration=None,
+#                                                                dataset_aggregation=None,
+#                                                                dataset_grouping=None,
+#                                                                dataset_filter=None):
+#     if isinstance(dataset_aggregation, str):
+#         dataset_aggregation = json.loads(dataset_aggregation)
+#     if isinstance(dataset_filter, str):
+#         dataset_filter = json.loads(dataset_filter)
+#     return client.usage_by_external_cloud_provider_type(external_cloud_provider_type=external_cloud_provider_type,
+#                                                         external_cloud_provider_id=external_cloud_provider_id,
+#                                                         type=type_,
+#                                                         timeframe=timeframe,
+#                                                         time_period=time_period,
+#                                                         configuration=dataset_configuration,
+#                                                         aggregation=dataset_aggregation,
+#                                                         grouping=dataset_grouping,
+#                                                         filter=dataset_filter)
 
 
 def costmanagement_export_list(cmd, client,
@@ -175,37 +175,38 @@ def costmanagement_export_show(cmd, client,
                                         export_name=export_name)
 
 
-def costmanagement_export_create(cmd, client,
-                                 scope,
-                                 export_name,
-                                 definition_type=None,
-                                 definition_timeframe=None,
-                                 definition_time_period=None,
-                                 definition_dataset_configuration=None,
-                                 definition_dataset_aggregation=None,
-                                 definition_dataset_grouping=None,
-                                 definition_dataset_filter=None,
-                                 delivery_info_destination=None,
-                                 schedule_status=None,
-                                 schedule_recurrence=None,
-                                 schedule_recurrence_period=None):
-    if isinstance(definition_dataset_aggregation, str):
-        definition_dataset_aggregation = json.loads(definition_dataset_aggregation)
-    if isinstance(definition_dataset_filter, str):
-        definition_dataset_filter = json.loads(definition_dataset_filter)
-    return client.create_or_update(scope=scope,
-                                   export_name=export_name,
-                                   type=definition_type,
-                                   timeframe=definition_timeframe,
-                                   time_period=definition_time_period,
-                                   configuration=definition_dataset_configuration,
-                                   aggregation=definition_dataset_aggregation,
-                                   grouping=definition_dataset_grouping,
-                                   filter=definition_dataset_filter,
-                                   destination=delivery_info_destination,
-                                   status=schedule_status,
-                                   recurrence=schedule_recurrence,
-                                   recurrence_period=schedule_recurrence_period)
+# overwrite in manual.custom.costmanagement_export_create
+# def costmanagement_export_create(cmd, client,
+#                                  scope,
+#                                  export_name,
+#                                  definition_type=None,
+#                                  definition_timeframe=None,
+#                                  definition_time_period=None,
+#                                  definition_dataset_configuration=None,
+#                                  definition_dataset_aggregation=None,
+#                                  definition_dataset_grouping=None,
+#                                  definition_dataset_filter=None,
+#                                  delivery_info_destination=None,
+#                                  schedule_status=None,
+#                                  schedule_recurrence=None,
+#                                  schedule_recurrence_period=None):
+#     if isinstance(definition_dataset_aggregation, str):
+#         definition_dataset_aggregation = json.loads(definition_dataset_aggregation)
+#     if isinstance(definition_dataset_filter, str):
+#         definition_dataset_filter = json.loads(definition_dataset_filter)
+#     return client.create_or_update(scope=scope,
+#                                    export_name=export_name,
+#                                    type=definition_type,
+#                                    timeframe=definition_timeframe,
+#                                    time_period=definition_time_period,
+#                                    configuration=definition_dataset_configuration,
+#                                    aggregation=definition_dataset_aggregation,
+#                                    grouping=definition_dataset_grouping,
+#                                    filter=definition_dataset_filter,
+#                                    destination=delivery_info_destination,
+#                                    status=schedule_status,
+#                                    recurrence=schedule_recurrence,
+#                                    recurrence_period=schedule_recurrence_period)
 
 
 def costmanagement_export_update(cmd, client,
