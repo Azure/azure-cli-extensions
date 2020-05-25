@@ -41,7 +41,7 @@ class VirtualNetworkPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
         self.resource_group_key = resource_group_key
         self.dev_setting_name = os.environ.get(dev_setting_name, None)
 
-    def create_resource(self, name, **kwargs):
+    def create_resource(self, name, **_):
         if self.dev_setting_name:
             return {self.parameter_name: self.dev_setting_name, }
 
@@ -64,7 +64,7 @@ class VirtualNetworkPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
         self.test_class_instance.kwargs[self.key] = name
         return {self.parameter_name: name}
 
-    def remove_resource(self, name, **kwargs):
+    def remove_resource(self, name, **_):
         # delete vnet if test is being recorded and if the vnet is not a dev rg
         if not self.dev_setting_name:
             self.live_only_execute(
@@ -92,7 +92,7 @@ class VnetSubnetPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
         self.address_prefixes = address_prefixes
         self.dev_setting_name = os.environ.get(dev_setting_name, None)
 
-    def create_resource(self, name, **kwargs):
+    def create_resource(self, name, **_):
         if self.dev_setting_name:
             return {self.parameter_name: self.dev_setting_name, }
 
@@ -109,7 +109,7 @@ class VnetSubnetPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
         self.test_class_instance.kwargs[self.key] = 'default'
         return {self.parameter_name: name}
 
-    def remove_resource(self, name, **kwargs):
+    def remove_resource(self, name, **_):
         pass
 
 
@@ -131,7 +131,7 @@ class VnetNicPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
         self.vnet = [vnet_key, None]
         self.dev_setting_name = os.environ.get(dev_setting_name, None)
 
-    def create_resource(self, name, **kwargs):
+    def create_resource(self, name, **_):
         if self.dev_setting_name:
             return {self.parameter_name: self.dev_setting_name, }
 
@@ -152,7 +152,7 @@ class VnetNicPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
         self.test_class_instance.kwargs[self.key] = name
         return {self.parameter_name: name}
 
-    def remove_resource(self, name, **kwargs):
+    def remove_resource(self, name, **_):
         if not self.dev_setting_name:
             self.live_only_execute(
                 self.cli_ctx,

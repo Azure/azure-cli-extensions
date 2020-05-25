@@ -57,6 +57,8 @@ class AddDesktopvirtualizationHostpoolUpdateRegistrationInfo(argparse.Action):
         for k in properties:
             kl = k.lower()
             v = properties[k]
-            if kl == 'registration-token-operation':
+            if kl == 'expiration-time':
+                d['expiration_time'] = v[0]
+            elif kl == 'registration-token-operation':
                 d['registration_token_operation'] = v[0]
         return d

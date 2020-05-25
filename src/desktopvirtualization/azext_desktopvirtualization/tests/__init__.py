@@ -12,6 +12,8 @@ import inspect
 import os
 import sys
 import traceback
+from azure.core.exceptions import AzureError
+from azure.cli.testsdk.exceptions import CliTestError, CliExecutionError, JMESPathCheckAssertionError
 
 
 __path__ = __import__('pkgutil').extend_path(__path__, __name__)
@@ -47,7 +49,7 @@ def try_manual(func):
         print("running {}()...".format(func.__name__))
         try:
             return func_to_call(*args, **kwargs)
-        except BaseException as e:
+        except (AssertionError, AzureError, CliTestError, CliExecutionError, JMESPathCheckAssertionError) as e:
             print("--------------------------------------")
             print("step exception: ", e)
             print("--------------------------------------", file=sys.stderr)

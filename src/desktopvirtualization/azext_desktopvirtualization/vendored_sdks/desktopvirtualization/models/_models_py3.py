@@ -838,6 +838,8 @@ class RegistrationInfo(msrest.serialization.Model):
 class RegistrationInfoPatch(msrest.serialization.Model):
     """Represents a RegistrationInfo definition.
 
+    :param expiration_time: Expiration time of registration token.
+    :type expiration_time: ~datetime.datetime
     :param registration_token_operation: The type of resetting the token. Possible values include:
      "Delete", "None", "Update".
     :type registration_token_operation: str or
@@ -845,16 +847,19 @@ class RegistrationInfoPatch(msrest.serialization.Model):
     """
 
     _attribute_map = {
+        'expiration_time': {'key': 'expirationTime', 'type': 'iso-8601'},
         'registration_token_operation': {'key': 'registrationTokenOperation', 'type': 'str'},
     }
 
     def __init__(
         self,
         *,
+        expiration_time: Optional[datetime.datetime] = None,
         registration_token_operation: Optional[Union[str, "RegistrationTokenOperation"]] = None,
         **kwargs
     ):
         super(RegistrationInfoPatch, self).__init__(**kwargs)
+        self.expiration_time = expiration_time
         self.registration_token_operation = registration_token_operation
 
 

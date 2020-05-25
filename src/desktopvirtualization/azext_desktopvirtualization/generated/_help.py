@@ -173,16 +173,17 @@ helps['desktopvirtualization hostpool update'] = """
       - name: --registration-info
         short-summary: The registration info of HostPool.
         long-summary: |
-            Usage: --registration-info registration-token-operation=XX
+            Usage: --registration-info expiration-time=XX registration-token-operation=XX
 
+            expiration-time: Expiration time of registration token.
             registration-token-operation: The type of resetting the token.
     examples:
       - name: HostPool_Update
         text: |-
                az desktopvirtualization hostpool update --description "des1" --friendly-name "friendly" --load-balancer\
 -type "BreadthFirst" --max-session-limit 999999 --personal-desktop-assignment-type "Automatic" --registration-info expi\
-rationTime="2020-10-02T14:01:54.9571247Z" --sso-context "KeyVaultPath" --tags "{\\"tag1\\":\\"value1\\",\\"tag2\\":\\"v\
-alue2\\"}" --name "hostPool1" --resource-group "resourceGroup1"
+ration-time="2020-10-01T15:01:54.9571247Z" registration-token-operation="Update" --sso-context "KeyVaultPath" --tags "{\
+\\"tag1\\":\\"value1\\",\\"tag2\\":\\"value2\\"}" --name "hostPool1" --resource-group "resourceGroup1"
 """
 
 helps['desktopvirtualization hostpool delete'] = """
