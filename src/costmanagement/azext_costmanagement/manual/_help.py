@@ -100,47 +100,59 @@ helps['costmanagement export create'] = """
 equest. You may obtain the latest eTag by performing a get operation. Create operation does not require eTag.
     examples:
       - name: Create an export for ManagementGroup scope
-        text: |-
-               az costmanagement export create --name "TestExport" --definition-type "Usage" --definition-datase\
-t-aggregation "{\\"costSum\\":{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}" --definition-dataset-configurati\
-on columns="Date" columns="MeterId" columns="InstanceId" columns="ResourceLocation" columns="PreTaxCost" --definition-d\
-ataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"va\
-lues\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\
-\\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\
-\\"API\\"]}}]}" --definition-dataset-grouping name="SubscriptionName" type="Dimension" --definition-dataset-grouping na\
-me="Environment" type="Tag" --definition-timeframe "MonthToDate" --delivery-info-destination container="exports" resour\
-ce-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG/providers/Microsoft.Storage/stora\
-geAccounts/ccmeastusdiag182" root-folder-path="ad-hoc" --schedule-recurrence "Weekly" --schedule-recurrence-period from\
-="2018-06-01T00:00:00Z" to="2018-10-31T00:00:00Z" --schedule-status "Active" --scope "providers/Microsoft.Management/ma\
-nagementGroups/TestMG"
+        text: >
+          az costmanagement export create
+          --name "TestExport"
+          --type "Usage"
+          --dataset-aggregation "{\\"costSum\\":{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}"
+          --dataset-configuration columns="Date" columns="MeterId" columns="InstanceId" columns="ResourceLocation" columns="PreTaxCost"
+          --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}"
+          --dataset-grouping name="SubscriptionName" type="Dimension"
+          --dataset-grouping name="Environment" type="Tag"
+          --timeframe "MonthToDate"
+          --storage-container="exports"
+          --storage-account-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG/providers/Microsoft.Storage/storageAccounts/ccmeastusdiag182"
+          --storage-directory="ad-hoc"
+          --recurrence "Weekly"
+          --recurrence-period from="2018-06-01T00:00:00Z" to="2018-10-31T00:00:00Z"
+          --schedule-status "Active"
+          --scope "providers/Microsoft.Management/managementGroups/TestMG"
       - name: Create an export for ResourceGroup scope
-        text: |-
-               az costmanagement export create --name "TestExport" --definition-type "Usage" --definition-datase\
-t-aggregation "{\\"costSum\\":{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}" --definition-dataset-configurati\
-on columns="Date" columns="MeterId" columns="InstanceId" columns="ResourceLocation" columns="PreTaxCost" --definition-d\
-ataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"va\
-lues\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\
-\\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\
-\\"API\\"]}}]}" --definition-dataset-grouping name="SubscriptionName" type="Dimension" --definition-dataset-grouping na\
-me="Environment" type="Tag" --definition-timeframe "MonthToDate" --delivery-info-destination container="exports" resour\
-ce-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG/providers/Microsoft.Storage/stora\
-geAccounts/ccmeastusdiag182" root-folder-path="ad-hoc" --schedule-recurrence "Weekly" --schedule-recurrence-period from\
-="2018-06-01T00:00:00Z" to="2018-10-31T00:00:00Z" --schedule-status "Active" --scope "subscriptions/00000000-0000-0000-\
-0000-000000000000/resourceGroups/MYDEVTESTRG"
+        text: >
+          az costmanagement export create
+          --name "TestExport"
+          --type "Usage"
+          --dataset-aggregation "{\\"costSum\\":{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}"
+          --dataset-configuration columns="Date" columns="MeterId" columns="InstanceId" columns="ResourceLocation" columns="PreTaxCost"
+          --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}"
+          --dataset-grouping name="SubscriptionName" type="Dimension"
+          --dataset-grouping name="Environment" type="Tag"
+          --timeframe "MonthToDate"
+          --storage-container="exports"
+          --storage-account-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG/providers/Microsoft.Storage/storageAccounts/ccmeastusdiag182"
+          --storage-directory="ad-hoc"
+          --recurrence "Weekly"
+          --recurrence-period from="2018-06-01T00:00:00Z" to="2018-10-31T00:00:00Z"
+          --schedule-status "Active"
+          --scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG"
       - name: Create an export for Subscription scope
-        text: |-
-               az costmanagement export create --name "TestExport" --definition-type "Usage" --definition-datase\
-t-aggregation "{\\"costSum\\":{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}" --definition-dataset-configurati\
-on columns="Date" columns="MeterId" columns="InstanceId" columns="ResourceLocation" columns="PreTaxCost" --definition-d\
-ataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"va\
-lues\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\
-\\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\
-\\"API\\"]}}]}" --definition-dataset-grouping name="SubscriptionName" type="Dimension" --definition-dataset-grouping na\
-me="Environment" type="Tag" --definition-timeframe "MonthToDate" --delivery-info-destination container="exports" resour\
-ce-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG/providers/Microsoft.Storage/stora\
-geAccounts/ccmeastusdiag182" root-folder-path="ad-hoc" --schedule-recurrence "Weekly" --schedule-recurrence-period from\
-="2018-06-01T00:00:00Z" to="2018-10-31T00:00:00Z" --schedule-status "Active" --scope "subscriptions/00000000-0000-0000-\
-0000-000000000000"
+        text: >
+          az costmanagement export create
+          --name "TestExport"
+          --type "Usage"
+          --dataset-aggregation "{\\"costSum\\":{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}"
+          --dataset-configuration columns="Date" columns="MeterId" columns="InstanceId" columns="ResourceLocation" columns="PreTaxCost"
+          --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}"
+          --dataset-grouping name="SubscriptionName" type="Dimension"
+          --dataset-grouping name="Environment" type="Tag"
+          --timeframe "MonthToDate"
+          --storage-container="exports"
+          --storage-account-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG/providers/Microsoft.Storage/storageAccounts/ccmeastusdiag182"
+          --storage-directory="ad-hoc"
+          --recurrence "Weekly"
+          --recurrence-period from="2018-06-01T00:00:00Z" to="2018-10-31T00:00:00Z"
+          --schedule-status "Active"
+          --scope "subscriptions/00000000-0000-0000-0000-000000000000"
 """
 
 helps['costmanagement export update'] = """
@@ -148,48 +160,60 @@ helps['costmanagement export update'] = """
     short-summary: The operation to create or update a export. Update operation requires latest eTag to be set in the r\
 equest. You may obtain the latest eTag by performing a get operation. Create operation does not require eTag.
     examples:
-      - name: Update an export for ManagementGroup scope
-        text: |-
-               az costmanagement export update --name "TestExport" --definition-type "Usage" --definition-datase\
-t-aggregation "{\\"costSum\\":{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}" --definition-dataset-configurati\
-on columns="Date" columns="MeterId" columns="InstanceId" columns="ResourceLocation" columns="PreTaxCost" --definition-d\
-ataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"va\
-lues\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\
-\\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\
-\\"API\\"]}}]}" --definition-dataset-grouping name="SubscriptionName" type="Dimension" --definition-dataset-grouping na\
-me="Environment" type="Tag" --definition-timeframe "MonthToDate" --delivery-info-destination container="exports" resour\
-ce-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG/providers/Microsoft.Storage/stora\
-geAccounts/ccmeastusdiag182" root-folder-path="ad-hoc" --schedule-recurrence "Weekly" --schedule-recurrence-period from\
-="2018-06-01T00:00:00Z" to="2018-10-31T00:00:00Z" --schedule-status "Active" --scope "providers/Microsoft.Management/ma\
-nagementGroups/TestMG"
-      - name: Update an export for ResourceGroup scope
-        text: |-
-               az costmanagement export update --name "TestExport" --definition-type "Usage" --definition-datase\
-t-aggregation "{\\"costSum\\":{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}" --definition-dataset-configurati\
-on columns="Date" columns="MeterId" columns="InstanceId" columns="ResourceLocation" columns="PreTaxCost" --definition-d\
-ataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"va\
-lues\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\
-\\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\
-\\"API\\"]}}]}" --definition-dataset-grouping name="SubscriptionName" type="Dimension" --definition-dataset-grouping na\
-me="Environment" type="Tag" --definition-timeframe "MonthToDate" --delivery-info-destination container="exports" resour\
-ce-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG/providers/Microsoft.Storage/stora\
-geAccounts/ccmeastusdiag182" root-folder-path="ad-hoc" --schedule-recurrence "Weekly" --schedule-recurrence-period from\
-="2018-06-01T00:00:00Z" to="2018-10-31T00:00:00Z" --schedule-status "Active" --scope "subscriptions/00000000-0000-0000-\
-0000-000000000000/resourceGroups/MYDEVTESTRG"
-      - name: Update an export for Subscription scope
-        text: |-
-               az costmanagement export update --name "TestExport" --definition-type "Usage" --definition-datase\
-t-aggregation "{\\"costSum\\":{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}" --definition-dataset-configurati\
-on columns="Date" columns="MeterId" columns="InstanceId" columns="ResourceLocation" columns="PreTaxCost" --definition-d\
-ataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"va\
-lues\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\
-\\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\
-\\"API\\"]}}]}" --definition-dataset-grouping name="SubscriptionName" type="Dimension" --definition-dataset-grouping na\
-me="Environment" type="Tag" --definition-timeframe "MonthToDate" --delivery-info-destination container="exports" resour\
-ce-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG/providers/Microsoft.Storage/stora\
-geAccounts/ccmeastusdiag182" root-folder-path="ad-hoc" --schedule-recurrence "Weekly" --schedule-recurrence-period from\
-="2018-06-01T00:00:00Z" to="2018-10-31T00:00:00Z" --schedule-status "Active" --scope "subscriptions/00000000-0000-0000-\
-0000-000000000000"
+      - name: Update an export in a ManagementGroup scope
+        text: >
+          az costmanagement export update
+          --name "TestExport"
+          --type "Usage"
+          --dataset-aggregation "{\\"costSum\\":{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}"
+          --dataset-configuration columns="Date" columns="MeterId" columns="InstanceId" columns="ResourceLocation" columns="PreTaxCost"
+          --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}"
+          --dataset-grouping name="SubscriptionName" type="Dimension"
+          --dataset-grouping name="Environment" type="Tag"
+          --timeframe "MonthToDate"
+          --storage-container="exports"
+          --storage-account-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG/providers/Microsoft.Storage/storageAccounts/ccmeastusdiag182"
+          --storage-directory="ad-hoc"
+          --recurrence "Weekly"
+          --recurrence-period from="2018-06-01T00:00:00Z" to="2018-10-31T00:00:00Z"
+          --schedule-status "Active"
+          --scope "providers/Microsoft.Management/managementGroups/TestMG"
+      - name: Update an export in a ResourceGroup scope
+        text: >
+          az costmanagement export update
+          --name "TestExport"
+          --type "Usage"
+          --dataset-aggregation "{\\"costSum\\":{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}"
+          --dataset-configuration columns="Date" columns="MeterId" columns="InstanceId" columns="ResourceLocation" columns="PreTaxCost"
+          --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}"
+          --dataset-grouping name="SubscriptionName" type="Dimension"
+          --dataset-grouping name="Environment" type="Tag"
+          --timeframe "MonthToDate"
+          --storage-container="exports"
+          --storage-account-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG/providers/Microsoft.Storage/storageAccounts/ccmeastusdiag182"
+          --storage-directory="ad-hoc"
+          --recurrence "Weekly"
+          --recurrence-period from="2018-06-01T00:00:00Z" to="2018-10-31T00:00:00Z"
+          --schedule-status "Active"
+          --scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG"
+      - name: Update an export in a Subscription scope
+        text: >
+          az costmanagement export create
+          --name "TestExport"
+          --type "Usage"
+          --dataset-aggregation "{\\"costSum\\":{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}"
+          --dataset-configuration columns="Date" columns="MeterId" columns="InstanceId" columns="ResourceLocation" columns="PreTaxCost"
+          --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}"
+          --dataset-grouping name="SubscriptionName" type="Dimension"
+          --dataset-grouping name="Environment" type="Tag"
+          --timeframe "MonthToDate"
+          --storage-container="exports"
+          --storage-account-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG/providers/Microsoft.Storage/storageAccounts/ccmeastusdiag182"
+          --storage-directory="ad-hoc"
+          --recurrence "Weekly"
+          --recurrence-period from="2018-06-01T00:00:00Z" to="2018-10-31T00:00:00Z"
+          --schedule-status "Active"
+          --scope "subscriptions/00000000-0000-0000-0000-000000000000"
 """
 
 helps['costmanagement export delete'] = """

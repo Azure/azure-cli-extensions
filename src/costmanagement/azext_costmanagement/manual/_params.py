@@ -63,6 +63,7 @@ def load_arguments(self, _):
                                             help='Has filter expression to use in the query. '
                                                  'Expected value: json-string/@json-file.'))
 
+    # region: costmanagement export
     with self.argument_context('costmanagement export') as c:
         c.argument('scope',
                    help='The scope associated with query and export operations. This includes '
@@ -128,7 +129,6 @@ def load_arguments(self, _):
 
     with self.argument_context('costmanagement export', arg_group='Schedule Info') as c:
         c.argument('schedule_status',
-                   options_list='--status',
                    arg_type=get_enum_type(['Active', 'Inactive']),
                    help='The status of the schedule.Whether active or not. '
                         'If inactive, the export\'s scheduled execution is paused.')
@@ -144,4 +144,5 @@ def load_arguments(self, _):
                         'The start date must be in future. '
                         'If present, the end date must be greater than start date. '
                         'Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , '
-                        'available KEYs are: from, to.')
+                        'available KEYs are: from, to. The time format is like 2020-05-01T00:00:00.')
+    # region end: costmanagement export
