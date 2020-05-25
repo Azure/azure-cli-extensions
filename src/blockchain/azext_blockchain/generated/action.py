@@ -19,7 +19,6 @@ class AddValidatorNodesSku(argparse.Action):
         action = self.get_action(values, option_string)
         namespace.validator_nodes_sku = action
 
-
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
             properties = defaultdict(list)
@@ -41,7 +40,6 @@ class AddBlockchainMemberCreateFirewallRules(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
         super(AddBlockchainMemberCreateFirewallRules, self).__call__(parser, namespace, action, option_string)
-
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -69,7 +67,6 @@ class AddBlockchainTransactionNodeUpdateFirewallRules(argparse._AppendAction):
         action = self.get_action(values, option_string)
         super(AddBlockchainTransactionNodeUpdateFirewallRules, self).__call__(parser, namespace, action, option_string)
 
-
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
             properties = defaultdict(list)
@@ -95,7 +92,6 @@ class AddBlockchainTransactionNodeCreateFirewallRules(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
         super(AddBlockchainTransactionNodeCreateFirewallRules, self).__call__(parser, namespace, action, option_string)
-
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:

@@ -44,7 +44,9 @@ def step__blockchainmembers_put_blockchainmembers_create(test, rg):
              '--validator-nodes-sku capacity=2 '
              '--protocol "Quorum" '
              '--name "{contosemember1}" '
-             '--resource-group "{rg}"',
+             '--resource-group "{rg}" '
+             '--firewall-rules rule-name=mytest start-ip-address=10.0.0.0 end-in-address=10.0.1.0 '
+             '--no-wait',
              checks=[])
     test.cmd('az blockchain member wait --created '
              '--name "{contosemember1}" '
@@ -123,7 +125,8 @@ def step__transactionnodes_put_transactionnodes_create(test, rg):
              '--resource-group "{rg}" '
              '--location "southeastasia" '
              '--password "1234abcdEFG1" '
-             '--name "{txnode2}"',
+             '--name "{txnode2}" '
+             '--no-wait',
              checks=[])
     test.cmd('az blockchain transaction-node wait --created '
              '--member-name "{contosemember1}" '

@@ -10,7 +10,6 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
-from knack.arguments import CLIArgumentType
 from azure.cli.core.commands.parameters import (
     tags_type,
     get_enum_type,
@@ -42,7 +41,8 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
-        c.argument('sku', arg_type=get_enum_type(['Basic', 'Standard']), help='The Sku of the blockchain member', validator=process_blockchain_member_sku)
+        c.argument('sku', arg_type=get_enum_type(['Basic', 'Standard']),
+                   help='The Sku of the blockchain member', validator=process_blockchain_member_sku)
         c.argument('protocol', arg_type=get_enum_type(['NotSpecified', 'Parity', 'Quorum', 'Corda']), help='Gets or set'
                    's the blockchain protocol.')
         c.argument('validator_nodes_sku', action=AddValidatorNodesSku, nargs='+', help='Gets or sets the blockchain val'

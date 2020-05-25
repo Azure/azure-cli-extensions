@@ -10,8 +10,9 @@
 
 import os
 from datetime import datetime
-from azure.cli.testsdk.preparers import NoTrafficRecordingPreparer
 from azure_devtools.scenario_tests import SingleValueReplacer
+
+from azure.cli.testsdk.preparers import NoTrafficRecordingPreparer
 from azure.cli.testsdk.exceptions import CliTestError
 from azure.cli.testsdk.reverse_dependency import get_dummy_cli
 
@@ -40,7 +41,7 @@ class VirtualNetworkPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
         self.resource_group_key = resource_group_key
         self.dev_setting_name = os.environ.get(dev_setting_name, None)
 
-    def create_resource(self, name, **kwargs):
+    def create_resource(self, name):
         if self.dev_setting_name:
             return {self.parameter_name: self.dev_setting_name, }
 
@@ -63,13 +64,15 @@ class VirtualNetworkPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
         self.test_class_instance.kwargs[self.key] = name
         return {self.parameter_name: name}
 
-    def remove_resource(self, name, **kwargs):
+    def remove_resource(self, name):
         # delete vnet if test is being recorded and if the vnet is not a dev rg
         if not self.dev_setting_name:
             self.live_only_execute(
-                self.cli_ctx, 'az network vnet delete --name {} --resource-group {}'.format(name, self.resource_group_name))
+                self.cli_ctx,
+                'az network vnet delete --name {} --resource-group {}'.format(name, self.resource_group_name))
 
 
+# pylint: disable=too-many-instance-attributes
 class VnetSubnetPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
     def __init__(self, name_prefix='clitest.vn',
                  parameter_name='subnet',
@@ -95,7 +98,7 @@ class VnetSubnetPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
         self.address_prefixes = address_prefixes
         self.dev_setting_name = os.environ.get(dev_setting_name, None)
 
-    def create_resource(self, name, **kwargs):
+    def create_resource(self, name):
         if self.dev_setting_name:
             return {self.parameter_name: self.dev_setting_name, }
 

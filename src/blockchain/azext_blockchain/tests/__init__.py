@@ -45,5 +45,4 @@ def try_manual(func):
 
     if inspect.isclass(func):
         return get_func_to_call()
-    else:
-        return wrapper
+    return wrapper

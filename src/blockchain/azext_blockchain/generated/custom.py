@@ -9,22 +9,24 @@
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-lines
 
+from azure.cli.core.util import sdk_no_wait
 
-def blockchain_member_list(cmd, client,
+
+def blockchain_member_list(client,
                            resource_group_name=None):
     if resource_group_name:
         return client.list(resource_group_name=resource_group_name)
     return client.list_all()
 
 
-def blockchain_member_show(cmd, client,
+def blockchain_member_show(client,
                            blockchain_member_name,
                            resource_group_name):
     return client.get(blockchain_member_name=blockchain_member_name,
                       resource_group_name=resource_group_name)
 
 
-def blockchain_member_create(cmd, client,
+def blockchain_member_create(client,
                              blockchain_member_name,
                              resource_group_name,
                              location=None,
@@ -35,21 +37,23 @@ def blockchain_member_create(cmd, client,
                              password=None,
                              consortium=None,
                              consortium_management_account_password=None,
-                             firewall_rules=None):
-    return client.begin_create(blockchain_member_name=blockchain_member_name,
-                               resource_group_name=resource_group_name,
-                               location=location,
-                               tags=tags,
-                               sku=sku,
-                               protocol=protocol,
-                               validator_nodes_sku=validator_nodes_sku,
-                               password=password,
-                               consortium=consortium,
-                               consortium_management_account_password=consortium_management_account_password,
-                               firewall_rules=firewall_rules)
+                             firewall_rules=None,
+                             no_wait=False):
+    return sdk_no_wait(no_wait, client.begin_create,
+                       blockchain_member_name=blockchain_member_name,
+                       resource_group_name=resource_group_name,
+                       location=location,
+                       tags=tags,
+                       sku=sku,
+                       protocol=protocol,
+                       validator_nodes_sku=validator_nodes_sku,
+                       password=password,
+                       consortium=consortium,
+                       consortium_management_account_password=consortium_management_account_password,
+                       firewall_rules=firewall_rules)
 
 
-def blockchain_member_update(cmd, client,
+def blockchain_member_update(client,
                              blockchain_member_name,
                              resource_group_name,
                              tags=None,
@@ -64,28 +68,30 @@ def blockchain_member_update(cmd, client,
                          consortium_management_account_password=consortium_management_account_password)
 
 
-def blockchain_member_delete(cmd, client,
+def blockchain_member_delete(client,
                              blockchain_member_name,
-                             resource_group_name):
-    return client.begin_delete(blockchain_member_name=blockchain_member_name,
-                               resource_group_name=resource_group_name)
+                             resource_group_name,
+                             no_wait=False):
+    return sdk_no_wait(no_wait, client.begin_delete,
+                       blockchain_member_name=blockchain_member_name,
+                       resource_group_name=resource_group_name)
 
 
-def blockchain_member_list_api_key(cmd, client,
+def blockchain_member_list_api_key(client,
                                    blockchain_member_name,
                                    resource_group_name):
     return client.list_api_key(blockchain_member_name=blockchain_member_name,
                                resource_group_name=resource_group_name)
 
 
-def blockchain_member_list_consortium_member(cmd, client,
+def blockchain_member_list_consortium_member(client,
                                              blockchain_member_name,
                                              resource_group_name):
     return client.list_consortium_member(blockchain_member_name=blockchain_member_name,
                                          resource_group_name=resource_group_name)
 
 
-def blockchain_member_regenerate_api_key(cmd, client,
+def blockchain_member_regenerate_api_key(client,
                                          blockchain_member_name,
                                          resource_group_name,
                                          key_name=None):
@@ -94,19 +100,19 @@ def blockchain_member_regenerate_api_key(cmd, client,
                                      key_name=key_name)
 
 
-def blockchain_consortium_list(cmd, client,
+def blockchain_consortium_list(client,
                                location):
     return client.list_consortium(location_name=location)
 
 
-def blockchain_transaction_node_list(cmd, client,
+def blockchain_transaction_node_list(client,
                                      blockchain_member_name,
                                      resource_group_name):
     return client.list(blockchain_member_name=blockchain_member_name,
                        resource_group_name=resource_group_name)
 
 
-def blockchain_transaction_node_show(cmd, client,
+def blockchain_transaction_node_show(client,
                                      blockchain_member_name,
                                      transaction_node_name,
                                      resource_group_name):
@@ -115,22 +121,24 @@ def blockchain_transaction_node_show(cmd, client,
                       resource_group_name=resource_group_name)
 
 
-def blockchain_transaction_node_create(cmd, client,
+def blockchain_transaction_node_create(client,
                                        blockchain_member_name,
                                        transaction_node_name,
                                        resource_group_name,
                                        location=None,
                                        password=None,
-                                       firewall_rules=None):
-    return client.begin_create(blockchain_member_name=blockchain_member_name,
-                               transaction_node_name=transaction_node_name,
-                               resource_group_name=resource_group_name,
-                               location=location,
-                               password=password,
-                               firewall_rules=firewall_rules)
+                                       firewall_rules=None,
+                                       no_wait=False):
+    return sdk_no_wait(no_wait, client.begin_create,
+                       blockchain_member_name=blockchain_member_name,
+                       transaction_node_name=transaction_node_name,
+                       resource_group_name=resource_group_name,
+                       location=location,
+                       password=password,
+                       firewall_rules=firewall_rules)
 
 
-def blockchain_transaction_node_update(cmd, client,
+def blockchain_transaction_node_update(client,
                                        blockchain_member_name,
                                        transaction_node_name,
                                        resource_group_name,
@@ -143,16 +151,18 @@ def blockchain_transaction_node_update(cmd, client,
                          firewall_rules=firewall_rules)
 
 
-def blockchain_transaction_node_delete(cmd, client,
+def blockchain_transaction_node_delete(client,
                                        blockchain_member_name,
                                        transaction_node_name,
-                                       resource_group_name):
-    return client.begin_delete(blockchain_member_name=blockchain_member_name,
-                               transaction_node_name=transaction_node_name,
-                               resource_group_name=resource_group_name)
+                                       resource_group_name,
+                                       no_wait=False):
+    return sdk_no_wait(no_wait, client.begin_delete,
+                       blockchain_member_name=blockchain_member_name,
+                       transaction_node_name=transaction_node_name,
+                       resource_group_name=resource_group_name)
 
 
-def blockchain_transaction_node_list_api_key(cmd, client,
+def blockchain_transaction_node_list_api_key(client,
                                              blockchain_member_name,
                                              transaction_node_name,
                                              resource_group_name):
@@ -161,7 +171,7 @@ def blockchain_transaction_node_list_api_key(cmd, client,
                                resource_group_name=resource_group_name)
 
 
-def blockchain_transaction_node_regenerate_api_key(cmd, client,
+def blockchain_transaction_node_regenerate_api_key(client,
                                                    blockchain_member_name,
                                                    transaction_node_name,
                                                    resource_group_name,
