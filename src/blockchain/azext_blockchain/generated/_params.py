@@ -18,8 +18,8 @@ from azure.cli.core.commands.parameters import (
     get_location_type
 )
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
+from azext_blockchain.generated._validators import process_blockchain_member_sku
 from azext_blockchain.action import (
-    AddSku,
     AddValidatorNodesSku,
     AddBlockchainMemberCreateFirewallRules,
     AddBlockchainTransactionNodeUpdateFirewallRules,
@@ -32,7 +32,7 @@ def load_arguments(self, _):
     with self.argument_context('blockchain member list') as c:
         c.argument('resource_group_name', resource_group_name_type)
 
-    with self.argument_context('blockchain member show') as c:
+    with self.argument_context('blockchain member') as c:
         c.argument('blockchain_member_name', options_list=['--name', '-n'], help='Blockchain member name.')
         c.argument('resource_group_name', resource_group_name_type)
 
@@ -42,8 +42,7 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
-        c.argument('sku', action=AddSku, nargs='+', help='Gets or sets the blockchain member Sku. Expect value: KEY1=VA'
-                   'LUE1 KEY2=VALUE2 ... , available KEYs are: name, tier.')
+        c.argument('sku', arg_type=get_enum_type(['Basic', 'Standard']), help='The Sku of the blockchain member', validator=process_blockchain_member_sku)
         c.argument('protocol', arg_type=get_enum_type(['NotSpecified', 'Parity', 'Quorum', 'Corda']), help='Gets or set'
                    's the blockchain protocol.')
         c.argument('validator_nodes_sku', action=AddValidatorNodesSku, nargs='+', help='Gets or sets the blockchain val'
@@ -54,18 +53,14 @@ def load_arguments(self, _):
                    'ord.')
         c.argument('consortium_role', help='Gets the role of the member in the consortium.')
         c.argument('consortium_member_display_name', help='Gets the display name of the member in the consortium.')
-        c.argument('firewall_rules', action=AddBlockchainMemberCreateFirewallRules, nargs='+', help='Gets or sets firew'
-                   'all rules Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: rule-name, start-ip-addre'
-                   'ss, end-ip-address.')
+        c.argument('firewall_rules', action=AddBlockchainMemberCreateFirewallRules, nargs='+')
 
     with self.argument_context('blockchain member update') as c:
         c.argument('blockchain_member_name', options_list=['--name', '-n'], help='Blockchain member name.')
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('tags', tags_type)
         c.argument('password', help='Sets the transaction node dns endpoint basic auth password.')
-        c.argument('firewall_rules', action=AddBlockchainTransactionNodeUpdateFirewallRules, nargs='+', help='Gets or s'
-                   'ets the firewall rules. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: rule-name, '
-                   'start-ip-address, end-ip-address.')
+        c.argument('firewall_rules', action=AddBlockchainTransactionNodeUpdateFirewallRules, nargs='+')
         c.argument('consortium_management_account_password', help='Sets the managed consortium management account passw'
                    'ord.')
 
@@ -87,8 +82,8 @@ def load_arguments(self, _):
     with self.argument_context('blockchain member regenerate-api-key') as c:
         c.argument('blockchain_member_name', options_list=['--name', '-n'], help='Blockchain member name.')
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('key_name', help='Gets or sets the API key name.')
-        c.argument('value', help='Gets or sets the API key value.')
+        c.argument('key_name', help='Gets or sets the API key name.',
+                   arg_type=get_enum_type(['key1', 'key2']))
 
     with self.argument_context('blockchain consortium list') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
@@ -97,7 +92,7 @@ def load_arguments(self, _):
         c.argument('blockchain_member_name', options_list=['--member-name'], help='Blockchain member name.')
         c.argument('resource_group_name', resource_group_name_type)
 
-    with self.argument_context('blockchain transaction-node show') as c:
+    with self.argument_context('blockchain transaction-node') as c:
         c.argument('blockchain_member_name', options_list=['--member-name'], help='Blockchain member name.')
         c.argument('transaction_node_name', options_list=['--name', '-n'], help='Transaction node name.')
         c.argument('resource_group_name', resource_group_name_type)
@@ -109,18 +104,14 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
         c.argument('password', help='Sets the transaction node dns endpoint basic auth password.')
-        c.argument('firewall_rules', action=AddBlockchainTransactionNodeCreateFirewallRules, nargs='+', help='Gets or s'
-                   'ets the firewall rules. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: rule-name, '
-                   'start-ip-address, end-ip-address.')
+        c.argument('firewall_rules', action=AddBlockchainTransactionNodeCreateFirewallRules, nargs='+')
 
     with self.argument_context('blockchain transaction-node update') as c:
         c.argument('blockchain_member_name', options_list=['--member-name'], help='Blockchain member name.')
         c.argument('transaction_node_name', options_list=['--name', '-n'], help='Transaction node name.')
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('password', help='Sets the transaction node dns endpoint basic auth password.')
-        c.argument('firewall_rules', action=AddBlockchainTransactionNodeUpdateFirewallRules, nargs='+', help='Gets or s'
-                   'ets the firewall rules. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: rule-name, '
-                   'start-ip-address, end-ip-address.')
+        c.argument('firewall_rules', action=AddBlockchainTransactionNodeUpdateFirewallRules, nargs='+')
 
     with self.argument_context('blockchain transaction-node delete') as c:
         c.argument('blockchain_member_name', options_list=['--member-name'], help='Blockchain member name.')

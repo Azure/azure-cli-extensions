@@ -25,7 +25,6 @@ def load_command_table(self, _):
         g.custom_command('create', 'blockchain_member_create', supports_no_wait=True)
         g.custom_command('update', 'blockchain_member_update')
         g.custom_command('delete', 'blockchain_member_delete', supports_no_wait=True)
-        g.custom_command('list-all', 'blockchain_member_list_all')
         g.custom_command('list-api-key', 'blockchain_member_list_api_key')
         g.custom_command('list-consortium-member', 'blockchain_member_list_consortium_member')
         g.custom_command('regenerate-api-key', 'blockchain_member_regenerate_api_key')

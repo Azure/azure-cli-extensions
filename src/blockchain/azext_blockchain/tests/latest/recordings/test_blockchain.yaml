@@ -1,0 +1,577 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - blockchain consortium list
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --location
+      User-Agent:
+      - AZURECLI/2.5.1 azsdk-python-mgmt-blockchain/2.0.0 Python/3.8.0 (Windows-10-10.0.18362-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blockchain/locations/southeastasia/listConsortiums?api-version=2018-06-01-preview
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 21 May 2020 07:53:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "southeastasia", "sku": {"name": "S0", "tier": "Standard"},
+      "properties": {"protocol": "Quorum", "validatorNodesSku": {"capacity": 2}, "password":
+      "1234abcdEFG1", "consortium": "ContoseConsortium", "consortiumManagementAccountPassword":
+      "1234abcdEFG1"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - blockchain member create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '266'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --consortium --consortium-management-account-password --password
+        --validator-nodes-sku --protocol --name --resource-group
+      User-Agent:
+      - AZURECLI/2.5.1 azsdk-python-mgmt-blockchain/2.0.0 Python/3.8.0 (Windows-10-10.0.18362-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Blockchain/blockchainMembers/contosemember1?api-version=2018-06-01-preview
+  response:
+    body:
+      string: '{"location":"southeastasia","name":"contosemember1","kind":null,"properties":{"validatorNodesSku":{"capacity":2},"userName":"contosemember1","password":null,"consortium":"ContoseConsortium","consortiumRole":null,"consortiumMemberDisplayName":null,"consortiumManagementAccountAddress":null,"consortiumManagementAccountPassword":null,"firewallRules":[{"ruleName":"AllowAll","startIpAddress":"0.0.0.0","endIpAddress":"255.255.255.255"}],"rootContractAddress":null,"publicKey":null,"provisioningState":"Updating","dns":null,"protocol":"Quorum"},"type":"Microsoft.Blockchain/blockchainMembers","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Blockchain/blockchainMembers/contosemember1","tags":null,"sku":{"name":"S0","tier":"Standard"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '853'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 21 May 2020 07:53:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1194'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - blockchain member create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --consortium --consortium-management-account-password --password
+        --validator-nodes-sku --protocol --name --resource-group
+      User-Agent:
+      - AZURECLI/2.5.1 azsdk-python-mgmt-blockchain/2.0.0 Python/3.8.0 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Blockchain/blockchainMembers/contosemember1?api-version=2018-06-01-preview
+  response:
+    body:
+      string: '{"location":"southeastasia","name":"contosemember1","kind":"Quorum","properties":{"validatorNodesSku":{"capacity":2},"userName":"contosemember1","password":null,"consortium":"ContoseConsortium","consortiumRole":null,"consortiumMemberDisplayName":null,"consortiumManagementAccountAddress":null,"consortiumManagementAccountPassword":null,"firewallRules":[{"ruleName":"AllowAll","startIpAddress":"0.0.0.0","endIpAddress":"255.255.255.255"}],"rootContractAddress":null,"publicKey":null,"provisioningState":"Updating","dns":null,"protocol":"Quorum"},"type":"Microsoft.Blockchain/blockchainMembers","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Blockchain/blockchainMembers/contosemember1","tags":null,"sku":{"name":"S0","tier":"Standard"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '857'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 21 May 2020 07:53:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - blockchain member create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --consortium --consortium-management-account-password --password
+        --validator-nodes-sku --protocol --name --resource-group
+      User-Agent:
+      - AZURECLI/2.5.1 azsdk-python-mgmt-blockchain/2.0.0 Python/3.8.0 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Blockchain/blockchainMembers/contosemember1?api-version=2018-06-01-preview
+  response:
+    body:
+      string: '{"location":"southeastasia","name":"contosemember1","kind":"Quorum","properties":{"validatorNodesSku":{"capacity":2},"userName":"contosemember1","password":null,"consortium":"ContoseConsortium","consortiumRole":null,"consortiumMemberDisplayName":null,"consortiumManagementAccountAddress":null,"consortiumManagementAccountPassword":null,"firewallRules":[{"ruleName":"AllowAll","startIpAddress":"0.0.0.0","endIpAddress":"255.255.255.255"}],"rootContractAddress":null,"publicKey":null,"provisioningState":"Updating","dns":null,"protocol":"Quorum"},"type":"Microsoft.Blockchain/blockchainMembers","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Blockchain/blockchainMembers/contosemember1","tags":null,"sku":{"name":"S0","tier":"Standard"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '857'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 21 May 2020 07:54:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - blockchain member create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --consortium --consortium-management-account-password --password
+        --validator-nodes-sku --protocol --name --resource-group
+      User-Agent:
+      - AZURECLI/2.5.1 azsdk-python-mgmt-blockchain/2.0.0 Python/3.8.0 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Blockchain/blockchainMembers/contosemember1?api-version=2018-06-01-preview
+  response:
+    body:
+      string: '{"location":"southeastasia","name":"contosemember1","kind":"Quorum","properties":{"validatorNodesSku":{"capacity":2},"userName":"contosemember1","password":null,"consortium":"ContoseConsortium","consortiumRole":null,"consortiumMemberDisplayName":null,"consortiumManagementAccountAddress":null,"consortiumManagementAccountPassword":null,"firewallRules":[{"ruleName":"AllowAll","startIpAddress":"0.0.0.0","endIpAddress":"255.255.255.255"}],"rootContractAddress":null,"publicKey":null,"provisioningState":"Updating","dns":null,"protocol":"Quorum"},"type":"Microsoft.Blockchain/blockchainMembers","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Blockchain/blockchainMembers/contosemember1","tags":null,"sku":{"name":"S0","tier":"Standard"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '857'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 21 May 2020 07:55:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - blockchain member create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --consortium --consortium-management-account-password --password
+        --validator-nodes-sku --protocol --name --resource-group
+      User-Agent:
+      - AZURECLI/2.5.1 azsdk-python-mgmt-blockchain/2.0.0 Python/3.8.0 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Blockchain/blockchainMembers/contosemember1?api-version=2018-06-01-preview
+  response:
+    body:
+      string: '{"location":"southeastasia","name":"contosemember1","kind":"Quorum","properties":{"validatorNodesSku":{"capacity":2},"userName":"contosemember1","password":null,"consortium":"ContoseConsortium","consortiumRole":null,"consortiumMemberDisplayName":null,"consortiumManagementAccountAddress":null,"consortiumManagementAccountPassword":null,"firewallRules":[{"ruleName":"AllowAll","startIpAddress":"0.0.0.0","endIpAddress":"255.255.255.255"}],"rootContractAddress":null,"publicKey":null,"provisioningState":"Updating","dns":null,"protocol":"Quorum"},"type":"Microsoft.Blockchain/blockchainMembers","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Blockchain/blockchainMembers/contosemember1","tags":null,"sku":{"name":"S0","tier":"Standard"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '857'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 21 May 2020 07:55:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - blockchain member create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --consortium --consortium-management-account-password --password
+        --validator-nodes-sku --protocol --name --resource-group
+      User-Agent:
+      - AZURECLI/2.5.1 azsdk-python-mgmt-blockchain/2.0.0 Python/3.8.0 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Blockchain/blockchainMembers/contosemember1?api-version=2018-06-01-preview
+  response:
+    body:
+      string: '{"location":"southeastasia","name":"contosemember1","kind":"Quorum","properties":{"validatorNodesSku":{"capacity":2},"userName":"contosemember1","password":null,"consortium":"ContoseConsortium","consortiumRole":null,"consortiumMemberDisplayName":null,"consortiumManagementAccountAddress":null,"consortiumManagementAccountPassword":null,"firewallRules":[{"ruleName":"AllowAll","startIpAddress":"0.0.0.0","endIpAddress":"255.255.255.255"}],"rootContractAddress":null,"publicKey":null,"provisioningState":"Updating","dns":null,"protocol":"Quorum"},"type":"Microsoft.Blockchain/blockchainMembers","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Blockchain/blockchainMembers/contosemember1","tags":null,"sku":{"name":"S0","tier":"Standard"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '857'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 21 May 2020 07:56:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - blockchain member create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --consortium --consortium-management-account-password --password
+        --validator-nodes-sku --protocol --name --resource-group
+      User-Agent:
+      - AZURECLI/2.5.1 azsdk-python-mgmt-blockchain/2.0.0 Python/3.8.0 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Blockchain/blockchainMembers/contosemember1?api-version=2018-06-01-preview
+  response:
+    body:
+      string: '{"location":"southeastasia","name":"contosemember1","kind":"Quorum","properties":{"validatorNodesSku":{"capacity":2},"userName":"contosemember1","password":null,"consortium":"ContoseConsortium","consortiumRole":null,"consortiumMemberDisplayName":null,"consortiumManagementAccountAddress":null,"consortiumManagementAccountPassword":null,"firewallRules":[{"ruleName":"AllowAll","startIpAddress":"0.0.0.0","endIpAddress":"255.255.255.255"}],"rootContractAddress":null,"publicKey":null,"provisioningState":"Updating","dns":null,"protocol":"Quorum"},"type":"Microsoft.Blockchain/blockchainMembers","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Blockchain/blockchainMembers/contosemember1","tags":null,"sku":{"name":"S0","tier":"Standard"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '857'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 21 May 2020 07:56:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - blockchain member create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --consortium --consortium-management-account-password --password
+        --validator-nodes-sku --protocol --name --resource-group
+      User-Agent:
+      - AZURECLI/2.5.1 azsdk-python-mgmt-blockchain/2.0.0 Python/3.8.0 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Blockchain/blockchainMembers/contosemember1?api-version=2018-06-01-preview
+  response:
+    body:
+      string: '{"location":"southeastasia","name":"contosemember1","kind":"Quorum","properties":{"validatorNodesSku":{"capacity":2},"userName":"contosemember1","password":null,"consortium":"ContoseConsortium","consortiumRole":null,"consortiumMemberDisplayName":null,"consortiumManagementAccountAddress":null,"consortiumManagementAccountPassword":null,"firewallRules":[{"ruleName":"AllowAll","startIpAddress":"0.0.0.0","endIpAddress":"255.255.255.255"}],"rootContractAddress":null,"publicKey":null,"provisioningState":"Updating","dns":null,"protocol":"Quorum"},"type":"Microsoft.Blockchain/blockchainMembers","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Blockchain/blockchainMembers/contosemember1","tags":null,"sku":{"name":"S0","tier":"Standard"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '857'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 21 May 2020 07:57:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - blockchain member create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --consortium --consortium-management-account-password --password
+        --validator-nodes-sku --protocol --name --resource-group
+      User-Agent:
+      - AZURECLI/2.5.1 azsdk-python-mgmt-blockchain/2.0.0 Python/3.8.0 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Blockchain/blockchainMembers/contosemember1?api-version=2018-06-01-preview
+  response:
+    body:
+      string: '{"location":"southeastasia","name":"contosemember1","kind":"Quorum","properties":{"validatorNodesSku":{"capacity":2},"userName":"contosemember1","password":null,"consortium":"ContoseConsortium","consortiumRole":null,"consortiumMemberDisplayName":null,"consortiumManagementAccountAddress":null,"consortiumManagementAccountPassword":null,"firewallRules":[{"ruleName":"AllowAll","startIpAddress":"0.0.0.0","endIpAddress":"255.255.255.255"}],"rootContractAddress":null,"publicKey":null,"provisioningState":"Updating","dns":null,"protocol":"Quorum"},"type":"Microsoft.Blockchain/blockchainMembers","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Blockchain/blockchainMembers/contosemember1","tags":null,"sku":{"name":"S0","tier":"Standard"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '857'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 21 May 2020 07:57:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - blockchain member create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --consortium --consortium-management-account-password --password
+        --validator-nodes-sku --protocol --name --resource-group
+      User-Agent:
+      - AZURECLI/2.5.1 azsdk-python-mgmt-blockchain/2.0.0 Python/3.8.0 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Blockchain/blockchainMembers/contosemember1?api-version=2018-06-01-preview
+  response:
+    body:
+      string: '{"location":"southeastasia","name":"contosemember1","kind":"Quorum","properties":{"validatorNodesSku":{"capacity":2},"userName":"contosemember1","password":null,"consortium":"ContoseConsortium","consortiumRole":null,"consortiumMemberDisplayName":null,"consortiumManagementAccountAddress":null,"consortiumManagementAccountPassword":null,"firewallRules":[{"ruleName":"AllowAll","startIpAddress":"0.0.0.0","endIpAddress":"255.255.255.255"}],"rootContractAddress":null,"publicKey":null,"provisioningState":"Updating","dns":null,"protocol":"Quorum"},"type":"Microsoft.Blockchain/blockchainMembers","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Blockchain/blockchainMembers/contosemember1","tags":null,"sku":{"name":"S0","tier":"Standard"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '857'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 21 May 2020 07:58:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - blockchain member create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --consortium --consortium-management-account-password --password
+        --validator-nodes-sku --protocol --name --resource-group
+      User-Agent:
+      - AZURECLI/2.5.1 azsdk-python-mgmt-blockchain/2.0.0 Python/3.8.0 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Blockchain/blockchainMembers/contosemember1?api-version=2018-06-01-preview
+  response:
+    body:
+      string: '{"error":{"code":"ExpiredAuthenticationToken","message":"The access
+        token expiry UTC time ''5/21/2020 8:21:12 AM'' is earlier than current UTC
+        time ''5/21/2020 8:32:20 AM''."}}'
+    headers:
+      cache-control:
+      - no-cache
+      connection:
+      - close
+      content-length:
+      - '172'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 21 May 2020 08:32:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      www-authenticate:
+      - Bearer authorization_uri="https://login.windows.net/54826b22-38d6-4fb2-bad9-b7b93a3e9c5a",
+        error="invalid_token", error_description="The access token has expired."
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+    status:
+      code: 401
+      message: Unauthorized
+version: 1

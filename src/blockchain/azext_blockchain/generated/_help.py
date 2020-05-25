@@ -19,7 +19,7 @@ helps['blockchain member'] = """
 
 helps['blockchain member list'] = """
     type: command
-    short-summary: Lists the blockchain members for a resource group.
+    short-summary: Lists the blockchain members.
     examples:
       - name: BlockchainMembers_List
         text: |-
@@ -38,6 +38,13 @@ helps['blockchain member show'] = """
 helps['blockchain member create'] = """
     type: command
     short-summary: Create a blockchain member.
+    parameters:
+      - name: --firewall-rules
+        short-summary: Firewall rules of the blockchian member.
+        long-summary: |
+            Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: rule-name, start-ip-address, end-ip-address.
+    
+            Multiple firewall rules can be specified by using more than one `--firewall-rules` argument.
     examples:
       - name: BlockchainMembers_Create
         text: |-
@@ -49,11 +56,18 @@ agement-account-password "1234abcdEFG1" --password "1234abcdEFG1" --validator-no
 helps['blockchain member update'] = """
     type: command
     short-summary: Update a blockchain member.
+    parameters:
+      - name: --firewall-rules
+        short-summary: Firewall rules of the blockchian member.
+        long-summary: |
+            Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: rule-name, start-ip-address, end-ip-address.
+    
+            Multiple firewall rules can be specified by using more than one `--firewall-rules` argument.
     examples:
       - name: BlockchainMembers_Update
         text: |-
                az blockchain member update --consortium-management-account-password "1234abcdEFG1" --password "1234abcd\
-EFG1" --blockchain-member-name "ContoseMember1" --resource-group "mygroup"
+EFG1" --name "ContoseMember1" --resource-group "mygroup"
 """
 
 helps['blockchain member delete'] = """
@@ -63,15 +77,6 @@ helps['blockchain member delete'] = """
       - name: BlockchainMembers_Delete
         text: |-
                az blockchain member delete --blockchain-member-name "contosemember1" --resource-group "mygroup"
-"""
-
-helps['blockchain member list-all'] = """
-    type: command
-    short-summary: Lists the blockchain members for a subscription.
-    examples:
-      - name: BlockchainMembers_ListAll
-        text: |-
-               az blockchain member list-all
 """
 
 helps['blockchain member list-api-key'] = """
@@ -144,6 +149,13 @@ helps['blockchain transaction-node show'] = """
 helps['blockchain transaction-node create'] = """
     type: command
     short-summary: Create or update the transaction node.
+    parameters:
+      - name: --firewall-rules
+        short-summary: Firewall rules of the blockchian transaction node.
+        long-summary: |
+            Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: rule-name, start-ip-address, end-ip-address.
+    
+            Multiple firewall rules can be specified by using more than one `--firewall-rules` argument.
     examples:
       - name: TransactionNodes_Create
         text: |-
@@ -154,6 +166,13 @@ p" --location "southeastasia" --password "1234abcdEFG1" --transaction-node-name 
 helps['blockchain transaction-node update'] = """
     type: command
     short-summary: Update the transaction node.
+    parameters:
+      - name: --firewall-rules
+        short-summary: Firewall rules of the blockchian transaction node.
+        long-summary: |
+            Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: rule-name, start-ip-address, end-ip-address.
+    
+            Multiple firewall rules can be specified by using more than one `--firewall-rules` argument.
     examples:
       - name: TransactionNodes_Update
         text: |-

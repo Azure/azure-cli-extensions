@@ -11,8 +11,10 @@
 
 
 def blockchain_member_list(cmd, client,
-                           resource_group_name):
-    return client.list(resource_group_name=resource_group_name)
+                           resource_group_name=None):
+    if resource_group_name:
+        return client.list(resource_group_name=resource_group_name)
+    return client.list_all()
 
 
 def blockchain_member_show(cmd, client,
@@ -69,10 +71,6 @@ def blockchain_member_delete(cmd, client,
                                resource_group_name=resource_group_name)
 
 
-def blockchain_member_list_all(cmd, client):
-    return client.list_all()
-
-
 def blockchain_member_list_api_key(cmd, client,
                                    blockchain_member_name,
                                    resource_group_name):
@@ -90,12 +88,10 @@ def blockchain_member_list_consortium_member(cmd, client,
 def blockchain_member_regenerate_api_key(cmd, client,
                                          blockchain_member_name,
                                          resource_group_name,
-                                         key_name=None,
-                                         value=None):
+                                         key_name=None):
     return client.regenerate_api_key(blockchain_member_name=blockchain_member_name,
                                      resource_group_name=resource_group_name,
-                                     key_name=key_name,
-                                     value=value)
+                                     key_name=key_name)
 
 
 def blockchain_consortium_list(cmd, client,

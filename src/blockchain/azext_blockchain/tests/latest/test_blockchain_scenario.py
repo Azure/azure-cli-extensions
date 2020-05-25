@@ -29,7 +29,7 @@ def setup(test, rg):
 @try_manual
 def step__locations_post_locations_listconsortiums(test, rg):
     test.cmd('az blockchain consortium list '
-             '--location-name "{southeastasia}"',
+             '--location "{southeastasia}"',
              checks=[])
 
 
@@ -43,11 +43,11 @@ def step__blockchainmembers_put_blockchainmembers_create(test, rg):
              '--password "1234abcdEFG1" '
              '--validator-nodes-sku capacity=2 '
              '--protocol "Quorum" '
-             '--blockchain-member-name "{contosemember1}" '
+             '--name "{contosemember1}" '
              '--resource-group "{rg}"',
              checks=[])
     test.cmd('az blockchain member wait --created '
-             '--blockchain-member-name "{contosemember1}" '
+             '--name "{contosemember1}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -63,7 +63,7 @@ def step__blockchainmembers_get_blockchainmembers_list(test, rg):
 # EXAMPLE: /BlockchainMembers/get/BlockchainMembers_ListAll
 @try_manual
 def step__blockchainmembers_get_blockchainmembers_listall(test, rg):
-    test.cmd('az blockchain member list-all',
+    test.cmd('az blockchain member list',
              checks=[])
 
 
@@ -71,7 +71,7 @@ def step__blockchainmembers_get_blockchainmembers_listall(test, rg):
 @try_manual
 def step__blockchainmembers_get_blockchainmembers_listconsortiummembers(test, rg):
     test.cmd('az blockchain member list-consortium-member '
-             '--blockchain-member-name "{contosemember1}" '
+             '--name "{contosemember1}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -80,7 +80,7 @@ def step__blockchainmembers_get_blockchainmembers_listconsortiummembers(test, rg
 @try_manual
 def step__blockchainmembers_post_blockchainmembers_listapikeys(test, rg):
     test.cmd('az blockchain member list-api-key '
-             '--blockchain-member-name "{contosemember1}" '
+             '--name "{contosemember1}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -90,7 +90,7 @@ def step__blockchainmembers_post_blockchainmembers_listapikeys(test, rg):
 def step__blockchainmembers_post_blockchainmembers_listregenerateapikeys(test, rg):
     test.cmd('az blockchain member regenerate-api-key '
              '--key-name "key1" '
-             '--blockchain-member-name "{contosemember1}" '
+             '--name "{contosemember1}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -101,7 +101,7 @@ def step__blockchainmembers_patch_blockchainmembers_update(test, rg):
     test.cmd('az blockchain member update '
              '--consortium-management-account-password "1234abcdEFG1" '
              '--password "1234abcdEFG1" '
-             '--blockchain-member-name "{BlockchainMembers_2}" '
+             '--name "{contosemember1}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -110,7 +110,7 @@ def step__blockchainmembers_patch_blockchainmembers_update(test, rg):
 @try_manual
 def step__blockchainmembers_get_blockchainmembers_get(test, rg):
     test.cmd('az blockchain member show '
-             '--blockchain-member-name "{contosemember1}" '
+             '--name "{contosemember1}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -119,15 +119,15 @@ def step__blockchainmembers_get_blockchainmembers_get(test, rg):
 @try_manual
 def step__transactionnodes_put_transactionnodes_create(test, rg):
     test.cmd('az blockchain transaction-node create '
-             '--blockchain-member-name "{contosemember1}" '
+             '--member-name "{contosemember1}" '
              '--resource-group "{rg}" '
              '--location "southeastasia" '
              '--password "1234abcdEFG1" '
-             '--transaction-node-name "{txnode2}"',
+             '--name "{txnode2}"',
              checks=[])
     test.cmd('az blockchain transaction-node wait --created '
              '--resource-group "{rg}" '
-             '--transaction-node-name "{txnode2}"',
+             '--name "{txnode2}"',
              checks=[])
 
 
@@ -135,7 +135,7 @@ def step__transactionnodes_put_transactionnodes_create(test, rg):
 @try_manual
 def step__transactionnodes_get_transactionnodes_list(test, rg):
     test.cmd('az blockchain transaction-node list '
-             '--blockchain-member-name "{contosemember1}" '
+             '--member-name "{contosemember1}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -144,9 +144,9 @@ def step__transactionnodes_get_transactionnodes_list(test, rg):
 @try_manual
 def step__transactionnodes_post_transactionnodes_listapikeys(test, rg):
     test.cmd('az blockchain transaction-node list-api-key '
-             '--blockchain-member-name "{contosemember1}" '
+             '--member-name "{contosemember1}" '
              '--resource-group "{rg}" '
-             '--transaction-node-name "{txnode2}"',
+             '--name "{txnode2}"',
              checks=[])
 
 
@@ -155,9 +155,9 @@ def step__transactionnodes_post_transactionnodes_listapikeys(test, rg):
 def step__transactionnodes_post_transactionnodes_listregenerateapikeys(test, rg):
     test.cmd('az blockchain transaction-node regenerate-api-key '
              '--key-name "key1" '
-             '--blockchain-member-name "{contosemember1}" '
+             '--member-name "{contosemember1}" '
              '--resource-group "{rg}" '
-             '--transaction-node-name "{txnode2}"',
+             '--name "{txnode2}"',
              checks=[])
 
 
@@ -165,10 +165,10 @@ def step__transactionnodes_post_transactionnodes_listregenerateapikeys(test, rg)
 @try_manual
 def step__transactionnodes_patch_transactionnodes_update(test, rg):
     test.cmd('az blockchain transaction-node update '
-             '--blockchain-member-name "{contosemember1}" '
+             '--member-name "{contosemember1}" '
              '--resource-group "{rg}" '
              '--password "1234abcdEFG1" '
-             '--transaction-node-name "{txnode2}"',
+             '--name "{txnode2}"',
              checks=[])
 
 
@@ -176,9 +176,9 @@ def step__transactionnodes_patch_transactionnodes_update(test, rg):
 @try_manual
 def step__transactionnodes_get_transactionnodes_get(test, rg):
     test.cmd('az blockchain transaction-node show '
-             '--blockchain-member-name "{contosemember1}" '
+             '--member-name "{contosemember1}" '
              '--resource-group "{rg}" '
-             '--transaction-node-name "{txnode2}"',
+             '--name "{txnode2}"',
              checks=[])
 
 
@@ -186,9 +186,9 @@ def step__transactionnodes_get_transactionnodes_get(test, rg):
 @try_manual
 def step__transactionnodes_delete_transactionnodes_delete(test, rg):
     test.cmd('az blockchain transaction-node delete '
-             '--blockchain-member-name "{contosemember1}" '
+             '--member-name "{contosemember1}" '
              '--resource-group "{rg}" '
-             '--transaction-node-name "{TransactionNodes_2}"',
+             '--name "{txnode2}"',
              checks=[])
 
 
@@ -196,7 +196,7 @@ def step__transactionnodes_delete_transactionnodes_delete(test, rg):
 @try_manual
 def step__blockchainmembers_delete_blockchainmembers_delete(test, rg):
     test.cmd('az blockchain member delete '
-             '--blockchain-member-name "{contosemember1}" '
+             '--name "{contosemember1}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -211,13 +211,13 @@ def call_scenario(test, rg):
     setup(test, rg)
     step__locations_post_locations_listconsortiums(test, rg)
     step__blockchainmembers_put_blockchainmembers_create(test, rg)
+    step__blockchainmembers_get_blockchainmembers_get(test, rg)
     step__blockchainmembers_get_blockchainmembers_list(test, rg)
     step__blockchainmembers_get_blockchainmembers_listall(test, rg)
     step__blockchainmembers_get_blockchainmembers_listconsortiummembers(test, rg)
     step__blockchainmembers_post_blockchainmembers_listapikeys(test, rg)
     step__blockchainmembers_post_blockchainmembers_listregenerateapikeys(test, rg)
     step__blockchainmembers_patch_blockchainmembers_update(test, rg)
-    step__blockchainmembers_get_blockchainmembers_get(test, rg)
     step__transactionnodes_put_transactionnodes_create(test, rg)
     step__transactionnodes_get_transactionnodes_list(test, rg)
     step__transactionnodes_post_transactionnodes_listapikeys(test, rg)
@@ -237,10 +237,8 @@ class BlockchainManagementClientScenarioTest(ScenarioTest):
 
         self.kwargs.update({
             'contosemember1': 'contosemember1',
-            'BlockchainMembers_2': 'BlockchainMembers_2',
             'southeastasia': 'southeastasia',
             'txnode2': 'txnode2',
-            'TransactionNodes_2': 'TransactionNodes_2',
         })
 
         call_scenario(self, rg)
