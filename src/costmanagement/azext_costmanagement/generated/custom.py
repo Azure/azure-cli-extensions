@@ -160,9 +160,9 @@ import json
 #                                                         filter=dataset_filter)
 
 
-def costmanagement_export_list(cmd, client,
-                               scope):
-    return client.list(scope=scope)
+# def costmanagement_export_list(cmd, client,
+#                                scope):
+#     return client.list(scope=scope)
 
 
 def costmanagement_export_show(cmd, client,

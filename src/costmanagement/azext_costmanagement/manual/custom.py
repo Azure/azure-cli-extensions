@@ -72,3 +72,7 @@ def costmanagement_export_create(cmd,
                                    status=schedule_status,
                                    recurrence=schedule_recurrence,
                                    recurrence_period=schedule_recurrence_period)
+
+
+def costmanagement_export_list(cmd, client, scope):
+    return client.list(scope=scope).value   # value exist even the result is empty
