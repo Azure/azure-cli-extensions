@@ -14,21 +14,21 @@ import json
 from knack.util import CLIError
 
 
-def kusto_cluster_list(client,
+def kusto_cluster_list(cmd, client,
                        resource_group_name=None):
     if resource_group_name is not None:
         return client.list_by_resource_group(resource_group_name=resource_group_name)
     return client.list()
 
 
-def kusto_cluster_show(client,
+def kusto_cluster_show(cmd, client,
                        resource_group_name,
                        cluster_name):
     return client.get(resource_group_name=resource_group_name,
                       cluster_name=cluster_name)
 
 
-def kusto_cluster_create(client,
+def kusto_cluster_create(cmd, client,
                          resource_group_name,
                          cluster_name,
                          location,
@@ -67,7 +67,7 @@ def kusto_cluster_create(client,
                                          user_assigned_identities=identity_user_assigned_identities)
 
 
-def kusto_cluster_update(client,
+def kusto_cluster_update(cmd, client,
                          resource_group_name,
                          cluster_name,
                          tags=None,
@@ -102,14 +102,14 @@ def kusto_cluster_update(client,
                                user_assigned_identities=identity_user_assigned_identities)
 
 
-def kusto_cluster_delete(client,
+def kusto_cluster_delete(cmd, client,
                          resource_group_name,
                          cluster_name):
     return client.begin_delete(resource_group_name=resource_group_name,
                                cluster_name=cluster_name)
 
 
-def kusto_cluster_add_language_extension(client,
+def kusto_cluster_add_language_extension(cmd, client,
                                          resource_group_name,
                                          cluster_name,
                                          value=None):
@@ -118,7 +118,7 @@ def kusto_cluster_add_language_extension(client,
                                                value=value)
 
 
-def kusto_cluster_detach_follower_database(client,
+def kusto_cluster_detach_follower_database(cmd, client,
                                            resource_group_name,
                                            cluster_name,
                                            cluster_resource_id,
@@ -129,28 +129,28 @@ def kusto_cluster_detach_follower_database(client,
                                                  attached_database_configuration_name=attached_database_configuration_name)
 
 
-def kusto_cluster_diagnose_virtual_network(client,
+def kusto_cluster_diagnose_virtual_network(cmd, client,
                                            resource_group_name,
                                            cluster_name):
     return client.begin_diagnose_virtual_network(resource_group_name=resource_group_name,
                                                  cluster_name=cluster_name)
 
 
-def kusto_cluster_list_follower_database(client,
+def kusto_cluster_list_follower_database(cmd, client,
                                          resource_group_name,
                                          cluster_name):
     return client.list_follower_database(resource_group_name=resource_group_name,
                                          cluster_name=cluster_name)
 
 
-def kusto_cluster_list_language_extension(client,
+def kusto_cluster_list_language_extension(cmd, client,
                                           resource_group_name,
                                           cluster_name):
     return client.list_language_extension(resource_group_name=resource_group_name,
                                           cluster_name=cluster_name)
 
 
-def kusto_cluster_list_sku(client,
+def kusto_cluster_list_sku(cmd, client,
                            resource_group_name=None,
                            cluster_name=None):
     if resource_group_name is not None and cluster_name is not None:
@@ -159,7 +159,7 @@ def kusto_cluster_list_sku(client,
     return client.list_sku()
 
 
-def kusto_cluster_remove_language_extension(client,
+def kusto_cluster_remove_language_extension(cmd, client,
                                             resource_group_name,
                                             cluster_name,
                                             value=None):
@@ -168,28 +168,28 @@ def kusto_cluster_remove_language_extension(client,
                                                   value=value)
 
 
-def kusto_cluster_start(client,
+def kusto_cluster_start(cmd, client,
                         resource_group_name,
                         cluster_name):
     return client.begin_start(resource_group_name=resource_group_name,
                               cluster_name=cluster_name)
 
 
-def kusto_cluster_stop(client,
+def kusto_cluster_stop(cmd, client,
                        resource_group_name,
                        cluster_name):
     return client.begin_stop(resource_group_name=resource_group_name,
                              cluster_name=cluster_name)
 
 
-def kusto_cluster_principal_assignment_list(client,
+def kusto_cluster_principal_assignment_list(cmd, client,
                                             resource_group_name,
                                             cluster_name):
     return client.list(resource_group_name=resource_group_name,
                        cluster_name=cluster_name)
 
 
-def kusto_cluster_principal_assignment_show(client,
+def kusto_cluster_principal_assignment_show(cmd, client,
                                             resource_group_name,
                                             cluster_name,
                                             principal_assignment_name):
@@ -198,7 +198,7 @@ def kusto_cluster_principal_assignment_show(client,
                       principal_assignment_name=principal_assignment_name)
 
 
-def kusto_cluster_principal_assignment_create(client,
+def kusto_cluster_principal_assignment_create(cmd, client,
                                               resource_group_name,
                                               cluster_name,
                                               principal_assignment_name,
@@ -215,7 +215,7 @@ def kusto_cluster_principal_assignment_create(client,
                                          principal_type=principal_type)
 
 
-def kusto_cluster_principal_assignment_update(client,
+def kusto_cluster_principal_assignment_update(cmd, client,
                                               resource_group_name,
                                               cluster_name,
                                               principal_assignment_name,
@@ -232,7 +232,7 @@ def kusto_cluster_principal_assignment_update(client,
                                          principal_type=principal_type)
 
 
-def kusto_cluster_principal_assignment_delete(client,
+def kusto_cluster_principal_assignment_delete(cmd, client,
                                               resource_group_name,
                                               cluster_name,
                                               principal_assignment_name):
@@ -241,14 +241,14 @@ def kusto_cluster_principal_assignment_delete(client,
                                principal_assignment_name=principal_assignment_name)
 
 
-def kusto_database_list(client,
+def kusto_database_list(cmd, client,
                         resource_group_name,
                         cluster_name):
     return client.list_by_cluster(resource_group_name=resource_group_name,
                                   cluster_name=cluster_name)
 
 
-def kusto_database_show(client,
+def kusto_database_show(cmd, client,
                         resource_group_name,
                         cluster_name,
                         database_name):
@@ -257,7 +257,7 @@ def kusto_database_show(client,
                       database_name=database_name)
 
 
-def kusto_database_create(client,
+def kusto_database_create(cmd, client,
                           resource_group_name,
                           cluster_name,
                           database_name,
@@ -280,7 +280,7 @@ def kusto_database_create(client,
                                          parameters=parameters)
 
 
-def kusto_database_update(client,
+def kusto_database_update(cmd, client,
                           resource_group_name,
                           cluster_name,
                           database_name,
@@ -303,7 +303,7 @@ def kusto_database_update(client,
                                parameters=parameters)
 
 
-def kusto_database_delete(client,
+def kusto_database_delete(cmd, client,
                           resource_group_name,
                           cluster_name,
                           database_name):
@@ -312,7 +312,7 @@ def kusto_database_delete(client,
                                database_name=database_name)
 
 
-def kusto_database_add_principal(client,
+def kusto_database_add_principal(cmd, client,
                                  resource_group_name,
                                  cluster_name,
                                  database_name,
@@ -323,7 +323,7 @@ def kusto_database_add_principal(client,
                                 value=value)
 
 
-def kusto_database_list_principal(client,
+def kusto_database_list_principal(cmd, client,
                                   resource_group_name,
                                   cluster_name,
                                   database_name):
@@ -332,7 +332,7 @@ def kusto_database_list_principal(client,
                                  database_name=database_name)
 
 
-def kusto_database_remove_principal(client,
+def kusto_database_remove_principal(cmd, client,
                                     resource_group_name,
                                     cluster_name,
                                     database_name,
@@ -343,7 +343,7 @@ def kusto_database_remove_principal(client,
                                    value=value)
 
 
-def kusto_database_principal_assignment_list(client,
+def kusto_database_principal_assignment_list(cmd, client,
                                              resource_group_name,
                                              cluster_name,
                                              database_name):
@@ -352,7 +352,7 @@ def kusto_database_principal_assignment_list(client,
                        database_name=database_name)
 
 
-def kusto_database_principal_assignment_show(client,
+def kusto_database_principal_assignment_show(cmd, client,
                                              resource_group_name,
                                              cluster_name,
                                              database_name,
@@ -363,7 +363,7 @@ def kusto_database_principal_assignment_show(client,
                       principal_assignment_name=principal_assignment_name)
 
 
-def kusto_database_principal_assignment_create(client,
+def kusto_database_principal_assignment_create(cmd, client,
                                                resource_group_name,
                                                cluster_name,
                                                database_name,
@@ -382,7 +382,7 @@ def kusto_database_principal_assignment_create(client,
                                          principal_type=principal_type)
 
 
-def kusto_database_principal_assignment_update(client,
+def kusto_database_principal_assignment_update(cmd, client,
                                                resource_group_name,
                                                cluster_name,
                                                database_name,
@@ -401,7 +401,7 @@ def kusto_database_principal_assignment_update(client,
                                          principal_type=principal_type)
 
 
-def kusto_database_principal_assignment_delete(client,
+def kusto_database_principal_assignment_delete(cmd, client,
                                                resource_group_name,
                                                cluster_name,
                                                database_name,
@@ -412,14 +412,14 @@ def kusto_database_principal_assignment_delete(client,
                                principal_assignment_name=principal_assignment_name)
 
 
-def kusto_attached_database_configuration_list(client,
+def kusto_attached_database_configuration_list(cmd, client,
                                                resource_group_name,
                                                cluster_name):
     return client.list_by_cluster(resource_group_name=resource_group_name,
                                   cluster_name=cluster_name)
 
 
-def kusto_attached_database_configuration_show(client,
+def kusto_attached_database_configuration_show(cmd, client,
                                                resource_group_name,
                                                cluster_name,
                                                attached_database_configuration_name):
@@ -428,7 +428,7 @@ def kusto_attached_database_configuration_show(client,
                       attached_database_configuration_name=attached_database_configuration_name)
 
 
-def kusto_attached_database_configuration_create(client,
+def kusto_attached_database_configuration_create(cmd, client,
                                                  resource_group_name,
                                                  cluster_name,
                                                  attached_database_configuration_name,
@@ -445,7 +445,7 @@ def kusto_attached_database_configuration_create(client,
                                          default_principals_modification_kind=default_principals_modification_kind)
 
 
-def kusto_attached_database_configuration_update(client,
+def kusto_attached_database_configuration_update(cmd, client,
                                                  resource_group_name,
                                                  cluster_name,
                                                  attached_database_configuration_name,
@@ -462,7 +462,7 @@ def kusto_attached_database_configuration_update(client,
                                          default_principals_modification_kind=default_principals_modification_kind)
 
 
-def kusto_attached_database_configuration_delete(client,
+def kusto_attached_database_configuration_delete(cmd, client,
                                                  resource_group_name,
                                                  cluster_name,
                                                  attached_database_configuration_name):
@@ -471,7 +471,7 @@ def kusto_attached_database_configuration_delete(client,
                                attached_database_configuration_name=attached_database_configuration_name)
 
 
-def kusto_data_connection_list(client,
+def kusto_data_connection_list(cmd, client,
                                resource_group_name,
                                cluster_name,
                                database_name):
@@ -480,7 +480,7 @@ def kusto_data_connection_list(client,
                                    database_name=database_name)
 
 
-def kusto_data_connection_show(client,
+def kusto_data_connection_show(cmd, client,
                                resource_group_name,
                                cluster_name,
                                database_name,
@@ -491,7 +491,7 @@ def kusto_data_connection_show(client,
                       data_connection_name=data_connection_name)
 
 
-def kusto_data_connection_event_grid_create(client,
+def kusto_data_connection_event_grid_create(cmd, client,
                                             resource_group_name,
                                             cluster_name,
                                             database_name,
@@ -519,7 +519,7 @@ def kusto_data_connection_event_grid_create(client,
                                          parameters=parameters)
 
 
-def kusto_data_connection_event_hub_create(client,
+def kusto_data_connection_event_hub_create(cmd, client,
                                            resource_group_name,
                                            cluster_name,
                                            database_name,
@@ -551,7 +551,7 @@ def kusto_data_connection_event_hub_create(client,
                                          parameters=parameters)
 
 
-def kusto_data_connection_iot_hub_create(client,
+def kusto_data_connection_iot_hub_create(cmd, client,
                                          resource_group_name,
                                          cluster_name,
                                          database_name,
@@ -583,7 +583,7 @@ def kusto_data_connection_iot_hub_create(client,
                                          parameters=parameters)
 
 
-def kusto_data_connection_event_grid_update(client,
+def kusto_data_connection_event_grid_update(cmd, client,
                                             resource_group_name,
                                             cluster_name,
                                             database_name,
@@ -611,7 +611,7 @@ def kusto_data_connection_event_grid_update(client,
                                parameters=parameters)
 
 
-def kusto_data_connection_event_hub_update(client,
+def kusto_data_connection_event_hub_update(cmd, client,
                                            resource_group_name,
                                            cluster_name,
                                            database_name,
@@ -643,7 +643,7 @@ def kusto_data_connection_event_hub_update(client,
                                parameters=parameters)
 
 
-def kusto_data_connection_iot_hub_update(client,
+def kusto_data_connection_iot_hub_update(cmd, client,
                                          resource_group_name,
                                          cluster_name,
                                          database_name,
@@ -675,7 +675,7 @@ def kusto_data_connection_iot_hub_update(client,
                                parameters=parameters)
 
 
-def kusto_data_connection_delete(client,
+def kusto_data_connection_delete(cmd, client,
                                  resource_group_name,
                                  cluster_name,
                                  database_name,
@@ -686,7 +686,7 @@ def kusto_data_connection_delete(client,
                                data_connection_name=data_connection_name)
 
 
-def kusto_data_connection_event_grid_data_connection_validation(client,
+def kusto_data_connection_event_grid_data_connection_validation(cmd, client,
                                                                 resource_group_name,
                                                                 cluster_name,
                                                                 database_name,
@@ -714,7 +714,7 @@ def kusto_data_connection_event_grid_data_connection_validation(client,
                                              properties=properties)
 
 
-def kusto_data_connection_event_hub_data_connection_validation(client,
+def kusto_data_connection_event_hub_data_connection_validation(cmd, client,
                                                                resource_group_name,
                                                                cluster_name,
                                                                database_name,
@@ -746,7 +746,7 @@ def kusto_data_connection_event_hub_data_connection_validation(client,
                                              properties=properties)
 
 
-def kusto_data_connection_iot_hub_data_connection_validation(client,
+def kusto_data_connection_iot_hub_data_connection_validation(cmd, client,
                                                              resource_group_name,
                                                              cluster_name,
                                                              database_name,

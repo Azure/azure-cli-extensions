@@ -42,8 +42,9 @@ helps['kusto cluster create'] = """
       - name: KustoClustersCreateOrUpdate
         text: |-
                az kusto cluster create --cluster-name "KustoClusterRPTest4" --identity-type "SystemAssigned" --location\
- "westus" --enable-purge true --enable-streaming-ingest true --key-vault-properties key-name="" key-vault-uri="" key-ve\
-rsion="" --sku name="Standard_L8s" capacity=2 tier="Standard" --resource-group "kustorptest"
+ "westus" --enable-purge true --enable-streaming-ingest true --key-vault-properties key-name="keyName" key-vault-uri="h\
+ttps://dummy.keyvault.com" key-version="keyVersion" --sku name="Standard_L8s" capacity=2 tier="Standard" --resource-gro\
+up "kustorptest"
 """
 
 helps['kusto cluster update'] = """
@@ -186,8 +187,8 @@ helps['kusto cluster-principal-assignment create'] = """
       - name: KustoClusterPrincipalAssignmentsCreateOrUpdate
         text: |-
                az kusto cluster-principal-assignment create --cluster-name "kustoclusterrptest4" --principal-id "876543\
-21-1234-1234-1234-123456789123" --principal-type "App" --role "AllDatabasesAdmin" --tenant-id "12345678-1234-1234-1234-\
-123456789123" --principal-assignment-name "kustoprincipal1" --resource-group "kustorptest"
+21-1234-1234-1234-123456789123" --principal-type "App" --role "Admin" --tenant-id "12345678-1234-1234-1234-123456789123\
+" --principal-assignment-name "kustoprincipal1" --resource-group "kustorptest"
 """
 
 helps['kusto cluster-principal-assignment update'] = """
@@ -197,8 +198,8 @@ helps['kusto cluster-principal-assignment update'] = """
       - name: KustoClusterPrincipalAssignmentsCreateOrUpdate
         text: |-
                az kusto cluster-principal-assignment update --cluster-name "kustoclusterrptest4" --principal-id "876543\
-21-1234-1234-1234-123456789123" --principal-type "App" --role "AllDatabasesAdmin" --tenant-id "12345678-1234-1234-1234-\
-123456789123" --principal-assignment-name "kustoprincipal1" --resource-group "kustorptest"
+21-1234-1234-1234-123456789123" --principal-type "App" --role "Admin" --tenant-id "12345678-1234-1234-1234-123456789123\
+" --principal-assignment-name "kustoprincipal1" --resource-group "kustorptest"
 """
 
 helps['kusto cluster-principal-assignment delete'] = """
@@ -284,8 +285,8 @@ helps['kusto database list-principal'] = """
     examples:
       - name: KustoDatabaseListPrincipals
         text: |-
-               az kusto database list-principal --cluster-name "KustoClusterRPTest4" --database-name "Kustodatabase8" -\
--resource-group "kustorptest"
+               az kusto database list-principal --cluster-name "KustoClusterRPTest4" --database-name "databaseName1" --\
+resource-group "kustorptest"
 """
 
 helps['kusto database remove-principal'] = """
@@ -392,7 +393,7 @@ helps['kusto attached-database-configuration create'] = """
                az kusto attached-database-configuration create --attached-database-configuration-name "attachedDatabase\
 Configurations1" --cluster-name "KustoClusterRPTest4" --location "westus" --cluster-resource-id "/subscriptions/1234567\
 8-1234-1234-1234-123456789098/resourceGroups/kustorptest/providers/Microsoft.Kusto/Clusters/KustoClusterLeader" --datab\
-ase-name "Kustodatabase8" --default-principals-modification-kind "Union" --resource-group "kustorptest"
+ase-name "db1" --default-principals-modification-kind "Union" --resource-group "kustorptest"
 """
 
 helps['kusto attached-database-configuration update'] = """
@@ -404,7 +405,7 @@ helps['kusto attached-database-configuration update'] = """
                az kusto attached-database-configuration update --attached-database-configuration-name "attachedDatabase\
 Configurations1" --cluster-name "KustoClusterRPTest4" --location "westus" --cluster-resource-id "/subscriptions/1234567\
 8-1234-1234-1234-123456789098/resourceGroups/kustorptest/providers/Microsoft.Kusto/Clusters/KustoClusterLeader" --datab\
-ase-name "Kustodatabase8" --default-principals-modification-kind "Union" --resource-group "kustorptest"
+ase-name "db1" --default-principals-modification-kind "Union" --resource-group "kustorptest"
 """
 
 helps['kusto attached-database-configuration delete'] = """
@@ -531,28 +532,4 @@ ub/namespaces/eventhubTestns1/eventhubs/eventhubTest1" --resource-group "kustorp
 helps['kusto data-connection iot-hub data-connection-validation'] = """
     type: command
     short-summary: Checks that the data connection parameters are valid.
-"""
-
-helps['kusto attached-database-configuration wait'] = """
-type: command
-short-summary: Wait for a managed Kusto cluster to reach a desired state.
-long-summary: If an operation on a cluster was interrupted or was started with `--no-wait`, use this command to wait for it to complete.
-"""
-
-helps['kusto cluster-principal-assignment wait'] = """
-type: command
-short-summary: Wait for a managed Kusto cluster to reach a desired state.
-long-summary: If an operation on a cluster was interrupted or was started with `--no-wait`, use this command to wait for it to complete.
-"""
-
-helps['kusto data-connection wait'] = """
-type: command
-short-summary: Wait for a managed Kusto cluster to reach a desired state.
-long-summary: If an operation on a cluster was interrupted or was started with `--no-wait`, use this command to wait for it to complete.
-"""
-
-helps['kusto database-principal-assignment wait'] = """
-type: command
-short-summary: Wait for a managed Kusto cluster to reach a desired state.
-long-summary: If an operation on a cluster was interrupted or was started with `--no-wait`, use this command to wait for it to complete.
 """
