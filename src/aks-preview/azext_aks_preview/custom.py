@@ -2214,11 +2214,11 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
 
     update_autoscaler = enable_cluster_autoscaler + disable_cluster_autoscaler + update_cluster_autoscaler
 
-    if (update_autoscaler != 1 and not tags and not mode):
+    if (update_autoscaler != 1 and not tags and not mode and not max_surge):
         raise CLIError('Please specify one or more of "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
-                       '"--tags" or "--mode"')
+                       '"--tags" or "--mode" or "--max-surge"')
 
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
 
