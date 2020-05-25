@@ -21,7 +21,7 @@ class CostManagementExportTest(ScenarioTest):
             'scope': '/subscriptions/{}'.format(self.get_subscription_id()),
         })
 
-        export_name = 'ep-06'
+        export_name = 'ep-01'
         storage_container = 'export'
         timeframe = 'TheLastMonth'
         storage_account_id = '/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Storage/storageAccounts/{account_name}'.format(
@@ -51,14 +51,20 @@ class CostManagementExportTest(ScenarioTest):
 
         # show an export
         show_data = self.cmd('costmanagement export show --scope {scope} --name {export_name}').get_output_in_json()
-        self._test_export_create_in_subscription_scope_assertions(creation_data,
+        self._test_export_create_in_subscription_scope_assertions(show_data,
                                                                   export_name,
                                                                   storage_container,
                                                                   storage_account_id,
                                                                   timeframe)
 
         # list exports
-        # list_data = self.cmd('costmanagement export list --scope {scope}').get_output_in_json()
+        list_data = self.cmd('costmanagement export list --scope {scope}').get_output_in_json()
+        self.assertEqual(len(list_data), 1)
+        self._test_export_create_in_subscription_scope_assertions(list_data[0],
+                                                                  export_name,
+                                                                  storage_container,
+                                                                  storage_account_id,
+                                                                  timeframe)
 
         self.cmd('costmanagement export delete --scope {scope} --name {export_name}')
 
