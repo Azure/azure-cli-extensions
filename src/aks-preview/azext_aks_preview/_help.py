@@ -290,6 +290,9 @@ helps['aks upgrade'] = """
         - name: --control-plane-only
           type: bool
           short-summary: Upgrade the cluster control plane only. If not specified, control plane AND all node pools will be upgraded.
+        - name: --node-image-only
+          type: bool
+          short-summary: Only upgrade node image for agent pools.
 """
 
 helps['aks update'] = """
@@ -538,6 +541,9 @@ helps['aks nodepool upgrade'] = """
         - name: --kubernetes-version -k
           type: string
           short-summary: Version of Kubernetes to upgrade the node pool to, such as "1.11.12".
+        - name: --node-image-only
+          type: bool
+          short-summary: Only upgrade agent pool's node image.
         - name: --max-surge
           type: string
           short-summary: int (5) or percent (33%)  indidcating the extra nodes to use to speed upgrade
