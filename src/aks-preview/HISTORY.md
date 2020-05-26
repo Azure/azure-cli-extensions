@@ -2,6 +2,11 @@
 
 Release History
 ===============
+
+0.4.50
++++++
+* Add "--max-surge" for az aks nodepool add/update/upgrade
+
 0.4.49
 +++++
 * Fix break in get-versions since container service needs to stay on old api.
