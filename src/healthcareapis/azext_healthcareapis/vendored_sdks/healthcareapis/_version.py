@@ -6,14 +6,4 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._healthcare_apis_management_client import HealthcareApisManagementClient
-from ._version import VERSION
-
-__version__ = VERSION
-__all__ = ['HealthcareApisManagementClient']
-
-try:
-    from .patch import patch_sdk
-    patch_sdk()
-except ImportError:
-    pass
+VERSION = "0.1.0"

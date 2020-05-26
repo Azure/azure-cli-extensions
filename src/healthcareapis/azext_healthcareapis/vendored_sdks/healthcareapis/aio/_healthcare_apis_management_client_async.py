@@ -6,33 +6,29 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from typing import TYPE_CHECKING
+from typing import Any, Optional
 
-from azure.mgmt.core import ARMPipelineClient
+from azure.mgmt.core import AsyncARMPipelineClient
 from msrest import Deserializer, Serializer
 
-if TYPE_CHECKING:
-    # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Optional
-
-from ._configuration import HealthcareApisManagementClientConfiguration
-from .operations import ServiceOperations
-from .operations import OperationOperations
-from .operations import OperationResultOperations
-from . import models
+from ._configuration_async import HealthcareApisManagementClientConfiguration
+from .operations_async import ServiceOperations
+from .operations_async import OperationOperations
+from .operations_async import OperationResultOperations
+from .. import models
 
 
 class HealthcareApisManagementClient(object):
     """Azure Healthcare APIs Client.
 
     :ivar service: ServiceOperations operations
-    :vartype service: azure.mgmt.healthcareapis.operations.ServiceOperations
+    :vartype service: azure.mgmt.healthcareapis.aio.operations_async.ServiceOperations
     :ivar operation: OperationOperations operations
-    :vartype operation: azure.mgmt.healthcareapis.operations.OperationOperations
+    :vartype operation: azure.mgmt.healthcareapis.aio.operations_async.OperationOperations
     :ivar operation_result: OperationResultOperations operations
-    :vartype operation_result: azure.mgmt.healthcareapis.operations.OperationResultOperations
+    :vartype operation_result: azure.mgmt.healthcareapis.aio.operations_async.OperationResultOperations
     :param credential: Credential needed for the client to connect to Azure.
-    :type credential: ~azure.core.credentials.TokenCredential
+    :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     :param subscription_id: The subscription identifier.
     :type subscription_id: str
     :param str base_url: Service URL
@@ -40,16 +36,15 @@ class HealthcareApisManagementClient(object):
 
     def __init__(
         self,
-        credential,  # type: "TokenCredential"
-        subscription_id,  # type: str
-        base_url=None,  # type: Optional[str]
-        **kwargs  # type: Any
-    ):
-        # type: (...) -> None
+        credential: "AsyncTokenCredential",
+        subscription_id: str,
+        base_url: Optional[str] = None,
+        **kwargs: Any
+    ) -> None:
         if not base_url:
             base_url = 'https://management.azure.com'
         self._config = HealthcareApisManagementClientConfiguration(credential, subscription_id, **kwargs)
-        self._client = ARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
+        self._client = AsyncARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)
@@ -62,15 +57,12 @@ class HealthcareApisManagementClient(object):
         self.operation_result = OperationResultOperations(
             self._client, self._config, self._serialize, self._deserialize)
 
-    def close(self):
-        # type: () -> None
-        self._client.close()
+    async def close(self) -> None:
+        await self._client.close()
 
-    def __enter__(self):
-        # type: () -> HealthcareApisManagementClient
-        self._client.__enter__()
+    async def __aenter__(self) -> "HealthcareApisManagementClient":
+        await self._client.__aenter__()
         return self
 
-    def __exit__(self, *exc_details):
-        # type: (Any) -> None
-        self._client.__exit__(*exc_details)
+    async def __aexit__(self, *exc_details) -> None:
+        await self._client.__aexit__(*exc_details)
