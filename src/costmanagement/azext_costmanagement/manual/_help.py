@@ -198,7 +198,7 @@ equest. You may obtain the latest eTag by performing a get operation. Create ope
           --scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG"
       - name: Update an export in a Subscription scope
         text: >
-          az costmanagement export create
+          az costmanagement export update
           --name "TestExport"
           --type "Usage"
           --dataset-aggregation "{\\"costSum\\":{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}"
