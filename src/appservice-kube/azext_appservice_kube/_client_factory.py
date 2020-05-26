@@ -38,6 +38,10 @@ def ex_handler_factory(creating_plan=False, no_throw=False):
 def web_client_factory(cli_ctx, **_):
     return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_APPSERVICE)
 
+def resource_client_factory(cli_ctx, **_):
+    from azure.cli.core.profiles import ResourceType
+    return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)
+
 
 def cf_kube_environments(cli_ctx, *_):
     return web_client_factory(cli_ctx).kube_environments

@@ -76,7 +76,7 @@ def load_arguments(self, _):
         c.argument('launch_browser', help="Launch the created app using the default browser", default=False, action='store_true', options_list=['--launch-browser', '-b'])
         c.argument('logs', help="Configure default logging required to enable viewing log stream immediately after launching the webapp", default=False, action='store_true')
         c.argument('html', help="Ignore app detection and deploy as an html app", default=False, action='store_true')
-        c.argument('kube_environment', help="Name of the kube environment, if app is to be deployed to a k8 cluster", options_list=['--kube-environment', '-ke'])
+        c.argument('environment', help="Name of the kube environment, if app is to be deployed to a k8 cluster", options_list=['--environment', '-e'])
 
     with self.argument_context('webapp show') as c:
         c.argument('name', arg_type=webapp_name_arg_type)
@@ -187,5 +187,5 @@ def load_arguments(self, _):
     with self.argument_context('appservice kube show') as c:
         c.argument('name', arg_type=name_arg_type, help='Name of the Kubernetes Environment.')
 
-    with self.argument_context('appservice kube waite') as c:
+    with self.argument_context('appservice kube wait') as c:
         c.argument('name', arg_type=name_arg_type, help='Name of the Kubernetes Environment.')

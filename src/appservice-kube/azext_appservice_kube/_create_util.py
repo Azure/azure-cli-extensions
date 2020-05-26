@@ -15,18 +15,8 @@ from ._constants import (NETCORE_VERSION_DEFAULT, NETCORE_VERSIONS, NODE_VERSION
                          NODE_VERSIONS, NETCORE_RUNTIME_NAME, NODE_RUNTIME_NAME, DOTNET_RUNTIME_NAME,
                          DOTNET_VERSION_DEFAULT, DOTNET_VERSIONS, STATIC_RUNTIME_NAME,
                          PYTHON_RUNTIME_NAME, PYTHON_VERSION_DEFAULT, LINUX_SKU_DEFAULT, OS_DEFAULT)
-
+from ._client_factory import web_client_factory, resource_client_factory
 logger = get_logger(__name__)
-
-
-def _resource_client_factory(cli_ctx, **_):
-    from azure.cli.core.profiles import ResourceType
-    return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)
-
-
-def web_client_factory(cli_ctx, **_):
-    from azure.mgmt.web import WebSiteManagementClient
-    return get_mgmt_service_client(cli_ctx, WebSiteManagementClient)
 
 def get_runtime_version_details(file_path, lang_name, is_kube = False):
     version_detected = None
@@ -83,14 +73,14 @@ def zip_contents_from_dir(dirPath, lang, is_kube = None):
 
 def create_resource_group(cmd, rg_name, location):
     from azure.cli.core.profiles import ResourceType, get_sdk
-    rcf = _resource_client_factory(cmd.cli_ctx)
+    rcf = resource_client_factory(cmd.cli_ctx)
     resource_group = get_sdk(cmd.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES, 'ResourceGroup', mod='models')
     rg_params = resource_group(location=location)
     return rcf.resource_groups.create_or_update(rg_name, rg_params)
 
 
 def _check_resource_group_exists(cmd, rg_name):
-    rcf = _resource_client_factory(cmd.cli_ctx)
+    rcf = resource_client_factory(cmd.cli_ctx)
     return rcf.resource_groups.check_existence(rg_name)
 
 

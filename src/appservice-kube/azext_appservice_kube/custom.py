@@ -348,17 +348,17 @@ def create_webapp(cmd, resource_group_name, name, plan, runtime=None, startup_fi
     return webapp
 
 def webapp_up(cmd, name, resource_group_name=None, plan=None, location=None, sku=None, dryrun=False, logs=False,  # pylint: disable=too-many-statements,
-        launch_browser=False, html=False, kube_environment=None, kube_environment_rg=None, kube_sku=KUBE_DEFAULT_SKU):
+        launch_browser=False, html=False, environment=None):
     import os
     is_kube = False
+    kube_sku=KUBE_DEFAULT_SKU
     KubeEnvironmentProfile = cmd.get_models('KubeEnvironmentProfile')
-    if kube_environment is not None:
+    if environment is not None:
         if resource_group_name is None:
-            raise CLIError("Must provide a resource group where Kube Environment '{}' exists".format(kube_id))
+            raise CLIError("Must provide a resource group where Kube Environment '{}' exists".format(kube_environment))
+        kube_id = _resolve_kube_environment_id(cmd.cli_ctx, environment, resource_group_name)
         is_kube = True
-        kube_id = _resolve_kube_environment_id(cmd.cli_ctx, kube_environment, resource_group_name)
         kube_def = KubeEnvironmentProfile(id=kube_id)
-        kind = KUBE_ASP_KIND
         parsed_id = parse_resource_id(kube_id)
         kube_name = parsed_id.get("name")
         kube_rg = parsed_id.get("resource_group")
@@ -368,7 +368,7 @@ def webapp_up(cmd, name, resource_group_name=None, plan=None, location=None, sku
                 location = kube_env.location.replace(" ", "")
             else:
                 raise CLIError("Kube Environment '{}' not found in subscription.".format(kube_id))
-    #AppServicePlan = cmd.get_models('AppServicePlan')
+    AppServicePlan = cmd.get_models('AppServicePlan')
     src_dir = os.getcwd()
     _src_path_escaped = "{}".format(src_dir.replace(os.sep, os.sep + os.sep))
     client = web_client_factory(cmd.cli_ctx)
@@ -429,7 +429,7 @@ def webapp_up(cmd, name, resource_group_name=None, plan=None, location=None, sku
             rg_name = kube_rg
             _create_new_rg = False
             _is_linux = False
-            plan = get_kube_plan_to_use(cmd, kube_environment, loc, sku, rg_name, _create_new_rg, plan)
+            plan = get_kube_plan_to_use(cmd, environment, loc, sku, rg_name, _create_new_rg, plan)
             sku_name = kube_sku
         else:
             sku = get_sku_to_use(src_dir, html, sku)
@@ -465,13 +465,13 @@ def webapp_up(cmd, name, resource_group_name=None, plan=None, location=None, sku
         # create ASP
         logger.warning("Creating AppServicePlan '%s' ...", plan)
     if is_kube:
-        logger.warning("Creating AppServicePlan '%s' with 1 instance count on kube cluster '%s' ...", plan, kube_environment)
+        logger.warning("Creating AppServicePlan '%s' with 1 instance count on kube cluster '%s' ...", plan, environment)
     else:
         logger.warning("Creating AppServicePlan '%s' ...", plan)
     # we will always call the ASP create or update API so that in case of re-deployment, if the SKU or plan setting are
     # updated we update those
     create_app_service_plan(cmd, rg_name, plan, _is_linux, hyper_v=False, per_site_scaling=False, sku=sku,
-                            number_of_workers=1 if _is_linux else None, location=location, kube_environment=kube_environment)
+                            number_of_workers=1 if _is_linux else None, location=location, kube_environment=environment)
     logger.warning("Successfully AppServicePlan '%s' ...", plan)
     if _create_new_app:
         logger.warning("Creating webapp '%s' ...", name)
@@ -480,7 +480,7 @@ def webapp_up(cmd, name, resource_group_name=None, plan=None, location=None, sku
         if not is_kube:
             _configure_default_logging(cmd, rg_name, name)
         else:
-            logger.warning("Successfully App '%s' on Kube Cluster '%s'...", plan, kube_environment)
+            logger.warning("Successfully App '%s' on Kube Cluster '%s'...", plan, environment)
     else:  # for existing app if we might need to update the stack runtime settings
         if os_name.lower() == 'linux' and site_config.linux_fx_version != runtime_version:
             logger.warning('Updating runtime version from %s to %s',
@@ -495,7 +495,7 @@ def webapp_up(cmd, name, resource_group_name=None, plan=None, location=None, sku
     logger.warning("Creating zip with contents of dir %s ...", src_dir)
     # zip contents & deploy
     zip_file_path = zip_contents_from_dir(src_dir, language, is_kube)
-    enable_zip_deploy(cmd, rg_name, name, zip_file_path)
+    enable_zip_deploy(cmd, rg_name, name, zip_file_path, is_kube=is_kube)
     # Remove the file after deployment, handling exception if user removed the file manually
     try:
         os.remove(zip_file_path)
@@ -512,7 +512,7 @@ def webapp_up(cmd, name, resource_group_name=None, plan=None, location=None, sku
     if logs:
         if not is_kube:
             _configure_default_logging(cmd, rg_name, name)
-        return get_streaming_log(cmd, rg_name, name)
+            return get_streaming_log(cmd, rg_name, name)
     if not is_kube:
         with ConfiguredDefaultSetter(cmd.cli_ctx.config, True):
             cmd.cli_ctx.config.set_value('defaults', 'group', rg_name)
@@ -1419,10 +1419,12 @@ def _rename_server_farm_props(webapp):
     return webapp
 
 
-def enable_zip_deploy(cmd, resource_group_name, name, src, timeout=None, slot=None):
+def enable_zip_deploy(cmd, resource_group_name, name, src, timeout=None, slot=None, is_kube=False):
     logger.warning("Getting scm site credentials for zip deployment")
     user_name, password = _get_site_credential(cmd.cli_ctx, resource_group_name, name, slot)
-
+    # Wait for a few seconds for envoy changes to propogate, for a kube app
+    if is_kube:
+        time.sleep(7)
     try:
         scm_url = _get_scm_url(cmd, resource_group_name, name, slot)
     except ValueError:
@@ -1437,7 +1439,6 @@ def enable_zip_deploy(cmd, resource_group_name, name, src, timeout=None, slot=No
     headers['Content-Type'] = 'application/octet-stream'
     headers['Cache-Control'] = 'no-cache'
     headers['User-Agent'] = get_az_user_agent()
-    print(headers['User-Agent'])
     import requests
     import os
     from azure.cli.core.util import should_disable_connection_verify
@@ -1448,11 +1449,18 @@ def enable_zip_deploy(cmd, resource_group_name, name, src, timeout=None, slot=No
         res = requests.post(zip_url, data=zip_content, headers=headers, verify=not should_disable_connection_verify())
         logger.warning("Deployment endpoint responded with status code %d", res.status_code)
 
+        if is_kube and res.status_code != 202 and res.status_code != 409:
+            logger.warning('Something went wrong. It may take a few seconds for a new deployment to reflect on kube cluster. Retrying deployment...')
+            time.sleep(10)   # retry in a moment 
+            res = requests.post(zip_url, data=zip_content, headers=headers, verify=not should_disable_connection_verify())
+            logger.warning("Deployment endpoint responded with status code %d", res.status_code)
+
     # check if there's an ongoing process
     if res.status_code == 409:
         raise CLIError("There may be an ongoing deployment or your app setting has WEBSITE_RUN_FROM_PACKAGE. "
                        "Please track your deployment in {} and ensure the WEBSITE_RUN_FROM_PACKAGE app setting "
                        "is removed.".format(deployment_status_url))
+
 
     # check the status of async deployment
     response = _check_zip_deployment_status(cmd, resource_group_name, name, deployment_status_url,
