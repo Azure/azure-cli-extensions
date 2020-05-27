@@ -2097,6 +2097,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
             raise CLIError("Node pool {} already exists, please try a different name, "
                            "use 'aks nodepool list' to get current list of node pool".format(nodepool_name))
 
+    upgradeSettings = AgentPoolUpgradeSettings()
     taints_array = []
 
     if node_taints is not None:
@@ -2110,7 +2111,6 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
     if node_vm_size is None:
         node_vm_size = "Standard_D2s_v3"
 
-    upgradeSettings = AgentPoolUpgradeSettings()
     if max_surge:
         upgradeSettings.max_surge = max_surge
 
