@@ -42,7 +42,7 @@ def load_arguments(self, _):
         c.argument('identity', action=AddIdentity, nargs='+', help='Setting indicating whether the service has a manage'
                    'd identity associated with it. Expect value: type=xx.')
         c.argument('properties', arg_type=CLIArgumentType(options_list=['--properties'], help='The common properties of'
-                   ' a service. Expected value: json-string/@json-file.'))
+                                                          ' a service. Expected value: json-string/@json-file.'))
 
     with self.argument_context('healthcareapis service update') as c:
         c.argument('resource_group_name', resource_group_name_type)

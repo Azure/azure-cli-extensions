@@ -7,7 +7,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-# pylint: disable=too-many-lines
+# pylint: disable=too-many-lines, unused-argument
 
 import json
 

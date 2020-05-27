@@ -25,7 +25,6 @@ def load_command_table(self, _):
         g.custom_command('create', 'healthcareapis_service_create', supports_no_wait=True)
         g.custom_command('update', 'healthcareapis_service_update', supports_no_wait=True)
         g.custom_command('delete', 'healthcareapis_service_delete', supports_no_wait=True)
-        g.wait_command('wait')
 
     from azext_healthcareapis.generated._client_factory import cf_operation_result
     healthcareapis_operation_result = CliCommandType(

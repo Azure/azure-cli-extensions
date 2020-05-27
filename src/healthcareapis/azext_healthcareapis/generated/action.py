@@ -19,7 +19,6 @@ class AddIdentity(argparse.Action):
         action = self.get_action(values, option_string)
         namespace.identity = action
 
-
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
             properties = defaultdict(list)
