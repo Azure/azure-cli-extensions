@@ -148,3 +148,20 @@ def costmanagement_export_update(cmd,
 
 def costmanagement_export_list(cmd, client, scope):
     return client.list(scope=scope).value   # value exist even the result is empty
+
+
+def costmanagement_export_show(cmd, client,
+                               scope,
+                               export_name):
+    if scope is not None and export_name is not None:
+        return client.get(scope=scope,
+                          export_name=export_name)
+    return client.get_execution_history(scope=scope,
+                                        export_name=export_name)
+
+
+def costmanagement_export_delete(cmd, client,
+                                 scope,
+                                 export_name):
+    return client.delete(scope=scope,
+                         export_name=export_name)

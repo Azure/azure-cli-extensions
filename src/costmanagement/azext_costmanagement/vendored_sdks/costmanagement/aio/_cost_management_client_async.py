@@ -12,9 +12,10 @@ from azure.mgmt.core import AsyncARMPipelineClient
 from msrest import Deserializer, Serializer
 
 from ._configuration_async import CostManagementClientConfiguration
-from .operations_async import DimensionOperations
+from .operations_async import ViewOperations
 from .operations_async import AlertOperations
 from .operations_async import ForecastOperations
+from .operations_async import DimensionOperations
 from .operations_async import QueryOperations
 from .operations_async import ExportOperations
 from .operations_async import OperationOperations
@@ -24,12 +25,14 @@ from .. import models
 class CostManagementClient(object):
     """CostManagementClient.
 
-    :ivar dimension: DimensionOperations operations
-    :vartype dimension: azure.mgmt.costmanagement.aio.operations_async.DimensionOperations
+    :ivar view: ViewOperations operations
+    :vartype view: azure.mgmt.costmanagement.aio.operations_async.ViewOperations
     :ivar alert: AlertOperations operations
     :vartype alert: azure.mgmt.costmanagement.aio.operations_async.AlertOperations
     :ivar forecast: ForecastOperations operations
     :vartype forecast: azure.mgmt.costmanagement.aio.operations_async.ForecastOperations
+    :ivar dimension: DimensionOperations operations
+    :vartype dimension: azure.mgmt.costmanagement.aio.operations_async.DimensionOperations
     :ivar query: QueryOperations operations
     :vartype query: azure.mgmt.costmanagement.aio.operations_async.QueryOperations
     :ivar export: ExportOperations operations
@@ -56,11 +59,13 @@ class CostManagementClient(object):
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
 
-        self.dimension = DimensionOperations(
+        self.view = ViewOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.alert = AlertOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.forecast = ForecastOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.dimension = DimensionOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.query = QueryOperations(
             self._client, self._config, self._serialize, self._deserialize)

@@ -8,6 +8,23 @@
 
 from enum import Enum
 
+class AccumulatedType(str, Enum):
+    """Show costs accumulated over time.
+    """
+
+    true = "true"
+    false = "false"
+
+class ChartType(str, Enum):
+    """Chart type of the main view in Cost Analysis. Required.
+    """
+
+    area = "Area"
+    line = "Line"
+    stacked_column = "StackedColumn"
+    grouped_column = "GroupedColumn"
+    table = "Table"
+
 class ExecutionStatus(str, Enum):
     """The status of the export execution.
     """
@@ -60,6 +77,35 @@ class ForecastType(str, Enum):
     actual_cost = "ActualCost"
     amortized_cost = "AmortizedCost"
 
+class KpiType(str, Enum):
+    """KPI type (Forecast, Budget).
+    """
+
+    forecast = "Forecast"
+    budget = "Budget"
+
+class MetricType(str, Enum):
+    """Metric to use when displaying costs.
+    """
+
+    actual_cost = "ActualCost"
+    amortized_cost = "AmortizedCost"
+    ahub = "AHUB"
+
+class OperatorType(str, Enum):
+    """The operator to use for comparison.
+    """
+
+    in_enum = "In"
+    contains = "Contains"
+
+class PivotType(str, Enum):
+    """Data type to show in view.
+    """
+
+    dimension = "Dimension"
+    tag_key = "TagKey"
+
 class QueryColumnType(str, Enum):
     """The type of the column in the export.
     """
@@ -75,6 +121,37 @@ class RecurrenceType(str, Enum):
     weekly = "Weekly"
     monthly = "Monthly"
     annually = "Annually"
+
+class ReportConfigColumnType(str, Enum):
+    """The type of the column in the report.
+    """
+
+    tag = "Tag"
+    dimension = "Dimension"
+
+class ReportConfigSortingDirection(str, Enum):
+    """Direction of sort.
+    """
+
+    ascending = "Ascending"
+    descending = "Descending"
+
+class ReportGranularityType(str, Enum):
+    """The granularity of rows in the report.
+    """
+
+    daily = "Daily"
+    monthly = "Monthly"
+
+class ReportTimeframeType(str, Enum):
+    """The time frame for pulling data for the report. If custom, then a specific time period must be
+    provided.
+    """
+
+    week_to_date = "WeekToDate"
+    month_to_date = "MonthToDate"
+    year_to_date = "YearToDate"
+    custom = "Custom"
 
 class StatusType(str, Enum):
     """The status of the schedule. Whether active or not. If inactive, the export's scheduled

@@ -6,17 +6,19 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._dimension_operations import DimensionOperations
+from ._view_operations import ViewOperations
 from ._alert_operations import AlertOperations
 from ._forecast_operations import ForecastOperations
+from ._dimension_operations import DimensionOperations
 from ._query_operations import QueryOperations
 from ._export_operations import ExportOperations
 from ._operation_operations import OperationOperations
 
 __all__ = [
-    'DimensionOperations',
+    'ViewOperations',
     'AlertOperations',
     'ForecastOperations',
+    'DimensionOperations',
     'QueryOperations',
     'ExportOperations',
     'OperationOperations',

@@ -12,131 +12,56 @@
 # from knack.help_files import helps
 
 
-# helps['costmanagement dimension'] = """
+# helps['costmanagement view'] = """
 #     type: group
-#     short-summary: costmanagement dimension
+#     short-summary: costmanagement view
 # """
 
-# helps['costmanagement dimension list'] = """
+# helps['costmanagement view list'] = """
 #     type: command
-#     short-summary: Lists the dimensions by the defined scope.
+#     short-summary: Lists all views by tenant and object.
 #     examples:
-#       - name: BillingAccountDimensionsList-Legacy
+#       - name: ResourceGroupViewList
 #         text: |-
-#                az costmanagement dimension list --scope "providers/Microsoft.Billing/billingAccounts/100"
-#       - name: BillingAccountDimensionsList-Modern
-#         text: |-
-#                az costmanagement dimension list --scope "providers/Microsoft.Billing/billingAccounts/12345:6789"
-#       - name: BillingAccountDimensionsListExpandAndTop-Legacy
-#         text: |-
-#                az costmanagement dimension list --expand "properties/data" --top 5 --scope "providers/Microsoft.Billing\
-# /billingAccounts/100"
-#       - name: BillingAccountDimensionsListExpandAndTop-Modern
-#         text: |-
-#                az costmanagement dimension list --expand "properties/data" --top 5 --scope "providers/Microsoft.Billing\
-# /billingAccounts/12345:6789"
-#       - name: BillingAccountDimensionsListWithFilter-Legacy
-#         text: |-
-#                az costmanagement dimension list --expand "properties/data" --filter "properties/category eq \'resourceI\
-# d\'" --top 5 --scope "providers/Microsoft.Billing/billingAccounts/100"
-#       - name: BillingAccountDimensionsListWithFilter-Modern
-#         text: |-
-#                az costmanagement dimension list --expand "properties/data" --filter "properties/category eq \'resourceI\
-# d\'" --top 5 --scope "providers/Microsoft.Billing/billingAccounts/12345:6789"
-#       - name: BillingProfileDimensionsList-Modern
-#         text: |-
-#                az costmanagement dimension list --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billing\
-# Profiles/13579"
-#       - name: BillingProfileDimensionsListExpandAndTop-Modern
-#         text: |-
-#                az costmanagement dimension list --expand "properties/data" --top 5 --scope "providers/Microsoft.Billing\
-# /billingAccounts/12345:6789/billingProfiles/13579"
-#       - name: BillingProfileDimensionsListWithFilter-Modern
-#         text: |-
-#                az costmanagement dimension list --expand "properties/data" --filter "properties/category eq \'resourceI\
-# d\'" --top 5 --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579"
-#       - name: CustomerDimensionsList-Modern
-#         text: |-
-#                az costmanagement dimension list --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/custome\
-# rs/5678"
-#       - name: CustomerDimensionsListExpandAndTop-Modern
-#         text: |-
-#                az costmanagement dimension list --expand "properties/data" --top 5 --scope "providers/Microsoft.Billing\
-# /billingAccounts/12345:6789/customers/5678"
-#       - name: CustomerDimensionsListWithFilter-Modern
-#         text: |-
-#                az costmanagement dimension list --expand "properties/data" --filter "properties/category eq \'resourceI\
-# d\'" --top 5 --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/customers/5678"
-#       - name: DepartmentDimensionsList-Legacy
-#         text: |-
-#                az costmanagement dimension list --scope "providers/Microsoft.Billing/billingAccounts/100/departments/12\
-# 3"
-#       - name: DepartmentDimensionsListExpandAndTop-Legacy
-#         text: |-
-#                az costmanagement dimension list --expand "properties/data" --top 5 --scope "providers/Microsoft.Billing\
-# /billingAccounts/100/departments/123"
-#       - name: DepartmentDimensionsListWithFilter-Legacy
-#         text: |-
-#                az costmanagement dimension list --expand "properties/data" --filter "properties/category eq \'resourceI\
-# d\'" --top 5 --scope "providers/Microsoft.Billing/billingAccounts/100/departments/123"
-#       - name: EnrollmentAccountDimensionsList-Legacy
-#         text: |-
-#                az costmanagement dimension list --scope "providers/Microsoft.Billing/billingAccounts/100/enrollmentAcco\
-# unts/456"
-#       - name: EnrollmentAccountDimensionsListExpandAndTop-Legacy
-#         text: |-
-#                az costmanagement dimension list --expand "properties/data" --top 5 --scope "providers/Microsoft.Billing\
-# /billingAccounts/100/enrollmentAccounts/456"
-#       - name: EnrollmentAccountDimensionsListWithFilter-Legacy
-#         text: |-
-#                az costmanagement dimension list --expand "properties/data" --filter "properties/category eq \'resourceI\
-# d\'" --top 5 --scope "providers/Microsoft.Billing/billingAccounts/100/enrollmentAccounts/456"
-#       - name: InvoiceSectionDimensionsList-Modern
-#         text: |-
-#                az costmanagement dimension list --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billing\
-# Profiles/13579/invoiceSections/9876"
-#       - name: InvoiceSectionDimensionsListExpandAndTop-Modern
-#         text: |-
-#                az costmanagement dimension list --expand "properties/data" --top 5 --scope "providers/Microsoft.Billing\
-# /billingAccounts/12345:6789/billingProfiles/13579/invoiceSections/9876"
-#       - name: InvoiceSectionDimensionsListWithFilter-Modern
-#         text: |-
-#                az costmanagement dimension list --expand "properties/data" --filter "properties/category eq \'resourceI\
-# d\'" --top 5 --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579/invoiceSections/9876\
-# "
-#       - name: ManagementGroupDimensionsList-Legacy
-#         text: |-
-#                az costmanagement dimension list --scope "providers/Microsoft.Management/managementGroups/MyMgId"
-#       - name: ManagementGroupDimensionsListExpandAndTop-Legacy
-#         text: |-
-#                az costmanagement dimension list --expand "properties/data" --top 5 --scope "providers/Microsoft.Managem\
-# ent/managementGroups/MyMgId"
-#       - name: ManagementGroupDimensionsListWithFilter-Legacy
-#         text: |-
-#                az costmanagement dimension list --expand "properties/data" --filter "properties/category eq \'resourceI\
-# d\'" --top 5 --scope "providers/Microsoft.Management/managementGroups/MyMgId"
-#       - name: ResourceGroupDimensionsList-Legacy
-#         text: |-
-#                az costmanagement dimension list --expand "properties/data" --top 5 --scope "subscriptions/00000000-0000\
-# -0000-0000-000000000000/resourceGroups/system.orlando"
-#       - name: SubscriptionDimensionsList-Legacy
-#         text: |-
-#                az costmanagement dimension list --expand "properties/data" --top 5 --scope "subscriptions/00000000-0000\
-# -0000-0000-000000000000"
+#                az costmanagement view list --scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/M\
+# YDEVTESTRG"
 # """
 
-# helps['costmanagement dimension by-external-cloud-provider-type'] = """
+# helps['costmanagement view show'] = """
 #     type: command
-#     short-summary: Lists the dimensions by the external cloud provider type.
+#     short-summary: Gets the view by view name.
 #     examples:
-#       - name: ExternalBillingAccountDimensionList
+#       - name: ResourceGroupView
 #         text: |-
-#                az costmanagement dimension by-external-cloud-provider-type --external-cloud-provider-id "100" --externa\
-# l-cloud-provider-type "externalBillingAccounts"
-#       - name: ExternalSubscriptionDimensionList
+#                az costmanagement view show --scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/M\
+# YDEVTESTRG" --view-name "swaggerExample"
+# """
+
+# helps['costmanagement view create'] = """
+#     type: command
+#     short-summary: The operation to create or update a view. Update operation requires latest eTag to be set in the req\
+# uest. You may obtain the latest eTag by performing a get operation. Create operation does not require eTag.
+#     examples:
+#       - name: ResourceGroupCreateOrUpdateView
 #         text: |-
-#                az costmanagement dimension by-external-cloud-provider-type --external-cloud-provider-id "100" --externa\
-# l-cloud-provider-type "externalSubscriptions"
+#                az costmanagement view create --e-tag "\\"1d4ff9fe66f1d10\\"" --accumulated "true" --chart "Table" --dis\
+# play-name "swagger Example" --kpis type="Forecast" enabled=true id=null --kpis type="Budget" enabled=true id="/subscrip\
+# tions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG/providers/Microsoft.Consumption/budgets/swaggerDe\
+# mo" --metric "ActualCost" --pivots name="ServiceName" type="Dimension" --pivots name="MeterCategory" type="Dimension" -\
+# -pivots name="swaggerTagKey" type="TagKey" --query-dataset "{\\"aggregation\\":{\\"totalCost\\":{\\"name\\":\\"PreTaxCo\
+# st\\",\\"function\\":\\"Sum\\"}},\\"granularity\\":\\"Daily\\",\\"grouping\\":[],\\"sorting\\":[{\\"name\\":\\"UsageDat\
+# e\\",\\"direction\\":\\"Ascending\\"}]}" --query-timeframe "MonthToDate" --properties-scope "subscriptions/00000000-000\
+# 0-0000-0000-000000000000/resourceGroups/MYDEVTESTRG" --view-name "swaggerExample"
+# """
+
+# helps['costmanagement view delete'] = """
+#     type: command
+#     short-summary: The operation to delete a view.
+#     examples:
+#       - name: ResourceGroupDeleteView
+#         text: |-
+#                az costmanagement view delete --scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups\
+# /MYDEVTESTRG" --view-name "TestView"
 # """
 
 # helps['costmanagement alert'] = """
@@ -273,6 +198,133 @@
 # ":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"na\
 # me\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" --include-actual-cost false --include-f\
 # resh-partial-cost false --timeframe "MonthToDate" --scope "subscriptions/00000000-0000-0000-0000-000000000000"
+# """
+
+# helps['costmanagement dimension'] = """
+#     type: group
+#     short-summary: costmanagement dimension
+# """
+
+# helps['costmanagement dimension list'] = """
+#     type: command
+#     short-summary: Lists the dimensions by the defined scope.
+#     examples:
+#       - name: BillingAccountDimensionsList-Legacy
+#         text: |-
+#                az costmanagement dimension list --scope "providers/Microsoft.Billing/billingAccounts/100"
+#       - name: BillingAccountDimensionsList-Modern
+#         text: |-
+#                az costmanagement dimension list --scope "providers/Microsoft.Billing/billingAccounts/12345:6789"
+#       - name: BillingAccountDimensionsListExpandAndTop-Legacy
+#         text: |-
+#                az costmanagement dimension list --expand "properties/data" --top 5 --scope "providers/Microsoft.Billing\
+# /billingAccounts/100"
+#       - name: BillingAccountDimensionsListExpandAndTop-Modern
+#         text: |-
+#                az costmanagement dimension list --expand "properties/data" --top 5 --scope "providers/Microsoft.Billing\
+# /billingAccounts/12345:6789"
+#       - name: BillingAccountDimensionsListWithFilter-Legacy
+#         text: |-
+#                az costmanagement dimension list --expand "properties/data" --filter "properties/category eq \'resourceI\
+# d\'" --top 5 --scope "providers/Microsoft.Billing/billingAccounts/100"
+#       - name: BillingAccountDimensionsListWithFilter-Modern
+#         text: |-
+#                az costmanagement dimension list --expand "properties/data" --filter "properties/category eq \'resourceI\
+# d\'" --top 5 --scope "providers/Microsoft.Billing/billingAccounts/12345:6789"
+#       - name: BillingProfileDimensionsList-Modern
+#         text: |-
+#                az costmanagement dimension list --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billing\
+# Profiles/13579"
+#       - name: BillingProfileDimensionsListExpandAndTop-Modern
+#         text: |-
+#                az costmanagement dimension list --expand "properties/data" --top 5 --scope "providers/Microsoft.Billing\
+# /billingAccounts/12345:6789/billingProfiles/13579"
+#       - name: BillingProfileDimensionsListWithFilter-Modern
+#         text: |-
+#                az costmanagement dimension list --expand "properties/data" --filter "properties/category eq \'resourceI\
+# d\'" --top 5 --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579"
+#       - name: CustomerDimensionsList-Modern
+#         text: |-
+#                az costmanagement dimension list --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/custome\
+# rs/5678"
+#       - name: CustomerDimensionsListExpandAndTop-Modern
+#         text: |-
+#                az costmanagement dimension list --expand "properties/data" --top 5 --scope "providers/Microsoft.Billing\
+# /billingAccounts/12345:6789/customers/5678"
+#       - name: CustomerDimensionsListWithFilter-Modern
+#         text: |-
+#                az costmanagement dimension list --expand "properties/data" --filter "properties/category eq \'resourceI\
+# d\'" --top 5 --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/customers/5678"
+#       - name: DepartmentDimensionsList-Legacy
+#         text: |-
+#                az costmanagement dimension list --scope "providers/Microsoft.Billing/billingAccounts/100/departments/12\
+# 3"
+#       - name: DepartmentDimensionsListExpandAndTop-Legacy
+#         text: |-
+#                az costmanagement dimension list --expand "properties/data" --top 5 --scope "providers/Microsoft.Billing\
+# /billingAccounts/100/departments/123"
+#       - name: DepartmentDimensionsListWithFilter-Legacy
+#         text: |-
+#                az costmanagement dimension list --expand "properties/data" --filter "properties/category eq \'resourceI\
+# d\'" --top 5 --scope "providers/Microsoft.Billing/billingAccounts/100/departments/123"
+#       - name: EnrollmentAccountDimensionsList-Legacy
+#         text: |-
+#                az costmanagement dimension list --scope "providers/Microsoft.Billing/billingAccounts/100/enrollmentAcco\
+# unts/456"
+#       - name: EnrollmentAccountDimensionsListExpandAndTop-Legacy
+#         text: |-
+#                az costmanagement dimension list --expand "properties/data" --top 5 --scope "providers/Microsoft.Billing\
+# /billingAccounts/100/enrollmentAccounts/456"
+#       - name: EnrollmentAccountDimensionsListWithFilter-Legacy
+#         text: |-
+#                az costmanagement dimension list --expand "properties/data" --filter "properties/category eq \'resourceI\
+# d\'" --top 5 --scope "providers/Microsoft.Billing/billingAccounts/100/enrollmentAccounts/456"
+#       - name: InvoiceSectionDimensionsList-Modern
+#         text: |-
+#                az costmanagement dimension list --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billing\
+# Profiles/13579/invoiceSections/9876"
+#       - name: InvoiceSectionDimensionsListExpandAndTop-Modern
+#         text: |-
+#                az costmanagement dimension list --expand "properties/data" --top 5 --scope "providers/Microsoft.Billing\
+# /billingAccounts/12345:6789/billingProfiles/13579/invoiceSections/9876"
+#       - name: InvoiceSectionDimensionsListWithFilter-Modern
+#         text: |-
+#                az costmanagement dimension list --expand "properties/data" --filter "properties/category eq \'resourceI\
+# d\'" --top 5 --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579/invoiceSections/9876\
+# "
+#       - name: ManagementGroupDimensionsList-Legacy
+#         text: |-
+#                az costmanagement dimension list --scope "providers/Microsoft.Management/managementGroups/MyMgId"
+#       - name: ManagementGroupDimensionsListExpandAndTop-Legacy
+#         text: |-
+#                az costmanagement dimension list --expand "properties/data" --top 5 --scope "providers/Microsoft.Managem\
+# ent/managementGroups/MyMgId"
+#       - name: ManagementGroupDimensionsListWithFilter-Legacy
+#         text: |-
+#                az costmanagement dimension list --expand "properties/data" --filter "properties/category eq \'resourceI\
+# d\'" --top 5 --scope "providers/Microsoft.Management/managementGroups/MyMgId"
+#       - name: ResourceGroupDimensionsList-Legacy
+#         text: |-
+#                az costmanagement dimension list --expand "properties/data" --top 5 --scope "subscriptions/00000000-0000\
+# -0000-0000-000000000000/resourceGroups/system.orlando"
+#       - name: SubscriptionDimensionsList-Legacy
+#         text: |-
+#                az costmanagement dimension list --expand "properties/data" --top 5 --scope "subscriptions/00000000-0000\
+# -0000-0000-000000000000"
+# """
+
+# helps['costmanagement dimension by-external-cloud-provider-type'] = """
+#     type: command
+#     short-summary: Lists the dimensions by the external cloud provider type.
+#     examples:
+#       - name: ExternalBillingAccountDimensionList
+#         text: |-
+#                az costmanagement dimension by-external-cloud-provider-type --external-cloud-provider-id "100" --externa\
+# l-cloud-provider-type "externalBillingAccounts"
+#       - name: ExternalSubscriptionDimensionList
+#         text: |-
+#                az costmanagement dimension by-external-cloud-provider-type --external-cloud-provider-id "100" --externa\
+# l-cloud-provider-type "externalSubscriptions"
 # """
 
 # helps['costmanagement query'] = """

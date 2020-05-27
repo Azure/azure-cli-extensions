@@ -180,6 +180,7 @@ class ExportOperations:
         self,
         scope: str,
         export_name: str,
+        e_tag: Optional[str] = None,
         type: Optional[Union[str, "models.ExportType"]] = None,
         timeframe: Optional[Union[str, "models.TimeframeType"]] = None,
         time_period: Optional["models.QueryTimePeriod"] = None,
@@ -214,6 +215,9 @@ class ExportOperations:
         :type scope: str
         :param export_name: Export Name.
         :type export_name: str
+        :param e_tag: eTag of the resource. To handle concurrent update scenario, this field will be
+         used to determine whether the user is updating the latest version or not.
+        :type e_tag: str
         :param type: The type of the query.
         :type type: str or ~azure.mgmt.costmanagement.models.ExportType
         :param timeframe: The time frame for pulling data for the query. If custom, then a specific
@@ -251,7 +255,7 @@ class ExportOperations:
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Export"]
         error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
-        _parameters = models.Export(type_properties_definition_type=type, timeframe=timeframe, time_period=time_period, configuration=configuration, aggregation=aggregation, grouping=grouping, filter=filter, destination=destination, status=status, recurrence=recurrence, recurrence_period=recurrence_period)
+        _parameters = models.Export(e_tag=e_tag, type_properties_definition_type=type, timeframe=timeframe, time_period=time_period, configuration=configuration, aggregation=aggregation, grouping=grouping, filter=filter, destination=destination, status=status, recurrence=recurrence, recurrence_period=recurrence_period)
         api_version = "2019-11-01"
         content_type = kwargs.pop("content_type", "application/json")
 

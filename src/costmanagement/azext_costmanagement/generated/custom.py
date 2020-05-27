@@ -12,32 +12,73 @@
 import json
 
 
-# def costmanagement_dimension_list(cmd, client,
-#                                   scope,
-#                                   filter=None,
-#                                   expand=None,
-#                                   skiptoken=None,
-#                                   top=None):
-#     return client.list(scope=scope,
-#                        filter=filter,
-#                        expand=expand,
-#                        skiptoken=skiptoken,
-#                        top=top)
+# def costmanagement_view_list(cmd, client,
+#                              scope=None):
+#     if scope is not None:
+#         return client.list_by_scope(scope=scope)
+#     return client.list()
 
 
-# def costmanagement_dimension_by_external_cloud_provider_type(cmd, client,
-#                                                              external_cloud_provider_type,
-#                                                              external_cloud_provider_id,
-#                                                              filter=None,
-#                                                              expand=None,
-#                                                              skiptoken=None,
-#                                                              top=None):
-#     return client.by_external_cloud_provider_type(external_cloud_provider_type=external_cloud_provider_type,
-#                                                   external_cloud_provider_id=external_cloud_provider_id,
-#                                                   filter=filter,
-#                                                   expand=expand,
-#                                                   skiptoken=skiptoken,
-#                                                   top=top)
+# def costmanagement_view_show(cmd, client,
+#                              view_name,
+#                              scope=None):
+#     if scope is not None and view_name is not None:
+#         return client.get_by_scope(scope=scope,
+#                                    view_name=view_name)
+#     return client.get(view_name=view_name)
+
+
+# def costmanagement_view_create(cmd, client,
+#                                view_name,
+#                                scope=None,
+#                                e_tag=None,
+#                                display_name=None,
+#                                properties_scope=None,
+#                                chart=None,
+#                                accumulated=None,
+#                                metric=None,
+#                                kpis=None,
+#                                pivots=None,
+#                                query_timeframe=None,
+#                                query_time_period=None,
+#                                query_dataset=None):
+#     if isinstance(query_dataset, str):
+#         query_dataset = json.loads(query_dataset)
+#     if scope is not None and view_name is not None and _parameters is not None:
+#         return client.create_or_update_by_scope(scope=scope,
+#                                                 view_name=view_name,
+#                                                 e_tag=e_tag,
+#                                                 display_name=display_name,
+#                                                 view_properties_scope=properties_scope,
+#                                                 chart=chart,
+#                                                 accumulated=accumulated,
+#                                                 metric=metric,
+#                                                 kpis=kpis,
+#                                                 pivots=pivots,
+#                                                 timeframe=query_timeframe,
+#                                                 time_period=query_time_period,
+#                                                 dataset=query_dataset)
+#     return client.create_or_update(view_name=view_name,
+#                                    e_tag=e_tag,
+#                                    display_name=display_name,
+#                                    scope=scope,
+#                                    chart=chart,
+#                                    accumulated=accumulated,
+#                                    metric=metric,
+#                                    kpis=kpis,
+#                                    pivots=pivots,
+#                                    timeframe=query_timeframe,
+#                                    time_period=query_time_period,
+#                                    dataset=query_dataset)
+
+
+# def costmanagement_view_delete(cmd, client,
+#                                view_name,
+#                                scope=None):
+#     if scope is not None and view_name is not None:
+#         return client.delete_by_scope(scope=scope,
+#                                       view_name=view_name)
+#     return client.delete(view_name=view_name)
 
 
 # def costmanagement_alert_list(cmd, client,
@@ -112,6 +153,34 @@ import json
 #                         query_filter=dataset_filter)
 
 
+# def costmanagement_dimension_list(cmd, client,
+#                                   scope,
+#                                   filter=None,
+#                                   expand=None,
+#                                   skiptoken=None,
+#                                   top=None):
+#     return client.list(scope=scope,
+#                        filter=filter,
+#                        expand=expand,
+#                        skiptoken=skiptoken,
+#                        top=top)
+
+
+# def costmanagement_dimension_by_external_cloud_provider_type(cmd, client,
+#                                                              external_cloud_provider_type,
+#                                                              external_cloud_provider_id,
+#                                                              filter=None,
+#                                                              expand=None,
+#                                                              skiptoken=None,
+#                                                              top=None):
+#     return client.by_external_cloud_provider_type(external_cloud_provider_type=external_cloud_provider_type,
+#                                                   external_cloud_provider_id=external_cloud_provider_id,
+#                                                   filter=filter,
+#                                                   expand=expand,
+#                                                   skiptoken=skiptoken,
+#                                                   top=top)
+
+
 def costmanagement_query_usage(cmd, client,
                                scope,
                                type_,
@@ -135,29 +204,29 @@ def costmanagement_query_usage(cmd, client,
                         filter=dataset_filter)
 
 
-# def costmanagement_query_usage_by_external_cloud_provider_type(cmd, client,
-#                                                                external_cloud_provider_type,
-#                                                                external_cloud_provider_id,
-#                                                                type_,
-#                                                                timeframe,
-#                                                                time_period=None,
-#                                                                dataset_configuration=None,
-#                                                                dataset_aggregation=None,
-#                                                                dataset_grouping=None,
-#                                                                dataset_filter=None):
-#     if isinstance(dataset_aggregation, str):
-#         dataset_aggregation = json.loads(dataset_aggregation)
-#     if isinstance(dataset_filter, str):
-#         dataset_filter = json.loads(dataset_filter)
-#     return client.usage_by_external_cloud_provider_type(external_cloud_provider_type=external_cloud_provider_type,
-#                                                         external_cloud_provider_id=external_cloud_provider_id,
-#                                                         type=type_,
-#                                                         timeframe=timeframe,
-#                                                         time_period=time_period,
-#                                                         configuration=dataset_configuration,
-#                                                         aggregation=dataset_aggregation,
-#                                                         grouping=dataset_grouping,
-#                                                         filter=dataset_filter)
+def costmanagement_query_usage_by_external_cloud_provider_type(cmd, client,
+                                                               external_cloud_provider_type,
+                                                               external_cloud_provider_id,
+                                                               type_,
+                                                               timeframe,
+                                                               time_period=None,
+                                                               dataset_configuration=None,
+                                                               dataset_aggregation=None,
+                                                               dataset_grouping=None,
+                                                               dataset_filter=None):
+    if isinstance(dataset_aggregation, str):
+        dataset_aggregation = json.loads(dataset_aggregation)
+    if isinstance(dataset_filter, str):
+        dataset_filter = json.loads(dataset_filter)
+    return client.usage_by_external_cloud_provider_type(external_cloud_provider_type=external_cloud_provider_type,
+                                                        external_cloud_provider_id=external_cloud_provider_id,
+                                                        type=type_,
+                                                        timeframe=timeframe,
+                                                        time_period=time_period,
+                                                        configuration=dataset_configuration,
+                                                        aggregation=dataset_aggregation,
+                                                        grouping=dataset_grouping,
+                                                        filter=dataset_filter)
 
 
 # def costmanagement_export_list(cmd, client,
@@ -165,20 +234,20 @@ def costmanagement_query_usage(cmd, client,
 #     return client.list(scope=scope)
 
 
-def costmanagement_export_show(cmd, client,
-                               scope,
-                               export_name):
-    if scope is not None and export_name is not None:
-        return client.get(scope=scope,
-                          export_name=export_name)
-    return client.get_execution_history(scope=scope,
-                                        export_name=export_name)
+# def costmanagement_export_show(cmd, client,
+#                                scope,
+#                                export_name):
+#     if scope is not None and export_name is not None:
+#         return client.get(scope=scope,
+#                           export_name=export_name)
+#     return client.get_execution_history(scope=scope,
+#                                         export_name=export_name)
 
 
-# overwrite in manual.custom.costmanagement_export_create
 # def costmanagement_export_create(cmd, client,
 #                                  scope,
 #                                  export_name,
+#                                  e_tag=None,
 #                                  definition_type=None,
 #                                  definition_timeframe=None,
 #                                  definition_time_period=None,
@@ -196,6 +265,7 @@ def costmanagement_export_show(cmd, client,
 #         definition_dataset_filter = json.loads(definition_dataset_filter)
 #     return client.create_or_update(scope=scope,
 #                                    export_name=export_name,
+#                                    e_tag=e_tag,
 #                                    type=definition_type,
 #                                    timeframe=definition_timeframe,
 #                                    time_period=definition_time_period,
@@ -212,6 +282,7 @@ def costmanagement_export_show(cmd, client,
 # def costmanagement_export_update(cmd, client,
 #                                  scope,
 #                                  export_name,
+#                                  e_tag=None,
 #                                  definition_type=None,
 #                                  definition_timeframe=None,
 #                                  definition_time_period=None,
@@ -229,6 +300,7 @@ def costmanagement_export_show(cmd, client,
 #         definition_dataset_filter = json.loads(definition_dataset_filter)
 #     return client.create_or_update(scope=scope,
 #                                    export_name=export_name,
+#                                    e_tag=e_tag,
 #                                    type=definition_type,
 #                                    timeframe=definition_timeframe,
 #                                    time_period=definition_time_period,
@@ -242,15 +314,15 @@ def costmanagement_export_show(cmd, client,
 #                                    recurrence_period=schedule_recurrence_period)
 
 
-def costmanagement_export_delete(cmd, client,
-                                 scope,
-                                 export_name):
-    return client.delete(scope=scope,
-                         export_name=export_name)
+# def costmanagement_export_delete(cmd, client,
+#                                  scope,
+#                                  export_name):
+#     return client.delete(scope=scope,
+#                          export_name=export_name)
 
 
-def costmanagement_export_execute(cmd, client,
-                                  scope,
-                                  export_name):
-    return client.execute(scope=scope,
-                          export_name=export_name)
+# def costmanagement_export_execute(cmd, client,
+#                                   scope,
+#                                   export_name):
+#     return client.execute(scope=scope,
+#                           export_name=export_name)

@@ -96,8 +96,7 @@ entGroups/TestMG"
 
 helps['costmanagement export create'] = """
     type: command
-    short-summary: The operation to create or update a export. Update operation requires latest eTag to be set in the r\
-equest. You may obtain the latest eTag by performing a get operation. Create operation does not require eTag.
+    short-summary: The operation to create a export.
     examples:
       - name: Create an export for ManagementGroup scope
         text: >
@@ -157,8 +156,7 @@ equest. You may obtain the latest eTag by performing a get operation. Create ope
 
 helps['costmanagement export update'] = """
     type: command
-    short-summary: The operation to create or update a export. Update operation requires latest eTag to be set in the r\
-equest. You may obtain the latest eTag by performing a get operation. Create operation does not require eTag.
+    short-summary: The operation to update a export.
     examples:
       - name: Update an export in a ManagementGroup scope
         text: >

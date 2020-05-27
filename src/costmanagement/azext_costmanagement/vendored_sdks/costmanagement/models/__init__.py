@@ -24,9 +24,12 @@ try:
     from ._models_py3 import ExportProperties
     from ._models_py3 import ExportRecurrencePeriod
     from ._models_py3 import ForecastDefinition
+    from ._models_py3 import KpiProperties
     from ._models_py3 import Operation
     from ._models_py3 import OperationDisplay
     from ._models_py3 import OperationListResult
+    from ._models_py3 import PivotProperties
+    from ._models_py3 import ProxyResource
     from ._models_py3 import QueryAggregation
     from ._models_py3 import QueryColumn
     from ._models_py3 import QueryComparisonExpression
@@ -36,7 +39,17 @@ try:
     from ._models_py3 import QueryGrouping
     from ._models_py3 import QueryResult
     from ._models_py3 import QueryTimePeriod
+    from ._models_py3 import ReportConfigAggregation
+    from ._models_py3 import ReportConfigComparisonExpression
+    from ._models_py3 import ReportConfigDataset
+    from ._models_py3 import ReportConfigDatasetConfiguration
+    from ._models_py3 import ReportConfigFilter
+    from ._models_py3 import ReportConfigGrouping
+    from ._models_py3 import ReportConfigSorting
+    from ._models_py3 import ReportConfigTimePeriod
     from ._models_py3 import Resource
+    from ._models_py3 import View
+    from ._models_py3 import ViewListResult
 except (SyntaxError, ImportError):
     from ._models import Alert  # type: ignore
     from ._models import AlertPropertiesDefinition  # type: ignore
@@ -55,9 +68,12 @@ except (SyntaxError, ImportError):
     from ._models import ExportProperties  # type: ignore
     from ._models import ExportRecurrencePeriod  # type: ignore
     from ._models import ForecastDefinition  # type: ignore
+    from ._models import KpiProperties  # type: ignore
     from ._models import Operation  # type: ignore
     from ._models import OperationDisplay  # type: ignore
     from ._models import OperationListResult  # type: ignore
+    from ._models import PivotProperties  # type: ignore
+    from ._models import ProxyResource  # type: ignore
     from ._models import QueryAggregation  # type: ignore
     from ._models import QueryColumn  # type: ignore
     from ._models import QueryComparisonExpression  # type: ignore
@@ -67,17 +83,37 @@ except (SyntaxError, ImportError):
     from ._models import QueryGrouping  # type: ignore
     from ._models import QueryResult  # type: ignore
     from ._models import QueryTimePeriod  # type: ignore
+    from ._models import ReportConfigAggregation  # type: ignore
+    from ._models import ReportConfigComparisonExpression  # type: ignore
+    from ._models import ReportConfigDataset  # type: ignore
+    from ._models import ReportConfigDatasetConfiguration  # type: ignore
+    from ._models import ReportConfigFilter  # type: ignore
+    from ._models import ReportConfigGrouping  # type: ignore
+    from ._models import ReportConfigSorting  # type: ignore
+    from ._models import ReportConfigTimePeriod  # type: ignore
     from ._models import Resource  # type: ignore
+    from ._models import View  # type: ignore
+    from ._models import ViewListResult  # type: ignore
 
 from ._cost_management_client_enums import (
+    AccumulatedType,
+    ChartType,
     ExecutionStatus,
     ExecutionType,
     ExportType,
     ExternalCloudProviderType,
     ForecastTimeframeType,
     ForecastType,
+    KpiType,
+    MetricType,
+    OperatorType,
+    PivotType,
     QueryColumnType,
     RecurrenceType,
+    ReportConfigColumnType,
+    ReportConfigSortingDirection,
+    ReportGranularityType,
+    ReportTimeframeType,
     StatusType,
     TimeframeType,
 )
@@ -100,9 +136,12 @@ __all__ = [
     'ExportProperties',
     'ExportRecurrencePeriod',
     'ForecastDefinition',
+    'KpiProperties',
     'Operation',
     'OperationDisplay',
     'OperationListResult',
+    'PivotProperties',
+    'ProxyResource',
     'QueryAggregation',
     'QueryColumn',
     'QueryComparisonExpression',
@@ -112,15 +151,35 @@ __all__ = [
     'QueryGrouping',
     'QueryResult',
     'QueryTimePeriod',
+    'ReportConfigAggregation',
+    'ReportConfigComparisonExpression',
+    'ReportConfigDataset',
+    'ReportConfigDatasetConfiguration',
+    'ReportConfigFilter',
+    'ReportConfigGrouping',
+    'ReportConfigSorting',
+    'ReportConfigTimePeriod',
     'Resource',
+    'View',
+    'ViewListResult',
+    'AccumulatedType',
+    'ChartType',
     'ExecutionStatus',
     'ExecutionType',
     'ExportType',
     'ExternalCloudProviderType',
     'ForecastTimeframeType',
     'ForecastType',
+    'KpiType',
+    'MetricType',
+    'OperatorType',
+    'PivotType',
     'QueryColumnType',
     'RecurrenceType',
+    'ReportConfigColumnType',
+    'ReportConfigSortingDirection',
+    'ReportGranularityType',
+    'ReportTimeframeType',
     'StatusType',
     'TimeframeType',
 ]
