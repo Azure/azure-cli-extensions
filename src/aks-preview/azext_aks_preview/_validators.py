@@ -372,3 +372,21 @@ def validate_label(label):
                        "characters, '-', '_' or '.', and must start and end with an alphanumeric character" % label)
 
     return {kv[0]: kv[1]}
+
+def validate_max_surge(namespace):
+    if namespace.max_surge is not None:
+        validate_postivitive_int_or_percent(namespace.max_surge)
+
+
+def validate_postivitive_int_or_percent(intOrPercent):
+    """validates parameters like  max surge are postive integers or percents. less strict than RP"""
+
+    
+    if intOrPercent.endswith('%'):
+        intOrPercent = intOrPercent.rstrip('%')
+
+    try:
+        if int(intOrPercent) < 0:
+            raise CLIError("--max-surge must be positive")
+    except ValueError:
+        raise CLIError("--max-surge should be an int or precentage")
