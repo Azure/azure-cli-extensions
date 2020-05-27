@@ -146,3 +146,18 @@ class TestVNetSubnetId(unittest.TestCase):
 class VnetSubnetIdNamespace:
     def __init__(self, vnet_subnet_id):
         self.vnet_subnet_id = vnet_subnet_id
+
+
+class TestMaxSurge(unittest.TestCase):
+    def test_valid_cases(self):
+        valid = ["5", "33%", "1", "100%"]
+        map(valid, validators.validate_postivitive_int_or_percent)
+        
+    def test_throws_on_string(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_postivitive_int_or_percent("foobar")
+
+    def test_throws_on_negative(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_postivitive_int_or_percent("-3")
+
