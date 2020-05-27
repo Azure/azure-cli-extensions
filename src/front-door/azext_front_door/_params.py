@@ -87,7 +87,7 @@ def load_arguments(self, _):
     with self.argument_context('network front-door', arg_group='Routing Rule') as c:
         c.argument('accepted_protocols', nargs='+', help='Space-separated list of protocols to accept. Default: Http')
         c.argument('patterns_to_match', options_list='--patterns', nargs='+', help='Space-separated list of patterns to match. Default: \'/*\'.')
-        c.argument('forwarding_protocol', help='Protocol to use for forwarding traffic.')
+        c.argument('forwarding_protocol', arg_type=get_enum_type(FrontDoorForwardingProtocol), help='Protocol to use for forwarding traffic.')
         c.argument('route_type', arg_type=get_enum_type(RouteType), help='Route type to define how Front Door should handle requests for this route i.e. forward them to a backend or redirect the users to a different URL.')
 
     with self.argument_context('network front-door purge-endpoint') as c:
@@ -129,15 +129,17 @@ def load_arguments(self, _):
     with self.argument_context('network front-door routing-rule', arg_group=None) as c:
         c.argument('accepted_protocols', nargs='+', help='Space-separated list of protocols to accept. Default: Http')
         c.argument('patterns_to_match', options_list='--patterns', nargs='+', help='Space-separated list of patterns to match. Default: \'/*\'.')
-        c.argument('rules_engine', help='Name or ID of a Rules Engine configuration.', validator=validate_rules_engine)
+        c.argument('rules_engine', help='Name or ID of a Rules Engine configuration. To unlink property, \"--remove rulesEngine\"', validator=validate_rules_engine)
         c.argument('frontend_endpoints', help='Space-separated list of frontend endpoint names or IDs.', nargs='+', validator=validate_frontend_endpoints)
     with self.argument_context('network front-door routing-rule', arg_group='Forward Routing Rule') as c:
         c.argument('backend_pool', help="Name or ID of a backend pool. It's required to create a Forward routing rule.", validator=validate_backend_pool)
-        c.argument('forwarding_protocol', help='Protocol to use for forwarding traffic.')
+        c.argument('forwarding_protocol', arg_type=get_enum_type(FrontDoorForwardingProtocol), help='Protocol to use for forwarding traffic.')
         c.argument('custom_forwarding_path', help='Custom path used to rewrite resource paths matched by this rule. Leave empty to use incoming path.')
         c.argument('caching', arg_type=get_three_state_flag(positive_label='Enabled', negative_label='Disabled', return_label=False), help='Whether to enable caching for this route.')
+        c.argument('cache_duration', help='The duration for which the content needs to be cached. Allowed format is ISO 8601 duration')
         c.argument('dynamic_compression', arg_type=get_three_state_flag(positive_label='Enabled', negative_label='Disabled', return_label=True), help='Use dynamic compression for cached content.')
         c.argument('query_parameter_strip_directive', arg_type=get_enum_type(FrontDoorQuery), help='Treatment of URL query terms when forming the cache key.')
+        c.argument('query_parameters', help='Query parameters to include or exclude (comma separated) when using query-parameter-strip-directive type StripAllExcept or StripOnly respectively.')
     with self.argument_context('network front-door routing-rule', arg_group='Redirect Routing Rule') as c:
         c.argument('redirect_type', arg_type=get_enum_type(FrontDoorRedirectType), help='The redirect type the rule will use when redirecting traffic.')
         c.argument('redirect_protocol', arg_type=get_enum_type(FrontDoorRedirectProtocol), help='The protocol of the destination to where the traffic is redirected.')
@@ -276,7 +278,7 @@ def load_arguments(self, _):
         c.argument('front_door_name', frontdoor_name_type, id_part=None)
         c.argument('rules_engine_name', rules_engine_name_type, id_part=None)
         c.argument('rule_name', options_list=['--name', '-n'], help='Name of the rule')
-        c.argument('action_type', arg_group="Action", arg_type=get_enum_type(['RequestHeader', 'ResponseHeader', 'ForwardRouteOverride', 'RedirectRouteOverride']), help='Action type to apply for a rule.')
+        c.argument('action_type', arg_group="Action", arg_type=get_enum_type(['RequestHeader', 'ResponseHeader']), help='Action type to apply for a rule.')
         c.argument('header_action', arg_group="Action", arg_type=get_enum_type(HeaderActionType), help='Header action type for the requests.')
         c.argument('header_name', arg_group="Action", help='Name of the header to modify.')
         c.argument('header_value', arg_group="Action", help='Value of the header.')
@@ -290,6 +292,7 @@ def load_arguments(self, _):
         c.argument('match_processing_behavior', arg_type=get_enum_type(MatchProcessingBehavior), help='Whether to stop processing rules after conditions in a rule is satisfied.')
 
     with self.argument_context('network front-door rules-engine rule action', arg_group='Forward Route Override') as c:
+        c.argument('action_type', arg_group="Action", arg_type=get_enum_type(['RequestHeader', 'ResponseHeader', 'ForwardRouteOverride', 'RedirectRouteOverride']), help='Action type to apply for a rule.')
         c.argument('backend_pool', help='Name or ID of a backend pool.', validator=validate_backend_pool)
         c.argument('forwarding_protocol', arg_type=get_enum_type(FrontDoorForwardingProtocol), help='Protocol to use for forwarding traffic.')
         c.argument('custom_forwarding_path', help='Custom path used to rewrite resource paths matched by this rule. Leave empty to use incoming path.')

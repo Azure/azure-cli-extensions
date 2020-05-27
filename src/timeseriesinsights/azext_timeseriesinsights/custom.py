@@ -92,8 +92,9 @@ def list_timeseriesinsights_environment(cmd, client, resource_group_name=None):
 
 def create_timeseriesinsights_event_source_eventhub(cmd, client,
                                                     resource_group_name, environment_name, event_source_name,
-                                                    timestamp_property_name, event_source_resource_id,
+                                                    event_source_resource_id,
                                                     consumer_group_name, key_name, shared_access_key,
+                                                    timestamp_property_name=None,
                                                     location=None, tags=None):
     from azext_timeseriesinsights.vendored_sdks.timeseriesinsights.models import EventHubEventSourceCreateOrUpdateParameters
     from msrestazure.tools import parse_resource_id
@@ -135,8 +136,9 @@ def update_timeseriesinsights_event_source_eventhub(cmd, client, resource_group_
 
 def create_timeseriesinsights_event_source_iothub(cmd, client,
                                                   resource_group_name, environment_name, event_source_name,
-                                                  timestamp_property_name, event_source_resource_id,
+                                                  event_source_resource_id,
                                                   consumer_group_name, key_name, shared_access_key,
+                                                  timestamp_property_name=None,
                                                   location=None, tags=None):
     from .vendored_sdks.timeseriesinsights.models import IoTHubEventSourceCreateOrUpdateParameters
     from msrestazure.tools import parse_resource_id

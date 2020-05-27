@@ -18,6 +18,7 @@ from azure.cli.core.commands.parameters import (
 )
 
 from .advanced_filter import EventSubscriptionAddFilter
+from .event_channel_filter import EventChannelAddFilter
 from .inbound_ip_rules import AddInboundIpRule
 
 included_event_types_type = CLIArgumentType(
@@ -149,6 +150,15 @@ partner_topic_source_type = CLIArgumentType(
     help='The identifier of the resource that forms the partner source of the events. This represents a unique resource in the partner\'s resource model.',
     arg_type=name_type,
     options_list=['--partner-topic-source'])
+
+phone_number_type = CLIArgumentType(
+    help='The customer service number of the publisher. The expected phone format should start with a \'+\' sign'
+         ' followed by the country code. The remaining digits are then followed. Only digits and spaces are allowed and its'
+         ' length cannot exceed 16 digits including country code. Examples of valid phone numbers are: +1 515 123 4567 and'
+         ' +966 7 5115 2471. Examples of invalid phone numbers are: +1 (515) 123-4567, 1 515 123 4567 and +966 121 5115 24 7 551 1234 43.')
+
+phone_extension_type = CLIArgumentType(
+    help='The extension of the customer service number of the publisher. Only digits are allowed and number of digits should not exceed 10.')
 
 
 def load_arguments(self, _):    # pylint: disable=too-many-statements
@@ -283,6 +293,10 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
 
     with self.argument_context('eventgrid partner registration') as c:
         c.argument('partner_registration_name', arg_type=partner_registration_name_type, options_list=['--name', '-n'], id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/partnerregistrations'))
+        c.argument('long_description', help='Description of the custom scenarios and integration. Length of this description should not exceed 2048 characters', id_part=None)
+        c.argument('customer_service_number', arg_type=phone_number_type, id_part=None)
+        c.argument('customer_service_extension', arg_type=phone_extension_type, id_part=None)
+        c.argument('customer_service_uri', help='The customer service URI of the publisher.', id_part=None)
 
     with self.argument_context('eventgrid partner registration list') as c:
         c.argument('odata_query', arg_type=odata_query_type, id_part=None)
@@ -303,6 +317,9 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
         c.argument('partner_namespace_name', arg_type=partner_namespace_name_type, id_part='name')
         c.argument('event_channel_name', arg_type=event_channel_name_type, options_list=['--name', '-n'], id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/partnernamespaes/eventchannels'))
         c.argument('partner_topic_source', arg_type=partner_topic_source_type, options_list=['--source'])
+        c.argument('activation_expiration_date', help="Date or datetime in UTC ISO 8601 format (e.g., '2022-02-17T01:59:59+00:00' or '2022-02-17') after which the event channel and corresponding partner topic would expire and get auto deleted. If this time is not specified, the expiration date is set to seven days by default.")
+        c.argument('partner_topic_description', help="Friendly description of the corresponding partner topic. This will be helpful to remove any ambiguity of the origin of creation of the partner topic for the customer.")
+        c.argument('publisher_filter', action=EventChannelAddFilter, nargs='+')
 
     with self.argument_context('eventgrid partner namespace event-channel show') as c:
         c.argument('partner_namespace_name', arg_type=partner_namespace_name_type, id_part='name')
