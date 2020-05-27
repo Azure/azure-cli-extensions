@@ -1552,16 +1552,23 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument
             vmas_cluster = True
             break
 
+    agent_pool_client = cf_agent_pools(cmd.cli_ctx)
+    def upgrade_agent_pools(mutate):
+        for agent_pool_profile in instance.agent_pool_profiles:
+            pool = agent_pool_client.get(resource_group_name, name, agent_pool_profile.name)
+            mutate(pool)
+            yield return sdk_no_wait(no_wait, agent_pool_client.create_or_update, resource_group_name, clustername_name, agent_pool_profile.name, pool)
+
+
     if node_image_only:
+        if vmas_cluster:
+            raise CLIError('This cluster is not using VirtualMachineScaleSets. Node image upgrade only operation can only be applied on VirtualMachineScaleSets cluster.')
+        
         msg = "This node image upgrade operation will run across every node pool in the cluster and might take a while, do you wish to continue?"
         if not prompt_y_n(msg, default="n"):
             return None
-        agent_pool_client = cf_agent_pools(cmd.cli_ctx)
-        for agent_pool_profile in instance.agent_pool_profiles:
-            if vmas_cluster:
-                raise CLIError('This cluster is not using VirtualMachineScaleSets. Node image upgrade only operation can only be applied on VirtualMachineScaleSets cluster.')
-            _upgrade_single_agent_pool_node_image(agent_pool_client, resource_group_name, name, agent_pool_profile, no_wait)
-        return None
+           
+        return upgrade_agent_pools(lambda pool: pool.node_image_version = 'latest')
 
     if instance.kubernetes_version == kubernetes_version:
         if instance.provisioning_state == "Succeeded":
@@ -1572,8 +1579,10 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument
             logger.warning("Cluster currently in failed state. Proceeding with upgrade to existing version %s to "
                            "attempt resolution of failed cluster state.", instance.kubernetes_version)
 
-    upgrade_all = False
     instance.kubernetes_version = kubernetes_version
+    # null out the SP and AAD profile because otherwise validation complains
+    instance.service_principal_profile = None
+    instance.aad_profile = None
 
     # for legacy clusters, we always upgrade node pools with CCP.
     if instance.max_agent_pools < 8 or vmas_cluster:
@@ -1582,35 +1591,25 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument
                    "upgraded to {} as well. Continue?").format(instance.kubernetes_version)
             if not prompt_y_n(msg, default="n"):
                 return None
-        upgrade_all = True
-    else:
-        if not control_plane_only:
-            msg = ("Since control-plane-only argument is not specified, this will upgrade the control plane "
-                   "AND all nodepools to version {}. Continue?").format(instance.kubernetes_version)
-            if not prompt_y_n(msg, default="n"):
-                return None
-            upgrade_all = True
-        else:
-            msg = ("Since control-plane-only argument is specified, this will upgrade only the control plane to {}. "
-                   "Node pool will not change. Continue?").format(instance.kubernetes_version)
-            if not prompt_y_n(msg, default="n"):
-                return None
-
-    if upgrade_all:
         for agent_profile in instance.agent_pool_profiles:
             agent_profile.orchestrator_version = kubernetes_version
+        return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
 
-    # null out the SP and AAD profile because otherwise validation complains
-    instance.service_principal_profile = None
-    instance.aad_profile = None
+    if not control_plane_only:
+        msg = ("Since control-plane-only argument is not specified, this will upgrade the control plane "
+                "AND all nodepools to version {}. Continue?").format(instance.kubernetes_version)
+    else:
+        msg = ("Since control-plane-only argument is specified, this will upgrade only the control plane to {}. "
+                "Node pool will not change. Continue?").format(instance.kubernetes_version)
+    
+    if not prompt_y_n(msg, default="n"):
+        return None
 
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
-
-
-def _upgrade_single_agent_pool_node_image(client, resource_group_name, cluster_name, agent_pool_profile, no_wait):
-    instance = client.get(resource_group_name, cluster_name, agent_pool_profile.name)
-    instance.node_image_version = 'latest'
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, agent_pool_profile.name, instance)
+    cp_upgrade = sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
+    if control_plane_only: 
+        return cp_upgrade
+    #upgrade node pools one at a time
+    return upgrade_agent_pools(lambda pool: pool.orchestrator_version = kubernetes_version)
 
 
 def _handle_addons_args(cmd, addons_str, subscription_id, resource_group_name, addon_profiles=None,
