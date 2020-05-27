@@ -373,6 +373,7 @@ def validate_label(label):
 
     return {kv[0]: kv[1]}
 
+
 def validate_max_surge(namespace):
     if namespace.max_surge is not None:
         validate_postivitive_int_or_percent(namespace.max_surge)

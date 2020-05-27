@@ -152,12 +152,14 @@ class TestMaxSurge(unittest.TestCase):
     def test_valid_cases(self):
         valid = ["5", "33%", "1", "100%"]
         map(valid, validators.validate_postivitive_int_or_percent)
-        
+
     def test_throws_on_string(self):
         with self.assertRaises(CLIError) as cm:
             validators.validate_postivitive_int_or_percent("foobar")
+        self.assertEqual(str(cm.exception), err)
 
     def test_throws_on_negative(self):
         with self.assertRaises(CLIError) as cm:
             validators.validate_postivitive_int_or_percent("-3")
+        self.assertEqual(str(cm.exception), err)
 
