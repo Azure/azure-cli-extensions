@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 import unittest
 from azure.cli.core.util import CLIError
-from azure.cli.command_modules.acs import _validators as validators
+import azext_aks_preview._validators as validators
 
 
 class TestValidateIPRanges(unittest.TestCase):
@@ -72,7 +72,7 @@ class TestClusterAutoscalerParamsValidators(unittest.TestCase):
         self.assertEqual(str(cm.exception), err)
 
     def test_non_empty_key_empty_value(self):
-        cluster_autoscaler_profile = ["key1="]
+        cluster_autoscaler_profile = ["scan-interval="]
         namespace = Namespace(cluster_autoscaler_profile=cluster_autoscaler_profile)
 
         validators.validate_cluster_autoscaler_profile(namespace)
@@ -162,9 +162,9 @@ class TestMaxSurge(unittest.TestCase):
     def test_throws_on_string(self):
         with self.assertRaises(CLIError) as cm:
             validators.validate_max_surge(MaxSurgeNamespace("foobar"))
-        self.assertTrue(str(cm.exception).contains('integer'))
+        self.assertTrue('int or percentage' in str(cm.exception), msg=str(cm.exception))
 
     def test_throws_on_negative(self):
         with self.assertRaises(CLIError) as cm:
-            validators.validate_max_surge("-3")
-        self.assertTrue(str(cm.exception).contains('positive'))
+            validators.validate_max_surge(MaxSurgeNamespace("-3"))
+        self.assertTrue('positive' in str(cm.exception), msg=str(cm.exception))
