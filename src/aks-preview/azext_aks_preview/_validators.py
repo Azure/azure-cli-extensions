@@ -381,7 +381,6 @@ def validate_max_surge(namespace):
 def validate_postivitive_int_or_percent(intOrPercent):
     """validates parameters like  max surge are postive integers or percents. less strict than RP"""
 
-    
     if intOrPercent.endswith('%'):
         intOrPercent = intOrPercent.rstrip('%')
 
