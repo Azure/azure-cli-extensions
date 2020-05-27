@@ -375,13 +375,10 @@ def validate_label(label):
 
 
 def validate_max_surge(namespace):
-    if namespace.max_surge is not None:
-        validate_postivitive_int_or_percent(namespace.max_surge)
-
-
-def validate_postivitive_int_or_percent(intOrPercent):
-    """validates parameters like  max surge are postive integers or percents. less strict than RP"""
-
+    """validates parameters like max surge are postive integers or percents. less strict than RP"""
+    if namespace.max_surge is None:
+        return
+    intOrPercent = namespace.max_surge
     if intOrPercent.endswith('%'):
         intOrPercent = intOrPercent.rstrip('%')
 
@@ -389,4 +386,4 @@ def validate_postivitive_int_or_percent(intOrPercent):
         if int(intOrPercent) < 0:
             raise CLIError("--max-surge must be positive")
     except ValueError:
-        raise CLIError("--max-surge should be an int or precentage")
+        raise CLIError("--max-surge should be an int or percentage")
