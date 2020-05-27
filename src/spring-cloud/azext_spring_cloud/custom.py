@@ -482,7 +482,9 @@ def app_tail_log(cmd, client, resource_group, service, name, instance=None, foll
 
     spring_cloud_service = client.services.get(resource_group, service)
     host_name = service
-    if spring_cloud_service.network_profile and spring_cloud_service.network_profile.service_runtime_subnet:
+    if spring_cloud_service.properties and \
+         spring_cloud_service.properties.network_profile and \
+         spring_cloud_service.properties.network_profile.service_runtime_subnet_id:
         host_name = '{0}.private'.format(service)
 
     primary_key = client.services.list_test_keys(
