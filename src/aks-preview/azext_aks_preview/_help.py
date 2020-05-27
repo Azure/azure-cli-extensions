@@ -290,6 +290,9 @@ helps['aks upgrade'] = """
         - name: --control-plane-only
           type: bool
           short-summary: Upgrade the cluster control plane only. If not specified, control plane AND all node pools will be upgraded.
+        - name: --node-image-only
+          type: bool
+          short-summary: Only upgrade node image for agent pools.
 """
 
 helps['aks update'] = """
@@ -355,6 +358,9 @@ helps['aks update'] = """
         - name: --aad-tenant-id
           type: string
           short-summary: The ID of an Azure Active Directory tenant.
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
@@ -511,6 +517,9 @@ helps['aks nodepool add'] = """
         - name: --mode
           type: string
           short-summary: The mode for a node pool which defines a node pool's primary function. If set as "System", AKS prefers system pods scheduling to node pools with mode `System`. Learn more at https://aka.ms/aks/nodepool/mode.
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
 """
 
 helps['aks nodepool scale'] = """
@@ -529,6 +538,9 @@ helps['aks nodepool upgrade'] = """
         - name: --kubernetes-version -k
           type: string
           short-summary: Version of Kubernetes to upgrade the node pool to, such as "1.11.12".
+        - name: --node-image-only
+          type: bool
+          short-summary: Only upgrade agent pool's node image.
 """
 
 helps['aks nodepool update'] = """

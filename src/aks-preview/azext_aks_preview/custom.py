@@ -49,21 +49,21 @@ from azure.graphrbac.models import (ApplicationCreateParameters,
                                     KeyCredential,
                                     ServicePrincipalCreateParameters,
                                     GetObjectsParameters)
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ContainerServiceLinuxProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterWindowsProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ContainerServiceNetworkProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterServicePrincipalProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ContainerServiceSshConfiguration
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ContainerServiceSshPublicKey
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedCluster
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterAADProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterAddonProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterAgentPoolProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import AgentPool
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ContainerServiceStorageProfileTypes
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterIdentity
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterAPIServerAccessProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterSKU
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ContainerServiceLinuxProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClusterWindowsProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ContainerServiceNetworkProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClusterServicePrincipalProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ContainerServiceSshConfiguration
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ContainerServiceSshPublicKey
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedCluster
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClusterAADProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClusterAddonProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClusterAgentPoolProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import AgentPool
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ContainerServiceStorageProfileTypes
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClusterIdentity
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClusterAPIServerAccessProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClusterSKU
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
@@ -71,6 +71,7 @@ from ._client_factory import cf_resources
 from ._client_factory import get_resource_by_name
 from ._client_factory import cf_container_registry_service
 from ._client_factory import cf_storage
+from ._client_factory import cf_agent_pools
 
 
 from ._helpers import (_populate_api_server_access_profile, _set_vm_set_type,
@@ -694,7 +695,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                windows_admin_username=None,
                windows_admin_password=None,
                kubernetes_version='',
-               node_vm_size="Standard_DS2_v2",
+               node_vm_size="Standard_D2s_v3",
                node_osdisk_size=0,
                node_osdisk_diskencryptionset_id=None,
                node_count=3,
@@ -1009,15 +1010,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             tier="Paid"
         )
 
-    headers = {}
-    if aks_custom_headers is not None:
-        if aks_custom_headers != "":
-            for pair in aks_custom_headers.split(','):
-                parts = pair.split('=')
-                if len(parts) != 2:
-                    raise CLIError('custom headers format is incorrect')
-
-                headers[parts[0]] = parts[1]
+    headers = get_aks_custom_headers(aks_custom_headers)
 
     # Due to SPN replication latency, we do a few retries here
     max_retry = 30
@@ -1096,7 +1089,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                attach_acr=None,
                detach_acr=None,
                aad_tenant_id=None,
-               aad_admin_group_object_ids=None):
+               aad_admin_group_object_ids=None,
+               aks_custom_headers=None):
     update_autoscaler = enable_cluster_autoscaler or disable_cluster_autoscaler or update_cluster_autoscaler
     update_acr = attach_acr is not None or detach_acr is not None
     update_pod_security = enable_pod_security_policy or disable_pod_security_policy
@@ -1244,7 +1238,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
         if aad_admin_group_object_ids is not None:
             instance.aad_profile.admin_group_object_ids = _parse_comma_separated_list(aad_admin_group_object_ids)
 
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance, custom_headers=headers)
 
 
 def aks_show(cmd, client, resource_group_name, name):   # pylint: disable=unused-argument
@@ -1478,7 +1473,8 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
         os.remove(temp_yaml_path)
 
     print()
-    normalized_fqdn = mc.fqdn.replace('.', '-')
+    fqdn = mc.fqdn if mc.fqdn is not None else mc.private_fqdn
+    normalized_fqdn = fqdn.replace('.', '-')
     token_in_storage_account_url = readonly_sas_token if readonly_sas_token is not None else sas_token
     log_storage_account_url = f"https://{storage_account_name}.blob.core.windows.net/" \
                               f"{_trim_fqdn_name_containing_hcp(normalized_fqdn)}?{token_in_storage_account_url}"
@@ -1539,11 +1535,33 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument
                 client,
                 resource_group_name,
                 name,
-                kubernetes_version,
+                kubernetes_version='',
                 control_plane_only=False,
                 no_wait=False,
+                node_image_only=False,
                 **kwargs):  # pylint: disable=unused-argument
+    from knack.prompting import prompt_y_n
     instance = client.get(resource_group_name, name)
+
+    if kubernetes_version != '' and node_image_only:
+        raise CLIError('Conflicting flags. Upgrading the Kubernetes version will also upgrade node image version. If you only want to upgrade the node version please use the "--node-image-only" option only.')
+
+    vmas_cluster = False
+    for agent_profile in instance.agent_pool_profiles:
+        if agent_profile.type.lower() == "availabilityset":
+            vmas_cluster = True
+            break
+
+    if node_image_only:
+        msg = "This node image upgrade operation will run across every node pool in the cluster and might take a while, do you wish to continue?"
+        if not prompt_y_n(msg, default="n"):
+            return None
+        agent_pool_client = cf_agent_pools(cmd.cli_ctx)
+        for agent_pool_profile in instance.agent_pool_profiles:
+            if vmas_cluster:
+                raise CLIError('This cluster is not using VirtualMachineScaleSets. Node image upgrade only operation can only be applied on VirtualMachineScaleSets cluster.')
+            _upgrade_single_agent_pool_node_image(agent_pool_client, resource_group_name, name, agent_pool_profile, no_wait)
+        return None
 
     if instance.kubernetes_version == kubernetes_version:
         if instance.provisioning_state == "Succeeded":
@@ -1554,16 +1572,8 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument
             logger.warning("Cluster currently in failed state. Proceeding with upgrade to existing version %s to "
                            "attempt resolution of failed cluster state.", instance.kubernetes_version)
 
-    from knack.prompting import prompt_y_n
-
     upgrade_all = False
     instance.kubernetes_version = kubernetes_version
-
-    vmas_cluster = False
-    for agent_profile in instance.agent_pool_profiles:
-        if agent_profile.type.lower() == "availabilityset":
-            vmas_cluster = True
-            break
 
     # for legacy clusters, we always upgrade node pools with CCP.
     if instance.max_agent_pools < 8 or vmas_cluster:
@@ -1595,6 +1605,12 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument
     instance.aad_profile = None
 
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
+
+
+def _upgrade_single_agent_pool_node_image(client, resource_group_name, cluster_name, agent_pool_profile, no_wait):
+    instance = client.get(resource_group_name, cluster_name, agent_pool_profile.name)
+    instance.node_image_version = 'latest'
+    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, agent_pool_profile.name, instance)
 
 
 def _handle_addons_args(cmd, addons_str, subscription_id, resource_group_name, addon_profiles=None,
@@ -2071,6 +2087,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       spot_max_price=float('nan'),
                       labels=None,
                       mode="User",
+                      aks_custom_headers=None,
                       no_wait=False):
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
@@ -2089,10 +2106,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                 raise CLIError('Taint does not match allowed values. Expect value such as "special=true:NoSchedule".')
 
     if node_vm_size is None:
-        if os_type == "Windows":
-            node_vm_size = "Standard_D2s_v3"
-        else:
-            node_vm_size = "Standard_DS2_v2"
+        node_vm_size = "Standard_D2s_v3"
 
     agent_pool = AgentPool(
         name=nodepool_name,
@@ -2124,7 +2138,8 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
     if node_osdisk_size:
         agent_pool.os_disk_size_gb = int(node_osdisk_size)
 
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, agent_pool)
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, agent_pool, custom_headers=headers)
 
 
 def aks_agentpool_scale(cmd,    # pylint: disable=unused-argument
@@ -2148,11 +2163,23 @@ def aks_agentpool_upgrade(cmd,  # pylint: disable=unused-argument
                           client,
                           resource_group_name,
                           cluster_name,
-                          kubernetes_version,
                           nodepool_name,
-                          no_wait=False):
+                          kubernetes_version='',
+                          no_wait=False,
+                          node_image_only=False):
+
+    from knack.prompting import prompt_y_n
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
+    if kubernetes_version != '' and node_image_only:
+        raise CLIError('Conflicting flags. Upgrading the Kubernetes version will also upgrade node image version. If you only want to upgrade the node version please use the "--node-image-only" option only.')
+
     instance.orchestrator_version = kubernetes_version
+    if node_image_only:
+        msg = "This node image upgrade operation will run across every node in this node pool and might take a while, " \
+              "do you wish to continue? "
+        if not prompt_y_n(msg, default="n"):
+            return None
+        instance.node_image_version = 'latest'
 
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
 
@@ -2677,3 +2704,15 @@ def format_bright(msg):
 
 def format_hyperlink(the_link):
     return f'\033[1m{colorama.Style.BRIGHT}{colorama.Fore.BLUE}{the_link}{colorama.Style.RESET_ALL}'
+
+
+def get_aks_custom_headers(aks_custom_headers=None):
+    headers = {}
+    if aks_custom_headers is not None:
+        if aks_custom_headers != "":
+            for pair in aks_custom_headers.split(','):
+                parts = pair.split('=')
+                if len(parts) != 2:
+                    raise CLIError('custom headers format is incorrect')
+                headers[parts[0]] = parts[1]
+    return headers

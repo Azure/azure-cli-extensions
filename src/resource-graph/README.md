@@ -1,4 +1,4 @@
-# Azure CLI blueprint Extension #
+# Azure CLI Resource Graph Extension #
 
 This package is for the 'resource-graph' extension, i.e. 'az graph'.
 
