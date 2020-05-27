@@ -3,7 +3,7 @@ Release History
 
 0.2.4
 -----
-* Add command "az spring-cloud app identity"  to support Managed Identity feature
+* Add command "az spring-cloud app identity" to support Managed Identity feature
 
 0.2.3
 -----
