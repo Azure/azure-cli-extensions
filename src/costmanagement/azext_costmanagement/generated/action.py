@@ -19,7 +19,6 @@ class AddKpis(argparse._AppendAction):
         action = self.get_action(values, option_string)
         super(AddKpis, self).__call__(parser, namespace, action, option_string)
 
-
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
             properties = defaultdict(list)
@@ -46,7 +45,6 @@ class AddPivots(argparse._AppendAction):
         action = self.get_action(values, option_string)
         super(AddPivots, self).__call__(parser, namespace, action, option_string)
 
-
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
             properties = defaultdict(list)
@@ -70,7 +68,6 @@ class AddQueryTimePeriod(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
         namespace.query_time_period = action
-
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -99,7 +96,6 @@ class AddTimePeriod(argparse.Action):
         if hasattr(namespace, 'time_period'):
             namespace.time_period = action
 
-
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
             properties = defaultdict(list)
@@ -122,8 +118,10 @@ class AddTimePeriod(argparse.Action):
 class AddDatasetConfiguration(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        namespace.dataset_configuration = action
-
+        if hasattr(namespace, 'dataset_configuration'):
+            namespace.dataset_configuration = action
+        if hasattr(namespace, 'definition_dataset_configuration'):
+            namespace.definition_dataset_configuration = action
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -146,7 +144,6 @@ class AddDatasetGrouping(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
         super(AddDatasetGrouping, self).__call__(parser, namespace, action, option_string)
-
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -171,7 +168,6 @@ class AddDeliveryInfoDestination(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
         namespace.delivery_info_destination = action
-
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -198,7 +194,6 @@ class AddScheduleRecurrencePeriod(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
         namespace.schedule_recurrence_period = action
-
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:

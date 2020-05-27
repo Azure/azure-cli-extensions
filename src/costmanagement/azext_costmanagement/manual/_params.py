@@ -39,8 +39,8 @@ def load_arguments(self, _):
                    action=AddTimePeriod,
                    nargs='+',
                    help='Has time period for pulling data for the query. '
-                        'Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: from, to. '
-                        'The time format is like 2020-05-01T00:00:00.')
+                        'Expect value: from=TIMESTAMP1 to=TIMESTAMP2. '
+                        'The timestamp format is like 2020-05-01T00:00:00.')
         c.argument('dataset_configuration',
                    action=AddDatasetConfiguration, nargs='+',
                    help='Has configuration information for the data in the export. '
@@ -88,8 +88,9 @@ def load_arguments(self, _):
                    options_list='--time-period',
                    nargs='+',
                    help='Has time period for pulling data for the query. '
-                        'Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: from, to.'
-                        'The time format is like 2020-05-01T00:00:00.')
+                         'Expect value: from=TIMESTAMP1 to=TIMESTAMP2. '
+                         'The timestamp format is like 2020-05-01T00:00:00.'
+                         'The TIMESTAMP1 must in the future and TIMESTAMP2 must be greater than TIMESTAMP1')
         c.argument('definition_dataset_configuration',
                    action=AddDatasetConfiguration,
                    options_list='--dataset-configuration',

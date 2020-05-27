@@ -81,7 +81,6 @@ def costmanagement_export_update(cmd,
                                  delivery_storage_container=None,
                                  delivery_storage_account_id=None,
                                  delivery_directory=None,
-                                 definition_type=None,
                                  definition_timeframe=None,
                                  definition_time_period=None,
                                  definition_dataset_configuration=None,
@@ -97,40 +96,36 @@ def costmanagement_export_update(cmd,
     print(type(export_instance))
     print(export_instance)
 
-    # if isinstance(definition_dataset_aggregation, str):
-    #     definition_dataset_aggregation = json.loads(definition_dataset_aggregation)
-    # if isinstance(definition_dataset_filter, str):
-    #     definition_dataset_filter = json.loads(definition_dataset_filter)
+    if isinstance(definition_dataset_aggregation, str):
+        definition_dataset_aggregation = json.loads(definition_dataset_aggregation)
+    if isinstance(definition_dataset_filter, str):
+        definition_dataset_filter = json.loads(definition_dataset_filter)
 
-    # delivery_info_destination = {
-    #     'resource_id': delivery_storage_account_id,
-    #     'container': delivery_storage_container,
-    #     'root_folder_path': delivery_directory,
-    # }
+    delivery_info_destination = {
+        'resource_id': delivery_storage_account_id or export_instance.destination.resource_id,
+        'container': delivery_storage_container or export_instance.destination.container,
+        'root_folder_path': delivery_directory or export_instance.destination.root_folder_path,
+    }
 
     with cmd.update_context(export_instance) as c:
-        # c.set_param('status', schedule_status)
-        # c.set_param('recurrence', schedule_recurrence)
-        # c.set_param('recurrence_period', )
+        # update export schedule configuration
+        c.set_param('status', schedule_status)
+        c.set_param('recurrence', schedule_recurrence)
+        c.set_param('recurrence_period', schedule_recurrence_period)
 
-        c.set_param('type', 'ActualCost')
+        # update delivery info
+        c.set_param('destination', delivery_info_destination)
+
+        # update export definition
+        c.set_param('timeframe', definition_timeframe)
+        c.set_param('configuration', definition_dataset_configuration)
+        c.set_param('aggregation', definition_dataset_aggregation)
+        c.set_param('grouping', definition_dataset_grouping)
+        c.set_param('filter', definition_dataset_filter)
 
     print('-' * 100)
     print(export_instance)
 
-    # return client.create_or_update(scope=scope,
-    #                                export_name=export_name,
-    #                                type=definition_type,
-    #                                timeframe=definition_timeframe,
-    #                                time_period=definition_time_period,
-    #                                configuration=definition_dataset_configuration,
-    #                                aggregation=definition_dataset_aggregation,
-    #                                grouping=definition_dataset_grouping,
-    #                                filter=definition_dataset_filter,
-    #                                destination=delivery_info_destination,
-    #                                status=schedule_status,
-    #                                recurrence=schedule_recurrence,
-    #                                recurrence_period=schedule_recurrence_period)
     return client.create_or_update(scope=scope,
                                    export_name=export_name,
                                    type=export_instance.type_properties_definition_type,
@@ -143,7 +138,8 @@ def costmanagement_export_update(cmd,
                                    destination=export_instance.destination,
                                    status=export_instance.status,
                                    recurrence=export_instance.recurrence,
-                                   recurrence_period=export_instance.recurrence_period)
+                                   recurrence_period=export_instance.recurrence_period,
+                                   e_tag=export_instance.e_tag)
 
 
 def costmanagement_export_list(cmd, client, scope):
