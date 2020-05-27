@@ -30,28 +30,44 @@ def db_down_namespace_processor(db_type):
     return lambda cmd, namespace: _process_db_down_namespace(namespace, db_type=db_type)
 
 
+# pylint: disable=bare-except
 def _process_db_up_namespace(cmd, namespace, db_type=None):
-    # populate from cache if existing
-    _set_value(db_type, namespace, 'location', 'location', cache=False)
-    _set_value(db_type, namespace, 'resource_group_name', 'group', cache=False)
+    # populate from cache if existing when no resource group name provided
+    resource_client = resource_client_factory(cmd.cli_ctx)
+    if namespace.resource_group_name is None:
+        _set_value(db_type, namespace, 'resource_group_name', 'group', cache=False)
+        try:
+            resource_client.resource_groups.get(namespace.resource_group_name)
+        except:  # Clear resource group name information when it is invalid
+            namespace.resource_group_name = None
 
-    # generate smart defaults
+    # populate from cache if existing when no location provided
+    if namespace.location is None:
+        _set_value(db_type, namespace, 'location', 'location', cache=False)
+    # generate smart defaults when namespace.location is None
     if _get_value(db_type, namespace, 'location', 'location') is None:
         try:
             get_default_location_from_resource_group(cmd, namespace)
         except (CLIError, ValidationError):
-            namespace.location = 'westus2'
-    _set_value(db_type, namespace, 'location', 'location', namespace.location)
+            namespace.location = 'eastus'
+    _set_value(db_type, namespace, 'location', 'location', default=namespace.location)
 
+    # When resource group name in namespace is different from what in cache, reset it and create new server name
+    if namespace.resource_group_name != get_config_value(db_type, 'group', None):
+        set_config_value(db_type, 'group', namespace.resource_group_name)
+        if namespace.server_name is None:
+            namespace.server_name = create_random_resource_name('server')
+            set_config_value(db_type, 'server', namespace.server_name)
+
+    # When no resource group name in namespace and cache, create new resource group with random name
     create_resource_group = True
-    resource_client = resource_client_factory(cmd.cli_ctx)
-    if namespace.resource_group_name is None:
+    if namespace.resource_group_name is None:  # No resource group provided and in cache
         namespace.resource_group_name = create_random_resource_name('group')
     else:
         try:
             resource_client.resource_groups.get(namespace.resource_group_name)
             create_resource_group = False
-        except CloudError:
+        except CloudError:  # throw exception when resource group name is invalid
             pass
 
     if create_resource_group:
@@ -59,14 +75,14 @@ def _process_db_up_namespace(cmd, namespace, db_type=None):
         params = ResourceGroup(location=namespace.location)
         logger.warning('Creating Resource Group \'%s\'...', namespace.resource_group_name)
         resource_client.resource_groups.create_or_update(namespace.resource_group_name, params)
-    _set_value(db_type, namespace, 'resource_group_name', 'group', namespace.resource_group_name)
+    _set_value(db_type, namespace, 'resource_group_name', 'group', default=namespace.resource_group_name)
 
-    _set_value(db_type, namespace, 'server_name', 'server', create_random_resource_name('server'))
-    _set_value(db_type, namespace, 'administrator_login', 'login', generate_username())
+    _set_value(db_type, namespace, 'server_name', 'server', default=create_random_resource_name('server'))
+    _set_value(db_type, namespace, 'administrator_login', 'login', default=generate_username())
     if namespace.generate_password:
         namespace.administrator_login_password = str(uuid.uuid4())
     del namespace.generate_password
-    _set_value(db_type, namespace, 'database_name', 'database', DEFAULT_DATABASE_NAME)
+    _set_value(db_type, namespace, 'database_name', 'database', default=DEFAULT_DATABASE_NAME)
 
 
 def _process_db_down_namespace(namespace, db_type=None):
@@ -82,7 +98,10 @@ def _process_db_down_namespace(namespace, db_type=None):
 def _set_value(db_type, namespace, attribute, option, default=None, cache=True):
     if getattr(namespace, attribute) is None:
         try:
-            setattr(namespace, attribute, get_config_value(db_type, option))
+            if get_config_value(db_type, option):
+                setattr(namespace, attribute, get_config_value(db_type, option))
+            else:
+                setattr(namespace, attribute, default)
         except (configparser.NoSectionError, configparser.NoOptionError):
             if default is not None:
                 setattr(namespace, attribute, default)
