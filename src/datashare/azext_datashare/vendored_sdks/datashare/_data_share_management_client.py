@@ -6,10 +6,14 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from typing import Any, Optional
+from typing import TYPE_CHECKING
 
-from azure.core import PipelineClient
+from azure.mgmt.core import ARMPipelineClient
 from msrest import Deserializer, Serializer
+
+if TYPE_CHECKING:
+    # pylint: disable=unused-import,ungrouped-imports
+    from typing import Any, Optional
 
 from ._configuration import DataShareManagementClientConfiguration
 from .operations import AccountOperations
@@ -31,31 +35,31 @@ class DataShareManagementClient(object):
     """Creates a Microsoft.DataShare management client.
 
     :ivar account: AccountOperations operations
-    :vartype account: data_share_management_client.operations.AccountOperations
+    :vartype account: azure.mgmt.datashare.operations.AccountOperations
     :ivar consumer_invitation: ConsumerInvitationOperations operations
-    :vartype consumer_invitation: data_share_management_client.operations.ConsumerInvitationOperations
+    :vartype consumer_invitation: azure.mgmt.datashare.operations.ConsumerInvitationOperations
     :ivar data_set: DataSetOperations operations
-    :vartype data_set: data_share_management_client.operations.DataSetOperations
+    :vartype data_set: azure.mgmt.datashare.operations.DataSetOperations
     :ivar data_set_mapping: DataSetMappingOperations operations
-    :vartype data_set_mapping: data_share_management_client.operations.DataSetMappingOperations
+    :vartype data_set_mapping: azure.mgmt.datashare.operations.DataSetMappingOperations
     :ivar invitation: InvitationOperations operations
-    :vartype invitation: data_share_management_client.operations.InvitationOperations
+    :vartype invitation: azure.mgmt.datashare.operations.InvitationOperations
     :ivar operation: OperationOperations operations
-    :vartype operation: data_share_management_client.operations.OperationOperations
+    :vartype operation: azure.mgmt.datashare.operations.OperationOperations
     :ivar share: ShareOperations operations
-    :vartype share: data_share_management_client.operations.ShareOperations
+    :vartype share: azure.mgmt.datashare.operations.ShareOperations
     :ivar provider_share_subscription: ProviderShareSubscriptionOperations operations
-    :vartype provider_share_subscription: data_share_management_client.operations.ProviderShareSubscriptionOperations
+    :vartype provider_share_subscription: azure.mgmt.datashare.operations.ProviderShareSubscriptionOperations
     :ivar share_subscription: ShareSubscriptionOperations operations
-    :vartype share_subscription: data_share_management_client.operations.ShareSubscriptionOperations
+    :vartype share_subscription: azure.mgmt.datashare.operations.ShareSubscriptionOperations
     :ivar consumer_source_data_set: ConsumerSourceDataSetOperations operations
-    :vartype consumer_source_data_set: data_share_management_client.operations.ConsumerSourceDataSetOperations
+    :vartype consumer_source_data_set: azure.mgmt.datashare.operations.ConsumerSourceDataSetOperations
     :ivar synchronization_setting: SynchronizationSettingOperations operations
-    :vartype synchronization_setting: data_share_management_client.operations.SynchronizationSettingOperations
+    :vartype synchronization_setting: azure.mgmt.datashare.operations.SynchronizationSettingOperations
     :ivar trigger: TriggerOperations operations
-    :vartype trigger: data_share_management_client.operations.TriggerOperations
+    :vartype trigger: azure.mgmt.datashare.operations.TriggerOperations
     :param credential: Credential needed for the client to connect to Azure.
-    :type credential: azure.core.credentials.TokenCredential
+    :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: The subscription identifier.
     :type subscription_id: str
     :param str base_url: Service URL
@@ -72,7 +76,7 @@ class DataShareManagementClient(object):
         if not base_url:
             base_url = 'https://management.azure.com'
         self._config = DataShareManagementClientConfiguration(credential, subscription_id, **kwargs)
-        self._client = PipelineClient(base_url=base_url, config=self._config, **kwargs)
+        self._client = ARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)

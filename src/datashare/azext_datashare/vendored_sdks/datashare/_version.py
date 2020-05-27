@@ -6,14 +6,4 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._data_share_management_client import DataShareManagementClient
-from ._version import VERSION
-
-__version__ = VERSION
-__all__ = ['DataShareManagementClient']
-
-try:
-    from .patch import patch_sdk
-    patch_sdk()
-except ImportError:
-    pass
+VERSION = "2019-11-01T00:00:00.000Z"

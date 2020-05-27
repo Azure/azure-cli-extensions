@@ -13,6 +13,8 @@ from azure.core.exceptions import HttpResponseError, ResourceExistsError, Resour
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
 from azure.core.polling import AsyncNoPolling, AsyncPollingMethod, async_poller
+from azure.mgmt.core.exceptions import ARMErrorFormat
+from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
 
 from ... import models
 
@@ -26,7 +28,7 @@ class DataSetOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~data_share_management_client.models
+    :type models: ~azure.mgmt.datashare.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -63,7 +65,7 @@ class DataSetOperations:
         :type data_set_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: DataSet or the result of cls(response)
-        :rtype: ~data_share_management_client.models.DataSet
+        :rtype: ~azure.mgmt.datashare.models.DataSet
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DataSet"]
@@ -97,7 +99,7 @@ class DataSetOperations:
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.DataShareError, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('DataSet', pipeline_response)
 
@@ -129,10 +131,10 @@ class DataSetOperations:
         :param data_set_name: The name of the dataSet.
         :type data_set_name: str
         :param data_set: The new data set information.
-        :type data_set: ~data_share_management_client.models.DataSet
+        :type data_set: ~azure.mgmt.datashare.models.DataSet
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: DataSet or the result of cls(response)
-        :rtype: ~data_share_management_client.models.DataSet or ~data_share_management_client.models.DataSet
+        :rtype: ~azure.mgmt.datashare.models.DataSet or ~azure.mgmt.datashare.models.DataSet
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DataSet"]
@@ -172,7 +174,7 @@ class DataSetOperations:
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.DataShareError, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = None
         if response.status_code == 200:
@@ -225,7 +227,7 @@ class DataSetOperations:
         if response.status_code not in [200, 202, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.DataShareError, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
           return cls(pipeline_response, None, {})
@@ -261,7 +263,7 @@ class DataSetOperations:
 
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        polling = kwargs.pop('polling', False)  # type: Union[bool, AsyncPollingMethod]
+        polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         raw_result = await self._delete_initial(
             resource_group_name=resource_group_name,
@@ -280,7 +282,7 @@ class DataSetOperations:
             'polling_interval',
             self._config.polling_interval
         )
-        if polling is True: raise ValueError("polling being True is not valid because no default polling implemetation has been defined.")
+        if polling is True: polling_method = AsyncARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         return await async_poller(self._client, raw_result, get_long_running_output, polling_method)
@@ -308,7 +310,7 @@ class DataSetOperations:
         :type skip_token: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: DataSetList or the result of cls(response)
-        :rtype: ~data_share_management_client.models.DataSetList
+        :rtype: ~azure.mgmt.datashare.models.DataSetList
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DataSetList"]
@@ -359,7 +361,7 @@ class DataSetOperations:
             if response.status_code not in [200]:
                 error = self._deserialize(models.DataShareError, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, model=error)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
