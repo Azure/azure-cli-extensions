@@ -144,8 +144,10 @@ def _fetch_compatible_sku(source_vm):
     # List available standard SKUs
     # TODO, premium IO only when needed
     list_sku_command = 'az vm list-skus -s standard_d -l {loc} --query ' \
-                       '"[?capabilities[?name==\'vCPUs\' && to_number(value)<= to_number(\'4\')] && ' \
-                       'capabilities[?name==\'MemoryGB\' && to_number(value)<=to_number(\'16\')] && ' \
+                       '"[?capabilities[?name==\'vCPUs\' && to_number(value)>= to_number(\'2\')] && ' \
+                       'capabilities[?name==\'vCPUs\' && to_number(value)<= to_number(\'8\')] && ' \
+                       'capabilities[?name==\'MemoryGB\' && to_number(value)>=to_number(\'8\')] && ' \
+                       'capabilities[?name==\'MemoryGB\' && to_number(value)<=to_number(\'32\')] && ' \
                        'capabilities[?name==\'MaxDataDiskCount\' && to_number(value)>to_number(\'0\')] && ' \
                        'capabilities[?name==\'PremiumIO\' && value==\'True\']].name" -o json'\
                        .format(loc=location)
@@ -181,10 +183,14 @@ def _list_resource_ids_in_rg(resource_group_name):
 
 
 def _fetch_encryption_settings(source_vm):
-    key_vault = "None"
-    kekurl = "None"
+    key_vault = None
+    kekurl = None
     if source_vm.storage_profile.os_disk.encryption_settings is not None:
         return Encryption.DUAL, key_vault, kekurl
+    # Unmanaged disk only support dual
+    if not _uses_managed_disk(source_vm):
+        return Encryption.NONE, key_vault, kekurl
+
     disk_id = source_vm.storage_profile.os_disk.managed_disk.id
     show_disk_command = 'az disk show --id {i} --query [encryptionSettingsCollection,encryptionSettingsCollection.encryptionSettings[].diskEncryptionKey.sourceVault.id,encryptionSettingsCollection.encryptionSettings[].keyEncryptionKey.keyUrl] -o json'.format(i=disk_id)
     encryption_type, key_vault, kekurl = loads(_call_az_command(show_disk_command))
@@ -220,6 +226,7 @@ def _unlock_singlepass_encrypted_disk(source_vm, is_linux, repair_group_name, re
             _manually_unlock_mount_encrypted_disk(repair_group_name, repair_vm_name)
     except AzCommandError as azCommandError:
         error_message = str(azCommandError)
+        # Linux VM encryption extension bug where it fails and then continue to mount disk manually
         if is_linux and "Failed to encrypt data volumes with error" in error_message:
             logger.debug("Expected bug for linux VMs. Ignoring error.")
             _manually_unlock_mount_encrypted_disk(repair_group_name, repair_vm_name)
