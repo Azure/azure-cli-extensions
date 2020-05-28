@@ -7,7 +7,7 @@ import re
 import logging
 import unittest.mock as mock
 
-from azure_devtools.scenario_tests import mock_in_unit_test
+from azure.cli.testsdk.patches import mock_in_unit_test
 from azure.cli.testsdk import ScenarioTest
 
 from azext_ai_did_you_mean_this._const import UNABLE_TO_HELP_FMT_STR, RECOMMENDATION_HEADER_FMT_STR
