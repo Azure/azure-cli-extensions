@@ -96,7 +96,7 @@ entGroups/TestMG"
 
 helps['costmanagement export create'] = """
     type: command
-    short-summary: The operation to create a export.
+    short-summary: The operation to create an export.
     examples:
       - name: Create an export for ManagementGroup scope
         text: >
@@ -156,7 +156,7 @@ helps['costmanagement export create'] = """
 
 helps['costmanagement export update'] = """
     type: command
-    short-summary: The operation to update a export.
+    short-summary: The operation to update an export.
     examples:
       - name: Update an export in a ManagementGroup scope
         text: >
@@ -213,7 +213,7 @@ helps['costmanagement export update'] = """
 
 helps['costmanagement export delete'] = """
     type: command
-    short-summary: The operation to delete a export.
+    short-summary: The operation to delete an export.
     examples:
       - name: delete an export for a ManagementGroup scope
         text: |-
