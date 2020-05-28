@@ -1521,7 +1521,7 @@ def aks_scale(cmd,  # pylint: disable=unused-argument
     for agent_profile in instance.agent_pool_profiles:
         if agent_profile.name == nodepool_name or (nodepool_name == "" and len(instance.agent_pool_profiles) == 1):
             if agent_profile.enable_auto_scaling:
-                raise CLIError("Cannot scale cluster autoscaler enabled agent pool.")
+                raise CLIError("Cannot scale cluster autoscaler enabled node pool.")
 
             agent_profile.count = int(node_count)  # pylint: disable=no-member
             # null out the SP and AAD profile because otherwise validation complains
@@ -2132,7 +2132,7 @@ def aks_agentpool_scale(cmd,    # pylint: disable=unused-argument
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
     new_node_count = int(node_count)
     if instance.enable_auto_scaling:
-        raise CLIError("Cannot scale cluster autoscaler enabled agent pool.")
+        raise CLIError("Cannot scale cluster autoscaler enabled node pool.")
     if new_node_count == instance.count:
         raise CLIError("The new node count is the same as the current node count.")
     instance.count = new_node_count  # pylint: disable=no-member
