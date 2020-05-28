@@ -80,7 +80,7 @@ class CostManagementExportTest(ScenarioTest):
             'resourceId': storage_account_id,
             'rootFolderPath': None
         })
-        self.assertEqual(data['typePropertiesDefinitionType'], 'Usage')    # default is Usage
+        self.assertEqual(data['typePropertiesDefinitionType'], 'Usage')
         self.assertIsNone(data['recurrence'])
         self.assertIsNone(data['recurrencePeriod'])
         self.assertEqual(data['status'], 'Inactive')
@@ -165,3 +165,57 @@ class CostManagementExportTest(ScenarioTest):
         self.assertEqual(data['status'], 'Active')
         self.assertIsNone(data['timePeriod'])
         self.assertEqual(data['timeframe'], timeframe)
+
+    @ResourceGroupPreparer(name_prefix='test_update_schedule')
+    @StorageAccountPreparer(name_prefix='test_update_schedule'.replace('_', ''))
+    def test_update_with_timeperiod_in_subscription_scope(self, resource_group, storage_account):
+        self.kwargs.update({
+            'scope': '/subscriptions/{}'.format(self.get_subscription_id()),
+        })
+
+        export_name = 'ep-03'
+        storage_container = 'export'
+        timeframe = 'TheLastMonth'
+        storage_account_id = '/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Storage/storageAccounts/{account_name}'.format(
+            sub=self.get_subscription_id(),
+            rg=resource_group,
+            account_name=storage_account
+        )
+
+        self.kwargs.update({
+            'export_name': export_name,
+            'storage_account_id': storage_account_id,
+            'storage_container': storage_container,
+            'timeframe': timeframe,
+            'time_period': 'from="2020-08-01T00:00:00Z" to="2020-10-31T00:00:00Z"'
+        })
+
+        creation_data = self.cmd('costmanagement export create '
+                                 '--scope {scope} '
+                                 '--name {export_name} '
+                                 '--storage-account-id {storage_account_id} '
+                                 '--storage-container {storage_container} '
+                                 '--timeframe {timeframe} ').get_output_in_json()
+        self._test_export_create_in_subscription_scope_assertions(creation_data,
+                                                                  export_name,
+                                                                  storage_container,
+                                                                  storage_account_id,
+                                                                  timeframe)
+
+        timeframe = 'TheLastBillingMonth'
+        self.kwargs.update({
+            'timeframe': timeframe,
+        })
+
+        update_data = self.cmd('costmanagement export update '
+                               '--scope {scope} '
+                               '--name {export_name} '
+                               '--recurrence-period {time_period} '
+                               '--timeframe {timeframe} ').get_output_in_json()
+        self.assertEqual(update_data['timeframe'], timeframe)
+        self.assertDictEqual(update_data['recurrencePeriod'], {
+            "fromProperty": "2020-08-01T00:00:00+00:00",
+            "to": "2020-10-31T00:00:00+00:00"
+        })
+
+        self.cmd('costmanagement export delete --scope {scope} --name {export_name}')
