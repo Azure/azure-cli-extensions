@@ -520,6 +520,9 @@ helps['aks nodepool add'] = """
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+        - name: --max-surge
+          type: string
+          short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
 """
 
 helps['aks nodepool scale'] = """
@@ -541,6 +544,9 @@ helps['aks nodepool upgrade'] = """
         - name: --node-image-only
           type: bool
           short-summary: Only upgrade agent pool's node image.
+        - name: --max-surge
+          type: string
+          short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
 """
 
 helps['aks nodepool update'] = """
@@ -562,6 +568,9 @@ helps['aks nodepool update'] = """
         - name: --max-count
           type: int
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100]
+        - name: --max-surge
+          type: string
+          short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
         - name: --mode
           type: string
           short-summary: The mode for a node pool which defines a node pool's primary function. If set as "System", AKS prefers system pods scheduling to node pools with mode `System`. Learn more at https://aka.ms/aks/nodepool/mode.
