@@ -12,7 +12,7 @@ from azure_devtools.scenario_tests import AllowLargeResponse
 
 class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AllowLargeResponse()
-    def test_get_version(self, resource_group, resource_group_location):
+    def test_get_version(self):
         versions_cmd = 'aks get-versions -l westus2'
         self.cmd(versions_cmd, checks=[
             self.check('type', 'Microsoft.ContainerService/locations/orchestrators'),
