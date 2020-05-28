@@ -28,10 +28,10 @@ class DatabricksClientScenarioTest(ScenarioTest):
         self.cmd('az databricks workspace create '
                  '--resource-group {rg} '
                  '--name {workspace_name} '
-                 '--location "westus" '
-                 '--sku standard',
+                 '--location "eastus2euap" '
+                 '--sku premium',
                  checks=[self.check('name', '{workspace_name}'),
-                         self.check('sku.name', 'standard')])
+                         self.check('sku.name', 'premium')])
 
         managed_resource_group_id = '/subscriptions/{}/resourceGroups/{}'.format(subscription_id, self.kwargs.get('managed_resource_group', ''))
         self.cmd('az databricks workspace create '
@@ -46,8 +46,10 @@ class DatabricksClientScenarioTest(ScenarioTest):
         self.cmd('az databricks workspace update '
                  '--resource-group {rg} '
                  '--name {workspace_name} '
-                 '--tags type=test',
-                 checks=[self.check('tags.type', 'test')])
+                 '--tags type=test '
+                 '--assign-identity',
+                 checks=[self.check('tags.type', 'test'),
+                         self.exists('storageAccountIdentity.principalId')])
 
         self.cmd('az databricks workspace show '
                  '--resource-group {rg} '
