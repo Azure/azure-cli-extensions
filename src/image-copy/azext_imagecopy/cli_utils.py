@@ -38,8 +38,7 @@ def run_cli_command(cmd, return_as_json=False):
                 return json_output
 
             raise CLIError("Command returned an unexpected empty string.")
-        else:
-            return cmd_output
+        return cmd_output
     except CalledProcessError as ex:
         logger.error('command failed: %s', cmd)
         logger.error('output: %s', ex.output)

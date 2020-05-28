@@ -85,8 +85,11 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
             # Copy OS disk command
             disk_sku, location, os_type, hyperV_generation = _fetch_disk_info(resource_group_name, target_disk_name)
-            copy_disk_command = 'az disk create -g {g} -n {n} --source {s} --sku {sku} --location {loc} --os-type {os_type} --hyper-v-generation {hyperV} --query id -o tsv' \
-                                .format(g=resource_group_name, n=copy_disk_name, s=target_disk_name, sku=disk_sku, loc=location, os_type=os_type, hyperV=hyperV_generation)
+            copy_disk_command = 'az disk create -g {g} -n {n} --source {s} --sku {sku} --location {loc} --os-type {os_type} --query id -o tsv' \
+                                .format(g=resource_group_name, n=copy_disk_name, s=target_disk_name, sku=disk_sku, loc=location, os_type=os_type)
+            # Only add hyperV variable when available
+            if hyperV_generation:
+                copy_disk_command += ' --hyper-v-generation {hyperV}'.format(hyperV=hyperV_generation)
             # Validate create vm create command to validate parameters before runnning copy disk command
             validate_create_vm_command = create_repair_vm_command + ' --validate'
 
