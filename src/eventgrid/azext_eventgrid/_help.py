@@ -22,8 +22,9 @@ type: command
 short-summary: Create a domain.
 parameters:
   - name: --inbound-ip-rules
-    short-summary: List of inbound ip rules specifying IP Address in CIDR notation e.g., 10.0.0.0/8 along with corresponding Action to perform based on the match or no match of the IpMask. Possible values include - Allow.
-    long-summary: List of inbound ip rules specifying IP Address in CIDR notation e.g., 10.0.0.0/8 along with corresponding Action to perform based on the match or no match of the IpMask. Possible values include - Allow.
+    short-summary: List of inbound IP rules.
+    long-summary: |
+        List of inbound IP rules specifying IP Address in CIDR notation e.g., 10.0.0.0/8 along with corresponding Action to perform based on the match or no match of the IpMask. Possible values include - Allow.
 examples:
   - name: Create a new domain.
     text: az eventgrid domain create -g rg1 --name domain1 -l westus2
@@ -32,7 +33,7 @@ examples:
   - name: Create a new domain that accepts events published in CloudEvents V1.0 schema and maps a property mytopicfield to the topic name.
     text: az eventgrid domain create -g rg1 --name domain1 -l westus2 --input-schema cloudeventschemav1_0 --input-mapping-fields topic=mytopicfield
   - name: Create a new domain which allows specific inbound ip rules.
-    text: az eventgrid domain create -g rg1 --name domain1 -l westus2 --public-network-access disabled --inbound-ip-rules 10.0.0.0/8 Allow --inbound-ip-rules 10.2.0.0/8 Allow
+    text: az eventgrid domain create -g rg1 --name domain1 -l westus2 --public-network-access enabled --inbound-ip-rules 10.0.0.0/8 Allow --inbound-ip-rules 10.2.0.0/8 Allow --sku basic
 
 """
 
@@ -73,6 +74,22 @@ examples:
     text: az eventgrid domain private-endpoint-connection list -g rg1 -n domain1
 """
 
+helps['eventgrid domain private-endpoint-connection approve'] = """
+type: command
+short-summary: Approve a private endpoint connection request for a domain.
+examples:
+  - name: Approve a private endpoint connection for a domain.
+    text: az eventgrid domain private-endpoint-connection approve -g rg1 --domain-name domain1 -n domain1-PrivateEndpoint.6d90cf76-a022-452c-9994-6dac62a50c99 --description "Sample approval description"
+"""
+
+helps['eventgrid domain private-endpoint-connection reject'] = """
+type: command
+short-summary: Reject a private endpoint connection request for a domain.
+examples:
+  - name: Reject a private endpoint connection for a domain.
+    text: az eventgrid domain private-endpoint-connection reject -g rg1 --domain-name domain1 -n domain1-PrivateEndpoint.6d90cf76-a022-452c-9994-6dac62a50c99 --description "Sample rejection description"
+"""
+
 helps['eventgrid domain private-link-resource'] = """
 type: group
 short-summary: Manage private link resource of a domain.
@@ -83,7 +100,7 @@ type: command
 short-summary: Display the properties of a private link resource for a domain.
 examples:
   - name: Show a private endpoint connection for a domain.
-    text: az eventgrid domain private-link-resource show -g rg1 --domain-name domain1 -n linkName1
+    text: az eventgrid domain private-link-resource show -g rg1 --domain-name domain1 -n domain
 """
 
 helps['eventgrid domain private-link-resource list'] = """
@@ -91,7 +108,7 @@ type: command
 short-summary: List the properties of all the private link resources for a domain.
 examples:
   - name: Show a private endpoint connection for a domain.
-    text: az eventgrid domain private-link-resource list -g rg1 -n domain1
+    text: az eventgrid domain private-link-resource list -g rg1 --domain-name domain1
 """
 
 
@@ -184,11 +201,12 @@ type: command
 short-summary: Update a domain.
 parameters:
   - name: --inbound-ip-rules
-    short-summary: List of inbound ip rules specifying IP Address in CIDR notation e.g., 10.0.0.0/8 along with corresponding Action to perform based on the match or no match of the IpMask. Possible values include - Allow.
-    long-summary: List of inbound ip rules specifying IP Address in CIDR notation e.g., 10.0.0.0/8 along with corresponding Action to perform based on the match or no match of the IpMask. Possible values include - Allow.
+    short-summary: List of inbound IP rules.
+    long-summary: |
+        List of inbound IP rules specifying IP Address in CIDR notation e.g., 10.0.0.0/8 along with corresponding Action to perform based on the match or no match of the IpMask. Possible values include - Allow.
 examples:
   - name: Update the properties of an existing domain.
-    text: az eventgrid domain update -g rg1 --name domain1 --sku Basic --identity noidentity --public-network-access Disabled --inbound-ip-rules 10.0.0.0/8 Allow --inbound-ip-rules 10.2.0.0/8 Allow --tags Dept=IT
+    text: az eventgrid domain update -g rg1 --name domain1 --sku Basic --identity noidentity --public-network-access enabled --inbound-ip-rules 10.0.0.0/8 Allow --inbound-ip-rules 10.2.0.0/8 Allow --tags Dept=IT --sku basic
 """
 
 helps['eventgrid partner'] = """
@@ -208,7 +226,7 @@ examples:
   - name: Create a new partner registration with basic information.
     text: az eventgrid partner registration create -g rg1 --name partnerRegistrationName1 --partner-name Contoso --resource-type-name Accounts --authorized-subscription-ids 533ad9de-25db-46e2-b94a-d00c37cf022b 05aa2228-7d34-4635-922d-2b582c422445
   - name: Create a new partner registration with partner information.
-    text: az eventgrid partner registration create -g rg1 --name partnerRegistrationName1 --partner-name Contoso --resource-type-name Accounts --authorized-subscription-ids 533ad9de-25db-46e2-b94a-d00c37cf022b 05aa2228-7d34-4635-922d-2b582c422445 --description ExampleDescription --display-name ExampleDisplayName1 --logo-uri https://www.example.com/logo.png --setup-uri https://www.example.com
+    text: az eventgrid partner registration create -g rg1 --name partnerRegistrationName1 --partner-name Contoso --resource-type-name Accounts --authorized-subscription-ids 533ad9de-25db-46e2-b94a-d00c37cf022b 05aa2228-7d34-4635-922d-2b582c422445 --description ExampleDescription --display-name ExampleDisplayName1 --logo-uri \'https://www.example.com/logo.png\' --setup-uri \'https://www.example.com\' --long-description \'This is sample description}\' --customer-service-number \'+1 800 123 4567' --customer-service-extension \'125\' --customer-service-uri \'https://www.example.com/customerservice\'
 """
 
 helps['eventgrid partner registration list'] = """
@@ -297,9 +315,31 @@ short-summary: Manage partner event channels.
 helps['eventgrid partner namespace event-channel create'] = """
 type: command
 short-summary: Create an event channel under a partner namespace.
+parameters:
+  - name: --publisher-filter
+    short-summary: A publisher filter that is used to enable filtering of events based on a specific event property. This set of filters that are specified by the publisher in order to determine which events to be received by the subscriber.
+    long-summary: |
+        Usage:                     --publisher-filter KEY[.INNERKEY] FILTEROPERATOR VALUE [VALUE ...]
+        StringIn:                  --publisher-filter data.Color StringIn Blue Red Orange Yellow
+        StringNotIn:               --publisher-filter data.Color StringNotIn Blue Red Orange Yellow
+        StringContains:            --publisher-filter subject StringContains Blue Red
+        StringBeginsWith:          --publisher-filter subject StringBeginsWith Blue Red
+        StringEndsWith:            --publisher-filter subject StringEndsWith img png jpg
+        NumberIn:                  --publisher-filter data.property1 NumberIn 5 10 20
+        NumberNotIn:               --publisher-filter data.property2 NumberNotIn 100 200 300
+        NumberLessThan:            --publisher-filter data.property3 NumberLessThan 100
+        NumberLessThanOrEquals:    --publisher-filter data.property2 NumberLessThanOrEquals 100
+        NumberGreaterThan:         --publisher-filter data.property3 NumberGreaterThan 100
+        NumberGreaterThanOrEquals: --publisher-filter data.property2 NumberGreaterThanOrEquals 100
+        BoolEquals:                --publisher-filter data.property3 BoolEquals true
+        Multiple publisher filters can be specified by using more than one `--publisher-filter` argument.
 examples:
-  - name: Create a specific event-channel.
+  - name: Create a specific event channel.
     text: az eventgrid partner namespace event-channel create -g rg1 --partner-namespace-name partnernamespace1 -n eventChannelName1 --source SourceExample1 --destination-subscription-id 61f7c265-374d-499e-866d-5f4cc302b888 --destination-resource-group rg2 --desination-topic-name topicName1
+  - name: Create a specific event channel with an activation expiration time and partner topic friendly description.
+    text: az eventgrid partner namespace event-channel create -g rg1 --partner-namespace-name partnernamespace1 -n eventChannelName1 --source SourceExample1 --destination-subscription-id 61f7c265-374d-499e-866d-5f4cc302b888 --destination-resource-group rg2 --desination-topic-name topicName1 --activation-expiration-date \'2020-05-20T10:00\' --partner-topic-description \'This topic is created by Costoco corp on user behavior.\'
+  - name: Create a specific event channel with publisher filters.
+    text: az eventgrid partner namespace event-channel create -g rg1 --partner-namespace-name partnernamespace1 -n eventChannelName1 --source SourceExample1 --destination-subscription-id 61f7c265-374d-499e-866d-5f4cc302b888 --destination-resource-group rg2 --desination-topic-name topicName1 --publisher-filter data.key1 NumberIn 2 3 4 100 200 --publisher-filter data.key2 StringIn 2 3 4 100 200
 """
 
 helps['eventgrid partner namespace event-channel list'] = """
@@ -500,8 +540,8 @@ examples:
         az eventgrid system-topic event-subscription create --name es1 \\
             -g rg1 --system-topic-name systemtopic1 \\
             --endpoint https://contoso.azurewebsites.net/api/f1?code=code
-            --azure_active_directory_tenant_id azureactivedirectorytenantid
-            --azure_active_directory_application_id_or_uri azureactivedirectoryapplicationidoruri
+            --azure-active-directory-tenant-id azureactivedirectorytenantid
+            --azure-active-directory-application-id-or-uri azureactivedirectoryapplicationidoruri
   - name: Create a new event subscription for an Event Grid system topic, using Azure Function as destination.
     text: |
         az eventgrid system-topic event-subscription create -n es1 \\
@@ -656,8 +696,8 @@ examples:
         az eventgrid partner topic event-subscription create --name es1 \\
             -g rg1 --partner-topic-name partnertopic1 \\
             --endpoint https://contoso.azurewebsites.net/api/f1?code=code
-            --azure_active_directory_tenant_id azureactivedirectorytenantid
-            --azure_active_directory_application_id_or_uri azureactivedirectoryapplicationidoruri
+            --azure-active-directory-tenant-id azureactivedirectorytenantid
+            --azure-active-directory-application-id-or-uri azureactivedirectoryapplicationidoruri
   - name: Create a new event subscription for an Event Grid partner topic, using Azure Function as destination.
     text: |
         az eventgrid partner topic event-subscription create -n es1 \\
@@ -793,6 +833,8 @@ parameters:
         Example: --deadletter-endpoint /subscriptions/{SubID}/resourceGroups/rg1/providers/Microsoft.Storage/storageAccounts/sa1/blobServices/default/containers/containerName
   - name: --endpoint-type
     short-summary: The type of the destination endpoint.
+  - name: --delivery-identity-endpoint-type
+    short-summary: The type of the destination endpoint with resource identity.
 examples:
   - name: Create a new event subscription for an Event Grid topic, using default filters.
     text: |
@@ -880,13 +922,19 @@ examples:
         az eventgrid event-subscription create --name es1 \\
             --source-resource-id /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.EventGrid/topics/topic1 \\
             --endpoint https://contoso.azurewebsites.net/api/f1?code=code
-            --azure_active_directory_tenant_id azureactivedirectorytenantid
-            --azure_active_directory_application_id_or_uri azureactivedirectoryapplicationidoruri
+            --azure-active-directory-tenant-id azureactivedirectorytenantid
+            --azure-active-directory-application-id-or-uri azureactivedirectoryapplicationidoruri
   - name: Create a new event subscription for an Event Grid topic, using Azure Function as destination.
     text: |
         az eventgrid event-subscription create --name es1 \\
             --source-resource-id /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.EventGrid/topics/topic1 \\
             --endpoint /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.Web/sites/{functionappname}/functions/{functionname} --endpoint-type azurefunction
+
+  - name: Create a new event subscription for an Event Grid topic, using Eventhub with systemassigned MSI identity as destination and with deadletter with MSI identity
+    text: |
+        az eventgrid event-subscription create --source-resource-id /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.EventGrid/topics/topic1 \\
+            --delivery-identity-endpoint-type eventhub --delivery-identity systemassigned --delivery-identity-endpoint /subscriptions/{SubId2|}/resourceGroups/{RG2}/providers/Microsoft.eventhub/namespaces/{EventHubNamespace}/eventhubs/{EventhubName} \\
+            --deadletter-identity-endpoint /subscriptions/{SubID}/resourceGroups/TestRG/providers/Microsoft.Storage/storageAccounts/s2/blobServices/default/containers/blobcontainer1 --deadletter-identity systemassigned -n {EventSubscriptionName}
 
 """
 
@@ -1049,6 +1097,8 @@ parameters:
         For EventGrid domain topic: --source-resource-id /subscriptions/{SubID}/resourceGroups/rg1/providers/Microsoft.EventGrid/domains/d1/topics/t1
   - name: --endpoint-type
     short-summary: The type of the destination endpoint.
+  - name: --delivery-identity-endpoint-type
+    short-summary: The type of the destination endpoint with resource identity.
   - name: --advanced-filter
     short-summary: An advanced filter enables filtering of events based on a specific event property.
     long-summary: |
@@ -1126,8 +1176,9 @@ type: command
 short-summary: Create a topic.
 parameters:
   - name: --inbound-ip-rules
-    short-summary: List of inbound ip rules specifying IP Address in CIDR notation e.g., 10.0.0.0/8 along with corresponding Action to perform based on the match or no match of the IpMask. Possible values include - Allow.
-    long-summary: List of inbound ip rules specifying IP Address in CIDR notation e.g., 10.0.0.0/8 along with corresponding Action to perform based on the match or no match of the IpMask. Possible values include - Allow.
+    short-summary: List of inbound IP rules.
+    long-summary: |
+        List of inbound IP rules specifying IP Address in CIDR notation e.g., 10.0.0.0/8 along with corresponding Action to perform based on the match or no match of the IpMask. Possible values include - Allow.
 examples:
   - name: Create a new topic.
     text: az eventgrid topic create -g rg1 --name topic1 -l westus2
@@ -1136,7 +1187,7 @@ examples:
   - name: Create a new topic that accepts events published in CloudEvents V1.0 schema.
     text: az eventgrid topic create -g rg1 --name topic1 -l westus2 --input-schema cloudeventschemav1_0
   - name: Create a new topic which allows specific inbound ip rules with Basic Sku and system assigned identity
-    text: az eventgrid topic create -g rg1 --name topic1 -l westus2 --public-network-access Disabled --inbound-ip-rules 10.0.0.0/8 Allow --inbound-ip-rules 10.2.0.0/8 Allow --sku Basic --identity systemassigned
+    text: az eventgrid topic create -g rg1 --name topic1 -l westus2 --public-network-access enabled --inbound-ip-rules 10.0.0.0/8 Allow --inbound-ip-rules 10.2.0.0/8 Allow --sku Basic --identity systemassigned
 """
 
 helps['eventgrid topic delete'] = """
@@ -1149,7 +1200,7 @@ examples:
 
 helps['eventgrid topic private-endpoint-connection'] = """
 type: group
-short-summary: Manage private endpoint connection resources of a topic.
+short-summary: Manage private endpoint connections of a topic.
 """
 
 
@@ -1173,8 +1224,24 @@ helps['eventgrid topic private-endpoint-connection list'] = """
 type: command
 short-summary: List the properties of all the private endpoint connections for a topic.
 examples:
-  - name: Show a private endpoint connection for a topic.
-    text: az eventgrid topic private-endpoint-connection list -g rg1 -n topic1
+  - name: List private endpoint connections for a topic.
+    text: az eventgrid topic private-endpoint-connection list -g rg1 --topic-name topic1
+"""
+
+helps['eventgrid topic private-endpoint-connection approve'] = """
+type: command
+short-summary: Approve a private endpoint connection request for a topic.
+examples:
+  - name: Approve a private endpoint connection for a topic.
+    text: az eventgrid topic private-endpoint-connection approve -g rg1 --topic-name topic1 -n topic1-PrivateEndpoint.6d90cf76-a022-452c-9994-6dac62a50c99 --description "Sample approval description"
+"""
+
+helps['eventgrid topic private-endpoint-connection reject'] = """
+type: command
+short-summary: Reject a private endpoint connection request for a topic.
+examples:
+  - name: Reject a private endpoint connection for a topic.
+    text: az eventgrid topic private-endpoint-connection reject -g rg1 --topic-name topic1 -n topic1-PrivateEndpoint.6d90cf76-a022-452c-9994-6dac62a50c99 --description "Sample rejection description"
 """
 
 helps['eventgrid topic private-link-resource'] = """
@@ -1187,7 +1254,7 @@ type: command
 short-summary: Display the properties of a private link resource for a topic.
 examples:
   - name: Show a private endpoint connection for a topic.
-    text: az eventgrid topic private-link-resource show -g rg1 --topic-name topic1 -n linkName1
+    text: az eventgrid topic private-link-resource show -g rg1 --topic-name topic1 -n topic
 """
 
 helps['eventgrid topic private-link-resource list'] = """
@@ -1195,7 +1262,7 @@ type: command
 short-summary: List the properties of all the private link resources for a topic.
 examples:
   - name: Show a private endpoint connection for a topic.
-    text: az eventgrid topic private-link-resource list -g rg1 -n topic1
+    text: az eventgrid topic private-link-resource list -g rg1 --topic-name topic1
 """
 
 helps['eventgrid topic key'] = """
@@ -1246,11 +1313,11 @@ type: command
 short-summary: Update a topic.
 parameters:
   - name: --inbound-ip-rules
-    short-summary: List of inbound ip rules specifying IP Address in CIDR notation e.g., 10.0.0.0/8 along with corresponding Action to perform based on the match or no match of the IpMask. Possible values include - Allow.
-    long-summary: List of inbound ip rules specifying IP Address in CIDR notation e.g., 10.0.0.0/8 along with corresponding Action to perform based on the match or no match of the IpMask. Possible values include - Allow.
+    short-summary: List of inbound IP rules specifying IP Address in CIDR notation e.g., 10.0.0.0/8 along with corresponding Action to perform based on the match or no match of the IpMask. Possible values include - Allow.
+    long-summary: List of inbound IP rules specifying IP Address in CIDR notation e.g., 10.0.0.0/8 along with corresponding Action to perform based on the match or no match of the IpMask. Possible values include - Allow.
 examples:
-  - name: Update the properties of an existing topic.
-    text: az eventgrid topic update -g rg1 --name topic1 --sku Premium --identity systemassigned --public-network-access Disabled --inbound-ip-rules 10.0.0.0/8 Allow --inbound-ip-rules 10.2.0.0/8 Allow --tags Dept=IT
+  - name: Update the properties of an existing topic with new sku, identity and public network access information.
+    text: az eventgrid topic update -g rg1 --name topic1 --sku Premium --identity systemassigned --public-network-access enabled --inbound-ip-rules 10.0.0.0/8 Allow --inbound-ip-rules 10.2.0.0/8 Allow --tags Dept=IT --sku basic
 """
 
 helps['eventgrid topic-type'] = """

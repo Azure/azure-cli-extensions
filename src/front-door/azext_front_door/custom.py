@@ -500,14 +500,17 @@ def update_fd_load_balancing_settings(instance, sample_size=None, successful_sam
 
 def routing_rule_usage_helper(route_type, backend_pool=None, custom_forwarding_path=None,
                               forwarding_protocol=None, dynamic_compression=None,
-                              query_parameter_strip_directive=None, redirect_type=None,
+                              query_parameter_strip_directive=None, query_parameters=None,
+                              cache_duration=None, redirect_type=None,
                               redirect_protocol=None, custom_host=None, custom_path=None,
                               custom_fragment=None, custom_query_string=None):
     forwarding_usage = ('usage error: [--backend-pool BACKEND_POOL] '
                         '[--custom-forwarding-path CUSTOM_FORWARDING_PATH] '
                         '[--forwarding-protocol FORWARDING_PROTOCOL] '
-                        '[--caching {Enabled,Disbaled}]'
-                        '[--query-parameter-strip-directive {StripNone,StripAll}] '
+                        '[--caching {Enabled,Disbaled}] '
+                        '[--query-parameter-strip-directive {StripNone,StripAll,StripOnly,StripAllExcept}] '
+                        '[--query-parameters QUERY_PARAMETERS] '
+                        '[--cache-duration CACHE_DURATION] '
                         '[--dynamic-compression [{Enabled,Disabled}]]')
     redirect_usage = ('usage error: [--redirect-type {Moved,Found,TemporaryRedirect,PermanentRedirect}]'
                       '[--redirect-protocol {HttpOnly,HttpsOnly,MatchRequest}] '
@@ -518,8 +521,8 @@ def routing_rule_usage_helper(route_type, backend_pool=None, custom_forwarding_p
     if 'Forward' in route_type and any([custom_host, custom_path, custom_fragment, custom_query_string]) and getattr(redirect_type, 'is_default', None) and getattr(redirect_protocol, 'is_default', None):
         from knack.util import CLIError
         raise CLIError(forwarding_usage)
-    if 'Redirect' in route_type and any([custom_forwarding_path, forwarding_protocol, backend_pool,
-                                         query_parameter_strip_directive, dynamic_compression]):
+    if 'Redirect' in route_type and any([custom_forwarding_path, forwarding_protocol, backend_pool, query_parameters,
+                                         cache_duration, query_parameter_strip_directive, dynamic_compression]):
         from knack.util import CLIError
         raise CLIError(redirect_usage)
 
@@ -528,14 +531,16 @@ def create_fd_routing_rules(cmd, resource_group_name, front_door_name, item_name
                             backend_pool=None, accepted_protocols=None, patterns_to_match=None,
                             rules_engine=None, custom_forwarding_path=None, forwarding_protocol=None, disabled=None,
                             caching=None, dynamic_compression=None, query_parameter_strip_directive=None,
-                            redirect_type='Moved', redirect_protocol='MatchRequest', custom_host=None, custom_path=None,
+                            query_parameters=None, cache_duration=None, redirect_type='Moved',
+                            redirect_protocol='MatchRequest', custom_host=None, custom_path=None,
                             custom_fragment=None, custom_query_string=None):
     from azext_front_door.vendored_sdks.models import (CacheConfiguration, RoutingRule, SubResource,
                                                        ForwardingConfiguration, RedirectConfiguration)
 
     routing_rule_usage_helper(route_type, backend_pool, custom_forwarding_path,
                               forwarding_protocol, dynamic_compression,
-                              query_parameter_strip_directive, redirect_type,
+                              query_parameter_strip_directive, query_parameters,
+                              cache_duration, redirect_type,
                               redirect_protocol, custom_host, custom_path,
                               custom_fragment, custom_query_string)
 
@@ -553,7 +558,9 @@ def create_fd_routing_rules(cmd, resource_group_name, front_door_name, item_name
                 backend_pool=SubResource(id=backend_pool) if backend_pool else None,
                 cache_configuration=CacheConfiguration(
                     query_parameter_strip_directive=query_parameter_strip_directive,
-                    dynamic_compression=dynamic_compression
+                    query_parameters=query_parameters,
+                    dynamic_compression=dynamic_compression,
+                    cache_duration=cache_duration
                 ) if caching else None
             )
         )
@@ -580,9 +587,10 @@ def create_fd_routing_rules(cmd, resource_group_name, front_door_name, item_name
 def update_fd_routing_rule(parent, instance, item_name, frontend_endpoints=None, accepted_protocols=None,  # pylint: disable=unused-argument
                            patterns_to_match=None, custom_forwarding_path=None, forwarding_protocol=None,
                            backend_pool=None, rules_engine=None, enabled=None, dynamic_compression=None,
-                           caching=None, query_parameter_strip_directive=None, redirect_type=None,
-                           redirect_protocol=None, custom_host=None, custom_path=None,
-                           custom_fragment=None, custom_query_string=None):
+                           caching=None, query_parameter_strip_directive=None, query_parameters=None,
+                           cache_duration=None, redirect_type=None, redirect_protocol=None,
+                           custom_host=None, custom_path=None, custom_fragment=None, custom_query_string=None):
+
     from azext_front_door.vendored_sdks.models import SubResource
     if instance:
         if hasattr(instance.route_configuration, 'forwarding_protocol'):
@@ -598,9 +606,15 @@ def update_fd_routing_rule(parent, instance, item_name, frontend_endpoints=None,
                 c.update_param('forwarding_protocol', forwarding_protocol, False)
                 c.update_param('backend_pool', SubResource(id=backend_pool) if backend_pool else None, False)
             if caching:
+                if instance.route_configuration.cache_configuration is None:
+                    from azext_front_door.vendored_sdks.models import CacheConfiguration
+                    instance.route_configuration.cache_configuration = CacheConfiguration(
+                        query_parameter_strip_directive='StripNone', dynamic_compression='Enabled')
                 with UpdateContext(instance.route_configuration.cache_configuration) as c:
                     c.update_param('dynamic_compression', dynamic_compression, False)
                     c.update_param('query_parameter_strip_directive', query_parameter_strip_directive, False)
+                    c.update_param('query_parameters', query_parameters, True)
+                    c.update_param('cache_duration', cache_duration, False)
             else:
                 if hasattr(instance.route_configuration, 'cache_configuration'):
                     instance.route_configuration.cache_configuration = None
@@ -1131,12 +1145,14 @@ def create_rules_engine_rule(cmd, resource_group_name, front_door_name, rules_en
     client = cf_fd_rules_engines(cmd.cli_ctx, None)
 
     match_conditions = []
+    if match_values is None:
+        match_values = []
     condition = RulesEngineMatchCondition(rules_engine_match_variable=match_variable,
                                           rules_engine_operator=operator,
                                           rules_engine_match_value=match_values,
                                           selector=selector,
                                           negate_condition=negate_condition, transforms=transforms)
-    if condition is not None:
+    if condition is not None and match_variable is not None:
         match_conditions.append(condition)
 
     request_header_actions = []
@@ -1235,6 +1251,8 @@ def add_rules_engine_condition(cmd, resource_group_name, front_door_name, rules_
     for rule in rules_engine.rules:
         if rule.name.upper() == rule_name.upper():
             found_rule = True
+            if match_values is None:
+                match_values = []
             condition = RulesEngineMatchCondition(rules_engine_match_variable=match_variable,
                                                   rules_engine_operator=operator,
                                                   rules_engine_match_value=match_values,
@@ -1288,7 +1306,6 @@ def list_rules_engine_condition(cmd, resource_group_name,
     raise CLIError("rule '{}' not found".format(rule_name))
 
 
-# pylint: disable=unused-argument
 def add_rules_engine_action(cmd, resource_group_name, front_door_name, rules_engine_name, rule_name,
                             action_type, header_action=None, header_name=None, header_value=None,
                             custom_forwarding_path=None, forwarding_protocol=None, backend_pool=None,
@@ -1315,7 +1332,8 @@ def add_rules_engine_action(cmd, resource_group_name, front_door_name, rules_eng
         if action_type.lower() == 'forwardrouteoverride' or 'redirectrouteoverride':
             routing_rule_usage_helper(action_type, backend_pool, custom_forwarding_path,
                                       forwarding_protocol, dynamic_compression,
-                                      query_parameter_strip_directive, redirect_type,
+                                      query_parameter_strip_directive, query_parameters,
+                                      cache_duration, redirect_type,
                                       redirect_protocol, custom_host, custom_path,
                                       custom_fragment, custom_query_string)
             if 'forward' in action_type.lower():
@@ -1326,7 +1344,9 @@ def add_rules_engine_action(cmd, resource_group_name, front_door_name, rules_eng
                         id=backend_pool) if backend_pool else None,
                     cache_configuration=CacheConfiguration(
                         query_parameter_strip_directive=query_parameter_strip_directive,
-                        dynamic_compression=dynamic_compression
+                        query_parameters=query_parameters,
+                        dynamic_compression=dynamic_compression,
+                        cache_duration=cache_duration
                     ) if caching else None
                 )
             elif 'redirect' in action_type.lower():
