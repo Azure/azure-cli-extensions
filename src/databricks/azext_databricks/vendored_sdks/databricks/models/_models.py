@@ -72,9 +72,9 @@ class Encryption(Model):
 
     _attribute_map = {
         'key_source': {'key': 'keySource', 'type': 'str'},
-        'key_name': {'key': 'keyName', 'type': 'str'},
-        'key_version': {'key': 'keyVersion', 'type': 'str'},
-        'key_vault_uri': {'key': 'keyVaultUri', 'type': 'str'},
+        'key_name': {'key': 'KeyName', 'type': 'str'},
+        'key_version': {'key': 'keyversion', 'type': 'str'},
+        'key_vault_uri': {'key': 'keyvaulturi', 'type': 'str'},
     }
 
     def __init__(self, **kwargs):
