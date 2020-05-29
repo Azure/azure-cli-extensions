@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 import unittest
 from azure.cli.core.util import CLIError
-from azure.cli.command_modules.acs import _validators as validators
+import azext_aks_preview._validators as validators
 
 
 class TestValidateIPRanges(unittest.TestCase):
@@ -61,6 +61,110 @@ class TestValidateIPRanges(unittest.TestCase):
         self.assertEqual(str(cm.exception), err)
 
 
+class TestClusterAutoscalerParamsValidators(unittest.TestCase):
+    def test_empty_key_empty_value(self):
+        cluster_autoscaler_profile = ["="]
+        namespace = Namespace(cluster_autoscaler_profile=cluster_autoscaler_profile)
+        err = "Empty key specified for cluster-autoscaler-profile"
+
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_cluster_autoscaler_profile(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_non_empty_key_empty_value(self):
+        cluster_autoscaler_profile = ["scan-interval="]
+        namespace = Namespace(cluster_autoscaler_profile=cluster_autoscaler_profile)
+
+        validators.validate_cluster_autoscaler_profile(namespace)
+
+    def test_two_empty_keys_empty_value(self):
+        cluster_autoscaler_profile = ["=", "="]
+        namespace = Namespace(cluster_autoscaler_profile=cluster_autoscaler_profile)
+        err = "Empty key specified for cluster-autoscaler-profile"
+
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_cluster_autoscaler_profile(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_one_empty_key_in_pair_one_non_empty(self):
+        cluster_autoscaler_profile = ["scan-interval=20s", "="]
+        namespace = Namespace(cluster_autoscaler_profile=cluster_autoscaler_profile)
+        err = "Empty key specified for cluster-autoscaler-profile"
+
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_cluster_autoscaler_profile(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_invalid_key(self):
+        cluster_autoscaler_profile = ["bad-key=val"]
+        namespace = Namespace(cluster_autoscaler_profile=cluster_autoscaler_profile)
+        err = "Invalid key specified for cluster-autoscaler-profile: bad-key"
+
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_cluster_autoscaler_profile(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_valid_parameters(self):
+        cluster_autoscaler_profile = ["scan-interval=20s", "scale-down-delay-after-add=15m"]
+        namespace = Namespace(cluster_autoscaler_profile=cluster_autoscaler_profile)
+
+        validators.validate_cluster_autoscaler_profile(namespace)
+
+
 class Namespace:
-    def __init__(self, api_server_authorized_ip_ranges):
+    def __init__(self, api_server_authorized_ip_ranges=None, cluster_autoscaler_profile=None):
         self.api_server_authorized_ip_ranges = api_server_authorized_ip_ranges
+        self.cluster_autoscaler_profile = cluster_autoscaler_profile
+
+
+class TestVNetSubnetId(unittest.TestCase):
+    def test_invalid_vnet_subnet_id(self):
+        invalid_vnet_subnet_id = "dummy subnet id"
+        namespace = VnetSubnetIdNamespace(invalid_vnet_subnet_id)
+        err = ("--vnet-subnet-id is not a valid Azure resource ID.")
+
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_vnet_subnet_id(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_valid_vnet_subnet_id(self):
+        invalid_vnet_subnet_id = "/subscriptions/testid/resourceGroups/MockedResourceGroup/providers/Microsoft.Network/virtualNetworks/MockedNetworkId/subnets/MockedSubNetId"
+        namespace = VnetSubnetIdNamespace(invalid_vnet_subnet_id)
+        validators.validate_vnet_subnet_id(namespace)
+
+    def test_none_vnet_subnet_id(self):
+        invalid_vnet_subnet_id = None
+        namespace = VnetSubnetIdNamespace(invalid_vnet_subnet_id)
+        validators.validate_vnet_subnet_id(namespace)
+
+    def test_empty_vnet_subnet_id(self):
+        invalid_vnet_subnet_id = ""
+        namespace = VnetSubnetIdNamespace(invalid_vnet_subnet_id)
+        validators.validate_vnet_subnet_id(namespace)
+
+
+class VnetSubnetIdNamespace:
+    def __init__(self, vnet_subnet_id):
+        self.vnet_subnet_id = vnet_subnet_id
+
+
+class MaxSurgeNamespace:
+    def __init__(self, max_surge):
+        self.max_surge = max_surge
+
+
+class TestMaxSurge(unittest.TestCase):
+    def test_valid_cases(self):
+        valid = ["5", "33%", "1", "100%"]
+        for v in valid:
+            validators.validate_max_surge(MaxSurgeNamespace(v))
+
+    def test_throws_on_string(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_max_surge(MaxSurgeNamespace("foobar"))
+        self.assertTrue('int or percentage' in str(cm.exception), msg=str(cm.exception))
+
+    def test_throws_on_negative(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_max_surge(MaxSurgeNamespace("-3"))
+        self.assertTrue('positive' in str(cm.exception), msg=str(cm.exception))

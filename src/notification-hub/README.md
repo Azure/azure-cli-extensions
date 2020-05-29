@@ -28,8 +28,7 @@ az notification-hub create \
     --resource-group groupName \
     --namespace-name spaceName \
     --name hubName \
-    --location "South Central US" \
-    --name "Basic"
+    --location "South Central US"
 ```
 
 ##### Create a Notification Hub authorization rule

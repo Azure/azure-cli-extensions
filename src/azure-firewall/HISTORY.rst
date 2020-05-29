@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.3.1
+++++++
+* `az network firewall network-rule/nat-rule`: Bug fixes.
+
 0.3.0
 ++++++
 * `az network firewall ip-config`: Add management ip config args group.

@@ -147,6 +147,37 @@ helps['spring-cloud app log tail'] = """
     short-summary: Show logs of an app instance, logs will be streamed when setting '-f/--follow'.
 """
 
+helps['spring-cloud app identity'] = """
+    type: group
+    short-summary: Manage an app's managed service identity.
+"""
+
+helps['spring-cloud app identity assign'] = """
+    type: command
+    short-summary: Enable managed service identity on an app.
+    examples:
+    - name: Enable the system assigned identity.
+      text: az spring-cloud app identity assign -n MyApp -s MyCluster -g MyResourceGroup
+    - name: Enable the system assigned identity on an app with the 'Reader' role.
+      text: az spring-cloud app identity assign -n MyApp -s MyCluster -g MyResourceGroup --role Reader --scope /subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxx/providers/Microsoft.KeyVault/vaults/xxxxx
+"""
+
+helps['spring-cloud app identity remove'] = """
+    type: command
+    short-summary: Remove managed service identity from an app.
+    examples:
+    - name: Remove the system assigned identity from an app.
+      text: az spring-cloud app identity remove -n MyApp -s MyCluster -g MyResourceGroup
+"""
+
+helps['spring-cloud app identity show'] = """
+    type: command
+    short-summary: Display app's managed identity info.
+    examples:
+    - name: Display an app's managed identity info.
+      text: az spring-cloud app identity show -n MyApp -s MyCluster -g MyResourceGroup
+"""
+
 helps['spring-cloud app set-deployment'] = """
     type: command
     short-summary: Set production deployment of an app.
@@ -158,9 +189,13 @@ helps['spring-cloud app set-deployment'] = """
 
 helps['spring-cloud app log'] = """
     type: group
-    short-summary: Show logs of an app instance, logs will be streamed when setting '-f/--follow'.
+    short-summary: Commands to tail app instances logs with multiple options. If the app has only one instance, the instance name is optional.
 """
 
+helps['spring-cloud app logs'] = """
+    type: command
+    short-summary: Show logs of an app instance, logs will be streamed when setting '-f/--follow'.
+"""
 
 helps['spring-cloud app deployment'] = """
     type: group
@@ -311,4 +346,74 @@ helps['spring-cloud app binding redis add'] = """
 helps['spring-cloud app binding redis update'] = """
     type: command
     short-summary: Update an Azure Cache for Redis service binding of the app.
+"""
+
+helps['spring-cloud certificate'] = """
+    type: group
+    short-summary: Commands to manage certificates.
+"""
+
+helps['spring-cloud certificate add'] = """
+    type: command
+    short-summary: Add a certificate in Azure Spring Cloud.
+    examples:
+    - name: Import certificate from key vault.
+      text: az spring-cloud certificate add --name MyCertName --vault-uri MyKeyVaultUri --vault-certificate-name MyKeyVaultCertName --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring-cloud certificate show'] = """
+    type: command
+    short-summary: Show a certificate in Azure Spring Cloud.
+"""
+
+helps['spring-cloud certificate list'] = """
+    type: command
+    short-summary: List all certificates in Azure Spring Cloud.
+    examples:
+    - name: List all certificates in spring cloud service.
+      text: az spring-cloud certificate list --service MyCluster --resource-group MyResourceGroup -o table
+"""
+
+helps['spring-cloud certificate remove'] = """
+    type: command
+    short-summary: Remove a certificate in Azure Spring Cloud.
+"""
+
+helps['spring-cloud app custom-domain'] = """
+    type: group
+    short-summary: Commands to manage custom domains.
+"""
+
+helps['spring-cloud app custom-domain bind'] = """
+    type: command
+    short-summary: Bind a custom domain with the app.
+    examples:
+    - name: Bind a custom domain to app.
+      text: az spring-cloud app custom-domain bind --domain-name MyDomainName --certificate MyCertName --app MyAppName --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring-cloud app custom-domain show'] = """
+    type: command
+    short-summary: Show details of a custom domain.
+"""
+
+helps['spring-cloud app custom-domain list'] = """
+    type: command
+    short-summary: List all custom domains of the app.
+    examples:
+    - name: List all custom domains of the app.
+      text: az spring-cloud app custom-domain list --app MyAppName --service MyCluster --resource-group MyResourceGroup -o table
+"""
+
+helps['spring-cloud app custom-domain update'] = """
+    type: command
+    short-summary: Update a custom domain of the app.
+    examples:
+    - name: Bind custom domain with a specified certificate.
+      text: az spring-cloud app custom-domain update --domain-name MyDomainName --certificate MCertName --app MyAppName --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring-cloud app custom-domain unbind'] = """
+    type: command
+    short-summary: Unbind a custom-domain of the app.
 """

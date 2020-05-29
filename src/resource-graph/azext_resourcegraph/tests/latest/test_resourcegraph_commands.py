@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
-from azure.cli.testsdk import ScenarioTest
+from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from azure_devtools.scenario_tests.const import MOCKED_SUBSCRIPTION_ID
 from knack.util import CLIError
 from six import string_types
@@ -85,3 +85,35 @@ class ResourceGraphTests(ScenarioTest):
         self.assertTrue(len(error_response['error']['details'][0]['code']) > 0)
         self.assertTrue(len(error_response['error']['details'][0]['message']) > 0)
         self.assertTrue(len(error_response['error']['details'][1]['additionalProperties']) == 4)
+
+    @ResourceGroupPreparer(location='eastus')
+    def test_shared_query_scenario(self, resource_group):
+        self.kwargs.update({
+            'name': self.create_random_name('clitest', 20),
+            'query': "project id, name, type, location, tags",
+            'description': "AzureCliTest",
+            'rg': resource_group
+        })
+
+        self.cmd('graph shared-query create -g {rg} -n {name} -q "{query}" -d {description} --tags a=b', checks=[
+            self.check('location', 'global'),
+            self.check('name', '{name}'),
+            self.check('description', '{description}'),
+            self.check('query', '{query}')
+        ])
+
+        self.cmd('graph shared-query show -g {rg} -n {name}', checks=[
+            self.check('location', 'global'),
+            self.check('name', '{name}'),
+            self.check('description', '{description}'),
+            self.check('query', '{query}')
+        ])
+
+        self.cmd('graph shared-query list -g {rg}', checks=[
+            self.check('length(@)', 1)
+        ])
+
+        self.cmd('graph shared-query delete -g {rg} -n {name}')
+
+        with self.assertRaises(SystemExit):
+            self.cmd('graph shared-query show -g {rg} -n {name}')
