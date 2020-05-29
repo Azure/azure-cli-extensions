@@ -7,7 +7,7 @@ import os
 import unittest
 
 from azure_devtools.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, KeyVaultPreparer)
 from msrestazure.tools import resource_id
 
 
@@ -17,9 +17,11 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 class DatabricksClientScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_databricks')
-    def test_databricks(self, resource_group):
+    @KeyVaultPreparer(location='eastus2euap')
+    def test_databricks(self, resource_group, key_vault):
         subscription_id = self.get_subscription_id()
         self.kwargs.update({
+            'kv': key_vault,
             'workspace_name': 'my-test-workspace',
             'custom_workspace_name': 'my-custom-workspace',
             'managed_resource_group': 'custom-managed-rg'
@@ -43,13 +45,48 @@ class DatabricksClientScenarioTest(ScenarioTest):
                  checks=[self.check('name', '{custom_workspace_name}'),
                          self.check('managedResourceGroupId', managed_resource_group_id)])
 
+        workspace = self.cmd('az databricks workspace update '
+                             '--resource-group {rg} '
+                             '--name {workspace_name} '
+                             '--tags type=test '
+                             '--assign-identity',
+                             checks=[self.check('tags.type', 'test'),
+                                     self.exists('storageAccountIdentity.principalId')]).get_output_in_json()
+        principalId = workspace['storageAccountIdentity']['principalId']
+
+        self.kwargs.update({'oid': principalId, 'key_name': 'testkey'})
+
+        self.cmd('az keyvault set-policy -n {kv} --object-id {oid} -g {rg} '
+                 '--key-permissions get wrapKey unwrapKey recover')
+
+        self.cmd('az keyvault update -n {kv} -g {rg} --set properties.enableSoftDelete=true')
+
+        keyvault = self.cmd('az keyvault update -n {kv} -g {rg} --set properties.enablePurgeProtection=true').get_output_in_json()
+
+        key = self.cmd('az keyvault key create -n {key_name} -p software --vault-name {kv}').get_output_in_json()
+        key_version = key['key']['kid'].rsplit('/', 1)[1]
+
+        self.kwargs.update({'key_version': key_version,
+                            'key_vault': keyvault['properties']['vaultUri']})
+
         self.cmd('az databricks workspace update '
                  '--resource-group {rg} '
                  '--name {workspace_name} '
-                 '--tags type=test '
-                 '--assign-identity',
-                 checks=[self.check('tags.type', 'test'),
-                         self.exists('storageAccountIdentity.principalId')])
+                 '--key-source Microsoft.KeyVault '
+                 '--key-name {key_name} '
+                 '--key-version {key_version} '
+                 '--key-vault {key_vault}',
+                 checks=[self.check('parameters.encryption.value.keySource', 'Microsoft.Keyvault'),
+                         self.check('parameters.encryption.value.keyName', '{key_name}'),
+                         self.check('parameters.encryption.value.keyVersion', '{key_version}'),
+                         self.check('parameters.encryption.value.keyVaultUri', '{key_vault}')])
+
+        self.cmd('az databricks workspace update '
+                 '--resource-group {rg} '
+                 '--name {workspace_name} '
+                 '--key-source Default',
+                 checks=[self.check('parameters.encryption.value.keySource', 'Default'),
+                         self.not_exists('parameters.encryption.value.keyName')])
 
         self.cmd('az databricks workspace show '
                  '--resource-group {rg} '
