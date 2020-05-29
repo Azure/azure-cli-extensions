@@ -156,6 +156,7 @@ def _fetch_compatible_sku(source_vm):
     sku_list = loads(_call_az_command(list_sku_command).strip('\n'))
 
     if sku_list:
+        logger.info('VM size \'%s\' is available. Using it to create repair VM.\n', sku_list[0])
         return sku_list[0]
 
     return None
