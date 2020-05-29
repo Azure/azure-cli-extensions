@@ -28,4 +28,4 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'costmanagement_export_show')
         g.custom_command('create', 'costmanagement_export_create')
         g.custom_command('update', 'costmanagement_export_update')
-        g.custom_command('delete', 'costmanagement_export_delete')
+        g.custom_command('delete', 'costmanagement_export_delete', confirmation=True)
