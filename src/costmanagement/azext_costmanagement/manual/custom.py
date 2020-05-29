@@ -93,9 +93,6 @@ def costmanagement_export_update(cmd,
 
     export_instance = client.get(scope=scope, export_name=export_name)
 
-    print(type(export_instance))
-    print(export_instance)
-
     if isinstance(definition_dataset_aggregation, str):
         definition_dataset_aggregation = json.loads(definition_dataset_aggregation)
     if isinstance(definition_dataset_filter, str):
@@ -122,9 +119,6 @@ def costmanagement_export_update(cmd,
         c.set_param('aggregation', definition_dataset_aggregation)
         c.set_param('grouping', definition_dataset_grouping)
         c.set_param('filter', definition_dataset_filter)
-
-    print('-' * 100)
-    print(export_instance)
 
     return client.create_or_update(scope=scope,
                                    export_name=export_name,
