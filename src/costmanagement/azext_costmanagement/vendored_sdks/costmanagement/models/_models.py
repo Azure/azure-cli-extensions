@@ -316,11 +316,11 @@ class CommonExportProperties(msrest.serialization.Model):
         'type': {'key': 'definition.type', 'type': 'str'},
         'timeframe': {'key': 'definition.timeframe', 'type': 'str'},
         'time_period': {'key': 'definition.timePeriod', 'type': 'QueryTimePeriod'},
-        'granularity': {'key': 'definition.dataset.granularity', 'type': 'str'},
-        'configuration': {'key': 'definition.dataset.configuration', 'type': 'QueryDatasetConfiguration'},
-        'aggregation': {'key': 'definition.dataset.aggregation', 'type': '{QueryAggregation}'},
-        'grouping': {'key': 'definition.dataset.grouping', 'type': '[QueryGrouping]'},
-        'filter': {'key': 'definition.dataset.filter', 'type': 'QueryFilter'},
+        'granularity': {'key': 'definition.dataSet.granularity', 'type': 'str'},
+        'configuration': {'key': 'definition.dataSet.configuration', 'type': 'QueryDatasetConfiguration'},
+        'aggregation': {'key': 'definition.dataSet.aggregation', 'type': '{QueryAggregation}'},
+        'grouping': {'key': 'definition.dataSet.grouping', 'type': '[QueryGrouping]'},
+        'filter': {'key': 'definition.dataSet.filter', 'type': 'QueryFilter'},
         'destination': {'key': 'deliveryInfo.destination', 'type': 'ExportDeliveryDestination'},
     }
 
@@ -478,15 +478,15 @@ class ErrorDetails(msrest.serialization.Model):
 
 
 class ErrorResponse(msrest.serialization.Model):
-    """Error response indicates that the service is not able to process the incoming request. The reason is provided in the error message. 
+    """Error response indicates that the service is not able to process the incoming request. The reason is provided in the error message.
 
-Some Error responses: 
+Some Error responses:
 
 
-* 
-  429 TooManyRequests - Request is throttled. Retry after waiting for the time specified in the "x-ms-ratelimit-microsoft.consumption-retry-after" header. 
+*
+  429 TooManyRequests - Request is throttled. Retry after waiting for the time specified in the "x-ms-ratelimit-microsoft.consumption-retry-after" header.
 
-* 
+*
   503 ServiceUnavailable - Service is temporarily unavailable. Retry after waiting for the time specified in the "Retry-After" header.
 
     :param error: The details of the error.
@@ -615,11 +615,11 @@ class Export(ProxyResource):
         'type_properties_definition_type': {'key': 'properties.definition.type', 'type': 'str'},
         'timeframe': {'key': 'properties.definition.timeframe', 'type': 'str'},
         'time_period': {'key': 'properties.definition.timePeriod', 'type': 'QueryTimePeriod'},
-        'granularity': {'key': 'properties.definition.dataset.granularity', 'type': 'str'},
-        'configuration': {'key': 'properties.definition.dataset.configuration', 'type': 'QueryDatasetConfiguration'},
-        'aggregation': {'key': 'properties.definition.dataset.aggregation', 'type': '{QueryAggregation}'},
-        'grouping': {'key': 'properties.definition.dataset.grouping', 'type': '[QueryGrouping]'},
-        'filter': {'key': 'properties.definition.dataset.filter', 'type': 'QueryFilter'},
+        'granularity': {'key': 'properties.definition.dataSet.granularity', 'type': 'str'},
+        'configuration': {'key': 'properties.definition.dataSet.configuration', 'type': 'QueryDatasetConfiguration'},
+        'aggregation': {'key': 'properties.definition.dataSet.aggregation', 'type': '{QueryAggregation}'},
+        'grouping': {'key': 'properties.definition.dataSet.grouping', 'type': '[QueryGrouping]'},
+        'filter': {'key': 'properties.definition.dataSet.filter', 'type': 'QueryFilter'},
         'destination': {'key': 'properties.deliveryInfo.destination', 'type': 'ExportDeliveryDestination'},
         'status': {'key': 'properties.schedule.status', 'type': 'str'},
         'recurrence': {'key': 'properties.schedule.recurrence', 'type': 'str'},
@@ -862,11 +862,11 @@ class ExportProperties(CommonExportProperties):
         'type': {'key': 'definition.type', 'type': 'str'},
         'timeframe': {'key': 'definition.timeframe', 'type': 'str'},
         'time_period': {'key': 'definition.timePeriod', 'type': 'QueryTimePeriod'},
-        'granularity': {'key': 'definition.dataset.granularity', 'type': 'str'},
-        'configuration': {'key': 'definition.dataset.configuration', 'type': 'QueryDatasetConfiguration'},
-        'aggregation': {'key': 'definition.dataset.aggregation', 'type': '{QueryAggregation}'},
-        'grouping': {'key': 'definition.dataset.grouping', 'type': '[QueryGrouping]'},
-        'filter': {'key': 'definition.dataset.filter', 'type': 'QueryFilter'},
+        'granularity': {'key': 'definition.dataSet.granularity', 'type': 'str'},
+        'configuration': {'key': 'definition.dataSet.configuration', 'type': 'QueryDatasetConfiguration'},
+        'aggregation': {'key': 'definition.dataSet.aggregation', 'type': '{QueryAggregation}'},
+        'grouping': {'key': 'definition.dataSet.grouping', 'type': '[QueryGrouping]'},
+        'filter': {'key': 'definition.dataSet.filter', 'type': 'QueryFilter'},
         'destination': {'key': 'deliveryInfo.destination', 'type': 'ExportDeliveryDestination'},
         'status': {'key': 'schedule.status', 'type': 'str'},
         'recurrence': {'key': 'schedule.recurrence', 'type': 'str'},
@@ -1289,11 +1289,11 @@ class QueryDefinition(msrest.serialization.Model):
         'type': {'key': 'type', 'type': 'str'},
         'timeframe': {'key': 'timeframe', 'type': 'str'},
         'time_period': {'key': 'timePeriod', 'type': 'QueryTimePeriod'},
-        'granularity': {'key': 'dataset.granularity', 'type': 'str'},
-        'configuration': {'key': 'dataset.configuration', 'type': 'QueryDatasetConfiguration'},
-        'aggregation': {'key': 'dataset.aggregation', 'type': '{QueryAggregation}'},
-        'grouping': {'key': 'dataset.grouping', 'type': '[QueryGrouping]'},
-        'filter': {'key': 'dataset.filter', 'type': 'QueryFilter'},
+        'granularity': {'key': 'dataSet.granularity', 'type': 'str'},
+        'configuration': {'key': 'dataSet.configuration', 'type': 'QueryDatasetConfiguration'},
+        'aggregation': {'key': 'dataSet.aggregation', 'type': '{QueryAggregation}'},
+        'grouping': {'key': 'dataSet.grouping', 'type': '[QueryGrouping]'},
+        'filter': {'key': 'dataSet.filter', 'type': 'QueryFilter'},
     }
 
     granularity = "Daily"

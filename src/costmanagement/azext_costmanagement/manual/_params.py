@@ -98,12 +98,6 @@ def load_arguments(self, _):
                    help='Has configuration information for the data in the export. '
                         'The configuration will be ignored if aggregation and grouping are provided. '
                         'Expect value: columns=xx.')
-        c.argument('definition_dataset_aggregation',
-                   arg_type=CLIArgumentType(options_list=['--dataset-aggregation'],
-                                            help='Dictionary of aggregation expression to use in the query. '
-                                                 'The key of each item in the dictionary is the alias for the '
-                                                 'aggregated column. Query can have up to 2 aggregation clauses. '
-                                                 'Expected value: json-string/@json-file.'))
         c.argument('definition_dataset_grouping',
                    action=AddDatasetGrouping,
                    options_list='--dataset-grouping',
@@ -111,11 +105,6 @@ def load_arguments(self, _):
                    help='Array of group by expression to use in the query. '
                         'Query can have up to 2 group by clauses. '
                         'Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: type, name.')
-        c.argument('definition_dataset_filter',
-                   options_list='--dataset-filter',
-                   arg_type=CLIArgumentType(options_list=['--definition-dataset-filter'],
-                                            help='Has filter expression to use in the query. '
-                                                 'Expected value: json-string/@json-file.'))
 
     with self.argument_context('costmanagement export', arg_group='Delivery Destination Info') as c:
         c.argument('delivery_storage_account_id',
