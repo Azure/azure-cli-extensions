@@ -16,7 +16,7 @@ short-summary: Manage and operate Synapse Workspace, Spark Pool, SQL Pool.
 
 helps['synapse workspace'] = """
 type: group
-short-summary: Manage Synapse Workspace.
+short-summary: Manage Synapse workspaces.
 """
 
 helps['synapse workspace create'] = """
@@ -26,13 +26,18 @@ examples:
   - name: Create a Synapse workspace
     text: |-
         az synapse workspace create --name fromcli4 --resource-group rg \\
-          --account-url https://testadlsgen2.dfs.core.windows.net --file-system testfilesystem \\
+          --storage-account testadlsgen2 --file-system testfilesystem \\
+          --sql-admin-login-user cliuser1 --sql-admin-login-password Password123! --location "East US"
+  - name: Create a Synapse workspace with storage resource id
+    text: |-
+        az synapse workspace create --name fromcli4 --resource-group rg \\
+          --storage-account /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.Storage/storageAccounts/testadlsgen2 --file-system testfilesystem \\
           --sql-admin-login-user cliuser1 --sql-admin-login-password Password123! --location "East US"
 """
 
 helps['synapse workspace list'] = """
 type: command
-short-summary: List all Synapse workspaces under a subscription or under a specific resource group.
+short-summary: List all Synapse workspaces.
 examples:
   - name: List all Synapse workspaces under a subscription
     text: |-
@@ -44,9 +49,9 @@ examples:
 
 helps['synapse workspace show'] = """
 type: command
-short-summary: Get a Synapse workspaces with workspace name.
+short-summary: Get a Synapse workspace.
 examples:
-  - name: Get a Synapse workspaces with workspace name.
+  - name: Get a Synapse workspace.
     text: |-
         az synapse workspace show --name testsynapseworkspace --resource-group rg
 """
@@ -63,77 +68,86 @@ examples:
 
 helps['synapse workspace delete'] = """
 type: command
-short-summary: Delete a Synapse workspaces with workspace name.
+short-summary: Delete a Synapse workspace.
 examples:
-  - name: Delete a Synapse workspaces with workspace name.
+  - name: Delete a Synapse workspace.
     text: |-
         az synapse workspace delete --name testsynapseworkspace --resource-group rg
 """
 
+helps['synapse workspace check-name'] = """
+type: command
+short-summary: Check if a Synapse workspace name is available or not.
+examples:
+  - name: Check if a Synapse workspace name is available or not.
+    text: |-
+        az synapse workspace check-name --name testsynapseworkspace
+"""
+
 helps['synapse workspace wait'] = """
 type: command
-short-summary: Place the CLI in a waiting state a condition of a workspace is met.
+short-summary: Place the CLI in a waiting state until a condition of the workspace is met.
 """
 
 helps['synapse spark'] = """
 type: group
-short-summary: Manage Spark pool and submit Spark Batch, Session, Statement job.
+short-summary: Manage Spark pools and Spark jobs.
 """
 
 helps['synapse spark pool'] = """
 type: group
-short-summary: Manage Spark pool including Create, Get, List, Delete Spark pool.
+short-summary: Manage Spark pools.
 """
 
 helps['synapse spark pool create'] = """
 type: command
 short-summary: Create a Spark pool.
-long-summary: Create a Spark pool with default configuration.
 examples:
   - name: Create a Spark pool.
     text: |-
-        az synapse spark pool create --name testpool --resource-group rg --workspace-name \\
-        testsynapseworkspace --location "East US" --spark-version 2.4
+        az synapse spark pool create --name testpool --workspace-name testsynapseworkspace --resource-group rg \\
+        --spark-version 2.4 --node-count 3 --node-size Medium
 """
 
 helps['synapse spark pool list'] = """
 type: command
 short-summary: List all Spark pools.
-long-summary: List all Spark pools under a workspace.
 examples:
-  - name: List all Spark pools under a workspace.
+  - name: List all Spark pools.
     text: |-
         az synapse spark pool list --workspace-name testsynapseworkspace --resource-group rg
 """
 
 helps['synapse spark pool show'] = """
 type: command
-short-summary: Get a specific Spark pool with Spark pool name.
+short-summary: Get a Spark pool.
 examples:
-  - name: Get a specific Spark pools with Spark pool name.
+  - name: Get a Spark pool.
     text: |-
-        az synapse spark pool show --name testpool  --workspace-name testsynapseworkspace \\
-        --resource-group rg
+        az synapse spark pool show --name testpool --workspace-name testsynapseworkspace --resource-group rg
 """
 
 helps['synapse spark pool update'] = """
 type: command
-short-summary: Update the Spark pool's tags.
+short-summary: Update the Spark pool.
 examples:
   - name: Update the Spark pool's tags.
     text: |-
-        az synapse spark pool update --name testpool  --workspace-name testsynapseworkspace --resource-group rg \\
+        az synapse spark pool update --name testpool --workspace-name testsynapseworkspace --resource-group rg \\
         --tags key1=value1
+  - name: Update the Spark pool's auto scale configuration.
+    text: |-
+        az synapse spark pool update --name testpool --workspace-name testsynapseworkspace --resource-group rg \\
+        --enable-auto-scale --min-node-count 3 --max-node-count 100
 """
 
 helps['synapse spark pool delete'] = """
 type: command
-short-summary: Delete a specific Spark pool with Spark pool name.
+short-summary: Delete a Spark pool.
 examples:
-  - name: Delete a specific big Spark pool with Spark pool name.
+  - name: Delete a Spark pool.
     text: |-
-        az synapse spark pool delete --name testpool --workspace-name testsynapseworkspace \\
-        --resource-group rg
+        az synapse spark pool delete --name testpool --workspace-name testsynapseworkspace --resource-group rg
 """
 
 helps['synapse spark pool wait'] = """
@@ -143,78 +157,77 @@ short-summary: Place the CLI in a waiting state until a condition of a Spark poo
 
 helps['synapse sql'] = """
 type: group
-short-summary: Manage SQL pool.
+short-summary: Manage SQL pools.
 """
 
 helps['synapse sql pool'] = """
 type: group
-short-summary: Manage SQL pool including Create, Get, List, Delete, Pause, Resume SQL pool.
+short-summary: Manage SQL pools.
 """
 
 helps['synapse sql pool create'] = """
 type: command
 short-summary: Create a SQL pool.
-long-summary: Create a SQL pool with default configuration.
 examples:
-  - name: Create SQL pool.
+  - name: Create a SQL pool.
     text: |-
-        az synapse sql pool create --name sqlpoolcli1 --sku-name "DW1000c" --resource-group rg --workspace-name \\
-        testsynapseworkspace --location "East US"
+        az synapse sql pool create --name sqlpoolcli1 --performance-level "DW1000c" \\
+        --workspace-name testsynapseworkspace --resource-group rg
 """
 
 helps['synapse sql pool show'] = """
 type: command
 short-summary: Get a SQL pool.
-long-summary: Get a SQL pool with SQL pool name.
 examples:
-  - name: Get SQL pool.
+  - name: Get a SQL pool.
     text: |-
-        az synapse sql pool show --name sqlpoolcli1 --resource-group rg --workspace-name \\
-        testsynapseworkspace
+        az synapse sql pool show --name sqlpoolcli1 --workspace-name testsynapseworkspace --resource-group rg
 """
 
 helps['synapse sql pool list'] = """
 type: command
 short-summary: List all SQL pools.
-long-summary: List all SQL pools under a specific workspace.
 examples:
   - name: List SQL pools.
     text: |-
-        az synapse sql pool list --resource-group rg \\
-        --workspace-name testsynapseworkspace
+        az synapse sql pool list --workspace-name testsynapseworkspace --resource-group rg
+"""
+
+helps['synapse sql pool update'] = """
+type: command
+short-summary: Update a SQL pool.
+examples:
+  - name: Update a SQL pool.
+    text: |-
+        az synapse sql pool update --name sqlpoolcli1 --workspace-name testsynapseworkspace --resource-group rg \\
+        --tags key1=value1
 """
 
 helps['synapse sql pool pause'] = """
 type: command
 short-summary: Pause a SQL pool.
-long-summary: Pause a SQL pool with SQL pool name.
 examples:
-  - name: Pause SQL pool.
+  - name: Pause a SQL pool.
     text: |-
-        az synapse sql pool pause --name sqlpoolcli1 --resource-group rg --workspace-name \\
-        testsynapseworkspace
+        az synapse sql pool pause --name sqlpoolcli1 --workspace-name testsynapseworkspace --resource-group rg
 """
 
 helps['synapse sql pool resume'] = """
 type: command
 short-summary: Resume a SQL pool.
-long-summary: Resume a SQL pool with SQL pool name.
 examples:
-  - name: Resume SQL pool.
+  - name: Resume a SQL pool.
     text: |-
-        az synapse sql pool resume --name sqlpoolcli1 --resource-group rg --workspace-name \\
-        testsynapseworkspace
+        az synapse sql pool resume --name sqlpoolcli1 --workspace-name testsynapseworkspace --resource-group rg
 """
 
 helps['synapse sql pool delete'] = """
 type: command
 short-summary: Delete a SQL pool.
-long-summary: Delete a SQL pool with SQL pool name.
 examples:
-  - name: Delete SQL pool.
+  - name: Delete a SQL pool.
     text: |-
-        az synapse sql pool delete --name sqlpoolcli1 --resource-group rg --workspace-name \\
-        testsynapseworkspace
+        az synapse sql pool delete --name sqlpoolcli1 --workspace-name testsynapseworkspace --resource-group rg
 """
 
 helps['synapse sql pool wait'] = """
@@ -222,153 +235,196 @@ type: command
 short-summary: Place the CLI in a waiting state until a condition of a SQL pool is met.
 """
 
-helps['synapse spark batch'] = """
+helps['synapse workspace firewall-rule'] = """
+type: group
+short-summary:  Manage a workspace's firewall rules.
+"""
+
+helps['synapse workspace firewall-rule create'] = """
+type: command
+short-summary: Create a firewall rule.
+examples:
+  - name: Create a firewall rule.
+    text: |-
+        az synapse workspace firewall-rule create --name allowAll --workspace-name testsynapseworkspace \\
+        --resource-group rg --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255
+"""
+
+helps['synapse workspace firewall-rule show'] = """
+type: command
+short-summary: Get a firewall rule.
+examples:
+  - name: Get a firewall rule.
+    text: |-
+        az synapse workspace firewall-rule show --name rule1 --workspace-name testsynapseworkspace --resource-group rg
+"""
+
+helps['synapse workspace firewall-rule list'] = """
+type: command
+short-summary: List all firewall rules.
+examples:
+  - name: List all firewall rules.
+    text: |-
+        az synapse workspace firewall-rule list --workspace-name testsynapseworkspace --resource-group rg
+"""
+
+helps['synapse workspace firewall-rule delete'] = """
+type: command
+short-summary: Delete a firewall rule.
+examples:
+  - name: Delete a firewall rule.
+    text: |-
+        az synapse workspace firewall-rule delete --name rule1 --workspace-name testsynapseworkspace --resource-group rg
+"""
+
+helps['synapse workspace firewall-rule wait'] = """
+type: command
+short-summary: Place the CLI in a waiting state until a condition of a firewall rule is met.
+"""
+
+helps['synapse spark job'] = """
 type: group
 short-summary: Manage Synapse Spark batch jobs.
 """
 
-helps['synapse spark batch create'] = """
+helps['synapse spark job submit'] = """
 type: command
-short-summary: Submit spark batch job.
-long-summary: Submit a spark batch job to a specific spark pool.
+short-summary: Submit a Spark job.
 examples:
-  - name: Submit a java spark batch job to a specific spark pool.
+  - name: Submit a Java Spark job.
     text: |-
-        az synapse spark batch create --name WordCount_Java --workspace-name testsynapseworkspace \\
-          --spark-pool-name testsparkpool \\
-          --file abfss://testfilesystem@testadlsgen2.dfs.core.windows.net/samples/java/wordcount/wordcount.jar \\
-          --class-name WordCount \\
-          --args abfss://testfilesystem@testadlsgen2.dfs.core.windows.net/samples/java/wordcount/shakespeare.txt \\
-          abfss://testfilesystem@testadlsgen2.dfs.core.windows.net/samples/java/wordcount/result/ \\
-          --driver-memory 4g --driver-cores 4 --executor-memory 4g --executor-cores 4 --num-executors 2
+        az synapse spark job submit --name WordCount_Java --workspace-name testsynapseworkspace \\
+        --spark-pool-name testsparkpool \\
+        --main-definition-file abfss://testfilesystem@testadlsgen2.dfs.core.windows.net/samples/java/wordcount/wordcount.jar \\
+        --main-class-name WordCount \\
+        --command-line-arguments abfss://testfilesystem@testadlsgen2.dfs.core.windows.net/samples/java/wordcount/shakespeare.txt \\
+        abfss://testfilesystem@testadlsgen2.dfs.core.windows.net/samples/java/wordcount/result/ \\
+        --executors 2 --executor-size Small
 """
 
-helps['synapse spark batch list'] = """
+helps['synapse spark job list'] = """
 type: command
-short-summary: List all spark batch jobs under the specific spark pool.
+short-summary: List all Spark jobs.
 examples:
-  - name: List all spark batch job under the specific spark pool.
+  - name: List all Spark jobs.
     text: |-
-        az synapse spark batch list --workspace-name testsynapseworkspace --spark-pool-name testsparkpool
+        az synapse spark job list --workspace-name testsynapseworkspace --spark-pool-name testsparkpool
 """
 
-helps['synapse spark batch show'] = """
+helps['synapse spark job show'] = """
 type: command
-short-summary: Get a specific spark batch job under the specific spark pool.
-long-summary: Get the spark batch job under the specific spark pool with batch id.
+short-summary: Get a Spark job.
 examples:
-  - name: Get a spark batch job under the specific spark pool with batch id.
+  - name: Get a Spark job.
     text: |-
-        az synapse spark batch show --id 1 --workspace-name testsynapseworkspace --spark-pool-name testsparkpool
+        az synapse spark job show --livy-id 1 --workspace-name testsynapseworkspace --spark-pool-name testsparkpool
 """
 
-helps['synapse spark batch cancel'] = """
+helps['synapse spark job cancel'] = """
 type: command
-short-summary: Cancel a specific spark batch job under the specific spark pool.
-long-summary: Cancel the spark batch job under the specific spark pool with batch id.
+short-summary: Cancel a Spark job.
 examples:
-  - name: Cancel a spark batch job under the specific spark pool with batch id.
+  - name: Cancel a Spark job.
     text: |-
-        az synapse spark batch cancel  --id 1 --workspace-name testsynapseworkspace --spark-pool-name testsparkpool
+        az synapse spark job cancel --livy-id 1 --workspace-name testsynapseworkspace --spark-pool-name testsparkpool
 """
 
 helps['synapse spark session'] = """
 type: group
-short-summary: Manage Synapse Spark Session jobs and reset the Spark Session timeout.
+short-summary: Manage Synapse Spark sessions.
 """
 
 helps['synapse spark session create'] = """
 type: command
-short-summary: Submit a spark session job
-long-summary: Submit a spark session job to a specific spark pool.
+short-summary: Create a Spark session.
 examples:
-  - name: Submit a spark session job under the specific spark pool.
+  - name: Create a Spark session.
     text: |-
-        az synapse spark session create --name testsession  --workspace-name testsynapseworkspace --spark-pool-name testsparkpool \\
-        --driver-memory 4g --driver-cores 4 \\
-        --executor-memory 4g --executor-cores 4 --num-executors 2
+        az synapse spark session create --name testsession  --workspace-name testsynapseworkspace \\
+        --spark-pool-name testsparkpool --executor-size Small --executors 4
 """
 
 helps['synapse spark session list'] = """
 type: command
-short-summary: List all spark session jobs under the specific spark pool.
+short-summary: List all Spark sessions.
 examples:
-  - name: List all spark session jobs under the specific spark pool.
+  - name: List all Spark sessions.
     text: |-
         az synapse spark session list --workspace-name testsynapseworkspace --spark-pool-name testsparkpool
 """
 
 helps['synapse spark session show'] = """
 type: command
-short-summary: Get a specific spark session job under the specific spark pool.
-long-summary: Get the spark session job under the specific spark pool with session id.
+short-summary: Get a Spark session.
 examples:
-  - name: Get a spark session job under the specific spark pool with session id.
+  - name: Get a Spark session.
     text: |-
-        az synapse spark session show --id 1 --workspace-name testsynapseworkspace --spark-pool-name testsparkpool
+        az synapse spark session show --livy-id 1 --workspace-name testsynapseworkspace --spark-pool-name testsparkpool
 """
 
 helps['synapse spark session cancel'] = """
 type: command
-short-summary: Cancel a specific spark session job under the specific spark pool.
-long-summary: Cancel the spark session job under the specific spark pool with session id.
+short-summary: Cancel a Spark session.
 examples:
-  - name: Cancel a spark session job under the specific spark pool with session id.
+  - name: Cancel a Spark session.
     text: |-
-        az synapse spark session cancel  --id 1 --workspace-name testsynapseworkspace --spark-pool-name testsparkpool
+        az synapse spark session cancel  --livy-id 1 --workspace-name testsynapseworkspace --spark-pool-name testsparkpool
 """
 
 helps['synapse spark session reset-timeout'] = """
 type: command
-short-summary: Reset the spark session timeout time.
-long-summary: Reset the spark session timeout time under the specific spark pool with session id.
+short-summary: Reset a Spark session timeout time.
 examples:
-  - name: Reset the spark session timeout time.
+  - name: Reset a Spark session's timeout time.
     text: |-
-        az synapse spark session reset-timeout --id 1 --workspace-name testsynapseworkspace --spark-pool-name testsparkpool
+        az synapse spark session reset-timeout --livy-id 1 --workspace-name testsynapseworkspace --spark-pool-name testsparkpool
 """
 
-helps['synapse spark session-statement'] = """
+helps['synapse spark statement'] = """
 type: group
-short-summary: Manage Synapse Spark Session Statements.
+short-summary: Manage Synapse Spark statements.
 """
 
-helps['synapse spark session-statement create'] = """
+helps['synapse spark statement invoke'] = """
 type: command
-short-summary: Submit a spark statement to a spark session.
+short-summary: Invoke a Spark statement.
 examples:
-  - name: Submit a spark statement to a spark session.
+  - name: Invoke a Spark statement.
     text: |-
-        az synapse spark session-statement create  --session-id 1 --workspace-name testsynapseworkspace \\
-        --spark-pool-name testsparkpool --code "print('hello, Azure CLI')" --kind pyspark
+        az synapse spark statement invoke --session-id 1 --workspace-name testsynapseworkspace \\
+        --spark-pool-name testsparkpool --code "print('hello, Azure CLI')" --language pyspark
+  - name: Submit a Spark statement by reading code content from file.
+    text: |-
+        az synapse spark statement invoke --session-id 1 --workspace-name testsynapseworkspace \\
+        --spark-pool-name testsparkpool --code @file-path --language pyspark
 """
 
-helps['synapse spark session-statement show'] = """
+helps['synapse spark statement show'] = """
 type: command
-short-summary: Get a spark statement with statement id.
+short-summary: Get a Spark statement.
 examples:
-  - name: Get a spark statement with statement id.
+  - name: Get a Spark statement.
     text: |-
-        az synapse spark session-statement show --id 1 --session-id 11 --workspace-name testsynapseworkspace \\
+        az synapse spark statement show --livy-id 1 --session-id 11 --workspace-name testsynapseworkspace \\
         --spark-pool-name testsparkpool
 """
 
-helps['synapse spark session-statement list'] = """
+helps['synapse spark statement list'] = """
 type: command
-short-summary: List all spark statements under the specify spark session.
+short-summary: List all Spark statements
 examples:
-  - name: List all spark statements under the specify spark session.
+  - name: List all Spark statements.
     text: |-
-        az synapse spark session-statement list --session-id 11 --workspace-name testsynapseworkspace \\
+        az synapse spark statement list --session-id 11 --workspace-name testsynapseworkspace \\
         --spark-pool-name testsparkpool
 """
 
-helps['synapse spark session-statement cancel'] = """
+helps['synapse spark statement cancel'] = """
 type: command
-short-summary: Cancel a spark statement with statement id.
+short-summary: Cancel a Spark statement.
 examples:
-  - name: Cancel a spark statement with statement id.
+  - name: Cancel a Spark statement.
     text: |-
-        az synapse spark session-statement cancel --id 1 --session-id 11 --workspace-name testsynapseworkspace \\
+        az synapse spark statement cancel --livy-id 1 --session-id 11 --workspace-name testsynapseworkspace \\
         --spark-pool-name testsparkpool
 """

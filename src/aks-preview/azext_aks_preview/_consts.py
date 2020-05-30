@@ -23,3 +23,7 @@ CONST_INGRESS_APPGW_SHARED = "shared"
 
 CONST_NODEPOOL_MODE_SYSTEM = "System"
 CONST_NODEPOOL_MODE_USER = "User"
+
+# refer https://docs.microsoft.com/en-us/rest/api/storageservices/
+# naming-and-referencing-containers--blobs--and-metadata#container-names
+CONST_CONTAINER_NAME_MAX_LENGTH = 63
