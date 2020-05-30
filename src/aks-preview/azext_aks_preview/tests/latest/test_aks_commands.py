@@ -6,11 +6,21 @@
 import unittest
 
 from azure.cli.testsdk import (
-    ResourceGroupPreparer, RoleBasedServicePrincipalPreparer, ScenarioTest)
+    ResourceGroupPreparer, RoleBasedServicePrincipalPreparer, ScenarioTest, live_only)
 from azure_devtools.scenario_tests import AllowLargeResponse
 
 
 class AzureKubernetesServiceScenarioTest(ScenarioTest):
+    @live_only()  # without live only fails with need az login
+    @AllowLargeResponse()
+    def test_get_version(self):
+        versions_cmd = 'aks get-versions -l westus2'
+        self.cmd(versions_cmd, checks=[
+            self.check('type', 'Microsoft.ContainerService/locations/orchestrators'),
+            self.check('orchestrators[0].orchestratorType', 'Kubernetes')
+        ])
+
+    @live_only()  # without live only fails with needs .ssh fails (maybe generate-ssh-keys would fix) and maybe az login.
     @AllowLargeResponse()
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_and_update_with_managed_aad(self, resource_group, resource_group_location):

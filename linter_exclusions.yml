@@ -1,0 +1,116 @@
+aks create:
+  parameters:
+    node_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+blueprint assignment update:
+  parameters:
+    identity_type:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+databricks workspace create:
+  parameters:
+    managed_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+devops security permission update:
+  parameters:
+    merge:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+devops wiki page update:
+  parameters:
+    comment:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+    encoding:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+eventgrid event-subscription update:
+  parameters:
+    endpoint_type:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+eventgrid partner namespace event-channel create:
+  parameters:
+    destination_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+eventgrid partner topic event-subscription update:
+  parameters:
+    endpoint_type:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+eventgrid system-topic event-subscription update:
+  parameters:
+    endpoint_type:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+image copy:
+  parameters:
+    source_resource_group_name:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+    target_resource_group_name:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+iot pnp capability-model update:
+  parameters:
+    repo_endpoint:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot pnp interface update:
+  parameters:
+    repo_endpoint:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+maintenance configuration update:
+  parameters:
+    maintenanceScope:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+ml endpoint realtime update:
+  parameters:
+    context:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+ml model update:
+  parameters:
+    context:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+ml service update:
+  parameters:
+    context:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+monitor action-rule list:
+  parameters:
+    target_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+network cross-connection peering update:
+  parameters:
+    ip_version:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+network firewall management-ip-config update:
+  parameters:
+    subnet:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+notification-hub credential apns update:
+  parameters:
+    endpoint:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+storage account update:
+  parameters:
+    encryption_key_source:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+storage azcopy run-command:
+  parameters:
+    command_args:
+      rule_exclusions:
+      - no_positional_parameters
