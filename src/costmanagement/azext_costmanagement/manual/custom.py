@@ -57,7 +57,7 @@ def costmanagement_export_create(cmd,
                                    export_name=export_name,
                                    type=definition_type,
                                    timeframe=definition_timeframe,
-                                   time_period=definition_time_period,
+                                   time_period=definiti-on_time_period,
                                    configuration=definition_dataset_configuration,
                                    grouping=definition_dataset_grouping,
                                    destination=delivery_info_destination,
@@ -100,6 +100,7 @@ def costmanagement_export_update(cmd,
 
         # update export definition
         c.set_param('timeframe', definition_timeframe)
+        c.set_param('time_period', definition_time_period)
         c.set_param('configuration', definition_dataset_configuration)
         c.set_param('grouping', definition_dataset_grouping)
 
