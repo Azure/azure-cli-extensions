@@ -33,7 +33,7 @@ az databricks update \
 az databricks update \
     --name my-workspace \
     --resource-group my-rg \
-    --assign-identity
+    --prepare-encryption
 ```
 
 ##### Configure CMK encryption

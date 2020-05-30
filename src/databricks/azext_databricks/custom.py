@@ -22,6 +22,7 @@ def create_databricks_workspace(cmd, client,
                                 custom_public_subnet_name=None,
                                 custom_private_subnet_name=None,
                                 tags=None,
+                                prepare_encryption=None,
                                 no_wait=False):
     body = {}
     body['tags'] = tags  # dictionary
@@ -33,6 +34,7 @@ def create_databricks_workspace(cmd, client,
     _set_parameter_value(parameters, 'custom_virtual_network_id', custom_virtual_network_id)  # str
     _set_parameter_value(parameters, 'custom_public_subnet_name', custom_public_subnet_name)  # str
     _set_parameter_value(parameters, 'custom_private_subnet_name', custom_private_subnet_name)  # str
+    _set_parameter_value(parameters, 'prepare_encryption', prepare_encryption)
     body['parameters'] = parameters
 
     return sdk_no_wait(no_wait, client.create_or_update,
@@ -50,7 +52,7 @@ def update_databricks_workspace(cmd, client,  # pylint: disable=too-many-branche
                                 resource_group_name,
                                 workspace_name,
                                 tags=None,
-                                assign_identity=None,
+                                prepare_encryption=None,
                                 encryption_key_source=None,
                                 encryption_key_name=None,
                                 encryption_key_version=None,
@@ -61,8 +63,8 @@ def update_databricks_workspace(cmd, client,  # pylint: disable=too-many-branche
     parameters = body['parameters']
     if tags is not None:
         body['tags'] = tags
-    if assign_identity:
-        _set_parameter_value(parameters, 'prepare_encryption', True)
+    if prepare_encryption is not None:
+        _set_parameter_value(parameters, 'prepare_encryption', prepare_encryption)
     if encryption_key_source is not None:
         encryption = {}
         encryption['key_source'] = encryption_key_source

@@ -49,7 +49,7 @@ class DatabricksClientScenarioTest(ScenarioTest):
                              '--resource-group {rg} '
                              '--name {workspace_name} '
                              '--tags type=test '
-                             '--assign-identity',
+                             '--prepare-encryption',
                              checks=[self.check('tags.type', 'test'),
                                      self.exists('storageAccountIdentity.principalId')]).get_output_in_json()
         principalId = workspace['storageAccountIdentity']['principalId']
