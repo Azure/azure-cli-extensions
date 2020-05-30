@@ -156,7 +156,6 @@ helps['costmanagement export update'] = """
         text: >
           az costmanagement export update
           --name "TestExport"
-          --dataset-aggregation "{\\"costSum\\":{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}"
           --dataset-configuration columns="Date" columns="MeterId" columns="InstanceId" columns="ResourceLocation" columns="PreTaxCost"
           --dataset-grouping name="SubscriptionName" type="Dimension"
           --dataset-grouping name="Environment" type="Tag"
@@ -172,7 +171,6 @@ helps['costmanagement export update'] = """
         text: >
           az costmanagement export update
           --name "TestExport"
-          --dataset-aggregation "{\\"costSum\\":{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}"
           --dataset-configuration columns="Date" columns="MeterId" columns="InstanceId" columns="ResourceLocation" columns="PreTaxCost"
           --dataset-grouping name="SubscriptionName" type="Dimension"
           --dataset-grouping name="Environment" type="Tag"
@@ -188,7 +186,6 @@ helps['costmanagement export update'] = """
         text: >
           az costmanagement export update
           --name "TestExport"
-          --dataset-aggregation "{\\"costSum\\":{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}"
           --dataset-configuration columns="Date" columns="MeterId" columns="InstanceId" columns="ResourceLocation" columns="PreTaxCost"
           --dataset-grouping name="SubscriptionName" type="Dimension"
           --dataset-grouping name="Environment" type="Tag"
