@@ -66,7 +66,7 @@ class CostManagementExportTest(ScenarioTest):
                                                                   storage_account_id,
                                                                   timeframe)
 
-        self.cmd('costmanagement export delete --scope {scope} --name {export_name}')
+        self.cmd('costmanagement export delete -y --scope {scope} --name {export_name}')
 
         with self.assertRaisesRegex(SystemExit, '3'):
             self.cmd('costmanagement export show --scope {scope} --name {export_name}')
@@ -142,7 +142,7 @@ class CostManagementExportTest(ScenarioTest):
                                                                                 storage_account_id,
                                                                                 timeframe)
 
-        self.cmd('costmanagement export delete --scope {scope} --name {export_name}')
+        self.cmd('costmanagement export delete -y --scope {scope} --name {export_name}')
 
         with self.assertRaisesRegex(SystemExit, '3'):
             self.cmd('costmanagement export show --scope {scope} --name {export_name}')
@@ -218,4 +218,4 @@ class CostManagementExportTest(ScenarioTest):
             "to": "2020-10-31T00:00:00+00:00"
         })
 
-        self.cmd('costmanagement export delete --scope {scope} --name {export_name}')
+        self.cmd('costmanagement export delete -y --scope {scope} --name {export_name}')
