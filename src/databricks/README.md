@@ -28,7 +28,7 @@ az databricks update \
     --tags key=value
 ```
 
-##### Assign identity for managed storage account
+##### Assign identity for managed storage account to prepare for CMK encryption
 ```
 az databricks update \
     --name my-workspace \

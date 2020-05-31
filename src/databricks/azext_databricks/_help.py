@@ -34,9 +34,9 @@ helps['databricks workspace update'] = """
       - name: Clean the workspace's tags.
         text: |-
                az databricks workspace update --resource-group MyResourceGroup --name MyWorkspace --tags ""
-      - name: Assign identity for storage account.
+      - name: Prepare for CMK encryption by assigning identity for storage account.
         text: |-
-               az databricks workspace update --resource-group MyResourceGroup --name MyWorkspace --assign-identity
+               az databricks workspace update --resource-group MyResourceGroup --name MyWorkspace --prepare-encryption
       - name: Configure CMK encryption
         text: |-
                az databricks workspace update --resource-group MyResourceGroup --name MyWorkspace --key-source Microsoft.KeyVault \
