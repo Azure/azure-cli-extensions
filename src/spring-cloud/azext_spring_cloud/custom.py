@@ -42,7 +42,13 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None, no_wai
     rg_location = _get_rg_location(cmd.cli_ctx, resource_group)
     if location is None:
         location = rg_location
-    resource = models.ServiceResource(location=location)
+
+    properties = models.ClusterResourceProperties()
+    properties.trace = models.TraceProperties(
+        enabled=True, app_insight_instrumentation_key="xxxxxxxxxxxxxxxxxxxxxx")
+
+    resource = models.ServiceResource(
+        location=location, properties=properties)
 
     return sdk_no_wait(no_wait, client.create_or_update,
                        resource_group_name=resource_group, service_name=name, resource=resource)
