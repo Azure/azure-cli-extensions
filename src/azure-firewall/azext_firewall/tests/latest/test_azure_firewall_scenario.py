@@ -426,9 +426,9 @@ class AzureFirewallScenario(ScenarioTest):
         })
 
         creation_data = self.cmd('network firewall create -g {rg} -n {fw} '
-                               '--dns-servers {dns_servers} '
-                               '--dns-proxy-enabled false '
-                               '--dns-require-proxy-for-network-rules false').get_output_in_json()
+                                 '--dns-servers {dns_servers} '
+                                 '--dns-proxy-enabled false '
+                                 '--dns-require-proxy-for-network-rules false').get_output_in_json()
         self.assertEqual(creation_data['name'], self.kwargs['fw'])
         self.assertEqual(creation_data['DNSServer'], "['10.0.0.2', '10.0.0.3']")
         self.assertEqual(creation_data['DNSEnableProxy'], 'False')
