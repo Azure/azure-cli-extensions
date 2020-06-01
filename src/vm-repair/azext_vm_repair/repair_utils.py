@@ -8,8 +8,8 @@ import shlex
 import os
 import re
 from json import loads
-import requests
 import pkgutil
+import requests
 
 from knack.log import get_logger
 from knack.prompting import prompt_y_n, NoTTYException
@@ -239,7 +239,7 @@ def _manually_unlock_mount_encrypted_disk(repair_group_name, repair_vm_name):
     # Unlocks the disk using the phasephrase and mounts it on the repair VM.
     REPAIR_DIR_NAME = 'azext_vm_repair'
     SCRIPTS_DIR_NAME = 'scripts'
-    LINUX_RUN_SCRIPT_NAME = 'mount_encrypted_disk.sh'
+    LINUX_RUN_SCRIPT_NAME = 'mount-encrypted-disk.sh'
     command_id = 'RunShellScript'
     loader = pkgutil.get_loader(REPAIR_DIR_NAME)
     mod = loader.load_module(REPAIR_DIR_NAME)
