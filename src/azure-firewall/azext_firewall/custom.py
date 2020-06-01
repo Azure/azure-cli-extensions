@@ -82,8 +82,9 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
             firewall.additional_properties = {}
         firewall.additional_properties['Network.SNAT.PrivateRanges'] = private_ranges
 
-    firewall.additional_properties['DNSEnableProxy'] = dns_proxy_enabled or False
-    firewall.additional_properties['DNSRequireProxyForNetworkRules'] = dns_require_proxy_for_network_rules or True
+    firewall.additional_properties['DNSEnableProxy'] = dns_proxy_enabled if dns_proxy_enabled is not None else False
+    firewall.additional_properties['DNSRequireProxyForNetworkRules'] = \
+        dns_require_proxy_for_network_rules if dns_require_proxy_for_network_rules is not None else True
     firewall.additional_properties['DNSServer'] = dns_servers
 
     return client.create_or_update(resource_group_name, azure_firewall_name, firewall)
