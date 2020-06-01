@@ -8,26 +8,24 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.1.13"
+VERSION = "0.1.14"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
     'Intended Audience :: Developers',
     'Intended Audience :: System Administrators',
     'Programming Language :: Python',
-    'Programming Language :: Python :: 2',
-    'Programming Language :: Python :: 2.7',
     'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.4',
-    'Programming Language :: Python :: 3.5',
     'Programming Language :: Python :: 3.6',
+    'Programming Language :: Python :: 3.7',
+    'Programming Language :: Python :: 3.8',
     'License :: OSI Approved :: MIT License',
 ]
 
 DEPENDENCIES = [
-    'Cython==0.29.6',
+    'Cython==0.29.17',
     'mysql-connector-python==8.0.13',
-    'psycopg2-binary==2.7.7'
+    'psycopg2-binary==2.8.5'
 ]
 
 setup(

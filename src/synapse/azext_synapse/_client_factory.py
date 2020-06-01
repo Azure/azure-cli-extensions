@@ -23,6 +23,14 @@ def cf_synapse_client_sqlpool_factory(cli_ctx, *_):
     return synapse_client_factory(cli_ctx).sql_pools
 
 
+def cf_synapse_client_ipfirewallrules_factory(cli_ctx, *_):
+    return synapse_client_factory(cli_ctx).ip_firewall_rules
+
+
+def cf_synapse_client_operations_factory(cli_ctx, *_):
+    return synapse_client_factory(cli_ctx).operations
+
+
 # TODO: add Synapse endpoint and synapse_dns_suffix to azure.cli.core
 def synapse_data_plane_factory(cli_ctx, _, subscription=None):
     from azext_synapse.vendored_sdks.azure_synapse import SynapseClient

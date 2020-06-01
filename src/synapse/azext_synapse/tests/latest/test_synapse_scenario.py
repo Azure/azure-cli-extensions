@@ -19,49 +19,61 @@ class SynapseScenarioTests(ScenarioTest):
         # create a workspace
         self._create_workspace()
 
+        # check workspace name
+        self.cmd('az synapse workspace check-name --name {workspace}', checks=[
+            self.check('available', False)
+        ])
+
         # get workspace with workspace name
-        self.cmd('az synapse workspace show --name {workspace} --resource-group {rg}', checks=[
+        workspace = self.cmd('az synapse workspace show --name {workspace} --resource-group {rg}', checks=[
             self.check('name', self.kwargs['workspace']),
             self.check('type', 'Microsoft.Synapse/workspaces'),
             self.check('provisioningState', 'Succeeded')
-        ])
+        ]).get_output_in_json()
+
+        self.kwargs["workspace-id"] = workspace['id']
 
         # list all workspaces under a specific resource group
         self.cmd('az synapse workspace list --resource-group {rg}', checks=[
             self.check('[0].type', 'Microsoft.Synapse/workspaces')
         ])
 
-        # list all synapse under a specific subscription
-        self.cmd('az synapse workspace list', checks=[
-            self.check('[0].type', 'Microsoft.Synapse/workspaces')
+        # update workspace
+        self.cmd('az synapse workspace update --ids {workspace-id} --tags key1=value1', checks=[
+            self.check('tags.key1', 'value1'),
+            self.check('name', self.kwargs['workspace']),
+            self.check('id', self.kwargs['workspace-id']),
+            self.check('type', 'Microsoft.Synapse/workspaces'),
+            self.check('provisioningState', 'Succeeded')
         ])
 
         # delete workspace with workspace name
         self.cmd('az synapse workspace delete --name {workspace} --resource-group {rg} --yes')
         import time
-        time.sleep(60)
+        time.sleep(120)
         self.cmd('az synapse workspace show --name {workspace} --resource-group {rg}', expect_failure=True)
 
     def test_spark_pool(self):
         self.kwargs.update({
             'location': 'eastus',
-            'workspace': 'testsynapseworkspace1234',
-            'rg': 'cli-test-rg',
+            'workspace': 'testsynapseworkspace',
+            'rg': 'rg',
             'spark-pool': self.create_random_name(prefix='testpool', length=15),
             'spark-version': '2.4'
         })
-
         # create spark pool
-        self.cmd('az synapse spark pool create --name {spark-pool} --spark-version {spark-version}'
-                 ' --workspace-name {workspace} --resource-group {rg} --location {location}',
-                 checks=[
-                     self.check('name', self.kwargs['spark-pool']),
-                     self.check('type', 'Microsoft.Synapse/workspaces/bigDataPools'),
-                     self.check('provisioningState', 'Succeeded')
-                 ])
+        spark_pool = self.cmd('az synapse spark pool create --name {spark-pool} --spark-version {spark-version}'
+                              ' --workspace {workspace} --resource-group {rg} --node-count 3 --node-size Medium',
+                              checks=[
+                                  self.check('name', self.kwargs['spark-pool']),
+                                  self.check('type', 'Microsoft.Synapse/workspaces/bigDataPools'),
+                                  self.check('provisioningState', 'Succeeded')
+                              ]).get_output_in_json()
+
+        self.kwargs['pool-id'] = spark_pool['id']
 
         # get spark pool with spark pool name
-        self.cmd('az synapse spark pool show --name {spark-pool} --workspace-name {workspace} --resource-group {rg}',
+        self.cmd('az synapse spark pool show --name {spark-pool} --workspace {workspace} --resource-group {rg}',
                  checks=[
                      self.check('name', self.kwargs['spark-pool']),
                      self.check('type', 'Microsoft.Synapse/workspaces/bigDataPools'),
@@ -69,37 +81,46 @@ class SynapseScenarioTests(ScenarioTest):
                  ])
 
         # list all spark pools under the workspace
-        self.cmd('az synapse spark pool list --workspace-name {workspace} --resource-group {rg}', checks=[
+        self.cmd('az synapse spark pool list --workspace {workspace} --resource-group {rg}', checks=[
             self.check('[0].type', 'Microsoft.Synapse/workspaces/bigDataPools')
+        ])
+
+        # update spark pool
+        self.cmd('az synapse spark pool update --ids {pool-id} --tags key1=value1', checks=[
+            self.check('tags.key1', 'value1'),
+            self.check('name', self.kwargs['spark-pool']),
+            self.check('type', 'Microsoft.Synapse/workspaces/bigDataPools'),
+            self.check('provisioningState', 'Succeeded')
         ])
 
         # delete spark pool with spark pool name
         self.cmd(
-            'az synapse spark pool delete --name {spark-pool} --workspace-name {workspace} --resource-group {rg} --yes')
-        self.cmd('az synapse spark pool show --name {spark-pool} --workspace-name {workspace} --resource-group {rg}',
+            'az synapse spark pool delete --name {spark-pool} --workspace {workspace} --resource-group {rg} --yes')
+        self.cmd('az synapse spark pool show --name {spark-pool} --workspace {workspace} --resource-group {rg}',
                  expect_failure=True)
 
     def test_sql_pool(self):
         self.kwargs.update({
             'location': 'eastus',
-            'workspace': 'testsynapseworkspace1234',
-            'rg': 'cli-test-rg',
+            'workspace': 'testsynapseworkspace',
+            'rg': 'rg',
             'sql-pool': self.create_random_name(prefix='testsqlpool', length=15),
-            'sku-name': 'DW1000c'
+            'performance-level': 'DW1000c'
         })
-
         # create sql pool
-        self.cmd(
-            'az synapse sql pool create --name {sql-pool} --sku-name {sku-name} --workspace-name {workspace}'
-            ' --resource-group {rg} --location {location}', checks=[
+        sql_pool = self.cmd(
+            'az synapse sql pool create --name {sql-pool} --performance-level {performance-level} '
+            '--workspace {workspace} --resource-group {rg}', checks=[
                 self.check('name', self.kwargs['sql-pool']),
                 self.check('type', 'Microsoft.Synapse/workspaces/sqlPools'),
                 self.check('provisioningState', 'Succeeded'),
                 self.check('status', 'Online')
-            ])
+            ]).get_output_in_json()
+
+        self.kwargs['pool-id'] = sql_pool['id']
 
         # get sql pool with sql pool name
-        self.cmd('az synapse sql pool show --name {sql-pool} --workspace-name {workspace} --resource-group {rg}',
+        self.cmd('az synapse sql pool show --name {sql-pool} --workspace {workspace} --resource-group {rg}',
                  checks=[
                      self.check('name', self.kwargs['sql-pool']),
                      self.check('type', 'Microsoft.Synapse/workspaces/sqlPools'),
@@ -108,14 +129,26 @@ class SynapseScenarioTests(ScenarioTest):
                  ])
 
         # list all sql pools under the workspace
-        self.cmd('az synapse sql pool list --workspace-name {workspace} --resource-group {rg}', checks=[
+        self.cmd('az synapse sql pool list --workspace {workspace} --resource-group {rg}', checks=[
             self.check('[0].type', 'Microsoft.Synapse/workspaces/sqlPools')
         ])
 
+        # update sql pool
+        self.cmd('az synapse sql pool update --ids {pool-id} --tags key1=value1')
+
+        # get sql pool with sql pool id
+        self.cmd('az synapse sql pool show --ids {pool-id}',
+                 checks=[
+                     self.check('name', self.kwargs['sql-pool']),
+                     self.check('type', 'Microsoft.Synapse/workspaces/sqlPools'),
+                     self.check('tags.key1', 'value1'),
+                     self.check('provisioningState', 'Succeeded'),
+                     self.check('status', 'Online')
+                 ])
+
         # pause sql pool
-        self.cmd('az synapse sql pool pause --name {sql-pool} --workspace-name {workspace} --resource-group {rg}',
-                 checks=[])
-        self.cmd('az synapse sql pool show --name {sql-pool} --workspace-name {workspace} --resource-group {rg}',
+        self.cmd('az synapse sql pool pause --name {sql-pool} --workspace {workspace} --resource-group {rg}', checks=[])
+        self.cmd('az synapse sql pool show --name {sql-pool} --workspace {workspace} --resource-group {rg}',
                  checks=[
                      self.check('name', self.kwargs['sql-pool']),
                      self.check('type', 'Microsoft.Synapse/workspaces/sqlPools'),
@@ -123,9 +156,8 @@ class SynapseScenarioTests(ScenarioTest):
                  ])
 
         # resume sql pool
-        self.cmd('az synapse sql pool resume --name {sql-pool} --workspace-name {workspace} --resource-group {rg}',
-                 checks=[])
-        self.cmd('az synapse sql pool show --name {sql-pool} --workspace-name {workspace} --resource-group {rg}',
+        self.cmd('az synapse sql pool resume --name {sql-pool} --workspace {workspace} --resource-group {rg}', checks=[])
+        self.cmd('az synapse sql pool show --name {sql-pool} --workspace {workspace} --resource-group {rg}',
                  checks=[
                      self.check('name', self.kwargs['sql-pool']),
                      self.check('type', 'Microsoft.Synapse/workspaces/sqlPools'),
@@ -134,35 +166,31 @@ class SynapseScenarioTests(ScenarioTest):
 
         # delete sql pool with sql pool name
         self.cmd(
-            'az synapse sql pool delete --name {sql-pool} --workspace-name {workspace} --resource-group {rg} --yes')
+            'az synapse sql pool delete --name {sql-pool} --workspace {workspace} --resource-group {rg} --yes')
 
-        self.cmd('az synapse sql pool show --name {sql-pool} --workspace-name {workspace} --resource-group {rg}',
+        self.cmd('az synapse sql pool show --name {sql-pool} --workspace {workspace} --resource-group {rg}',
                  expect_failure=True)
 
     @ResourceGroupPreparer(name_prefix='synapse-cli', random_name_length=16)
-    def test_spark_batch(self, resource_group):
+    def test_spark_job(self, resource_group):
         self.kwargs.update({
             'spark-pool': 'testsparkpool',
-            'workspace': 'testsynapseworkspace1234',
+            'workspace': 'testsynapseworkspace',
             'job': 'WordCount_Java',
-            'file': 'abfss://testfilesystem@adlsgen2account.dfs.core.windows.net/samples/java/wordcount/wordcount.jar',
-            'class-name': 'WordCount',
-            'args': [
+            'main-definition-file': 'abfss://testfilesystem@adlsgen2account.dfs.core.windows.net/samples/java/wordcount/wordcount.jar',
+            'main-class-name': 'WordCount',
+            'command-line-arguments': [
                 'abfss://testfilesystem@adlsgen2account.dfs.core.windows.net/samples/java/wordcount/shakespeare.txt',
                 'abfss://testfilesystem@adlsgen2account.dfs.core.windows.net/samples/java/wordcount/result/'],
-            'driver-memory': '4g',
-            'driver-cores': 4,
-            'executor-memory': '4g',
-            'executor-cores': 4,
-            'num-executors': 2
+            'executors': 2,
+            'executor-size': 'Medium'
         })
 
         # create a spark batch job
-        batch_job = self.cmd('az synapse spark batch create --name {job} --workspace-name {workspace} '
-                             '--spark-pool-name {spark-pool} --file {file} --class-name {class-name} --args {args} '
-                             '--driver-memory {driver-memory} --driver-cores {driver-cores} '
-                             '--executor-memory {executor-memory} --executor-cores {executor-cores} '
-                             '--num-executors {num-executors}',
+        batch_job = self.cmd('az synapse spark job submit --name {job} --workspace-name {workspace} '
+                             '--spark-pool-name {spark-pool} --main-definition-file {main-definition-file} '
+                             '--main-class-name {main-class-name} --command-line-arguments {command-line-arguments} '
+                             '--executors {executors} --executor-size {executor-size}',
                              checks=[self.check('name', self.kwargs['job']),
                                      self.check('jobType', 'SparkBatch'),
                                      self.check('state', 'not_started')
@@ -171,22 +199,22 @@ class SynapseScenarioTests(ScenarioTest):
         self.kwargs['batch-id'] = batch_job['id']
 
         # get a spark batch job with batch id
-        self.cmd('az synapse spark batch show --id {batch-id} --workspace-name {workspace} '
+        self.cmd('az synapse spark job show --livy-id {batch-id} --workspace-name {workspace} '
                  '--spark-pool-name {spark-pool}', checks=[self.check('id', self.kwargs['batch-id'])])
 
         # list all spark batch jobs under a specific spark pool
-        self.cmd('az synapse spark batch list --workspace-name {workspace} '
+        self.cmd('az synapse spark job list --workspace-name {workspace} '
                  '--spark-pool-name {spark-pool}',
                  checks=[
                      self.check('sessions[0].jobType', 'SparkBatch')
                  ])
 
         # cancel a spark batch job with batch id
-        self.cmd('az synapse spark batch cancel --id {batch-id} --workspace-name {workspace} '
+        self.cmd('az synapse spark job cancel --livy-id {batch-id} --workspace-name {workspace} '
                  '--spark-pool-name {spark-pool} --yes')
         import time
         time.sleep(60)
-        self.cmd('az synapse spark batch show --id {batch-id} --workspace-name {workspace} '
+        self.cmd('az synapse spark job show --livy-id {batch-id} --workspace-name {workspace} '
                  '--spark-pool-name {spark-pool}',
                  checks=[
                      self.check('result', 'Cancelled')
@@ -196,22 +224,18 @@ class SynapseScenarioTests(ScenarioTest):
     def test_spark_session_and_statements(self, resource_group):
         self.kwargs.update({
             'spark-pool': 'testsparkpool',
-            'workspace': 'testsynapseworkspace1234',
-            'job': 'session_job',
-            'driver-memory': '4g',
-            'driver-cores': 4,
-            'executor-memory': '4g',
-            'executor-cores': 4,
-            'num-executors': 2,
+            'workspace': 'testsynapseworkspace',
+            'job': self.create_random_name(prefix='clisession', length=14),
+            'executor-size': 'Small',
+            'executors': 2,
             'code': "\"import time\ntime.sleep(10)\nprint('hello from cli')\"",
-            'kind': 'pyspark'
+            'language': 'pyspark'
         })
 
         # create a spark session
         create_result = self.cmd('az synapse spark session create --name {job} --workspace-name {workspace} '
-                                 '--spark-pool-name {spark-pool} --driver-memory {driver-memory} --driver-cores {driver-cores} '
-                                 '--executor-memory {executor-memory} --executor-cores {executor-cores} '
-                                 '--num-executors {num-executors}',
+                                 '--spark-pool-name {spark-pool} --executor-size {executor-size} '
+                                 '--executors {executors}',
                                  checks=[
                                      self.check('jobType', 'SparkSession'),
                                      self.check('name', self.kwargs['job']),
@@ -225,7 +249,7 @@ class SynapseScenarioTests(ScenarioTest):
         time.sleep(360)
 
         # get a spark session
-        self.cmd('az synapse spark session show --id {session-id} --workspace-name {workspace} '
+        self.cmd('az synapse spark session show --livy-id {session-id} --workspace-name {workspace} '
                  '--spark-pool-name {spark-pool}',
                  checks=[
                      self.check('id', self.kwargs['session-id']),
@@ -240,56 +264,101 @@ class SynapseScenarioTests(ScenarioTest):
                  ])
 
         # reset spark session's timeout time
-        self.cmd('az synapse spark session reset-timeout --id {session-id} --workspace-name {workspace} '
+        self.cmd('az synapse spark session reset-timeout --livy-id {session-id} --workspace-name {workspace} '
                  '--spark-pool-name {spark-pool}')
 
         # create a spark session statement job
-        statement = self.cmd('az synapse spark session-statement create --session-id {session-id} '
+        statement = self.cmd('az synapse spark statement invoke --session-id {session-id} '
                              '--workspace-name {workspace} --spark-pool-name {spark-pool} '
-                             '--code {code} --kind {kind}',
+                             '--code {code} --language {language}',
                              checks=[
                                  self.check('state', 'waiting')
                              ]).get_output_in_json()
         self.kwargs['statement-id'] = statement['id']
 
         # get a spark session statement
-        self.cmd('az synapse spark session-statement show --id {statement-id} --session-id {session-id} '
+        self.cmd('az synapse spark statement show --livy-id {statement-id} --session-id {session-id} '
                  '--workspace-name {workspace} --spark-pool-name {spark-pool}',
                  checks=[
                      self.check('state', 'running')
                  ])
 
         # list all spark session statements under a specific spark session
-        self.cmd('az synapse spark session-statement list --session-id {session-id} '
+        self.cmd('az synapse spark statement list --session-id {session-id} '
                  '--workspace-name {workspace} --spark-pool-name {spark-pool}',
                  checks=[
                      self.check('statements[0].state', 'running')
                  ])
 
         # cancel a spark session statement
-        self.cmd('az synapse spark session-statement cancel --id {statement-id} --session-id {session-id} '
+        self.cmd('az synapse spark statement cancel --livy-id {statement-id} --session-id {session-id} '
                  '--workspace-name {workspace} --spark-pool-name {spark-pool}  --yes',
                  checks=[
                      self.check('msg', 'canceled')
                  ])
 
         # delete/cancel a spark session
-        self.cmd('az synapse spark session cancel --id {session-id} --workspace-name {workspace} '
+        self.cmd('az synapse spark session cancel --livy-id {session-id} --workspace-name {workspace} '
                  '--spark-pool-name {spark-pool} --yes')
         import time
         time.sleep(120)
-        self.cmd('az synapse spark session show --id {session-id} --workspace-name {workspace} '
+        self.cmd('az synapse spark session show --livy-id {session-id} --workspace-name {workspace} '
                  '--spark-pool-name {spark-pool}',
                  checks=[
                      self.check('state', 'killed')
                  ])
+
+    @ResourceGroupPreparer(name_prefix='synapse-cli', random_name_length=16)
+    def test_ip_firewall_rules(self, resource_group):
+        self.kwargs.update({
+            'workspace': 'testsynapseworkspace',
+            'rg': 'rg',
+            'ruleName': self.create_random_name(prefix='rule', length=8),
+            'startIpAddress': "0.0.0.0",
+            'endIpAddress': "255.255.255.255"
+        })
+
+        # create a firewall rule
+        self.cmd(
+            'az synapse workspace firewall-rule create --name {ruleName} --workspace-name {workspace} '
+            '--resource-group {rg} --start-ip-address {startIpAddress} --end-ip-address {endIpAddress}',
+            checks=[
+                self.check('name', self.kwargs['ruleName']),
+                self.check('type', 'Microsoft.Synapse/workspaces/firewallRules'),
+                self.check('provisioningState', 'Succeeded')
+            ])
+
+        # get a firewall rule
+        self.cmd(
+            'az synapse workspace firewall-rule show --name {ruleName} --workspace-name {workspace} '
+            '--resource-group {rg}',
+            checks=[
+                self.check('name', self.kwargs['ruleName']),
+                self.check('type', 'Microsoft.Synapse/workspaces/firewallRules'),
+                self.check('provisioningState', 'Succeeded')
+            ])
+
+        # list all firewall rules under a specific workspace
+        self.cmd('az synapse workspace firewall-rule list --workspace-name {workspace} --resource-group {rg}',
+                 checks=[
+                     self.check('[0].type', 'Microsoft.Synapse/workspaces/firewallRules')
+                 ])
+
+        # delete a firewall rule
+        self.cmd(
+            'az synapse workspace firewall-rule delete --name {ruleName} --workspace-name {workspace} '
+            '--resource-group {rg} --yes')
+        import time
+        time.sleep(20)
+        self.cmd('az synapse workspace firewall-rule show --name {ruleName} --workspace-name {workspace} '
+                 '--resource-group {rg}', expect_failure=True)
 
     def _create_workspace(self):
         self.kwargs.update({
             'location': self.location,
             'workspace': self.create_random_name(prefix='clitest', length=16),
             'file-system': 'testfilesystem',
-            'account-url': 'https://adlsgen2account.dfs.core.windows.net',
+            'storage-account': 'adlsgen2account',
             'login-user': 'cliuser1',
             'login-password': 'Password123!'
         })
@@ -301,7 +370,7 @@ class SynapseScenarioTests(ScenarioTest):
 
         # create synapse workspace
         self.cmd(
-            'az synapse workspace create --name {workspace} --resource-group {rg} --account-url {account-url} '
+            'az synapse workspace create --name {workspace} --resource-group {rg} --storage-account {storage-account} '
             '--file-system {file-system} --sql-admin-login-user {login-user} '
             '--sql-admin-login-password {login-password}'
             ' --location {location}', checks=[
