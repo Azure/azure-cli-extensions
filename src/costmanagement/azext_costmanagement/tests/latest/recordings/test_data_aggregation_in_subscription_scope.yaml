@@ -1,0 +1,63 @@
+interactions:
+- request:
+    body: '{"type": "ActualCost", "timeframe": "TheLastMonth", "dataset": {"granularity":
+      "Daily", "aggregation": {"totalCost": {"name": "PreTaxCost", "function": "Sum"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - costmanagement query
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '161'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --type --timeframe --scope --dataset-aggregation
+      User-Agent:
+      - AZURECLI/2.6.0 azsdk-python-mgmt-costmanagement/1.2.0 Python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CostManagement/query?api-version=2019-11-01
+  response:
+    body:
+      string: '{"id":"subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.CostManagement/query/6ded9eae-7dcf-4adf-80c1-8525927fc7db","name":"6ded9eae-7dcf-4adf-80c1-8525927fc7db","type":"Microsoft.CostManagement/query","location":null,"sku":null,"eTag":null,"properties":{"nextLink":null,"columns":[{"name":"PreTaxCost","type":"Number"},{"name":"UsageDate","type":"Number"},{"name":"Currency","type":"String"}],"rows":[[416.613981,20200401,"USD"],[408.468119,20200402,"USD"],[456.219457,20200403,"USD"],[438.307939,20200404,"USD"],[426.956897,20200405,"USD"],[425.69036,20200406,"USD"],[518.270865,20200407,"USD"],[357.930806,20200408,"USD"],[428.149184,20200409,"USD"],[537.673011,20200410,"USD"],[492.206168,20200411,"USD"],[523.479139,20200412,"USD"],[505.556428,20200413,"USD"],[483.03273,20200414,"USD"],[480.243421,20200415,"USD"],[483.139806,20200416,"USD"],[485.523736,20200417,"USD"],[483.687605,20200418,"USD"],[484.006764,20200419,"USD"],[484.891544,20200420,"USD"],[484.316853,20200421,"USD"],[466.370659,20200422,"USD"],[480.70762,20200423,"USD"],[477.721725,20200424,"USD"],[689.082173,20200425,"USD"],[626.994474,20200426,"USD"],[412.660238,20200427,"USD"],[314.921493,20200428,"USD"],[309.928617,20200429,"USD"],[304.582833,20200430,"USD"]]}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '1262'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 23 May 2020 06:28:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      session-id:
+      - fe1a4581-7ff6-48f9-b4ce-733b73b405fb
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-microsoft.costmanagement-entity-retry-after:
+      - '60'
+      x-ms-ratelimit-microsoft.costmanagement-tenant-retry-after:
+      - '60'
+      x-ms-ratelimit-remaining-microsoft.costmanagement-entity-requests:
+      - '29'
+      x-ms-ratelimit-remaining-microsoft.costmanagement-tenant-requests:
+      - '199'
+    status:
+      code: 200
+      message: OK
+version: 1
