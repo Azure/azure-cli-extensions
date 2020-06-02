@@ -33,6 +33,7 @@ def load_arguments(self, _):
     with self.argument_context('spring-cloud create') as c:
         c.argument('location', arg_type=get_location_type(
             self.cli_ctx), validator=validate_location)
+        c.argument('app_insights_key', help="Instrumentation key of App Insights to be added for the distributed tracing")
 
     with self.argument_context('spring-cloud test-endpoint renew-key') as c:
         c.argument('type', type=str, arg_type=get_enum_type(

@@ -38,14 +38,16 @@ NO_PRODUCTION_DEPLOYMENT_ERROR = "No production deployment found, use --deployme
 LOG_RUNNING_PROMPT = "This command usually takes minutes to run. Add '--verbose' parameter if needed."
 
 
-def spring_cloud_create(cmd, client, resource_group, name, location=None, no_wait=False):
+def spring_cloud_create(cmd, client, resource_group, name, location=None, app_insights_key=None, no_wait=False):
     rg_location = _get_rg_location(cmd.cli_ctx, resource_group)
     if location is None:
         location = rg_location
 
     properties = models.ClusterResourceProperties()
-    properties.trace = models.TraceProperties(
-        enabled=True, app_insight_instrumentation_key="xxxxxxxxxxxxxxxxxxxxxx")
+
+    if app_insights_key is not None:
+        properties.trace = models.TraceProperties(
+            enabled=True, app_insight_instrumentation_key=app_insights_key)
 
     resource = models.ServiceResource(
         location=location, properties=properties)
