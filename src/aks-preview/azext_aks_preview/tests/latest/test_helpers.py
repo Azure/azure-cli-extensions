@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import unittest
-from azure.cli.command_modules.acs import _helpers as helpers
+import azext_aks_preview._helpers as helpers
 
 
 class TestPopulateApiServerAccessProfile(unittest.TestCase):
