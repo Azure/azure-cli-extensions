@@ -427,7 +427,7 @@ class AzureFirewallScenario(ScenarioTest):
 
         creation_data = self.cmd('network firewall create -g {rg} -n {fw} '
                                  '--dns-servers {dns_servers} '
-                                 '--dns-proxy-enabled false '
+                                 '--enable-dns-proxy false '
                                  '--dns-require-proxy-for-network-rules false').get_output_in_json()
         self.assertEqual(creation_data['name'], self.kwargs['fw'])
         self.assertEqual(creation_data['DNSServer'], "['10.0.0.2', '10.0.0.3']")
@@ -441,7 +441,7 @@ class AzureFirewallScenario(ScenarioTest):
         self.assertEqual(show_data['DNSRequireProxyForNetworkRules'], 'False')
 
         self.cmd('network firewall update -g {rg} -n {fw} '
-                 '--dns-proxy-enabled true').get_output_in_json()
+                 '--enable-dns-proxy true').get_output_in_json()
 
         show_data = self.cmd('network firewall show -g {rg} -n {fw}').get_output_in_json()
         self.assertEqual(show_data['name'], self.kwargs['fw'])
