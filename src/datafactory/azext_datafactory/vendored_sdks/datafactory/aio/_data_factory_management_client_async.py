@@ -6,10 +6,14 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from typing import Any, Optional
+from typing import Any, Optional, TYPE_CHECKING
 
 from azure.mgmt.core import AsyncARMPipelineClient
 from msrest import Deserializer, Serializer
+
+if TYPE_CHECKING:
+    # pylint: disable=unused-import,ungrouped-imports
+    from azure.core.credentials_async import AsyncTokenCredential
 
 from ._configuration_async import DataFactoryManagementClientConfiguration
 from .operations_async import OperationOperations
@@ -34,45 +38,46 @@ class DataFactoryManagementClient(object):
     """The Azure Data Factory V2 management API provides a RESTful set of web services that interact with Azure Data Factory V2 services.
 
     :ivar operation: OperationOperations operations
-    :vartype operation: azure.mgmt.datafactory.aio.operations_async.OperationOperations
+    :vartype operation: data_factory_management_client.aio.operations_async.OperationOperations
     :ivar factory: FactoryOperations operations
-    :vartype factory: azure.mgmt.datafactory.aio.operations_async.FactoryOperations
+    :vartype factory: data_factory_management_client.aio.operations_async.FactoryOperations
     :ivar exposure_control: ExposureControlOperations operations
-    :vartype exposure_control: azure.mgmt.datafactory.aio.operations_async.ExposureControlOperations
+    :vartype exposure_control: data_factory_management_client.aio.operations_async.ExposureControlOperations
     :ivar integration_runtime: IntegrationRuntimeOperations operations
-    :vartype integration_runtime: azure.mgmt.datafactory.aio.operations_async.IntegrationRuntimeOperations
+    :vartype integration_runtime: data_factory_management_client.aio.operations_async.IntegrationRuntimeOperations
     :ivar integration_runtime_object_metadata: IntegrationRuntimeObjectMetadataOperations operations
-    :vartype integration_runtime_object_metadata: azure.mgmt.datafactory.aio.operations_async.IntegrationRuntimeObjectMetadataOperations
+    :vartype integration_runtime_object_metadata: data_factory_management_client.aio.operations_async.IntegrationRuntimeObjectMetadataOperations
     :ivar integration_runtime_node: IntegrationRuntimeNodeOperations operations
-    :vartype integration_runtime_node: azure.mgmt.datafactory.aio.operations_async.IntegrationRuntimeNodeOperations
+    :vartype integration_runtime_node: data_factory_management_client.aio.operations_async.IntegrationRuntimeNodeOperations
     :ivar linked_service: LinkedServiceOperations operations
-    :vartype linked_service: azure.mgmt.datafactory.aio.operations_async.LinkedServiceOperations
+    :vartype linked_service: data_factory_management_client.aio.operations_async.LinkedServiceOperations
     :ivar dataset: DatasetOperations operations
-    :vartype dataset: azure.mgmt.datafactory.aio.operations_async.DatasetOperations
+    :vartype dataset: data_factory_management_client.aio.operations_async.DatasetOperations
     :ivar pipeline: PipelineOperations operations
-    :vartype pipeline: azure.mgmt.datafactory.aio.operations_async.PipelineOperations
+    :vartype pipeline: data_factory_management_client.aio.operations_async.PipelineOperations
     :ivar pipeline_run: PipelineRunOperations operations
-    :vartype pipeline_run: azure.mgmt.datafactory.aio.operations_async.PipelineRunOperations
+    :vartype pipeline_run: data_factory_management_client.aio.operations_async.PipelineRunOperations
     :ivar activity_run: ActivityRunOperations operations
-    :vartype activity_run: azure.mgmt.datafactory.aio.operations_async.ActivityRunOperations
+    :vartype activity_run: data_factory_management_client.aio.operations_async.ActivityRunOperations
     :ivar trigger: TriggerOperations operations
-    :vartype trigger: azure.mgmt.datafactory.aio.operations_async.TriggerOperations
+    :vartype trigger: data_factory_management_client.aio.operations_async.TriggerOperations
     :ivar trigger_run: TriggerRunOperations operations
-    :vartype trigger_run: azure.mgmt.datafactory.aio.operations_async.TriggerRunOperations
+    :vartype trigger_run: data_factory_management_client.aio.operations_async.TriggerRunOperations
     :ivar data_flow: DataFlowOperations operations
-    :vartype data_flow: azure.mgmt.datafactory.aio.operations_async.DataFlowOperations
+    :vartype data_flow: data_factory_management_client.aio.operations_async.DataFlowOperations
     :ivar data_flow_debug_session: DataFlowDebugSessionOperations operations
-    :vartype data_flow_debug_session: azure.mgmt.datafactory.aio.operations_async.DataFlowDebugSessionOperations
+    :vartype data_flow_debug_session: data_factory_management_client.aio.operations_async.DataFlowDebugSessionOperations
     :param credential: Credential needed for the client to connect to Azure.
-    :type credential: azure.core.credentials.TokenCredential
+    :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     :param subscription_id: The subscription identifier.
     :type subscription_id: str
     :param str base_url: Service URL
+    :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
     """
 
     def __init__(
         self,
-        credential: "TokenCredential",
+        credential: "AsyncTokenCredential",
         subscription_id: str,
         base_url: Optional[str] = None,
         **kwargs: Any

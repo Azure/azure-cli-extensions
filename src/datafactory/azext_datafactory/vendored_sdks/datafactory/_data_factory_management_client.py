@@ -6,10 +6,16 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from typing import Any, Optional
+from typing import TYPE_CHECKING
 
 from azure.mgmt.core import ARMPipelineClient
 from msrest import Deserializer, Serializer
+
+if TYPE_CHECKING:
+    # pylint: disable=unused-import,ungrouped-imports
+    from typing import Any, Optional
+
+    from azure.core.credentials import TokenCredential
 
 from ._configuration import DataFactoryManagementClientConfiguration
 from .operations import OperationOperations
@@ -34,40 +40,41 @@ class DataFactoryManagementClient(object):
     """The Azure Data Factory V2 management API provides a RESTful set of web services that interact with Azure Data Factory V2 services.
 
     :ivar operation: OperationOperations operations
-    :vartype operation: azure.mgmt.datafactory.operations.OperationOperations
+    :vartype operation: data_factory_management_client.operations.OperationOperations
     :ivar factory: FactoryOperations operations
-    :vartype factory: azure.mgmt.datafactory.operations.FactoryOperations
+    :vartype factory: data_factory_management_client.operations.FactoryOperations
     :ivar exposure_control: ExposureControlOperations operations
-    :vartype exposure_control: azure.mgmt.datafactory.operations.ExposureControlOperations
+    :vartype exposure_control: data_factory_management_client.operations.ExposureControlOperations
     :ivar integration_runtime: IntegrationRuntimeOperations operations
-    :vartype integration_runtime: azure.mgmt.datafactory.operations.IntegrationRuntimeOperations
+    :vartype integration_runtime: data_factory_management_client.operations.IntegrationRuntimeOperations
     :ivar integration_runtime_object_metadata: IntegrationRuntimeObjectMetadataOperations operations
-    :vartype integration_runtime_object_metadata: azure.mgmt.datafactory.operations.IntegrationRuntimeObjectMetadataOperations
+    :vartype integration_runtime_object_metadata: data_factory_management_client.operations.IntegrationRuntimeObjectMetadataOperations
     :ivar integration_runtime_node: IntegrationRuntimeNodeOperations operations
-    :vartype integration_runtime_node: azure.mgmt.datafactory.operations.IntegrationRuntimeNodeOperations
+    :vartype integration_runtime_node: data_factory_management_client.operations.IntegrationRuntimeNodeOperations
     :ivar linked_service: LinkedServiceOperations operations
-    :vartype linked_service: azure.mgmt.datafactory.operations.LinkedServiceOperations
+    :vartype linked_service: data_factory_management_client.operations.LinkedServiceOperations
     :ivar dataset: DatasetOperations operations
-    :vartype dataset: azure.mgmt.datafactory.operations.DatasetOperations
+    :vartype dataset: data_factory_management_client.operations.DatasetOperations
     :ivar pipeline: PipelineOperations operations
-    :vartype pipeline: azure.mgmt.datafactory.operations.PipelineOperations
+    :vartype pipeline: data_factory_management_client.operations.PipelineOperations
     :ivar pipeline_run: PipelineRunOperations operations
-    :vartype pipeline_run: azure.mgmt.datafactory.operations.PipelineRunOperations
+    :vartype pipeline_run: data_factory_management_client.operations.PipelineRunOperations
     :ivar activity_run: ActivityRunOperations operations
-    :vartype activity_run: azure.mgmt.datafactory.operations.ActivityRunOperations
+    :vartype activity_run: data_factory_management_client.operations.ActivityRunOperations
     :ivar trigger: TriggerOperations operations
-    :vartype trigger: azure.mgmt.datafactory.operations.TriggerOperations
+    :vartype trigger: data_factory_management_client.operations.TriggerOperations
     :ivar trigger_run: TriggerRunOperations operations
-    :vartype trigger_run: azure.mgmt.datafactory.operations.TriggerRunOperations
+    :vartype trigger_run: data_factory_management_client.operations.TriggerRunOperations
     :ivar data_flow: DataFlowOperations operations
-    :vartype data_flow: azure.mgmt.datafactory.operations.DataFlowOperations
+    :vartype data_flow: data_factory_management_client.operations.DataFlowOperations
     :ivar data_flow_debug_session: DataFlowDebugSessionOperations operations
-    :vartype data_flow_debug_session: azure.mgmt.datafactory.operations.DataFlowDebugSessionOperations
+    :vartype data_flow_debug_session: data_factory_management_client.operations.DataFlowDebugSessionOperations
     :param credential: Credential needed for the client to connect to Azure.
-    :type credential: azure.core.credentials.TokenCredential
+    :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: The subscription identifier.
     :type subscription_id: str
     :param str base_url: Service URL
+    :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
     """
 
     def __init__(

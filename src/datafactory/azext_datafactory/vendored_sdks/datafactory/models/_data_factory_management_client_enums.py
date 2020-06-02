@@ -8,6 +8,334 @@
 
 from enum import Enum
 
+class AvroCompressionCodec(str, Enum):
+
+    none = "none"
+    deflate = "deflate"
+    snappy = "snappy"
+    xz = "xz"
+    bzip2 = "bzip2"
+
+class AzureFunctionActivityMethod(str, Enum):
+    """The list of HTTP methods supported by a AzureFunctionActivity.
+    """
+
+    get = "GET"
+    post = "POST"
+    put = "PUT"
+    delete = "DELETE"
+    options = "OPTIONS"
+    head = "HEAD"
+    trace = "TRACE"
+
+class AzureSearchIndexWriteBehaviorType(str, Enum):
+    """Specify the write behavior when upserting documents into Azure Search Index.
+    """
+
+    merge = "Merge"
+    upload = "Upload"
+
+class BlobEventTypes(str, Enum):
+
+    microsoft_storage_blob_created = "Microsoft.Storage.BlobCreated"
+    microsoft_storage_blob_deleted = "Microsoft.Storage.BlobDeleted"
+
+class CassandraSourceReadConsistencyLevels(str, Enum):
+    """The consistency level specifies how many Cassandra servers must respond to a read request
+    before returning data to the client application. Cassandra checks the specified number of
+    Cassandra servers for data to satisfy the read request. Must be one of
+    cassandraSourceReadConsistencyLevels. The default value is 'ONE'. It is case-insensitive.
+    """
+
+    all = "ALL"
+    each_quorum = "EACH_QUORUM"
+    quorum = "QUORUM"
+    local_quorum = "LOCAL_QUORUM"
+    one = "ONE"
+    two = "TWO"
+    three = "THREE"
+    local_one = "LOCAL_ONE"
+    serial = "SERIAL"
+    local_serial = "LOCAL_SERIAL"
+
+class CompressionCodec(str, Enum):
+
+    none = "none"
+    gzip = "gzip"
+    snappy = "snappy"
+    lzo = "lzo"
+    bzip2 = "bzip2"
+    deflate = "deflate"
+    zip_deflate = "zipDeflate"
+    lz4 = "lz4"
+
+class CopyBehaviorType(str, Enum):
+    """All available types of copy behavior.
+    """
+
+    preserve_hierarchy = "PreserveHierarchy"
+    flatten_hierarchy = "FlattenHierarchy"
+    merge_files = "MergeFiles"
+
+class DataFlowComputeType(str, Enum):
+    """Compute type of the cluster which will execute data flow job.
+    """
+
+    general = "General"
+    memory_optimized = "MemoryOptimized"
+    compute_optimized = "ComputeOptimized"
+
+class DataFlowDebugCommandType(str, Enum):
+    """The command type.
+    """
+
+    execute_preview_query = "executePreviewQuery"
+    execute_statistics_query = "executeStatisticsQuery"
+    execute_expression_query = "executeExpressionQuery"
+
+class DatasetCompressionLevel(str, Enum):
+    """All available compression levels.
+    """
+
+    optimal = "Optimal"
+    fastest = "Fastest"
+
+class DayOfWeek(str, Enum):
+    """The days of the week.
+    """
+
+    sunday = "Sunday"
+    monday = "Monday"
+    tuesday = "Tuesday"
+    wednesday = "Wednesday"
+    thursday = "Thursday"
+    friday = "Friday"
+    saturday = "Saturday"
+
+class DaysOfWeek(str, Enum):
+
+    sunday = "Sunday"
+    monday = "Monday"
+    tuesday = "Tuesday"
+    wednesday = "Wednesday"
+    thursday = "Thursday"
+    friday = "Friday"
+    saturday = "Saturday"
+
+class DependencyCondition(str, Enum):
+
+    succeeded = "Succeeded"
+    failed = "Failed"
+    skipped = "Skipped"
+    completed = "Completed"
+
+class DynamicsAuthenticationType(str, Enum):
+    """The authentication type to connect to Dynamics server. 'Office365' for online scenario, 'Ifd'
+    for on-premises with Ifd scenario, 'AADServicePrincipal' for Server-To-Server authentication in
+    online scenario. Type: string (or Expression with resultType string).
+    """
+
+    office365 = "Office365"
+    ifd = "Ifd"
+    aad_service_principal = "AADServicePrincipal"
+
+class DynamicsDeploymentType(str, Enum):
+    """The deployment type of the Dynamics instance. 'Online' for Dynamics Online and
+    'OnPremisesWithIfd' for Dynamics on-premises with Ifd. Type: string (or Expression with
+    resultType string).
+    """
+
+    online = "Online"
+    on_premises_with_ifd = "OnPremisesWithIfd"
+
+class DynamicsServicePrincipalCredentialType(str, Enum):
+    """The service principal credential type to use in Server-To-Server authentication.
+    'ServicePrincipalKey' for key/secret, 'ServicePrincipalCert' for certificate. Type: string (or
+    Expression with resultType string).
+    """
+
+    service_principal_key = "ServicePrincipalKey"
+    service_principal_cert = "ServicePrincipalCert"
+
+class EventSubscriptionStatus(str, Enum):
+    """Event Subscription Status.
+    """
+
+    enabled = "Enabled"
+    provisioning = "Provisioning"
+    deprovisioning = "Deprovisioning"
+    disabled = "Disabled"
+    unknown = "Unknown"
+
+class FtpAuthenticationType(str, Enum):
+    """The authentication type to be used to connect to the FTP server.
+    """
+
+    basic = "Basic"
+    anonymous = "Anonymous"
+
+class GlobalParameterType(str, Enum):
+    """Global Parameter type.
+    """
+
+    object = "Object"
+    string = "String"
+    int = "Int"
+    float = "Float"
+    bool = "Bool"
+    array = "Array"
+
+class GoogleAdWordsAuthenticationType(str, Enum):
+    """The OAuth 2.0 authentication mechanism used for authentication. ServiceAuthentication can only
+    be used on self-hosted IR.
+    """
+
+    service_authentication = "ServiceAuthentication"
+    user_authentication = "UserAuthentication"
+
+class GoogleBigQueryAuthenticationType(str, Enum):
+    """The OAuth 2.0 authentication mechanism used for authentication. ServiceAuthentication can only
+    be used on self-hosted IR.
+    """
+
+    service_authentication = "ServiceAuthentication"
+    user_authentication = "UserAuthentication"
+
+class HBaseAuthenticationType(str, Enum):
+    """The authentication mechanism to use to connect to the HBase server.
+    """
+
+    anonymous = "Anonymous"
+    basic = "Basic"
+
+class HdiNodeTypes(str, Enum):
+    """The node types on which the script action should be executed.
+    """
+
+    headnode = "Headnode"
+    workernode = "Workernode"
+    zookeeper = "Zookeeper"
+
+class HdInsightActivityDebugInfoOption(str, Enum):
+    """The HDInsightActivityDebugInfoOption settings to use.
+    """
+
+    none = "None"
+    always = "Always"
+    failure = "Failure"
+
+class HiveAuthenticationType(str, Enum):
+    """The authentication method used to access the Hive server.
+    """
+
+    anonymous = "Anonymous"
+    username = "Username"
+    username_and_password = "UsernameAndPassword"
+    windows_azure_hd_insight_service = "WindowsAzureHDInsightService"
+
+class HiveServerType(str, Enum):
+    """The type of Hive server.
+    """
+
+    hive_server1 = "HiveServer1"
+    hive_server2 = "HiveServer2"
+    hive_thrift_server = "HiveThriftServer"
+
+class HiveThriftTransportProtocol(str, Enum):
+    """The transport protocol to use in the Thrift layer.
+    """
+
+    binary = "Binary"
+    sasl = "SASL"
+    http = "HTTP "
+
+class HttpAuthenticationType(str, Enum):
+    """The authentication type to be used to connect to the HTTP server.
+    """
+
+    basic = "Basic"
+    anonymous = "Anonymous"
+    digest = "Digest"
+    windows = "Windows"
+    client_certificate = "ClientCertificate"
+
+class ImpalaAuthenticationType(str, Enum):
+    """The authentication type to use.
+    """
+
+    anonymous = "Anonymous"
+    sasl_username = "SASLUsername"
+    username_and_password = "UsernameAndPassword"
+
+class IntegrationRuntimeAuthKeyName(str, Enum):
+    """The name of the authentication key to regenerate.
+    """
+
+    auth_key1 = "authKey1"
+    auth_key2 = "authKey2"
+
+class IntegrationRuntimeAutoUpdate(str, Enum):
+    """The state of integration runtime auto update.
+    """
+
+    on = "On"
+    off = "Off"
+
+class IntegrationRuntimeEdition(str, Enum):
+    """The edition for the SSIS Integration Runtime
+    """
+
+    standard = "Standard"
+    enterprise = "Enterprise"
+
+class IntegrationRuntimeEntityReferenceType(str, Enum):
+    """The type of this referenced entity.
+    """
+
+    integration_runtime_reference = "IntegrationRuntimeReference"
+    linked_service_reference = "LinkedServiceReference"
+
+class IntegrationRuntimeInternalChannelEncryptionMode(str, Enum):
+    """It is used to set the encryption mode for node-node communication channel (when more than 2
+    self-hosted integration runtime nodes exist).
+    """
+
+    not_set = "NotSet"
+    ssl_encrypted = "SslEncrypted"
+    not_encrypted = "NotEncrypted"
+
+class IntegrationRuntimeLicenseType(str, Enum):
+    """License type for bringing your own license scenario.
+    """
+
+    base_price = "BasePrice"
+    license_included = "LicenseIncluded"
+
+class IntegrationRuntimeSsisCatalogPricingTier(str, Enum):
+    """The pricing tier for the catalog database. The valid values could be found in
+    https://azure.microsoft.com/en-us/pricing/details/sql-database/
+    """
+
+    basic = "Basic"
+    standard = "Standard"
+    premium = "Premium"
+    premium_rs = "PremiumRS"
+
+class IntegrationRuntimeState(str, Enum):
+    """The state of integration runtime.
+    """
+
+    initial = "Initial"
+    stopped = "Stopped"
+    started = "Started"
+    starting = "Starting"
+    stopping = "Stopping"
+    need_registration = "NeedRegistration"
+    online = "Online"
+    limited = "Limited"
+    offline = "Offline"
+    access_denied = "AccessDenied"
+
 class IntegrationRuntimeType(str, Enum):
     """The type of integration runtime.
     """
@@ -15,14 +343,83 @@ class IntegrationRuntimeType(str, Enum):
     managed = "Managed"
     self_hosted = "SelfHosted"
 
-class SsisObjectMetadataType(str, Enum):
-    """The type of SSIS object metadata.
+class IntegrationRuntimeUpdateResult(str, Enum):
+    """The result of the last integration runtime node update.
     """
 
-    folder = "Folder"
-    project = "Project"
-    package = "Package"
-    environment = "Environment"
+    none = "None"
+    succeed = "Succeed"
+    fail = "Fail"
+
+class JsonFormatFilePattern(str, Enum):
+    """JSON format file pattern. A property of JsonFormat.
+    """
+
+    set_of_objects = "setOfObjects"
+    array_of_objects = "arrayOfObjects"
+
+class JsonWriteFilePattern(str, Enum):
+    """File pattern of JSON. This setting controls the way a collection of JSON objects will be
+    treated. The default value is 'setOfObjects'. It is case-sensitive.
+    """
+
+    set_of_objects = "setOfObjects"
+    array_of_objects = "arrayOfObjects"
+
+class ManagedIntegrationRuntimeNodeStatus(str, Enum):
+    """The managed integration runtime node status.
+    """
+
+    starting = "Starting"
+    available = "Available"
+    recycling = "Recycling"
+    unavailable = "Unavailable"
+
+class MongoDBAuthenticationType(str, Enum):
+    """The authentication type to be used to connect to the MongoDB database.
+    """
+
+    basic = "Basic"
+    anonymous = "Anonymous"
+
+class NetezzaPartitionOption(str, Enum):
+    """The partition mechanism that will be used for Netezza read in parallel.
+    """
+
+    none = "None"
+    data_slice = "DataSlice"
+    dynamic_range = "DynamicRange"
+
+class ODataAadServicePrincipalCredentialType(str, Enum):
+    """Specify the credential type (key or cert) is used for service principal.
+    """
+
+    service_principal_key = "ServicePrincipalKey"
+    service_principal_cert = "ServicePrincipalCert"
+
+class ODataAuthenticationType(str, Enum):
+    """Type of authentication used to connect to the OData service.
+    """
+
+    basic = "Basic"
+    anonymous = "Anonymous"
+    windows = "Windows"
+    aad_service_principal = "AadServicePrincipal"
+    managed_service_identity = "ManagedServiceIdentity"
+
+class OraclePartitionOption(str, Enum):
+    """The partition mechanism that will be used for Oracle read in parallel.
+    """
+
+    none = "None"
+    physical_partitions_of_table = "PhysicalPartitionsOfTable"
+    dynamic_range = "DynamicRange"
+
+class OrcCompressionCodec(str, Enum):
+
+    none = "none"
+    zlib = "zlib"
+    snappy = "snappy"
 
 class ParameterType(str, Enum):
     """Parameter type.
@@ -36,20 +433,48 @@ class ParameterType(str, Enum):
     array = "Array"
     secure_string = "SecureString"
 
-class DependencyCondition(str, Enum):
-
-    succeeded = "Succeeded"
-    failed = "Failed"
-    skipped = "Skipped"
-    completed = "Completed"
-
-class VariableType(str, Enum):
-    """Variable type.
+class PhoenixAuthenticationType(str, Enum):
+    """The authentication mechanism used to connect to the Phoenix server.
     """
 
-    string = "String"
-    bool = "Bool"
-    array = "Array"
+    anonymous = "Anonymous"
+    username_and_password = "UsernameAndPassword"
+    windows_azure_hd_insight_service = "WindowsAzureHDInsightService"
+
+class PolybaseSettingsRejectType(str, Enum):
+    """Indicates whether the RejectValue property is specified as a literal value or a percentage.
+    """
+
+    value = "value"
+    percentage = "percentage"
+
+class PrestoAuthenticationType(str, Enum):
+    """The authentication mechanism used to connect to the Presto server.
+    """
+
+    anonymous = "Anonymous"
+    ldap = "LDAP"
+
+class RecurrenceFrequency(str, Enum):
+    """Enumerates possible frequency option for the schedule trigger.
+    """
+
+    not_specified = "NotSpecified"
+    minute = "Minute"
+    hour = "Hour"
+    day = "Day"
+    week = "Week"
+    month = "Month"
+    year = "Year"
+
+class RestServiceAuthenticationType(str, Enum):
+    """Type of authentication used to connect to the REST service.
+    """
+
+    anonymous = "Anonymous"
+    basic = "Basic"
+    aad_service_principal = "AadServicePrincipal"
+    managed_service_identity = "ManagedServiceIdentity"
 
 class RunQueryFilterOperand(str, Enum):
     """Parameter name to be used for filter. The allowed operands to query pipeline runs are
@@ -80,6 +505,13 @@ class RunQueryFilterOperator(str, Enum):
     in_enum = "In"
     not_in = "NotIn"
 
+class RunQueryOrder(str, Enum):
+    """Sorting order of the parameter.
+    """
+
+    asc = "ASC"
+    desc = "DESC"
+
 class RunQueryOrderByField(str, Enum):
     """Parameter name to be used for order by. The allowed parameters to order by for pipeline runs
     are PipelineName, RunStart, RunEnd and Status; for activity runs are ActivityName,
@@ -97,451 +529,12 @@ class RunQueryOrderByField(str, Enum):
     trigger_name = "TriggerName"
     trigger_run_timestamp = "TriggerRunTimestamp"
 
-class RunQueryOrder(str, Enum):
-    """Sorting order of the parameter.
+class SalesforceSinkWriteBehavior(str, Enum):
+    """The write behavior for the operation. Default is Insert.
     """
 
-    asc = "ASC"
-    desc = "DESC"
-
-class TriggerRuntimeState(str, Enum):
-    """Enumerates possible state of Triggers.
-    """
-
-    started = "Started"
-    stopped = "Stopped"
-    disabled = "Disabled"
-
-class TriggerRunStatus(str, Enum):
-    """Trigger run status.
-    """
-
-    succeeded = "Succeeded"
-    failed = "Failed"
-    inprogress = "Inprogress"
-
-class IntegrationRuntimeState(str, Enum):
-    """The state of integration runtime.
-    """
-
-    initial = "Initial"
-    stopped = "Stopped"
-    started = "Started"
-    starting = "Starting"
-    stopping = "Stopping"
-    need_registration = "NeedRegistration"
-    online = "Online"
-    limited = "Limited"
-    offline = "Offline"
-    access_denied = "AccessDenied"
-
-class ManagedIntegrationRuntimeNodeStatus(str, Enum):
-    """The managed integration runtime node status.
-    """
-
-    starting = "Starting"
-    available = "Available"
-    recycling = "Recycling"
-    unavailable = "Unavailable"
-
-class SelfHostedIntegrationRuntimeNodeStatus(str, Enum):
-    """Status of the integration runtime node.
-    """
-
-    need_registration = "NeedRegistration"
-    online = "Online"
-    limited = "Limited"
-    offline = "Offline"
-    upgrading = "Upgrading"
-    initializing = "Initializing"
-    initialize_failed = "InitializeFailed"
-
-class IntegrationRuntimeUpdateResult(str, Enum):
-    """The result of the last integration runtime node update.
-    """
-
-    none = "None"
-    succeed = "Succeed"
-    fail = "Fail"
-
-class HdiNodeTypes(str, Enum):
-    """The node types on which the script action should be executed.
-    """
-
-    headnode = "Headnode"
-    workernode = "Workernode"
-    zookeeper = "Zookeeper"
-
-class DaysOfWeek(str, Enum):
-
-    sunday = "Sunday"
-    monday = "Monday"
-    tuesday = "Tuesday"
-    wednesday = "Wednesday"
-    thursday = "Thursday"
-    friday = "Friday"
-    saturday = "Saturday"
-
-class DayOfWeek(str, Enum):
-    """The days of the week.
-    """
-
-    sunday = "Sunday"
-    monday = "Monday"
-    tuesday = "Tuesday"
-    wednesday = "Wednesday"
-    thursday = "Thursday"
-    friday = "Friday"
-    saturday = "Saturday"
-
-class BlobEventTypes(str, Enum):
-
-    microsoft_storage_blob_created = "Microsoft.Storage.BlobCreated"
-    microsoft_storage_blob_deleted = "Microsoft.Storage.BlobDeleted"
-
-class IntegrationRuntimeAutoUpdate(str, Enum):
-    """The state of integration runtime auto update.
-    """
-
-    on = "On"
-    off = "Off"
-
-class IntegrationRuntimeAuthKeyName(str, Enum):
-    """The name of the authentication key to regenerate.
-    """
-
-    auth_key1 = "authKey1"
-    auth_key2 = "authKey2"
-
-class EventSubscriptionStatus(str, Enum):
-    """Event Subscription Status.
-    """
-
-    enabled = "Enabled"
-    provisioning = "Provisioning"
-    deprovisioning = "Deprovisioning"
-    disabled = "Disabled"
-    unknown = "Unknown"
-
-class DataFlowDebugCommandType(str, Enum):
-    """The command type.
-    """
-
-    execute_preview_query = "executePreviewQuery"
-    execute_statistics_query = "executeStatisticsQuery"
-    execute_expression_query = "executeExpressionQuery"
-
-class JsonFormatFilePattern(str, Enum):
-    """JSON format file pattern. A property of JsonFormat.
-    """
-
-    set_of_objects = "setOfObjects"
-    array_of_objects = "arrayOfObjects"
-
-class DatasetCompressionLevel(str, Enum):
-    """All available compression levels.
-    """
-
-    optimal = "Optimal"
-    fastest = "Fastest"
-
-class AvroCompressionCodec(str, Enum):
-
-    none = "none"
-    deflate = "deflate"
-    snappy = "snappy"
-    xz = "xz"
-    bzip2 = "bzip2"
-
-class CompressionCodec(str, Enum):
-
-    none = "none"
-    gzip = "gzip"
-    snappy = "snappy"
-    lzo = "lzo"
-    bzip2 = "bzip2"
-    deflate = "deflate"
-    zip_deflate = "zipDeflate"
-    lz4 = "lz4"
-
-class OrcCompressionCodec(str, Enum):
-
-    none = "none"
-    zlib = "zlib"
-    snappy = "snappy"
-
-class DataFlowComputeType(str, Enum):
-    """Compute type of the cluster which will execute data flow job.
-    """
-
-    general = "General"
-    memory_optimized = "MemoryOptimized"
-    compute_optimized = "ComputeOptimized"
-
-class IntegrationRuntimeSsisCatalogPricingTier(str, Enum):
-    """The pricing tier for the catalog database. The valid values could be found in
-    https://azure.microsoft.com/en-us/pricing/details/sql-database/
-    """
-
-    basic = "Basic"
-    standard = "Standard"
-    premium = "Premium"
-    premium_rs = "PremiumRS"
-
-class IntegrationRuntimeLicenseType(str, Enum):
-    """License type for bringing your own license scenario.
-    """
-
-    base_price = "BasePrice"
-    license_included = "LicenseIncluded"
-
-class IntegrationRuntimeEntityReferenceType(str, Enum):
-    """The type of this referenced entity.
-    """
-
-    integration_runtime_reference = "IntegrationRuntimeReference"
-    linked_service_reference = "LinkedServiceReference"
-
-class IntegrationRuntimeEdition(str, Enum):
-    """The edition for the SSIS Integration Runtime
-    """
-
-    standard = "Standard"
-    enterprise = "Enterprise"
-
-class IntegrationRuntimeInternalChannelEncryptionMode(str, Enum):
-    """It is used to set the encryption mode for node-node communication channel (when more than 2
-    self-hosted integration runtime nodes exist).
-    """
-
-    not_set = "NotSet"
-    ssl_encrypted = "SslEncrypted"
-    not_encrypted = "NotEncrypted"
-
-class DynamicsDeploymentType(str, Enum):
-    """The deployment type of the Dynamics instance. 'Online' for Dynamics Online and
-    'OnPremisesWithIfd' for Dynamics on-premises with Ifd. Type: string (or Expression with
-    resultType string).
-    """
-
-    online = "Online"
-    on_premises_with_ifd = "OnPremisesWithIfd"
-
-class DynamicsAuthenticationType(str, Enum):
-    """The authentication type to connect to Dynamics server. 'Office365' for online scenario, 'Ifd'
-    for on-premises with Ifd scenario, 'AADServicePrincipal' for Server-To-Server authentication in
-    online scenario. Type: string (or Expression with resultType string).
-    """
-
-    office365 = "Office365"
-    ifd = "Ifd"
-    aad_service_principal = "AADServicePrincipal"
-
-class DynamicsServicePrincipalCredentialType(str, Enum):
-    """The service principal credential type to use in Server-To-Server authentication.
-    'ServicePrincipalKey' for key/secret, 'ServicePrincipalCert' for certificate. Type: string (or
-    Expression with resultType string).
-    """
-
-    service_principal_key = "ServicePrincipalKey"
-    service_principal_cert = "ServicePrincipalCert"
-
-class SybaseAuthenticationType(str, Enum):
-    """AuthenticationType to be used for connection.
-    """
-
-    basic = "Basic"
-    windows = "Windows"
-
-class TeradataAuthenticationType(str, Enum):
-    """AuthenticationType to be used for connection.
-    """
-
-    basic = "Basic"
-    windows = "Windows"
-
-class ODataAuthenticationType(str, Enum):
-    """Type of authentication used to connect to the OData service.
-    """
-
-    basic = "Basic"
-    anonymous = "Anonymous"
-    windows = "Windows"
-    aad_service_principal = "AadServicePrincipal"
-    managed_service_identity = "ManagedServiceIdentity"
-
-class ODataAadServicePrincipalCredentialType(str, Enum):
-    """Specify the credential type (key or cert) is used for service principal.
-    """
-
-    service_principal_key = "ServicePrincipalKey"
-    service_principal_cert = "ServicePrincipalCert"
-
-class WebAuthenticationType(str, Enum):
-    """Type of authentication used to connect to the web table source.
-    """
-
-    basic = "Basic"
-    anonymous = "Anonymous"
-    client_certificate = "ClientCertificate"
-
-class MongoDBAuthenticationType(str, Enum):
-    """The authentication type to be used to connect to the MongoDB database.
-    """
-
-    basic = "Basic"
-    anonymous = "Anonymous"
-
-class RestServiceAuthenticationType(str, Enum):
-    """Type of authentication used to connect to the REST service.
-    """
-
-    anonymous = "Anonymous"
-    basic = "Basic"
-    aad_service_principal = "AadServicePrincipal"
-    managed_service_identity = "ManagedServiceIdentity"
-
-class HttpAuthenticationType(str, Enum):
-    """The authentication type to be used to connect to the HTTP server.
-    """
-
-    basic = "Basic"
-    anonymous = "Anonymous"
-    digest = "Digest"
-    windows = "Windows"
-    client_certificate = "ClientCertificate"
-
-class FtpAuthenticationType(str, Enum):
-    """The authentication type to be used to connect to the FTP server.
-    """
-
-    basic = "Basic"
-    anonymous = "Anonymous"
-
-class SftpAuthenticationType(str, Enum):
-    """The authentication type to be used to connect to the FTP server.
-    """
-
-    basic = "Basic"
-    ssh_public_key = "SshPublicKey"
-
-class SapHanaAuthenticationType(str, Enum):
-    """The authentication type to be used to connect to the SAP HANA server.
-    """
-
-    basic = "Basic"
-    windows = "Windows"
-
-class GoogleBigQueryAuthenticationType(str, Enum):
-    """The OAuth 2.0 authentication mechanism used for authentication. ServiceAuthentication can only
-    be used on self-hosted IR.
-    """
-
-    service_authentication = "ServiceAuthentication"
-    user_authentication = "UserAuthentication"
-
-class HBaseAuthenticationType(str, Enum):
-    """The authentication mechanism to use to connect to the HBase server.
-    """
-
-    anonymous = "Anonymous"
-    basic = "Basic"
-
-class HiveServerType(str, Enum):
-    """The type of Hive server.
-    """
-
-    hive_server1 = "HiveServer1"
-    hive_server2 = "HiveServer2"
-    hive_thrift_server = "HiveThriftServer"
-
-class HiveThriftTransportProtocol(str, Enum):
-    """The transport protocol to use in the Thrift layer.
-    """
-
-    binary = "Binary"
-    sasl = "SASL"
-    http = "HTTP "
-
-class HiveAuthenticationType(str, Enum):
-    """The authentication method used to access the Hive server.
-    """
-
-    anonymous = "Anonymous"
-    username = "Username"
-    username_and_password = "UsernameAndPassword"
-    windows_azure_hd_insight_service = "WindowsAzureHDInsightService"
-
-class ImpalaAuthenticationType(str, Enum):
-    """The authentication type to use.
-    """
-
-    anonymous = "Anonymous"
-    sasl_username = "SASLUsername"
-    username_and_password = "UsernameAndPassword"
-
-class PhoenixAuthenticationType(str, Enum):
-    """The authentication mechanism used to connect to the Phoenix server.
-    """
-
-    anonymous = "Anonymous"
-    username_and_password = "UsernameAndPassword"
-    windows_azure_hd_insight_service = "WindowsAzureHDInsightService"
-
-class PrestoAuthenticationType(str, Enum):
-    """The authentication mechanism used to connect to the Presto server.
-    """
-
-    anonymous = "Anonymous"
-    ldap = "LDAP"
-
-class ServiceNowAuthenticationType(str, Enum):
-    """The authentication type to use.
-    """
-
-    basic = "Basic"
-    o_auth2 = "OAuth2"
-
-class SparkServerType(str, Enum):
-    """The type of Spark server.
-    """
-
-    shark_server = "SharkServer"
-    shark_server2 = "SharkServer2"
-    spark_thrift_server = "SparkThriftServer"
-
-class SparkThriftTransportProtocol(str, Enum):
-    """The transport protocol to use in the Thrift layer.
-    """
-
-    binary = "Binary"
-    sasl = "SASL"
-    http = "HTTP "
-
-class SparkAuthenticationType(str, Enum):
-    """The authentication method used to access the Spark server.
-    """
-
-    anonymous = "Anonymous"
-    username = "Username"
-    username_and_password = "UsernameAndPassword"
-    windows_azure_hd_insight_service = "WindowsAzureHDInsightService"
-
-class GoogleAdWordsAuthenticationType(str, Enum):
-    """The OAuth 2.0 authentication mechanism used for authentication. ServiceAuthentication can only
-    be used on self-hosted IR.
-    """
-
-    service_authentication = "ServiceAuthentication"
-    user_authentication = "UserAuthentication"
-
-class JsonWriteFilePattern(str, Enum):
-    """File pattern of JSON. This setting controls the way a collection of JSON objects will be
-    treated. The default value is 'setOfObjects'. It is case-sensitive.
-    """
-
-    set_of_objects = "setOfObjects"
-    array_of_objects = "arrayOfObjects"
+    insert = "Insert"
+    upsert = "Upsert"
 
 class SalesforceSourceReadBehavior(str, Enum):
     """The read behavior for the operation. Default is Query.
@@ -549,6 +542,20 @@ class SalesforceSourceReadBehavior(str, Enum):
 
     query = "Query"
     query_all = "QueryAll"
+
+class SapCloudForCustomerSinkWriteBehavior(str, Enum):
+    """The write behavior for the operation. Default is 'Insert'.
+    """
+
+    insert = "Insert"
+    update = "Update"
+
+class SapHanaAuthenticationType(str, Enum):
+    """The authentication type to be used to connect to the SAP HANA server.
+    """
+
+    basic = "Basic"
+    windows = "Windows"
 
 class SapHanaPartitionOption(str, Enum):
     """The partition mechanism that will be used for SAP HANA read in parallel.
@@ -569,6 +576,75 @@ class SapTablePartitionOption(str, Enum):
     partition_on_calendar_date = "PartitionOnCalendarDate"
     partition_on_time = "PartitionOnTime"
 
+class SelfHostedIntegrationRuntimeNodeStatus(str, Enum):
+    """Status of the integration runtime node.
+    """
+
+    need_registration = "NeedRegistration"
+    online = "Online"
+    limited = "Limited"
+    offline = "Offline"
+    upgrading = "Upgrading"
+    initializing = "Initializing"
+    initialize_failed = "InitializeFailed"
+
+class ServiceNowAuthenticationType(str, Enum):
+    """The authentication type to use.
+    """
+
+    basic = "Basic"
+    o_auth2 = "OAuth2"
+
+class SftpAuthenticationType(str, Enum):
+    """The authentication type to be used to connect to the FTP server.
+    """
+
+    basic = "Basic"
+    ssh_public_key = "SshPublicKey"
+
+class SparkAuthenticationType(str, Enum):
+    """The authentication method used to access the Spark server.
+    """
+
+    anonymous = "Anonymous"
+    username = "Username"
+    username_and_password = "UsernameAndPassword"
+    windows_azure_hd_insight_service = "WindowsAzureHDInsightService"
+
+class SparkServerType(str, Enum):
+    """The type of Spark server.
+    """
+
+    shark_server = "SharkServer"
+    shark_server2 = "SharkServer2"
+    spark_thrift_server = "SparkThriftServer"
+
+class SparkThriftTransportProtocol(str, Enum):
+    """The transport protocol to use in the Thrift layer.
+    """
+
+    binary = "Binary"
+    sasl = "SASL"
+    http = "HTTP "
+
+class SsisObjectMetadataType(str, Enum):
+    """The type of SSIS object metadata.
+    """
+
+    folder = "Folder"
+    project = "Project"
+    package = "Package"
+    environment = "Environment"
+
+class SsisPackageLocationType(str, Enum):
+    """The type of SSIS package location.
+    """
+
+    ssisdb = "SSISDB"
+    file = "File"
+    inline_package = "InlinePackage"
+    package_store = "PackageStore"
+
 class StoredProcedureParameterType(str, Enum):
     """Stored procedure parameter type.
     """
@@ -581,13 +657,19 @@ class StoredProcedureParameterType(str, Enum):
     boolean = "Boolean"
     date = "Date"
 
-class OraclePartitionOption(str, Enum):
-    """The partition mechanism that will be used for Oracle read in parallel.
+class SybaseAuthenticationType(str, Enum):
+    """AuthenticationType to be used for connection.
     """
 
-    none = "None"
-    physical_partitions_of_table = "PhysicalPartitionsOfTable"
-    dynamic_range = "DynamicRange"
+    basic = "Basic"
+    windows = "Windows"
+
+class TeradataAuthenticationType(str, Enum):
+    """AuthenticationType to be used for connection.
+    """
+
+    basic = "Basic"
+    windows = "Windows"
 
 class TeradataPartitionOption(str, Enum):
     """The partition mechanism that will be used for teradata read in parallel.
@@ -597,75 +679,36 @@ class TeradataPartitionOption(str, Enum):
     hash = "Hash"
     dynamic_range = "DynamicRange"
 
-class CassandraSourceReadConsistencyLevels(str, Enum):
-    """The consistency level specifies how many Cassandra servers must respond to a read request
-    before returning data to the client application. Cassandra checks the specified number of
-    Cassandra servers for data to satisfy the read request. Must be one of
-    cassandraSourceReadConsistencyLevels. The default value is 'ONE'. It is case-insensitive.
+class TriggerRunStatus(str, Enum):
+    """Trigger run status.
     """
 
-    all = "ALL"
-    each_quorum = "EACH_QUORUM"
-    quorum = "QUORUM"
-    local_quorum = "LOCAL_QUORUM"
-    one = "ONE"
-    two = "TWO"
-    three = "THREE"
-    local_one = "LOCAL_ONE"
-    serial = "SERIAL"
-    local_serial = "LOCAL_SERIAL"
+    succeeded = "Succeeded"
+    failed = "Failed"
+    inprogress = "Inprogress"
 
-class NetezzaPartitionOption(str, Enum):
-    """The partition mechanism that will be used for Netezza read in parallel.
+class TriggerRuntimeState(str, Enum):
+    """Enumerates possible state of Triggers.
     """
 
-    none = "None"
-    data_slice = "DataSlice"
-    dynamic_range = "DynamicRange"
+    started = "Started"
+    stopped = "Stopped"
+    disabled = "Disabled"
 
-class SapCloudForCustomerSinkWriteBehavior(str, Enum):
-    """The write behavior for the operation. Default is 'Insert'.
+class TumblingWindowFrequency(str, Enum):
+    """Enumerates possible frequency option for the tumbling window trigger.
     """
 
-    insert = "Insert"
-    update = "Update"
+    minute = "Minute"
+    hour = "Hour"
 
-class PolybaseSettingsRejectType(str, Enum):
-    """Indicates whether the RejectValue property is specified as a literal value or a percentage.
+class VariableType(str, Enum):
+    """Variable type.
     """
 
-    value = "value"
-    percentage = "percentage"
-
-class AzureSearchIndexWriteBehaviorType(str, Enum):
-    """Specify the write behavior when upserting documents into Azure Search Index.
-    """
-
-    merge = "Merge"
-    upload = "Upload"
-
-class SalesforceSinkWriteBehavior(str, Enum):
-    """The write behavior for the operation. Default is Insert.
-    """
-
-    insert = "Insert"
-    upsert = "Upsert"
-
-class HdInsightActivityDebugInfoOption(str, Enum):
-    """The HDInsightActivityDebugInfoOption settings to use.
-    """
-
-    none = "None"
-    always = "Always"
-    failure = "Failure"
-
-class SsisPackageLocationType(str, Enum):
-    """The type of SSIS package location.
-    """
-
-    ssisdb = "SSISDB"
-    file = "File"
-    inline_package = "InlinePackage"
+    string = "String"
+    bool = "Bool"
+    array = "Array"
 
 class WebActivityMethod(str, Enum):
     """The list of HTTP methods supported by a WebActivity.
@@ -676,41 +719,10 @@ class WebActivityMethod(str, Enum):
     put = "PUT"
     delete = "DELETE"
 
-class AzureFunctionActivityMethod(str, Enum):
-    """The list of HTTP methods supported by a AzureFunctionActivity.
+class WebAuthenticationType(str, Enum):
+    """Type of authentication used to connect to the web table source.
     """
 
-    get = "GET"
-    post = "POST"
-    put = "PUT"
-    delete = "DELETE"
-    options = "OPTIONS"
-    head = "HEAD"
-    trace = "TRACE"
-
-class RecurrenceFrequency(str, Enum):
-    """Enumerates possible frequency option for the schedule trigger.
-    """
-
-    not_specified = "NotSpecified"
-    minute = "Minute"
-    hour = "Hour"
-    day = "Day"
-    week = "Week"
-    month = "Month"
-    year = "Year"
-
-class TumblingWindowFrequency(str, Enum):
-    """Enumerates possible frequency option for the tumbling window trigger.
-    """
-
-    minute = "Minute"
-    hour = "Hour"
-
-class CopyBehaviorType(str, Enum):
-    """All available types of copy behavior.
-    """
-
-    preserve_hierarchy = "PreserveHierarchy"
-    flatten_hierarchy = "FlattenHierarchy"
-    merge_files = "MergeFiles"
+    basic = "Basic"
+    anonymous = "Anonymous"
+    client_certificate = "ClientCertificate"

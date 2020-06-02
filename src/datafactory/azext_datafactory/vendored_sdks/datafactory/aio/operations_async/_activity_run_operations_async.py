@@ -26,7 +26,7 @@ class ActivityRunOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.datafactory.models
+    :type models: ~data_factory_management_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -49,8 +49,8 @@ class ActivityRunOperations:
         last_updated_after: datetime.datetime,
         last_updated_before: datetime.datetime,
         continuation_token: Optional[str] = None,
-        filters: Optional[List["RunQueryFilter"]] = None,
-        order_by: Optional[List["RunQueryOrderBy"]] = None,
+        filters: Optional[List["models.RunQueryFilter"]] = None,
+        order_by: Optional[List["models.RunQueryOrderBy"]] = None,
         **kwargs
     ) -> "models.ActivityRunsQueryResponse":
         """Query activity runs based on input filter conditions.
@@ -71,23 +71,24 @@ class ActivityRunOperations:
          for first page.
         :type continuation_token: str
         :param filters: List of filters.
-        :type filters: list[~azure.mgmt.datafactory.models.RunQueryFilter]
+        :type filters: list[~data_factory_management_client.models.RunQueryFilter]
         :param order_by: List of OrderBy option.
-        :type order_by: list[~azure.mgmt.datafactory.models.RunQueryOrderBy]
+        :type order_by: list[~data_factory_management_client.models.RunQueryOrderBy]
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: ActivityRunsQueryResponse or the result of cls(response)
-        :rtype: ~azure.mgmt.datafactory.models.ActivityRunsQueryResponse
+        :return: ActivityRunsQueryResponse, or the result of cls(response)
+        :rtype: ~data_factory_management_client.models.ActivityRunsQueryResponse
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ActivityRunsQueryResponse"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
 
         _filter_parameters = models.RunFilterParameters(continuation_token=continuation_token, last_updated_after=last_updated_after, last_updated_before=last_updated_before, filters=filters, order_by=order_by)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
-        url = self.query_by_pipeline_run.metadata['url']
+        url = self.query_by_pipeline_run.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
@@ -121,7 +122,7 @@ class ActivityRunOperations:
         deserialized = self._deserialize('ActivityRunsQueryResponse', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    query_by_pipeline_run.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/pipelineruns/{runId}/queryActivityruns'}
+    query_by_pipeline_run.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/pipelineruns/{runId}/queryActivityruns'}  # type: ignore

@@ -27,7 +27,7 @@ class IntegrationRuntimeObjectMetadataOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.datafactory.models
+    :type models: ~data_factory_management_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -50,11 +50,12 @@ class IntegrationRuntimeObjectMetadataOperations:
         **kwargs
     ) -> "models.SsisObjectMetadataStatusResponse":
         cls = kwargs.pop('cls', None)  # type: ClsType["models.SsisObjectMetadataStatusResponse"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2018-06-01"
 
         # Construct URL
-        url = self._refresh_initial.metadata['url']
+        url = self._refresh_initial.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
@@ -85,10 +86,10 @@ class IntegrationRuntimeObjectMetadataOperations:
             deserialized = self._deserialize('SsisObjectMetadataStatusResponse', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _refresh_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/integrationRuntimes/{integrationRuntimeName}/refreshObjectMetadata'}
+    _refresh_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/integrationRuntimes/{integrationRuntimeName}/refreshObjectMetadata'}  # type: ignore
 
     async def refresh(
         self,
@@ -109,13 +110,17 @@ class IntegrationRuntimeObjectMetadataOperations:
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :return: An instance of LROPoller that returns SsisObjectMetadataStatusResponse
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.datafactory.models.SsisObjectMetadataStatusResponse]
-
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
+        :return: SsisObjectMetadataStatusResponse, or the result of cls(response)
+        :rtype: ~data_factory_management_client.models.SsisObjectMetadataStatusResponse
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["models.SsisObjectMetadataStatusResponse"]
+        lro_delay = kwargs.pop(
+            'polling_interval',
+            self._config.polling_interval
+        )
         raw_result = await self._refresh_initial(
             resource_group_name=resource_group_name,
             factory_name=factory_name,
@@ -124,6 +129,9 @@ class IntegrationRuntimeObjectMetadataOperations:
             **kwargs
         )
 
+        kwargs.pop('error_map', None)
+        kwargs.pop('content_type', None)
+
         def get_long_running_output(pipeline_response):
             deserialized = self._deserialize('SsisObjectMetadataStatusResponse', pipeline_response)
 
@@ -131,15 +139,11 @@ class IntegrationRuntimeObjectMetadataOperations:
                 return cls(pipeline_response, deserialized, {})
             return deserialized
 
-        lro_delay = kwargs.get(
-            'polling_interval',
-            self._config.polling_interval
-        )
         if polling is True: polling_method = AsyncARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         return await async_poller(self._client, raw_result, get_long_running_output, polling_method)
-    refresh.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/integrationRuntimes/{integrationRuntimeName}/refreshObjectMetadata'}
+    refresh.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/integrationRuntimes/{integrationRuntimeName}/refreshObjectMetadata'}  # type: ignore
 
     async def get(
         self,
@@ -160,19 +164,20 @@ class IntegrationRuntimeObjectMetadataOperations:
         :param metadata_path: Metadata path.
         :type metadata_path: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: SsisObjectMetadataListResponse or the result of cls(response)
-        :rtype: ~azure.mgmt.datafactory.models.SsisObjectMetadataListResponse
+        :return: SsisObjectMetadataListResponse, or the result of cls(response)
+        :rtype: ~data_factory_management_client.models.SsisObjectMetadataListResponse
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.SsisObjectMetadataListResponse"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
 
         _get_metadata_request = models.GetSsisObjectMetadataRequest(metadata_path=metadata_path)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
-        url = self.get.metadata['url']
+        url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
@@ -209,7 +214,7 @@ class IntegrationRuntimeObjectMetadataOperations:
         deserialized = self._deserialize('SsisObjectMetadataListResponse', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/integrationRuntimes/{integrationRuntimeName}/getObjectMetadata'}
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/integrationRuntimes/{integrationRuntimeName}/getObjectMetadata'}  # type: ignore

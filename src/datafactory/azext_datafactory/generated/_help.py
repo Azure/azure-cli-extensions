@@ -32,17 +32,45 @@ helps['datafactory factory show'] = """
     examples:
       - name: Factories_Get
         text: |-
-               az datafactory factory show --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
+               az datafactory factory show --name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory factory create'] = """
     type: command
     short-summary: Creates or updates a factory.
+    parameters:
+      - name: --factory-vsts-configuration
+        short-summary: Factory's VSTS repo information.
+        long-summary: |
+            Usage: --factory-vsts-configuration project-name=XX tenant-id=XX type=XX account-name=XX repository-name=XX\
+ collaboration-branch=XX root-folder=XX last-commit-id=XX
+
+            project-name: Required. VSTS project name.
+            tenant-id: VSTS tenant id.
+            type: Required. Type of repo configuration.
+            account-name: Required. Account name.
+            repository-name: Required. Repository name.
+            collaboration-branch: Required. Collaboration branch.
+            root-folder: Required. Root folder.
+            last-commit-id: Last commit id.
+      - name: --factory-git-hub-configuration
+        short-summary: Factory's GitHub repo information.
+        long-summary: |
+            Usage: --factory-git-hub-configuration host-name=XX type=XX account-name=XX repository-name=XX collaboratio\
+n-branch=XX root-folder=XX last-commit-id=XX
+
+            host-name: GitHub Enterprise host name. For example: https://github.mydomain.com
+            type: Required. Type of repo configuration.
+            account-name: Required. Account name.
+            repository-name: Required. Repository name.
+            collaboration-branch: Required. Collaboration branch.
+            root-folder: Required. Root folder.
+            last-commit-id: Last commit id.
     examples:
       - name: Factories_CreateOrUpdate
         text: |-
-               az datafactory factory create --location "East US" --factory-name "exampleFactoryName" --resource-group \
-"exampleResourceGroup"
+               az datafactory factory create --location "East US" --name "exampleFactoryName" --resource-group "example\
+ResourceGroup"
 """
 
 helps['datafactory factory update'] = """
@@ -51,8 +79,8 @@ helps['datafactory factory update'] = """
     examples:
       - name: Factories_Update
         text: |-
-               az datafactory factory update --factory-name "exampleFactoryName" --tags exampleTag="exampleValue" --res\
-ource-group "exampleResourceGroup"
+               az datafactory factory update --name "exampleFactoryName" --tags exampleTag="exampleValue" --resource-gr\
+oup "exampleResourceGroup"
 """
 
 helps['datafactory factory delete'] = """
@@ -61,13 +89,40 @@ helps['datafactory factory delete'] = """
     examples:
       - name: Factories_Delete
         text: |-
-               az datafactory factory delete --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup\
-"
+               az datafactory factory delete --name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory factory configure-factory-repo'] = """
     type: command
     short-summary: Updates a factory's repo information.
+    parameters:
+      - name: --factory-vsts-configuration
+        short-summary: Factory's VSTS repo information.
+        long-summary: |
+            Usage: --factory-vsts-configuration project-name=XX tenant-id=XX type=XX account-name=XX repository-name=XX\
+ collaboration-branch=XX root-folder=XX last-commit-id=XX
+
+            project-name: Required. VSTS project name.
+            tenant-id: VSTS tenant id.
+            type: Required. Type of repo configuration.
+            account-name: Required. Account name.
+            repository-name: Required. Repository name.
+            collaboration-branch: Required. Collaboration branch.
+            root-folder: Required. Root folder.
+            last-commit-id: Last commit id.
+      - name: --factory-git-hub-configuration
+        short-summary: Factory's GitHub repo information.
+        long-summary: |
+            Usage: --factory-git-hub-configuration host-name=XX type=XX account-name=XX repository-name=XX collaboratio\
+n-branch=XX root-folder=XX last-commit-id=XX
+
+            host-name: GitHub Enterprise host name. For example: https://github.mydomain.com
+            type: Required. Type of repo configuration.
+            account-name: Required. Account name.
+            repository-name: Required. Repository name.
+            collaboration-branch: Required. Collaboration branch.
+            root-folder: Required. Root folder.
+            last-commit-id: Last commit id.
     examples:
       - name: Factories_ConfigureFactoryRepo
         text: |-
@@ -83,9 +138,9 @@ helps['datafactory factory get-data-plane-access'] = """
     examples:
       - name: Factories_GetDataPlaneAccess
         text: |-
-               az datafactory factory get-data-plane-access --factory-name "exampleFactoryName" --access-resource-path \
-"" --expire-time "2018-11-10T09:46:20.2659347Z" --permissions "r" --profile-name "DefaultProfile" --start-time "2018-11\
--10T02:46:20.2659347Z" --resource-group "exampleResourceGroup"
+               az datafactory factory get-data-plane-access --name "exampleFactoryName" --access-resource-path "" --exp\
+ire-time "2018-11-10T09:46:20.2659347Z" --permissions "r" --profile-name "DefaultProfile" --start-time "2018-11-10T02:4\
+6:20.2659347Z" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory factory get-git-hub-access-token'] = """
@@ -94,33 +149,8 @@ helps['datafactory factory get-git-hub-access-token'] = """
     examples:
       - name: Factories_GetGitHubAccessToken
         text: |-
-               az datafactory factory get-git-hub-access-token --factory-name "exampleFactoryName" --git-hub-access-cod\
-e "some" --git-hub-access-token-base-url "some" --git-hub-client-id "some" --resource-group "exampleResourceGroup"
-"""
-
-helps['datafactory exposure-control'] = """
-    type: group
-    short-summary: datafactory exposure-control
-"""
-
-helps['datafactory exposure-control get-feature-value'] = """
-    type: command
-    short-summary: Get exposure control feature for specific location.
-    examples:
-      - name: ExposureControl_GetFeatureValue
-        text: |-
-               az datafactory exposure-control get-feature-value --feature-name "ADFIntegrationRuntimeSharingRbac" --fe\
-ature-type "Feature" --location-id "WestEurope"
-"""
-
-helps['datafactory exposure-control get-feature-value-by-factory'] = """
-    type: command
-    short-summary: Get exposure control feature for specific factory.
-    examples:
-      - name: ExposureControl_GetFeatureValueByFactory
-        text: |-
-               az datafactory exposure-control get-feature-value-by-factory --feature-name "ADFIntegrationRuntimeSharin\
-gRbac" --feature-type "Feature" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
+               az datafactory factory get-git-hub-access-token --name "exampleFactoryName" --git-hub-access-code "some"\
+ --git-hub-access-token-base-url "some" --git-hub-client-id "some" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory integration-runtime'] = """
@@ -144,8 +174,25 @@ helps['datafactory integration-runtime show'] = """
     examples:
       - name: IntegrationRuntimes_Get
         text: |-
-               az datafactory integration-runtime show --factory-name "exampleFactoryName" --integration-runtime-name "\
-exampleIntegrationRuntime" --resource-group "exampleResourceGroup"
+               az datafactory integration-runtime show --factory-name "exampleFactoryName" --name "exampleIntegrationRu\
+ntime" --resource-group "exampleResourceGroup"
+"""
+
+helps['datafactory integration-runtime linked-integration-runtime'] = """
+    type: group
+    short-summary: datafactory integration-runtime sub group linked-integration-runtime
+"""
+
+helps['datafactory integration-runtime linked-integration-runtime create'] = """
+    type: command
+    short-summary: Create a linked integration runtime entry in a shared integration runtime.
+    examples:
+      - name: IntegrationRuntimes_CreateLinkedIntegrationRuntime
+        text: |-
+               az datafactory integration-runtime linked-integration-runtime create --name "bfa92911-9fb6-4fbe-8f23-bea\
+e87bc1c83" --data-factory-location "West US" --data-factory-name "e9955d6d-56ea-4be3-841c-52a12c1a9981" --subscription-\
+id "061774c7-4b5a-4159-a55b-365581830283" --factory-name "exampleFactoryName" --integration-runtime-name "exampleIntegr\
+ationRuntime" --resource-group "exampleResourceGroup" --subscription-id "12345678-1234-1234-1234-12345678abc"
 """
 
 helps['datafactory integration-runtime managed'] = """
@@ -156,6 +203,11 @@ helps['datafactory integration-runtime managed'] = """
 helps['datafactory integration-runtime managed create'] = """
     type: command
     short-summary: Creates or updates an integration runtime.
+    examples:
+      - name: IntegrationRuntimes_Create
+        text: |-
+               az datafactory integration-runtime managed create --factory-name "exampleFactoryName" --description "A s\
+elfhosted integration runtime" --name "exampleIntegrationRuntime" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory integration-runtime self-hosted'] = """
@@ -170,8 +222,7 @@ helps['datafactory integration-runtime self-hosted create'] = """
       - name: IntegrationRuntimes_Create
         text: |-
                az datafactory integration-runtime self-hosted create --factory-name "exampleFactoryName" --description \
-"A selfhosted integration runtime" --integration-runtime-name "exampleIntegrationRuntime" --resource-group "exampleReso\
-urceGroup"
+"A selfhosted integration runtime" --name "exampleIntegrationRuntime" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory integration-runtime update'] = """
@@ -180,9 +231,8 @@ helps['datafactory integration-runtime update'] = """
     examples:
       - name: IntegrationRuntimes_Update
         text: |-
-               az datafactory integration-runtime update --factory-name "exampleFactoryName" --integration-runtime-name\
- "exampleIntegrationRuntime" --resource-group "exampleResourceGroup" --auto-update "Off" --update-delay-offset "\\"PT3H\
-\\""
+               az datafactory integration-runtime update --factory-name "exampleFactoryName" --name "exampleIntegration\
+Runtime" --resource-group "exampleResourceGroup" --auto-update "Off" --update-delay-offset "\\"PT3H\\""
 """
 
 helps['datafactory integration-runtime delete'] = """
@@ -191,20 +241,8 @@ helps['datafactory integration-runtime delete'] = """
     examples:
       - name: IntegrationRuntimes_Delete
         text: |-
-               az datafactory integration-runtime delete --factory-name "exampleFactoryName" --integration-runtime-name\
- "exampleIntegrationRuntime" --resource-group "exampleResourceGroup"
-"""
-
-helps['datafactory integration-runtime create-linked-integration-runtime'] = """
-    type: command
-    short-summary: Create a linked integration runtime entry in a shared integration runtime.
-    examples:
-      - name: IntegrationRuntimes_CreateLinkedIntegrationRuntime
-        text: |-
-               az datafactory integration-runtime create-linked-integration-runtime --name "bfa92911-9fb6-4fbe-8f23-bea\
-e87bc1c83" --data-factory-location "West US" --data-factory-name "e9955d6d-56ea-4be3-841c-52a12c1a9981" --subscription-\
-id "061774c7-4b5a-4159-a55b-365581830283" --factory-name "exampleFactoryName" --integration-runtime-name "exampleIntegr\
-ationRuntime" --resource-group "exampleResourceGroup" --subscription-id "12345678-1234-1234-1234-12345678abc"
+               az datafactory integration-runtime delete --factory-name "exampleFactoryName" --name "exampleIntegration\
+Runtime" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory integration-runtime get-connection-info'] = """
@@ -214,8 +252,8 @@ source credentials.
     examples:
       - name: IntegrationRuntimes_GetConnectionInfo
         text: |-
-               az datafactory integration-runtime get-connection-info --factory-name "exampleFactoryName" --integration\
--runtime-name "exampleIntegrationRuntime" --resource-group "exampleResourceGroup"
+               az datafactory integration-runtime get-connection-info --factory-name "exampleFactoryName" --name "examp\
+leIntegrationRuntime" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory integration-runtime get-monitoring-data'] = """
@@ -225,8 +263,8 @@ helps['datafactory integration-runtime get-monitoring-data'] = """
     examples:
       - name: IntegrationRuntimes_GetMonitoringData
         text: |-
-               az datafactory integration-runtime get-monitoring-data --factory-name "exampleFactoryName" --integration\
--runtime-name "exampleIntegrationRuntime" --resource-group "exampleResourceGroup"
+               az datafactory integration-runtime get-monitoring-data --factory-name "exampleFactoryName" --name "examp\
+leIntegrationRuntime" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory integration-runtime get-status'] = """
@@ -235,8 +273,8 @@ helps['datafactory integration-runtime get-status'] = """
     examples:
       - name: IntegrationRuntimes_GetStatus
         text: |-
-               az datafactory integration-runtime get-status --factory-name "exampleFactoryName" --integration-runtime-\
-name "exampleIntegrationRuntime" --resource-group "exampleResourceGroup"
+               az datafactory integration-runtime get-status --factory-name "exampleFactoryName" --name "exampleIntegra\
+tionRuntime" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory integration-runtime list-auth-key'] = """
@@ -245,8 +283,8 @@ helps['datafactory integration-runtime list-auth-key'] = """
     examples:
       - name: IntegrationRuntimes_ListAuthKeys
         text: |-
-               az datafactory integration-runtime list-auth-key --factory-name "exampleFactoryName" --integration-runti\
-me-name "exampleIntegrationRuntime" --resource-group "exampleResourceGroup"
+               az datafactory integration-runtime list-auth-key --factory-name "exampleFactoryName" --name "exampleInte\
+grationRuntime" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory integration-runtime regenerate-auth-key'] = """
@@ -255,8 +293,8 @@ helps['datafactory integration-runtime regenerate-auth-key'] = """
     examples:
       - name: IntegrationRuntimes_RegenerateAuthKey
         text: |-
-               az datafactory integration-runtime regenerate-auth-key --factory-name "exampleFactoryName" --integration\
--runtime-name "exampleIntegrationRuntime" --key-name "authKey2" --resource-group "exampleResourceGroup"
+               az datafactory integration-runtime regenerate-auth-key --factory-name "exampleFactoryName" --name "examp\
+leIntegrationRuntime" --key-name "authKey2" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory integration-runtime remove-link'] = """
@@ -266,8 +304,8 @@ ime.
     examples:
       - name: IntegrationRuntimes_Upgrade
         text: |-
-               az datafactory integration-runtime remove-link --factory-name "exampleFactoryName" --integration-runtime\
--name "exampleIntegrationRuntime" --resource-group "exampleResourceGroup"
+               az datafactory integration-runtime remove-link --factory-name "exampleFactoryName" --name "exampleIntegr\
+ationRuntime" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory integration-runtime start'] = """
@@ -276,8 +314,8 @@ helps['datafactory integration-runtime start'] = """
     examples:
       - name: IntegrationRuntimes_Start
         text: |-
-               az datafactory integration-runtime start --factory-name "exampleFactoryName" --integration-runtime-name \
-"exampleManagedIntegrationRuntime" --resource-group "exampleResourceGroup"
+               az datafactory integration-runtime start --factory-name "exampleFactoryName" --name "exampleManagedInteg\
+rationRuntime" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory integration-runtime stop'] = """
@@ -286,8 +324,8 @@ helps['datafactory integration-runtime stop'] = """
     examples:
       - name: IntegrationRuntimes_Stop
         text: |-
-               az datafactory integration-runtime stop --factory-name "exampleFactoryName" --integration-runtime-name "\
-exampleManagedIntegrationRuntime" --resource-group "exampleResourceGroup"
+               az datafactory integration-runtime stop --factory-name "exampleFactoryName" --name "exampleManagedIntegr\
+ationRuntime" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory integration-runtime sync-credentials'] = """
@@ -299,8 +337,8 @@ e than using this API directly.
     examples:
       - name: IntegrationRuntimes_SyncCredentials
         text: |-
-               az datafactory integration-runtime sync-credentials --factory-name "exampleFactoryName" --integration-ru\
-ntime-name "exampleIntegrationRuntime" --resource-group "exampleResourceGroup"
+               az datafactory integration-runtime sync-credentials --factory-name "exampleFactoryName" --name "exampleI\
+ntegrationRuntime" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory integration-runtime upgrade'] = """
@@ -309,34 +347,19 @@ helps['datafactory integration-runtime upgrade'] = """
     examples:
       - name: IntegrationRuntimes_Upgrade
         text: |-
-               az datafactory integration-runtime upgrade --factory-name "exampleFactoryName" --integration-runtime-nam\
-e "exampleIntegrationRuntime" --resource-group "exampleResourceGroup"
+               az datafactory integration-runtime upgrade --factory-name "exampleFactoryName" --name "exampleIntegratio\
+nRuntime" --resource-group "exampleResourceGroup"
 """
 
-helps['datafactory integration-runtime-object-metadata'] = """
-    type: group
-    short-summary: datafactory integration-runtime-object-metadata
-"""
-
-helps['datafactory integration-runtime-object-metadata get'] = """
+helps['datafactory integration-runtime wait'] = """
     type: command
-    short-summary: Get a SSIS integration runtime object metadata by specified path. The return is pageable metadata li\
-st.
+    short-summary: Place the CLI in a waiting state until a condition of the datafactory integration-runtime is met.
     examples:
-      - name: IntegrationRuntimeObjectMetadata_Get
+      - name: Pause executing next line of CLI script until the datafactory integration-runtime is successfully created\
+.
         text: |-
-               az datafactory integration-runtime-object-metadata get --factory-name "exampleFactoryName" --metadata-pa\
-th "ssisFolders" --integration-runtime-name "testactivityv2" --resource-group "exampleResourceGroup"
-"""
-
-helps['datafactory integration-runtime-object-metadata refresh'] = """
-    type: command
-    short-summary: Refresh a SSIS integration runtime object metadata.
-    examples:
-      - name: IntegrationRuntimeObjectMetadata_Refresh
-        text: |-
-               az datafactory integration-runtime-object-metadata refresh --factory-name "exampleFactoryName" --integra\
-tion-runtime-name "testactivityv2" --resource-group "exampleResourceGroup"
+               az datafactory integration-runtime wait --factory-name "exampleFactoryName" --name "exampleIntegrationRu\
+ntime" --resource-group "exampleResourceGroup" --created
 """
 
 helps['datafactory integration-runtime-node'] = """
@@ -406,1451 +429,44 @@ helps['datafactory linked-service show'] = """
     examples:
       - name: LinkedServices_Get
         text: |-
-               az datafactory linked-service show --factory-name "exampleFactoryName" --linked-service-name "exampleLin\
-kedService" --resource-group "exampleResourceGroup"
+               az datafactory linked-service show --factory-name "exampleFactoryName" --name "exampleLinkedService" --r\
+esource-group "exampleResourceGroup"
 """
 
-helps['datafactory linked-service amazon-mws'] = """
-    type: group
-    short-summary: datafactory linked-service sub group amazon-mws
-"""
-
-helps['datafactory linked-service amazon-mws create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service amazon-mws update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service amazon-redshift'] = """
-    type: group
-    short-summary: datafactory linked-service sub group amazon-redshift
-"""
-
-helps['datafactory linked-service amazon-redshift create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service amazon-redshift update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service amazon-s3'] = """
-    type: group
-    short-summary: datafactory linked-service sub group amazon-s3
-"""
-
-helps['datafactory linked-service amazon-s3 create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service amazon-s3 update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-batch'] = """
-    type: group
-    short-summary: datafactory linked-service sub group azure-batch
-"""
-
-helps['datafactory linked-service azure-batch create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-batch update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-blob-fs'] = """
-    type: group
-    short-summary: datafactory linked-service sub group azure-blob-fs
-"""
-
-helps['datafactory linked-service azure-blob-fs create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-blob-fs update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-blob-storage'] = """
-    type: group
-    short-summary: datafactory linked-service sub group azure-blob-storage
-"""
-
-helps['datafactory linked-service azure-blob-storage create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-blob-storage update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-data-explorer'] = """
-    type: group
-    short-summary: datafactory linked-service sub group azure-data-explorer
-"""
-
-helps['datafactory linked-service azure-data-explorer create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-data-explorer update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-data-lake-analytics'] = """
-    type: group
-    short-summary: datafactory linked-service sub group azure-data-lake-analytics
-"""
-
-helps['datafactory linked-service azure-data-lake-analytics create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-data-lake-analytics update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-data-lake-store'] = """
-    type: group
-    short-summary: datafactory linked-service sub group azure-data-lake-store
-"""
-
-helps['datafactory linked-service azure-data-lake-store create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-data-lake-store update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-databricks'] = """
-    type: group
-    short-summary: datafactory linked-service sub group azure-databricks
-"""
-
-helps['datafactory linked-service azure-databricks create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-databricks update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-file-storage'] = """
-    type: group
-    short-summary: datafactory linked-service sub group azure-file-storage
-"""
-
-helps['datafactory linked-service azure-file-storage create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-file-storage update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-function'] = """
-    type: group
-    short-summary: datafactory linked-service sub group azure-function
-"""
-
-helps['datafactory linked-service azure-function create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-function update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-key-vault'] = """
-    type: group
-    short-summary: datafactory linked-service sub group azure-key-vault
-"""
-
-helps['datafactory linked-service azure-key-vault create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-key-vault update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-maria-d-b'] = """
-    type: group
-    short-summary: datafactory linked-service sub group azure-maria-d-b
-"""
-
-helps['datafactory linked-service azure-maria-d-b create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-maria-d-b update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-ml'] = """
-    type: group
-    short-summary: datafactory linked-service sub group azure-ml
-"""
-
-helps['datafactory linked-service azure-ml create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-ml update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-ml-service'] = """
-    type: group
-    short-summary: datafactory linked-service sub group azure-ml-service
-"""
-
-helps['datafactory linked-service azure-ml-service create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-ml-service update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-my-sql'] = """
-    type: group
-    short-summary: datafactory linked-service sub group azure-my-sql
-"""
-
-helps['datafactory linked-service azure-my-sql create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-my-sql update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-postgre-sql'] = """
-    type: group
-    short-summary: datafactory linked-service sub group azure-postgre-sql
-"""
-
-helps['datafactory linked-service azure-postgre-sql create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-postgre-sql update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-search'] = """
-    type: group
-    short-summary: datafactory linked-service sub group azure-search
-"""
-
-helps['datafactory linked-service azure-search create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-search update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-sql-database'] = """
-    type: group
-    short-summary: datafactory linked-service sub group azure-sql-database
-"""
-
-helps['datafactory linked-service azure-sql-database create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-sql-database update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-sql-dw'] = """
-    type: group
-    short-summary: datafactory linked-service sub group azure-sql-dw
-"""
-
-helps['datafactory linked-service azure-sql-dw create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-sql-dw update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-sql-mi'] = """
-    type: group
-    short-summary: datafactory linked-service sub group azure-sql-mi
-"""
-
-helps['datafactory linked-service azure-sql-mi create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-sql-mi update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-storage'] = """
-    type: group
-    short-summary: datafactory linked-service sub group azure-storage
-"""
-
-helps['datafactory linked-service azure-storage create'] = """
+helps['datafactory linked-service create'] = """
     type: command
     short-summary: Creates or updates a linked service.
     examples:
       - name: LinkedServices_Create
         text: |-
-               az datafactory linked-service azure-storage create --factory-name "exampleFactoryName" --linked-service-\
-name "exampleLinkedService" --resource-group "exampleResourceGroup"
+               az datafactory linked-service create --factory-name "exampleFactoryName" --properties "{\\"type\\":\\"Az\
+ureStorage\\",\\"typeProperties\\":{\\"connectionString\\":{\\"type\\":\\"SecureString\\",\\"value\\":\\"DefaultEndpoin\
+tsProtocol=https;AccountName=examplestorageaccount;AccountKey=<storage key>\\"}}}" --name "exampleLinkedService" --reso\
+urce-group "exampleResourceGroup"
       - name: LinkedServices_Update
         text: |-
-               az datafactory linked-service azure-storage create --factory-name "exampleFactoryName" --description "Ex\
-ample description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
+               az datafactory linked-service create --factory-name "exampleFactoryName" --properties "{\\"type\\":\\"Az\
+ureStorage\\",\\"description\\":\\"Example description\\",\\"typeProperties\\":{\\"connectionString\\":{\\"type\\":\\"S\
+ecureString\\",\\"value\\":\\"DefaultEndpointsProtocol=https;AccountName=examplestorageaccount;AccountKey=<storage key>\
+\\"}}}" --name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
-helps['datafactory linked-service azure-storage update'] = """
+helps['datafactory linked-service update'] = """
     type: command
     short-summary: Creates or updates a linked service.
     examples:
       - name: LinkedServices_Create
         text: |-
-               az datafactory linked-service azure-storage update --factory-name "exampleFactoryName" --linked-service-\
-name "exampleLinkedService" --resource-group "exampleResourceGroup"
+               az datafactory linked-service update --factory-name "exampleFactoryName" --properties "{\\"type\\":\\"Az\
+ureStorage\\",\\"typeProperties\\":{\\"connectionString\\":{\\"type\\":\\"SecureString\\",\\"value\\":\\"DefaultEndpoin\
+tsProtocol=https;AccountName=examplestorageaccount;AccountKey=<storage key>\\"}}}" --name "exampleLinkedService" --reso\
+urce-group "exampleResourceGroup"
       - name: LinkedServices_Update
         text: |-
-               az datafactory linked-service azure-storage update --factory-name "exampleFactoryName" --description "Ex\
-ample description" --linked-service-name "exampleLinkedService" --resource-group "exampleResourceGroup"
-"""
-
-helps['datafactory linked-service azure-table-storage'] = """
-    type: group
-    short-summary: datafactory linked-service sub group azure-table-storage
-"""
-
-helps['datafactory linked-service azure-table-storage create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service azure-table-storage update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service cassandra'] = """
-    type: group
-    short-summary: datafactory linked-service sub group cassandra
-"""
-
-helps['datafactory linked-service cassandra create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service cassandra update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service common-data-service-for-apps'] = """
-    type: group
-    short-summary: datafactory linked-service sub group common-data-service-for-apps
-"""
-
-helps['datafactory linked-service common-data-service-for-apps create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service common-data-service-for-apps update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service concur'] = """
-    type: group
-    short-summary: datafactory linked-service sub group concur
-"""
-
-helps['datafactory linked-service concur create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service concur update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service cosmos-d-b'] = """
-    type: group
-    short-summary: datafactory linked-service sub group cosmos-d-b
-"""
-
-helps['datafactory linked-service cosmos-d-b create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service cosmos-d-b update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service cosmos-d-b-mongo-d-b-api'] = """
-    type: group
-    short-summary: datafactory linked-service sub group cosmos-d-b-mongo-d-b-api
-"""
-
-helps['datafactory linked-service cosmos-d-b-mongo-d-b-api create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service cosmos-d-b-mongo-d-b-api update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service couchbase'] = """
-    type: group
-    short-summary: datafactory linked-service sub group couchbase
-"""
-
-helps['datafactory linked-service couchbase create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service couchbase update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service custom-data-source'] = """
-    type: group
-    short-summary: datafactory linked-service sub group custom-data-source
-"""
-
-helps['datafactory linked-service custom-data-source create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service custom-data-source update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service db2'] = """
-    type: group
-    short-summary: datafactory linked-service sub group db2
-"""
-
-helps['datafactory linked-service db2 create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service db2 update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service drill'] = """
-    type: group
-    short-summary: datafactory linked-service sub group drill
-"""
-
-helps['datafactory linked-service drill create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service drill update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service dynamics'] = """
-    type: group
-    short-summary: datafactory linked-service sub group dynamics
-"""
-
-helps['datafactory linked-service dynamics create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service dynamics update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service dynamics-ax'] = """
-    type: group
-    short-summary: datafactory linked-service sub group dynamics-ax
-"""
-
-helps['datafactory linked-service dynamics-ax create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service dynamics-ax update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service dynamics-crm'] = """
-    type: group
-    short-summary: datafactory linked-service sub group dynamics-crm
-"""
-
-helps['datafactory linked-service dynamics-crm create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service dynamics-crm update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service eloqua'] = """
-    type: group
-    short-summary: datafactory linked-service sub group eloqua
-"""
-
-helps['datafactory linked-service eloqua create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service eloqua update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service file-server'] = """
-    type: group
-    short-summary: datafactory linked-service sub group file-server
-"""
-
-helps['datafactory linked-service file-server create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service file-server update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service ftp-server'] = """
-    type: group
-    short-summary: datafactory linked-service sub group ftp-server
-"""
-
-helps['datafactory linked-service ftp-server create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service ftp-server update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service google-ad-words'] = """
-    type: group
-    short-summary: datafactory linked-service sub group google-ad-words
-"""
-
-helps['datafactory linked-service google-ad-words create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service google-ad-words update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service google-big-query'] = """
-    type: group
-    short-summary: datafactory linked-service sub group google-big-query
-"""
-
-helps['datafactory linked-service google-big-query create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service google-big-query update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service google-cloud-storage'] = """
-    type: group
-    short-summary: datafactory linked-service sub group google-cloud-storage
-"""
-
-helps['datafactory linked-service google-cloud-storage create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service google-cloud-storage update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service greenplum'] = """
-    type: group
-    short-summary: datafactory linked-service sub group greenplum
-"""
-
-helps['datafactory linked-service greenplum create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service greenplum update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service h-base'] = """
-    type: group
-    short-summary: datafactory linked-service sub group h-base
-"""
-
-helps['datafactory linked-service h-base create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service h-base update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service hd-insight'] = """
-    type: group
-    short-summary: datafactory linked-service sub group hd-insight
-"""
-
-helps['datafactory linked-service hd-insight create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service hd-insight update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service hd-insight-on-demand'] = """
-    type: group
-    short-summary: datafactory linked-service sub group hd-insight-on-demand
-"""
-
-helps['datafactory linked-service hd-insight-on-demand create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service hd-insight-on-demand update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service hdfs'] = """
-    type: group
-    short-summary: datafactory linked-service sub group hdfs
-"""
-
-helps['datafactory linked-service hdfs create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service hdfs update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service hive'] = """
-    type: group
-    short-summary: datafactory linked-service sub group hive
-"""
-
-helps['datafactory linked-service hive create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service hive update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service http-server'] = """
-    type: group
-    short-summary: datafactory linked-service sub group http-server
-"""
-
-helps['datafactory linked-service http-server create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service http-server update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service hubspot'] = """
-    type: group
-    short-summary: datafactory linked-service sub group hubspot
-"""
-
-helps['datafactory linked-service hubspot create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service hubspot update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service impala'] = """
-    type: group
-    short-summary: datafactory linked-service sub group impala
-"""
-
-helps['datafactory linked-service impala create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service impala update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service informix'] = """
-    type: group
-    short-summary: datafactory linked-service sub group informix
-"""
-
-helps['datafactory linked-service informix create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service informix update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service jira'] = """
-    type: group
-    short-summary: datafactory linked-service sub group jira
-"""
-
-helps['datafactory linked-service jira create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service jira update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service magento'] = """
-    type: group
-    short-summary: datafactory linked-service sub group magento
-"""
-
-helps['datafactory linked-service magento create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service magento update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service maria-d-b'] = """
-    type: group
-    short-summary: datafactory linked-service sub group maria-d-b
-"""
-
-helps['datafactory linked-service maria-d-b create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service maria-d-b update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service marketo'] = """
-    type: group
-    short-summary: datafactory linked-service sub group marketo
-"""
-
-helps['datafactory linked-service marketo create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service marketo update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service microsoft-access'] = """
-    type: group
-    short-summary: datafactory linked-service sub group microsoft-access
-"""
-
-helps['datafactory linked-service microsoft-access create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service microsoft-access update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service mongo-d-b'] = """
-    type: group
-    short-summary: datafactory linked-service sub group mongo-d-b
-"""
-
-helps['datafactory linked-service mongo-d-b create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service mongo-d-b update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service mongo-d-b-v2'] = """
-    type: group
-    short-summary: datafactory linked-service sub group mongo-d-b-v2
-"""
-
-helps['datafactory linked-service mongo-d-b-v2 create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service mongo-d-b-v2 update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service my-sql'] = """
-    type: group
-    short-summary: datafactory linked-service sub group my-sql
-"""
-
-helps['datafactory linked-service my-sql create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service my-sql update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service netezza'] = """
-    type: group
-    short-summary: datafactory linked-service sub group netezza
-"""
-
-helps['datafactory linked-service netezza create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service netezza update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service o-data'] = """
-    type: group
-    short-summary: datafactory linked-service sub group o-data
-"""
-
-helps['datafactory linked-service o-data create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service o-data update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service odbc'] = """
-    type: group
-    short-summary: datafactory linked-service sub group odbc
-"""
-
-helps['datafactory linked-service odbc create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service odbc update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service office365'] = """
-    type: group
-    short-summary: datafactory linked-service sub group office365
-"""
-
-helps['datafactory linked-service office365 create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service office365 update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service oracle'] = """
-    type: group
-    short-summary: datafactory linked-service sub group oracle
-"""
-
-helps['datafactory linked-service oracle create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service oracle update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service oracle-service-cloud'] = """
-    type: group
-    short-summary: datafactory linked-service sub group oracle-service-cloud
-"""
-
-helps['datafactory linked-service oracle-service-cloud create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service oracle-service-cloud update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service paypal'] = """
-    type: group
-    short-summary: datafactory linked-service sub group paypal
-"""
-
-helps['datafactory linked-service paypal create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service paypal update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service phoenix'] = """
-    type: group
-    short-summary: datafactory linked-service sub group phoenix
-"""
-
-helps['datafactory linked-service phoenix create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service phoenix update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service postgre-sql'] = """
-    type: group
-    short-summary: datafactory linked-service sub group postgre-sql
-"""
-
-helps['datafactory linked-service postgre-sql create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service postgre-sql update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service presto'] = """
-    type: group
-    short-summary: datafactory linked-service sub group presto
-"""
-
-helps['datafactory linked-service presto create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service presto update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service quick-books'] = """
-    type: group
-    short-summary: datafactory linked-service sub group quick-books
-"""
-
-helps['datafactory linked-service quick-books create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service quick-books update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service responsys'] = """
-    type: group
-    short-summary: datafactory linked-service sub group responsys
-"""
-
-helps['datafactory linked-service responsys create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service responsys update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service rest-service'] = """
-    type: group
-    short-summary: datafactory linked-service sub group rest-service
-"""
-
-helps['datafactory linked-service rest-service create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service rest-service update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service salesforce'] = """
-    type: group
-    short-summary: datafactory linked-service sub group salesforce
-"""
-
-helps['datafactory linked-service salesforce create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service salesforce update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service salesforce-marketing-cloud'] = """
-    type: group
-    short-summary: datafactory linked-service sub group salesforce-marketing-cloud
-"""
-
-helps['datafactory linked-service salesforce-marketing-cloud create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service salesforce-marketing-cloud update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service salesforce-service-cloud'] = """
-    type: group
-    short-summary: datafactory linked-service sub group salesforce-service-cloud
-"""
-
-helps['datafactory linked-service salesforce-service-cloud create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service salesforce-service-cloud update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service sap-bw'] = """
-    type: group
-    short-summary: datafactory linked-service sub group sap-bw
-"""
-
-helps['datafactory linked-service sap-bw create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service sap-bw update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service sap-cloud-for-customer'] = """
-    type: group
-    short-summary: datafactory linked-service sub group sap-cloud-for-customer
-"""
-
-helps['datafactory linked-service sap-cloud-for-customer create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service sap-cloud-for-customer update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service sap-ecc'] = """
-    type: group
-    short-summary: datafactory linked-service sub group sap-ecc
-"""
-
-helps['datafactory linked-service sap-ecc create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service sap-ecc update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service sap-hana'] = """
-    type: group
-    short-summary: datafactory linked-service sub group sap-hana
-"""
-
-helps['datafactory linked-service sap-hana create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service sap-hana update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service sap-open-hub'] = """
-    type: group
-    short-summary: datafactory linked-service sub group sap-open-hub
-"""
-
-helps['datafactory linked-service sap-open-hub create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service sap-open-hub update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service sap-table'] = """
-    type: group
-    short-summary: datafactory linked-service sub group sap-table
-"""
-
-helps['datafactory linked-service sap-table create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service sap-table update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service service-now'] = """
-    type: group
-    short-summary: datafactory linked-service sub group service-now
-"""
-
-helps['datafactory linked-service service-now create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service service-now update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service sftp'] = """
-    type: group
-    short-summary: datafactory linked-service sub group sftp
-"""
-
-helps['datafactory linked-service sftp create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service sftp update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service shopify'] = """
-    type: group
-    short-summary: datafactory linked-service sub group shopify
-"""
-
-helps['datafactory linked-service shopify create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service shopify update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service snowflake'] = """
-    type: group
-    short-summary: datafactory linked-service sub group snowflake
-"""
-
-helps['datafactory linked-service snowflake create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service snowflake update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service spark'] = """
-    type: group
-    short-summary: datafactory linked-service sub group spark
-"""
-
-helps['datafactory linked-service spark create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service spark update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service sql-server'] = """
-    type: group
-    short-summary: datafactory linked-service sub group sql-server
-"""
-
-helps['datafactory linked-service sql-server create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service sql-server update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service square'] = """
-    type: group
-    short-summary: datafactory linked-service sub group square
-"""
-
-helps['datafactory linked-service square create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service square update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service sybase'] = """
-    type: group
-    short-summary: datafactory linked-service sub group sybase
-"""
-
-helps['datafactory linked-service sybase create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service sybase update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service teradata'] = """
-    type: group
-    short-summary: datafactory linked-service sub group teradata
-"""
-
-helps['datafactory linked-service teradata create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service teradata update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service vertica'] = """
-    type: group
-    short-summary: datafactory linked-service sub group vertica
-"""
-
-helps['datafactory linked-service vertica create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service vertica update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service web'] = """
-    type: group
-    short-summary: datafactory linked-service sub group web
-"""
-
-helps['datafactory linked-service web create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service web update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service xero'] = """
-    type: group
-    short-summary: datafactory linked-service sub group xero
-"""
-
-helps['datafactory linked-service xero create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service xero update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service zoho'] = """
-    type: group
-    short-summary: datafactory linked-service sub group zoho
-"""
-
-helps['datafactory linked-service zoho create'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-"""
-
-helps['datafactory linked-service zoho update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
+               az datafactory linked-service update --factory-name "exampleFactoryName" --properties "{\\"type\\":\\"Az\
+ureStorage\\",\\"description\\":\\"Example description\\",\\"typeProperties\\":{\\"connectionString\\":{\\"type\\":\\"S\
+ecureString\\",\\"value\\":\\"DefaultEndpointsProtocol=https;AccountName=examplestorageaccount;AccountKey=<storage key>\
+\\"}}}" --name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service delete'] = """
@@ -1859,8 +475,8 @@ helps['datafactory linked-service delete'] = """
     examples:
       - name: LinkedServices_Delete
         text: |-
-               az datafactory linked-service delete --factory-name "exampleFactoryName" --linked-service-name "exampleL\
-inkedService" --resource-group "exampleResourceGroup"
+               az datafactory linked-service delete --factory-name "exampleFactoryName" --name "exampleLinkedService" -\
+-resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset'] = """
@@ -1883,1426 +499,52 @@ helps['datafactory dataset show'] = """
     examples:
       - name: Datasets_Get
         text: |-
-               az datafactory dataset show --dataset-name "exampleDataset" --factory-name "exampleFactoryName" --resour\
-ce-group "exampleResourceGroup"
+               az datafactory dataset show --name "exampleDataset" --factory-name "exampleFactoryName" --resource-group\
+ "exampleResourceGroup"
 """
 
-helps['datafactory dataset amazon-mws-object'] = """
-    type: group
-    short-summary: datafactory dataset sub group amazon-mws-object
-"""
-
-helps['datafactory dataset amazon-mws-object create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset amazon-mws-object update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset amazon-redshift-table'] = """
-    type: group
-    short-summary: datafactory dataset sub group amazon-redshift-table
-"""
-
-helps['datafactory dataset amazon-redshift-table create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset amazon-redshift-table update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset amazon-s3-object'] = """
-    type: group
-    short-summary: datafactory dataset sub group amazon-s3-object
-"""
-
-helps['datafactory dataset amazon-s3-object create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset amazon-s3-object update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset avro'] = """
-    type: group
-    short-summary: datafactory dataset sub group avro
-"""
-
-helps['datafactory dataset avro create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset avro update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset azure-blob'] = """
-    type: group
-    short-summary: datafactory dataset sub group azure-blob
-"""
-
-helps['datafactory dataset azure-blob create'] = """
+helps['datafactory dataset create'] = """
     type: command
     short-summary: Creates or updates a dataset.
     examples:
       - name: Datasets_Create
         text: |-
-               az datafactory dataset azure-blob create --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\"\
-,\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolder\
-Path\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryName" --resource-grou\
-p "exampleResourceGroup"
+               az datafactory dataset create --properties "{\\"type\\":\\"AzureBlob\\",\\"linkedServiceName\\":{\\"type\
+\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"},\\"parameters\\":{\\"MyFileName\\":{\\\
+"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}},\\"typeProperties\\":{\\"format\\":{\\"type\\":\\"\
+TextFormat\\"},\\"fileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFileName\\"},\\"folderPath\\":{\
+\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}" --name "exampleDataset" --factory-name "examp\
+leFactoryName" --resource-group "exampleResourceGroup"
       - name: Datasets_Update
         text: |-
-               az datafactory dataset azure-blob create --description "Example description" --linked-service-name "{\\"\
-type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\
-\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name \
-"exampleFactoryName" --resource-group "exampleResourceGroup"
+               az datafactory dataset create --properties "{\\"type\\":\\"AzureBlob\\",\\"description\\":\\"Example des\
+cription\\",\\"linkedServiceName\\":{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServic\
+e\\"},\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}},\\"typ\
+eProperties\\":{\\"format\\":{\\"type\\":\\"TextFormat\\"},\\"fileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@\
+dataset().MyFileName\\"},\\"folderPath\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}" --\
+name "exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
-helps['datafactory dataset azure-blob update'] = """
+helps['datafactory dataset update'] = """
     type: command
     short-summary: Creates or updates a dataset.
     examples:
       - name: Datasets_Create
         text: |-
-               az datafactory dataset azure-blob update --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\"\
-,\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolder\
-Path\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryName" --resource-grou\
-p "exampleResourceGroup"
+               az datafactory dataset update --properties "{\\"type\\":\\"AzureBlob\\",\\"linkedServiceName\\":{\\"type\
+\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"},\\"parameters\\":{\\"MyFileName\\":{\\\
+"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}},\\"typeProperties\\":{\\"format\\":{\\"type\\":\\"\
+TextFormat\\"},\\"fileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFileName\\"},\\"folderPath\\":{\
+\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}" --name "exampleDataset" --factory-name "examp\
+leFactoryName" --resource-group "exampleResourceGroup"
       - name: Datasets_Update
         text: |-
-               az datafactory dataset azure-blob update --description "Example description" --linked-service-name "{\\"\
-type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\
-\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --dataset-name "exampleDataset" --factory-name \
-"exampleFactoryName" --resource-group "exampleResourceGroup"
-"""
-
-helps['datafactory dataset azure-blob-fs-file'] = """
-    type: group
-    short-summary: datafactory dataset sub group azure-blob-fs-file
-"""
-
-helps['datafactory dataset azure-blob-fs-file create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset azure-blob-fs-file update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset azure-data-explorer-table'] = """
-    type: group
-    short-summary: datafactory dataset sub group azure-data-explorer-table
-"""
-
-helps['datafactory dataset azure-data-explorer-table create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset azure-data-explorer-table update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset azure-data-lake-store-file'] = """
-    type: group
-    short-summary: datafactory dataset sub group azure-data-lake-store-file
-"""
-
-helps['datafactory dataset azure-data-lake-store-file create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset azure-data-lake-store-file update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset azure-maria-d-b-table'] = """
-    type: group
-    short-summary: datafactory dataset sub group azure-maria-d-b-table
-"""
-
-helps['datafactory dataset azure-maria-d-b-table create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset azure-maria-d-b-table update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset azure-my-sql-table'] = """
-    type: group
-    short-summary: datafactory dataset sub group azure-my-sql-table
-"""
-
-helps['datafactory dataset azure-my-sql-table create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset azure-my-sql-table update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset azure-postgre-sql-table'] = """
-    type: group
-    short-summary: datafactory dataset sub group azure-postgre-sql-table
-"""
-
-helps['datafactory dataset azure-postgre-sql-table create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset azure-postgre-sql-table update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset azure-search-index'] = """
-    type: group
-    short-summary: datafactory dataset sub group azure-search-index
-"""
-
-helps['datafactory dataset azure-search-index create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset azure-search-index update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset azure-sql-dw-table'] = """
-    type: group
-    short-summary: datafactory dataset sub group azure-sql-dw-table
-"""
-
-helps['datafactory dataset azure-sql-dw-table create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset azure-sql-dw-table update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset azure-sql-mi-table'] = """
-    type: group
-    short-summary: datafactory dataset sub group azure-sql-mi-table
-"""
-
-helps['datafactory dataset azure-sql-mi-table create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset azure-sql-mi-table update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset azure-sql-table'] = """
-    type: group
-    short-summary: datafactory dataset sub group azure-sql-table
-"""
-
-helps['datafactory dataset azure-sql-table create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset azure-sql-table update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset azure-table'] = """
-    type: group
-    short-summary: datafactory dataset sub group azure-table
-"""
-
-helps['datafactory dataset azure-table create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset azure-table update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset binary'] = """
-    type: group
-    short-summary: datafactory dataset sub group binary
-"""
-
-helps['datafactory dataset binary create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset binary update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset cassandra-table'] = """
-    type: group
-    short-summary: datafactory dataset sub group cassandra-table
-"""
-
-helps['datafactory dataset cassandra-table create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset cassandra-table update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset common-data-service-for-apps-entity'] = """
-    type: group
-    short-summary: datafactory dataset sub group common-data-service-for-apps-entity
-"""
-
-helps['datafactory dataset common-data-service-for-apps-entity create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset common-data-service-for-apps-entity update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset concur-object'] = """
-    type: group
-    short-summary: datafactory dataset sub group concur-object
-"""
-
-helps['datafactory dataset concur-object create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset concur-object update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset cosmos-d-b-mongo-d-b-api-collection'] = """
-    type: group
-    short-summary: datafactory dataset sub group cosmos-d-b-mongo-d-b-api-collection
-"""
-
-helps['datafactory dataset cosmos-d-b-mongo-d-b-api-collection create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset cosmos-d-b-mongo-d-b-api-collection update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset cosmos-d-b-sql-api-collection'] = """
-    type: group
-    short-summary: datafactory dataset sub group cosmos-d-b-sql-api-collection
-"""
-
-helps['datafactory dataset cosmos-d-b-sql-api-collection create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset cosmos-d-b-sql-api-collection create --properties "{\\"type\\":\\"AzureBlob\\",\\\
-"linkedServiceName\\":{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"},\\"param\
-eters\\":{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}},\\"typeProperties\\"\
-:{\\"format\\":{\\"type\\":\\"TextFormat\\"},\\"fileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFi\
-leName\\"},\\"folderPath\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}" --dataset-name "\
-exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset cosmos-d-b-sql-api-collection create --properties "{\\"type\\":\\"AzureBlob\\",\\\
-"description\\":\\"Example description\\",\\"linkedServiceName\\":{\\"type\\":\\"LinkedServiceReference\\",\\"reference\
-Name\\":\\"exampleLinkedService\\"},\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\\
-"type\\":\\"String\\"}},\\"typeProperties\\":{\\"format\\":{\\"type\\":\\"TextFormat\\"},\\"fileName\\":{\\"type\\":\\"\
-Expression\\",\\"value\\":\\"@dataset().MyFileName\\"},\\"folderPath\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@da\
-taset().MyFolderPath\\"}}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryName" --resource-group "examp\
-leResourceGroup"
-"""
-
-helps['datafactory dataset cosmos-d-b-sql-api-collection update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset cosmos-d-b-sql-api-collection update --properties "{\\"type\\":\\"AzureBlob\\",\\\
-"linkedServiceName\\":{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"},\\"param\
-eters\\":{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}},\\"typeProperties\\"\
-:{\\"format\\":{\\"type\\":\\"TextFormat\\"},\\"fileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFi\
-leName\\"},\\"folderPath\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}" --dataset-name "\
-exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset cosmos-d-b-sql-api-collection update --properties "{\\"type\\":\\"AzureBlob\\",\\\
-"description\\":\\"Example description\\",\\"linkedServiceName\\":{\\"type\\":\\"LinkedServiceReference\\",\\"reference\
-Name\\":\\"exampleLinkedService\\"},\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\\
-"type\\":\\"String\\"}},\\"typeProperties\\":{\\"format\\":{\\"type\\":\\"TextFormat\\"},\\"fileName\\":{\\"type\\":\\"\
-Expression\\",\\"value\\":\\"@dataset().MyFileName\\"},\\"folderPath\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@da\
-taset().MyFolderPath\\"}}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryName" --resource-group "examp\
-leResourceGroup"
-"""
-
-helps['datafactory dataset couchbase-table'] = """
-    type: group
-    short-summary: datafactory dataset sub group couchbase-table
-"""
-
-helps['datafactory dataset couchbase-table create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset couchbase-table update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset custom-dataset'] = """
-    type: group
-    short-summary: datafactory dataset sub group custom-dataset
-"""
-
-helps['datafactory dataset custom-dataset create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset custom-dataset update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset db2-table'] = """
-    type: group
-    short-summary: datafactory dataset sub group db2-table
-"""
-
-helps['datafactory dataset db2-table create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset db2-table update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset delimited-text'] = """
-    type: group
-    short-summary: datafactory dataset sub group delimited-text
-"""
-
-helps['datafactory dataset delimited-text create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset delimited-text update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset document-d-b-collection'] = """
-    type: group
-    short-summary: datafactory dataset sub group document-d-b-collection
-"""
-
-helps['datafactory dataset document-d-b-collection create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset document-d-b-collection update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset drill-table'] = """
-    type: group
-    short-summary: datafactory dataset sub group drill-table
-"""
-
-helps['datafactory dataset drill-table create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset drill-table update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset dynamics-ax-resource'] = """
-    type: group
-    short-summary: datafactory dataset sub group dynamics-ax-resource
-"""
-
-helps['datafactory dataset dynamics-ax-resource create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset dynamics-ax-resource update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset dynamics-crm-entity'] = """
-    type: group
-    short-summary: datafactory dataset sub group dynamics-crm-entity
-"""
-
-helps['datafactory dataset dynamics-crm-entity create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset dynamics-crm-entity update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset dynamics-entity'] = """
-    type: group
-    short-summary: datafactory dataset sub group dynamics-entity
-"""
-
-helps['datafactory dataset dynamics-entity create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset dynamics-entity update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset eloqua-object'] = """
-    type: group
-    short-summary: datafactory dataset sub group eloqua-object
-"""
-
-helps['datafactory dataset eloqua-object create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset eloqua-object update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset file-share'] = """
-    type: group
-    short-summary: datafactory dataset sub group file-share
-"""
-
-helps['datafactory dataset file-share create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset file-share update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset google-ad-words-object'] = """
-    type: group
-    short-summary: datafactory dataset sub group google-ad-words-object
-"""
-
-helps['datafactory dataset google-ad-words-object create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset google-ad-words-object update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset google-big-query-object'] = """
-    type: group
-    short-summary: datafactory dataset sub group google-big-query-object
-"""
-
-helps['datafactory dataset google-big-query-object create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset google-big-query-object create --type-properties-dataset "{\\"properties\\":{\\"t\
-ype\\":\\"AzureBlob\\",\\"linkedServiceName\\":{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleL\
-inkedService\\"},\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\
-\\"}},\\"typeProperties\\":{\\"format\\":{\\"type\\":\\"TextFormat\\"},\\"fileName\\":{\\"type\\":\\"Expression\\",\\"v\
-alue\\":\\"@dataset().MyFileName\\"},\\"folderPath\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPa\
-th\\"}}}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset google-big-query-object create --type-properties-dataset "{\\"properties\\":{\\"t\
-ype\\":\\"AzureBlob\\",\\"description\\":\\"Example description\\",\\"linkedServiceName\\":{\\"type\\":\\"LinkedService\
-Reference\\",\\"referenceName\\":\\"exampleLinkedService\\"},\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\"String\\\
-"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}},\\"typeProperties\\":{\\"format\\":{\\"type\\":\\"TextFormat\\"},\\"fi\
-leName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFileName\\"},\\"folderPath\\":{\\"type\\":\\"Express\
-ion\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryNam\
-e" --resource-group "exampleResourceGroup"
-"""
-
-helps['datafactory dataset google-big-query-object update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset google-big-query-object update --type-properties-dataset "{\\"properties\\":{\\"t\
-ype\\":\\"AzureBlob\\",\\"linkedServiceName\\":{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleL\
-inkedService\\"},\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\
-\\"}},\\"typeProperties\\":{\\"format\\":{\\"type\\":\\"TextFormat\\"},\\"fileName\\":{\\"type\\":\\"Expression\\",\\"v\
-alue\\":\\"@dataset().MyFileName\\"},\\"folderPath\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPa\
-th\\"}}}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset google-big-query-object update --type-properties-dataset "{\\"properties\\":{\\"t\
-ype\\":\\"AzureBlob\\",\\"description\\":\\"Example description\\",\\"linkedServiceName\\":{\\"type\\":\\"LinkedService\
-Reference\\",\\"referenceName\\":\\"exampleLinkedService\\"},\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\"String\\\
-"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}},\\"typeProperties\\":{\\"format\\":{\\"type\\":\\"TextFormat\\"},\\"fi\
-leName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFileName\\"},\\"folderPath\\":{\\"type\\":\\"Express\
-ion\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}}" --dataset-name "exampleDataset" --factory-name "exampleFactoryNam\
-e" --resource-group "exampleResourceGroup"
-"""
-
-helps['datafactory dataset greenplum-table'] = """
-    type: group
-    short-summary: datafactory dataset sub group greenplum-table
-"""
-
-helps['datafactory dataset greenplum-table create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset greenplum-table update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset h-base-object'] = """
-    type: group
-    short-summary: datafactory dataset sub group h-base-object
-"""
-
-helps['datafactory dataset h-base-object create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset h-base-object update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset hive-object'] = """
-    type: group
-    short-summary: datafactory dataset sub group hive-object
-"""
-
-helps['datafactory dataset hive-object create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset hive-object update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset http-file'] = """
-    type: group
-    short-summary: datafactory dataset sub group http-file
-"""
-
-helps['datafactory dataset http-file create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset http-file update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset hubspot-object'] = """
-    type: group
-    short-summary: datafactory dataset sub group hubspot-object
-"""
-
-helps['datafactory dataset hubspot-object create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset hubspot-object update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset impala-object'] = """
-    type: group
-    short-summary: datafactory dataset sub group impala-object
-"""
-
-helps['datafactory dataset impala-object create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset impala-object update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset informix-table'] = """
-    type: group
-    short-summary: datafactory dataset sub group informix-table
-"""
-
-helps['datafactory dataset informix-table create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset informix-table update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset jira-object'] = """
-    type: group
-    short-summary: datafactory dataset sub group jira-object
-"""
-
-helps['datafactory dataset jira-object create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset jira-object update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset json'] = """
-    type: group
-    short-summary: datafactory dataset sub group json
-"""
-
-helps['datafactory dataset json create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset json update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset magento-object'] = """
-    type: group
-    short-summary: datafactory dataset sub group magento-object
-"""
-
-helps['datafactory dataset magento-object create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset magento-object update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset maria-d-b-table'] = """
-    type: group
-    short-summary: datafactory dataset sub group maria-d-b-table
-"""
-
-helps['datafactory dataset maria-d-b-table create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset maria-d-b-table update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset marketo-object'] = """
-    type: group
-    short-summary: datafactory dataset sub group marketo-object
-"""
-
-helps['datafactory dataset marketo-object create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset marketo-object update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset microsoft-access-table'] = """
-    type: group
-    short-summary: datafactory dataset sub group microsoft-access-table
-"""
-
-helps['datafactory dataset microsoft-access-table create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset microsoft-access-table update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset mongo-d-b-collection'] = """
-    type: group
-    short-summary: datafactory dataset sub group mongo-d-b-collection
-"""
-
-helps['datafactory dataset mongo-d-b-collection create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset mongo-d-b-collection update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset mongo-d-b-v2-collection'] = """
-    type: group
-    short-summary: datafactory dataset sub group mongo-d-b-v2-collection
-"""
-
-helps['datafactory dataset mongo-d-b-v2-collection create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset mongo-d-b-v2-collection update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset my-sql-table'] = """
-    type: group
-    short-summary: datafactory dataset sub group my-sql-table
-"""
-
-helps['datafactory dataset my-sql-table create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset my-sql-table update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset netezza-table'] = """
-    type: group
-    short-summary: datafactory dataset sub group netezza-table
-"""
-
-helps['datafactory dataset netezza-table create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset netezza-table update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset o-data-resource'] = """
-    type: group
-    short-summary: datafactory dataset sub group o-data-resource
-"""
-
-helps['datafactory dataset o-data-resource create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset o-data-resource update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset odbc-table'] = """
-    type: group
-    short-summary: datafactory dataset sub group odbc-table
-"""
-
-helps['datafactory dataset odbc-table create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset odbc-table update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset office365-table'] = """
-    type: group
-    short-summary: datafactory dataset sub group office365-table
-"""
-
-helps['datafactory dataset office365-table create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset office365-table update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset oracle-service-cloud-object'] = """
-    type: group
-    short-summary: datafactory dataset sub group oracle-service-cloud-object
-"""
-
-helps['datafactory dataset oracle-service-cloud-object create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset oracle-service-cloud-object update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset oracle-table'] = """
-    type: group
-    short-summary: datafactory dataset sub group oracle-table
-"""
-
-helps['datafactory dataset oracle-table create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset oracle-table update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset orc'] = """
-    type: group
-    short-summary: datafactory dataset sub group orc
-"""
-
-helps['datafactory dataset orc create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset orc update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset parquet'] = """
-    type: group
-    short-summary: datafactory dataset sub group parquet
-"""
-
-helps['datafactory dataset parquet create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset parquet update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset paypal-object'] = """
-    type: group
-    short-summary: datafactory dataset sub group paypal-object
-"""
-
-helps['datafactory dataset paypal-object create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset paypal-object update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset phoenix-object'] = """
-    type: group
-    short-summary: datafactory dataset sub group phoenix-object
-"""
-
-helps['datafactory dataset phoenix-object create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset phoenix-object update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset postgre-sql-table'] = """
-    type: group
-    short-summary: datafactory dataset sub group postgre-sql-table
-"""
-
-helps['datafactory dataset postgre-sql-table create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset postgre-sql-table update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset presto-object'] = """
-    type: group
-    short-summary: datafactory dataset sub group presto-object
-"""
-
-helps['datafactory dataset presto-object create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset presto-object update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset quick-books-object'] = """
-    type: group
-    short-summary: datafactory dataset sub group quick-books-object
-"""
-
-helps['datafactory dataset quick-books-object create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset quick-books-object update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset relational-table'] = """
-    type: group
-    short-summary: datafactory dataset sub group relational-table
-"""
-
-helps['datafactory dataset relational-table create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset relational-table update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset responsys-object'] = """
-    type: group
-    short-summary: datafactory dataset sub group responsys-object
-"""
-
-helps['datafactory dataset responsys-object create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset responsys-object update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset rest-resource'] = """
-    type: group
-    short-summary: datafactory dataset sub group rest-resource
-"""
-
-helps['datafactory dataset rest-resource create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset rest-resource update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset salesforce-marketing-cloud-object'] = """
-    type: group
-    short-summary: datafactory dataset sub group salesforce-marketing-cloud-object
-"""
-
-helps['datafactory dataset salesforce-marketing-cloud-object create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset salesforce-marketing-cloud-object update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset salesforce-object'] = """
-    type: group
-    short-summary: datafactory dataset sub group salesforce-object
-"""
-
-helps['datafactory dataset salesforce-object create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset salesforce-object update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset salesforce-service-cloud-object'] = """
-    type: group
-    short-summary: datafactory dataset sub group salesforce-service-cloud-object
-"""
-
-helps['datafactory dataset salesforce-service-cloud-object create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset salesforce-service-cloud-object update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset sap-bw-cube'] = """
-    type: group
-    short-summary: datafactory dataset sub group sap-bw-cube
-"""
-
-helps['datafactory dataset sap-bw-cube create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset sap-bw-cube update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset sap-cloud-for-customer-resource'] = """
-    type: group
-    short-summary: datafactory dataset sub group sap-cloud-for-customer-resource
-"""
-
-helps['datafactory dataset sap-cloud-for-customer-resource create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset sap-cloud-for-customer-resource update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset sap-ecc-resource'] = """
-    type: group
-    short-summary: datafactory dataset sub group sap-ecc-resource
-"""
-
-helps['datafactory dataset sap-ecc-resource create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset sap-ecc-resource update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset sap-hana-table'] = """
-    type: group
-    short-summary: datafactory dataset sub group sap-hana-table
-"""
-
-helps['datafactory dataset sap-hana-table create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset sap-hana-table update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset sap-open-hub-table'] = """
-    type: group
-    short-summary: datafactory dataset sub group sap-open-hub-table
-"""
-
-helps['datafactory dataset sap-open-hub-table create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset sap-open-hub-table update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset sap-table-resource'] = """
-    type: group
-    short-summary: datafactory dataset sub group sap-table-resource
-"""
-
-helps['datafactory dataset sap-table-resource create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset sap-table-resource update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset service-now-object'] = """
-    type: group
-    short-summary: datafactory dataset sub group service-now-object
-"""
-
-helps['datafactory dataset service-now-object create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset service-now-object update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset shopify-object'] = """
-    type: group
-    short-summary: datafactory dataset sub group shopify-object
-"""
-
-helps['datafactory dataset shopify-object create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset shopify-object update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset snowflake-table'] = """
-    type: group
-    short-summary: datafactory dataset sub group snowflake-table
-"""
-
-helps['datafactory dataset snowflake-table create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset snowflake-table update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset spark-object'] = """
-    type: group
-    short-summary: datafactory dataset sub group spark-object
-"""
-
-helps['datafactory dataset spark-object create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset spark-object update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset sql-server-table'] = """
-    type: group
-    short-summary: datafactory dataset sub group sql-server-table
-"""
-
-helps['datafactory dataset sql-server-table create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset sql-server-table update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset square-object'] = """
-    type: group
-    short-summary: datafactory dataset sub group square-object
-"""
-
-helps['datafactory dataset square-object create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset square-object update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset sybase-table'] = """
-    type: group
-    short-summary: datafactory dataset sub group sybase-table
-"""
-
-helps['datafactory dataset sybase-table create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset sybase-table update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset teradata-table'] = """
-    type: group
-    short-summary: datafactory dataset sub group teradata-table
-"""
-
-helps['datafactory dataset teradata-table create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset teradata-table update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset vertica-table'] = """
-    type: group
-    short-summary: datafactory dataset sub group vertica-table
-"""
-
-helps['datafactory dataset vertica-table create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset vertica-table update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset web-table'] = """
-    type: group
-    short-summary: datafactory dataset sub group web-table
-"""
-
-helps['datafactory dataset web-table create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset web-table update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset xero-object'] = """
-    type: group
-    short-summary: datafactory dataset sub group xero-object
-"""
-
-helps['datafactory dataset xero-object create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset xero-object update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset zoho-object'] = """
-    type: group
-    short-summary: datafactory dataset sub group zoho-object
-"""
-
-helps['datafactory dataset zoho-object create'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-"""
-
-helps['datafactory dataset zoho-object update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
+               az datafactory dataset update --properties "{\\"type\\":\\"AzureBlob\\",\\"description\\":\\"Example des\
+cription\\",\\"linkedServiceName\\":{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServic\
+e\\"},\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}},\\"typ\
+eProperties\\":{\\"format\\":{\\"type\\":\\"TextFormat\\"},\\"fileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@\
+dataset().MyFileName\\"},\\"folderPath\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}" --\
+name "exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset delete'] = """
@@ -3311,8 +553,8 @@ helps['datafactory dataset delete'] = """
     examples:
       - name: Datasets_Delete
         text: |-
-               az datafactory dataset delete --dataset-name "exampleDataset" --factory-name "exampleFactoryName" --reso\
-urce-group "exampleResourceGroup"
+               az datafactory dataset delete --name "exampleDataset" --factory-name "exampleFactoryName" --resource-gro\
+up "exampleResourceGroup"
 """
 
 helps['datafactory pipeline'] = """
@@ -3335,8 +577,8 @@ helps['datafactory pipeline show'] = """
     examples:
       - name: Pipelines_Get
         text: |-
-               az datafactory pipeline show --factory-name "exampleFactoryName" --pipeline-name "examplePipeline" --res\
-ource-group "exampleResourceGroup"
+               az datafactory pipeline show --factory-name "exampleFactoryName" --name "examplePipeline" --resource-gro\
+up "exampleResourceGroup"
 """
 
 helps['datafactory pipeline create'] = """
@@ -3345,30 +587,30 @@ helps['datafactory pipeline create'] = """
     examples:
       - name: Pipelines_Create
         text: |-
-               az datafactory pipeline create --factory-name "exampleFactoryName" --pipeline "{\\"properties\\":{\\"act\
-ivities\\":[{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperties\\":{\\"activities\\":[{\
-\\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{\\"type\\":\\"DatasetReference\\",\\"paramete\
-rs\\":{\\"MyFileName\\":\\"examplecontainer.csv\\",\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referenceName\\":\\"ex\
-ampleDataset\\"}],\\"outputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\"E\
-xpression\\",\\"value\\":\\"@item()\\"},\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referenceName\\":\\"exampleDatase\
-t\\"}],\\"typeProperties\\":{\\"dataIntegrationUnits\\":32,\\"sink\\":{\\"type\\":\\"BlobSink\\"},\\"source\\":{\\"type\
-\\":\\"BlobSource\\"}}}],\\"isSequential\\":true,\\"items\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().pa\
-rameters.OutputBlobNameList\\"}}}],\\"parameters\\":{\\"JobId\\":{\\"type\\":\\"String\\"},\\"OutputBlobNameList\\":{\\\
-"type\\":\\"Array\\"}},\\"runDimensions\\":{\\"JobId\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().paramet\
-ers.JobId\\"}},\\"variables\\":{\\"TestVariableArray\\":{\\"type\\":\\"Array\\"}}}}" --pipeline-name "examplePipeline" \
---resource-group "exampleResourceGroup"
+               az datafactory pipeline create --factory-name "exampleFactoryName" --pipeline "{\\"activities\\":[{\\"na\
+me\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperties\\":{\\"activities\\":[{\\"name\\":\\"Exam\
+pleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFileNa\
+me\\":\\"examplecontainer.csv\\",\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referenceName\\":\\"exampleDataset\\"}],\
+\\"outputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\"Expression\\",\\"va\
+lue\\":\\"@item()\\"},\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referenceName\\":\\"exampleDataset\\"}],\\"typeProp\
+erties\\":{\\"dataIntegrationUnits\\":32,\\"sink\\":{\\"type\\":\\"BlobSink\\"},\\"source\\":{\\"type\\":\\"BlobSource\
+\\"}}}],\\"isSequential\\":true,\\"items\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().parameters.OutputBl\
+obNameList\\"}}}],\\"parameters\\":{\\"JobId\\":{\\"type\\":\\"String\\"},\\"OutputBlobNameList\\":{\\"type\\":\\"Array\
+\\"}},\\"variables\\":{\\"TestVariableArray\\":{\\"type\\":\\"Array\\"}},\\"runDimensions\\":{\\"JobId\\":{\\"type\\":\
+\\"Expression\\",\\"value\\":\\"@pipeline().parameters.JobId\\"}}}" --name "examplePipeline" --resource-group "exampleR\
+esourceGroup"
       - name: Pipelines_Update
         text: |-
-               az datafactory pipeline create --factory-name "exampleFactoryName" --pipeline "{\\"properties\\":{\\"des\
-cription\\":\\"Example description\\",\\"activities\\":[{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\
-\\",\\"typeProperties\\":{\\"activities\\":[{\\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{\
-\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFileName\\":\\"examplecontainer.csv\\",\\"MyFolderPath\\":\\"e\
-xamplecontainer\\"},\\"referenceName\\":\\"exampleDataset\\"}],\\"outputs\\":[{\\"type\\":\\"DatasetReference\\",\\"par\
-ameters\\":{\\"MyFileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@item()\\"},\\"MyFolderPath\\":\\"exampleconta\
-iner\\"},\\"referenceName\\":\\"exampleDataset\\"}],\\"typeProperties\\":{\\"dataIntegrationUnits\\":32,\\"sink\\":{\\"\
-type\\":\\"BlobSink\\"},\\"source\\":{\\"type\\":\\"BlobSource\\"}}}],\\"isSequential\\":true,\\"items\\":{\\"type\\":\
-\\"Expression\\",\\"value\\":\\"@pipeline().parameters.OutputBlobNameList\\"}}}],\\"parameters\\":{\\"OutputBlobNameLis\
-t\\":{\\"type\\":\\"Array\\"}}}}" --pipeline-name "examplePipeline" --resource-group "exampleResourceGroup"
+               az datafactory pipeline create --factory-name "exampleFactoryName" --pipeline "{\\"description\\":\\"Exa\
+mple description\\",\\"activities\\":[{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperti\
+es\\":{\\"activities\\":[{\\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{\\"type\\":\\"Datas\
+etReference\\",\\"parameters\\":{\\"MyFileName\\":\\"examplecontainer.csv\\",\\"MyFolderPath\\":\\"examplecontainer\\"}\
+,\\"referenceName\\":\\"exampleDataset\\"}],\\"outputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFi\
+leName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@item()\\"},\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referen\
+ceName\\":\\"exampleDataset\\"}],\\"typeProperties\\":{\\"dataIntegrationUnits\\":32,\\"sink\\":{\\"type\\":\\"BlobSink\
+\\"},\\"source\\":{\\"type\\":\\"BlobSource\\"}}}],\\"isSequential\\":true,\\"items\\":{\\"type\\":\\"Expression\\",\\"\
+value\\":\\"@pipeline().parameters.OutputBlobNameList\\"}}}],\\"parameters\\":{\\"OutputBlobNameList\\":{\\"type\\":\\"\
+Array\\"}}}" --name "examplePipeline" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory pipeline update'] = """
@@ -3377,30 +619,30 @@ helps['datafactory pipeline update'] = """
     examples:
       - name: Pipelines_Create
         text: |-
-               az datafactory pipeline update --factory-name "exampleFactoryName" --pipeline "{\\"properties\\":{\\"act\
-ivities\\":[{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperties\\":{\\"activities\\":[{\
-\\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{\\"type\\":\\"DatasetReference\\",\\"paramete\
-rs\\":{\\"MyFileName\\":\\"examplecontainer.csv\\",\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referenceName\\":\\"ex\
-ampleDataset\\"}],\\"outputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\"E\
-xpression\\",\\"value\\":\\"@item()\\"},\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referenceName\\":\\"exampleDatase\
-t\\"}],\\"typeProperties\\":{\\"dataIntegrationUnits\\":32,\\"sink\\":{\\"type\\":\\"BlobSink\\"},\\"source\\":{\\"type\
-\\":\\"BlobSource\\"}}}],\\"isSequential\\":true,\\"items\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().pa\
-rameters.OutputBlobNameList\\"}}}],\\"parameters\\":{\\"JobId\\":{\\"type\\":\\"String\\"},\\"OutputBlobNameList\\":{\\\
-"type\\":\\"Array\\"}},\\"runDimensions\\":{\\"JobId\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().paramet\
-ers.JobId\\"}},\\"variables\\":{\\"TestVariableArray\\":{\\"type\\":\\"Array\\"}}}}" --pipeline-name "examplePipeline" \
---resource-group "exampleResourceGroup"
+               az datafactory pipeline update --factory-name "exampleFactoryName" --pipeline "{\\"activities\\":[{\\"na\
+me\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperties\\":{\\"activities\\":[{\\"name\\":\\"Exam\
+pleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFileNa\
+me\\":\\"examplecontainer.csv\\",\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referenceName\\":\\"exampleDataset\\"}],\
+\\"outputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\"Expression\\",\\"va\
+lue\\":\\"@item()\\"},\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referenceName\\":\\"exampleDataset\\"}],\\"typeProp\
+erties\\":{\\"dataIntegrationUnits\\":32,\\"sink\\":{\\"type\\":\\"BlobSink\\"},\\"source\\":{\\"type\\":\\"BlobSource\
+\\"}}}],\\"isSequential\\":true,\\"items\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().parameters.OutputBl\
+obNameList\\"}}}],\\"parameters\\":{\\"JobId\\":{\\"type\\":\\"String\\"},\\"OutputBlobNameList\\":{\\"type\\":\\"Array\
+\\"}},\\"variables\\":{\\"TestVariableArray\\":{\\"type\\":\\"Array\\"}},\\"runDimensions\\":{\\"JobId\\":{\\"type\\":\
+\\"Expression\\",\\"value\\":\\"@pipeline().parameters.JobId\\"}}}" --name "examplePipeline" --resource-group "exampleR\
+esourceGroup"
       - name: Pipelines_Update
         text: |-
-               az datafactory pipeline update --factory-name "exampleFactoryName" --pipeline "{\\"properties\\":{\\"des\
-cription\\":\\"Example description\\",\\"activities\\":[{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\
-\\",\\"typeProperties\\":{\\"activities\\":[{\\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{\
-\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFileName\\":\\"examplecontainer.csv\\",\\"MyFolderPath\\":\\"e\
-xamplecontainer\\"},\\"referenceName\\":\\"exampleDataset\\"}],\\"outputs\\":[{\\"type\\":\\"DatasetReference\\",\\"par\
-ameters\\":{\\"MyFileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@item()\\"},\\"MyFolderPath\\":\\"exampleconta\
-iner\\"},\\"referenceName\\":\\"exampleDataset\\"}],\\"typeProperties\\":{\\"dataIntegrationUnits\\":32,\\"sink\\":{\\"\
-type\\":\\"BlobSink\\"},\\"source\\":{\\"type\\":\\"BlobSource\\"}}}],\\"isSequential\\":true,\\"items\\":{\\"type\\":\
-\\"Expression\\",\\"value\\":\\"@pipeline().parameters.OutputBlobNameList\\"}}}],\\"parameters\\":{\\"OutputBlobNameLis\
-t\\":{\\"type\\":\\"Array\\"}}}}" --pipeline-name "examplePipeline" --resource-group "exampleResourceGroup"
+               az datafactory pipeline update --factory-name "exampleFactoryName" --pipeline "{\\"description\\":\\"Exa\
+mple description\\",\\"activities\\":[{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperti\
+es\\":{\\"activities\\":[{\\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{\\"type\\":\\"Datas\
+etReference\\",\\"parameters\\":{\\"MyFileName\\":\\"examplecontainer.csv\\",\\"MyFolderPath\\":\\"examplecontainer\\"}\
+,\\"referenceName\\":\\"exampleDataset\\"}],\\"outputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFi\
+leName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@item()\\"},\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referen\
+ceName\\":\\"exampleDataset\\"}],\\"typeProperties\\":{\\"dataIntegrationUnits\\":32,\\"sink\\":{\\"type\\":\\"BlobSink\
+\\"},\\"source\\":{\\"type\\":\\"BlobSource\\"}}}],\\"isSequential\\":true,\\"items\\":{\\"type\\":\\"Expression\\",\\"\
+value\\":\\"@pipeline().parameters.OutputBlobNameList\\"}}}],\\"parameters\\":{\\"OutputBlobNameList\\":{\\"type\\":\\"\
+Array\\"}}}" --name "examplePipeline" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory pipeline delete'] = """
@@ -3409,8 +651,8 @@ helps['datafactory pipeline delete'] = """
     examples:
       - name: Pipelines_Delete
         text: |-
-               az datafactory pipeline delete --factory-name "exampleFactoryName" --pipeline-name "examplePipeline" --r\
-esource-group "exampleResourceGroup"
+               az datafactory pipeline delete --factory-name "exampleFactoryName" --name "examplePipeline" --resource-g\
+roup "exampleResourceGroup"
 """
 
 helps['datafactory pipeline create-run'] = """
@@ -3420,7 +662,7 @@ helps['datafactory pipeline create-run'] = """
       - name: Pipelines_CreateRun
         text: |-
                az datafactory pipeline create-run --factory-name "exampleFactoryName" --parameters "{\\"OutputBlobNameL\
-ist\\":[\\"exampleoutput.csv\\"]}" --pipeline-name "examplePipeline" --resource-group "exampleResourceGroup"
+ist\\":[\\"exampleoutput.csv\\"]}" --name "examplePipeline" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory pipeline-run'] = """
@@ -3451,6 +693,30 @@ Group" --run-id "16ac5348-ff82-4f95-a80d-638c1d47b721"
 helps['datafactory pipeline-run query-by-factory'] = """
     type: command
     short-summary: Query pipeline runs in the factory based on input filter conditions.
+    parameters:
+      - name: --filters
+        short-summary: List of filters.
+        long-summary: |
+            Usage: --filters operand=XX operator=XX values=XX
+
+            operand: Required. Parameter name to be used for filter. The allowed operands to query pipeline runs are Pi\
+pelineName, RunStart, RunEnd and Status; to query activity runs are ActivityName, ActivityRunStart, ActivityRunEnd, Act\
+ivityType and Status, and to query trigger runs are TriggerName, TriggerRunTimestamp and Status.
+            operator: Required. Operator to be used for filter.
+            values: Required. List of filter values.
+
+            Multiple actions can be specified by using more than one --filters argument.
+      - name: --order-by
+        short-summary: List of OrderBy option.
+        long-summary: |
+            Usage: --order-by order-by=XX order=XX
+
+            order-by: Required. Parameter name to be used for order by. The allowed parameters to order by for pipeline\
+ runs are PipelineName, RunStart, RunEnd and Status; for activity runs are ActivityName, ActivityRunStart, ActivityRunE\
+nd and Status; for trigger runs are TriggerName, TriggerRunTimestamp and Status.
+            order: Required. Sorting order of the parameter.
+
+            Multiple actions can be specified by using more than one --order-by argument.
     examples:
       - name: PipelineRuns_QueryByFactory
         text: |-
@@ -3467,6 +733,30 @@ helps['datafactory activity-run'] = """
 helps['datafactory activity-run query-by-pipeline-run'] = """
     type: command
     short-summary: Query activity runs based on input filter conditions.
+    parameters:
+      - name: --filters
+        short-summary: List of filters.
+        long-summary: |
+            Usage: --filters operand=XX operator=XX values=XX
+
+            operand: Required. Parameter name to be used for filter. The allowed operands to query pipeline runs are Pi\
+pelineName, RunStart, RunEnd and Status; to query activity runs are ActivityName, ActivityRunStart, ActivityRunEnd, Act\
+ivityType and Status, and to query trigger runs are TriggerName, TriggerRunTimestamp and Status.
+            operator: Required. Operator to be used for filter.
+            values: Required. List of filter values.
+
+            Multiple actions can be specified by using more than one --filters argument.
+      - name: --order-by
+        short-summary: List of OrderBy option.
+        long-summary: |
+            Usage: --order-by order-by=XX order=XX
+
+            order-by: Required. Parameter name to be used for order by. The allowed parameters to order by for pipeline\
+ runs are PipelineName, RunStart, RunEnd and Status; for activity runs are ActivityName, ActivityRunStart, ActivityRunE\
+nd and Status; for trigger runs are TriggerName, TriggerRunTimestamp and Status.
+            order: Required. Sorting order of the parameter.
+
+            Multiple actions can be specified by using more than one --order-by argument.
     examples:
       - name: ActivityRuns_QueryByPipelineRun
         text: |-
@@ -3496,7 +786,7 @@ helps['datafactory trigger show'] = """
       - name: Triggers_Get
         text: |-
                az datafactory trigger show --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup" \
---trigger-name "exampleTrigger"
+--name "exampleTrigger"
 """
 
 helps['datafactory trigger create'] = """
@@ -3509,8 +799,8 @@ helps['datafactory trigger create'] = """
 " --properties "{\\"type\\":\\"ScheduleTrigger\\",\\"pipelines\\":[{\\"parameters\\":{\\"OutputBlobNameList\\":[\\"exam\
 pleoutput.csv\\"]},\\"pipelineReference\\":{\\"type\\":\\"PipelineReference\\",\\"referenceName\\":\\"examplePipeline\\\
 "}}],\\"typeProperties\\":{\\"recurrence\\":{\\"endTime\\":\\"2018-06-16T00:55:13.8441801Z\\",\\"frequency\\":\\"Minute\
-\\",\\"interval\\":4,\\"startTime\\":\\"2018-06-16T00:39:13.8441801Z\\",\\"timeZone\\":\\"UTC\\"}}}" --trigger-name "ex\
-ampleTrigger"
+\\",\\"interval\\":4,\\"startTime\\":\\"2018-06-16T00:39:13.8441801Z\\",\\"timeZone\\":\\"UTC\\"}}}" --name "exampleTri\
+gger"
       - name: Triggers_Update
         text: |-
                az datafactory trigger create --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup\
@@ -3518,7 +808,7 @@ ampleTrigger"
 meters\\":{\\"OutputBlobNameList\\":[\\"exampleoutput.csv\\"]},\\"pipelineReference\\":{\\"type\\":\\"PipelineReference\
 \\",\\"referenceName\\":\\"examplePipeline\\"}}],\\"typeProperties\\":{\\"recurrence\\":{\\"endTime\\":\\"2018-06-16T00\
 :55:14.905167Z\\",\\"frequency\\":\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\"2018-06-16T00:39:14.905167Z\\",\\"ti\
-meZone\\":\\"UTC\\"}}}" --trigger-name "exampleTrigger"
+meZone\\":\\"UTC\\"}}}" --name "exampleTrigger"
 """
 
 helps['datafactory trigger update'] = """
@@ -3531,8 +821,8 @@ helps['datafactory trigger update'] = """
 " --properties "{\\"type\\":\\"ScheduleTrigger\\",\\"pipelines\\":[{\\"parameters\\":{\\"OutputBlobNameList\\":[\\"exam\
 pleoutput.csv\\"]},\\"pipelineReference\\":{\\"type\\":\\"PipelineReference\\",\\"referenceName\\":\\"examplePipeline\\\
 "}}],\\"typeProperties\\":{\\"recurrence\\":{\\"endTime\\":\\"2018-06-16T00:55:13.8441801Z\\",\\"frequency\\":\\"Minute\
-\\",\\"interval\\":4,\\"startTime\\":\\"2018-06-16T00:39:13.8441801Z\\",\\"timeZone\\":\\"UTC\\"}}}" --trigger-name "ex\
-ampleTrigger"
+\\",\\"interval\\":4,\\"startTime\\":\\"2018-06-16T00:39:13.8441801Z\\",\\"timeZone\\":\\"UTC\\"}}}" --name "exampleTri\
+gger"
       - name: Triggers_Update
         text: |-
                az datafactory trigger update --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup\
@@ -3540,7 +830,7 @@ ampleTrigger"
 meters\\":{\\"OutputBlobNameList\\":[\\"exampleoutput.csv\\"]},\\"pipelineReference\\":{\\"type\\":\\"PipelineReference\
 \\",\\"referenceName\\":\\"examplePipeline\\"}}],\\"typeProperties\\":{\\"recurrence\\":{\\"endTime\\":\\"2018-06-16T00\
 :55:14.905167Z\\",\\"frequency\\":\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\"2018-06-16T00:39:14.905167Z\\",\\"ti\
-meZone\\":\\"UTC\\"}}}" --trigger-name "exampleTrigger"
+meZone\\":\\"UTC\\"}}}" --name "exampleTrigger"
 """
 
 helps['datafactory trigger delete'] = """
@@ -3550,7 +840,7 @@ helps['datafactory trigger delete'] = """
       - name: Triggers_Delete
         text: |-
                az datafactory trigger delete --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup\
-" --trigger-name "exampleTrigger"
+" --name "exampleTrigger"
 """
 
 helps['datafactory trigger get-event-subscription-status'] = """
@@ -3560,7 +850,7 @@ helps['datafactory trigger get-event-subscription-status'] = """
       - name: Triggers_GetEventSubscriptionStatus
         text: |-
                az datafactory trigger get-event-subscription-status --factory-name "exampleFactoryName" --resource-grou\
-p "exampleResourceGroup" --trigger-name "exampleTrigger"
+p "exampleResourceGroup" --name "exampleTrigger"
 """
 
 helps['datafactory trigger query-by-factory'] = """
@@ -3580,7 +870,7 @@ helps['datafactory trigger start'] = """
       - name: Triggers_Start
         text: |-
                az datafactory trigger start --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"\
- --trigger-name "exampleTrigger"
+ --name "exampleTrigger"
 """
 
 helps['datafactory trigger stop'] = """
@@ -3590,7 +880,7 @@ helps['datafactory trigger stop'] = """
       - name: Triggers_Stop
         text: |-
                az datafactory trigger stop --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup" \
---trigger-name "exampleTrigger"
+--name "exampleTrigger"
 """
 
 helps['datafactory trigger subscribe-to-event'] = """
@@ -3600,7 +890,7 @@ helps['datafactory trigger subscribe-to-event'] = """
       - name: Triggers_SubscribeToEvents
         text: |-
                az datafactory trigger subscribe-to-event --factory-name "exampleFactoryName" --resource-group "exampleR\
-esourceGroup" --trigger-name "exampleTrigger"
+esourceGroup" --name "exampleTrigger"
 """
 
 helps['datafactory trigger unsubscribe-from-event'] = """
@@ -3610,7 +900,17 @@ helps['datafactory trigger unsubscribe-from-event'] = """
       - name: Triggers_UnsubscribeFromEvents
         text: |-
                az datafactory trigger unsubscribe-from-event --factory-name "exampleFactoryName" --resource-group "exam\
-pleResourceGroup" --trigger-name "exampleTrigger"
+pleResourceGroup" --name "exampleTrigger"
+"""
+
+helps['datafactory trigger wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the datafactory trigger is met.
+    examples:
+      - name: Pause executing next line of CLI script until the datafactory trigger is successfully created.
+        text: |-
+               az datafactory trigger wait --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup" \
+--name "exampleTrigger" --created
 """
 
 helps['datafactory trigger-run'] = """
@@ -3621,6 +921,30 @@ helps['datafactory trigger-run'] = """
 helps['datafactory trigger-run query-by-factory'] = """
     type: command
     short-summary: Query trigger runs.
+    parameters:
+      - name: --filters
+        short-summary: List of filters.
+        long-summary: |
+            Usage: --filters operand=XX operator=XX values=XX
+
+            operand: Required. Parameter name to be used for filter. The allowed operands to query pipeline runs are Pi\
+pelineName, RunStart, RunEnd and Status; to query activity runs are ActivityName, ActivityRunStart, ActivityRunEnd, Act\
+ivityType and Status, and to query trigger runs are TriggerName, TriggerRunTimestamp and Status.
+            operator: Required. Operator to be used for filter.
+            values: Required. List of filter values.
+
+            Multiple actions can be specified by using more than one --filters argument.
+      - name: --order-by
+        short-summary: List of OrderBy option.
+        long-summary: |
+            Usage: --order-by order-by=XX order=XX
+
+            order-by: Required. Parameter name to be used for order by. The allowed parameters to order by for pipeline\
+ runs are PipelineName, RunStart, RunEnd and Status; for activity runs are ActivityName, ActivityRunStart, ActivityRunE\
+nd and Status; for trigger runs are TriggerName, TriggerRunTimestamp and Status.
+            order: Required. Sorting order of the parameter.
+
+            Multiple actions can be specified by using more than one --order-by argument.
     examples:
       - name: TriggerRuns_QueryByFactory
         text: |-
@@ -3660,8 +984,8 @@ helps['datafactory data-flow show'] = """
     examples:
       - name: DataFlows_Get
         text: |-
-               az datafactory data-flow show --data-flow-name "exampleDataFlow" --factory-name "exampleFactoryName" --r\
-esource-group "exampleResourceGroup"
+               az datafactory data-flow show --name "exampleDataFlow" --factory-name "exampleFactoryName" --resource-gr\
+oup "exampleResourceGroup"
 """
 
 helps['datafactory data-flow create'] = """
@@ -3682,8 +1006,8 @@ SDSink\\\\nConditionalSplit1@CAD sink(saveMode:\'overwrite\' ) ~> CADSink\\",\\"
 dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"USDOutput\\"}},{\\"name\\":\\"CADSink\\",\\"datase\
 t\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CADOutput\\"}}],\\"sources\\":[{\\"name\\":\\"USDCurrenc\
 y\\",\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetUSD\\"}},{\\"name\\":\\"CAD\
-Source\\",\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetCAD\\"}}]}}" --data-fl\
-ow-name "exampleDataFlow" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
+Source\\",\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetCAD\\"}}]}}" --name "e\
+xampleDataFlow" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
       - name: DataFlows_Update
         text: |-
                az datafactory data-flow create --properties "{\\"type\\":\\"MappingDataFlow\\",\\"description\\":\\"Sam\
@@ -3698,8 +1022,8 @@ SDSink\\\\nConditionalSplit1@CAD sink(saveMode:\'overwrite\' ) ~> CADSink\\",\\"
 dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"USDOutput\\"}},{\\"name\\":\\"CADSink\\",\\"datase\
 t\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CADOutput\\"}}],\\"sources\\":[{\\"name\\":\\"USDCurrenc\
 y\\",\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetUSD\\"}},{\\"name\\":\\"CAD\
-Source\\",\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetCAD\\"}}]}}" --data-fl\
-ow-name "exampleDataFlow" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
+Source\\",\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetCAD\\"}}]}}" --name "e\
+xampleDataFlow" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory data-flow update'] = """
@@ -3720,8 +1044,8 @@ SDSink\\\\nConditionalSplit1@CAD sink(saveMode:\'overwrite\' ) ~> CADSink\\",\\"
 dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"USDOutput\\"}},{\\"name\\":\\"CADSink\\",\\"datase\
 t\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CADOutput\\"}}],\\"sources\\":[{\\"name\\":\\"USDCurrenc\
 y\\",\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetUSD\\"}},{\\"name\\":\\"CAD\
-Source\\",\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetCAD\\"}}]}}" --data-fl\
-ow-name "exampleDataFlow" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
+Source\\",\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetCAD\\"}}]}}" --name "e\
+xampleDataFlow" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
       - name: DataFlows_Update
         text: |-
                az datafactory data-flow update --properties "{\\"type\\":\\"MappingDataFlow\\",\\"description\\":\\"Sam\
@@ -3736,8 +1060,8 @@ SDSink\\\\nConditionalSplit1@CAD sink(saveMode:\'overwrite\' ) ~> CADSink\\",\\"
 dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"USDOutput\\"}},{\\"name\\":\\"CADSink\\",\\"datase\
 t\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CADOutput\\"}}],\\"sources\\":[{\\"name\\":\\"USDCurrenc\
 y\\",\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetUSD\\"}},{\\"name\\":\\"CAD\
-Source\\",\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetCAD\\"}}]}}" --data-fl\
-ow-name "exampleDataFlow" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
+Source\\",\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetCAD\\"}}]}}" --name "e\
+xampleDataFlow" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory data-flow delete'] = """
@@ -3746,8 +1070,8 @@ helps['datafactory data-flow delete'] = """
     examples:
       - name: DataFlows_Delete
         text: |-
-               az datafactory data-flow delete --data-flow-name "exampleDataFlow" --factory-name "exampleFactoryName" -\
--resource-group "exampleResourceGroup"
+               az datafactory data-flow delete --name "exampleDataFlow" --factory-name "exampleFactoryName" --resource-\
+group "exampleResourceGroup"
 """
 
 helps['datafactory data-flow-debug-session'] = """
@@ -3780,6 +1104,16 @@ pleResourceGroup" --session-id "91fb57e0-8292-47be-89ff-c8f2d2bb2a7e"
 helps['datafactory data-flow-debug-session add-data-flow'] = """
     type: command
     short-summary: Add a data flow into debug session.
+    parameters:
+      - name: --debug-settings-source-settings
+        short-summary: Source setting for data flow debug.
+        long-summary: |
+            Usage: --debug-settings-source-settings source-name=XX row-limit=XX
+
+            source-name: The data flow source name.
+            row-limit: Defines the row limit of data flow source in debug.
+
+            Multiple actions can be specified by using more than one --debug-settings-source-settings argument.
     examples:
       - name: DataFlowDebugSession_AddDataFlow
         text: |-
@@ -3803,6 +1137,16 @@ ptedCredential\\":\\"<credential>\\"}}}]" --session-id "f06ed247-9d07-49b2-b05e-
 helps['datafactory data-flow-debug-session execute-command'] = """
     type: command
     short-summary: Execute a data flow debug command.
+    parameters:
+      - name: --command-payload
+        short-summary: The command payload object.
+        long-summary: |
+            Usage: --command-payload stream-name=XX row-limits=XX columns=XX expression=XX
+
+            stream-name: Required. The stream name which is used for preview.
+            row-limits: Row limits for preview response.
+            columns: Array of column names.
+            expression: The expression which is used for preview.
     examples:
       - name: DataFlowDebugSession_ExecuteCommand
         text: |-

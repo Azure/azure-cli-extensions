@@ -14,32 +14,10 @@ from knack.util import CLIError
 from collections import defaultdict
 
 
-class AddIdentity(argparse.Action):
-    def __call__(self, parser, namespace, values, option_string=None):
-        action = self.get_action(values, option_string)
-        namespace.identity = action
-
-
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
-        try:
-            properties = defaultdict(list)
-            for (k, v) in (x.split('=', 1) for x in values):
-                properties[k].append(v)
-            properties = dict(properties)
-        except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
-        d = {}
-        for k in properties:
-            kl = k.lower()
-            v = properties[k]
-        return d
-
-
 class AddFactoryVstsConfiguration(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
         namespace.factory_vsts_configuration = action
-
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -76,7 +54,6 @@ class AddFactoryGitHubConfiguration(argparse.Action):
         action = self.get_action(values, option_string)
         namespace.factory_git_hub_configuration = action
 
-
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
             properties = defaultdict(list)
@@ -105,157 +82,10 @@ class AddFactoryGitHubConfiguration(argparse.Action):
         return d
 
 
-class AddTypePropertiesScriptActions(argparse._AppendAction):
-    def __call__(self, parser, namespace, values, option_string=None):
-        action = self.get_action(values, option_string)
-        super(AddTypePropertiesScriptActions, self).__call__(parser, namespace, action, option_string)
-
-
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
-        try:
-            properties = defaultdict(list)
-            for (k, v) in (x.split('=', 1) for x in values):
-                properties[k].append(v)
-            properties = dict(properties)
-        except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
-        d = {}
-        for k in properties:
-            kl = k.lower()
-            v = properties[k]
-            if kl == 'name':
-                d['name'] = v[0]
-            elif kl == 'uri':
-                d['uri'] = v[0]
-            elif kl == 'roles':
-                d['roles'] = v[0]
-            elif kl == 'parameters':
-                d['parameters'] = v[0]
-        return d
-
-
-class AddFolder(argparse.Action):
-    def __call__(self, parser, namespace, values, option_string=None):
-        action = self.get_action(values, option_string)
-        namespace.folder = action
-
-
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
-        try:
-            properties = defaultdict(list)
-            for (k, v) in (x.split('=', 1) for x in values):
-                properties[k].append(v)
-            properties = dict(properties)
-        except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
-        d = {}
-        for k in properties:
-            kl = k.lower()
-            v = properties[k]
-            if kl == 'name':
-                d['name'] = v[0]
-        return d
-
-
-class AddDatasetBZip2Compression(argparse.Action):
-    def __call__(self, parser, namespace, values, option_string=None):
-        action = self.get_action(values, option_string)
-        namespace.dataset_b_zip2_compression = action
-
-
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
-        try:
-            properties = defaultdict(list)
-            for (k, v) in (x.split('=', 1) for x in values):
-                properties[k].append(v)
-            properties = dict(properties)
-        except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
-        d = {}
-        for k in properties:
-            kl = k.lower()
-            v = properties[k]
-        d['type'] = 'BZip2'
-        return d
-
-
-class AddDatasetGZipCompression(argparse.Action):
-    def __call__(self, parser, namespace, values, option_string=None):
-        action = self.get_action(values, option_string)
-        namespace.dataset_g_zip_compression = action
-
-
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
-        try:
-            properties = defaultdict(list)
-            for (k, v) in (x.split('=', 1) for x in values):
-                properties[k].append(v)
-            properties = dict(properties)
-        except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
-        d = {}
-        for k in properties:
-            kl = k.lower()
-            v = properties[k]
-            if kl == 'level':
-                d['level'] = v[0]
-        d['type'] = 'GZip'
-        return d
-
-
-class AddDatasetDeflateCompression(argparse.Action):
-    def __call__(self, parser, namespace, values, option_string=None):
-        action = self.get_action(values, option_string)
-        namespace.dataset_deflate_compression = action
-
-
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
-        try:
-            properties = defaultdict(list)
-            for (k, v) in (x.split('=', 1) for x in values):
-                properties[k].append(v)
-            properties = dict(properties)
-        except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
-        d = {}
-        for k in properties:
-            kl = k.lower()
-            v = properties[k]
-            if kl == 'level':
-                d['level'] = v[0]
-        d['type'] = 'Deflate'
-        return d
-
-
-class AddDatasetZipDeflateCompression(argparse.Action):
-    def __call__(self, parser, namespace, values, option_string=None):
-        action = self.get_action(values, option_string)
-        namespace.dataset_zip_deflate_compression = action
-
-
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
-        try:
-            properties = defaultdict(list)
-            for (k, v) in (x.split('=', 1) for x in values):
-                properties[k].append(v)
-            properties = dict(properties)
-        except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
-        d = {}
-        for k in properties:
-            kl = k.lower()
-            v = properties[k]
-            if kl == 'level':
-                d['level'] = v[0]
-        d['type'] = 'ZipDeflate'
-        return d
-
-
 class AddFilters(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
         super(AddFilters, self).__call__(parser, namespace, action, option_string)
-
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -283,7 +113,6 @@ class AddOrderBy(argparse._AppendAction):
         action = self.get_action(values, option_string)
         super(AddOrderBy, self).__call__(parser, namespace, action, option_string)
 
-
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
             properties = defaultdict(list)
@@ -308,7 +137,6 @@ class AddDebugSettingsSourceSettings(argparse._AppendAction):
         action = self.get_action(values, option_string)
         super(AddDebugSettingsSourceSettings, self).__call__(parser, namespace, action, option_string)
 
-
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
             properties = defaultdict(list)
@@ -332,7 +160,6 @@ class AddCommandPayload(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
         namespace.command_payload = action
-
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:

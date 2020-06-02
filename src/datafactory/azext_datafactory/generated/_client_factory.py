@@ -19,16 +19,8 @@ def cf_factory(cli_ctx, *_):
     return cf_datafactory(cli_ctx).factory
 
 
-def cf_exposure_control(cli_ctx, *_):
-    return cf_datafactory(cli_ctx).exposure_control
-
-
 def cf_integration_runtime(cli_ctx, *_):
     return cf_datafactory(cli_ctx).integration_runtime
-
-
-def cf_integration_runtime_object_metadata(cli_ctx, *_):
-    return cf_datafactory(cli_ctx).integration_runtime_object_metadata
 
 
 def cf_integration_runtime_node(cli_ctx, *_):

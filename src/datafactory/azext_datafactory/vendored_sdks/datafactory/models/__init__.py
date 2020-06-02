@@ -86,9 +86,9 @@ try:
     from ._models_py3 import AzureSearchIndexDataset
     from ._models_py3 import AzureSearchIndexSink
     from ._models_py3 import AzureSearchLinkedService
+    from ._models_py3 import AzureSqlDWLinkedService
+    from ._models_py3 import AzureSqlDWTableDataset
     from ._models_py3 import AzureSqlDatabaseLinkedService
-    from ._models_py3 import AzureSqlDwLinkedService
-    from ._models_py3 import AzureSqlDwTableDataset
     from ._models_py3 import AzureSqlMiLinkedService
     from ._models_py3 import AzureSqlMiTableDataset
     from ._models_py3 import AzureSqlSink
@@ -100,6 +100,7 @@ try:
     from ._models_py3 import AzureTableSource
     from ._models_py3 import AzureTableStorageLinkedService
     from ._models_py3 import BinaryDataset
+    from ._models_py3 import BinaryReadSettings
     from ._models_py3 import BinarySink
     from ._models_py3 import BinarySource
     from ._models_py3 import BlobEventsTrigger
@@ -117,6 +118,7 @@ try:
     from ._models_py3 import CommonDataServiceForAppsSink
     from ._models_py3 import CommonDataServiceForAppsSource
     from ._models_py3 import ComponentSetup
+    from ._models_py3 import CompressionReadSettings
     from ._models_py3 import ConcurLinkedService
     from ._models_py3 import ConcurObjectDataset
     from ._models_py3 import ConcurSource
@@ -145,6 +147,8 @@ try:
     from ._models_py3 import CustomDataSourceLinkedService
     from ._models_py3 import CustomDataset
     from ._models_py3 import CustomSetupBase
+    from ._models_py3 import DWCopyCommandDefaultValue
+    from ._models_py3 import DWCopyCommandSettings
     from ._models_py3 import DataFlow
     from ._models_py3 import DataFlowDebugCommandPayload
     from ._models_py3 import DataFlowDebugCommandRequest
@@ -197,8 +201,6 @@ try:
     from ._models_py3 import DrillLinkedService
     from ._models_py3 import DrillSource
     from ._models_py3 import DrillTableDataset
-    from ._models_py3 import DwCopyCommandDefaultValue
-    from ._models_py3 import DwCopyCommandSettings
     from ._models_py3 import DynamicsAxLinkedService
     from ._models_py3 import DynamicsAxResourceDataset
     from ._models_py3 import DynamicsAxSource
@@ -215,6 +217,8 @@ try:
     from ._models_py3 import EloquaSource
     from ._models_py3 import EntityReference
     from ._models_py3 import EnvironmentVariableSetup
+    from ._models_py3 import ExcelDataset
+    from ._models_py3 import ExcelSource
     from ._models_py3 import ExecuteDataFlowActivity
     from ._models_py3 import ExecuteDataFlowActivityTypePropertiesCompute
     from ._models_py3 import ExecutePipelineActivity
@@ -251,6 +255,7 @@ try:
     from ._models_py3 import GetSsisObjectMetadataRequest
     from ._models_py3 import GitHubAccessTokenRequest
     from ._models_py3 import GitHubAccessTokenResponse
+    from ._models_py3 import GlobalParameterSpecification
     from ._models_py3 import GoogleAdWordsLinkedService
     from ._models_py3 import GoogleAdWordsObjectDataset
     from ._models_py3 import GoogleAdWordsSource
@@ -323,6 +328,7 @@ try:
     from ._models_py3 import JiraSource
     from ._models_py3 import JsonDataset
     from ._models_py3 import JsonFormat
+    from ._models_py3 import JsonReadSettings
     from ._models_py3 import JsonSink
     from ._models_py3 import JsonSource
     from ._models_py3 import JsonWriteSettings
@@ -402,6 +408,7 @@ try:
     from ._models_py3 import OrcFormat
     from ._models_py3 import OrcSink
     from ._models_py3 import OrcSource
+    from ._models_py3 import PackageStore
     from ._models_py3 import ParameterSpecification
     from ._models_py3 import ParquetDataset
     from ._models_py3 import ParquetFormat
@@ -413,7 +420,6 @@ try:
     from ._models_py3 import PhoenixLinkedService
     from ._models_py3 import PhoenixObjectDataset
     from ._models_py3 import PhoenixSource
-    from ._models_py3 import PipelineFolder
     from ._models_py3 import PipelineListResponse
     from ._models_py3 import PipelineReference
     from ._models_py3 import PipelineResource
@@ -498,6 +504,9 @@ try:
     from ._models_py3 import SftpReadSettings
     from ._models_py3 import SftpServerLinkedService
     from ._models_py3 import SftpWriteSettings
+    from ._models_py3 import SharePointOnlineListLinkedService
+    from ._models_py3 import SharePointOnlineListResourceDataset
+    from ._models_py3 import SharePointOnlineListSource
     from ._models_py3 import ShopifyLinkedService
     from ._models_py3 import ShopifyObjectDataset
     from ._models_py3 import ShopifySource
@@ -511,8 +520,8 @@ try:
     from ._models_py3 import SparkLinkedService
     from ._models_py3 import SparkObjectDataset
     from ._models_py3 import SparkSource
-    from ._models_py3 import SqlDwSink
-    from ._models_py3 import SqlDwSource
+    from ._models_py3 import SqlDWSink
+    from ._models_py3 import SqlDWSource
     from ._models_py3 import SqlMiSink
     from ._models_py3 import SqlMiSource
     from ._models_py3 import SqlServerLinkedService
@@ -574,6 +583,7 @@ try:
     from ._models_py3 import TriggerSubscriptionOperationStatus
     from ._models_py3 import TumblingWindowTrigger
     from ._models_py3 import TumblingWindowTriggerDependencyReference
+    from ._models_py3 import TypeConversionSettings
     from ._models_py3 import UntilActivity
     from ._models_py3 import UpdateIntegrationRuntimeNodeRequest
     from ._models_py3 import UpdateIntegrationRuntimeRequest
@@ -598,6 +608,10 @@ try:
     from ._models_py3 import XeroLinkedService
     from ._models_py3 import XeroObjectDataset
     from ._models_py3 import XeroSource
+    from ._models_py3 import XmlDataset
+    from ._models_py3 import XmlReadSettings
+    from ._models_py3 import XmlSource
+    from ._models_py3 import ZipDeflateReadSettings
     from ._models_py3 import ZohoLinkedService
     from ._models_py3 import ZohoObjectDataset
     from ._models_py3 import ZohoSource
@@ -681,9 +695,9 @@ except (SyntaxError, ImportError):
     from ._models import AzureSearchIndexDataset  # type: ignore
     from ._models import AzureSearchIndexSink  # type: ignore
     from ._models import AzureSearchLinkedService  # type: ignore
+    from ._models import AzureSqlDWLinkedService  # type: ignore
+    from ._models import AzureSqlDWTableDataset  # type: ignore
     from ._models import AzureSqlDatabaseLinkedService  # type: ignore
-    from ._models import AzureSqlDwLinkedService  # type: ignore
-    from ._models import AzureSqlDwTableDataset  # type: ignore
     from ._models import AzureSqlMiLinkedService  # type: ignore
     from ._models import AzureSqlMiTableDataset  # type: ignore
     from ._models import AzureSqlSink  # type: ignore
@@ -695,6 +709,7 @@ except (SyntaxError, ImportError):
     from ._models import AzureTableSource  # type: ignore
     from ._models import AzureTableStorageLinkedService  # type: ignore
     from ._models import BinaryDataset  # type: ignore
+    from ._models import BinaryReadSettings  # type: ignore
     from ._models import BinarySink  # type: ignore
     from ._models import BinarySource  # type: ignore
     from ._models import BlobEventsTrigger  # type: ignore
@@ -712,6 +727,7 @@ except (SyntaxError, ImportError):
     from ._models import CommonDataServiceForAppsSink  # type: ignore
     from ._models import CommonDataServiceForAppsSource  # type: ignore
     from ._models import ComponentSetup  # type: ignore
+    from ._models import CompressionReadSettings  # type: ignore
     from ._models import ConcurLinkedService  # type: ignore
     from ._models import ConcurObjectDataset  # type: ignore
     from ._models import ConcurSource  # type: ignore
@@ -740,6 +756,8 @@ except (SyntaxError, ImportError):
     from ._models import CustomDataSourceLinkedService  # type: ignore
     from ._models import CustomDataset  # type: ignore
     from ._models import CustomSetupBase  # type: ignore
+    from ._models import DWCopyCommandDefaultValue  # type: ignore
+    from ._models import DWCopyCommandSettings  # type: ignore
     from ._models import DataFlow  # type: ignore
     from ._models import DataFlowDebugCommandPayload  # type: ignore
     from ._models import DataFlowDebugCommandRequest  # type: ignore
@@ -792,8 +810,6 @@ except (SyntaxError, ImportError):
     from ._models import DrillLinkedService  # type: ignore
     from ._models import DrillSource  # type: ignore
     from ._models import DrillTableDataset  # type: ignore
-    from ._models import DwCopyCommandDefaultValue  # type: ignore
-    from ._models import DwCopyCommandSettings  # type: ignore
     from ._models import DynamicsAxLinkedService  # type: ignore
     from ._models import DynamicsAxResourceDataset  # type: ignore
     from ._models import DynamicsAxSource  # type: ignore
@@ -810,6 +826,8 @@ except (SyntaxError, ImportError):
     from ._models import EloquaSource  # type: ignore
     from ._models import EntityReference  # type: ignore
     from ._models import EnvironmentVariableSetup  # type: ignore
+    from ._models import ExcelDataset  # type: ignore
+    from ._models import ExcelSource  # type: ignore
     from ._models import ExecuteDataFlowActivity  # type: ignore
     from ._models import ExecuteDataFlowActivityTypePropertiesCompute  # type: ignore
     from ._models import ExecutePipelineActivity  # type: ignore
@@ -846,6 +864,7 @@ except (SyntaxError, ImportError):
     from ._models import GetSsisObjectMetadataRequest  # type: ignore
     from ._models import GitHubAccessTokenRequest  # type: ignore
     from ._models import GitHubAccessTokenResponse  # type: ignore
+    from ._models import GlobalParameterSpecification  # type: ignore
     from ._models import GoogleAdWordsLinkedService  # type: ignore
     from ._models import GoogleAdWordsObjectDataset  # type: ignore
     from ._models import GoogleAdWordsSource  # type: ignore
@@ -918,6 +937,7 @@ except (SyntaxError, ImportError):
     from ._models import JiraSource  # type: ignore
     from ._models import JsonDataset  # type: ignore
     from ._models import JsonFormat  # type: ignore
+    from ._models import JsonReadSettings  # type: ignore
     from ._models import JsonSink  # type: ignore
     from ._models import JsonSource  # type: ignore
     from ._models import JsonWriteSettings  # type: ignore
@@ -997,6 +1017,7 @@ except (SyntaxError, ImportError):
     from ._models import OrcFormat  # type: ignore
     from ._models import OrcSink  # type: ignore
     from ._models import OrcSource  # type: ignore
+    from ._models import PackageStore  # type: ignore
     from ._models import ParameterSpecification  # type: ignore
     from ._models import ParquetDataset  # type: ignore
     from ._models import ParquetFormat  # type: ignore
@@ -1008,7 +1029,6 @@ except (SyntaxError, ImportError):
     from ._models import PhoenixLinkedService  # type: ignore
     from ._models import PhoenixObjectDataset  # type: ignore
     from ._models import PhoenixSource  # type: ignore
-    from ._models import PipelineFolder  # type: ignore
     from ._models import PipelineListResponse  # type: ignore
     from ._models import PipelineReference  # type: ignore
     from ._models import PipelineResource  # type: ignore
@@ -1093,6 +1113,9 @@ except (SyntaxError, ImportError):
     from ._models import SftpReadSettings  # type: ignore
     from ._models import SftpServerLinkedService  # type: ignore
     from ._models import SftpWriteSettings  # type: ignore
+    from ._models import SharePointOnlineListLinkedService  # type: ignore
+    from ._models import SharePointOnlineListResourceDataset  # type: ignore
+    from ._models import SharePointOnlineListSource  # type: ignore
     from ._models import ShopifyLinkedService  # type: ignore
     from ._models import ShopifyObjectDataset  # type: ignore
     from ._models import ShopifySource  # type: ignore
@@ -1106,8 +1129,8 @@ except (SyntaxError, ImportError):
     from ._models import SparkLinkedService  # type: ignore
     from ._models import SparkObjectDataset  # type: ignore
     from ._models import SparkSource  # type: ignore
-    from ._models import SqlDwSink  # type: ignore
-    from ._models import SqlDwSource  # type: ignore
+    from ._models import SqlDWSink  # type: ignore
+    from ._models import SqlDWSource  # type: ignore
     from ._models import SqlMiSink  # type: ignore
     from ._models import SqlMiSource  # type: ignore
     from ._models import SqlServerLinkedService  # type: ignore
@@ -1169,6 +1192,7 @@ except (SyntaxError, ImportError):
     from ._models import TriggerSubscriptionOperationStatus  # type: ignore
     from ._models import TumblingWindowTrigger  # type: ignore
     from ._models import TumblingWindowTriggerDependencyReference  # type: ignore
+    from ._models import TypeConversionSettings  # type: ignore
     from ._models import UntilActivity  # type: ignore
     from ._models import UpdateIntegrationRuntimeNodeRequest  # type: ignore
     from ._models import UpdateIntegrationRuntimeRequest  # type: ignore
@@ -1193,6 +1217,10 @@ except (SyntaxError, ImportError):
     from ._models import XeroLinkedService  # type: ignore
     from ._models import XeroObjectDataset  # type: ignore
     from ._models import XeroSource  # type: ignore
+    from ._models import XmlDataset  # type: ignore
+    from ._models import XmlReadSettings  # type: ignore
+    from ._models import XmlSource  # type: ignore
+    from ._models import ZipDeflateReadSettings  # type: ignore
     from ._models import ZohoLinkedService  # type: ignore
     from ._models import ZohoObjectDataset  # type: ignore
     from ._models import ZohoSource  # type: ignore
@@ -1216,6 +1244,7 @@ from ._data_factory_management_client_enums import (
     DynamicsServicePrincipalCredentialType,
     EventSubscriptionStatus,
     FtpAuthenticationType,
+    GlobalParameterType,
     GoogleAdWordsAuthenticationType,
     GoogleBigQueryAuthenticationType,
     HBaseAuthenticationType,
@@ -1361,9 +1390,9 @@ __all__ = [
     'AzureSearchIndexDataset',
     'AzureSearchIndexSink',
     'AzureSearchLinkedService',
+    'AzureSqlDWLinkedService',
+    'AzureSqlDWTableDataset',
     'AzureSqlDatabaseLinkedService',
-    'AzureSqlDwLinkedService',
-    'AzureSqlDwTableDataset',
     'AzureSqlMiLinkedService',
     'AzureSqlMiTableDataset',
     'AzureSqlSink',
@@ -1375,6 +1404,7 @@ __all__ = [
     'AzureTableSource',
     'AzureTableStorageLinkedService',
     'BinaryDataset',
+    'BinaryReadSettings',
     'BinarySink',
     'BinarySource',
     'BlobEventsTrigger',
@@ -1392,6 +1422,7 @@ __all__ = [
     'CommonDataServiceForAppsSink',
     'CommonDataServiceForAppsSource',
     'ComponentSetup',
+    'CompressionReadSettings',
     'ConcurLinkedService',
     'ConcurObjectDataset',
     'ConcurSource',
@@ -1420,6 +1451,8 @@ __all__ = [
     'CustomDataSourceLinkedService',
     'CustomDataset',
     'CustomSetupBase',
+    'DWCopyCommandDefaultValue',
+    'DWCopyCommandSettings',
     'DataFlow',
     'DataFlowDebugCommandPayload',
     'DataFlowDebugCommandRequest',
@@ -1472,8 +1505,6 @@ __all__ = [
     'DrillLinkedService',
     'DrillSource',
     'DrillTableDataset',
-    'DwCopyCommandDefaultValue',
-    'DwCopyCommandSettings',
     'DynamicsAxLinkedService',
     'DynamicsAxResourceDataset',
     'DynamicsAxSource',
@@ -1490,6 +1521,8 @@ __all__ = [
     'EloquaSource',
     'EntityReference',
     'EnvironmentVariableSetup',
+    'ExcelDataset',
+    'ExcelSource',
     'ExecuteDataFlowActivity',
     'ExecuteDataFlowActivityTypePropertiesCompute',
     'ExecutePipelineActivity',
@@ -1526,6 +1559,7 @@ __all__ = [
     'GetSsisObjectMetadataRequest',
     'GitHubAccessTokenRequest',
     'GitHubAccessTokenResponse',
+    'GlobalParameterSpecification',
     'GoogleAdWordsLinkedService',
     'GoogleAdWordsObjectDataset',
     'GoogleAdWordsSource',
@@ -1598,6 +1632,7 @@ __all__ = [
     'JiraSource',
     'JsonDataset',
     'JsonFormat',
+    'JsonReadSettings',
     'JsonSink',
     'JsonSource',
     'JsonWriteSettings',
@@ -1677,6 +1712,7 @@ __all__ = [
     'OrcFormat',
     'OrcSink',
     'OrcSource',
+    'PackageStore',
     'ParameterSpecification',
     'ParquetDataset',
     'ParquetFormat',
@@ -1688,7 +1724,6 @@ __all__ = [
     'PhoenixLinkedService',
     'PhoenixObjectDataset',
     'PhoenixSource',
-    'PipelineFolder',
     'PipelineListResponse',
     'PipelineReference',
     'PipelineResource',
@@ -1773,6 +1808,9 @@ __all__ = [
     'SftpReadSettings',
     'SftpServerLinkedService',
     'SftpWriteSettings',
+    'SharePointOnlineListLinkedService',
+    'SharePointOnlineListResourceDataset',
+    'SharePointOnlineListSource',
     'ShopifyLinkedService',
     'ShopifyObjectDataset',
     'ShopifySource',
@@ -1786,8 +1824,8 @@ __all__ = [
     'SparkLinkedService',
     'SparkObjectDataset',
     'SparkSource',
-    'SqlDwSink',
-    'SqlDwSource',
+    'SqlDWSink',
+    'SqlDWSource',
     'SqlMiSink',
     'SqlMiSource',
     'SqlServerLinkedService',
@@ -1849,6 +1887,7 @@ __all__ = [
     'TriggerSubscriptionOperationStatus',
     'TumblingWindowTrigger',
     'TumblingWindowTriggerDependencyReference',
+    'TypeConversionSettings',
     'UntilActivity',
     'UpdateIntegrationRuntimeNodeRequest',
     'UpdateIntegrationRuntimeRequest',
@@ -1873,6 +1912,10 @@ __all__ = [
     'XeroLinkedService',
     'XeroObjectDataset',
     'XeroSource',
+    'XmlDataset',
+    'XmlReadSettings',
+    'XmlSource',
+    'ZipDeflateReadSettings',
     'ZohoLinkedService',
     'ZohoObjectDataset',
     'ZohoSource',
@@ -1894,6 +1937,7 @@ __all__ = [
     'DynamicsServicePrincipalCredentialType',
     'EventSubscriptionStatus',
     'FtpAuthenticationType',
+    'GlobalParameterType',
     'GoogleAdWordsAuthenticationType',
     'GoogleBigQueryAuthenticationType',
     'HBaseAuthenticationType',

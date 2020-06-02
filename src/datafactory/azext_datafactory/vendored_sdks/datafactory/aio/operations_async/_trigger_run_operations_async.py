@@ -26,7 +26,7 @@ class TriggerRunOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.datafactory.models
+    :type models: ~data_factory_management_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -60,16 +60,17 @@ class TriggerRunOperations:
         :param run_id: The pipeline run identifier.
         :type run_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: None or the result of cls(response)
+        :return: None, or the result of cls(response)
         :rtype: None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2018-06-01"
 
         # Construct URL
-        url = self.rerun.metadata['url']
+        url = self.rerun.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
@@ -96,9 +97,9 @@ class TriggerRunOperations:
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if cls:
-          return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, {})
 
-    rerun.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/triggers/{triggerName}/triggerRuns/{runId}/rerun'}
+    rerun.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/triggers/{triggerName}/triggerRuns/{runId}/rerun'}  # type: ignore
 
     async def query_by_factory(
         self,
@@ -107,8 +108,8 @@ class TriggerRunOperations:
         last_updated_after: datetime.datetime,
         last_updated_before: datetime.datetime,
         continuation_token: Optional[str] = None,
-        filters: Optional[List["RunQueryFilter"]] = None,
-        order_by: Optional[List["RunQueryOrderBy"]] = None,
+        filters: Optional[List["models.RunQueryFilter"]] = None,
+        order_by: Optional[List["models.RunQueryOrderBy"]] = None,
         **kwargs
     ) -> "models.TriggerRunsQueryResponse":
         """Query trigger runs.
@@ -127,23 +128,24 @@ class TriggerRunOperations:
          for first page.
         :type continuation_token: str
         :param filters: List of filters.
-        :type filters: list[~azure.mgmt.datafactory.models.RunQueryFilter]
+        :type filters: list[~data_factory_management_client.models.RunQueryFilter]
         :param order_by: List of OrderBy option.
-        :type order_by: list[~azure.mgmt.datafactory.models.RunQueryOrderBy]
+        :type order_by: list[~data_factory_management_client.models.RunQueryOrderBy]
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: TriggerRunsQueryResponse or the result of cls(response)
-        :rtype: ~azure.mgmt.datafactory.models.TriggerRunsQueryResponse
+        :return: TriggerRunsQueryResponse, or the result of cls(response)
+        :rtype: ~data_factory_management_client.models.TriggerRunsQueryResponse
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.TriggerRunsQueryResponse"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
 
         _filter_parameters = models.RunFilterParameters(continuation_token=continuation_token, last_updated_after=last_updated_after, last_updated_before=last_updated_before, filters=filters, order_by=order_by)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
-        url = self.query_by_factory.metadata['url']
+        url = self.query_by_factory.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
@@ -176,7 +178,7 @@ class TriggerRunOperations:
         deserialized = self._deserialize('TriggerRunsQueryResponse', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    query_by_factory.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/queryTriggerRuns'}
+    query_by_factory.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/queryTriggerRuns'}  # type: ignore
