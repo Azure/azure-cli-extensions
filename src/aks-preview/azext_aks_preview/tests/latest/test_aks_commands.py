@@ -58,7 +58,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'name': aks_name
         })
 
-        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity --service-principal xxxx --client-secret yyyy ' \
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity --service-principal xxxx --client-secret yyyy --generate-ssh-keys ' \
                      '-a ingress-appgw --appgw-subnet-prefix 10.2.0.0/16 -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -99,7 +99,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
 
         # create aks cluster
-        create_cmd = 'aks create --resource-group={resource_group} --name={aks_name} --enable-managed-identity ' \
+        create_cmd = 'aks create --resource-group={resource_group} --name={aks_name} --enable-managed-identity --generate-ssh-keys ' \
                      '--vnet-subnet-id {vnet_id}/subnets/aks-subnet ' \
                      '-a ingress-appgw --appgw-name gateway --appgw-subnet-id {vnet_id}/subnets/appgw-subnet  -o json'
         aks_cluster = self.cmd(create_cmd, checks=[
@@ -175,7 +175,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
 
         # create aks cluster
-        create_cmd = 'aks create -n {aks_name} -g {resource_group} --enable-managed-identity --service-principal xxxx --client-secret yyyy ' \
+        create_cmd = 'aks create -n {aks_name} -g {resource_group} --enable-managed-identity --service-principal xxxx --client-secret yyyy --generate-ssh-keys ' \
                      '--vnet-subnet-id {vnet_id}/subnets/aks-subnet ' \
                      '-a ingress-appgw --appgw-id {appgw_id} -o json'
         aks_cluster = self.cmd(create_cmd, checks=[
