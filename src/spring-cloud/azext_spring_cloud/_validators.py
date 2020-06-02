@@ -149,8 +149,8 @@ def validate_vnet(cmd, namespace):
        not namespace.service_runtime_subnet and not namespace.reserved_cidr_range:
         return
     validate_vnet_required_parameters(namespace)
-    _validate_cidr_range(namespace)
 
+    vnet_id = ''
     if namespace.vnet:
         vnet_id = namespace.vnet
         # format the app_subnet and service_runtime_subnet
@@ -175,8 +175,39 @@ def validate_vnet(cmd, namespace):
         service_runtime_vnet_id = _parse_vnet_id_from_subnet(namespace.service_runtime_subnet)
         if app_vnet_id.lower() != service_runtime_vnet_id.lower():
             raise CLIError('--app-subnet and --service-runtime-subnet should be in the same Virtual Networks.')
+        vnet_id = app_vnet_id
     if namespace.app_subnet.lower() == namespace.service_runtime_subnet.lower():
         raise CLIError('--app-subnet and --service-runtime-subnet should not be same.')
+
+    if namespace.reserved_cidr_range:
+        _validate_cidr_range(namespace)
+    else:
+        vnet_obj = _get_vnet(cmd, vnet_id)
+        namespace.reserved_cidr_range = _set_default_cidr_range(vnet_obj)
+
+def _get_vnet(cmd, vnet_id):
+    vnet = parse_resource_id(vnet_id)
+    return _get_network_client(cmd.cli_ctx).virtual_networks.get(vnet['resource_group'], vnet['resource_name'])
+
+def _get_network_client(cli_ctx):
+    from azure.cli.core.profiles import ResourceType, get_api_version
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+    return get_mgmt_service_client(cli_ctx,
+                                   ResourceType.MGMT_NETWORK,
+                                   api_version=get_api_version(cli_ctx, ResourceType.MGMT_NETWORK))
+
+def _set_default_cidr_range(vnet):
+    candidates = ['10.0.0.0/14', '172.16.0.0/14']
+    if not vnet or not vnet.address_space or not vnet.address_space.address_prefixes:
+        return candidates[0]
+    subnets = [ip_network(ip, strict=False) for ip in candidates]
+    for value in vnet.address_space.address_prefixes:
+        ip = ip_network(value)
+        subnets = [x for x in subnets if not x.overlaps(ip)]
+    if not subnets:
+        raise CLIError('Cannot set "reserved-cidr-range" automatically. '
+                       'Please specify an used CIDR range in your vnet.')
+    return str(subnets[0])
 
 
 def _parse_vnet_id_from_subnet(subnet_id):
@@ -235,7 +266,7 @@ def _validate_ip(ip, prefix):
             raise CLIError('{0} is not a valid IPv4 CIDR.'.format(ip))
         if ip_address.prefixlen > prefix:
             raise CLIError(
-                '{0} doesn\'t has valid CIDR prefix.'
+                '{0} doesn\'t has valid CIDR prefix. '
                 ' --reserved-cidr-range should be 1 unused /14 IP range, or 3 unused /16 IP ranges.'.format(ip))
         return ip_address
     except ValueError:
@@ -243,8 +274,7 @@ def _validate_ip(ip, prefix):
 
 
 def validate_vnet_required_parameters(namespace):
-    if not namespace.reserved_cidr_range \
-       or not namespace.app_subnet \
+    if not namespace.app_subnet \
        or not namespace.service_runtime_subnet:
         raise CLIError(
-            '--reserved-cidr-range, --app-subnet, --service-runtime-subnet must be set when deploying to VNet')
+            '--app-subnet, --service-runtime-subnet must be set when deploying to VNet')

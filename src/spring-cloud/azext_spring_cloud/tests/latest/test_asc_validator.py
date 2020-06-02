@@ -24,10 +24,10 @@ def _get_test_cmd():
 
 class TestValidateIPRanges(unittest.TestCase):
     def test_lack_of_parameters(self):
-        ns = Namespace(vnet='test-vnet', app_subnet='app', service_runtime_subnet='svc', resource_group='test', reserved_cidr_range=None)
+        ns = Namespace(vnet='test-vnet', app_subnet='app', service_runtime_subnet=None, resource_group='test', reserved_cidr_range='10.0.0.0/14')
         with self.assertRaises(CLIError) as context:
             validate_vnet_required_parameters(ns)
-            self.assertEqual('--reserved-cidr-range, --app-subnet, --service-runtime-subnet must be set when deploying to VNet',
+            self.assertEqual('--app-subnet, --service-runtime-subnet must be set when deploying to VNet',
                              str(context.exception))
 
     def test_single_cidr(self):
