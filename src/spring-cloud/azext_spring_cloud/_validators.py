@@ -185,9 +185,11 @@ def validate_vnet(cmd, namespace):
         vnet_obj = _get_vnet(cmd, vnet_id)
         namespace.reserved_cidr_range = _set_default_cidr_range(vnet_obj)
 
+
 def _get_vnet(cmd, vnet_id):
     vnet = parse_resource_id(vnet_id)
     return _get_network_client(cmd.cli_ctx).virtual_networks.get(vnet['resource_group'], vnet['resource_name'])
+
 
 def _get_network_client(cli_ctx):
     from azure.cli.core.profiles import ResourceType, get_api_version
@@ -195,6 +197,7 @@ def _get_network_client(cli_ctx):
     return get_mgmt_service_client(cli_ctx,
                                    ResourceType.MGMT_NETWORK,
                                    api_version=get_api_version(cli_ctx, ResourceType.MGMT_NETWORK))
+
 
 def _set_default_cidr_range(vnet):
     candidates = ['10.0.0.0/14', '172.16.0.0/14']
