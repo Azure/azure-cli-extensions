@@ -416,3 +416,37 @@ class AzureFirewallScenario(ScenarioTest):
         ])
 
         self.cmd('network firewall policy delete -g {rg} --name {policy}')
+
+    @ResourceGroupPreparer(name_prefix='test_firewall_with_dns_proxy')
+    def test_firewall_with_dns_proxy(self, resource_group):
+        self.kwargs.update({
+            'rg': resource_group,
+            'fw': 'fw01',
+            'dns_servers': '10.0.0.2 10.0.0.3'
+        })
+
+        creation_data = self.cmd('network firewall create -g {rg} -n {fw} '
+                                 '--dns-servers {dns_servers} '
+                                 '--enable-dns-proxy false '
+                                 '--dns-require-proxy-for-network-rules false').get_output_in_json()
+        self.assertEqual(creation_data['name'], self.kwargs['fw'])
+        self.assertEqual(creation_data['DNSServer'], "['10.0.0.2', '10.0.0.3']")
+        self.assertEqual(creation_data['DNSEnableProxy'], 'False')
+        self.assertEqual(creation_data['DNSRequireProxyForNetworkRules'], 'False')
+
+        show_data = self.cmd('network firewall show -g {rg} -n {fw}').get_output_in_json()
+        self.assertEqual(show_data['name'], self.kwargs['fw'])
+        self.assertEqual(show_data['DNSServer'], "['10.0.0.2', '10.0.0.3']")
+        self.assertEqual(show_data['DNSEnableProxy'], 'False')
+        self.assertEqual(show_data['DNSRequireProxyForNetworkRules'], 'False')
+
+        self.cmd('network firewall update -g {rg} -n {fw} '
+                 '--enable-dns-proxy true').get_output_in_json()
+
+        show_data = self.cmd('network firewall show -g {rg} -n {fw}').get_output_in_json()
+        self.assertEqual(show_data['name'], self.kwargs['fw'])
+        self.assertEqual(show_data['DNSServer'], "['10.0.0.2', '10.0.0.3']")
+        self.assertEqual(show_data['DNSEnableProxy'], 'True')
+        self.assertEqual(show_data['DNSRequireProxyForNetworkRules'], 'False')
+
+        self.cmd('network firewall delete -g {rg} --name {fw}')

@@ -7,7 +7,8 @@
 import argparse
 
 from azure.cli.core.commands.parameters import (
-    get_resource_name_completion_list, tags_type, get_enum_type, get_location_type, zones_type)
+    get_resource_name_completion_list, tags_type, get_enum_type, get_location_type, zones_type,
+    get_three_state_flag)
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 
 from knack.arguments import CLIArgumentType
@@ -56,6 +57,12 @@ def load_arguments(self, _):
                                                                                   'The default sku in server end is AZFW_VNet. '
                                                                                   'If you want to attach azure firewall to vhub, you should set sku to AZFW_Hub.')
         c.argument('private_ranges', nargs='+', validator=process_private_ranges, help='Space-separated list of SNAT private range. Validate values are single Ip, Ip prefixes or a single special value "IANAPrivateRanges"')
+
+    with self.argument_context('network firewall', arg_group='DNS') as c:
+        c.argument('dns_servers', nargs='+', help='Space-separated list of DNS server IP addresses')
+        c.argument('enable_dns_proxy', arg_type=get_three_state_flag(), help='Enable DNS Proxy')
+        c.argument('dns_require_proxy_for_network_rules', arg_type=get_three_state_flag(), help='Requires DNS Proxy functionality for FQDNs within Network Rules')
+
     with self.argument_context('network firewall threat-intel-whitelist') as c:
         c.argument('ip_addresses', nargs='+', validator=process_threat_intel_whitelist_ip_addresses, help='Space-separated list of IPv4 addresses.')
         c.argument('fqdns', nargs='+', validator=process_threat_intel_whitelist_fqdns, help='Space-separated list of FQDNs.')
