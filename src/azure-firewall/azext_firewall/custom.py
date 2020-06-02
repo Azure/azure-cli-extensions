@@ -66,7 +66,7 @@ def _find_item_at_path(instance, path):
 def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, location=None,
                           tags=None, zones=None, private_ranges=None, firewall_policy=None,
                           virtual_hub=None, sku=None,
-                          dns_servers=None, enable_dns_proxy=None, dns_require_proxy_for_network_rules=None):
+                          dns_servers=None, enable_dns_proxy=None, require_dns_proxy_for_network_rules=None):
     client = network_client_factory(cmd.cli_ctx).azure_firewalls
     AzureFirewall, SubResource, AzureFirewallSku = cmd.get_models('AzureFirewall', 'SubResource', 'AzureFirewallSku')
     sku_instance = AzureFirewallSku(name=sku, tier='Standard')
@@ -84,7 +84,7 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
 
     firewall.additional_properties['DNSEnableProxy'] = enable_dns_proxy if enable_dns_proxy is not None else False
     firewall.additional_properties['DNSRequireProxyForNetworkRules'] = \
-        dns_require_proxy_for_network_rules if dns_require_proxy_for_network_rules is not None else True
+        require_dns_proxy_for_network_rules if require_dns_proxy_for_network_rules is not None else True
     firewall.additional_properties['DNSServer'] = dns_servers
 
     return client.create_or_update(resource_group_name, azure_firewall_name, firewall)
@@ -92,7 +92,7 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
 
 def update_azure_firewall(cmd, instance, tags=None, zones=None, private_ranges=None,
                           firewall_policy=None, virtual_hub=None,
-                          dns_servers=None, enable_dns_proxy=None, dns_require_proxy_for_network_rules=None):
+                          dns_servers=None, enable_dns_proxy=None, require_dns_proxy_for_network_rules=None):
     SubResource = cmd.get_models('SubResource')
     if tags is not None:
         instance.tags = tags
@@ -112,8 +112,8 @@ def update_azure_firewall(cmd, instance, tags=None, zones=None, private_ranges=N
 
     if enable_dns_proxy is not None:
         instance.additional_properties['DNSEnableProxy'] = enable_dns_proxy
-    if dns_require_proxy_for_network_rules is not None:
-        instance.additional_properties['DNSRequireProxyForNetworkRules'] = dns_require_proxy_for_network_rules
+    if require_dns_proxy_for_network_rules is not None:
+        instance.additional_properties['DNSRequireProxyForNetworkRules'] = require_dns_proxy_for_network_rules
     if dns_servers is not None:
         instance.additional_properties['DNSServer'] = dns_servers
 
