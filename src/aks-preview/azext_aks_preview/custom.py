@@ -705,38 +705,39 @@ def _add_ingress_appgw_addon_role_assignment(result, cmd):
         service_principal_msi_id = result.addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].identity.object_id
         is_service_principal = False
 
-    config = result.addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].config
-    from msrestazure.tools import parse_resource_id, resource_id
-    if CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID in config:
-        appgw_id = config[CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID]
-        parsed_appgw_id = parse_resource_id(appgw_id)
-        appgw_group_id = resource_id(subscription=parsed_appgw_id["subscription"],
-                                     resource_group=parsed_appgw_id["resource_group"])
-        if not _add_role_assignment(cmd.cli_ctx, 'Contributor',
-                                    service_principal_msi_id, is_service_principal, scope=appgw_group_id):
-            logger.warning('Could not create a role assignment for application gateway: %s '
-                           'specified in %s addon. '
-                           'Are you an Owner on this subscription?', appgw_id, CONST_INGRESS_APPGW_ADDON_NAME)
-    if CONST_INGRESS_APPGW_SUBNET_ID in config:
-        subnet_id = config[CONST_INGRESS_APPGW_SUBNET_ID]
-        if not _add_role_assignment(cmd.cli_ctx, 'Network Contributor',
-                                    service_principal_msi_id, is_service_principal, scope=subnet_id):
-            logger.warning('Could not create a role assignment for subnet: %s '
-                           'specified in %s addon. '
-                           'Are you an Owner on this subscription?', subnet_id, CONST_INGRESS_APPGW_ADDON_NAME)
-    if CONST_INGRESS_APPGW_SUBNET_PREFIX in config:
-        if result.agent_pool_profiles[0].vnet_subnet_id is not None:
-            parsed_subnet_vnet_id = parse_resource_id(result.agent_pool_profiles[0].vnet_subnet_id)
-            vnet_id = resource_id(subscription=parsed_subnet_vnet_id["subscription"],
-                                  resource_group=parsed_subnet_vnet_id["resource_group"],
-                                  namespace="Microsoft.Network",
-                                  type="virtualNetworks",
-                                  name=parsed_subnet_vnet_id["name"])
+    if service_principal_msi_id is not None:
+        config = result.addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].config
+        from msrestazure.tools import parse_resource_id, resource_id
+        if CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID in config:
+            appgw_id = config[CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID]
+            parsed_appgw_id = parse_resource_id(appgw_id)
+            appgw_group_id = resource_id(subscription=parsed_appgw_id["subscription"],
+                                         resource_group=parsed_appgw_id["resource_group"])
             if not _add_role_assignment(cmd.cli_ctx, 'Contributor',
-                                        service_principal_msi_id, is_service_principal, scope=vnet_id):
-                logger.warning('Could not create a role assignment for virtual network: %s '
+                                        service_principal_msi_id, is_service_principal, scope=appgw_group_id):
+                logger.warning('Could not create a role assignment for application gateway: %s '
                                'specified in %s addon. '
-                               'Are you an Owner on this subscription?', vnet_id, CONST_INGRESS_APPGW_ADDON_NAME)
+                               'Are you an Owner on this subscription?', appgw_id, CONST_INGRESS_APPGW_ADDON_NAME)
+        if CONST_INGRESS_APPGW_SUBNET_ID in config:
+            subnet_id = config[CONST_INGRESS_APPGW_SUBNET_ID]
+            if not _add_role_assignment(cmd.cli_ctx, 'Network Contributor',
+                                        service_principal_msi_id, is_service_principal, scope=subnet_id):
+                logger.warning('Could not create a role assignment for subnet: %s '
+                               'specified in %s addon. '
+                               'Are you an Owner on this subscription?', subnet_id, CONST_INGRESS_APPGW_ADDON_NAME)
+        if CONST_INGRESS_APPGW_SUBNET_PREFIX in config:
+            if result.agent_pool_profiles[0].vnet_subnet_id is not None:
+                parsed_subnet_vnet_id = parse_resource_id(result.agent_pool_profiles[0].vnet_subnet_id)
+                vnet_id = resource_id(subscription=parsed_subnet_vnet_id["subscription"],
+                                      resource_group=parsed_subnet_vnet_id["resource_group"],
+                                      namespace="Microsoft.Network",
+                                      type="virtualNetworks",
+                                      name=parsed_subnet_vnet_id["name"])
+                if not _add_role_assignment(cmd.cli_ctx, 'Contributor',
+                                            service_principal_msi_id, is_service_principal, scope=vnet_id):
+                    logger.warning('Could not create a role assignment for virtual network: %s '
+                                   'specified in %s addon. '
+                                   'Are you an Owner on this subscription?', vnet_id, CONST_INGRESS_APPGW_ADDON_NAME)
 
 
 def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,too-many-branches
